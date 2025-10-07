@@ -1,0 +1,138 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`radio-input-component removes validation message when an option is selected 1`] = `
+<radio-input-component group-options="[{&quot;value&quot;:&quot;x&quot;,&quot;labelTxt&quot;:&quot;X&quot;,&quot;inputId&quot;:&quot;radio-x&quot;,&quot;checked&quot;:false,&quot;disabled&quot;:false},{&quot;value&quot;:&quot;y&quot;,&quot;labelTxt&quot;:&quot;Y&quot;,&quot;inputId&quot;:&quot;radio-y&quot;,&quot;checked&quot;:false,&quot;disabled&quot;:false}]" group-title="Validation Clear" name="group2" radio-group="" required="" validation="" validation-msg="Please select one">
+  <div class="radio-group">
+    <div class="group-title">
+      Validation Clear
+      <span class="required">
+        *
+      </span>
+    </div>
+    <div class="form-group">
+      <div class="form-check">
+        <input aria-checked="true" aria-disabled="false" checked="" class="form-check-input" id="radio-x" name="group2" required="" type="radio" value="x">
+        <label class="form-check-label" htmlfor="radio-x">
+          X
+        </label>
+      </div>
+      <div class="form-check">
+        <input aria-checked="false" aria-disabled="false" class="form-check-input" id="radio-y" name="group2" required="" type="radio" value="y">
+        <label class="form-check-label" htmlfor="radio-y">
+          Y
+        </label>
+      </div>
+    </div>
+  </div>
+</radio-input-component>
+`;
+
+exports[`radio-input-component renders custom radio group with options 1`] = `
+<radio-input-component custom-radio-group="" group-options="[{&quot;value&quot;:&quot;alpha&quot;,&quot;labelTxt&quot;:&quot;Alpha&quot;,&quot;inputId&quot;:&quot;radio-alpha&quot;,&quot;checked&quot;:false,&quot;disabled&quot;:false},{&quot;value&quot;:&quot;beta&quot;,&quot;labelTxt&quot;:&quot;Beta&quot;,&quot;inputId&quot;:&quot;radio-beta&quot;,&quot;checked&quot;:false,&quot;disabled&quot;:false}]" group-title="Custom Group" name="customGroup">
+  <div class="radio-group">
+    <div class="group-title">
+      Custom Group
+    </div>
+    <div class="form-group">
+      <div class="custom-control custom-radio">
+        <input aria-checked="false" aria-disabled="false" class="custom-control-input" id="radio-alpha" name="customGroup" type="radio" value="alpha">
+        <label class="custom-control-label" htmlfor="radio-alpha">
+          Alpha
+        </label>
+      </div>
+      <div class="custom-control custom-radio">
+        <input aria-checked="false" aria-disabled="false" class="custom-control-input" id="radio-beta" name="customGroup" type="radio" value="beta">
+        <label class="custom-control-label" htmlfor="radio-beta">
+          Beta
+        </label>
+      </div>
+    </div>
+  </div>
+</radio-input-component>
+`;
+
+exports[`radio-input-component renders radio group with options 1`] = `
+<radio-input-component group-options="[{&quot;value&quot;:&quot;one&quot;,&quot;labelTxt&quot;:&quot;Option One&quot;,&quot;inputId&quot;:&quot;radio-one&quot;,&quot;checked&quot;:false,&quot;disabled&quot;:false},{&quot;value&quot;:&quot;two&quot;,&quot;labelTxt&quot;:&quot;Option Two&quot;,&quot;inputId&quot;:&quot;radio-two&quot;,&quot;checked&quot;:true,&quot;disabled&quot;:false},{&quot;value&quot;:&quot;three&quot;,&quot;labelTxt&quot;:&quot;Option Three&quot;,&quot;inputId&quot;:&quot;radio-three&quot;,&quot;checked&quot;:false,&quot;disabled&quot;:true}]" group-title="Select Option" name="group" radio-group="">
+  <div class="radio-group">
+    <div class="group-title">
+      Select Option
+    </div>
+    <div class="form-group">
+      <div class="form-check">
+        <input aria-checked="false" aria-disabled="false" class="form-check-input" id="radio-one" name="group" type="radio" value="one">
+        <label class="form-check-label" htmlfor="radio-one">
+          Option One
+        </label>
+      </div>
+      <div class="form-check">
+        <input aria-checked="true" aria-disabled="false" checked="" class="form-check-input" id="radio-two" name="group" type="radio" value="two">
+        <label class="form-check-label" htmlfor="radio-two">
+          Option Two
+        </label>
+      </div>
+      <div class="form-check">
+        <input aria-checked="false" aria-disabled="true" class="form-check-input" disabled="" id="radio-three" name="group" type="radio" value="three">
+        <label class="form-check-label" htmlfor="radio-three">
+          Option Three
+        </label>
+      </div>
+    </div>
+  </div>
+</radio-input-component>
+`;
+
+exports[`radio-input-component renders single custom radio input 1`] = `
+<radio-input-component custom-radio="" input-id="custom-radio" label-txt="Custom Radio" name="custom">
+  <div class="form-group">
+    <div class="custom-control custom-radio">
+      <input aria-checked="false" aria-disabled="false" class="custom-control-input" id="custom-radio" name="custom" type="radio" value="">
+      <label class="custom-control-label" htmlfor="custom-radio">
+        Custom Radio
+      </label>
+    </div>
+  </div>
+</radio-input-component>
+`;
+
+exports[`radio-input-component renders single radio input 1`] = `
+<radio-input-component input-id="single-radio" label-txt="Single Radio" name="test" radio="">
+  <div class="form-group">
+    <div class="form-check">
+      <input aria-checked="false" aria-disabled="false" class="form-check-input" id="single-radio" name="test" type="radio" value="">
+      <label class="form-check-label" htmlfor="single-radio">
+        Single Radio
+      </label>
+    </div>
+  </div>
+</radio-input-component>
+`;
+
+exports[`radio-input-component shows validation message when no selection is made and required 1`] = `
+<radio-input-component group-options="[{&quot;value&quot;:&quot;x&quot;,&quot;labelTxt&quot;:&quot;X&quot;,&quot;inputId&quot;:&quot;radio-x&quot;,&quot;checked&quot;:false,&quot;disabled&quot;:false},{&quot;value&quot;:&quot;y&quot;,&quot;labelTxt&quot;:&quot;Y&quot;,&quot;inputId&quot;:&quot;radio-y&quot;,&quot;checked&quot;:false,&quot;disabled&quot;:false}]" group-title="Validation Test" name="group1" radio-group="" required="" validation="" validation-msg="Please select one">
+  <div class="radio-group was-validated">
+    <div class="group-title">
+      Validation Test
+      <span class="required">
+        *
+      </span>
+    </div>
+    <div class="form-group">
+      <div class="form-check">
+        <input aria-checked="false" aria-disabled="false" class="form-check-input" id="radio-x" name="group1" required="" type="radio" value="x">
+        <label class="form-check-label" htmlfor="radio-x">
+          X
+        </label>
+      </div>
+      <div class="form-check">
+        <input aria-checked="false" aria-disabled="false" class="form-check-input" id="radio-y" name="group1" required="" type="radio" value="y">
+        <label class="form-check-label" htmlfor="radio-y">
+          Y
+        </label>
+      </div>
+    </div>
+    <div class="form-text invalid-feedback" style="display: block;">
+      Please select one
+    </div>
+  </div>
+</radio-input-component>
+`;

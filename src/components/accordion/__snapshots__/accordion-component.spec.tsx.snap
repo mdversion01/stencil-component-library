@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`accordion-component renders closed by default 1`] = `
+<accordion-component target-id="section1">
+  <!---->
+  <div class="accordion-wrapper">
+    <button-component aria-controls="section1" aria-expanded="false" classnames=" collapsed" data-target="section1" data-toggle="collapse" role="button" size="" tabindex="0" variant=""></button-component>
+    <div aria-labelledby="section1-header" class="collapse" id="section1" role="region" style="height: 0px; overflow: hidden; transition: height 0.35s ease; display: none;">
+      <div class="accordion-body accordion-card"></div>
+    </div>
+  </div>
+</accordion-component>
+`;
+
+exports[`accordion-component renders open by default when is-open is set 1`] = `
+<accordion-component is-open="true" target-id="section2">
+  <!---->
+  <div class="accordion-wrapper">
+    <button-component aria-controls="section2" aria-expanded="true" classnames=" " data-target="section2" data-toggle="collapse" role="button" size="" tabindex="0" variant=""></button-component>
+    <div aria-labelledby="section2-header" class="collapse" id="section2" role="region" style="height: auto; overflow: hidden; transition: height 0.35s ease; display: block;">
+      <div class="accordion-body accordion-card"></div>
+    </div>
+  </div>
+</accordion-component>
+`;

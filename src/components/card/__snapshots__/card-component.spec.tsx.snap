@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`card-component applies elevation and custom classes 1`] = `
+<card-component class-names="custom-card" elevation="2">
+  <!---->
+  <div aria-label="Card section" class="card custom-card elevated-2" role="region" style="max-width: 20rem;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title"></h5>
+      <div class="card-text"></div>
+    </div>
+    <div class="card-footer"></div>
+  </div>
+</card-component>
+`;
+
+exports[`card-component is focusable when tabindex is provided 1`] = `
+<card-component tab="0">
+  <!---->
+  <div aria-label="Card section" class="card" role="region" tabindex="0" style="max-width: 20rem;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title"></h5>
+      <div class="card-text"></div>
+    </div>
+    <div class="card-footer"></div>
+  </div>
+</card-component>
+`;
+
+exports[`card-component renders basic card with default aria attributes 1`] = `
+<card-component>
+  <!---->
+  <div aria-label="Card section" class="card" role="region" style="max-width: 20rem;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title"></h5>
+      <div class="card-text"></div>
+    </div>
+    <div class="card-footer"></div>
+  </div>
+</card-component>
+`;
+
+exports[`card-component renders card with actions slot 1`] = `
+<card-component actions="">
+  <!---->
+  <div aria-label="Card section" class="card" role="region" style="max-width: 20rem;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title"></h5>
+      <div class="card-text"></div>
+    </div>
+    <div class="card-actions">
+      <div slot="actions">
+        Action Button
+      </div>
+    </div>
+    <div class="card-footer"></div>
+  </div>
+</card-component>
+`;
+
+exports[`card-component renders card with custom aria-label 1`] = `
+<card-component aria-label="Profile Card">
+  <!---->
+  <div aria-label="Profile Card" class="card" role="region" style="max-width: 20rem;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title"></h5>
+      <div class="card-text"></div>
+    </div>
+    <div class="card-footer"></div>
+  </div>
+</card-component>
+`;
+
+exports[`card-component renders card with header and footer slots 1`] = `
+<card-component>
+  <!---->
+  <div aria-label="Card section" class="card" role="region" style="max-width: 20rem;">
+    <div class="card-header">
+      <div slot="header">
+        Header Content
+      </div>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Main text content
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <div slot="footer">
+        Footer Content
+      </div>
+    </div>
+  </div>
+</card-component>
+`;
+
+exports[`card-component renders card with image 1`] = `
+<card-component alt-text="Sample Image" img="" img-src="https://example.com/image.jpg">
+  <!---->
+  <div aria-label="Card section" class="card" role="region" style="max-width: 20rem;">
+    <img alt="Sample Image" class="card-img-top" src="https://example.com/image.jpg" style="height: 11.25rem; width: 100%; display: block;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title"></h5>
+      <div class="card-text"></div>
+    </div>
+    <div class="card-footer"></div>
+  </div>
+</card-component>
+`;

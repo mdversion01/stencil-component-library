@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`icon-component applies dynamic font-size and color 1`] = `
+<icon-component color="red" icon="fa-star" icon-size="24">
+  <i aria-hidden="true" class="fa-star" style="font-size: 24px; color: red;"></i>
+</icon-component>
+`;
+
+exports[`icon-component applies tokenIcon class 1`] = `
+<icon-component icon="fa-star" token-icon="">
+  <i aria-hidden="true" class="fa-star token-icon"></i>
+</icon-component>
+`;
+
+exports[`icon-component renders with default props 1`] = `
+<icon-component icon="fa-check">
+  <i aria-hidden="true" class="fa-check"></i>
+</icon-component>
+`;
+
+exports[`icon-component renders with iconMargin left 1`] = `
+<icon-component icon="fa-user" icon-margin="left">
+  <i aria-hidden="true" class="fa-user ms-1"></i>
+</icon-component>
+`;
+
+exports[`icon-component renders with iconMargin right 1`] = `
+<icon-component icon="fa-user" icon-margin="right">
+  <i aria-hidden="true" class="fa-user me-1"></i>
+</icon-component>
+`;
+
+exports[`icon-component sets custom aria-label and aria-hidden=false 1`] = `
+<icon-component icon="fa-info" icon-aria-hidden="false" icon-aria-label="Information">
+  <i aria-hidden="false" aria-label="Information" class="fa-info"></i>
+</icon-component>
+`;

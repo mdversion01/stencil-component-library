@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`button-group applies additional classNames 1`] = `
+<button-group class-names="custom-class">
+  <!---->
+  <div aria-label="Button Group" class="btn-group custom-class" role="group"></div>
+</button-group>
+`;
+
+exports[`button-group renders horizontal by default with default aria-label 1`] = `
+<button-group>
+  <!---->
+  <div aria-label="Button Group" class="btn-group" role="group"></div>
+</button-group>
+`;
+
+exports[`button-group renders slotted buttons 1`] = `
+<button-group>
+  <!---->
+  <div aria-label="Button Group" class="btn-group" role="group">
+    <button-component btn-text="One"></button-component>
+    <button-component btn-text="Two"></button-component>
+  </div>
+</button-group>
+`;
+
+exports[`button-group renders vertical layout when vertical prop is true 1`] = `
+<button-group vertical="">
+  <!---->
+  <div aria-label="Button Group" class="btn-group-vertical" role="group"></div>
+</button-group>
+`;
+
+exports[`button-group uses custom aria-label if provided 1`] = `
+<button-group aria-label="Custom Group Label">
+  <!---->
+  <div aria-label="Custom Group Label" class="btn-group" role="group"></div>
+</button-group>
+`;

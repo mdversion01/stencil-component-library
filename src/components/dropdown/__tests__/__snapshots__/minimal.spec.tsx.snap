@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`dropdown-component (minimal test) smoke test: can mount and snapshot closed menu: closed-render 1`] = `"<dropdown-<id>><div class="dropdown"><button-component id="dropdown-<id>-toggle-button" class="dropdown-button" variant="default" shape="" size="" aria-haspopup="true" aria-controls="dropdown-<id>-menu-root" aria-expanded="false">Dropdown<div class="dropdown-caret"><icon-component icon="fa-solid fa-caret-down"></icon-component></div></button-component><div class="dropdown-menu" role="menu" id="dropdown-<id>-menu-root" aria-activedescendant="dropdown-item--1" aria-owns="" aria-labelledby="dropdown-<id>-toggle-button" tabindex="-1"></div></div></dropdown-<id>>"`;

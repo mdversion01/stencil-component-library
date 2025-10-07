@@ -1,0 +1,20 @@
+// @mixin generate-badge-utilities($colors) {
+//   @each $name, $value in $colors {
+//     .bg-#{"" + $name} {
+//       background-color: #{$value} !important;
+//       border-color: #{$value} !important;
+//     }
+
+//     // .text-bg-#{"" + $name} {
+//     //   background-color: #{$value} !important;
+//     //   color: if(#{$name} == yellow, #000, #fff) !important;
+//     // }
+
+//     .bg-#{"" + $name}.outlined {
+//       background-color: #FFF !important;
+//       border-color: #{$value} !important;
+//       color: #{$value} !important;
+//     }
+//   }
+// }
+

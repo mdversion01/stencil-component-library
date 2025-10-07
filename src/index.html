@@ -2,13 +2,625 @@
 <html dir="ltr" lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stencil Component Starter</title>
 
     <script type="module" src="/build/stencil-component-library.esm.js"></script>
     <script nomodule src="/build/stencil-component-library.js"></script>
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+    </style>
   </head>
   <body>
-    <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <autocomplete-single id="aci1" input-id="ac-single1" size="sm" label="Autocomplete Single"></autocomplete-single>
+
+        <autocomplete-single id="aci2" input-id="ac-single2" label="Autocomplete Single" required validation validation-message="Please fill in"></autocomplete-single>
+
+        <autocomplete-multiselect
+          id="aci3"
+          input-id="ac-1"
+          label="Autocomplete Multiselect"
+          required
+          validation
+          validation-message="Please fill in"
+          placeholder="Type to search..."
+          data-autocomplete="true"
+        ></autocomplete-multiselect>
+
+        <autocomplete-multiple-selections
+          id="aci4"
+          badge-variant="dark"
+          badge-shape="pill"
+          input-id="ac-2"
+          label="Autocomplete Multiple Selections"
+          placeholder="Type to search..."
+          data-autocomplete="true"
+        ></autocomplete-multiple-selections>
+      </div>
+
+      <!-- <div class="cwrapper">
+        <badge-component id="badge1" elevation="6" shape="square" background-color="primary">Badge Base</badge-component>
+
+        <badge-component id="badge2" background-color="success" size="lg">Badge Large</badge-component>
+
+        <badge-component id="badge3" variant="purple" outlined shape="pill" size="sm">Badge Small</badge-component>
+
+        <badge-component id="badge4" bdg-position="left" elevation="3" outlined variant="purple" token bordered background-color="amber" shape="circle" inset
+          ><button type="button" class="btn btn-outline-secondary btn-sm">Badge Small</button><span slot="token"><i class="fa-solid fa-house"></i></span
+        ></badge-component>
+
+        <badge-component id="badge5" elevation="1" dot pulse variant="amber">
+          <button type="button" class="btn btn-outline-secondary btn-sm">Badge Small</button>
+        </badge-component>
+      </div> -->
+
+      <!-- <div class="cwrapper">
+        <button-component title-attr="Go Ahead" variant="default" btn-text="Default Button"></button-component>
+
+        <button-component title-attr="Go Ahead" variant="danger" btn-text="Click Button"></button-component>
+
+        <button-component title-attr="Go Ahead" outlined variant="success" btn-text="Outlined Button"></button-component>
+
+        <button-component title-attr="Go Ahead" link btn-text="Link Button"></button-component>
+
+        <button-component title-attr="Go Ahead" disabled variant="info" btn-text="disabled Button"></button-component>
+
+        <button-component title-attr="Go Ahead" stripped btn-text="Stripped Button"></button-component>
+
+        <button-component title-attr="Go Ahead" variant="default" size="xs" btn-text="XSmall Button"></button-component>
+
+        <button-component title-attr="Go Ahead" variant="default" size="sm" btn-text="Small Button"></button-component>
+
+        <button-component title-attr="Go Ahead" variant="default" size="lg" btn-text="Lg Button"></button-component>
+
+        <button-component title-attr="Go Ahead" variant="default" shape="pill" btn-text="Pill Button"></button-component>
+
+        <button-component title-attr="Go Ahead" variant="default" shape="square" btn-text="Square Button"></button-component>
+
+        <button-component title-attr="Icon" icon-btn elevation="3" variant="primary"><i class="fa-solid fa-house"></i></button-component>
+
+        <button-component title-attr="Icon" btn-icon variant="primary"><i class="fa-solid fa-house"></i></button-component>
+
+        <button-component title-attr="Go Ahead" btn-text="Ripple Effect Button" variant="primary" ripple></button-component>
+
+        <button-component title-attr="Go Ahead" btn-text="Text Button" text-btn variant="primary"></button-component>
+
+        <button-component title-attr="Go Ahead" btn-text="Just Text (Button)" text variant="primary"></button-component>
+
+        <button-component title-attr="Button with text and Icon" slot-side="left" btn-text="Home" variant="primary"><i class="fa-solid fa-house"></i></button-component>
+
+        <button-component title-attr="Button with text and Icon" slot-side="right" btn-text="Home" variant="primary"><i class="fa-solid fa-house"></i></button-component>
+      -->
+      <!-- <button-component title-attr="Icon" slot-side="left" slot-side="right" btn-text="Home" variant="primary"><i class="fa-solid fa-house"></i><span>Text</span><i class="fa-solid fa-house"></i></button-component> -->
+
+      <!-- <button-component title-attr="Button with Badge" btn-text="With a badge" variant="primary">
+          <badge-component id="badge12" background-color="light" bdg-position="right" size="sm">1</badge-component>
+        </button-component>
+
+        <button-component title-attr="Go Ahead" variant="active-blue" class-names="active" btn-text="Active State Button"></button-component>
+      </div> -->
+
+      <!-- <div class="cwrapper">
+        <button-group vertical>
+          <button-component title-attr="Go Ahead" start size="sm" variant="active-blue" active vertical group-btn btn-text="Default Button"></button-component>
+          <button-component title-attr="Go Ahead" variant="active-blue" size="sm" vertical group-btn btn-text="Default Button"></button-component>
+          <button-component title-attr="Go Ahead" variant="active-blue" disabled size="sm" vertical group-btn end btn-text="Default This Button"></button-component>
+        </button-group>
+
+        <button-group>
+          <button-component title-attr="Go Ahead" start size="sm" variant="primary" group-btn btn-text="Default Button"></button-component>
+          <button-component title-attr="Go Ahead" variant="danger" size="sm" group-btn btn-text="Default Button"></button-component>
+          <button-component title-attr="Go Ahead" variant="success" size="sm" group-btn end btn-text="Default This Button"></button-component>
+        </button-group>
+      </div> -->
+
+      <!-- <div class="cwrapper">
+        <card-component>
+          <div slot="header">Card Header</div>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+          <div slot="footer">
+            <p>Card Footer</p>
+          </div>
+        </card-component>
+
+        <card-component no-header>
+          <div slot="header">Card Header</div>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+          <div slot="footer">
+            <p>Card Footer</p>
+          </div>
+        </card-component>
+
+        <card-component no-footer>
+          <div slot="header">Card Header</div>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+          <div slot="footer">
+            <p>Card Footer</p>
+          </div>
+        </card-component>
+
+        <card-component no-header no-footer>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+        </card-component>
+
+        <card-component actions>
+          <div slot="header">Card Header</div>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+          <div slot="actions">Action Buttons or Links can go here.</div>
+        </card-component>
+
+        <card-component img img-src="https://th.bing.com/th/id/OIP.uHaqRdiMzWSMCR2LzsmhtQHaEZ?w=265&h=180&c=7&r=0&o=5&pid=1.7">
+          <div slot="header">Card Header</div>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+          <div slot="footer">
+            <p>Card Footer</p>
+          </div>
+        </card-component>
+
+        <card-component img img-src="https://th.bing.com/th/id/OIP.uHaqRdiMzWSMCR2LzsmhtQHaEZ?w=265&h=180&c=7&r=0&o=5&pid=1.7" actions>
+          <div slot="header">Card Header</div>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+          <div slot="actions">Action Buttons or Links can go here.</div>
+          <div slot="footer">
+            <p>Card Footer</p>
+          </div>
+        </card-component>
+
+        <card-component elevation="8">
+          <div slot="header">Card Header</div>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+          <div slot="footer">
+            <p>Card Footer</p>
+          </div>
+        </card-component>
+      </div> -->
+
+      <div class="cwrapper">
+        <checkbox-component size="lg" input-id="checkbox0" name="checkbox0" label-txt="Regular Checkbox"></checkbox-component>
+
+        <checkbox-component size="lg" custom-checkbox input-id="checkbox1" name="checkbox1" label-txt="Checkbox 1"></checkbox-component>
+
+        <checkbox-component disabled size="sm" validation validation-msg="Must select" input-id="checkbox1" required name="checkbox1" label-txt="Checkbox 1"></checkbox-component>
+
+        <checkbox-component
+          size="lg"
+          custom-checkbox-group
+          inline
+          validation
+          disabled
+          validation-msg="Must select at least one"
+          required
+          name="fruits"
+          group-title="Select your fruits"
+          group-title-size="lg"
+          group-options='[
+            { "value": "apple", "labelTxt": "Apple", "inputId": "chk-apple", "checked": false, "disabled": false },
+            { "value": "banana", "labelTxt": "Banana", "inputId": "chk-banana", "checked": true, "disabled": false },
+            { "value": "cherry", "labelTxt": "Cherry", "inputId": "chk-cherry", "checked": false, "disabled": true }
+          ]'
+        ></checkbox-component>
+        <br />
+        <checkbox-component
+          checkbox-group
+          size="lg"
+          disabled
+          name="fruits"
+          group-title="Select your fruits"
+          group-title-size="lg"
+          group-options='[
+            { "value": "apple", "labelTxt": "Apple", "inputId": "chk-apple1", "checked": false, "disabled": false },
+            { "value": "banana", "labelTxt": "Banana", "inputId": "chk-banana1", "checked": true, "disabled": false },
+            { "value": "cherry", "labelTxt": "Cherry", "inputId": "chk-cherry1", "checked": false, "disabled": true }
+          ]'
+        ></checkbox-component>
+      </div>
+
+      <div class="cwrapper">
+        <radio-input-component
+          validation
+          size="sm"
+          custom-radio
+          validation-msg="Must select"
+          required
+          input-id="radio1"
+          name="radio1"
+          label-txt="Radio 1"
+          value="radio1"
+        ></radio-input-component>
+
+        <radio-input-component size="sm" input-id="radio2" custom-radio name="radio2" label-txt="Radio 2" value="radio2"></radio-input-component>
+
+        <radio-input-component
+          input-id="radio1a"
+          name="radio1a"
+          label-txt="Regular Radio 1"
+          value="radio1a"
+        ></radio-input-component>
+
+        <radio-input-component input-id="radio2a" name="radio2a" label-txt="Regular Radio 2" value="radio2a"></radio-input-component>
+
+        <br />
+        <radio-input-component
+          required
+          validation
+          disabled
+          validation-msg="Must select one"
+          custom-radio-group
+          inline
+          name="colors"
+          group-title="Choose a color"
+          group-title-size="sm"
+          size="sm"
+          group-options='[{"value":"red","labelTxt":"Red","inputId":"radio-red","checked":false,"disabled":false},{"value":"green","labelTxt":"Green","inputId":"radio-green","checked":false,"disabled":false},{"value":"blue","labelTxt":"Blue","inputId":"radio-blue","checked":false,"disabled":false}]'
+        ></radio-input-component>
+        <br />
+        <radio-input-component
+          required
+          disabled
+          validation
+          validation-msg="Must select one"
+          custom-radio-group
+          name="colors1"
+          group-title="Choose a color"
+          group-title-size="md"
+          size="sm"
+          group-options='[{"value":"red1","labelTxt":"Red","inputId":"radio-red1","checked":false,"disabled":false},{"value":"green1","labelTxt":"Green","inputId":"radio-green1","checked":false,"disabled":false},{"value":"blue1","labelTxt":"Blue","inputId":"radio-blue1","checked":false,"disabled":false}]'
+        ></radio-input-component>
+      </div>
+      <!-- </app-wrapper> -->
+
+      <!-- <div class="cwrapper"> -->
+      <!-- <button-component title-attr="Go Ahead" link btn-text="Link Button" url="test.html"></button-component> -->
+
+      <!-- <accordion-component target-id="accordion-section-3" content-txt-size="sm" icon="fa-solid fa-plus, fa-solid fa-minus" accordion aria-label="Accordion Section">
+          <span slot="accordion-header">Using Other Icons</span>
+          <div slot="content">This content can be collapsed</div>
+        </accordion-component>
+        <br />
+
+        <accordion-container id="accordion-1" content-txt-size="sm" parent-id="accordion-example"></accordion-container>
+
+        <script>
+          const collapseData = [
+            { header: 'Accordion 1', content: 'Content 1' },
+            { header: 'Accordion 2', content: 'Content 2' },
+            { header: 'Accordion 3', content: 'Content 3' },
+            { header: 'Accordion 4', content: 'Content 4' },
+          ];
+          document.getElementById('accordion-1').data = collapseData;
+        </script>
+
+        <br /><br />
+        <accordion-component target-id="accordion-section-1" is-open="true" variant="default" aria-label="Frequently Asked Questions">
+          <span slot="button-text">What is your return policy?</span>
+          <div slot="content">
+            <p>You can return any item within 30 days of purchase for a full refund. Please ensure the product is in original condition.</p>
+          </div>
+        </accordion-component>
+        <br />
+        <accordion-component link target-id="link-1">
+          <span slot="button-text">Toggle Link 1</span>
+          <div slot="content">Toggle content 1</div>
+        </accordion-component>
+        <br />
+      </div> -->
+
+      <!-- <div class="cwrapper">
+        <icon-component icon="mdi mdi-home" size="sm"></icon-component>
+
+        <icon-component icon="fa-solid fa-house" size="md" color="red"></icon-component>
+
+        <icon-component icon="fa-solid fa-house" size="lg"></icon-component>
+
+        <icon-component icon="fa-solid fa-house" icon-size="72"></icon-component>
+
+        <badge-component id="badge4" bdg-position="left" elevation="3" outlined variant="purple" token bordered background-color="amber" shape="circle" inset
+          ><button type="button" class="btn btn-outline-secondary btn-sm">Badge Small</button
+          ><span slot="token"> <icon-component icon="fa-solid fa-house" icon-size="10" token-icon></icon-component></span
+        ></badge-component>
+      </div> -->
+
+      <!-- <div class="cwrapper">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        <divider-component></divider-component>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+
+        <section>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+          <divider-component dashed></divider-component>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        </section>
+
+        <section>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+          <divider-component orientation="center">Text Center</divider-component>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        </section>
+
+        <section class="display-box-demo">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+          <divider-component orientation="left">Text Left</divider-component>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        </section>
+
+        <section class="display-box-demo">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+          <divider-component orientation="left" orientation-margin="left">Text Left</divider-component>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        </section>
+
+        <section>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+          <divider-component orientation="right">Text Right</divider-component>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        </section>
+
+        <section>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+          <divider-component orientation="right" orientation-margin="right">Text Right</divider-component>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        </section>
+
+        <section>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+          <divider-component styles="color:red;" orientation="center" plain>Text Center and Plain</divider-component>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        </section>
+
+        <section class="display-box-demo">
+          <div class="txt-14">
+            Test <divider-component type="vertical"></divider-component> Test <divider-component type="vertical"></divider-component> Test
+            <divider-component type="vertical"></divider-component>
+          </div>
+        </section>
+      </div> -->
+
+      <div class="cwrapper">
+        <section>
+          <!-- <dropdown-component id="dditems" size="sm" variant="default" listType="toggle-switches"></dropdown-component> -->
+
+          <dropdown-component id="ddMenu" size="sm" icon-size="10" variant="primary" icon-dropdown icon="fa-solid fa-ellipsis-vertical" list-type="customCheckboxes"></dropdown-component>
+
+          <dropdown-component id="ddMenu3" size="lg" icon-dropdown icon="fa-solid fa-gear"></dropdown-component>
+        </section>
+        <br />
+        <br />
+
+        <section style="margin-left: 100px">
+          <dropdown-component id="dditemsSubMenu" button-text="DD w/ Submenu aligned left" variant="default" outlined></dropdown-component>
+        </section>
+        <br />
+        <br />
+        <dropdown-component id="dditems" size="sm" variant="primary" list-type="toggleSwitches"></dropdown-component>
+
+        <br />
+
+        <script type="module">
+          document.addEventListener('DOMContentLoaded', () => {
+            // Dynamically selectable options
+            const dditems = document.getElementById('dditems');
+            if (dditems) {
+              dditems.options = [
+                { name: 'Action', path: '#' },
+                { name: 'Another Action', path: '#' },
+                { name: 'Something else here', path: '#' },
+                // Add more items as needed
+              ];
+            }
+
+            // Dynamically selectable options
+            const ddMenu = document.getElementById('ddMenu');
+            if (ddMenu) {
+              ddMenu.options = [
+                { name: 'Action', path: '#', inputId: 'dd1', value: 'action' },
+                { name: 'Another Action', path: '#', inputId: 'dd2', value: 'another action' },
+                { name: 'Something else here', path: '#', inputId: 'dd3', value: 'something else' },
+                // Add more items as needed
+              ];
+            }
+
+            const ddMenu3 = document.getElementById('ddMenu3');
+            if (ddMenu3) {
+              ddMenu3.options = [
+                { name: 'Action', path: '#' },
+                { name: 'Another Action', path: '#' },
+                { name: 'Something else here', path: '#' },
+                // Add more items as needed
+              ];
+            }
+
+            // Dynamically selectable options
+            const dditemsSubMenu = document.getElementById('dditemsSubMenu');
+            if (dditemsSubMenu) {
+              dditemsSubMenu.options = [
+                { name: 'Item 1', path: '#' },
+                // { isDivider: true },
+
+                {
+                  name: 'Settings',
+                  submenu: [
+                    { name: 'Dark Mode', checked: true, customListType: 'toggleSwitches' },
+                    {
+                      name: 'Test 1',
+                      submenu: [
+                        { name: 'Sub Test 1', path: '#' },
+                        { name: 'Sub Test 2', path: '#' },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  name: 'Tools',
+                  submenu: [
+                    { name: 'Compress Images', checked: true, customListType: 'checkboxes' },
+                    { name: 'Test 2', checked: false, customListType: 'customCheckboxes' },
+                  ],
+                },
+
+                { name: 'Item 6', path: '#' },
+                // ... other items
+              ];
+            }
+          });
+        </script>
+      </div>
+
+      <div class="cwrapper">
+        <toggle-switch-component
+          input-id="agree-switch"
+          label-txt="Accept Terms"
+          toggle-txt="true"
+          new-toggle-txt='{"on":"Yes","off":"No"}'
+          checked="true"
+          size="sm"
+          required
+          validation
+          validation-message="Please accept the terms"
+        ></toggle-switch-component>
+        <br />
+        <toggle-switch-component
+          input-id="agree-switch-2"
+          label-txt="Custom Accept Terms"
+          toggle-txt="true"
+          new-toggle-txt='{"on":"Yes","off":"No"}'
+          checked="true"
+          size="sm"
+          custom-switch="true"
+          required
+          validation
+          validation-message="Please accept the terms"
+        ></toggle-switch-component>
+
+        <toggle-switch-component id="toggle-group" input-id="groupTS" switches custom-switch="true" size="sm" ></toggle-switch-component>
+
+        <br /><br />
+        <toggle-switch-component id="group-inline" input-id="tsInline" switches inline></toggle-switch-component>
+
+        <script>
+          document.addEventListener('DOMContentLoaded', () => {
+            // Dynamically selectable option
+            const dditems = document.getElementById('dditems');
+            if (dditems) {
+              dditems.options = [
+                { name: 'Action', inputId: '1', checked: true, disabled: false },
+                { name: 'Another Action', inputId: '2', checked: false, disabled: false },
+                { name: 'Something else here', inputId: '3', checked: false, disabled: false },
+
+                // Add more items as needed
+              ];
+            }
+
+            const group = document.getElementById('toggle-group');
+            group.switchesArray = [
+              {
+                id: '1',
+                label: 'Notifications',
+                checked: true,
+                toggleTxt: true,
+                newToggleTxt: { on: 'On', off: 'Off' },
+                required: true,
+                validation: true,
+                validationMessage: 'Please enable email updates',
+              },
+              {
+                id: '2',
+                label: 'Email Updates',
+                checked: false,
+                required: true,
+                validation: true,
+                validationMessage: 'Please enable email updates',
+              },
+            ];
+
+            document.getElementById('group-inline').switchesArray = [
+              { id: 'a', label: 'One', checked: true, validation: true, validationMessage: 'Please enable status updates', required: true },
+              { id: 'b', label: 'Two', checked: false, toggleTxt: true, validation: true, validationMessage: 'Please enable email updates', required: true },
+            ];
+          });
+        </script>
+      </div>
+    </app-wrapper>
+
+    <!-- <script type="module"> -->
+    <!-- // window.addEventListener('DOMContentLoaded', () => {
+      //   const aci1 = document.getElementById('aci1');
+      //   const aci1Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+      //   setTimeout(() => {
+      //     aci1.options = aci1Options;
+      //   }, 300); // delay to allow stencil hydration
+
+      //   const aci2 = document.getElementById('aci2');
+      //   const aci2Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+      //   setTimeout(() => {
+      //     aci2.options = aci2Options;
+      //   }, 300); // delay to allow stencil hydration
+
+      //   const aci3 = document.getElementById('aci3');
+      //   const aci3Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+      //   setTimeout(() => {
+      //     aci3.options = aci3Options;
+      //   }, 300); // delay to allow stencil hydration
+
+      //   const aci4 = document.getElementById('aci4');
+      //   const aci4Options = [
+      //     'Apple',
+      //     'Apparatus',
+      //     'Apple Pie',
+      //     'Applegate',
+      //     'Banana',
+      //     'Orange',
+      //     'Mango',
+      //     'Bet',
+      //     'Betty',
+      //     'Bobby',
+      //     'Bob',
+      //     'Bobby Brown',
+      //     'Bobby Blue',
+      //     'Bobby Green',
+      //   ];
+      //   setTimeout(() => {
+      //     aci4.options = aci4Options;
+      //   }, 300);
+      // }); -->
+    <!-- </script> -->
   </body>
 </html>

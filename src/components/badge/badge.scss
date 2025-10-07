@@ -1,0 +1,353 @@
+@import "../../global/variables.scss";
+
+@mixin generate-badge-utilities($colors) {
+  @each $name, $value in $colors {
+    .bg-#{"" + $name} {
+      background-color: #{$value} !important;
+      border-color: #{$value} !important;
+      color: if(#{$name} == light, #000, '') !important;
+    }
+
+    .text-bg-#{"" + $name} {
+      background-color: #{$value} !important;
+      color: if(#{$name} == yellow, #000, #fff) !important;
+    }
+
+    .bg-#{"" + $name}.outlined {
+      background-color: #FFF !important;
+      border-color: #{$value} !important;
+      color: #{$value} !important;
+    }
+  }
+}
+
+@include generate-badge-utilities($badge-colors);
+
+// _badge-sizes.scss
+
+$badge-sizes: (
+  xs: (font: 0.625rem, font-important: false, min: 36px),
+  sm: (font: 0.75rem,  font-important: false, min: 50px),
+  lg: (font: 1.2rem,   font-important: true,  min: 78px)
+);
+
+/// Emits `.badge.{size}` with optional min-width
+@mixin make-badge-size(
+  $name,
+  $cfg,
+  $block: '.badge',
+  $sep: '.',
+  $emit-min-width: false
+) {
+  #{$block}#{$sep}#{$name} {
+    $font: map-get($cfg, font);
+    $imp-font: if(map-get($cfg, font-important), ' !important', '');
+    font-size: #{$font}#{$imp-font};
+    @if $emit-min-width {
+      min-width: map-get($cfg, min) !important;
+    }
+  }
+}
+
+// Generate .badge.xs / .badge.sm / .badge.lg
+@each $name, $cfg in $badge-sizes {
+  @include make-badge-size($name, $cfg, '.badge', '.', $emit-min-width: false);
+}
+
+// _badge-variants
+
+$badge-variants: (
+  accent:   (#2680eb, true),
+  primary:  (#2680eb, true),
+  secondary:(#909090, true),
+  tertiary: (#b9b9b9, true),
+  success:  (#2d9d78, true),
+  danger:   (#e34850, true),
+  warning:  (#e68619, true),
+  info:     (#5aa9fa, true),
+  light:    (#c5c5c5, false), // no text color in outlined version (matches source)
+  dark:     (#323232, true)
+);
+
+// Variants that get white text when NOT outlined (matches your explicit list)
+$badge-white-text-when-solid: accent, danger, info, primary, secondary, success, warning, dark;
+
+// Base outlined rule
+.badge--outlined,
+.badge__token.outlined {
+  background-color: #fff !important;
+  border: thin solid !important;
+}
+
+// 1) Non-outlined: white text for selected variants
+@each $v in $badge-white-text-when-solid {
+  .badge:not(.badge--outlined).#{$v} {
+    color: #fff;
+  }
+}
+
+// 2) Outlined per-variant: transparent bg, border/color per map
+@each $name, $tuple in $badge-variants {
+  $color: nth($tuple, 1);
+  $set-text: nth($tuple, 2);
+
+  .badge--outlined.#{$name},
+  .badge__token.outlined.#{$name} {
+    background-color: transparent;
+    border-color: $color;
+    @if $set-text {
+      color: $color;
+    }
+  }
+}
+
+// 3) Token override (matches your final group)
+@each $name, $tuple in $badge-variants {
+  .badge__token.outlined.#{$name} {
+    background-color: #fff !important;
+  }
+}
+
+.badge.bg-light {
+  color: #000 !important;
+}
+
+.badge-flex {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Badge styles */
+.badge__wrapper {
+  flex: 0 1;
+  height: 100%;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 5;
+}
+
+.badge--dot-wrapper,
+.badge__token-wrapper {
+  display: inline-block;
+  line-height: 1;
+  position: relative;
+}
+
+.badge__token {
+  border-radius: 10px;
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 0;
+  min-width: 12px;
+  padding: 4px;
+  position: absolute;
+  overflow: hidden;
+  text-align: center;
+  text-indent: 0;
+  top: auto;
+  transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+  white-space: nowrap;
+}
+
+.badge--icon .badge__token {
+  padding: 4px 6px;
+}
+
+.token-bordered .badge__token:after {
+  border-radius: inherit;
+  border-width: 2px;
+  border-style: solid;
+  bottom: 0;
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: scale(1.15);
+}
+
+.badge--dot {
+  border-radius: 4.5px;
+  height: 9px;
+  min-width: 0;
+  padding: 0;
+  width: 9px;
+  position: absolute;
+}
+
+.badge--dot,
+.badge__token {
+  inset: auto auto calc(100% - 6px) calc(100% - 6px);
+}
+
+.badge {
+  align-items: center;
+  border: 1px solid transparent;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-weight: normal !important;
+  letter-spacing: 0.0892857143em;
+  line-height: inherit !important;
+  justify-content: center;
+  min-width: 8px;
+  outline: 0;
+  padding: 0 0.15rem 0.15rem !important;
+  position: relative;
+  text-decoration: none;
+  text-indent: 0.0892857143em;
+  transition-duration: 0.28s;
+  transition-property: box-shadow, transform, opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.badge.disabled,
+.badge:disabled {
+  cursor: default !important;
+  opacity: 0.65 !important;
+  pointer-events: none !important;
+}
+
+.badge:focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(38, 128, 235, 0.5);
+}
+
+.badge--block {
+  display: flex;
+  flex: 1 0 auto;
+  min-width: 100% !important;
+  max-width: none;
+}
+
+.badge__content {
+  align-items: center;
+  color: inherit;
+  display: flex;
+  flex: 1 0 auto;
+  justify-content: inherit;
+  line-height: normal;
+  position: relative;
+  transition: inherit;
+  transition-property: opacity;
+}
+
+/* .badge.primary:not(:disabled):not(.disabled).active,
+.badge.primary:not(:disabled):not(.disabled):active, */
+/* .badge__token.primary:not(:disabled):not(.disabled).active,
+.badge__token.primary:not(:disabled):not(.disabled):active  */
+.badge.primary.active,
+.badge__token.primary.active {
+  background-color: #1367cb;
+  border-color: #1261c0;
+}
+
+/* .badge.secondary:not(:disabled):not(.disabled).active,
+.badge.secondary:not(:disabled):not(.disabled):active,
+.badge__token.secondary:not(:disabled):not(.disabled).active,
+.badge__token.secondary:not(:disabled):not(.disabled):active  */
+.badge.secondary.active,
+.badge__token.secondary.active {
+  background-color: #777;
+  border-color: #707070;
+}
+
+.blue.badge,
+.blue-grey.badge,
+.brown.badge,
+.deep-orange.badge,
+.deep-purple.badge,
+.green.badge,
+.grey.badge,
+.indigo.badge,
+.light-blue.badge,
+.pink.badge,
+.purple.badge,
+.red.badge,
+.teal.badge,
+.shades.black.badge {
+  color: #fff;
+}
+
+.amber.badge,
+.cyan.badge,
+.lime.badge,
+.light-green.badge,
+.orange.badge,
+.yellow.badge,
+.shades.white.badge {
+  color: #000;
+}
+
+.badge.text {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.rounded-pill {
+  padding: 0.15rem 0.5rem !important;
+}
+
+.badge__token.yellow,
+.badge__token.light,
+.badge__token.white {
+  color: #000;
+}
+
+.badge .icon {
+  margin: 0 3px;
+}
+
+.rounded-pill .icon {
+  margin: 0 0 0 3px;
+}
+
+.badge.square,
+.badge__token.square {
+  border-radius: 0;
+}
+
+.badge.circle,
+.badge__token.circle {
+  border-radius: 50%;
+}
+
+.badge.rounded,
+.badge__token.rounded {
+  border-radius: 4px;
+}
+
+.badge.link {
+  background-color: transparent;
+  border-color: transparent;
+  color: #2680eb;
+}
+
+.badge.link:hover {
+  background-color: transparent;
+  border-color: transparent;
+  color: #115bb4;
+}
+
+.pulse {
+  animation: token-pulse 2s infinite;
+}
+
+@keyframes token-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

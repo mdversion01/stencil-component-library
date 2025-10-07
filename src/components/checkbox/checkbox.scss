@@ -1,0 +1,204 @@
+.check-box {
+  .checkbox-group,
+  .radio-group {
+    display: inline-block;
+  }
+
+  label {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-group {
+    padding: 2px 15px;
+    margin-bottom: 0;
+  }
+
+  .form-check {
+    position: relative;
+    display: block;
+    padding-left: 1.25rem !important;
+  }
+
+  .form-check-input {
+    --bs-border-color: #bebebe;
+    position: absolute;
+    margin-top: 0.1rem;
+    margin-left: -1.25rem;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+  }
+
+  .form-check-input:disabled ~ .form-check-label {
+    color: #6c757d;
+  }
+
+  .form-check-label,
+  .group-title {
+    font-size: 0.875rem !important;
+    margin-bottom: 0;
+  }
+
+  .form-check-label.sm,
+  .group-title.sm {
+    font-size: 0.75rem !important;
+  }
+
+  .form-check-input.sm {
+    width: 0.9rem;
+    height: 0.9rem;
+    margin-top: 0.35rem;
+    margin-left: -1.25rem !important;
+  }
+
+  .form-check-input {
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.25rem;
+    margin-left: -1.5rem !important;
+  }
+
+  .form-check-label.lg,
+  .group-title.lg,
+  .custom-control-label.lg {
+    font-size: 1rem !important;
+  }
+
+  .check-box .custom-control-label {
+    font-size: 0.875rem !important;
+    padding-top: 0;
+  }
+
+  .check-box .custom-control-label.sm {
+    font-size: 0.75rem !important;
+    padding-top: 4px;
+  }
+
+  .check-box .custom-control-label.lg {
+    font-size: 1rem !important;
+    padding-top: 0;
+  }
+
+  .form-group.form-check-inline {
+    margin-right: 0;
+  }
+
+  .form-group.form-check-inline .form-check {
+    padding-left: 0;
+  }
+
+  .form-group.form-check-inline .form-check-input {
+    margin-right: 0;
+  }
+
+  input:disabled {
+    cursor: default;
+    background-color: -internal-light-dark(rgba(239, 239, 239, 0.3), rgba(59, 59, 59, 0.3));
+    color: -internal-light-dark(rgb(84, 84, 84), rgb(170, 170, 170));
+    border-color: rgba(118, 118, 118, 0.3);
+  }
+
+  input[type='checkbox' i] {
+    appearance: auto;
+    box-sizing: border-box;
+  }
+
+  input[type='checkbox' i]:disabled {
+    background-color: initial;
+  }
+
+  .form-check-input:disabled ~ .form-check-label {
+    color: #6c757d;
+  }
+
+  .invalid-feedback {
+    color: #b30009;
+    margin-top: 0.25rem;
+    font-size: 0.75rem !important;
+    margin-bottom: 0.25rem;
+  }
+
+  .invalid-feedback.custom {
+    margin-top: 0;
+  }
+
+  .form-check-inline.was-validated + .invalid-feedback {
+    padding: 0;
+  }
+
+  .invalid {
+    color: #b30009;
+  }
+
+  .form-check-input.is-invalid ~ .form-check-label,
+  .was-validated .form-check-input:invalid ~ .form-check-label,
+  .was-validated .group-title {
+    color: #b30009;
+  }
+
+  // Kick in the inline
+  // @include media-breakpoint-up(sm) {
+  //   label {
+  //     display: flex;
+  //     align-items: center;
+  //     justify-content: center;
+  //     margin-bottom: 0;
+  //   }
+
+  //   // Inline-block all the things for "inline"
+  //   .form-group {
+  //     display: flex;
+  //     flex: 0 0 auto;
+  //     flex-flow: row wrap;
+  //     align-items: center;
+  //     margin-bottom: 0;
+  //   }
+
+  //   .form-control {
+  //     display: inline-block;
+  //     width: auto;
+  //     vertical-align: middle;
+  //   }
+
+  //   // Make static controls behave like regular ones
+  //   .form-control-plaintext {
+  //     display: inline-block;
+  //   }
+
+  //   .input-group {
+  //     width: auto;
+  //   }
+
+  //   .form-check {
+  //     display: flex;
+  //     align-items: center;
+  //     justify-content: center;
+  //     width: auto;
+  //     padding-left: 0;
+  //   }
+
+  //   .form-check-input {
+  //     position: relative;
+  //     margin-top: 0;
+  //     margin-right: 0.75rem;
+  //     margin-left: 0;
+  //   }
+
+  //}
+}
+
+.form-check-inline {
+  display: flex;
+  align-items: center;
+}
+
+.form-inline {
+  display: flex;
+  padding-left: 0 !important;
+  align-items: center;
+}
+
+.form-inline .form-check {
+  width: 100%;
+  margin-right: 1rem;
+  margin-left: 0;
+}

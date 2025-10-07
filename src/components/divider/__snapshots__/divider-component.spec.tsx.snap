@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`divider-component renders dashed horizontal divider 1`] = `
+<divider-component dashed="">
+  <!---->
+  <div class="divider divider-dashed divider-horizontal" role="separator"></div>
+</divider-component>
+`;
+
+exports[`divider-component renders divider with centered text 1`] = `
+<divider-component orientation="center">
+  <!---->
+  <div class="divider divider-horizontal divider-with-text divider-with-text-center" role="separator">
+    <span class="divider-inner-text">
+      Center
+    </span>
+  </div>
+</divider-component>
+`;
+
+exports[`divider-component renders divider with custom styles in text 1`] = `
+<divider-component orientation="center" styles="color: red; font-weight: bold;">
+  <!---->
+  <div class="divider divider-horizontal divider-with-text divider-with-text-center" role="separator">
+    <span class="divider-inner-text" style="color: red; font-weight: bold;">
+      Styled
+    </span>
+  </div>
+</divider-component>
+`;
+
+exports[`divider-component renders divider with left aligned text and margin override 1`] = `
+<divider-component orientation="left" orientation-margin="left">
+  <!---->
+  <div class="divider divider-horizontal divider-no-default-orientation-margin-left divider-with-text divider-with-text-left" role="separator">
+    <span class="divider-inner-text">
+      Left
+    </span>
+  </div>
+</divider-component>
+`;
+
+exports[`divider-component renders horizontal divider by default 1`] = `
+<divider-component>
+  <!---->
+  <div class="divider divider-horizontal" role="separator"></div>
+</divider-component>
+`;
+
+exports[`divider-component renders vertical divider 1`] = `
+<divider-component type="vertical">
+  <!---->
+  <div class="divider divider-vertical" role="separator"></div>
+</divider-component>
+`;

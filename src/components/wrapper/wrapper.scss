@@ -1,0 +1,7 @@
+@import "../../assets/mdi/materialdesignicons.min.css";
+@import '../../global/global.scss'; // ✅ bring in your global styles
+
+.app-wrapper {
+  display: block;
+  width: 100%;
+}

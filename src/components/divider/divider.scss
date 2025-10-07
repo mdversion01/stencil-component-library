@@ -1,0 +1,159 @@
+[class^="divider"],
+[class*=" divider"] {
+  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+[class^="divider"]::before,
+[class*=" divider"]::before,
+[class^="divider"]::after,
+[class*=" divider"]::after {
+  box-sizing: border-box;
+}
+
+[class^="divider"] [class^="divider"],
+[class*=" divider"] [class^="divider"],
+[class^="divider"] [class*=" divider"],
+[class*=" divider"] [class*=" divider"] {
+  box-sizing: border-box;
+}
+
+[class^="divider"] [class^="divider"]::before,
+[class*=" divider"] [class^="divider"]::before,
+[class^="divider"] [class*=" divider"]::before,
+[class*=" divider"] [class*=" divider"]::before,
+[class^="divider"] [class^="divider"]::after,
+[class*=" divider"] [class^="divider"]::after,
+[class^="divider"] [class*=" divider"]::after,
+[class*=" divider"] [class*=" divider"]::after {
+  box-sizing: border-box;
+}
+
+.divider {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 14px;
+  line-height: 1.5714285714285714;
+  list-style: none;
+  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
+  border-block-start: 1px solid rgba(5, 5, 5, 0.15);
+}
+
+.divider-vertical {
+  position: relative;
+  top: -0.06em;
+  display: inline-block;
+  height: 0.9em;
+  margin-inline: 8px;
+  margin-block: 0;
+  vertical-align: middle;
+  border-top: 0;
+  border-inline-start: 1px solid rgba(5, 5, 5, 0.15);
+}
+
+.divider-horizontal {
+  display: flex;
+  clear: both;
+  width: 100%;
+  min-width: 100%;
+  margin: 24px 0;
+}
+
+.divider-horizontal.divider-with-text {
+  display: flex;
+  align-items: center;
+  margin: 16px 0;
+  color: rgba(0, 0, 0, 0.88);
+  font-weight: 500;
+  font-size: 16px;
+  white-space: nowrap;
+  text-align: center;
+  border-block-start: 0 rgba(5, 5, 5, 0.15);
+}
+
+.divider-horizontal.divider-with-text::before,
+.divider-horizontal.divider-with-text::after {
+  position: relative;
+  width: 50%;
+  border-block-start: 1px solid transparent;
+  border-block-start-color: inherit;
+  border-block-end: 0;
+  transform: translateY(50%);
+  content: "";
+}
+
+.divider-horizontal.divider-with-text-left::before {
+  width: calc(0.05 * 100%);
+}
+
+.divider-horizontal.divider-with-text-left::after {
+  width: calc(100% - 0.05 * 100%);
+}
+
+.divider-horizontal.divider-with-text-right::before {
+  width: calc(100% - 0.05 * 100%);
+}
+
+.divider-horizontal.divider-with-text-right::after {
+  width: calc(0.05 * 100%);
+}
+
+.divider .divider-inner-text {
+  display: inline-block;
+  padding-block: 0;
+  padding-inline: 1em;
+}
+
+.divider-dashed {
+  background: none;
+  border-color: rgba(5, 5, 5, 0.15);
+  border-style: dashed;
+  border-width: 1px 0 0;
+}
+
+.divider-horizontal.divider-with-text.divider-dashed::before,
+.divider-horizontal.divider-with-text.divider-dashed::after {
+  border-style: dashed none none;
+}
+
+.divider-vertical.divider-dashed {
+  border-inline-start-width: 1px;
+  border-inline-end: 0;
+  border-block-start: 0;
+  border-block-end: 0;
+}
+
+.divider-plain.divider-with-text {
+  color: rgba(0, 0, 0, 0.88);
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.divider-horizontal.divider-with-text-left.divider-no-default-orientation-margin-left::before {
+  width: 0;
+}
+
+.divider-horizontal.divider-with-text-left.divider-no-default-orientation-margin-left::after {
+  width: 100%;
+}
+
+.divider-horizontal.divider-with-text-left.divider-no-default-orientation-margin-left
+  .divider-inner-text {
+  padding-inline-start: 0;
+}
+
+.divider-horizontal.divider-with-text-right.divider-no-default-orientation-margin-right::before {
+  width: 100%;
+}
+
+.divider-horizontal.divider-with-text-right.divider-no-default-orientation-margin-right::after {
+  width: 0;
+}
+
+.divider-horizontal.divider-with-text-right.divider-no-default-orientation-margin-right
+  .divider-inner-text {
+  padding-inline-end: 0;
+}

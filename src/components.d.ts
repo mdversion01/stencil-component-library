@@ -5,57 +5,973 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { DropdownItem } from "./components/dropdown/dropdown-types";
+import { ToggleItem } from "./components/toggle-switch/toggle-switch-types";
+export { DropdownItem } from "./components/dropdown/dropdown-types";
+export { ToggleItem } from "./components/toggle-switch/toggle-switch-types";
 export namespace Components {
-    interface MyComponent {
+    interface AccordionComponent {
+        "accordion": boolean;
+        "block": boolean;
+        "classNames": string;
+        "contentTxtSize": string;
+        "disabled": boolean;
+        "flush": boolean;
+        "icon": string;
+        "isOpen": boolean;
+        "link": boolean;
+        "outlined": boolean;
+        "ripple": boolean;
+        "size": string;
+        "targetId": string;
+        "variant": string;
+    }
+    interface AccordionContainer {
+        "block": boolean;
+        "classNames": string;
+        "contentTxtSize": string;
+        "data": Array<{ header: string; content: string }>;
+        "disabled": boolean;
+        "flush": boolean;
+        "icon": string;
+        "outlined": boolean;
+        "parentId": string;
+        "ripple": boolean;
+        "singleOpen": boolean;
+        "size": string;
+        "variant": string;
+    }
+    interface AppWrapper {
         /**
-          * The first name
+          * Optional classNames (e.g. bg-primary, p-4)
          */
-        "first": string;
-        /**
-          * The last name
-         */
-        "last": string;
-        /**
-          * The middle name
-         */
-        "middle": string;
+        "classNames": string;
+    }
+    interface AutocompleteMultipleSelections {
+        "addBtn": boolean;
+        "addIcon": string;
+        "arialabelledBy": string;
+        "badgeInlineStyles": string;
+        "badgeShape": string;
+        "badgeVariant": string;
+        "clearIcon": string;
+        "devMode": boolean;
+        "disabled": boolean;
+        "error": boolean;
+        "errorMessage": string;
+        "formId": string;
+        "formLayout": string;
+        "inputId": string;
+        "label": string;
+        "labelHidden": boolean;
+        "navigateOptions": (direction: number) => Promise<void>;
+        "options": string[];
+        "placeholder": string;
+        "removeBtnBorder": boolean;
+        "removeClearBtn": boolean;
+        "required": boolean;
+        "size": string;
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+    }
+    interface AutocompleteMultiselect {
+        "addBtn": boolean;
+        "addIcon": string;
+        "arialabelledBy": string;
+        "badgeInlineStyles": string;
+        "badgeShape": string;
+        "badgeVariant": string;
+        "clearIcon": string;
+        "devMode": boolean;
+        "disabled": boolean;
+        "error": boolean;
+        "errorMessage": string;
+        "filterOptions": () => Promise<void>;
+        "formId": string;
+        "formLayout": string;
+        "inputId": string;
+        "label": string;
+        "labelHidden": boolean;
+        "navigateOptions": (direction: number) => Promise<void>;
+        "options": string[];
+        "placeholder": string;
+        "removeClearBtn": boolean;
+        "required": boolean;
+        "size": string;
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+    }
+    interface AutocompleteSingle {
+        "addBtn": boolean;
+        "addIcon": string;
+        "arialabelledBy": string;
+        "clearIcon": string;
+        "devMode": boolean;
+        "disabled": boolean;
+        "error": boolean;
+        "errorMessage": string;
+        "formId": string;
+        "formLayout": string;
+        "inputId": string;
+        "label": string;
+        "labelHidden": boolean;
+        "options": string[];
+        "placeholder": string;
+        "removeClearBtn": boolean;
+        "required": boolean;
+        "size": string;
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+    }
+    interface BadgeComponent {
+        "absolute": boolean;
+        "ariaDescribedby"?: string;
+        "ariaLabelledby"?: string;
+        "backgroundColor": string;
+        "bdgPosition": string;
+        "bordered": boolean;
+        "bottom": string;
+        "classNames": string;
+        "color": string;
+        "devMode": boolean;
+        "disabled": boolean;
+        "dot": boolean;
+        "elevation": string;
+        "icon": boolean;
+        "inlineStyles": string;
+        "inset": boolean;
+        "label": string;
+        "left": string;
+        "offsetX": string;
+        "offsetY": string;
+        "outlined": boolean;
+        "pulse": boolean;
+        "right": string;
+        "shape": string;
+        "size": string;
+        "styles": string;
+        "token": boolean;
+        "top": string;
+        "variant": string;
+        "zIndex": string;
+    }
+    interface ButtonComponent {
+        "absolute": boolean;
+        "accordion": boolean;
+        "active": boolean;
+        "ariaLabel": string;
+        "block": boolean;
+        "bottom": string;
+        "btnIcon": boolean;
+        "btnText": string;
+        "classNames": string;
+        "devMode": boolean;
+        "disabled": boolean;
+        "elevation": string;
+        "end": boolean;
+        "fixed": boolean;
+        "groupBtn": boolean;
+        "iconBtn": boolean;
+        "isOpen": boolean;
+        "left": string;
+        "link": boolean;
+        "outlined": boolean;
+        "pressed": boolean | string;
+        "right": string;
+        "ripple": boolean;
+        "shape": string;
+        "size": string;
+        "slotSide": 'left' | 'right' | 'none';
+        "start": boolean;
+        "stripped": boolean;
+        "styles": string;
+        "targetId": string;
+        "text": boolean;
+        "textBtn": boolean;
+        "titleAttr": string;
+        "top": string;
+        "url": string;
+        "variant": string;
+        "vertical": boolean;
+        "zIndex": string;
+    }
+    interface ButtonGroup {
+        "ariaLabel": string;
+        "classNames": string;
+        "vertical": boolean;
+    }
+    interface CardComponent {
+        "actions": boolean;
+        "altText": string;
+        "ariaLabel": string;
+        "cardMaxWidth": string;
+        "classNames": string;
+        "elevation": string;
+        "img": boolean;
+        "imgHeight": string;
+        "imgSrc": string;
+        "inlineStyles": string;
+        "noFooter": boolean;
+        "noHeader": boolean;
+        "tab"?: string;
+    }
+    interface CheckboxComponent {
+        "checkbox": boolean;
+        "checkboxGroup": boolean;
+        "checked": boolean;
+        "customCheckbox": boolean;
+        "customCheckboxGroup": boolean;
+        "disabled": boolean;
+        "groupOptions": any;
+        "groupTitle": string;
+        "groupTitleSize": string;
+        "inline": boolean;
+        "inputId": string;
+        "labelTxt": string;
+        "name": string;
+        "noPadding": boolean;
+        "required": boolean;
+        "size": string;
+        "validation": boolean;
+        "validationMsg": string;
+        "value": string;
+    }
+    interface DividerComponent {
+        "dashed": boolean;
+        "orientation"?: 'left' | 'right' | 'center';
+        "orientationMargin"?: string;
+        "plain": boolean;
+        "styles"?: string;
+        "type": 'horizontal' | 'vertical';
+    }
+    interface DropdownComponent {
+        "alignMenuRight": boolean;
+        "autoFocusSubmenu": boolean;
+        "buttonText": string;
+        "disabled": boolean;
+        "icon": string;
+        "iconDropdown": boolean;
+        "iconSize"?: number;
+        "inputId": string;
+        "listType": string;
+        "menuOffsetY": number;
+        "name": string;
+        "options": DropdownItem[];
+        "outlined": boolean;
+        "ripple": boolean;
+        "shape": string;
+        "size": string;
+        "subMenuListType": string;
+        "submenuOffsetX": number;
+        "tableId": string;
+        "titleAttr": string;
+        "value": string;
+        "variant": string;
+    }
+    interface IconComponent {
+        "color"?: string;
+        "icon": string;
+        "iconAriaHidden": boolean;
+        "iconAriaLabel"?: string;
+        "iconMargin": string;
+        "iconSize"?: number;
+        "size": string;
+        "svg": boolean;
+        "tokenIcon": boolean;
+    }
+    interface RadioInputComponent {
+        "customRadio": boolean;
+        "customRadioGroup": boolean;
+        "disabled": boolean;
+        "groupOptions": any;
+        "groupTitle": string;
+        "groupTitleSize": string;
+        "inline": boolean;
+        "inputId": string;
+        "labelTxt": string;
+        "name": string;
+        "radio": boolean;
+        "radioGroup": boolean;
+        "required": boolean;
+        "size": string;
+        "validation": boolean;
+        "validationMsg": string;
+        "value": string;
+    }
+    interface ToggleSwitchComponent {
+        "checked": boolean;
+        "customSwitch": boolean;
+        "disabled": boolean;
+        "inline": boolean;
+        "inputId": string;
+        "labelTxt": string;
+        "newToggleTxt": { on: string; off: string };
+        "required": boolean;
+        "size": string;
+        "switches": boolean;
+        "switchesArray": ToggleItem[];
+        "toggleTxt": boolean;
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
     }
 }
+export interface AccordionComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLAccordionComponentElement;
+}
+export interface AutocompleteMultipleSelectionsCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLAutocompleteMultipleSelectionsElement;
+}
+export interface AutocompleteMultiselectCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLAutocompleteMultiselectElement;
+}
+export interface AutocompleteSingleCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLAutocompleteSingleElement;
+}
+export interface BadgeComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBadgeComponentElement;
+}
+export interface ButtonComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLButtonComponentElement;
+}
+export interface CardComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLCardComponentElement;
+}
+export interface CheckboxComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLCheckboxComponentElement;
+}
+export interface DropdownComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDropdownComponentElement;
+}
+export interface RadioInputComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLRadioInputComponentElement;
+}
+export interface ToggleSwitchComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLToggleSwitchComponentElement;
+}
 declare global {
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
+    interface HTMLAccordionComponentElementEventMap {
+        "toggleEvent": boolean;
     }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
+    interface HTMLAccordionComponentElement extends Components.AccordionComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLAccordionComponentElementEventMap>(type: K, listener: (this: HTMLAccordionComponentElement, ev: AccordionComponentCustomEvent<HTMLAccordionComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLAccordionComponentElementEventMap>(type: K, listener: (this: HTMLAccordionComponentElement, ev: AccordionComponentCustomEvent<HTMLAccordionComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLAccordionComponentElement: {
+        prototype: HTMLAccordionComponentElement;
+        new (): HTMLAccordionComponentElement;
+    };
+    interface HTMLAccordionContainerElement extends Components.AccordionContainer, HTMLStencilElement {
+    }
+    var HTMLAccordionContainerElement: {
+        prototype: HTMLAccordionContainerElement;
+        new (): HTMLAccordionContainerElement;
+    };
+    interface HTMLAppWrapperElement extends Components.AppWrapper, HTMLStencilElement {
+    }
+    var HTMLAppWrapperElement: {
+        prototype: HTMLAppWrapperElement;
+        new (): HTMLAppWrapperElement;
+    };
+    interface HTMLAutocompleteMultipleSelectionsElementEventMap {
+        "itemSelect": string;
+        "clear": void;
+        "componentError": { message: string; stack?: string };
+        "multiSelectChange": string[];
+    }
+    interface HTMLAutocompleteMultipleSelectionsElement extends Components.AutocompleteMultipleSelections, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLAutocompleteMultipleSelectionsElementEventMap>(type: K, listener: (this: HTMLAutocompleteMultipleSelectionsElement, ev: AutocompleteMultipleSelectionsCustomEvent<HTMLAutocompleteMultipleSelectionsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLAutocompleteMultipleSelectionsElementEventMap>(type: K, listener: (this: HTMLAutocompleteMultipleSelectionsElement, ev: AutocompleteMultipleSelectionsCustomEvent<HTMLAutocompleteMultipleSelectionsElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLAutocompleteMultipleSelectionsElement: {
+        prototype: HTMLAutocompleteMultipleSelectionsElement;
+        new (): HTMLAutocompleteMultipleSelectionsElement;
+    };
+    interface HTMLAutocompleteMultiselectElementEventMap {
+        "itemSelect": string;
+        "clear": void;
+        "componentError": { message: string; stack?: string };
+        "multiSelectChange": string[];
+    }
+    interface HTMLAutocompleteMultiselectElement extends Components.AutocompleteMultiselect, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLAutocompleteMultiselectElementEventMap>(type: K, listener: (this: HTMLAutocompleteMultiselectElement, ev: AutocompleteMultiselectCustomEvent<HTMLAutocompleteMultiselectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLAutocompleteMultiselectElementEventMap>(type: K, listener: (this: HTMLAutocompleteMultiselectElement, ev: AutocompleteMultiselectCustomEvent<HTMLAutocompleteMultiselectElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLAutocompleteMultiselectElement: {
+        prototype: HTMLAutocompleteMultiselectElement;
+        new (): HTMLAutocompleteMultiselectElement;
+    };
+    interface HTMLAutocompleteSingleElementEventMap {
+        "itemSelect": string;
+        "clear": void;
+        "componentError": { message: string; stack?: string };
+    }
+    interface HTMLAutocompleteSingleElement extends Components.AutocompleteSingle, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLAutocompleteSingleElementEventMap>(type: K, listener: (this: HTMLAutocompleteSingleElement, ev: AutocompleteSingleCustomEvent<HTMLAutocompleteSingleElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLAutocompleteSingleElementEventMap>(type: K, listener: (this: HTMLAutocompleteSingleElement, ev: AutocompleteSingleCustomEvent<HTMLAutocompleteSingleElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLAutocompleteSingleElement: {
+        prototype: HTMLAutocompleteSingleElement;
+        new (): HTMLAutocompleteSingleElement;
+    };
+    interface HTMLBadgeComponentElementEventMap {
+        "customClick": any;
+    }
+    interface HTMLBadgeComponentElement extends Components.BadgeComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBadgeComponentElementEventMap>(type: K, listener: (this: HTMLBadgeComponentElement, ev: BadgeComponentCustomEvent<HTMLBadgeComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBadgeComponentElementEventMap>(type: K, listener: (this: HTMLBadgeComponentElement, ev: BadgeComponentCustomEvent<HTMLBadgeComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBadgeComponentElement: {
+        prototype: HTMLBadgeComponentElement;
+        new (): HTMLBadgeComponentElement;
+    };
+    interface HTMLButtonComponentElementEventMap {
+        "customClick": any;
+    }
+    interface HTMLButtonComponentElement extends Components.ButtonComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLButtonComponentElementEventMap>(type: K, listener: (this: HTMLButtonComponentElement, ev: ButtonComponentCustomEvent<HTMLButtonComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLButtonComponentElementEventMap>(type: K, listener: (this: HTMLButtonComponentElement, ev: ButtonComponentCustomEvent<HTMLButtonComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLButtonComponentElement: {
+        prototype: HTMLButtonComponentElement;
+        new (): HTMLButtonComponentElement;
+    };
+    interface HTMLButtonGroupElement extends Components.ButtonGroup, HTMLStencilElement {
+    }
+    var HTMLButtonGroupElement: {
+        prototype: HTMLButtonGroupElement;
+        new (): HTMLButtonGroupElement;
+    };
+    interface HTMLCardComponentElementEventMap {
+        "customClick": any;
+    }
+    interface HTMLCardComponentElement extends Components.CardComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLCardComponentElementEventMap>(type: K, listener: (this: HTMLCardComponentElement, ev: CardComponentCustomEvent<HTMLCardComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLCardComponentElementEventMap>(type: K, listener: (this: HTMLCardComponentElement, ev: CardComponentCustomEvent<HTMLCardComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLCardComponentElement: {
+        prototype: HTMLCardComponentElement;
+        new (): HTMLCardComponentElement;
+    };
+    interface HTMLCheckboxComponentElementEventMap {
+        "groupChange": string[];
+    }
+    interface HTMLCheckboxComponentElement extends Components.CheckboxComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLCheckboxComponentElementEventMap>(type: K, listener: (this: HTMLCheckboxComponentElement, ev: CheckboxComponentCustomEvent<HTMLCheckboxComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLCheckboxComponentElementEventMap>(type: K, listener: (this: HTMLCheckboxComponentElement, ev: CheckboxComponentCustomEvent<HTMLCheckboxComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLCheckboxComponentElement: {
+        prototype: HTMLCheckboxComponentElement;
+        new (): HTMLCheckboxComponentElement;
+    };
+    interface HTMLDividerComponentElement extends Components.DividerComponent, HTMLStencilElement {
+    }
+    var HTMLDividerComponentElement: {
+        prototype: HTMLDividerComponentElement;
+        new (): HTMLDividerComponentElement;
+    };
+    interface HTMLDropdownComponentElementEventMap {
+        "itemSelected": any;
+    }
+    interface HTMLDropdownComponentElement extends Components.DropdownComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDropdownComponentElementEventMap>(type: K, listener: (this: HTMLDropdownComponentElement, ev: DropdownComponentCustomEvent<HTMLDropdownComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDropdownComponentElementEventMap>(type: K, listener: (this: HTMLDropdownComponentElement, ev: DropdownComponentCustomEvent<HTMLDropdownComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLDropdownComponentElement: {
+        prototype: HTMLDropdownComponentElement;
+        new (): HTMLDropdownComponentElement;
+    };
+    interface HTMLIconComponentElement extends Components.IconComponent, HTMLStencilElement {
+    }
+    var HTMLIconComponentElement: {
+        prototype: HTMLIconComponentElement;
+        new (): HTMLIconComponentElement;
+    };
+    interface HTMLRadioInputComponentElementEventMap {
+        "groupChange": string;
+    }
+    interface HTMLRadioInputComponentElement extends Components.RadioInputComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLRadioInputComponentElementEventMap>(type: K, listener: (this: HTMLRadioInputComponentElement, ev: RadioInputComponentCustomEvent<HTMLRadioInputComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLRadioInputComponentElementEventMap>(type: K, listener: (this: HTMLRadioInputComponentElement, ev: RadioInputComponentCustomEvent<HTMLRadioInputComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLRadioInputComponentElement: {
+        prototype: HTMLRadioInputComponentElement;
+        new (): HTMLRadioInputComponentElement;
+    };
+    interface HTMLToggleSwitchComponentElementEventMap {
+        "checkedChanged": { id: string; checked: boolean };
+    }
+    interface HTMLToggleSwitchComponentElement extends Components.ToggleSwitchComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLToggleSwitchComponentElementEventMap>(type: K, listener: (this: HTMLToggleSwitchComponentElement, ev: ToggleSwitchComponentCustomEvent<HTMLToggleSwitchComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLToggleSwitchComponentElementEventMap>(type: K, listener: (this: HTMLToggleSwitchComponentElement, ev: ToggleSwitchComponentCustomEvent<HTMLToggleSwitchComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLToggleSwitchComponentElement: {
+        prototype: HTMLToggleSwitchComponentElement;
+        new (): HTMLToggleSwitchComponentElement;
     };
     interface HTMLElementTagNameMap {
-        "my-component": HTMLMyComponentElement;
+        "accordion-component": HTMLAccordionComponentElement;
+        "accordion-container": HTMLAccordionContainerElement;
+        "app-wrapper": HTMLAppWrapperElement;
+        "autocomplete-multiple-selections": HTMLAutocompleteMultipleSelectionsElement;
+        "autocomplete-multiselect": HTMLAutocompleteMultiselectElement;
+        "autocomplete-single": HTMLAutocompleteSingleElement;
+        "badge-component": HTMLBadgeComponentElement;
+        "button-component": HTMLButtonComponentElement;
+        "button-group": HTMLButtonGroupElement;
+        "card-component": HTMLCardComponentElement;
+        "checkbox-component": HTMLCheckboxComponentElement;
+        "divider-component": HTMLDividerComponentElement;
+        "dropdown-component": HTMLDropdownComponentElement;
+        "icon-component": HTMLIconComponentElement;
+        "radio-input-component": HTMLRadioInputComponentElement;
+        "toggle-switch-component": HTMLToggleSwitchComponentElement;
     }
 }
 declare namespace LocalJSX {
-    interface MyComponent {
+    interface AccordionComponent {
+        "accordion"?: boolean;
+        "block"?: boolean;
+        "classNames"?: string;
+        "contentTxtSize"?: string;
+        "disabled"?: boolean;
+        "flush"?: boolean;
+        "icon"?: string;
+        "isOpen"?: boolean;
+        "link"?: boolean;
+        "onToggleEvent"?: (event: AccordionComponentCustomEvent<boolean>) => void;
+        "outlined"?: boolean;
+        "ripple"?: boolean;
+        "size"?: string;
+        "targetId"?: string;
+        "variant"?: string;
+    }
+    interface AccordionContainer {
+        "block"?: boolean;
+        "classNames"?: string;
+        "contentTxtSize"?: string;
+        "data"?: Array<{ header: string; content: string }>;
+        "disabled"?: boolean;
+        "flush"?: boolean;
+        "icon"?: string;
+        "outlined"?: boolean;
+        "parentId"?: string;
+        "ripple"?: boolean;
+        "singleOpen"?: boolean;
+        "size"?: string;
+        "variant"?: string;
+    }
+    interface AppWrapper {
         /**
-          * The first name
+          * Optional classNames (e.g. bg-primary, p-4)
          */
-        "first"?: string;
-        /**
-          * The last name
-         */
-        "last"?: string;
-        /**
-          * The middle name
-         */
-        "middle"?: string;
+        "classNames"?: string;
+    }
+    interface AutocompleteMultipleSelections {
+        "addBtn"?: boolean;
+        "addIcon"?: string;
+        "arialabelledBy"?: string;
+        "badgeInlineStyles"?: string;
+        "badgeShape"?: string;
+        "badgeVariant"?: string;
+        "clearIcon"?: string;
+        "devMode"?: boolean;
+        "disabled"?: boolean;
+        "error"?: boolean;
+        "errorMessage"?: string;
+        "formId"?: string;
+        "formLayout"?: string;
+        "inputId"?: string;
+        "label"?: string;
+        "labelHidden"?: boolean;
+        "onClear"?: (event: AutocompleteMultipleSelectionsCustomEvent<void>) => void;
+        "onComponentError"?: (event: AutocompleteMultipleSelectionsCustomEvent<{ message: string; stack?: string }>) => void;
+        "onItemSelect"?: (event: AutocompleteMultipleSelectionsCustomEvent<string>) => void;
+        "onMultiSelectChange"?: (event: AutocompleteMultipleSelectionsCustomEvent<string[]>) => void;
+        "options"?: string[];
+        "placeholder"?: string;
+        "removeBtnBorder"?: boolean;
+        "removeClearBtn"?: boolean;
+        "required"?: boolean;
+        "size"?: string;
+        "type"?: string;
+        "validation"?: boolean;
+        "validationMessage"?: string;
+    }
+    interface AutocompleteMultiselect {
+        "addBtn"?: boolean;
+        "addIcon"?: string;
+        "arialabelledBy"?: string;
+        "badgeInlineStyles"?: string;
+        "badgeShape"?: string;
+        "badgeVariant"?: string;
+        "clearIcon"?: string;
+        "devMode"?: boolean;
+        "disabled"?: boolean;
+        "error"?: boolean;
+        "errorMessage"?: string;
+        "formId"?: string;
+        "formLayout"?: string;
+        "inputId"?: string;
+        "label"?: string;
+        "labelHidden"?: boolean;
+        "onClear"?: (event: AutocompleteMultiselectCustomEvent<void>) => void;
+        "onComponentError"?: (event: AutocompleteMultiselectCustomEvent<{ message: string; stack?: string }>) => void;
+        "onItemSelect"?: (event: AutocompleteMultiselectCustomEvent<string>) => void;
+        "onMultiSelectChange"?: (event: AutocompleteMultiselectCustomEvent<string[]>) => void;
+        "options"?: string[];
+        "placeholder"?: string;
+        "removeClearBtn"?: boolean;
+        "required"?: boolean;
+        "size"?: string;
+        "type"?: string;
+        "validation"?: boolean;
+        "validationMessage"?: string;
+    }
+    interface AutocompleteSingle {
+        "addBtn"?: boolean;
+        "addIcon"?: string;
+        "arialabelledBy"?: string;
+        "clearIcon"?: string;
+        "devMode"?: boolean;
+        "disabled"?: boolean;
+        "error"?: boolean;
+        "errorMessage"?: string;
+        "formId"?: string;
+        "formLayout"?: string;
+        "inputId"?: string;
+        "label"?: string;
+        "labelHidden"?: boolean;
+        "onClear"?: (event: AutocompleteSingleCustomEvent<void>) => void;
+        "onComponentError"?: (event: AutocompleteSingleCustomEvent<{ message: string; stack?: string }>) => void;
+        "onItemSelect"?: (event: AutocompleteSingleCustomEvent<string>) => void;
+        "options"?: string[];
+        "placeholder"?: string;
+        "removeClearBtn"?: boolean;
+        "required"?: boolean;
+        "size"?: string;
+        "type"?: string;
+        "validation"?: boolean;
+        "validationMessage"?: string;
+    }
+    interface BadgeComponent {
+        "absolute"?: boolean;
+        "ariaDescribedby"?: string;
+        "ariaLabelledby"?: string;
+        "backgroundColor"?: string;
+        "bdgPosition"?: string;
+        "bordered"?: boolean;
+        "bottom"?: string;
+        "classNames"?: string;
+        "color"?: string;
+        "devMode"?: boolean;
+        "disabled"?: boolean;
+        "dot"?: boolean;
+        "elevation"?: string;
+        "icon"?: boolean;
+        "inlineStyles"?: string;
+        "inset"?: boolean;
+        "label"?: string;
+        "left"?: string;
+        "offsetX"?: string;
+        "offsetY"?: string;
+        "onCustomClick"?: (event: BadgeComponentCustomEvent<any>) => void;
+        "outlined"?: boolean;
+        "pulse"?: boolean;
+        "right"?: string;
+        "shape"?: string;
+        "size"?: string;
+        "styles"?: string;
+        "token"?: boolean;
+        "top"?: string;
+        "variant"?: string;
+        "zIndex"?: string;
+    }
+    interface ButtonComponent {
+        "absolute"?: boolean;
+        "accordion"?: boolean;
+        "active"?: boolean;
+        "ariaLabel"?: string;
+        "block"?: boolean;
+        "bottom"?: string;
+        "btnIcon"?: boolean;
+        "btnText"?: string;
+        "classNames"?: string;
+        "devMode"?: boolean;
+        "disabled"?: boolean;
+        "elevation"?: string;
+        "end"?: boolean;
+        "fixed"?: boolean;
+        "groupBtn"?: boolean;
+        "iconBtn"?: boolean;
+        "isOpen"?: boolean;
+        "left"?: string;
+        "link"?: boolean;
+        "onCustomClick"?: (event: ButtonComponentCustomEvent<any>) => void;
+        "outlined"?: boolean;
+        "pressed"?: boolean | string;
+        "right"?: string;
+        "ripple"?: boolean;
+        "shape"?: string;
+        "size"?: string;
+        "slotSide"?: 'left' | 'right' | 'none';
+        "start"?: boolean;
+        "stripped"?: boolean;
+        "styles"?: string;
+        "targetId"?: string;
+        "text"?: boolean;
+        "textBtn"?: boolean;
+        "titleAttr"?: string;
+        "top"?: string;
+        "url"?: string;
+        "variant"?: string;
+        "vertical"?: boolean;
+        "zIndex"?: string;
+    }
+    interface ButtonGroup {
+        "ariaLabel"?: string;
+        "classNames"?: string;
+        "vertical"?: boolean;
+    }
+    interface CardComponent {
+        "actions"?: boolean;
+        "altText"?: string;
+        "ariaLabel"?: string;
+        "cardMaxWidth"?: string;
+        "classNames"?: string;
+        "elevation"?: string;
+        "img"?: boolean;
+        "imgHeight"?: string;
+        "imgSrc"?: string;
+        "inlineStyles"?: string;
+        "noFooter"?: boolean;
+        "noHeader"?: boolean;
+        "onCustomClick"?: (event: CardComponentCustomEvent<any>) => void;
+        "tab"?: string;
+    }
+    interface CheckboxComponent {
+        "checkbox"?: boolean;
+        "checkboxGroup"?: boolean;
+        "checked"?: boolean;
+        "customCheckbox"?: boolean;
+        "customCheckboxGroup"?: boolean;
+        "disabled"?: boolean;
+        "groupOptions"?: any;
+        "groupTitle"?: string;
+        "groupTitleSize"?: string;
+        "inline"?: boolean;
+        "inputId"?: string;
+        "labelTxt"?: string;
+        "name"?: string;
+        "noPadding"?: boolean;
+        "onGroupChange"?: (event: CheckboxComponentCustomEvent<string[]>) => void;
+        "required"?: boolean;
+        "size"?: string;
+        "validation"?: boolean;
+        "validationMsg"?: string;
+        "value"?: string;
+    }
+    interface DividerComponent {
+        "dashed"?: boolean;
+        "orientation"?: 'left' | 'right' | 'center';
+        "orientationMargin"?: string;
+        "plain"?: boolean;
+        "styles"?: string;
+        "type"?: 'horizontal' | 'vertical';
+    }
+    interface DropdownComponent {
+        "alignMenuRight"?: boolean;
+        "autoFocusSubmenu"?: boolean;
+        "buttonText"?: string;
+        "disabled"?: boolean;
+        "icon"?: string;
+        "iconDropdown"?: boolean;
+        "iconSize"?: number;
+        "inputId"?: string;
+        "listType"?: string;
+        "menuOffsetY"?: number;
+        "name"?: string;
+        "onItemSelected"?: (event: DropdownComponentCustomEvent<any>) => void;
+        "options"?: DropdownItem[];
+        "outlined"?: boolean;
+        "ripple"?: boolean;
+        "shape"?: string;
+        "size"?: string;
+        "subMenuListType"?: string;
+        "submenuOffsetX"?: number;
+        "tableId"?: string;
+        "titleAttr"?: string;
+        "value"?: string;
+        "variant"?: string;
+    }
+    interface IconComponent {
+        "color"?: string;
+        "icon"?: string;
+        "iconAriaHidden"?: boolean;
+        "iconAriaLabel"?: string;
+        "iconMargin"?: string;
+        "iconSize"?: number;
+        "size"?: string;
+        "svg"?: boolean;
+        "tokenIcon"?: boolean;
+    }
+    interface RadioInputComponent {
+        "customRadio"?: boolean;
+        "customRadioGroup"?: boolean;
+        "disabled"?: boolean;
+        "groupOptions"?: any;
+        "groupTitle"?: string;
+        "groupTitleSize"?: string;
+        "inline"?: boolean;
+        "inputId"?: string;
+        "labelTxt"?: string;
+        "name"?: string;
+        "onGroupChange"?: (event: RadioInputComponentCustomEvent<string>) => void;
+        "radio"?: boolean;
+        "radioGroup"?: boolean;
+        "required"?: boolean;
+        "size"?: string;
+        "validation"?: boolean;
+        "validationMsg"?: string;
+        "value"?: string;
+    }
+    interface ToggleSwitchComponent {
+        "checked"?: boolean;
+        "customSwitch"?: boolean;
+        "disabled"?: boolean;
+        "inline"?: boolean;
+        "inputId"?: string;
+        "labelTxt"?: string;
+        "newToggleTxt"?: { on: string; off: string };
+        "onCheckedChanged"?: (event: ToggleSwitchComponentCustomEvent<{ id: string; checked: boolean }>) => void;
+        "required"?: boolean;
+        "size"?: string;
+        "switches"?: boolean;
+        "switchesArray"?: ToggleItem[];
+        "toggleTxt"?: boolean;
+        "validation"?: boolean;
+        "validationMessage"?: string;
+        "value"?: string;
     }
     interface IntrinsicElements {
-        "my-component": MyComponent;
+        "accordion-component": AccordionComponent;
+        "accordion-container": AccordionContainer;
+        "app-wrapper": AppWrapper;
+        "autocomplete-multiple-selections": AutocompleteMultipleSelections;
+        "autocomplete-multiselect": AutocompleteMultiselect;
+        "autocomplete-single": AutocompleteSingle;
+        "badge-component": BadgeComponent;
+        "button-component": ButtonComponent;
+        "button-group": ButtonGroup;
+        "card-component": CardComponent;
+        "checkbox-component": CheckboxComponent;
+        "divider-component": DividerComponent;
+        "dropdown-component": DropdownComponent;
+        "icon-component": IconComponent;
+        "radio-input-component": RadioInputComponent;
+        "toggle-switch-component": ToggleSwitchComponent;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "accordion-component": LocalJSX.AccordionComponent & JSXBase.HTMLAttributes<HTMLAccordionComponentElement>;
+            "accordion-container": LocalJSX.AccordionContainer & JSXBase.HTMLAttributes<HTMLAccordionContainerElement>;
+            "app-wrapper": LocalJSX.AppWrapper & JSXBase.HTMLAttributes<HTMLAppWrapperElement>;
+            "autocomplete-multiple-selections": LocalJSX.AutocompleteMultipleSelections & JSXBase.HTMLAttributes<HTMLAutocompleteMultipleSelectionsElement>;
+            "autocomplete-multiselect": LocalJSX.AutocompleteMultiselect & JSXBase.HTMLAttributes<HTMLAutocompleteMultiselectElement>;
+            "autocomplete-single": LocalJSX.AutocompleteSingle & JSXBase.HTMLAttributes<HTMLAutocompleteSingleElement>;
+            "badge-component": LocalJSX.BadgeComponent & JSXBase.HTMLAttributes<HTMLBadgeComponentElement>;
+            "button-component": LocalJSX.ButtonComponent & JSXBase.HTMLAttributes<HTMLButtonComponentElement>;
+            "button-group": LocalJSX.ButtonGroup & JSXBase.HTMLAttributes<HTMLButtonGroupElement>;
+            "card-component": LocalJSX.CardComponent & JSXBase.HTMLAttributes<HTMLCardComponentElement>;
+            "checkbox-component": LocalJSX.CheckboxComponent & JSXBase.HTMLAttributes<HTMLCheckboxComponentElement>;
+            "divider-component": LocalJSX.DividerComponent & JSXBase.HTMLAttributes<HTMLDividerComponentElement>;
+            "dropdown-component": LocalJSX.DropdownComponent & JSXBase.HTMLAttributes<HTMLDropdownComponentElement>;
+            "icon-component": LocalJSX.IconComponent & JSXBase.HTMLAttributes<HTMLIconComponentElement>;
+            "radio-input-component": LocalJSX.RadioInputComponent & JSXBase.HTMLAttributes<HTMLRadioInputComponentElement>;
+            "toggle-switch-component": LocalJSX.ToggleSwitchComponent & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;
         }
     }
 }

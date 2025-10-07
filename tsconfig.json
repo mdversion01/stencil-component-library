@@ -21,6 +21,10 @@
     "src"
   ],
   "exclude": [
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/__mocks__",
+    "jest.config.ts",
     "node_modules"
   ]
 }

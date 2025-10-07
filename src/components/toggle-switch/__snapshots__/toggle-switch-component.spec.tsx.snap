@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`toggle-switch-component renders a toggle with toggleTxt and newToggleTxt 1`] = `
+<toggle-switch-component checked="true" input-id="txt-toggle" label-txt="Power" new-toggle-txt="{ &quot;on&quot;: &quot;Enabled&quot;, &quot;off&quot;: &quot;Disabled&quot; }" toggle-txt="true">
+  <div class="form-group toggle-switch">
+    <div class="form-check form-switch">
+      <input aria-checked="true" aria-disabled="false" checked="" class="form-check-input" id="txt-toggle" role="switch" type="checkbox" value="">
+      <label class="form-check-label" htmlfor="txt-toggle">
+        Power
+        <span class="toggleTxt-bold">
+          On
+        </span>
+      </label>
+    </div>
+  </div>
+</toggle-switch-component>
+`;
+
+exports[`toggle-switch-component renders multiple switches from switchesArray 1`] = `
+<toggle-switch-component switches="true">
+  <div class="form-group ts-group">
+    <div id="toggle-group" role="group">
+      <div class="form-check form-switch">
+        <input aria-checked="false" aria-disabled="undefined" class="form-check-input" id="toggle-group_option_one" role="switch" type="checkbox">
+        <label class="form-check-label" htmlfor="toggle-group_option_one">
+          First
+        </label>
+      </div>
+      <div class="form-check form-switch">
+        <input aria-checked="true" aria-disabled="undefined" checked="" class="form-check-input" id="toggle-group_option_two" role="switch" type="checkbox">
+        <label class="form-check-label" htmlfor="toggle-group_option_two">
+          Second
+        </label>
+      </div>
+    </div>
+  </div>
+</toggle-switch-component>
+`;
+
+exports[`toggle-switch-component renders no switches when switchesArray is empty 1`] = `
+<toggle-switch-component switches="true">
+  <div class="form-group ts-group">
+    <div id="toggle-group" role="group"></div>
+  </div>
+</toggle-switch-component>
+`;
