@@ -1,4 +1,5 @@
 import { setAssetPath } from '@stencil/core';
+
 /**
  * Set asset path for lazy-loaded assets
  */

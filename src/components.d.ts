@@ -282,6 +282,36 @@ export namespace Components {
         "svg": boolean;
         "tokenIcon": boolean;
     }
+    interface ModalComponent {
+        "ariaLabel": string;
+        "block": boolean;
+        "btnText": string;
+        "cancelCloseBtn": string;
+        "classNames": string;
+        /**
+          * Close programmatically
+         */
+        "close": () => Promise<void>;
+        "disabled": boolean;
+        "link": boolean;
+        "modalFullScreen"?: 'fullscreen' | 'sm-down' | 'md-down' | 'lg-down' | 'xl-down' | 'xxl-down';
+        "modalId"?: string;
+        "modalSize"?: 'sm' | 'lg' | 'xl';
+        "modalTitle": string;
+        /**
+          * Open programmatically
+         */
+        "open": () => Promise<void>;
+        "outlined": boolean;
+        "ripple": boolean;
+        "scrollLongContent": boolean;
+        "scrollableBody": boolean;
+        "shape": string;
+        "size": string;
+        "titleAttr": string;
+        "variant": string;
+        "verticallyCentered": boolean;
+    }
     interface RadioInputComponent {
         "customRadio": boolean;
         "customRadioGroup": boolean;
@@ -555,6 +585,12 @@ declare global {
         prototype: HTMLIconComponentElement;
         new (): HTMLIconComponentElement;
     };
+    interface HTMLModalComponentElement extends Components.ModalComponent, HTMLStencilElement {
+    }
+    var HTMLModalComponentElement: {
+        prototype: HTMLModalComponentElement;
+        new (): HTMLModalComponentElement;
+    };
     interface HTMLRadioInputComponentElementEventMap {
         "groupChange": string;
     }
@@ -604,6 +640,7 @@ declare global {
         "divider-component": HTMLDividerComponentElement;
         "dropdown-component": HTMLDropdownComponentElement;
         "icon-component": HTMLIconComponentElement;
+        "modal-component": HTMLModalComponentElement;
         "radio-input-component": HTMLRadioInputComponentElement;
         "toggle-switch-component": HTMLToggleSwitchComponentElement;
     }
@@ -895,6 +932,28 @@ declare namespace LocalJSX {
         "svg"?: boolean;
         "tokenIcon"?: boolean;
     }
+    interface ModalComponent {
+        "ariaLabel"?: string;
+        "block"?: boolean;
+        "btnText"?: string;
+        "cancelCloseBtn"?: string;
+        "classNames"?: string;
+        "disabled"?: boolean;
+        "link"?: boolean;
+        "modalFullScreen"?: 'fullscreen' | 'sm-down' | 'md-down' | 'lg-down' | 'xl-down' | 'xxl-down';
+        "modalId"?: string;
+        "modalSize"?: 'sm' | 'lg' | 'xl';
+        "modalTitle"?: string;
+        "outlined"?: boolean;
+        "ripple"?: boolean;
+        "scrollLongContent"?: boolean;
+        "scrollableBody"?: boolean;
+        "shape"?: string;
+        "size"?: string;
+        "titleAttr"?: string;
+        "variant"?: string;
+        "verticallyCentered"?: boolean;
+    }
     interface RadioInputComponent {
         "customRadio"?: boolean;
         "customRadioGroup"?: boolean;
@@ -948,6 +1007,7 @@ declare namespace LocalJSX {
         "divider-component": DividerComponent;
         "dropdown-component": DropdownComponent;
         "icon-component": IconComponent;
+        "modal-component": ModalComponent;
         "radio-input-component": RadioInputComponent;
         "toggle-switch-component": ToggleSwitchComponent;
     }
@@ -970,6 +1030,7 @@ declare module "@stencil/core" {
             "divider-component": LocalJSX.DividerComponent & JSXBase.HTMLAttributes<HTMLDividerComponentElement>;
             "dropdown-component": LocalJSX.DropdownComponent & JSXBase.HTMLAttributes<HTMLDropdownComponentElement>;
             "icon-component": LocalJSX.IconComponent & JSXBase.HTMLAttributes<HTMLIconComponentElement>;
+            "modal-component": LocalJSX.ModalComponent & JSXBase.HTMLAttributes<HTMLModalComponentElement>;
             "radio-input-component": LocalJSX.RadioInputComponent & JSXBase.HTMLAttributes<HTMLRadioInputComponentElement>;
             "toggle-switch-component": LocalJSX.ToggleSwitchComponent & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;
         }

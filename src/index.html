@@ -18,7 +18,7 @@
     <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
      -->
     <app-wrapper>
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <autocomplete-single id="aci1" input-id="ac-single1" size="sm" label="Autocomplete Single"></autocomplete-single>
 
         <autocomplete-single id="aci2" input-id="ac-single2" label="Autocomplete Single" required validation validation-message="Please fill in"></autocomplete-single>
@@ -43,7 +43,7 @@
           placeholder="Type to search..."
           data-autocomplete="true"
         ></autocomplete-multiple-selections>
-      </div>
+      </div> -->
 
       <!-- <div class="cwrapper">
         <badge-component id="badge1" elevation="6" shape="square" background-color="primary">Badge Base</badge-component>
@@ -214,7 +214,7 @@
         </card-component>
       </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <checkbox-component size="lg" input-id="checkbox0" name="checkbox0" label-txt="Regular Checkbox"></checkbox-component>
 
         <checkbox-component size="lg" custom-checkbox input-id="checkbox1" name="checkbox1" label-txt="Checkbox 1"></checkbox-component>
@@ -252,9 +252,9 @@
             { "value": "cherry", "labelTxt": "Cherry", "inputId": "chk-cherry1", "checked": false, "disabled": true }
           ]'
         ></checkbox-component>
-      </div>
+      </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <radio-input-component
           validation
           size="sm"
@@ -305,7 +305,7 @@
           size="sm"
           group-options='[{"value":"red1","labelTxt":"Red","inputId":"radio-red1","checked":false,"disabled":false},{"value":"green1","labelTxt":"Green","inputId":"radio-green1","checked":false,"disabled":false},{"value":"blue1","labelTxt":"Blue","inputId":"radio-blue1","checked":false,"disabled":false}]'
         ></radio-input-component>
-      </div>
+      </div> -->
       <!-- </app-wrapper> -->
 
       <!-- <div class="cwrapper"> -->
@@ -414,11 +414,11 @@
         </section>
       </div> -->
 
-      <div class="cwrapper">
-        <section>
-          <!-- <dropdown-component id="dditems" size="sm" variant="default" listType="toggle-switches"></dropdown-component> -->
+      <!-- <div class="cwrapper">
+        <section> -->
+      <!-- <dropdown-component id="dditems" size="sm" variant="default" listType="toggle-switches"></dropdown-component> -->
 
-          <dropdown-component id="ddMenu" size="sm" icon-size="10" variant="primary" icon-dropdown icon="fa-solid fa-ellipsis-vertical" list-type="customCheckboxes"></dropdown-component>
+      <!-- <dropdown-component id="ddMenu" size="sm" icon-size="10" variant="primary" icon-dropdown icon="fa-solid fa-ellipsis-vertical" list-type="customCheckboxes"></dropdown-component>
 
           <dropdown-component id="ddMenu3" size="lg" icon-dropdown icon="fa-solid fa-gear"></dropdown-component>
         </section>
@@ -432,9 +432,9 @@
         <br />
         <dropdown-component id="dditems" size="sm" variant="primary" list-type="toggleSwitches"></dropdown-component>
 
-        <br />
+        <br /> -->
 
-        <script type="module">
+      <!-- <script type="module">
           document.addEventListener('DOMContentLoaded', () => {
             // Dynamically selectable options
             const dditems = document.getElementById('dditems');
@@ -501,10 +501,10 @@
               ];
             }
           });
-        </script>
-      </div>
+        </script> -->
+      <!-- </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <toggle-switch-component
           input-id="agree-switch"
           label-txt="Accept Terms"
@@ -577,6 +577,23 @@
             ];
           });
         </script>
+      </div> -->
+
+      <div class="cwrapper">
+        <modal-component modal-id="myModal" cancel-close-btn="Cancel" size="sm" btn-text="Launch demo modal" variant="primary" title="Modal title">
+          <p>
+                    Cras mattis consectetur purus sit amet fermentum. Cras justo
+                    odio, dapibus ac facilisis in, egestas eget quam. Morbi leo
+                    risus, porta ac consectetur ac, vestibulum at eros.
+                  </p>
+
+          <div slot="footer">
+            <button class="btn btn-primary btn-sm">Save</button>
+          </div>
+        </modal-component>
+
+        <br />
+
       </div>
     </app-wrapper>
 
