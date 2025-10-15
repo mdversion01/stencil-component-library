@@ -60,17 +60,26 @@ export namespace Components {
         "error": boolean;
         "errorMessage": string;
         "formId": string;
-        "formLayout": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
+         */
+        "inputCol": number;
         "inputId": string;
         "label": string;
+        /**
+          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
+         */
+        "labelCol": number;
         "labelHidden": boolean;
+        "labelSize": '' | 'sm' | 'lg';
         "navigateOptions": (direction: number) => Promise<void>;
         "options": string[];
         "placeholder": string;
         "removeBtnBorder": boolean;
         "removeClearBtn": boolean;
         "required": boolean;
-        "size": string;
+        "size": '' | 'sm' | 'lg';
         "type": string;
         "validation": boolean;
         "validationMessage": string;
@@ -89,16 +98,25 @@ export namespace Components {
         "errorMessage": string;
         "filterOptions": () => Promise<void>;
         "formId": string;
-        "formLayout": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
+         */
+        "inputCol": number;
         "inputId": string;
         "label": string;
+        /**
+          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
+         */
+        "labelCol": number;
         "labelHidden": boolean;
+        "labelSize": '' | 'sm' | 'lg';
         "navigateOptions": (direction: number) => Promise<void>;
         "options": string[];
         "placeholder": string;
         "removeClearBtn": boolean;
         "required": boolean;
-        "size": string;
+        "size": '' | 'sm' | 'lg';
         "type": string;
         "validation": boolean;
         "validationMessage": string;
@@ -113,15 +131,24 @@ export namespace Components {
         "error": boolean;
         "errorMessage": string;
         "formId": string;
-        "formLayout": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
+         */
+        "inputCol": number;
         "inputId": string;
         "label": string;
+        /**
+          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
+         */
+        "labelCol": number;
         "labelHidden": boolean;
+        "labelSize": '' | 'sm' | 'lg';
         "options": string[];
         "placeholder": string;
         "removeClearBtn": boolean;
         "required": boolean;
-        "size": string;
+        "size": '' | 'sm' | 'lg';
         "type": string;
         "validation": boolean;
         "validationMessage": string;
@@ -271,6 +298,40 @@ export namespace Components {
         "value": string;
         "variant": string;
     }
+    interface FormComponent {
+        /**
+          * Native form attributes
+         */
+        "action": string;
+        /**
+          * Optional border/box styling
+         */
+        "bcolor": string;
+        "bradius"?: number;
+        "bstyle": string;
+        "bwidth"?: number;
+        /**
+          * Render a fieldset wrapper (with optional legend)
+         */
+        "fieldset": boolean;
+        "formId": string;
+        /**
+          * Layout + identity used by slotted children
+         */
+        "formLayout": '' | 'horizontal' | 'inline';
+        "legend": boolean;
+        "legendPosition": 'left' | 'center' | 'right' | string;
+        "legendTxt": string;
+        "method": string;
+        /**
+          * If true, do not render a <form>. Inputs placed outside the form can still read formId via closest('form-component') and set their own form attribute.
+         */
+        "outsideOfForm": boolean;
+        /**
+          * Additional inline styles to append (CSS string)
+         */
+        "styles": string;
+    }
     interface IconComponent {
         "color"?: string;
         "icon": string;
@@ -281,6 +342,30 @@ export namespace Components {
         "size": string;
         "svg": boolean;
         "tokenIcon": boolean;
+    }
+    interface InputFieldComponent {
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
+         */
+        "inputCol": number;
+        "inputId": string;
+        "label": string;
+        /**
+          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
+         */
+        "labelCol": number;
+        "labelHidden": boolean;
+        "labelSize": '' | 'sm' | 'lg';
+        "placeholder"?: string;
+        "required": boolean;
+        "size": '' | 'sm' | 'lg';
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
     }
     interface ModalComponent {
         "ariaLabel": string;
@@ -579,11 +664,23 @@ declare global {
         prototype: HTMLDropdownComponentElement;
         new (): HTMLDropdownComponentElement;
     };
+    interface HTMLFormComponentElement extends Components.FormComponent, HTMLStencilElement {
+    }
+    var HTMLFormComponentElement: {
+        prototype: HTMLFormComponentElement;
+        new (): HTMLFormComponentElement;
+    };
     interface HTMLIconComponentElement extends Components.IconComponent, HTMLStencilElement {
     }
     var HTMLIconComponentElement: {
         prototype: HTMLIconComponentElement;
         new (): HTMLIconComponentElement;
+    };
+    interface HTMLInputFieldComponentElement extends Components.InputFieldComponent, HTMLStencilElement {
+    }
+    var HTMLInputFieldComponentElement: {
+        prototype: HTMLInputFieldComponentElement;
+        new (): HTMLInputFieldComponentElement;
     };
     interface HTMLModalComponentElement extends Components.ModalComponent, HTMLStencilElement {
     }
@@ -639,7 +736,9 @@ declare global {
         "checkbox-component": HTMLCheckboxComponentElement;
         "divider-component": HTMLDividerComponentElement;
         "dropdown-component": HTMLDropdownComponentElement;
+        "form-component": HTMLFormComponentElement;
         "icon-component": HTMLIconComponentElement;
+        "input-field-component": HTMLInputFieldComponentElement;
         "modal-component": HTMLModalComponentElement;
         "radio-input-component": HTMLRadioInputComponentElement;
         "toggle-switch-component": HTMLToggleSwitchComponentElement;
@@ -697,10 +796,19 @@ declare namespace LocalJSX {
         "error"?: boolean;
         "errorMessage"?: string;
         "formId"?: string;
-        "formLayout"?: string;
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
+         */
+        "inputCol"?: number;
         "inputId"?: string;
         "label"?: string;
+        /**
+          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
+         */
+        "labelCol"?: number;
         "labelHidden"?: boolean;
+        "labelSize"?: '' | 'sm' | 'lg';
         "onClear"?: (event: AutocompleteMultipleSelectionsCustomEvent<void>) => void;
         "onComponentError"?: (event: AutocompleteMultipleSelectionsCustomEvent<{ message: string; stack?: string }>) => void;
         "onItemSelect"?: (event: AutocompleteMultipleSelectionsCustomEvent<string>) => void;
@@ -710,7 +818,7 @@ declare namespace LocalJSX {
         "removeBtnBorder"?: boolean;
         "removeClearBtn"?: boolean;
         "required"?: boolean;
-        "size"?: string;
+        "size"?: '' | 'sm' | 'lg';
         "type"?: string;
         "validation"?: boolean;
         "validationMessage"?: string;
@@ -728,10 +836,19 @@ declare namespace LocalJSX {
         "error"?: boolean;
         "errorMessage"?: string;
         "formId"?: string;
-        "formLayout"?: string;
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
+         */
+        "inputCol"?: number;
         "inputId"?: string;
         "label"?: string;
+        /**
+          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
+         */
+        "labelCol"?: number;
         "labelHidden"?: boolean;
+        "labelSize"?: '' | 'sm' | 'lg';
         "onClear"?: (event: AutocompleteMultiselectCustomEvent<void>) => void;
         "onComponentError"?: (event: AutocompleteMultiselectCustomEvent<{ message: string; stack?: string }>) => void;
         "onItemSelect"?: (event: AutocompleteMultiselectCustomEvent<string>) => void;
@@ -740,7 +857,7 @@ declare namespace LocalJSX {
         "placeholder"?: string;
         "removeClearBtn"?: boolean;
         "required"?: boolean;
-        "size"?: string;
+        "size"?: '' | 'sm' | 'lg';
         "type"?: string;
         "validation"?: boolean;
         "validationMessage"?: string;
@@ -755,10 +872,19 @@ declare namespace LocalJSX {
         "error"?: boolean;
         "errorMessage"?: string;
         "formId"?: string;
-        "formLayout"?: string;
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
+         */
+        "inputCol"?: number;
         "inputId"?: string;
         "label"?: string;
+        /**
+          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
+         */
+        "labelCol"?: number;
         "labelHidden"?: boolean;
+        "labelSize"?: '' | 'sm' | 'lg';
         "onClear"?: (event: AutocompleteSingleCustomEvent<void>) => void;
         "onComponentError"?: (event: AutocompleteSingleCustomEvent<{ message: string; stack?: string }>) => void;
         "onItemSelect"?: (event: AutocompleteSingleCustomEvent<string>) => void;
@@ -766,7 +892,7 @@ declare namespace LocalJSX {
         "placeholder"?: string;
         "removeClearBtn"?: boolean;
         "required"?: boolean;
-        "size"?: string;
+        "size"?: '' | 'sm' | 'lg';
         "type"?: string;
         "validation"?: boolean;
         "validationMessage"?: string;
@@ -921,6 +1047,40 @@ declare namespace LocalJSX {
         "value"?: string;
         "variant"?: string;
     }
+    interface FormComponent {
+        /**
+          * Native form attributes
+         */
+        "action"?: string;
+        /**
+          * Optional border/box styling
+         */
+        "bcolor"?: string;
+        "bradius"?: number;
+        "bstyle"?: string;
+        "bwidth"?: number;
+        /**
+          * Render a fieldset wrapper (with optional legend)
+         */
+        "fieldset"?: boolean;
+        "formId"?: string;
+        /**
+          * Layout + identity used by slotted children
+         */
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        "legend"?: boolean;
+        "legendPosition"?: 'left' | 'center' | 'right' | string;
+        "legendTxt"?: string;
+        "method"?: string;
+        /**
+          * If true, do not render a <form>. Inputs placed outside the form can still read formId via closest('form-component') and set their own form attribute.
+         */
+        "outsideOfForm"?: boolean;
+        /**
+          * Additional inline styles to append (CSS string)
+         */
+        "styles"?: string;
+    }
     interface IconComponent {
         "color"?: string;
         "icon"?: string;
@@ -931,6 +1091,30 @@ declare namespace LocalJSX {
         "size"?: string;
         "svg"?: boolean;
         "tokenIcon"?: boolean;
+    }
+    interface InputFieldComponent {
+        "disabled"?: boolean;
+        "formId"?: string;
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
+         */
+        "inputCol"?: number;
+        "inputId"?: string;
+        "label"?: string;
+        /**
+          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
+         */
+        "labelCol"?: number;
+        "labelHidden"?: boolean;
+        "labelSize"?: '' | 'sm' | 'lg';
+        "placeholder"?: string;
+        "required"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "type"?: string;
+        "validation"?: boolean;
+        "validationMessage"?: string;
+        "value"?: string;
     }
     interface ModalComponent {
         "ariaLabel"?: string;
@@ -1006,7 +1190,9 @@ declare namespace LocalJSX {
         "checkbox-component": CheckboxComponent;
         "divider-component": DividerComponent;
         "dropdown-component": DropdownComponent;
+        "form-component": FormComponent;
         "icon-component": IconComponent;
+        "input-field-component": InputFieldComponent;
         "modal-component": ModalComponent;
         "radio-input-component": RadioInputComponent;
         "toggle-switch-component": ToggleSwitchComponent;
@@ -1029,7 +1215,9 @@ declare module "@stencil/core" {
             "checkbox-component": LocalJSX.CheckboxComponent & JSXBase.HTMLAttributes<HTMLCheckboxComponentElement>;
             "divider-component": LocalJSX.DividerComponent & JSXBase.HTMLAttributes<HTMLDividerComponentElement>;
             "dropdown-component": LocalJSX.DropdownComponent & JSXBase.HTMLAttributes<HTMLDropdownComponentElement>;
+            "form-component": LocalJSX.FormComponent & JSXBase.HTMLAttributes<HTMLFormComponentElement>;
             "icon-component": LocalJSX.IconComponent & JSXBase.HTMLAttributes<HTMLIconComponentElement>;
+            "input-field-component": LocalJSX.InputFieldComponent & JSXBase.HTMLAttributes<HTMLInputFieldComponentElement>;
             "modal-component": LocalJSX.ModalComponent & JSXBase.HTMLAttributes<HTMLModalComponentElement>;
             "radio-input-component": LocalJSX.RadioInputComponent & JSXBase.HTMLAttributes<HTMLRadioInputComponentElement>;
             "toggle-switch-component": LocalJSX.ToggleSwitchComponent & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;

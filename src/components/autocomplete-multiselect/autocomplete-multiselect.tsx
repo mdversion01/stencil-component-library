@@ -27,14 +27,15 @@ export class AutocompleteMultiselect {
   @Prop() devMode: boolean = false;
   @Prop() disabled: boolean = false;
   @Prop() formId: string = '';
-  @Prop() formLayout: string = ''; // 'horizontal'
+  @Prop({ mutable: true }) formLayout: '' | 'horizontal' | 'inline' = '';
   @Prop({ mutable: true }) error = false;
   @Prop({ mutable: true }) errorMessage = '';
   @Prop() inputId = '';
   @Prop() label: string = '';
+  @Prop() labelSize: '' | 'sm' | 'lg' = '';
   @Prop() labelHidden: boolean = false;
   @Prop() removeClearBtn: boolean = false;
-  @Prop() size: string = ''; // 'sm' | 'lg'
+  @Prop() size: '' | 'sm' | 'lg' = '';
   @Prop() required: boolean = false;
   @Prop() type = '';
   @Prop({ mutable: true }) validation: boolean = false;
@@ -44,6 +45,11 @@ export class AutocompleteMultiselect {
   @Prop() badgeVariant: string = ''; // 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark'
   @Prop() badgeShape: string = ''; // 'rounded' | 'circle' | 'square' | 'pill'
   @Prop() badgeInlineStyles: string = ''; // 'width: 100px; height: 100px;' | 'color: red; background-color: blue;' | 'font-size: 16px; font-weight: bold;'
+
+  /** Bootstrap grid columns for label when formLayout="horizontal" (default 2) */
+  @Prop() labelCol: number = 2;
+  /** Bootstrap grid columns for input when formLayout="horizontal" (default 10) */
+  @Prop() inputCol: number = 10;
 
   @State() inputValue: string = '';
   @State() filteredOptions: string[] = [];
@@ -142,23 +148,24 @@ export class AutocompleteMultiselect {
     }
   }
 
-  private renderLabel(ids: string) {
-    if (!this.label) return null;
+  private renderInputLabel(ids: string, labelColClass?: string) {
+    if (this.labelHidden) return null;
+
+    const classes = [
+      'form-control-label',
+      this.required ? 'required' : '',
+      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.formLayout === 'horizontal' ? `${labelColClass} no-padding col-form-label` : '',
+      this.validation ? 'invalid' : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+
+    const text = this.formLayout === 'horizontal' || this.formLayout === 'inline' ? `${this.label}:` : this.label;
+
     return (
-      <label
-        htmlFor={ids}
-        class={{
-          'form-label': true,
-          'sr-only': this.labelHidden,
-          'invalid': this.validation,
-          'required-text': this.validation,
-          'col-sm-2 col-form-label': this.formLayout === 'horizontal' || this.formLayout === 'inline',
-        }}
-      >
-        <span>
-          {this.label}
-          {this.required ? <span class="required">*</span> : ''}
-        </span>
+      <label class={classes} htmlFor={ids || undefined}>
+        {text}
       </label>
     );
   }
@@ -181,7 +188,7 @@ export class AutocompleteMultiselect {
         class={{
           'form-control': true,
           'is-invalid': this.validation,
-          [`input-${this.size}`]: !!this.size,
+          [this.size === 'sm' ? 'basic-input-sm' : this.size === 'lg' ? 'basic-input-lg' : '']: !!this.size,
         }}
         type={this.type}
         placeholder={this.placeholder}
@@ -322,6 +329,36 @@ export class AutocompleteMultiselect {
       this.hasBeenInteractedWith = true; // ✅ mark as touched
     }
   };
+
+  /** Compute safe label/input col classes without mutating props. */
+  private getComputedCols() {
+    // Defaults for horizontal layout
+    const DEFAULT_LABEL = 2;
+    const DEFAULT_INPUT = 10;
+
+    // If the label is visually hidden and layout is horizontal, use full-width input
+    if (this.formLayout === 'horizontal' && this.labelHidden) {
+      return { label: 0, input: 12 };
+    }
+
+    const lbl = Number(this.labelCol);
+    const inp = Number(this.inputCol);
+    const label = Number.isFinite(lbl) ? Math.max(0, Math.min(12, lbl)) : DEFAULT_LABEL;
+    const input = Number.isFinite(inp) ? Math.max(0, Math.min(12, inp)) : DEFAULT_INPUT;
+
+    if (this.formLayout === 'horizontal') {
+      if (label + input !== 12) {
+        console.error(
+          '[autocomplete-multiselect] For formLayout="horizontal", label-col + input-col must equal 12 exactly. ' +
+            `Received: ${this.labelCol} + ${this.inputCol} = ${Number(this.labelCol) + Number(this.inputCol)}. ` +
+            'Falling back to 2/10.',
+        );
+        return { label: DEFAULT_LABEL, input: DEFAULT_INPUT };
+      }
+    }
+
+    return { label, input };
+  }
 
   @Method()
   public async filterOptions(): Promise<void> {
@@ -496,31 +533,67 @@ export class AutocompleteMultiselect {
   };
 
   private renderLayout = (ids: string, names: string) => {
-    const isHorizontalOrInline = this.formLayout === 'horizontal' || this.formLayout === 'inline';
+    const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
+
+    const isRowLayout = this.formLayout === 'horizontal' || this.formLayout === 'inline';
+    const { label, input } = this.getComputedCols();
+
+    // Build grid classes
+    const labelColClass = this.formLayout === 'horizontal' && !this.labelHidden ? `col-${label}` : '';
+    const inputColClass = this.formLayout === 'horizontal' ? `col-${this.labelHidden ? 12 : input}` : this.formLayout === 'inline' ? 'col' : '';
 
     return (
-      <div class={{ row: isHorizontalOrInline, [this.formLayout]: isHorizontalOrInline }}>
-        {this.renderLabel(ids)}
-        <div class={isHorizontalOrInline ? 'col-sm-10' : null}>
-          <div
-            class={{
-              'ac-multi-select-container': true,
-              'is-invalid': this.validation,
-              [`${this.size}`]: !!this.size,
-              [this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '']: true, // ✅ highlights on input focus
-            }}
-          >
-            <div class="ac-selected-items">{this.renderSelectedItems()}</div>
-            <div class="ac-input-container">
-              <div class={{ 'input-group': true }}>
-                {this.renderInputField(ids, names)}
-                {this.renderAddButton()}
-                {this.renderClearButton()}
+      <div class={outerClass}>
+        {isRowLayout ? (
+          <div class="row">
+            {this.renderInputLabel(ids, labelColClass)}
+            <div class={inputColClass || undefined}>
+              <div
+                class={{
+                  'ac-multi-select-container': true,
+                  'is-invalid': this.validation,
+                  [`${this.size}`]: !!this.size,
+                  [this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '']: true,
+                }}
+              >
+                <div class="ac-selected-items">{this.renderSelectedItems()}</div>
+                <div class="ac-input-container">
+                  <div class={{ 'input-group': true }}>
+                    {this.renderInputField(ids, names)}
+                    {this.renderAddButton()}
+                    {this.renderClearButton()}
+                  </div>
+                </div>
               </div>
+              {this.renderDropdown(ids)}
             </div>
           </div>
-          {this.renderDropdown(ids)}
-        </div>
+        ) : (
+          // Non-row layout (stacked)
+          <div>
+            {this.renderInputLabel(ids)}
+            <div>
+              <div
+                class={{
+                  'ac-multi-select-container': true,
+                  'is-invalid': this.validation,
+                  [`${this.size}`]: !!this.size,
+                  [this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '']: true,
+                }}
+              >
+                <div class="ac-selected-items">{this.renderSelectedItems()}</div>
+                <div class="ac-input-container">
+                  <div class={{ 'input-group': true }}>
+                    {this.renderInputField(ids, names)}
+                    {this.renderAddButton()}
+                    {this.renderClearButton()}
+                  </div>
+                </div>
+              </div>
+              {this.renderDropdown(ids)}
+            </div>
+          </div>
+        )}
       </div>
     );
   };

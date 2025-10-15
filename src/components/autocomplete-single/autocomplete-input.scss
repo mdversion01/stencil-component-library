@@ -10,6 +10,15 @@
     flex-wrap: nowrap !important;
   }
 
+  .horizontal .form-group {
+    margin-bottom: 0;
+    padding: 0;
+  }
+
+  .invalid-feedback {
+    margin-top: 0 !important;
+  }
+
   .autocomplete-single-select {
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
@@ -23,7 +32,7 @@
       box-shadow: none !important;
     }
 
-    >.input-group-btn {
+    > .input-group-btn {
       border: none;
     }
 
@@ -53,12 +62,12 @@
       outline: 1px solid #b80000;
     }
 
-    &.is-invalid>.input-group-btn.add,
+    &.is-invalid > .input-group-btn.add,
     &.is-invalid > .input-group-btn.clear {
       color: #b30009;
     }
 
-    &.is-invalid >.input-group-btn.add svg,
+    &.is-invalid > .input-group-btn.add svg,
     &.is-invalid > .input-group-btn.clear svg {
       color: #b30009;
       fill: #b30009;

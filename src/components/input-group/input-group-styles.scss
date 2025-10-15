@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 0.275rem 0.75rem;
+  padding: 0.275rem 0.25rem;
   margin-bottom: 0;
   font-size: 1rem;
   font-weight: 400;
@@ -277,7 +277,7 @@
 
 .horizontal .input-group,
 .inline .input-group {
-  padding: 0 15px 0 0;
+  padding: 0;
 }
 
 .form-input-group-basic label {

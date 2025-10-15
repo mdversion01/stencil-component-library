@@ -29,17 +29,20 @@
   clip-path: none;
 }
 
-.required {
+.required::after {
+  content: '*';
   color: #b30009;
   margin-left: 5px;
   margin-left: 2px;
   margin-top: -2px;
   margin-right: 5px;
 
-  &-text {
+
+}
+
+.required {
     color: #b30009;
   }
-}
 
 button,
 input,
@@ -133,6 +136,10 @@ input[type='radio'] {
   height: 100%;
   padding-top: 6px;
   padding-bottom: 0;
+}
+
+.inline.row>* {
+  width: auto!important;
 }
 
 // Plumage Search Bar

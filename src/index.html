@@ -18,16 +18,39 @@
     <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
      -->
     <app-wrapper>
-      <!-- <div class="cwrapper">
-        <autocomplete-single id="aci1" input-id="ac-single1" size="sm" label="Autocomplete Single"></autocomplete-single>
+      <div class="cwrapper">
+        <autocomplete-single
+          id="aci1"
+          label-size="sm"
+          required
+          validation
+          validation-message="Please fill in"
+          input-id="ac-single1"
+          label="Autocomplete Single"
+        ></autocomplete-single>
 
-        <autocomplete-single id="aci2" input-id="ac-single2" label="Autocomplete Single" required validation validation-message="Please fill in"></autocomplete-single>
+        <autocomplete-single
+          id="aci2"
+          input-id="ac-single2"
+          form-layout="horizontal"
+          label-size="sm"
+          label="Autocomplete Single"
+          size="sm"
+          required
+          validation
+          validation-message="Please fill in"
+        ></autocomplete-single>
 
         <autocomplete-multiselect
           id="aci3"
           input-id="ac-1"
           label="Autocomplete Multiselect"
+          label-size="lg"
+          form-layout="horizontal"
+          label-col="6"
+          input-col="6"
           required
+          size="lg"
           validation
           validation-message="Please fill in"
           placeholder="Type to search..."
@@ -40,10 +63,17 @@
           badge-shape="pill"
           input-id="ac-2"
           label="Autocomplete Multiple Selections"
+          label-size="lg"
           placeholder="Type to search..."
           data-autocomplete="true"
+          form-layout="inline"
+          required
+          size="lg"
+          validation
+          validation-message="Please fill in"
+          placeholder="Type to search..."
         ></autocomplete-multiple-selections>
-      </div> -->
+      </div>
 
       <!-- <div class="cwrapper">
         <badge-component id="badge1" elevation="6" shape="square" background-color="primary">Badge Base</badge-component>
@@ -579,7 +609,7 @@
         </script>
       </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <modal-component modal-id="myModal" cancel-close-btn="Cancel" size="sm" btn-text="Launch demo modal" variant="primary" title="Modal title">
           <p>
                     Cras mattis consectetur purus sit amet fermentum. Cras justo
@@ -594,50 +624,91 @@
 
         <br />
 
+      </div> -->
+
+      <div class="cwrapper">
+        <input-field-component label="First Name" label-size="sm" size="sm" value="" input-id="firstName"></input-field-component>
+
+        <input-field-component label="Last Name" value="" input-id="lastName"></input-field-component>
+
+        <input-field-component
+          label="Email"
+          required
+          validation
+          validation-message="Please enter a valid email"
+          value=""
+          input-id="email"
+          size="lg"
+        ></input-field-component>
+
+        <input-field-component form-layout="inline" label="Email" input-id="email" label-col="6" input-col="6"></input-field-component>
+
+        <form-component form-layout="inline">
+          <input-field-component
+            form-layout="inline"
+            required
+            validation
+            validation-message="Please enter First name"
+            label="First Name"
+            value=""
+            input-id="input-5"
+            slot="formField"
+          ></input-field-component>
+          <input-field-component
+            form-layout="inline"
+            required
+            validation
+            validation-message="Please enter Last name"
+            label="Last Name"
+            value=""
+            input-id="input-6"
+            slot="formField"
+          ></input-field-component>
+        </form-component>
       </div>
     </app-wrapper>
 
-    <!-- <script type="module"> -->
-    <!-- // window.addEventListener('DOMContentLoaded', () => {
-      //   const aci1 = document.getElementById('aci1');
-      //   const aci1Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
-      //   setTimeout(() => {
-      //     aci1.options = aci1Options;
-      //   }, 300); // delay to allow stencil hydration
+    <script type="module">
+      window.addEventListener('DOMContentLoaded', () => {
+        const aci1 = document.getElementById('aci1');
+        const aci1Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+        setTimeout(() => {
+          aci1.options = aci1Options;
+        }, 300); // delay to allow stencil hydration
 
-      //   const aci2 = document.getElementById('aci2');
-      //   const aci2Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
-      //   setTimeout(() => {
-      //     aci2.options = aci2Options;
-      //   }, 300); // delay to allow stencil hydration
+        const aci2 = document.getElementById('aci2');
+        const aci2Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+        setTimeout(() => {
+          aci2.options = aci2Options;
+        }, 300); // delay to allow stencil hydration
 
-      //   const aci3 = document.getElementById('aci3');
-      //   const aci3Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
-      //   setTimeout(() => {
-      //     aci3.options = aci3Options;
-      //   }, 300); // delay to allow stencil hydration
+        const aci3 = document.getElementById('aci3');
+        const aci3Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+        setTimeout(() => {
+          aci3.options = aci3Options;
+        }, 300); // delay to allow stencil hydration
 
-      //   const aci4 = document.getElementById('aci4');
-      //   const aci4Options = [
-      //     'Apple',
-      //     'Apparatus',
-      //     'Apple Pie',
-      //     'Applegate',
-      //     'Banana',
-      //     'Orange',
-      //     'Mango',
-      //     'Bet',
-      //     'Betty',
-      //     'Bobby',
-      //     'Bob',
-      //     'Bobby Brown',
-      //     'Bobby Blue',
-      //     'Bobby Green',
-      //   ];
-      //   setTimeout(() => {
-      //     aci4.options = aci4Options;
-      //   }, 300);
-      // }); -->
-    <!-- </script> -->
+        const aci4 = document.getElementById('aci4');
+        const aci4Options = [
+          'Apple',
+          'Apparatus',
+          'Apple Pie',
+          'Applegate',
+          'Banana',
+          'Orange',
+          'Mango',
+          'Bet',
+          'Betty',
+          'Bobby',
+          'Bob',
+          'Bobby Brown',
+          'Bobby Blue',
+          'Bobby Green',
+        ];
+        setTimeout(() => {
+          aci4.options = aci4Options;
+        }, 300);
+      });
+    </script>
   </body>
 </html>
