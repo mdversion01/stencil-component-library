@@ -11,7 +11,7 @@
     .form-control {
       border: none;
       display: flex !important;
-      flex: 1 1 200px;
+      flex: 1 1 auto !important; // 200px
       padding: 0.375rem 0.75rem;
       width: 100%;
     }
@@ -90,7 +90,7 @@
       font-size: 0.65rem !important;
       height: 28px;
     }
-  
+
     &.lg {
       font-size: 1rem !important;
       height: 42px;
@@ -104,22 +104,25 @@
       border-radius: 1.75rem;
       padding: 0.25rem 0.5rem;
     }
-  
+
     span {
       margin-right: 0.5rem;
       margin-top: -0.1rem;
     }
-  
+
     .remove-btn {
       background-color: transparent;
       border: none;
       border-radius: 25%;
       margin: 0;
       padding: 0;
-      height: 16px;
-      width: 16px;
+      height: 1rem;
+      width: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-  
+
     .remove-btn svg {
       cursor: pointer;
       fill: #666666;
@@ -128,7 +131,7 @@
       width: 1rem;
       z-index: 1;
     }
-  
+
     .remove-btn:hover svg,
     .remove-btn:focus svg {
       fill: #b30009;

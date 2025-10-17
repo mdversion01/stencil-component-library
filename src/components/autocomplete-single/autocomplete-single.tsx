@@ -236,14 +236,14 @@ export class AutocompleteSingle {
 
     return (
       <label class={classes} htmlFor={ids || undefined}>
-        {text}
+        {text}{this.showRequiredMark() ? '*' : ''}
       </label>
     );
   }
 
   private renderInputField(ids: string, names: string) {
     const sizeClass = this.size === 'sm' ? 'basic-input-sm' : this.size === 'lg' ? 'basic-input-lg' : '';
-    const classes = ['form-control', this.validation ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    const classes = ['form-control', (this.validation || this.error) ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
 
     const placeholder = this.labelHidden ? this.label || this.placeholder || 'Placeholder Text' : this.label || this.placeholder || 'Placeholder Text';
 
@@ -559,10 +559,12 @@ export class AutocompleteSingle {
   componentDidLoad() {
     // Use capture to ensure this fires even when clicks originate in nested portals/shadow etc.
     document.addEventListener('click', this.handleClickOutside, true);
+    // this.validation = false;
     this.hasBeenInteractedWith = false;
   }
 
   componentWillLoad() {
+    // this.validation = false;
     this.hasBeenInteractedWith = false;
 
     if (!Array.isArray(this.options)) {

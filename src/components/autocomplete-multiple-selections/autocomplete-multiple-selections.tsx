@@ -58,6 +58,7 @@ export class AutocompleteMultipleSelections {
   @State() focusedOptionIndex: number = -1;
   @State() isFocused: boolean = false;
   @State() hasBeenInteractedWith: boolean = false;
+  @State() satisfied: boolean = false; // true when selected OR input length >= 3
 
   @Event({ eventName: 'itemSelect' }) itemSelect: EventEmitter<string>;
   @Event() clear: EventEmitter<void>;
@@ -85,12 +86,10 @@ export class AutocompleteMultipleSelections {
 
   componentDidLoad() {
     document.addEventListener('click', this.handleClickOutside);
-    this.validation = false;
     this.hasBeenInteractedWith = false;
   }
 
   componentWillLoad() {
-    this.validation = false;
     this.hasBeenInteractedWith = false;
 
     if (!Array.isArray(this.options)) {
@@ -111,8 +110,19 @@ export class AutocompleteMultipleSelections {
   };
 
   private handleBlur = () => {
-    if (this.suppressBlur) return; // 👈 Prevent blur side effects during selection
     this.isFocused = false;
+
+    // If blur was caused by clicking inside the dropdown, skip closing now.
+    if (this.suppressBlur) {
+      return;
+    }
+
+    // Let any pending interactions settle, then close
+    setTimeout(() => this.closeDropdown(), 0);
+
+    if (this.required) {
+      this.validation = !this.isSatisfiedNow();
+    }
   };
 
   private ensureOptionInView(index: number) {
@@ -147,39 +157,26 @@ export class AutocompleteMultipleSelections {
     }
   }
 
-  // private renderLabel(ids: string) {
-  //   if (!this.label) return null;
-  //   return (
-  //     <label
-  //       htmlFor={ids}
-  //       class={{
-  //         'form-control-label': true,
-  //         [this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '']: !!this.labelSize,
-  //         'sr-only': this.labelHidden,
-  //         'invalid': this.validation,
-  //         'required-text': this.required,
-  //         'col-sm-2 col-form-label': this.formLayout === 'horizontal' || this.formLayout === 'inline',
-  //       }}
-  //     >
-  //       <span>
-  //         {this.label}
-  //         {this.required ? <span class="required"></span> : ''}
-  //       </span>
-  //     </label>
-  //   );
-  // }
+  private isSatisfiedNow(): boolean {
+    const typedEnough = this.inputValue.trim().length >= 3;
+    const hasSelection = this.selectedItems.length > 0;
+    return typedEnough || hasSelection;
+  }
+
+  private showRequiredMark(): boolean {
+    return this.required && !this.isSatisfiedNow();
+  }
 
   private renderInputLabel(ids: string, labelColClass?: string) {
     if (this.labelHidden) return null;
 
     const classes = [
       'form-control-label',
-      this.required ? 'required' : '',
+      this.showRequiredMark() ? 'required' : '',
       this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.formLayout === 'horizontal' ? `${labelColClass} no-padding col-form-label` : '',
       this.validation ? 'invalid' : '',
       this.labelHidden ? 'sr-only' : '',
-      this.validation ? 'invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -188,12 +185,17 @@ export class AutocompleteMultipleSelections {
 
     return (
       <label class={classes} htmlFor={ids || undefined}>
-        {text}
+        {text}{this.showRequiredMark() ? '*' : ''}
       </label>
     );
   }
 
   private renderInputField(ids: string, names: string) {
+    const sizeClass = this.size === 'sm' ? 'basic-input-sm' : this.size === 'lg' ? 'basic-input-lg' : '';
+    const classes = ['form-control', this.validation || this.error ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+
+    const placeholder = this.labelHidden ? this.label || this.placeholder || 'Placeholder Text' : this.label || this.placeholder || 'Placeholder Text';
+
     return (
       <input
         id={ids ? ids : null}
@@ -205,16 +207,12 @@ export class AutocompleteMultipleSelections {
         aria-autocomplete="list"
         aria-expanded={this.filteredOptions.length > 0 ? 'true' : 'false'}
         aria-controls={`${ids}-listbox`}
-        aria-activedescendant={this.focusedOptionIndex >= 0 ? `${this.inputId}-option-${this.focusedOptionIndex}` : undefined}
+        aria-activedescendant={this.focusedOptionIndex >= 0 ? `${ids}-option-${this.focusedOptionIndex}` : undefined}
         aria-required={this.required ? 'true' : 'false'}
         aria-haspopup="listbox"
-        class={{
-          'form-control': true,
-          'is-invalid': this.validation,
-          [this.size === 'sm' ? 'basic-input-sm' : this.size === 'lg' ? 'basic-input-lg' : '']: !!this.size,
-        }}
+        class={classes}
         type={this.type}
-        placeholder={this.placeholder}
+        placeholder={placeholder}
         value={this.inputValue}
         disabled={this.disabled}
         onInput={this.handleInput}
@@ -361,6 +359,9 @@ export class AutocompleteMultipleSelections {
       this.inputValue = this.sanitizeInput(input.value);
       this.filterOptions();
       this.hasBeenInteractedWith = true;
+      if (this.required) {
+        this.validation = !this.isSatisfiedNow();
+      }
     }
   };
 
@@ -429,7 +430,7 @@ export class AutocompleteMultipleSelections {
                 'focused': this.focusedOptionIndex === i,
                 [`${this.size}`]: !!this.size,
               }}
-              onClick={() => this.toggleItem(option)}
+              onMouseDown={e => this.onOptionMouseDown(e, option)}
               tabindex="-1"
             >
               <span innerHTML={option.replace(/</g, '&lt;').replace(/>/g, '&gt;')} />
@@ -450,6 +451,23 @@ export class AutocompleteMultipleSelections {
     );
   }
 
+  private onOptionMouseDown = (e: MouseEvent, option: string) => {
+    // prevent the input from losing focus before we handle selection
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.suppressBlur = true; // tell onBlur not to close
+    this.toggleItem(option); // add/remove selection right away
+
+    // allow blur handling to resume after the current tick
+    setTimeout(() => {
+      this.suppressBlur = false;
+      // put focus back to the input for continuous typing
+      const input = this.el.querySelector('input');
+      input?.focus();
+    }, 0);
+  };
+
   private toggleItem(option: string) {
     const updated = new Set(this.selectedItems);
     if (updated.has(option)) {
@@ -461,7 +479,7 @@ export class AutocompleteMultipleSelections {
     this.selectedItems = Array.from(updated);
     this.selectionChange.emit(this.selectedItems);
 
-    this.validation = this.required && this.selectedItems.length === 0;
+    this.validation = this.required && !this.isSatisfiedNow();
     this.filterOptions();
 
     // ⏱ restore input focus after selecting an item
@@ -489,7 +507,7 @@ export class AutocompleteMultipleSelections {
     this.selectionChange.emit(this.selectedItems);
 
     if (this.selectedItems.length === 0 && this.required) {
-      this.validation = true;
+      this.validation = this.required && !this.isSatisfiedNow(); // ✅ triggers reactive re-render
     }
   }
 
@@ -501,7 +519,7 @@ export class AutocompleteMultipleSelections {
 
     this.hasBeenInteractedWith = true;
     if (this.required && this.hasBeenInteractedWith) {
-      this.validation = true;
+      this.validation = this.required && !this.isSatisfiedNow();
     }
 
     this.clear.emit();
@@ -510,38 +528,79 @@ export class AutocompleteMultipleSelections {
 
   private renderValidationMessages = (ids: string) => {
     if (this.validation && this.validationMessage) {
-      if (this.formLayout === 'horizontal' || this.formLayout === 'inline') {
+      if (this.formLayout === 'horizontal') {
+        const { label, input } = this.getComputedCols();
+        const labelColClass = `col-${label}`;
+        const inputColClass = `col-${input}`;
+
         return (
           <div class="row">
-            <div class={{ 'col-sm-2': true, 'col': this.formLayout === 'inline' }}></div>
-            <div class={{ 'col-sm-10': true, 'col': this.formLayout === 'inline' }}>
+            <div class={labelColClass}></div>
+            <div class={inputColClass}>
               <div id={`${ids}-validation`} class="invalid-feedback" aria-live="polite">
                 {this.validationMessage}
               </div>
             </div>
           </div>
         );
+      } else if (this.formLayout === 'inline') {
+         return (
+          <div class="row">
+            <div></div>
+            <div>
+              <div id={`${ids}-validation`} class="invalid-feedback" aria-live="polite">
+                {this.validationMessage}
+              </div>
+            </div>
+          </div>
+        );
+      } else {
+
+        return (
+          <div id={`${ids}-validation`} class="invalid-feedback" aria-live="polite">
+            {this.validationMessage}
+          </div>
+        );
       }
-      return <div class="invalid-feedback">{this.validationMessage}</div>;
     }
     return '';
   };
 
   private renderErrorMessages = (ids: string) => {
     if (this.error && this.errorMessage) {
-      if (this.formLayout === 'horizontal' || this.formLayout === 'inline') {
+      if (this.formLayout === 'horizontal') {
+        const { label, input } = this.getComputedCols();
+        const labelColClass = `col-${label}`;
+        const inputColClass = `col-${input}`;
+
         return (
           <div class="row">
-            <div class={{ 'col-sm-2': true, 'col': this.formLayout === 'inline' }}></div>
-            <div class={{ 'col-sm-10': true, 'col': this.formLayout === 'inline' }}>
+            <div class={labelColClass}></div>
+            <div class={inputColClass}>
               <div id={`${ids}-error`} class="error-message" aria-live="polite">
                 {this.errorMessage}
               </div>
             </div>
           </div>
         );
+      } else if (this.formLayout === 'inline') {
+        return (
+          <div class="row">
+            <div></div>
+            <div>
+              <div id={`${ids}-error`} class="error-message" aria-live="polite">
+                {this.errorMessage}
+              </div>
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <div id={`${ids}-error`} class="error-message" aria-live="polite">
+            {this.errorMessage}
+          </div>
+        );
       }
-      return <div class="error-message">{this.errorMessage}</div>;
     }
     return '';
   };
@@ -554,13 +613,13 @@ export class AutocompleteMultipleSelections {
 
     // Build grid classes
     const labelColClass = this.formLayout === 'horizontal' && !this.labelHidden ? `col-${label}` : '';
-    const inputColClass = this.formLayout === 'horizontal' ? `col-${this.labelHidden ? 12 : input}` : this.formLayout === 'inline' ? 'col' : '';
+    const inputColClass = this.formLayout === 'horizontal' ? `col-${this.labelHidden ? 12 : input}` : this.formLayout === 'inline' ? '' : '';
 
 
     return (
       <div class={outerClass}>
         {isRowLayout ? (
-          <div class="row">
+          <div class={`row form-group ${this.formLayout === 'inline' ? 'inline' : this.formLayout === 'horizontal' ? 'horizontal' : ''}`}>
             {this.renderInputLabel(ids, labelColClass)}
             <div class={inputColClass || undefined}>
               <div
@@ -581,6 +640,8 @@ export class AutocompleteMultipleSelections {
                 </div>
               </div>
               {this.renderDropdown(ids)}
+              {this.formLayout === 'inline' ? this.renderValidationMessages(ids) : ''}
+              {this.formLayout === 'inline' ? this.renderErrorMessages(ids) : ''}
             </div>
           </div>
         ) : (
@@ -614,12 +675,8 @@ export class AutocompleteMultipleSelections {
   };
 
   public validate(): boolean {
-    if (this.required && this.selectedItems.length === 0) {
-      this.validation = true;
-      return false;
-    }
-    this.validation = false;
-    return true;
+    this.validation = this.required && !this.isSatisfiedNow();
+    return !this.validation;
   }
 
   render() {
@@ -629,8 +686,8 @@ export class AutocompleteMultipleSelections {
     return (
       <div class="form-group">
         {this.renderLayout(ids, names)}
-        {this.renderValidationMessages(ids)}
-        {this.renderErrorMessages(ids)}
+        {this.formLayout === 'horizontal' ? this.renderValidationMessages(ids) : ''}
+        {this.formLayout === 'horizontal' ? this.renderErrorMessages(ids) : ''}
       </div>
     );
   }

@@ -207,7 +207,12 @@
   font-size: 0.75rem !important;
 }
 
-:not(.is-invalid) ~ .invalid-feedback {
+.is-invalid ::placeholder {
+  color: #b30009 !important;
+}
+
+:not(.is-invalid) ~ .invalid-feedback,
+:not(.was-validated) ~ .invalid-feedback {
   display: none !important;
 }
 
@@ -295,5 +300,9 @@
   .label-lg {
     align-items: start !important;
     padding-top: 9px !important;
+  }
+
+  .ac-multi-select-container .input-group .form-control {
+    min-width: 240px;
   }
 }
