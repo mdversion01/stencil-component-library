@@ -9,14 +9,27 @@ describe('<autocomplete-single>', () => {
       html: `<autocomplete-single label="Test Label" input-id="test"></autocomplete-single>`,
     });
 
-    expect(page.root).toBeTruthy();
-    expect(page.root.querySelector('input')).toBeTruthy();
-    expect(page.root.querySelector('label')?.textContent).toContain('Test Label');
+    const root = page.root!;
+    const label = root.querySelector('label') as HTMLLabelElement;
+    const input = root.querySelector('input') as HTMLInputElement;
 
-     // ✅ Snapshot rendering
-     expect(page.root).toMatchSnapshot();
+    expect(root).toBeTruthy();
+    expect(label).toBeTruthy();
+    expect(input).toBeTruthy();
 
+    // label text & updated class
+    expect(label.textContent).toContain('Test Label');
+    expect(label.className).toContain('form-control-label');
+
+    // placeholder now prefers the label
+    expect(input.placeholder).toBe('Test Label');
+
+    // a11y basics unchanged
+    expect(input.getAttribute('role')).toBe('combobox');
+    expect(input.getAttribute('aria-controls')).toBe('test-listbox');
+    expect(input.getAttribute('aria-expanded')).toBe('false');
   });
+
 
   it('filters options based on input', async () => {
     const page = await newSpecPage({

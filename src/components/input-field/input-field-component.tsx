@@ -25,10 +25,13 @@ export class InputFieldComponent {
   @Prop() value: string = '';
   @Prop() placeholder?: string;
 
-  /** Bootstrap grid columns for label when formLayout="horizontal" (default 2) */
+  /** Legacy numeric cols (fallback) */
   @Prop() labelCol: number = 2;
-  /** Bootstrap grid columns for input when formLayout="horizontal" (default 10) */
   @Prop() inputCol: number = 10;
+
+  /** NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4") */
+  @Prop() labelCols: string = '';
+  @Prop() inputCols: string = '';
 
   // Internal
   @State() _resolvedFormId: string = '';
@@ -83,32 +86,111 @@ export class InputFieldComponent {
     this.value = target.value;
   };
 
-  /** Compute safe label/input col classes without mutating props. */
+  // ----- Layout helpers -----
+
+  private isHorizontal() {
+    return this.formLayout === 'horizontal';
+  }
+  private isInline() {
+    return this.formLayout === 'inline';
+  }
+
+  /** Parse responsive column spec into Bootstrap classes. */
+  private parseColsSpec(spec?: string): string {
+    if (!spec) return '';
+    const tokens = spec.trim().split(/\s+/);
+    const out: string[] = [];
+
+    for (const t of tokens) {
+      if (!t) continue;
+
+      // Already a bootstrap col class
+      if (/^col(-\w+)?(-\d+)?$/.test(t)) {
+        out.push(t);
+        continue;
+      }
+      // Number only -> col-N
+      if (/^\d{1,2}$/.test(t)) {
+        const n = Math.max(1, Math.min(12, parseInt(t, 10)));
+        out.push(`col-${n}`);
+        continue;
+      }
+      // breakpoint-number -> col-bp-n (xs means no bp prefix)
+      const m = /^(xs|sm|md|lg|xl|xxl)-(\d{1,2})$/.exec(t);
+      if (m) {
+        const bp = m[1];
+        const n = Math.max(1, Math.min(12, parseInt(m[2], 10)));
+        out.push(bp === 'xs' ? `col-${n}` : `col-${bp}-${n}`);
+        continue;
+      }
+      if (t === 'col') {
+        out.push('col');
+        continue;
+      }
+
+      // Unknown token -> ignore silently (or log if you want)
+      // console.warn('[input-field-component] Unknown cols token:', t);
+    }
+
+    return Array.from(new Set(out)).join(' ');
+  }
+
+  /** Build final col class (string spec > numeric fallback > special cases). */
+  private buildColClass(kind: 'label' | 'input'): string {
+    const spec = (kind === 'label' ? this.labelCols : this.inputCols)?.trim();
+
+    if (this.isHorizontal()) {
+      if (spec) return this.parseColsSpec(spec);
+
+      // If label is visually hidden, default input to full width (unless user provides inputCols)
+      if (kind === 'input' && this.labelHidden) {
+        return this.inputCols ? this.parseColsSpec(this.inputCols) : 'col-12';
+      }
+
+      // Fallback to numeric cols
+      const num = kind === 'label' ? this.labelCol : this.inputCol;
+      if (Number.isFinite(num)) {
+        const n = Math.max(0, Math.min(12, Number(num)));
+        if (n === 0) return '';
+        return `col-${n}`;
+      }
+      return '';
+    }
+
+    // Inline layout: allow user-provided classes, else no grid class
+    if (this.isInline()) {
+      return spec ? this.parseColsSpec(spec) : '';
+    }
+
+    // Stacked layout: no grid classes
+    return '';
+  }
+
+  /** Legacy numeric validation helper (only used when no string specs provided). */
   private getComputedCols() {
-    // Defaults
     const DEFAULT_LABEL = 2;
     const DEFAULT_INPUT = 10;
 
-    // Parse numbers + clamp to [1..11] for label and input
+    if (this.isHorizontal() && this.labelHidden) return { label: 0, input: 12 };
+
     const lbl = Number(this.labelCol);
     const inp = Number(this.inputCol);
     const label = Number.isFinite(lbl) ? Math.max(1, Math.min(11, lbl)) : DEFAULT_LABEL;
     const input = Number.isFinite(inp) ? Math.max(1, Math.min(11, inp)) : DEFAULT_INPUT;
 
-    if (this.formLayout === 'horizontal') {
-      if (label + input !== 12) {
-        // ❗ Do NOT mutate props; just log and fall back to defaults
-        console.error(
-          '[input-field-component] For formLayout="horizontal", label-col + input-col must equal 12 exactly. ' +
-            `Received: ${this.labelCol} + ${this.inputCol} = ${Number(this.labelCol) + Number(this.inputCol)}. ` +
-            'Falling back to 2/10.'
-        );
-        return { label: DEFAULT_LABEL, input: DEFAULT_INPUT };
-      }
+    // Only enforce 12 if string specs are not provided
+    if (this.isHorizontal() && !this.labelCols && !this.inputCols && label + input !== 12) {
+      console.error(
+        '[input-field-component] For formLayout="horizontal", labelCol + inputCol must equal 12. ' +
+          `Received: ${this.labelCol} + ${this.inputCol} = ${Number(this.labelCol) + Number(this.inputCol)}. Falling back to 2/10.`
+      );
+      return { label: DEFAULT_LABEL, input: DEFAULT_INPUT };
     }
 
     return { label, input };
   }
+
+  // ----- Render bits -----
 
   private renderInputLabel(ids: string, labelColClass?: string) {
     const classes = [
@@ -116,13 +198,13 @@ export class InputFieldComponent {
       this.required ? 'required' : '',
       this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelHidden ? 'sr-only' : '',
-      this.formLayout === 'horizontal' ? `${labelColClass} no-padding col-form-label` : '',
+      this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.validation ? 'invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
 
-    const text = this.formLayout === 'horizontal' || this.formLayout === 'inline' ? `${this.label}:` : this.label;
+    const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
 
     return (
       <label class={classes} htmlFor={ids || undefined}>
@@ -170,20 +252,26 @@ export class InputFieldComponent {
     const names = this.camelCase(this.label).replace(/ /g, '');
 
     const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
-
     const groupClasses = ['form-group'];
-    if (this.formLayout === 'horizontal') groupClasses.push('row');
-    else if (this.formLayout === 'inline') groupClasses.push('row', 'inline');
+    if (this.isHorizontal()) groupClasses.push('row');
+    else if (this.isInline()) groupClasses.push('row', 'inline');
 
-    const { label, input } = this.getComputedCols();
-    const labelColClass = `col-${label}`;
-    const inputColClass = `col-${input}`;
+    // Keep numeric validation behavior if string specs not in use
+    this.getComputedCols();
+
+    const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
+    const inputColClass =
+      this.isHorizontal()
+        ? this.buildColClass('input') || undefined
+        : this.isInline()
+        ? this.buildColClass('input') || undefined
+        : undefined;
 
     return (
       <div class={outerClass}>
         <div class={groupClasses.join(' ')}>
           {this.renderInputLabel(ids, labelColClass)}
-          {this.formLayout === 'horizontal' ? (
+          {this.isHorizontal() ? (
             <div class={inputColClass}>{this.renderInput(ids, names)}</div>
           ) : (
             this.renderInput(ids, names)

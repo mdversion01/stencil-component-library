@@ -29,9 +29,11 @@
         <autocomplete-single
           id="aci2"
           input-id="ac-single2"
-          form-layout="inline"
+          form-layout="horizontal"
           label-size="sm"
           label="Autocomplete Single"
+          label-cols="col"
+          input-cols="col"
           size="sm"
           required
           validation
@@ -42,8 +44,9 @@
           id="aci3"
           input-id="ac-1"
           label="Autocomplete Multiselect"
-          label-size="sm"
-          form-layout="inline"
+          form-layout="horizontal"
+          label-cols="col-sm-6 col-md-4"
+          input-cols="col-sm-6 col-md-8"
           required
           validation
           validation-message="Please fill in"
@@ -60,7 +63,9 @@
           label-size="lg"
           placeholder="Type to search..."
           data-autocomplete="true"
-          form-layout="inline"
+          form-layout="horizontal"
+          label-cols="col-sm-6 col-md-4"
+          input-cols="col-sm-6 col-md-8"
           required
           size="lg"
           validation
@@ -637,23 +642,32 @@
 
         <input-field-component form-layout="inline" label="Email" input-id="email" label-col="6" input-col="6"></input-field-component>
 
-        <form-component form-layout="inline">
+        <form-component form-layout="horizontal">
           <input-field-component
-            form-layout="inline"
+            form-layout="horizontal"
+            label-cols="col-sm-6 col-md-4"
+            input-cols="col-sm-6 col-md-8"
             required
             validation
             validation-message="Please enter First name"
             label="First Name"
+            label-size="sm"
+            size="sm"
             value=""
             input-id="input-5"
             slot="formField"
           ></input-field-component>
+
           <input-field-component
-            form-layout="inline"
+            form-layout="horizontal"
+            label-cols="col-sm-6 col-md-4"
+            input-cols="col-sm-6 col-md-8"
             required
             validation
             validation-message="Please enter Last name"
             label="Last Name"
+            label-size="sm"
+            size="sm"
             value=""
             input-id="input-6"
             slot="formField"

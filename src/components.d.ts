@@ -61,16 +61,15 @@ export namespace Components {
         "errorMessage": string;
         "formId": string;
         "formLayout": '' | 'horizontal' | 'inline';
-        /**
-          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
-         */
         "inputCol": number;
+        "inputCols": string;
         "inputId": string;
         "label": string;
-        /**
-          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
-         */
         "labelCol": number;
+        /**
+          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+         */
+        "labelCols": string;
         "labelHidden": boolean;
         "labelSize": '' | 'sm' | 'lg';
         "navigateOptions": (direction: number) => Promise<void>;
@@ -99,16 +98,15 @@ export namespace Components {
         "filterOptions": () => Promise<void>;
         "formId": string;
         "formLayout": '' | 'horizontal' | 'inline';
-        /**
-          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
-         */
         "inputCol": number;
+        "inputCols": string;
         "inputId": string;
         "label": string;
-        /**
-          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
-         */
         "labelCol": number;
+        /**
+          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+         */
+        "labelCols": string;
         "labelHidden": boolean;
         "labelSize": '' | 'sm' | 'lg';
         "navigateOptions": (direction: number) => Promise<void>;
@@ -132,16 +130,18 @@ export namespace Components {
         "errorMessage": string;
         "formId": string;
         "formLayout": '' | 'horizontal' | 'inline';
-        /**
-          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
-         */
         "inputCol": number;
+        "inputCols": string;
         "inputId": string;
         "label": string;
         /**
-          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
+          * Back-compat numeric columns (used only if labelCols/inputCols are not provided)
          */
         "labelCol": number;
+        /**
+          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+         */
+        "labelCols": string;
         "labelHidden": boolean;
         "labelSize": '' | 'sm' | 'lg';
         "options": string[];
@@ -347,16 +347,18 @@ export namespace Components {
         "disabled": boolean;
         "formId": string;
         "formLayout": '' | 'horizontal' | 'inline';
-        /**
-          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
-         */
         "inputCol": number;
+        "inputCols": string;
         "inputId": string;
         "label": string;
         /**
-          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
+          * Legacy numeric cols (fallback)
          */
         "labelCol": number;
+        /**
+          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+         */
+        "labelCols": string;
         "labelHidden": boolean;
         "labelSize": '' | 'sm' | 'lg';
         "placeholder"?: string;
@@ -797,16 +799,15 @@ declare namespace LocalJSX {
         "errorMessage"?: string;
         "formId"?: string;
         "formLayout"?: '' | 'horizontal' | 'inline';
-        /**
-          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
-         */
         "inputCol"?: number;
+        "inputCols"?: string;
         "inputId"?: string;
         "label"?: string;
-        /**
-          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
-         */
         "labelCol"?: number;
+        /**
+          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+         */
+        "labelCols"?: string;
         "labelHidden"?: boolean;
         "labelSize"?: '' | 'sm' | 'lg';
         "onClear"?: (event: AutocompleteMultipleSelectionsCustomEvent<void>) => void;
@@ -837,16 +838,15 @@ declare namespace LocalJSX {
         "errorMessage"?: string;
         "formId"?: string;
         "formLayout"?: '' | 'horizontal' | 'inline';
-        /**
-          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
-         */
         "inputCol"?: number;
+        "inputCols"?: string;
         "inputId"?: string;
         "label"?: string;
-        /**
-          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
-         */
         "labelCol"?: number;
+        /**
+          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+         */
+        "labelCols"?: string;
         "labelHidden"?: boolean;
         "labelSize"?: '' | 'sm' | 'lg';
         "onClear"?: (event: AutocompleteMultiselectCustomEvent<void>) => void;
@@ -873,16 +873,18 @@ declare namespace LocalJSX {
         "errorMessage"?: string;
         "formId"?: string;
         "formLayout"?: '' | 'horizontal' | 'inline';
-        /**
-          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
-         */
         "inputCol"?: number;
+        "inputCols"?: string;
         "inputId"?: string;
         "label"?: string;
         /**
-          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
+          * Back-compat numeric columns (used only if labelCols/inputCols are not provided)
          */
         "labelCol"?: number;
+        /**
+          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+         */
+        "labelCols"?: string;
         "labelHidden"?: boolean;
         "labelSize"?: '' | 'sm' | 'lg';
         "onClear"?: (event: AutocompleteSingleCustomEvent<void>) => void;
@@ -1096,16 +1098,18 @@ declare namespace LocalJSX {
         "disabled"?: boolean;
         "formId"?: string;
         "formLayout"?: '' | 'horizontal' | 'inline';
-        /**
-          * Bootstrap grid columns for input when formLayout="horizontal" (default 10)
-         */
         "inputCol"?: number;
+        "inputCols"?: string;
         "inputId"?: string;
         "label"?: string;
         /**
-          * Bootstrap grid columns for label when formLayout="horizontal" (default 2)
+          * Legacy numeric cols (fallback)
          */
         "labelCol"?: number;
+        /**
+          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+         */
+        "labelCols"?: string;
         "labelHidden"?: boolean;
         "labelSize"?: '' | 'sm' | 'lg';
         "placeholder"?: string;

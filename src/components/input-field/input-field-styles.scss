@@ -216,6 +216,13 @@
   display: none !important;
 }
 
+.was-validated :invalid ~ .invalid-feedback,
+.was-validated :invalid ~ .invalid-tooltip,
+.is-invalid ~ .invalid-feedback,
+.is-invalid ~ .invalid-tooltip {
+    display: block !important;
+}
+
 // // .invalid {
 // //   color: #b30009;
 // // }
@@ -286,7 +293,7 @@
   font-size: 1.125rem !important;
 }
 
-.inline {
+.inline, .horizontal {
   .form-control-label {
     align-items: start !important;
     padding-top: 7px !important;

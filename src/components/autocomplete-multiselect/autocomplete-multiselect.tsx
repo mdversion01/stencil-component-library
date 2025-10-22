@@ -18,52 +18,61 @@ import { logInfo, logWarn, logError } from '../../utils/log-debug';
 export class AutocompleteMultiselect {
   @Element() el: HTMLElement;
 
+  // Props
   @Prop({ mutable: true }) options: string[] = [];
   @Prop() addBtn = false;
   @Prop() addIcon = '';
   @Prop() arialabelledBy: string = '';
   @Prop() clearIcon = '';
-  @Prop() placeholder: string = 'Type to search/filter...';
-  @Prop() devMode: boolean = false;
-  @Prop() disabled: boolean = false;
-  @Prop() formId: string = '';
+  @Prop() placeholder = 'Type to search/filter...';
+  @Prop() devMode = false;
+  @Prop() disabled = false;
+  @Prop() formId = '';
   @Prop({ mutable: true }) formLayout: '' | 'horizontal' | 'inline' = '';
   @Prop({ mutable: true }) error = false;
   @Prop({ mutable: true }) errorMessage = '';
   @Prop() inputId = '';
-  @Prop() label: string = '';
+  @Prop() label = '';
   @Prop() labelSize: '' | 'sm' | 'lg' = '';
-  @Prop() labelHidden: boolean = false;
-  @Prop() removeClearBtn: boolean = false;
+  @Prop() labelHidden = false;
+  @Prop() removeClearBtn = false;
   @Prop() size: '' | 'sm' | 'lg' = '';
-  @Prop() required: boolean = false;
+  @Prop() required = false;
   @Prop() type = '';
-  @Prop({ mutable: true }) validation: boolean = false;
-  @Prop() validationMessage: string = '';
+  @Prop({ mutable: true }) validation = false;
+  @Prop() validationMessage = '';
 
   // Badge Props
-  @Prop() badgeVariant: string = ''; // 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark'
-  @Prop() badgeShape: string = ''; // 'rounded' | 'circle' | 'square' | 'pill'
-  @Prop() badgeInlineStyles: string = ''; // 'width: 100px; height: 100px;' | 'color: red; background-color: blue;' | 'font-size: 16px; font-weight: bold;'
+  @Prop() badgeVariant = '';
+  @Prop() badgeShape = '';
+  @Prop() badgeInlineStyles = '';
 
-  /** Bootstrap grid columns for label when formLayout="horizontal" (default 2) */
+  // Horizontal layout columns (legacy numeric fallback)
   @Prop() labelCol: number = 2;
-  /** Bootstrap grid columns for input when formLayout="horizontal" (default 10) */
   @Prop() inputCol: number = 10;
 
-  @State() inputValue: string = '';
+  /** NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4") */
+  @Prop() labelCols: string = '';
+  @Prop() inputCols: string = '';
+
+  // State
+  @State() inputValue = '';
   @State() filteredOptions: string[] = [];
   @State() selectedItems: string[] = [];
-  @State() focusedOptionIndex: number = -1;
-  @State() selectedOptionIndex: number = -1;
-  @State() isFocused: boolean = false;
-  @State() hasBeenInteractedWith: boolean = false;
-  @State() satisfied: boolean = false; // true when selected OR input length >= 3
+  @State() focusedOptionIndex = -1;
+  @State() isFocused = false;
+  @State() hasBeenInteractedWith = false;
 
+  // Events
   @Event({ eventName: 'itemSelect' }) itemSelect: EventEmitter<string>;
   @Event() clear: EventEmitter<void>;
   @Event() componentError: EventEmitter<{ message: string; stack?: string }>;
   @Event({ eventName: 'multiSelectChange' }) selectionChange: EventEmitter<string[]>;
+
+  // prevent blur-then-close when clicking inside dropdown
+  private suppressBlur = false;
+
+  // ---------------- Lifecycle / watchers ----------------
 
   @Watch('options')
   handleOptionsChange(newVal: string[]) {
@@ -73,38 +82,6 @@ export class AutocompleteMultiselect {
     }
     this.filterOptions();
   }
-
-  private camelCase(str: string): string {
-    return (
-      str
-        // uppercase each word‑start (but lowercase the very first char)
-        .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase()))
-        // remove spaces *and* hyphens
-        .replace(/[\s-]+/g, '')
-    );
-  }
-
-  private sanitizeInput(value: string): string {
-    return value.replace(/[<>]/g, '');
-  }
-
-  private suppressBlur = false;
-
-  private handleBlur = () => {
-    this.isFocused = false;
-
-    // If blur was caused by clicking inside the dropdown, skip closing now.
-    if (this.suppressBlur) {
-      return;
-    }
-
-    // Let any pending interactions settle, then close
-    setTimeout(() => this.closeDropdown(), 0);
-
-    if (this.required) {
-      this.validation = !this.isSatisfiedNow();
-    }
-  };
 
   componentDidLoad() {
     document.addEventListener('click', this.handleClickOutside);
@@ -117,7 +94,6 @@ export class AutocompleteMultiselect {
     if (!Array.isArray(this.options)) {
       logError(this.devMode, 'AutocompleteMultiselect', `Expected 'options' to be an array, got ${typeof this.options}`);
     }
-
     if (!this.label) {
       logWarn(this.devMode, 'AutocompleteMultiselect', 'Missing label prop; accessibility may be impacted');
     }
@@ -127,65 +103,396 @@ export class AutocompleteMultiselect {
     document.removeEventListener('click', this.handleClickOutside);
   }
 
-  private handleFocus = () => {
-    this.isFocused = true;
-  };
+  // ---------------- Utilities ----------------
 
-  private ensureOptionInView(index: number) {
-    setTimeout(() => {
-      const items = this.el.querySelectorAll('.autocomplete-dropdown-item');
-      if (items && index >= 0 && index < items.length) {
-        const item = items[index] as HTMLElement;
-        item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      }
-    }, 0);
+  private camelCase(str: string): string {
+    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase())).replace(/[\s-]+/g, '');
   }
 
-  @Method()
-  public async navigateOptions(direction: number): Promise<void> {
-    const newIndex = this.focusedOptionIndex + direction;
+  private sanitizeInput(v: string) {
+    return v.replace(/[<>]/g, '');
+  }
 
-    if (!Array.isArray(this.filteredOptions)) return;
-
-    if (newIndex >= 0 && newIndex < this.filteredOptions.length) {
-      this.focusedOptionIndex = newIndex;
-      this.ensureOptionInView(newIndex); // trigger scrollIntoView
-    } else {
-      logWarn(this.devMode, 'AutocompleteMultiselect', `Navigation index out of bounds`, {
-        attemptedIndex: newIndex,
-        totalOptions: this.filteredOptions.length,
-      });
-    }
+  private isHorizontal() {
+    return this.formLayout === 'horizontal';
+  }
+  private isInline() {
+    return this.formLayout === 'inline';
+  }
+  private isRowLayout() {
+    return this.isHorizontal() || this.isInline();
   }
 
   private isSatisfiedNow(): boolean {
-    const typedEnough = this.inputValue.trim().length >= 3;
-    const hasSelection = this.selectedItems.length > 0;
-    return typedEnough || hasSelection;
+    return this.inputValue.trim().length >= 3 || this.selectedItems.length > 0;
   }
 
   private showRequiredMark(): boolean {
     return this.required && !this.isSatisfiedNow();
   }
 
-  private renderInputLabel(ids: string, labelColClass?: string) {
-    if (this.labelHidden) return null;
+  /** Parse responsive column spec into Bootstrap classes. */
+  private parseColsSpec(spec?: string): string {
+    if (!spec) return '';
+    const tokens = spec.trim().split(/\s+/);
+    const out: string[] = [];
 
-    const classes = [
+    for (const t of tokens) {
+      if (!t) continue;
+
+      // already a bootstrap class
+      if (/^col(-\w+)?(-\d+)?$/.test(t)) {
+        out.push(t);
+        continue;
+      }
+      // number only -> col-N
+      if (/^\d{1,2}$/.test(t)) {
+        const n = Math.max(1, Math.min(12, parseInt(t, 10)));
+        out.push(`col-${n}`);
+        continue;
+      }
+      // breakpoint-number -> col-bp-n (xs means no bp)
+      const m = /^(xs|sm|md|lg|xl|xxl)-(\d{1,2})$/.exec(t);
+      if (m) {
+        const bp = m[1];
+        const n = Math.max(1, Math.min(12, parseInt(m[2], 10)));
+        out.push(bp === 'xs' ? `col-${n}` : `col-${bp}-${n}`);
+        continue;
+      }
+      if (t === 'col') {
+        out.push('col');
+        continue;
+      }
+
+      if (this.devMode) console.warn('[autocomplete-multiselect] Unknown cols token:', t);
+    }
+
+    return Array.from(new Set(out)).join(' ');
+  }
+
+  /** Build final col class (string spec > numeric fallback > special cases). */
+  private buildColClass(kind: 'label' | 'input'): string {
+    const spec = (kind === 'label' ? this.labelCols : this.inputCols)?.trim();
+    const num = kind === 'label' ? this.labelCol : this.inputCol;
+
+    if (this.isHorizontal()) {
+      if (spec) return this.parseColsSpec(spec);
+
+      // if label is hidden, input should span full width unless overridden
+      if (kind === 'input' && this.labelHidden) {
+        return this.inputCols ? this.parseColsSpec(this.inputCols) : 'col-12';
+      }
+
+      if (Number.isFinite(num)) {
+        const n = Math.max(0, Math.min(12, Number(num)));
+        if (n === 0) return '';
+        return `col-${n}`;
+      }
+
+      return '';
+    }
+
+    // Inline layout: respect user spec if provided, else none.
+    if (this.isInline()) {
+      return spec ? this.parseColsSpec(spec) : '';
+    }
+
+    // Stacked layout: no grid classes
+    return '';
+  }
+
+  private labelClasses(labelColClass?: string) {
+    return [
       'form-control-label',
       this.showRequiredMark() ? 'required' : '',
-      this.labelSize === 'sm' ? ' label-sm' : this.labelSize === 'lg' ? ' label-lg' : '',
-      this.formLayout === 'horizontal' ? ` ${labelColClass} no-padding col-form-label` : '',
+      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.validation ? 'invalid' : '',
-      this.labelHidden ? ' sr-only' : '',
+      this.labelHidden ? 'sr-only' : '',
     ]
       .filter(Boolean)
       .join(' ');
+  }
 
-    const text = this.formLayout === 'horizontal' || this.formLayout === 'inline' ? `${this.label}:` : this.label;
+  private inputClasses() {
+    const sizeClass = this.size === 'sm' ? 'basic-input-sm' : this.size === 'lg' ? 'basic-input-lg' : '';
+    return ['form-control', this.validation || this.error ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+  }
+
+  private containerClasses() {
+    return [
+      'ac-multi-select-container',
+      this.validation ? 'is-invalid' : '',
+      this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '',
+      this.size || '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+  }
+
+  // ---------------- Handlers ----------------
+
+  private handleFocus = () => {
+    this.isFocused = true;
+  };
+
+  private handleBlur = () => {
+    this.isFocused = false;
+    if (this.suppressBlur) return;
+
+    setTimeout(() => this.closeDropdown(), 0);
+    if (this.required) this.validation = !this.isSatisfiedNow();
+  };
+
+  private handleClickOutside = (e: MouseEvent) => {
+    const path = e.composedPath();
+    if (!path.includes(this.el)) {
+      this.closeDropdown();
+      this.inputValue = '';
+      logInfo(this.devMode, 'AutocompleteMultiselect', 'Click outside - dropdown closed');
+    }
+  };
+
+  private handleInput = (event: InputEvent | KeyboardEvent) => {
+    const input = event.target as HTMLInputElement;
+
+    if (event.type === 'keydown') {
+      const key = (event as KeyboardEvent).key;
+
+      if (key === 'ArrowDown') {
+        event.preventDefault();
+        this.navigateOptions(1);
+        return;
+      }
+      if (key === 'ArrowUp') {
+        event.preventDefault();
+        this.navigateOptions(-1);
+        return;
+      }
+      if (key === 'Enter' && this.focusedOptionIndex >= 0) {
+        this.selectOption(this.filteredOptions[this.focusedOptionIndex]);
+        return;
+      }
+      if (key === 'Escape') {
+        this.closeDropdown();
+        return;
+      }
+    } else {
+      this.inputValue = this.sanitizeInput(input.value);
+      this.filterOptions();
+      this.hasBeenInteractedWith = true;
+      if (this.required) this.validation = !this.isSatisfiedNow();
+    }
+  };
+
+  private handleAddItem = () => {
+    const value = this.inputValue.trim();
+    if (!value) return;
+
+    this.itemSelect.emit(value); // let the host handle the add
+    this.inputValue = '';
+    this.validation = false;
+    this.filterOptions(); // refresh dropdown after clearing
+    this.focusedOptionIndex = -1;
+
+    logInfo(this.devMode, 'AutocompleteMultiselect', 'Add button clicked', { value });
+  };
+
+  // keep dropdown open when mousedown inside
+  private onOptionMouseDown = (e: MouseEvent, option: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.suppressBlur = true;
+    this.toggleItem(option);
+
+    setTimeout(() => {
+      this.suppressBlur = false;
+      const input = this.el.querySelector('input');
+      input?.focus();
+    }, 0);
+  };
+
+  // ---------------- Core Behavior ----------------
+
+  @Method()
+  public async navigateOptions(direction: number): Promise<void> {
+    const newIndex = this.focusedOptionIndex + direction;
+    if (!Array.isArray(this.filteredOptions)) return;
+
+    if (newIndex >= 0 && newIndex < this.filteredOptions.length) {
+      this.focusedOptionIndex = newIndex;
+      setTimeout(() => {
+        const items = this.el.querySelectorAll('.autocomplete-dropdown-item');
+        if (items[newIndex]) (items[newIndex] as HTMLElement).scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }, 0);
+    } else {
+      logWarn(this.devMode, 'AutocompleteMultiselect', 'Navigation index out of bounds', {
+        attemptedIndex: newIndex,
+        totalOptions: this.filteredOptions.length,
+      });
+    }
+  }
+
+  @Method()
+  public async filterOptions(): Promise<void> {
+    if (!Array.isArray(this.options)) {
+      logError(this.devMode, 'AutocompleteMultiselect', `'options' must be an array`, {
+        receivedType: typeof this.options,
+        value: this.options,
+      });
+      this.filteredOptions = [];
+      return;
+    }
+
+    const v = this.inputValue.trim().toLowerCase();
+    const available = this.options.filter(opt => !this.selectedItems.includes(opt));
+    this.filteredOptions = v.length > 0 ? available.filter(opt => opt.toLowerCase().includes(v)) : available;
+  }
+
+  private toggleItem(option: string) {
+    const updated = new Set(this.selectedItems);
+    updated.has(option) ? updated.delete(option) : updated.add(option);
+
+    this.selectedItems = Array.from(updated);
+    this.inputValue = '';
+    this.selectionChange.emit(this.selectedItems);
+
+    this.validation = this.required && !this.isSatisfiedNow();
+    this.filterOptions();
+
+    // restore focus for continued typing
+    setTimeout(() => {
+      const input = this.el.querySelector('input');
+      input?.focus();
+    }, 0);
+
+    logInfo(this.devMode, 'AutocompleteMultiselect', 'Toggled item', {
+      selected: option,
+      currentSelections: this.selectedItems,
+    });
+  }
+
+  private selectOption(option: string) {
+    if (typeof option !== 'string' || option.trim() === '') {
+      logError(this.devMode, 'AutocompleteMultiselect', 'Invalid option selected', { option });
+      return;
+    }
+
+    if (!this.selectedItems.includes(option)) {
+      this.selectedItems = [...this.selectedItems, option];
+      this.selectionChange.emit(this.selectedItems);
+    }
+
+    this.inputValue = '';
+    this.validation = false;
+    this.filterOptions();
+    this.focusedOptionIndex = -1;
+
+    logInfo(this.devMode, 'AutocompleteMultiselect', 'Item selected', { selected: option });
+  }
+
+  private closeDropdown() {
+    this.filteredOptions = [];
+       this.focusedOptionIndex = -1;
+    logInfo(this.devMode, 'AutocompleteMultiselect', 'Dropdown closed');
+  }
+
+  private removeItem(item: string) {
+    this.selectedItems = this.selectedItems.filter(i => i !== item);
+    this.filterOptions();
+    this.selectionChange.emit(this.selectedItems);
+
+    if (this.required) this.validation = !this.isSatisfiedNow();
+  }
+
+  private clearAll = () => {
+    this.selectedItems = [];
+    this.inputValue = '';
+    this.filteredOptions = [];
+    this.selectionChange.emit([]);
+
+    this.hasBeenInteractedWith = true;
+    if (this.required && this.hasBeenInteractedWith) this.validation = !this.isSatisfiedNow();
+
+    this.clear.emit();
+    logInfo(this.devMode, 'AutocompleteMultiselect', 'Input cleared');
+  };
+
+  // ---------------- Render helpers ----------------
+
+  private parseInlineStyles(styles: string): { [k: string]: string } | undefined {
+    if (!styles || typeof styles !== 'string') return undefined;
+    return styles.split(';').reduce((acc, rule) => {
+      const [key, value] = rule.split(':').map(s => s.trim());
+      if (key && value) acc[key.replace(/-([a-z])/g, g => g[1].toUpperCase())] = value;
+      return acc;
+    }, {} as { [k: string]: string });
+  }
+
+  private renderSelectedItems() {
+    return this.selectedItems.map(item => {
+      const classMap: { [k: string]: boolean } = {
+        badge: true,
+        [`text-bg-${this.badgeVariant}`]: !!this.badgeVariant,
+        [this.badgeShape]: !!this.badgeShape,
+        [this.size]: !!this.size,
+      };
+
+      return (
+        <span class={classMap} style={this.parseInlineStyles(this.badgeInlineStyles)} key={item}>
+          <span>{item}</span>
+          <button onClick={() => this.removeItem(item)} aria-label={`Remove ${item}`} data-tag={item} role="button" class="remove-btn" title="Remove Tag">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9z" />
+            </svg>
+          </button>
+        </span>
+      );
+    });
+  }
+
+  private renderAddIcon() {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
+      </svg>
+    );
+  }
+
+  private renderAddButton() {
+    if (!this.addBtn) return null;
+    return (
+      <button class="input-group-btn add add-btn" role="button" disabled={this.disabled} onClick={this.handleAddItem} aria-label="Add item" title="Add item">
+        {this.addIcon ? <i class={this.addIcon} /> : this.renderAddIcon()}
+      </button>
+    );
+  }
+
+  private renderClearIcon() {
+    return (
+      <svg class="fa-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s-12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+      </svg>
+    );
+  }
+
+  private renderClearButton() {
+    const hasInputOrSelection = this.inputValue.trim().length > 0 || this.selectedItems.length > 0;
+    if (this.removeClearBtn || !hasInputOrSelection) return null;
 
     return (
-      <label class={classes} htmlFor={ids || undefined}>
+      <button class="input-group-btn clear clear-btn" aria-label="Clear input" disabled={this.disabled} title="Clear input" onClick={this.clearAll}>
+        {this.clearIcon ? <i class={this.clearIcon} /> : this.renderClearIcon()}
+      </button>
+    );
+  }
+
+  private renderInputLabel(ids: string, labelColClass?: string) {
+    if (this.labelHidden) return null;
+    const text = this.isRowLayout() ? `${this.label}:` : this.label;
+
+    return (
+      <label class={this.labelClasses(labelColClass)} htmlFor={ids || undefined}>
         {text}
         {this.showRequiredMark() ? '*' : ''}
       </label>
@@ -193,15 +500,12 @@ export class AutocompleteMultiselect {
   }
 
   private renderInputField(ids: string, names: string) {
-    const sizeClass = this.size === 'sm' ? 'basic-input-sm' : this.size === 'lg' ? 'basic-input-lg' : '';
-    const classes = ['form-control', this.validation || this.error ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
-
     const placeholder = this.labelHidden ? this.label || this.placeholder || 'Placeholder Text' : this.label || this.placeholder || 'Placeholder Text';
 
     return (
       <input
-        id={ids ? ids : null}
-        name={names ? names : null}
+        id={ids || null}
+        name={names || null}
         role="combobox"
         aria-label={this.labelHidden ? names : null}
         aria-labelledby={this.arialabelledBy}
@@ -212,7 +516,7 @@ export class AutocompleteMultiselect {
         aria-activedescendant={this.focusedOptionIndex >= 0 ? `${ids}-option-${this.focusedOptionIndex}` : undefined}
         aria-required={this.required ? 'true' : 'false'}
         aria-haspopup="listbox"
-        class={classes}
+        class={this.inputClasses()}
         type={this.type}
         placeholder={placeholder}
         value={this.inputValue}
@@ -228,216 +532,42 @@ export class AutocompleteMultiselect {
     );
   }
 
-  private renderAddIcon() {
-    return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-        <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
-      </svg>
-    );
-  }
-
-  private renderAddButton() {
-    if (!this.addBtn) return null;
-
-    return (
-      <button class="input-group-btn add add-btn" role="button" disabled={this.disabled} onClick={this.handleAddItem} aria-label="Add item" title="Add item">
-        {this.addIcon ? <i class={this.addIcon} /> : this.renderAddIcon()}
-      </button>
-    );
-  }
-
-  private handleAddItem = () => {
-    const value = this.inputValue.trim();
-    if (!value) return;
-
-    this.itemSelect.emit(value); // 👉 user handles custom adding logic outside
-    this.inputValue = '';
-    this.validation = false;
-    this.filterOptions(); // re-filter after clearing
-    this.focusedOptionIndex = -1;
-
-    logInfo(this.devMode, 'AutocompleteMultiselect', 'Add button clicked', { value });
-  };
-
-  private renderClearIcon() {
-    return (
-      <svg class="fa-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-      </svg>
-    );
-  }
-
-  private renderClearButton() {
-    const hasInputOrSelection = this.inputValue.trim().length > 0 || this.selectedItems.length > 0;
-    if (this.removeClearBtn || !hasInputOrSelection) return null;
-    return (
-      <button class="input-group-btn clear clear-btn" aria-label="Clear input" disabled={this.disabled} title="Clear input" onClick={this.clearAll}>
-        {this.clearIcon ? <i class={this.clearIcon} /> : this.renderClearIcon()}
-      </button>
-    );
-  }
-
-  private parseInlineStyles(styles: string): { [key: string]: string } | undefined {
-    if (!styles || typeof styles !== 'string') return undefined;
-
-    return styles.split(';').reduce((acc, rule) => {
-      const [key, value] = rule.split(':').map(s => s.trim());
-      if (key && value) {
-        const camelKey = key.replace(/-([a-z])/g, g => g[1].toUpperCase());
-        acc[camelKey] = value;
-      }
-      return acc;
-    }, {} as { [key: string]: string });
-  }
-
-  private renderSelectedItems() {
-    return this.selectedItems.map(item => {
-      const classMap: { [key: string]: boolean } = { badge: true };
-
-      if (typeof this.badgeVariant === 'string') {
-        classMap[`text-bg-${this.badgeVariant}`] = true;
-      }
-
-      if (typeof this.badgeShape === 'string') {
-        classMap[this.badgeShape] = true;
-      }
-
-      if (typeof this.size === 'string') {
-        classMap[this.size] = true;
-      }
-
-      return (
-        <span class={classMap} style={this.parseInlineStyles(this.badgeInlineStyles)} key={item}>
-          <span>{item}</span>
-          <button onClick={() => this.removeItem(item)} aria-label={`Remove ${item}`} data-tag={item} role="button" class="remove-btn" title="Remove Tag">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" />
-            </svg>
-          </button>
-        </span>
-      );
-    });
-  }
-
-  private handleClickOutside = (e: MouseEvent) => {
-    const path = e.composedPath();
-    if (!path.includes(this.el)) {
-      this.filteredOptions = [];
-      this.focusedOptionIndex = -1;
-      // Clear input when dropdown closes
-      this.inputValue = '';
-      logInfo(this.devMode, 'AutocompleteMultiselect', 'Click outside - dropdown closed');
-    }
-  };
-
-  private handleInput = (event: InputEvent | KeyboardEvent) => {
-    const input = event.target as HTMLInputElement;
-
-    if (event.type === 'keydown') {
-      const key = (event as KeyboardEvent).key;
-      if (key === 'ArrowDown') {
-        event.preventDefault();
-        this.navigateOptions(1);
-      } else if (key === 'ArrowUp') {
-        event.preventDefault();
-        this.navigateOptions(-1);
-      } else if (key === 'Enter' && this.focusedOptionIndex >= 0) {
-        this.selectOption(this.filteredOptions[this.focusedOptionIndex]);
-      } else if (key === 'Escape') {
-        this.closeDropdown();
-      }
-    } else {
-      this.inputValue = this.sanitizeInput(input.value);
-      this.filterOptions();
-      this.hasBeenInteractedWith = true; // ✅ mark as touched
-      if (this.required) {
-        this.validation = !this.isSatisfiedNow();
-      }
-    }
-  };
-
-  /** Compute safe label/input col classes without mutating props. */
-  private getComputedCols() {
-    // Defaults for horizontal layout
-    const DEFAULT_LABEL = 2;
-    const DEFAULT_INPUT = 10;
-
-    // If the label is visually hidden and layout is horizontal, use full-width input
-    if (this.formLayout === 'horizontal' && this.labelHidden) {
-      return { label: 0, input: 12 };
-    }
-
-    const lbl = Number(this.labelCol);
-    const inp = Number(this.inputCol);
-    const label = Number.isFinite(lbl) ? Math.max(0, Math.min(12, lbl)) : DEFAULT_LABEL;
-    const input = Number.isFinite(inp) ? Math.max(0, Math.min(12, inp)) : DEFAULT_INPUT;
-
-    if (this.formLayout === 'horizontal') {
-      if (label + input !== 12) {
-        console.error(
-          '[autocomplete-multiselect] For formLayout="horizontal", label-col + input-col must equal 12 exactly. ' +
-            `Received: ${this.labelCol} + ${this.inputCol} = ${Number(this.labelCol) + Number(this.inputCol)}. ` +
-            'Falling back to 2/10.',
-        );
-        return { label: DEFAULT_LABEL, input: DEFAULT_INPUT };
-      }
-    }
-
-    return { label, input };
-  }
-
-  @Method()
-  public async filterOptions(): Promise<void> {
-    if (!Array.isArray(this.options)) {
-      logError(this.devMode, 'AutocompleteMultiselect', `'options' must be an array`, {
-        receivedType: typeof this.options,
-        value: this.options,
-      });
-      this.filteredOptions = [];
-      return;
-    }
-    if (this.inputValue.length > 0) {
-      this.filteredOptions = this.options.filter(opt => opt.toLowerCase().includes(this.inputValue.toLowerCase()) && !this.selectedItems.includes(opt));
-    } else {
-      this.filteredOptions = this.options.filter(opt => !this.selectedItems.includes(opt));
-    }
-  }
-
   private renderDropdownList(ids: string) {
-    return (
-      <ul role="listbox" id={`${ids}-listbox`} tabindex="-1">
-        {this.filteredOptions.length > 0 ? (
-          this.filteredOptions.map((option, i) => (
-            <li
-              id={`${ids}-option-${i}`}
-              role="option"
-              aria-selected={this.focusedOptionIndex === i ? 'true' : 'false'}
-              class={{
-                'autocomplete-dropdown-item': true,
-                'focused': this.focusedOptionIndex === i,
-                [`${this.size}`]: !!this.size,
-              }}
-              onMouseDown={e => this.onOptionMouseDown(e, option)}
-              tabindex="-1"
-            >
-              <span innerHTML={option.replace(/</g, '&lt;').replace(/>/g, '&gt;')} />
-            </li>
-          ))
-        ) : this.inputValue.trim().length > 0 ? (
+    if (this.filteredOptions.length === 0) {
+      return this.inputValue.trim().length > 0 ? (
+        <ul role="listbox" id={`${ids}-listbox`} tabindex="-1">
           <li class={{ 'autocomplete-dropdown-no-results': true, [`${this.size}`]: !!this.size }} aria-disabled="true">
             No results found
           </li>
-        ) : null}
+        </ul>
+      ) : null;
+    }
+
+    return (
+      <ul role="listbox" id={`${ids}-listbox`} tabindex="-1">
+        {this.filteredOptions.map((option, i) => (
+          <li
+            id={`${ids}-option-${i}`}
+            role="option"
+            aria-selected={this.focusedOptionIndex === i ? 'true' : 'false'}
+            class={{
+              'autocomplete-dropdown-item': true,
+              focused: this.focusedOptionIndex === i,
+              [`${this.size}`]: !!this.size,
+            }}
+            onMouseDown={e => this.onOptionMouseDown(e, option)}
+            tabindex="-1"
+          >
+            <span innerHTML={option.replace(/</g, '&lt;').replace(/>/g, '&gt;')} />
+          </li>
+        ))}
       </ul>
     );
   }
 
   private renderDropdown(ids: string) {
-    if (!this.inputValue.trim()) return null; // only check input presence
-
-    logInfo(this.devMode, 'AutocompleteMultiselect', 'Dropdown opened', {
-      optionsCount: this.filteredOptions.length,
-    });
+    if (!this.inputValue.trim()) return null;
+    logInfo(this.devMode, 'AutocompleteMultiselect', 'Dropdown opened', { optionsCount: this.filteredOptions.length });
 
     return (
       <div class="autocomplete-dropdown" aria-live="polite">
@@ -446,265 +576,113 @@ export class AutocompleteMultiselect {
     );
   }
 
-  private onOptionMouseDown = (e: MouseEvent, option: string) => {
-    // prevent the input from losing focus before we handle selection
-    e.preventDefault();
-    e.stopPropagation();
+  private renderMessage(kind: 'validation' | 'error', ids: string) {
+    const active = kind === 'validation' ? this.validation && !!this.validationMessage : this.error && !!this.errorMessage;
+    if (!active) return '';
 
-    this.suppressBlur = true; // tell onBlur not to close
-    this.toggleItem(option); // add/remove selection right away
+    const message = kind === 'validation' ? this.validationMessage : this.errorMessage;
+    const baseId = kind === 'validation' ? `${ids}-validation` : `${ids}-error`;
+    const baseClass = kind === 'validation' ? 'invalid-feedback' : 'error-message';
 
-    // allow blur handling to resume after the current tick
-    setTimeout(() => {
-      this.suppressBlur = false;
-      // put focus back to the input for continuous typing
-      const input = this.el.querySelector('input');
-      input?.focus();
-    }, 0);
-  };
-
-  private toggleItem(option: string) {
-    this.suppressBlur = true;
-
-    const updated = new Set(this.selectedItems);
-    if (updated.has(option)) {
-      updated.delete(option);
-    } else {
-      updated.add(option);
+    if (this.isHorizontal()) {
+      return (
+        <div id={baseId} class={baseClass} aria-live="polite">
+          {message}
+        </div>
+      );
     }
 
-    this.selectedItems = Array.from(updated);
-    this.inputValue = '';
-    this.filterOptions();
-    this.validation = this.required && !this.isSatisfiedNow();
-    this.selectionChange.emit(this.selectedItems);
-
-    setTimeout(() => {
-      this.suppressBlur = false;
-      const input = this.el.querySelector('input');
-      input?.focus();
-    }, 0);
-  }
-
-  private selectOption(option: string) {
-    if (typeof option !== 'string' || option.trim() === '') {
-      logError(this.devMode, 'AutocompleteMultiselect', 'Invalid option selected', { option });
-      return;
-    }
-
-    if (!this.selectedItems.includes(option)) {
-      this.selectedItems = [...this.selectedItems, option];
-      this.selectionChange.emit(this.selectedItems);
-    }
-
-    this.inputValue = '';
-    this.validation = false; // ✅ Clear validation
-    this.filterOptions();
-    this.focusedOptionIndex = -1;
-
-    logInfo(this.devMode, 'AutocompleteMultiselect', 'Item selected', { selected: option });
-  }
-
-  private closeDropdown() {
-    this.filteredOptions = [];
-    this.focusedOptionIndex = -1;
-
-    logInfo(this.devMode, 'AutocompleteMultiselect', 'Dropdown closed');
-  }
-
-  private removeItem(item: string) {
-    this.selectedItems = this.selectedItems.filter(i => i !== item);
-    this.filterOptions();
-    this.selectionChange.emit(this.selectedItems);
-
-    if (this.selectedItems.length === 0 && this.required) {
-      this.validation = this.required && !this.isSatisfiedNow(); // ✅ triggers reactive re-render
-    }
-  }
-
-  private clearAll = () => {
-    this.selectedItems = [];
-    this.inputValue = '';
-    this.filteredOptions = [];
-    this.selectionChange.emit([]);
-
-    this.hasBeenInteractedWith = true;
-    if (this.required && this.hasBeenInteractedWith) {
-      this.validation = this.required && !this.isSatisfiedNow();
-    }
-
-    this.clear.emit();
-    logInfo(this.devMode, 'AutocompleteMultiselect', 'Input cleared');
-  };
-
-  private renderValidationMessages = (ids: string) => {
-    if (this.validation && this.validationMessage) {
-      if (this.formLayout === 'horizontal') {
-        const { label, input } = this.getComputedCols();
-        const labelColClass = `col-${label}`;
-        const inputColClass = `col-${input}`;
-
-        return (
-          <div class="row">
-            <div class={labelColClass}></div>
-            <div class={inputColClass}>
-              <div id={`${ids}-validation`} class="invalid-feedback" aria-live="polite">
-                {this.validationMessage}
-              </div>
+    if (this.isInline()) {
+      return (
+        <div class="row">
+          <div></div>
+          <div>
+            <div id={baseId} class={baseClass} aria-live="polite">
+              {message}
             </div>
           </div>
-        );
-      } else if (this.formLayout === 'inline') {
-        return (
-          <div class="row">
-            <div></div>
-            <div>
-              <div id={`${ids}-validation`} class="invalid-feedback" aria-live="polite">
-                {this.validationMessage}
-              </div>
-            </div>
-          </div>
-        );
-      } else {
-        return (
-          <div id={`${ids}-validation`} class="invalid-feedback" aria-live="polite">
-            {this.validationMessage}
-          </div>
-        );
-      }
+        </div>
+      );
     }
-    return '';
-  };
-
-  private renderErrorMessages = (ids: string) => {
-    if (this.error && this.errorMessage) {
-      if (this.formLayout === 'horizontal') {
-        const { label, input } = this.getComputedCols();
-        const labelColClass = `col-${label}`;
-        const inputColClass = `col-${input}`;
-
-        return (
-          <div class="row">
-            <div class={labelColClass}></div>
-            <div class={inputColClass}>
-              <div id={`${ids}-error`} class="error-message" aria-live="polite">
-                {this.errorMessage}
-              </div>
-            </div>
-          </div>
-        );
-      } else if (this.formLayout === 'inline') {
-        return (
-          <div class="row">
-            <div></div>
-            <div>
-              <div id={`${ids}-error`} class="error-message" aria-live="polite">
-                {this.errorMessage}
-              </div>
-            </div>
-          </div>
-        );
-      } else {
-        return (
-          <div id={`${ids}-error`} class="error-message" aria-live="polite">
-            {this.errorMessage}
-          </div>
-        );
-      }
-    }
-    return '';
-  };
-
-  private renderLayout = (ids: string, names: string) => {
-    const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
-
-    const isRowLayout = this.formLayout === 'horizontal' || this.formLayout === 'inline';
-    const { label, input } = this.getComputedCols();
-
-    // Build grid classes
-    const labelColClass = this.formLayout === 'horizontal' && !this.labelHidden ? `col-${label}` : '';
-    const inputColClass = this.formLayout === 'horizontal' ? `col-${this.labelHidden ? 12 : input}` : this.formLayout === 'inline' ? '' : '';
 
     return (
-      <div class={outerClass}>
-        {isRowLayout ? (
-          <div class={`row form-group ${this.formLayout === 'inline' ? 'inline' : this.formLayout === 'horizontal' ? 'horizontal' : ''}`}>
-            {this.renderInputLabel(ids, labelColClass)}
-            <div class={inputColClass || undefined}>
-              <div
-                class={{
-                  'ac-multi-select-container': true,
-                  'is-invalid': this.validation,
-                  [`${this.size}`]: !!this.size,
-                  [this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '']: true,
-                }}
-              >
-                <div class="ac-selected-items">{this.renderSelectedItems()}</div>
-                <div class="ac-input-container">
-                  <div class={{ 'input-group': true }}>
-                    {this.renderInputField(ids, names)}
-                    {this.renderAddButton()}
-                    {this.renderClearButton()}
-                  </div>
-                </div>
-              </div>
-              {this.renderDropdown(ids)}
-              {this.formLayout === 'inline' ? this.renderValidationMessages(ids) : ''}
-              {this.formLayout === 'inline' ? this.renderErrorMessages(ids) : ''}
-            </div>
-          </div>
-        ) : (
-          // Non-row layout (stacked)
-          <div>
-            {this.renderInputLabel(ids)}
-            <div>
-              <div
-                class={{
-                  'ac-multi-select-container': true,
-                  'is-invalid': this.validation,
-                  [`${this.size}`]: !!this.size,
-                  [this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '']: true,
-                }}
-              >
-                <div class="ac-selected-items">{this.renderSelectedItems()}</div>
-                <div class="ac-input-container">
-                  <div class={{ 'input-group': true }}>
-                    {this.renderInputField(ids, names)}
-                    {this.renderAddButton()}
-                    {this.renderClearButton()}
-                  </div>
-                </div>
-              </div>
-              {this.renderDropdown(ids)}
-              {this.renderValidationMessages(ids)}
-              {this.renderErrorMessages(ids)}
-            </div>
-          </div>
-        )}
+      <div id={baseId} class={baseClass} aria-live="polite">
+        {message}
       </div>
     );
-  };
+  }
+
+  private renderFieldArea(ids: string, names: string) {
+    return (
+      <div class={this.containerClasses()}>
+        <div class="ac-selected-items">{this.renderSelectedItems()}</div>
+        <div class="ac-input-container">
+          <div class={{ 'input-group': true }}>
+            {this.renderInputField(ids, names)}
+            {this.renderAddButton()}
+            {this.renderClearButton()}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  private renderLayout(ids: string, names: string) {
+    const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
+
+    // Build grid classes from new props (or numeric fallbacks)
+    const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
+    const inputColClass = this.isHorizontal()
+      ? this.buildColClass('input') || undefined
+      : this.isInline()
+      ? this.buildColClass('input') || undefined
+      : undefined;
+
+    if (this.isRowLayout()) {
+      return (
+        <div class={outerClass}>
+          <div class={`row form-group ${this.isInline() ? 'inline' : this.isHorizontal() ? 'horizontal' : ''}`}>
+            {this.renderInputLabel(ids, labelColClass)}
+            <div class={inputColClass}>
+              {this.renderFieldArea(ids, names)}
+              {this.renderDropdown(ids)}
+              {this.isInline() ? this.renderMessage('validation', ids) : ''}
+              {this.isInline() ? this.renderMessage('error', ids) : ''}
+              {this.isHorizontal() ? this.renderMessage('validation', ids) : ''}
+              {this.isHorizontal() ? this.renderMessage('error', ids) : ''}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Stacked layout
+    return (
+      <div class={outerClass}>
+        {this.renderInputLabel(ids)}
+        <div>
+          {this.renderFieldArea(ids, names)}
+          {this.renderDropdown(ids)}
+          {this.renderMessage('validation', ids)}
+          {this.renderMessage('error', ids)}
+        </div>
+      </div>
+    );
+  }
+
+  // ---------------- Public API ----------------
 
   public validate(): boolean {
     this.validation = this.required && !this.isSatisfiedNow();
     return !this.validation;
   }
 
+  // ---------------- Render root ----------------
+
   render() {
     const ids = this.camelCase(this.inputId).replace(/ /g, '');
     const names = this.camelCase(this.label).replace(/ /g, '');
 
-    return (
-      <div
-        class={{
-          'autocomplete-container': true,
-          'form-group': true,
-        }}
-      >
-        {this.renderLayout(ids, names)}
-        {this.formLayout === 'horizontal' ? this.renderValidationMessages(ids) : ''}
-        {this.formLayout === 'horizontal' ? this.renderErrorMessages(ids) : ''}
-      </div>
-    );
+    return <div class={{ 'autocomplete-container': true, 'form-group': true }}>{this.renderLayout(ids, names)}</div>;
   }
 }
