@@ -63,6 +63,7 @@ export class AutocompleteMultipleSelections {
   @State() focusedOptionIndex: number = -1;
   @State() isFocused: boolean = false;
   @State() hasBeenInteractedWith: boolean = false;
+  @State() dropdownOpen: boolean = false;
 
   /** prevent blur -> close when clicking inside dropdown */
   private suppressBlur = false;
@@ -227,11 +228,26 @@ export class AutocompleteMultipleSelections {
     this.isFocused = true;
   };
 
+  private closeTimer: number | null = null;
+
   private handleBlur = () => {
     this.isFocused = false;
     if (this.suppressBlur) return;
 
-    setTimeout(() => this.closeDropdown(), 0);
+    // Clear any prior close attempt
+    if (this.closeTimer) {
+      clearTimeout(this.closeTimer);
+      this.closeTimer = null;
+    }
+
+    // Delay the close slightly; if focus returns, skip closing
+    this.closeTimer = window.setTimeout(() => {
+      if (!this.isFocused) {
+        this.closeDropdown();
+      }
+      this.closeTimer = null;
+    }, 120);
+
     if (this.required) this.validation = !this.isSatisfiedNow();
   };
 
@@ -269,12 +285,36 @@ export class AutocompleteMultipleSelections {
         value: this.options,
       });
       this.filteredOptions = [];
+      this.dropdownOpen = false;
       return;
     }
 
     const q = this.inputValue.trim().toLowerCase();
     const pool = this.options.filter(opt => !this.selectedItems.includes(opt));
-    this.filteredOptions = q ? pool.filter(opt => opt.toLowerCase().includes(q)) : pool;
+
+    if (q.length === 0) {
+      this.filteredOptions = [];
+      this.dropdownOpen = false;
+      return;
+    }
+
+    this.filteredOptions = pool.filter(opt => opt.toLowerCase().includes(q));
+    this.dropdownOpen = this.filteredOptions.length > 0; // open only if there are matches
+  }
+
+  private getAvailableOptions(): string[] {
+    return this.options.filter(opt => !this.selectedItems.includes(opt));
+  }
+
+  /** Recompute filteredOptions from a specific query (does not read inputValue). */
+  private filterFromQuery(query: string): boolean {
+    const q = query.trim().toLowerCase();
+    const pool = this.getAvailableOptions();
+    const next = q ? pool.filter(opt => opt.toLowerCase().includes(q)) : [];
+    this.filteredOptions = next;
+    this.dropdownOpen = next.length > 0;
+    this.focusedOptionIndex = next.length ? 0 : -1;
+    return next.length > 0;
   }
 
   // ---------- Input handling (typing + keys) ----------
@@ -334,31 +374,53 @@ export class AutocompleteMultipleSelections {
 
   // ---------- Selection toggling ----------
   private onOptionMouseDown = (e: MouseEvent, option: string) => {
-    // keep input focused & dropdown open while selecting
     e.preventDefault();
     e.stopPropagation();
 
     this.suppressBlur = true;
+
+    // ⛔ Cancel any scheduled close from a previous blur
+    if (this.closeTimer) {
+      clearTimeout(this.closeTimer);
+      this.closeTimer = null;
+    }
+
     this.toggleItem(option);
 
     setTimeout(() => {
       this.suppressBlur = false;
       const input = this.el.querySelector('input');
-      input?.focus();
+      input?.focus(); // will set isFocused = true
     }, 0);
   };
 
   private toggleItem(option: string) {
+    const lastQuery = this.inputValue;
+
     const updated = new Set(this.selectedItems);
     updated.has(option) ? updated.delete(option) : updated.add(option);
 
     this.selectedItems = Array.from(updated);
     this.selectionChange.emit(this.selectedItems);
 
-    this.validation = this.required && !this.isSatisfiedNow();
-    this.filterOptions();
+    // clear typing so the first character doesn’t “stick”
+    this.inputValue = '';
 
-    // restore focus for continued typing
+    // keep validation up-to-date
+    this.validation = this.required && !this.isSatisfiedNow();
+
+    // Try to keep the dropdown filtered by the last query…
+    const stillHasMatches = this.filterFromQuery(lastQuery);
+
+    // …but if that query now has no matches, show ALL remaining options instead
+    if (!stillHasMatches) {
+      const available = this.getAvailableOptions();
+      this.filteredOptions = available;
+      this.dropdownOpen = available.length > 0;
+      this.focusedOptionIndex = available.length ? 0 : -1;
+    }
+
+    // keep focus for fast multi-select
     setTimeout(() => {
       const input = this.el.querySelector('input');
       input?.focus();
@@ -397,7 +459,8 @@ export class AutocompleteMultipleSelections {
   private clearAll = () => {
     this.selectedItems = [];
     this.inputValue = '';
-       this.filteredOptions = [];
+    this.filteredOptions = [];
+    this.dropdownOpen = false; // ← keep signals consistent
     this.selectionChange.emit([]);
 
     this.hasBeenInteractedWith = true;
@@ -413,34 +476,28 @@ export class AutocompleteMultipleSelections {
   private renderDropdownList(ids: string) {
     return (
       <ul role="listbox" id={`${ids}-listbox`} tabindex="-1">
-        {this.filteredOptions.length === 0 ? (
-          <li class={{ 'autocomplete-dropdown-no-results': true, [`${this.size}`]: !!this.size }} aria-disabled="true">
-            No results found
+        {this.filteredOptions.map((option, i) => (
+          <li
+            id={`${ids}-option-${i}`}
+            role="option"
+            aria-selected={this.focusedOptionIndex === i ? 'true' : 'false'}
+            class={{
+              'autocomplete-dropdown-item': true,
+              'focused': this.focusedOptionIndex === i,
+              [`${this.size}`]: !!this.size,
+            }}
+            onMouseDown={e => this.onOptionMouseDown(e, option)}
+            tabindex="-1"
+          >
+            <span innerHTML={option.replace(/</g, '&lt;').replace(/>/g, '&gt;')} />
           </li>
-        ) : (
-          this.filteredOptions.map((option, i) => (
-            <li
-              id={`${ids}-option-${i}`}
-              role="option"
-              aria-selected={this.focusedOptionIndex === i ? 'true' : 'false'}
-              class={{
-                'autocomplete-dropdown-item': true,
-                focused: this.focusedOptionIndex === i,
-                [`${this.size}`]: !!this.size,
-              }}
-              onMouseDown={e => this.onOptionMouseDown(e, option)}
-              tabindex="-1"
-            >
-              <span innerHTML={option.replace(/</g, '&lt;').replace(/>/g, '&gt;')} />
-            </li>
-          ))
-        )}
+        ))}
       </ul>
     );
   }
 
   private renderDropdown(ids: string) {
-    if (!this.inputValue.trim()) return null;
+    if (!this.dropdownOpen) return null;
     return (
       <div class="autocomplete-dropdown" aria-live="polite">
         {this.renderDropdownList(ids)}
@@ -449,8 +506,14 @@ export class AutocompleteMultipleSelections {
   }
 
   private closeDropdown() {
+    if (this.closeTimer) {
+      clearTimeout(this.closeTimer);
+      this.closeTimer = null;
+    }
     this.filteredOptions = [];
     this.focusedOptionIndex = -1;
+    this.dropdownOpen = false;
+    this.inputValue = ''; // keep the “don’t leave first char” fix
     logInfo(this.devMode, 'AutocompleteMultipleSelections', 'Dropdown closed');
   }
 
@@ -478,14 +541,7 @@ export class AutocompleteMultipleSelections {
       return (
         <span class={classMap} style={this.parseInlineStyles(this.badgeInlineStyles)} key={item}>
           <span>{item}</span>
-          <button
-            onClick={() => this.removeItem(item)}
-            aria-label={`Remove ${item}`}
-            data-tag={item}
-            role="button"
-            class="remove-btn"
-            title="Remove Tag"
-          >
+          <button onClick={() => this.removeItem(item)} aria-label={`Remove ${item}`} data-tag={item} role="button" class="remove-btn" title="Remove Tag">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
               <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" />
             </svg>
@@ -533,7 +589,7 @@ export class AutocompleteMultipleSelections {
         aria-labelledby={this.arialabelledBy}
         aria-describedby={this.validation ? `${ids}-validation` : this.error ? `${ids}-error` : null}
         aria-autocomplete="list"
-        aria-expanded={this.filteredOptions.length > 0 ? 'true' : 'false'}
+        aria-expanded={this.dropdownOpen ? 'true' : 'false'}
         aria-controls={`${ids}-listbox`}
         aria-activedescendant={this.focusedOptionIndex >= 0 ? `${ids}-option-${this.focusedOptionIndex}` : undefined}
         aria-required={this.required ? 'true' : 'false'}
@@ -568,7 +624,7 @@ export class AutocompleteMultipleSelections {
       <button
         class={{
           'input-group-btn': true,
-          add: true,
+          'add': true,
           'add-btn': true,
           'no-border': this.removeBtnBorder,
         }}
@@ -631,12 +687,7 @@ export class AutocompleteMultipleSelections {
 
     // Build grid classes from new props (or numeric fallbacks)
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass =
-      this.isHorizontal()
-        ? this.buildColClass('input') || undefined
-        : this.isInline()
-        ? this.buildColClass('input') || undefined
-        : undefined;
+    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     const fieldBlock = (
       <div
@@ -697,10 +748,6 @@ export class AutocompleteMultipleSelections {
     const ids = this.camelCase(this.inputId).replace(/ /g, '');
     const names = this.camelCase(this.label).replace(/ /g, '');
 
-    return (
-      <div class="form-group">
-        {this.renderLayout(ids, names)}
-      </div>
-    );
+    return <div class="form-group">{this.renderLayout(ids, names)}</div>;
   }
 }

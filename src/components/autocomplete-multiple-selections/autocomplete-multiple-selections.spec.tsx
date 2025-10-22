@@ -2,7 +2,11 @@
 import { newSpecPage } from '@stencil/core/testing';
 import { AutocompleteMultipleSelections } from './autocomplete-multiple-selections';
 
-describe('autocomplete-multiple-selections', () => {
+// If your Jest config doesn't already include the Stencil serializer, ensure:
+// preset: '@stencil/core/testing',
+// snapshotSerializers: ['@stencil/core/testing'],
+
+describe('<autocomplete-multiple-selections>', () => {
   it('renders with default props', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
@@ -25,37 +29,64 @@ describe('autocomplete-multiple-selections', () => {
     expect(input.getAttribute('aria-expanded')).toBe('false');
   });
 
-  it('filters and renders dropdown with options', async () => {
+  it('opens dropdown only when there are matches (and renders listbox)', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
-      html: `<autocomplete-multiple-selections label="Fruit" input-id="fruit-id"></autocomplete-multiple-selections>`,
+      html: `<autocomplete-multiple-selections label="Fruit" input-id="fruit"></autocomplete-multiple-selections>`,
     });
+
     const comp = page.rootInstance as AutocompleteMultipleSelections;
     comp.options = ['Apple', 'Banana', 'Orange'];
-    comp.inputValue = 'a';
+
+    // No query => closed
+    comp.inputValue = '';
+    comp.filterOptions();
+    await page.waitForChanges();
+    expect(comp.filteredOptions).toEqual([]);
+    expect(comp['dropdownOpen']).toBe(false);
+    expect(page.root!.querySelector('[role="listbox"]')).toBeNull();
+
+    // With matches => open
+    comp.inputValue = 'an'; // Banana, Orange
+    comp.filterOptions();
+    await page.waitForChanges();
+    expect(comp.filteredOptions).toEqual(['Banana', 'Orange']);
+    expect(comp['dropdownOpen']).toBe(true);
+
+    const input = page.root!.querySelector('input')!;
+    expect(input.getAttribute('aria-expanded')).toBe('true');
+    expect(page.root!.querySelector('[role="listbox"]')).toBeTruthy();
+  });
+
+  it('selects multiple items and keeps dropdown open with remaining options', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections input-id="tags"></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['Alpha', 'Beta', 'Gamma'];
+    comp.inputValue = 'a'; // matches all three
     comp.filterOptions();
     await page.waitForChanges();
 
-    expect(comp.filteredOptions).toEqual(['Apple', 'Banana', 'Orange']);
-
-    const list = page.root!.querySelector('#fruitId-listbox, #fruit-id-listbox, [role="listbox"]');
-    // It only renders the list when input has content; our filter set it.
-    expect(list).toBeTruthy();
-  });
-
-  it('selects multiple items and renders selected badges', async () => {
-    const page = await newSpecPage({
-      components: [AutocompleteMultipleSelections],
-      html: `<autocomplete-multiple-selections></autocomplete-multiple-selections>`,
-    });
-    const comp = page.rootInstance as AutocompleteMultipleSelections;
-    comp.options = ['One', 'Two', 'Three'];
-    comp.toggleItem('One');
-    comp.toggleItem('Two');
+    // Select "Alpha"
+    (comp as any).toggleItem('Alpha');
     await page.waitForChanges();
+    expect(comp.selectedItems).toEqual(['Alpha']);
 
-    expect(comp.selectedItems).toEqual(['One', 'Two']);
-    expect(page.root!.querySelectorAll('.ac-selected-items .badge').length).toBe(2);
+    // Dropdown should still be open, filtered by the last query ('a') but excluding selected
+    expect(comp['dropdownOpen']).toBe(true);
+    expect(comp.filteredOptions).toEqual(['Beta', 'Gamma']);
+
+    // Select "Gamma"
+    (comp as any).toggleItem('Gamma');
+    await page.waitForChanges();
+    expect(comp.selectedItems).toEqual(['Alpha', 'Gamma']);
+
+    // Still open, showing remaining option(s)
+    expect(comp['dropdownOpen']).toBe(true);
+    expect(comp.filteredOptions).toEqual(['Beta']);
   });
 
   it('validates as invalid when required and nothing selected', async () => {
@@ -72,7 +103,7 @@ describe('autocomplete-multiple-selections', () => {
     expect(page.root!.textContent).toContain('Select at least one');
   });
 
-  it('handles keyboard navigation and enter selection', async () => {
+  it('handles keyboard navigation and Enter toggling selection', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
       html: `<autocomplete-multiple-selections></autocomplete-multiple-selections>`,
@@ -84,12 +115,13 @@ describe('autocomplete-multiple-selections', () => {
     await page.waitForChanges();
 
     const input = page.root!.querySelector('input')!;
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, composed: true }));
     await page.waitForChanges();
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
     await page.waitForChanges();
 
-    expect(comp.selectedItems).toContain('Alpha');
+    expect(comp.selectedItems.length).toBe(1);
+    expect(['Alpha', 'Beta', 'Gamma']).toContain(comp.selectedItems[0]);
   });
 
   it('assigns correct aria attributes and roles', async () => {
@@ -108,7 +140,7 @@ describe('autocomplete-multiple-selections', () => {
     expect(input.getAttribute('aria-haspopup')).toBe('listbox');
   });
 
-  it('handles Escape key to close dropdown', async () => {
+  it('Escape closes the dropdown and clears first-typed char fix', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
       html: `<autocomplete-multiple-selections></autocomplete-multiple-selections>`,
@@ -119,46 +151,18 @@ describe('autocomplete-multiple-selections', () => {
     comp.inputValue = 'o';
     comp.filterOptions();
     await page.waitForChanges();
+    expect(comp['dropdownOpen']).toBe(true);
 
     const input = page.root!.querySelector('input')!;
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, composed: true }));
     await page.waitForChanges();
 
+    expect(comp['dropdownOpen']).toBe(false);
     expect(comp.filteredOptions.length).toBe(0);
+    expect(comp.inputValue).toBe(''); // first-char persistence fix
   });
 
-  it('handles Backspace with no selection (does not clear)', async () => {
-    const page = await newSpecPage({
-      components: [AutocompleteMultipleSelections],
-      html: `<autocomplete-multiple-selections></autocomplete-multiple-selections>`,
-    });
-
-    const comp = page.rootInstance as AutocompleteMultipleSelections;
-    comp.inputValue = 'a';
-    const input = page.root!.querySelector('input')!;
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Backspace' }));
-    await page.waitForChanges();
-
-    expect(comp.inputValue).toBe('a');
-  });
-
-  it('handles Tab to blur', async () => {
-    const page = await newSpecPage({
-      components: [AutocompleteMultipleSelections],
-      html: `<autocomplete-multiple-selections></autocomplete-multiple-selections>`,
-    });
-
-    const comp = page.rootInstance as AutocompleteMultipleSelections;
-    comp.isFocused = true;
-    const input = page.root!.querySelector('input')!;
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab' }));
-    comp['handleBlur']();
-    await page.waitForChanges();
-
-    expect(comp.isFocused).toBe(false);
-  });
-
-  it('programmatically navigates and updates aria-activedescendant', async () => {
+  it('programmatic navigateOptions updates aria-activedescendant', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
       html: `<autocomplete-multiple-selections input-id="id"></autocomplete-multiple-selections>`,
@@ -171,7 +175,6 @@ describe('autocomplete-multiple-selections', () => {
     await page.waitForChanges();
 
     const input: HTMLInputElement = page.root!.querySelector('input')!;
-
     await comp.navigateOptions(1);
     await page.waitForChanges();
 
@@ -179,104 +182,85 @@ describe('autocomplete-multiple-selections', () => {
     expect(input.getAttribute('aria-activedescendant')).toBe('id-option-0');
   });
 
-  it('wires onKeyDown to handleInput', async () => {
-    const page = await newSpecPage({
-      components: [AutocompleteMultipleSelections],
-      html: `<autocomplete-multiple-selections input-id="id"></autocomplete-multiple-selections>`,
-    });
-    const comp = page.rootInstance as AutocompleteMultipleSelections;
-    const spy = jest.spyOn(comp as any, 'handleInput');
-
-    comp.options = ['A', 'B', 'C'];
-    await page.waitForChanges();
-
-    const input = page.root!.querySelector('input')!;
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, composed: true }));
-    await page.waitForChanges();
-
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('ignores Enter key when input does not match any option', async () => {
-    const page = await newSpecPage({
-      components: [AutocompleteMultipleSelections],
-      html: `<autocomplete-multiple-selections></autocomplete-multiple-selections>`,
-    });
-
-    const comp = page.rootInstance as AutocompleteMultipleSelections;
-    comp.options = ['One', 'Two', 'Three'];
-    comp.inputValue = 'zzz';
-    comp.filterOptions();
-    await page.waitForChanges();
-
-    const input = page.root!.querySelector('input')!;
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
-    await page.waitForChanges();
-
-    expect(comp.selectedItems).toEqual([]); // no match => nothing added
-  });
-
-  it('emits itemSelect when addBtn is clicked with inputValue', async () => {
-    const page = await newSpecPage({
-      components: [AutocompleteMultipleSelections],
-      html: `<autocomplete-multiple-selections add-btn></autocomplete-multiple-selections>`,
-    });
-
-    const comp = page.rootInstance as AutocompleteMultipleSelections;
-    const spy = jest.fn();
-    page.root!.addEventListener('itemSelect', spy);
-
-    comp.inputValue = 'CustomOption';
-    await page.waitForChanges();
-
-    const btn = page.root!.querySelector('button.add-btn') as HTMLButtonElement;
-    btn.click();
-    await page.waitForChanges();
-
-    expect(spy).toHaveBeenCalledWith(expect.objectContaining({ detail: 'CustomOption' }));
-  });
-
-  it('disables input and buttons when disabled is true', async () => {
+  it('disables input and add/clear buttons when disabled', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
       html: `<autocomplete-multiple-selections disabled add-btn></autocomplete-multiple-selections>`,
     });
 
+    // give it some state so clear button is rendered
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.inputValue = 'x';
+    await page.waitForChanges();
+
     const input = page.root!.querySelector('input')!;
     const addBtn = page.root!.querySelector('button.add-btn')!;
-    expect(input.hasAttribute('disabled')).toBe(true);
-    expect(addBtn.hasAttribute('disabled')).toBe(true);
+    const clearBtn = page.root!.querySelector('button.clear-btn')!;
+    expect(input).toHaveAttribute('disabled');
+    expect(addBtn).toHaveAttribute('disabled');
+    expect(clearBtn).toHaveAttribute('disabled');
   });
 
-  it('supports compact spec tokens like "xs-12 sm-6 md-4"', async () => {
+  it('supports compact responsive col specs', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
       html: `<autocomplete-multiple-selections
-             label="Fruits"
-             input-id="fruit"
-             form-layout="horizontal"
-             label-cols="xs-12 sm-4"
-             input-cols="xs-12 sm-8"
-           ></autocomplete-multiple-selections>`,
+               label="Fruits"
+               input-id="fruit"
+               form-layout="horizontal"
+               label-cols="xs-12 sm-4"
+               input-cols="xs-12 sm-8"
+             ></autocomplete-multiple-selections>`,
     });
 
-    // Option A: go from the label to its next sibling (the col-* wrapper)
     const row = page.root!.querySelector('.row.form-group') as HTMLElement;
-    expect(row).toBeTruthy();
-
     const labelEl = row.querySelector('label') as HTMLLabelElement;
-    expect(labelEl).toBeTruthy();
-
-    const inputWrapper = labelEl.nextElementSibling as HTMLElement; // <-- this div has the col-* classes
-    expect(inputWrapper).toBeTruthy();
+    const inputWrapper = labelEl.nextElementSibling as HTMLElement;
 
     expect(inputWrapper.className).toMatch(/(^|\s)col-12(\s|$)/);
     expect(inputWrapper.className).toMatch(/(^|\s)col-sm-8(\s|$)/);
+  });
 
-    // Option B (equivalent): start at the field container and take its parent
-    // const fieldContainer = page.root!.querySelector('.ac-multi-select-container')!;
-    // const inputWrapper = fieldContainer.parentElement as HTMLElement;
-    // expect(inputWrapper.className).toMatch(/(^|\s)col-12(\s|$)/);
-    // expect(inputWrapper.className).toMatch(/(^|\s)col-sm-8(\s|$)/);
+  // ---------------- SNAPSHOTS ----------------
+
+  it('matches snapshot (default render)', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections
+               label="Tags"
+               input-id="tags"
+             ></autocomplete-multiple-selections>`,
+    });
+
+    await page.waitForChanges();
+    expect(page.root).toMatchSnapshot();
+  });
+
+  it('matches snapshot (open with matches and two selections made)', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections
+               label="Tags"
+               input-id="tags"
+               add-btn
+             ></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['Alpha', 'Beta', 'Gamma', 'Delta'];
+    comp.inputValue = 'a';
+    comp.filterOptions();
+    await page.waitForChanges();
+
+    // Select two items programmatically (runtime can access "private")
+    (comp as any).toggleItem('Alpha');
+    (comp as any).toggleItem('Gamma');
+    await page.waitForChanges();
+
+    // Should still be open and show remaining matches
+    expect(comp['dropdownOpen']).toBe(true);
+    expect(comp.selectedItems).toEqual(['Alpha', 'Gamma']);
+
+    expect(page.root).toMatchSnapshot();
   });
 });

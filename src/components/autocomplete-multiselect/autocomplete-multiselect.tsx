@@ -62,6 +62,7 @@ export class AutocompleteMultiselect {
   @State() focusedOptionIndex = -1;
   @State() isFocused = false;
   @State() hasBeenInteractedWith = false;
+  @State() dropdownOpen = false;
 
   // Events
   @Event({ eventName: 'itemSelect' }) itemSelect: EventEmitter<string>;
@@ -341,12 +342,23 @@ export class AutocompleteMultiselect {
         value: this.options,
       });
       this.filteredOptions = [];
+      this.dropdownOpen = false;
       return;
     }
 
     const v = this.inputValue.trim().toLowerCase();
     const available = this.options.filter(opt => !this.selectedItems.includes(opt));
-    this.filteredOptions = v.length > 0 ? available.filter(opt => opt.toLowerCase().includes(v)) : available;
+
+    if (v.length === 0) {
+      // ✅ No typing -> keep it closed (mirrors single’s behavior)
+      this.filteredOptions = [];
+      this.dropdownOpen = false;
+      return;
+    }
+
+    this.filteredOptions = available.filter(opt => opt.toLowerCase().includes(v));
+    // ✅ Only open when there are matches
+    this.dropdownOpen = this.filteredOptions.length > 0;
   }
 
   private toggleItem(option: string) {
@@ -393,7 +405,8 @@ export class AutocompleteMultiselect {
 
   private closeDropdown() {
     this.filteredOptions = [];
-       this.focusedOptionIndex = -1;
+    this.focusedOptionIndex = -1;
+    this.dropdownOpen = false;
     logInfo(this.devMode, 'AutocompleteMultiselect', 'Dropdown closed');
   }
 
@@ -511,7 +524,7 @@ export class AutocompleteMultiselect {
         aria-labelledby={this.arialabelledBy}
         aria-describedby={this.validation ? `${ids}-validation` : this.error ? `${ids}-error` : null}
         aria-autocomplete="list"
-        aria-expanded={this.filteredOptions.length > 0 ? 'true' : 'false'}
+        aria-expanded={this.dropdownOpen ? 'true' : 'false'}
         aria-controls={`${ids}-listbox`}
         aria-activedescendant={this.focusedOptionIndex >= 0 ? `${ids}-option-${this.focusedOptionIndex}` : undefined}
         aria-required={this.required ? 'true' : 'false'}
@@ -533,16 +546,6 @@ export class AutocompleteMultiselect {
   }
 
   private renderDropdownList(ids: string) {
-    if (this.filteredOptions.length === 0) {
-      return this.inputValue.trim().length > 0 ? (
-        <ul role="listbox" id={`${ids}-listbox`} tabindex="-1">
-          <li class={{ 'autocomplete-dropdown-no-results': true, [`${this.size}`]: !!this.size }} aria-disabled="true">
-            No results found
-          </li>
-        </ul>
-      ) : null;
-    }
-
     return (
       <ul role="listbox" id={`${ids}-listbox`} tabindex="-1">
         {this.filteredOptions.map((option, i) => (
@@ -552,7 +555,7 @@ export class AutocompleteMultiselect {
             aria-selected={this.focusedOptionIndex === i ? 'true' : 'false'}
             class={{
               'autocomplete-dropdown-item': true,
-              focused: this.focusedOptionIndex === i,
+              'focused': this.focusedOptionIndex === i,
               [`${this.size}`]: !!this.size,
             }}
             onMouseDown={e => this.onOptionMouseDown(e, option)}
@@ -566,9 +569,7 @@ export class AutocompleteMultiselect {
   }
 
   private renderDropdown(ids: string) {
-    if (!this.inputValue.trim()) return null;
-    logInfo(this.devMode, 'AutocompleteMultiselect', 'Dropdown opened', { optionsCount: this.filteredOptions.length });
-
+    if (!this.dropdownOpen) return null;
     return (
       <div class="autocomplete-dropdown" aria-live="polite">
         {this.renderDropdownList(ids)}
@@ -632,11 +633,7 @@ export class AutocompleteMultiselect {
 
     // Build grid classes from new props (or numeric fallbacks)
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass = this.isHorizontal()
-      ? this.buildColClass('input') || undefined
-      : this.isInline()
-      ? this.buildColClass('input') || undefined
-      : undefined;
+    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     if (this.isRowLayout()) {
       return (

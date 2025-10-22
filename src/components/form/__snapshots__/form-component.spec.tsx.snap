@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<form-component> matches snapshot (base form) 1`] = `
+<form-component action="/s" form-id="f1" method="get">
+  <!---->
+  <form action="/s" id="f1" method="get"></form>
+</form-component>
+`;
+
+exports[`<form-component> matches snapshot (fieldset + legend + styles, outsideOfForm) 1`] = `
+<form-component bcolor="red" bradius="4" bstyle="dashed" bwidth="1" fieldset="" form-id="external" legend="" legend-position="right" legend-txt="Settings" outside-of-form="" styles="padding:2px;">
+  <!---->
+  <fieldset style="padding: 2px; border-color: red; border-style: dashed; border-width: 1px; border-radius: 4px;">
+    <legend class="right">
+      Settings
+    </legend>
+    <div slot="formField">
+      Inner field
+    </div>
+  </fieldset>
+</form-component>
+`;

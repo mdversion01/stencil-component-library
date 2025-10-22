@@ -1,3 +1,4 @@
+// src/components/autocomplete-multiselect/autocomplete-multiselect.spec.tsx
 import { newSpecPage } from '@stencil/core/testing';
 import { AutocompleteMultiselect } from './autocomplete-multiselect';
 
@@ -13,15 +14,64 @@ describe('autocomplete-multiselect', () => {
     expect(page.root).toBeTruthy();
   });
 
-  it('filters options based on input', async () => {
+  it('opens dropdown only when there are matches; stays closed when no input', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultiselect],
+      html: `<autocomplete-multiselect input-id="fruit" label="Fruits"></autocomplete-multiselect>`,
+    });
+    const comp = page.rootInstance as AutocompleteMultiselect;
+    comp.options = ['Apple', 'Banana', 'Orange'];
+
+    // No input -> closed
+    comp.inputValue = '';
+    await comp.filterOptions();
+    await page.waitForChanges();
+
+    expect(comp.filteredOptions).toEqual([]);
+    expect(comp['dropdownOpen']).toBe(false);
+    const input = page.root!.querySelector('input')!;
+    expect(input.getAttribute('aria-expanded')).toBe('false');
+    expect(page.root!.querySelector('.autocomplete-dropdown')).toBeNull();
+
+    // With matches -> open
+    comp.inputValue = 'an'; // Banana, Orange
+    await comp.filterOptions();
+    await page.waitForChanges();
+
+    expect(comp.filteredOptions).toEqual(['Banana', 'Orange']);
+    expect(comp['dropdownOpen']).toBe(true);
+    expect(input.getAttribute('aria-expanded')).toBe('true');
+    expect(page.root!.querySelector('.autocomplete-dropdown')).toBeTruthy();
+  });
+
+  it('stays closed when there is input but no matches', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultiselect],
+      html: `<autocomplete-multiselect input-id="fruit" label="Fruits"></autocomplete-multiselect>`,
+    });
+    const comp = page.rootInstance as AutocompleteMultiselect;
+    comp.options = ['Apple', 'Banana', 'Orange'];
+
+    comp.inputValue = 'zzz';
+    await comp.filterOptions();
+    await page.waitForChanges();
+
+    expect(comp.filteredOptions).toEqual([]);
+    expect(comp['dropdownOpen']).toBe(false);
+    const input = page.root!.querySelector('input')!;
+    expect(input.getAttribute('aria-expanded')).toBe('false');
+    expect(page.root!.querySelector('.autocomplete-dropdown')).toBeNull();
+  });
+
+  it('filters options based on input (case-insensitive)', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultiselect],
       html: `<autocomplete-multiselect></autocomplete-multiselect>`,
     });
-    const comp = page.rootInstance;
+    const comp = page.rootInstance as AutocompleteMultiselect;
     comp.options = ['Apple', 'Banana', 'Orange'];
     comp.inputValue = 'ap';
-    comp.filterOptions();
+    await comp.filterOptions();
     await page.waitForChanges();
     expect(comp.filteredOptions).toEqual(['Apple']);
   });
@@ -31,28 +81,16 @@ describe('autocomplete-multiselect', () => {
       components: [AutocompleteMultiselect],
       html: `<autocomplete-multiselect></autocomplete-multiselect>`,
     });
-    const comp = page.rootInstance;
+    const comp = page.rootInstance as AutocompleteMultiselect;
     comp.options = ['One', 'Two'];
+
     comp.toggleItem('One');
     await page.waitForChanges();
     expect(comp.selectedItems).toContain('One');
+
     comp.toggleItem('One');
     await page.waitForChanges();
     expect(comp.selectedItems).not.toContain('One');
-  });
-
-  it('shows no results when no match exists', async () => {
-    const page = await newSpecPage({
-      components: [AutocompleteMultiselect],
-      html: `<autocomplete-multiselect></autocomplete-multiselect>`,
-    });
-    const comp = page.rootInstance;
-    comp.options = ['One', 'Two'];
-    comp.inputValue = 'xyz';
-    comp.filterOptions();
-    await page.waitForChanges();
-    const list = page.root.querySelector('ul');
-    expect(list.innerHTML).toContain('No results found');
   });
 
   it('validate returns false when required and nothing selected', async () => {
@@ -60,7 +98,7 @@ describe('autocomplete-multiselect', () => {
       components: [AutocompleteMultiselect],
       html: `<autocomplete-multiselect required></autocomplete-multiselect>`,
     });
-    const comp = page.rootInstance;
+    const comp = page.rootInstance as AutocompleteMultiselect;
     const valid = comp.validate();
     await page.waitForChanges();
     expect(valid).toBe(false);
@@ -72,9 +110,9 @@ describe('autocomplete-multiselect', () => {
       components: [AutocompleteMultiselect],
       html: `<autocomplete-multiselect required></autocomplete-multiselect>`,
     });
-    const comp = page.rootInstance;
+    const comp = page.rootInstance as AutocompleteMultiselect;
     comp.selectedItems = ['One'];
-    comp.inputValue = 'dummy'; // avoid triggering validation = true based on blank input
+    comp.inputValue = 'dummy';
     await page.waitForChanges();
     const valid = comp.validate();
     expect(valid).toBe(true);
@@ -86,12 +124,12 @@ describe('autocomplete-multiselect', () => {
       components: [AutocompleteMultiselect],
       html: `<autocomplete-multiselect add-btn></autocomplete-multiselect>`,
     });
-    const comp = page.rootInstance;
+    const comp = page.rootInstance as AutocompleteMultiselect;
     const spy = jest.fn();
-    page.root.addEventListener('itemSelect', spy);
+    page.root!.addEventListener('itemSelect', spy);
     comp.inputValue = 'NewTag';
     await page.waitForChanges();
-    const btn = page.root.querySelector('button.add-btn') as HTMLButtonElement;
+    const btn = page.root!.querySelector('button.add-btn') as HTMLButtonElement;
     btn.click();
     await page.waitForChanges();
     expect(spy).toHaveBeenCalledWith(expect.objectContaining({ detail: 'NewTag' }));
@@ -102,16 +140,16 @@ describe('autocomplete-multiselect', () => {
       components: [AutocompleteMultiselect],
       html: `<autocomplete-multiselect></autocomplete-multiselect>`,
     });
-    const comp = page.rootInstance;
+    const comp = page.rootInstance as AutocompleteMultiselect;
     comp.options = ['One', 'Two', 'Three'];
     comp.inputValue = 'T';
-    comp.filterOptions();
+    await comp.filterOptions();
     await page.waitForChanges();
 
-    const input = page.root.querySelector('input');
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    const input = page.root!.querySelector('input')!;
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, composed: true }));
     await page.waitForChanges();
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
     await page.waitForChanges();
 
     expect(comp.selectedItems).toContain('Two');
@@ -120,33 +158,30 @@ describe('autocomplete-multiselect', () => {
   it('aria-activedescendant updates on focus change', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultiselect],
-      html: `<autocomplete-multiselect options='["A", "B"]'></autocomplete-multiselect>`,
+      html: `<autocomplete-multiselect options='["A", "B"]' input-id="letters"></autocomplete-multiselect>`,
     });
-    const comp = page.rootInstance;
+    const comp = page.rootInstance as AutocompleteMultiselect;
     comp.inputValue = 'B';
-    comp.filterOptions();
+    await comp.filterOptions();
     comp.focusedOptionIndex = 0;
     await page.waitForChanges();
-    const input = page.root.querySelector('input');
-    expect(input.getAttribute('aria-activedescendant')).toContain('option-0');
+    const input = page.root!.querySelector('input')!;
+    expect(input.getAttribute('aria-activedescendant')).toContain('letters-option-0');
   });
 
   it('scrolls focused item into view', async () => {
-    // 1) Render the component and grab the instance
     const page = await newSpecPage({
       components: [AutocompleteMultiselect],
       html: `<autocomplete-multiselect></autocomplete-multiselect>`,
     });
     const comp = page.rootInstance as AutocompleteMultiselect;
 
-    // 2) Prime it with some options and a filter term
     comp.options = ['One', 'Two', 'Three'];
     comp.inputValue = 'o';
     await comp.filterOptions();
     comp.focusedOptionIndex = -1;
     await page.waitForChanges();
 
-    // 3) Patch querySelectorAll to return fake <li> nodes with scrollIntoView spies
     const originalQS = HTMLElement.prototype.querySelectorAll;
     const fakeItems = ['One', 'Two', 'Three'].map(() => {
       const li = document.createElement('li');
@@ -156,18 +191,11 @@ describe('autocomplete-multiselect', () => {
     (HTMLElement.prototype.querySelectorAll as any) = jest.fn(() => fakeItems as any);
 
     try {
-      // 4) Switch to fake timers so our setTimeout in ensureOptionInView runs deterministically
       jest.useFakeTimers();
-
-      // 5) Call navigateOptions – this schedules ensureOptionInView(...)
-      comp.navigateOptions(1); // moves focusedOptionIndex to 0 + schedules scrollIntoView
-      // flush pending timers
+      comp.navigateOptions(1);
       jest.runAllTimers();
-
-      // 6) Assert that our fake <li> got scrolled into view
-      expect(fakeItems[0].scrollIntoView).toHaveBeenCalled();
+      expect((fakeItems[0].scrollIntoView as any)).toHaveBeenCalled();
     } finally {
-      // 7) Clean up
       HTMLElement.prototype.querySelectorAll = originalQS;
       jest.useRealTimers();
     }
@@ -179,14 +207,14 @@ describe('autocomplete-multiselect', () => {
       html: `<autocomplete-multiselect badge-variant="success" badge-shape="rounded" badge-inline-styles="color: white;"></autocomplete-multiselect>`,
     });
 
-    const comp = page.rootInstance;
+    const comp = page.rootInstance as AutocompleteMultiselect;
     comp.selectedItems = ['Item'];
     await page.waitForChanges();
 
-    const badge = page.root.querySelector('.badge');
+    const badge = page.root!.querySelector('.badge')!;
     expect(badge.classList.contains('text-bg-success')).toBe(true);
     expect(badge.classList.contains('rounded')).toBe(true);
-    expect(badge.getAttribute('style')).toContain('color: white');
+    expect(badge.getAttribute('style')!).toContain('color: white');
   });
 
   it('emits multiSelectChange on selection', async () => {
@@ -196,8 +224,8 @@ describe('autocomplete-multiselect', () => {
     });
 
     const spy = jest.fn();
-    page.root.addEventListener('multiSelectChange', spy);
-    const comp = page.rootInstance;
+    page.root!.addEventListener('multiSelectChange', spy);
+    const comp = page.rootInstance as AutocompleteMultiselect;
     comp.options = ['A'];
     comp.toggleItem('A');
     await page.waitForChanges();
@@ -211,7 +239,7 @@ describe('autocomplete-multiselect', () => {
       html: `<autocomplete-multiselect></autocomplete-multiselect>`,
     });
 
-    const comp = page.rootInstance;
+    const comp = page.rootInstance as AutocompleteMultiselect;
     comp.selectedItems = ['A'];
     comp.inputValue = 'text';
     comp.clearAll();
@@ -221,16 +249,28 @@ describe('autocomplete-multiselect', () => {
     expect(comp.inputValue).toBe('');
   });
 
-  it('handles blur correctly', async () => {
+  it('handles blur correctly (closes dropdown via closeDropdown path)', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultiselect],
       html: `<autocomplete-multiselect></autocomplete-multiselect>`,
     });
 
-    const comp = page.rootInstance;
-    comp.handleBlur();
+    const comp = page.rootInstance as AutocompleteMultiselect;
+    // simulate open state, then blur:
+    comp.inputValue = 'a';
+    comp.options = ['a'];
+    await comp.filterOptions();
     await page.waitForChanges();
+    expect(comp['dropdownOpen']).toBe(true);
+
+    comp['handleBlur']();
+    await page.waitForChanges();
+
+    // allow setTimeout(0) pathway to run:
+    await new Promise(r => setTimeout(r, 1));
+
     expect(comp.isFocused).toBe(false);
+    expect(comp['dropdownOpen']).toBe(false);
   });
 
   it('disables input and add & clear buttons when disabled is true', async () => {
@@ -240,14 +280,12 @@ describe('autocomplete-multiselect', () => {
     });
     const comp = page.rootInstance as AutocompleteMultiselect;
 
-    // Give it some state so the clear‑button renders:
     comp.inputValue = 'foo';
-    // or: comp.selectedItems = ['foo'];
     await page.waitForChanges();
 
-    const input = page.root.querySelector('input');
-    const addBtn = page.root.querySelector('button.add-btn');
-    const clearBtn = page.root.querySelector('button.clear-btn');
+    const input = page.root!.querySelector('input')!;
+    const addBtn = page.root!.querySelector('button.add-btn')!;
+    const clearBtn = page.root!.querySelector('button.clear-btn')!;
 
     expect(input).toHaveAttribute('disabled');
     expect(addBtn).toHaveAttribute('disabled');
@@ -259,10 +297,10 @@ describe('autocomplete-multiselect', () => {
       components: [AutocompleteMultiselect],
       html: `<autocomplete-multiselect required validation-message="Required field."></autocomplete-multiselect>`,
     });
-    const comp = page.rootInstance;
+    const comp = page.rootInstance as AutocompleteMultiselect;
     comp.validate();
     await page.waitForChanges();
-    const input = page.root.querySelector('input');
+    const input = page.root!.querySelector('input')!;
     expect(input.getAttribute('aria-required')).toBe('true');
     expect(input.classList.contains('is-invalid')).toBe(true);
   });
@@ -272,9 +310,9 @@ describe('autocomplete-multiselect', () => {
       components: [AutocompleteMultiselect],
       html: `<autocomplete-multiselect></autocomplete-multiselect>`,
     });
-    const comp = page.rootInstance;
+    const comp = page.rootInstance as AutocompleteMultiselect;
     const clearSpy = jest.fn();
-    page.root.addEventListener('clear', clearSpy);
+    page.root!.addEventListener('clear', clearSpy);
 
     comp.selectedItems = ['A'];
     comp.inputValue = 'test';
@@ -290,7 +328,7 @@ describe('autocomplete-multiselect', () => {
       html: `<autocomplete-multiselect error error-message="Something went wrong"></autocomplete-multiselect>`,
     });
     await page.waitForChanges();
-    const msg = page.root.querySelector('.error-message');
+    const msg = page.root!.querySelector('.error-message')!;
     expect(msg.textContent).toContain('Something went wrong');
   });
 
@@ -300,11 +338,11 @@ describe('autocomplete-multiselect', () => {
       html: `<autocomplete-multiselect badge-inline-styles="font-size: 14px;"></autocomplete-multiselect>`,
     });
 
-    const comp = page.rootInstance;
+    const comp = page.rootInstance as AutocompleteMultiselect;
     comp.selectedItems = ['Styled'];
     await page.waitForChanges();
-    const badge = page.root.querySelector('.badge');
-    expect(badge.getAttribute('style')).toContain('font-size: 14px');
+    const badge = page.root!.querySelector('.badge')!;
+    expect(badge.getAttribute('style')!).toContain('font-size: 14px');
   });
 
   it('uses inputId and label for accessibility linkage', async () => {
@@ -313,12 +351,10 @@ describe('autocomplete-multiselect', () => {
       html: `<autocomplete-multiselect input-id="fruit-input" label="Fruits" arialabelled-by="label-id"></autocomplete-multiselect>`,
     });
 
-    const input = page.root.querySelector('input');
-
+    const input = page.root!.querySelector('input')!;
     expect(input.getAttribute('aria-controls')).toContain('fruitInput-listbox');
     expect(input.getAttribute('aria-labelledby')).toBe('label-id');
   });
-
 
   it('renders full DOM output snapshot for given props', async () => {
     const page = await newSpecPage({
@@ -337,11 +373,11 @@ describe('autocomplete-multiselect', () => {
              ></autocomplete-multiselect>`,
     });
 
-    const comp = page.rootInstance;
+    const comp = page.rootInstance as AutocompleteMultiselect;
     comp.options = ['One', 'Two'];
     comp.selectedItems = ['Two'];
     comp.inputValue = 'T';
-    comp.filterOptions();
+    await comp.filterOptions();
     comp.validation = true;
     await page.waitForChanges();
 

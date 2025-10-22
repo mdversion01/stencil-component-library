@@ -4,13 +4,7 @@ import { logInfo, logWarn, logError } from '../../utils/log-debug';
 
 @Component({
   tag: 'autocomplete-single',
-  styleUrls: [
-    '../layout-styles.scss',
-    '../form-styles.scss',
-    '../input-field/input-field-styles.scss',
-    '../input-group/input-group-styles.scss',
-    './autocomplete-input.scss',
-  ],
+  styleUrls: ['../layout-styles.scss', '../form-styles.scss', '../input-field/input-field-styles.scss', '../input-group/input-group-styles.scss', './autocomplete-input.scss'],
   shadow: false,
 })
 export class AutocompleteSingle {
@@ -306,13 +300,17 @@ export class AutocompleteSingle {
     }
 
     const v = this.inputValue.trim().toLowerCase();
-    if (v.length > 0) {
-      this.filteredOptions = this.options.filter(opt => opt.toLowerCase().includes(v));
-      this.dropdownOpen = true;
-    } else {
+
+    if (v.length === 0) {
       this.filteredOptions = [];
       this.dropdownOpen = false;
+      return;
     }
+
+    this.filteredOptions = this.options.filter(opt => opt.toLowerCase().includes(v));
+
+    // ✅ Only open when there are matches
+    this.dropdownOpen = this.filteredOptions.length > 0;
   }
 
   private ensureOptionInView(index: number) {
@@ -450,7 +448,7 @@ export class AutocompleteSingle {
         aria-labelledby={this.arialabelledBy}
         aria-describedby={this.validation ? `${ids}-validation` : this.error ? `${ids}-error` : null}
         aria-autocomplete="list"
-        aria-expanded={this.filteredOptions.length > 0 ? 'true' : 'false'}
+        aria-expanded={this.dropdownOpen ? 'true' : 'false'}
         aria-controls={`${ids}-listbox`}
         aria-activedescendant={this.focusedOptionIndex >= 0 ? `${ids}-option-${this.focusedOptionIndex}` : undefined}
         aria-required={this.required ? 'true' : 'false'}
@@ -472,33 +470,25 @@ export class AutocompleteSingle {
   }
 
   private renderDropdownList(ids: string) {
-    const hasOptions = this.filteredOptions.length > 0;
-
     return (
       <ul role="listbox" id={`${ids}-listbox`} tabIndex={-1}>
-        {hasOptions
-          ? this.filteredOptions.map((option, index) => (
-              <li
-                id={`${ids}-option-${index}`}
-                role="option"
-                aria-selected={this.focusedOptionIndex === index ? 'true' : 'false'}
-                class={{
-                  'autocomplete-dropdown-item': true,
-                  focused: this.focusedOptionIndex === index,
-                  [`${this.size}`]: !!this.size,
-                }}
-                onMouseDown={this.onDropdownMouseDown}
-                onClick={() => this.selectOption(option)}
-                tabIndex={-1}
-              >
-                <span innerHTML={option.replace(/</g, '&lt;').replace(/>/g, '&gt;')} />
-              </li>
-            ))
-          : (
-            <li class={{ 'autocomplete-dropdown-no-results': true, [`${this.size}`]: !!this.size }} aria-disabled="true">
-              No results found
-            </li>
-          )}
+        {this.filteredOptions.map((option, index) => (
+          <li
+            id={`${ids}-option-${index}`}
+            role="option"
+            aria-selected={this.focusedOptionIndex === index ? 'true' : 'false'}
+            class={{
+              'autocomplete-dropdown-item': true,
+              'focused': this.focusedOptionIndex === index,
+              [`${this.size}`]: !!this.size,
+            }}
+            onMouseDown={this.onDropdownMouseDown}
+            onClick={() => this.selectOption(option)}
+            tabIndex={-1}
+          >
+            <span innerHTML={option.replace(/</g, '&lt;').replace(/>/g, '&gt;')} />
+          </li>
+        ))}
       </ul>
     );
   }
@@ -597,11 +587,7 @@ export class AutocompleteSingle {
 
     // Build grid classes from new props (or numeric fallbacks)
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass = this.isHorizontal()
-      ? this.buildColClass('input') || undefined
-      : this.isInline()
-      ? this.buildColClass('input') || undefined
-      : undefined;
+    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     if (this.isRowLayout()) {
       return (
@@ -641,10 +627,6 @@ export class AutocompleteSingle {
     const ids = this.camelCase(this.inputId).replace(/ /g, '');
     const names = this.camelCase(this.label).replace(/ /g, '');
 
-    return (
-      <div class={{ 'autocomplete-container': true, 'form-group': true }}>
-        {this.renderLayout(ids, names)}
-      </div>
-    );
+    return <div class={{ 'autocomplete-container': true, 'form-group': true }}>{this.renderLayout(ids, names)}</div>;
   }
 }

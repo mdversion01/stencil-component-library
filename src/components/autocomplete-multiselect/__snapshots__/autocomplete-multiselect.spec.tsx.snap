@@ -37,13 +37,6 @@ exports[`autocomplete-multiselect renders full DOM output snapshot for given pro
             </div>
           </div>
         </div>
-        <div aria-live="polite" class="autocomplete-dropdown">
-          <ul id="tagInput-listbox" role="listbox" tabindex="-1">
-            <li aria-disabled="true" class="autocomplete-dropdown-no-results">
-              No results found
-            </li>
-          </ul>
-        </div>
         <div aria-live="polite" class="invalid-feedback" id="tagInput-validation">
           Required field.
         </div>
