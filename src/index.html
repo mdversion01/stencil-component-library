@@ -19,12 +19,7 @@
      -->
     <app-wrapper>
       <div class="cwrapper">
-        <autocomplete-single
-          id="aci1"
-          label-size="sm"
-          input-id="ac-single1"
-          label="Autocomplete Single"
-        ></autocomplete-single>
+        <autocomplete-single id="aci1" add-btn label-size="sm" input-id="ac-single1" label="Autocomplete Single"></autocomplete-single>
 
         <autocomplete-single
           id="aci2"
@@ -42,7 +37,9 @@
 
         <autocomplete-multiselect
           id="aci3"
+          add-btn
           input-id="ac-1"
+          editable
           label="Autocomplete Multiselect"
           form-layout="horizontal"
           label-cols="col-sm-6 col-md-4"
@@ -56,8 +53,7 @@
 
         <autocomplete-multiple-selections
           id="aci4"
-          badge-variant="dark"
-          badge-shape="pill"
+          editable
           input-id="ac-2"
           label="Autocomplete Multiple Selections"
           label-size="lg"
@@ -67,6 +63,7 @@
           label-cols="col-sm-6 col-md-4"
           input-cols="col-sm-6 col-md-8"
           required
+          add-btn
           size="lg"
           validation
           validation-message="Please fill in"
@@ -630,15 +627,7 @@
 
         <input-field-component label="Last Name" value="" input-id="lastName"></input-field-component>
 
-        <input-field-component
-          label="Email"
-          required
-          validation
-          validation-message="Please enter a valid email"
-          value=""
-          input-id="email"
-          size="lg"
-        ></input-field-component>
+        <input-field-component label="Email" required validation validation-message="Please enter a valid email" value="" input-id="email" size="lg"></input-field-component>
 
         <input-field-component form-layout="inline" label="Email" input-id="email" label-col="6" input-col="6"></input-field-component>
 
@@ -684,38 +673,88 @@
           aci1.options = aci1Options;
         }, 300); // delay to allow stencil hydration
 
+        /***********************************/
+
         const aci2 = document.getElementById('aci2');
         const aci2Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
         setTimeout(() => {
           aci2.options = aci2Options;
         }, 300); // delay to allow stencil hydration
 
+        /***********************************/
+
         const aci3 = document.getElementById('aci3');
-        const aci3Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
-        setTimeout(() => {
-          aci3.options = aci3Options;
-        }, 300); // delay to allow stencil hydration
+        // keep this mutable so we can mirror updates from the component
+        let aci3Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+
+        // 1) Push initial options once the component is ready
+        // Either approach works; use ONE of them:
+
+        // A) Using Stencil's componentOnReady()
+        aci3.componentOnReady?.().then(async () => {
+          await aci3.setOptions(aci3Options);
+        });
+
+        // B) Or using customElements.whenDefined(...)
+        // customElements.whenDefined('autocomplete-multiselect').then(async () => {
+        //   await aci3.setOptions(aci3Options);
+        // });
+
+        // 2) Keep your app state in sync when users ADD/DELETE options (editable=true)
+        aci3.addEventListener('optionsChange', e => {
+          const { options, reason, value } = e.detail || {};
+          if (reason === 'replace') {
+            console.log('[aci3 optionsChange]', reason, options);
+          } else {
+            console.log('[aci3 optionsChange]', reason, value, options);
+          }
+          // (optional) persist somewhere (e.g., localStorage / server)
+          // localStorage.setItem('aci3Options', JSON.stringify(aci3Options));
+        });
+
+        // 3) (Optional) react to selection changes
+        aci3.addEventListener('multiSelectChange', e => {
+          console.log('[aci3 selectedItems]', e.detail);
+        });
+
+        // 4) (Optional) replace options later from your app
+        async function refreshFromServer(nextOptions) {
+          await aci3.setOptions(nextOptions); // will also emit optionsChange with reason: 'replace'
+        }
+
+        // 5) (Optional) read the current options from the component
+        async function logCurrentOptions() {
+          const opts = await aci3.getOptions();
+          console.log('[aci3 getOptions]', opts);
+        }
+
+        /***********************************/
+
+        let aci4Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango', 'Bet', 'Betty', 'Bobby', 'Bob', 'Bobby Brown', 'Bobby Blue', 'Bobby Green'];
 
         const aci4 = document.getElementById('aci4');
-        const aci4Options = [
-          'Apple',
-          'Apparatus',
-          'Apple Pie',
-          'Applegate',
-          'Banana',
-          'Orange',
-          'Mango',
-          'Bet',
-          'Betty',
-          'Bobby',
-          'Bob',
-          'Bobby Brown',
-          'Bobby Blue',
-          'Bobby Green',
-        ];
-        setTimeout(() => {
-          aci4.options = aci4Options;
-        }, 300);
+
+        (async () => {
+          if (window.customElements?.whenDefined) {
+            await customElements.whenDefined('autocomplete-multiple-selections');
+          }
+          if (typeof aci4.componentOnReady === 'function') {
+            await aci4.componentOnReady();
+          }
+
+          // seed options by assigning the prop (the component’s @Watch('options') will pick it up)
+          aci4.options = aci4Options.slice();
+
+          // there is NO optionsChange in this component by default.
+          // You can still listen to selection changes:
+          aci4.addEventListener('multiSelectChange', e => {
+            console.log('[aci4 selectedItems]', e.detail);
+          });
+
+          // If you want to mirror user-added options back to app state,
+          // you must add an `@Event({eventName:'optionsChange'})` inside the component
+          // and emit it when options are upserted/deleted. Otherwise, there’s no hook.
+        })();
       });
     </script>
   </body>

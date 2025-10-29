@@ -50,13 +50,17 @@ export namespace Components {
     interface AutocompleteMultipleSelections {
         "addBtn": boolean;
         "addIcon": string;
+        "addNewOnEnter": boolean;
         "arialabelledBy": string;
+        "autoSort": boolean;
         "badgeInlineStyles": string;
         "badgeShape": string;
         "badgeVariant": string;
         "clearIcon": string;
+        "clearInputOnBlurOutside": boolean;
         "devMode": boolean;
         "disabled": boolean;
+        "editable": boolean;
         "error": boolean;
         "errorMessage": string;
         "formId": string;
@@ -67,14 +71,23 @@ export namespace Components {
         "label": string;
         "labelCol": number;
         /**
-          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+          * Responsive columns (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")
          */
         "labelCols": string;
         "labelHidden": boolean;
         "labelSize": '' | 'sm' | 'lg';
+        /**
+          * Field name for selected items; if it ends with [] one input per item is emitted.
+         */
+        "name"?: string;
         "navigateOptions": (direction: number) => Promise<void>;
         "options": string[];
         "placeholder": string;
+        "preserveInputOnSelect"?: boolean;
+        /**
+          * Also submit whatever the user typed under this name (verbatim).
+         */
+        "rawInputName"?: string;
         "removeBtnBorder": boolean;
         "removeClearBtn": boolean;
         "required": boolean;
@@ -86,43 +99,57 @@ export namespace Components {
     interface AutocompleteMultiselect {
         "addBtn": boolean;
         "addIcon": string;
+        "addNewOnEnter": boolean;
         "arialabelledBy": string;
+        "autoSort": boolean;
         "badgeInlineStyles": string;
         "badgeShape": string;
         "badgeVariant": string;
         "clearIcon": string;
+        "clearInputOnBlurOutside": boolean;
         "devMode": boolean;
         "disabled": boolean;
+        "editable": boolean;
         "error": boolean;
         "errorMessage": string;
         "filterOptions": () => Promise<void>;
         "formId": string;
         "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * 🔎 Read current options from the component (for hosts).
+         */
+        "getOptions": () => Promise<string[]>;
         "inputCol": number;
         "inputCols": string;
         "inputId": string;
         "label": string;
         "labelCol": number;
         /**
-          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+          * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
          */
         "labelCols": string;
         "labelHidden": boolean;
         "labelSize": '' | 'sm' | 'lg';
+        "name"?: string;
         "navigateOptions": (direction: number) => Promise<void>;
         "options": string[];
         "placeholder": string;
+        "preserveInputOnSelect"?: boolean;
+        "rawInputName"?: string;
         "removeClearBtn": boolean;
         "required": boolean;
+        /**
+          * 🔧 Replace options from the host (for hosts). Also emits optionsChange('replace').
+         */
+        "setOptions": (next: string[]) => Promise<void>;
         "size": '' | 'sm' | 'lg';
         "type": string;
         "validation": boolean;
         "validationMessage": string;
     }
     interface AutocompleteSingle {
-        "addBtn": boolean;
-        "addIcon": string;
         "arialabelledBy": string;
+        "autoSort": boolean;
         "clearIcon": string;
         "devMode": boolean;
         "disabled": boolean;
@@ -139,7 +166,7 @@ export namespace Components {
          */
         "labelCol": number;
         /**
-          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+          * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
          */
         "labelCols": string;
         "labelHidden": boolean;
@@ -515,6 +542,7 @@ declare global {
         "clear": void;
         "componentError": { message: string; stack?: string };
         "multiSelectChange": string[];
+        "optionDelete": string;
     }
     interface HTMLAutocompleteMultipleSelectionsElement extends Components.AutocompleteMultipleSelections, HTMLStencilElement {
         addEventListener<K extends keyof HTMLAutocompleteMultipleSelectionsElementEventMap>(type: K, listener: (this: HTMLAutocompleteMultipleSelectionsElement, ev: AutocompleteMultipleSelectionsCustomEvent<HTMLAutocompleteMultipleSelectionsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -535,6 +563,12 @@ declare global {
         "clear": void;
         "componentError": { message: string; stack?: string };
         "multiSelectChange": string[];
+        "optionsChange": {
+    options: string[];
+    reason: 'add' | 'delete' | 'replace';
+    value?: string; // the added/removed item, if applicable
+  };
+        "optionDelete": string;
     }
     interface HTMLAutocompleteMultiselectElement extends Components.AutocompleteMultiselect, HTMLStencilElement {
         addEventListener<K extends keyof HTMLAutocompleteMultiselectElementEventMap>(type: K, listener: (this: HTMLAutocompleteMultiselectElement, ev: AutocompleteMultiselectCustomEvent<HTMLAutocompleteMultiselectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -788,13 +822,17 @@ declare namespace LocalJSX {
     interface AutocompleteMultipleSelections {
         "addBtn"?: boolean;
         "addIcon"?: string;
+        "addNewOnEnter"?: boolean;
         "arialabelledBy"?: string;
+        "autoSort"?: boolean;
         "badgeInlineStyles"?: string;
         "badgeShape"?: string;
         "badgeVariant"?: string;
         "clearIcon"?: string;
+        "clearInputOnBlurOutside"?: boolean;
         "devMode"?: boolean;
         "disabled"?: boolean;
+        "editable"?: boolean;
         "error"?: boolean;
         "errorMessage"?: string;
         "formId"?: string;
@@ -805,17 +843,27 @@ declare namespace LocalJSX {
         "label"?: string;
         "labelCol"?: number;
         /**
-          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+          * Responsive columns (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
         "labelSize"?: '' | 'sm' | 'lg';
+        /**
+          * Field name for selected items; if it ends with [] one input per item is emitted.
+         */
+        "name"?: string;
         "onClear"?: (event: AutocompleteMultipleSelectionsCustomEvent<void>) => void;
         "onComponentError"?: (event: AutocompleteMultipleSelectionsCustomEvent<{ message: string; stack?: string }>) => void;
         "onItemSelect"?: (event: AutocompleteMultipleSelectionsCustomEvent<string>) => void;
         "onMultiSelectChange"?: (event: AutocompleteMultipleSelectionsCustomEvent<string[]>) => void;
+        "onOptionDelete"?: (event: AutocompleteMultipleSelectionsCustomEvent<string>) => void;
         "options"?: string[];
         "placeholder"?: string;
+        "preserveInputOnSelect"?: boolean;
+        /**
+          * Also submit whatever the user typed under this name (verbatim).
+         */
+        "rawInputName"?: string;
         "removeBtnBorder"?: boolean;
         "removeClearBtn"?: boolean;
         "required"?: boolean;
@@ -827,13 +875,17 @@ declare namespace LocalJSX {
     interface AutocompleteMultiselect {
         "addBtn"?: boolean;
         "addIcon"?: string;
+        "addNewOnEnter"?: boolean;
         "arialabelledBy"?: string;
+        "autoSort"?: boolean;
         "badgeInlineStyles"?: string;
         "badgeShape"?: string;
         "badgeVariant"?: string;
         "clearIcon"?: string;
+        "clearInputOnBlurOutside"?: boolean;
         "devMode"?: boolean;
         "disabled"?: boolean;
+        "editable"?: boolean;
         "error"?: boolean;
         "errorMessage"?: string;
         "formId"?: string;
@@ -844,17 +896,29 @@ declare namespace LocalJSX {
         "label"?: string;
         "labelCol"?: number;
         /**
-          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+          * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
         "labelSize"?: '' | 'sm' | 'lg';
+        "name"?: string;
         "onClear"?: (event: AutocompleteMultiselectCustomEvent<void>) => void;
         "onComponentError"?: (event: AutocompleteMultiselectCustomEvent<{ message: string; stack?: string }>) => void;
         "onItemSelect"?: (event: AutocompleteMultiselectCustomEvent<string>) => void;
         "onMultiSelectChange"?: (event: AutocompleteMultiselectCustomEvent<string[]>) => void;
+        "onOptionDelete"?: (event: AutocompleteMultiselectCustomEvent<string>) => void;
+        /**
+          * 🔔 Hook for hosts to mirror/persist options
+         */
+        "onOptionsChange"?: (event: AutocompleteMultiselectCustomEvent<{
+    options: string[];
+    reason: 'add' | 'delete' | 'replace';
+    value?: string; // the added/removed item, if applicable
+  }>) => void;
         "options"?: string[];
         "placeholder"?: string;
+        "preserveInputOnSelect"?: boolean;
+        "rawInputName"?: string;
         "removeClearBtn"?: boolean;
         "required"?: boolean;
         "size"?: '' | 'sm' | 'lg';
@@ -863,9 +927,8 @@ declare namespace LocalJSX {
         "validationMessage"?: string;
     }
     interface AutocompleteSingle {
-        "addBtn"?: boolean;
-        "addIcon"?: string;
         "arialabelledBy"?: string;
+        "autoSort"?: boolean;
         "clearIcon"?: string;
         "devMode"?: boolean;
         "disabled"?: boolean;
@@ -882,7 +945,7 @@ declare namespace LocalJSX {
          */
         "labelCol"?: number;
         /**
-          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+          * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;

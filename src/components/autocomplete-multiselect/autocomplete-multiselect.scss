@@ -70,6 +70,7 @@
   flex-wrap: wrap;
   overflow: auto;
   max-height: 100px;
+  padding-top: 2px;
 
 
   .badge {
@@ -83,7 +84,7 @@
     height: 30px;
     justify-content: center;
     margin: 0.15rem;
-    padding: 0 0.5rem;
+    padding: 0.15rem 0.5rem !important;
     position: relative;
 
     &.sm {
@@ -93,7 +94,7 @@
 
     &.lg {
       font-size: 1rem !important;
-      height: 42px;
+      height: 38px;
     }
 
     &.square {

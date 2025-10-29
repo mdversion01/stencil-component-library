@@ -2,10 +2,6 @@
 import { newSpecPage } from '@stencil/core/testing';
 import { AutocompleteMultipleSelections } from './autocomplete-multiple-selections';
 
-// If your Jest config doesn't already include the Stencil serializer, ensure:
-// preset: '@stencil/core/testing',
-// snapshotSerializers: ['@stencil/core/testing'],
-
 describe('<autocomplete-multiple-selections>', () => {
   it('renders with default props', async () => {
     const page = await newSpecPage({
@@ -20,7 +16,7 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(label.textContent).toContain('Fruits');
     expect(label.className).toContain('form-control-label');
 
-    // placeholder now prefers the label
+    // placeholder prefers the label
     expect(input.placeholder).toBe('Fruits');
 
     // input a11y basics
@@ -43,7 +39,7 @@ describe('<autocomplete-multiple-selections>', () => {
     comp.filterOptions();
     await page.waitForChanges();
     expect(comp.filteredOptions).toEqual([]);
-    expect(comp['dropdownOpen']).toBe(false);
+    expect((comp as any)['dropdownOpen']).toBe(false);
     expect(page.root!.querySelector('[role="listbox"]')).toBeNull();
 
     // With matches => open
@@ -51,14 +47,14 @@ describe('<autocomplete-multiple-selections>', () => {
     comp.filterOptions();
     await page.waitForChanges();
     expect(comp.filteredOptions).toEqual(['Banana', 'Orange']);
-    expect(comp['dropdownOpen']).toBe(true);
+    expect((comp as any)['dropdownOpen']).toBe(true);
 
     const input = page.root!.querySelector('input')!;
     expect(input.getAttribute('aria-expanded')).toBe('true');
     expect(page.root!.querySelector('[role="listbox"]')).toBeTruthy();
   });
 
-  it('selects multiple items and keeps dropdown open with remaining options', async () => {
+  it('selects multiple items (dropdown now closes after each pick)', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
       html: `<autocomplete-multiple-selections input-id="tags"></autocomplete-multiple-selections>`,
@@ -66,27 +62,26 @@ describe('<autocomplete-multiple-selections>', () => {
 
     const comp = page.rootInstance as AutocompleteMultipleSelections;
     comp.options = ['Alpha', 'Beta', 'Gamma'];
-    comp.inputValue = 'a'; // matches all three
-    comp.filterOptions();
-    await page.waitForChanges();
 
     // Select "Alpha"
+    comp.inputValue = 'a';
+    comp.filterOptions();
+    await page.waitForChanges();
     (comp as any).toggleItem('Alpha');
     await page.waitForChanges();
+
     expect(comp.selectedItems).toEqual(['Alpha']);
+    expect((comp as any)['dropdownOpen']).toBe(false);
 
-    // Dropdown should still be open, filtered by the last query ('a') but excluding selected
-    expect(comp['dropdownOpen']).toBe(true);
-    expect(comp.filteredOptions).toEqual(['Beta', 'Gamma']);
-
-    // Select "Gamma"
+    // Re-open for next pick and select "Gamma"
+    comp.inputValue = 'a';
+    comp.filterOptions();
+    await page.waitForChanges();
     (comp as any).toggleItem('Gamma');
     await page.waitForChanges();
-    expect(comp.selectedItems).toEqual(['Alpha', 'Gamma']);
 
-    // Still open, showing remaining option(s)
-    expect(comp['dropdownOpen']).toBe(true);
-    expect(comp.filteredOptions).toEqual(['Beta']);
+    expect(comp.selectedItems).toEqual(['Alpha', 'Gamma']);
+    expect((comp as any)['dropdownOpen']).toBe(false);
   });
 
   it('validates as invalid when required and nothing selected', async () => {
@@ -140,7 +135,7 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(input.getAttribute('aria-haspopup')).toBe('listbox');
   });
 
-  it('Escape closes the dropdown and clears first-typed char fix', async () => {
+  it('Escape closes the dropdown and clears the input', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
       html: `<autocomplete-multiple-selections></autocomplete-multiple-selections>`,
@@ -151,15 +146,15 @@ describe('<autocomplete-multiple-selections>', () => {
     comp.inputValue = 'o';
     comp.filterOptions();
     await page.waitForChanges();
-    expect(comp['dropdownOpen']).toBe(true);
+    expect((comp as any)['dropdownOpen']).toBe(true);
 
     const input = page.root!.querySelector('input')!;
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, composed: true }));
     await page.waitForChanges();
 
-    expect(comp['dropdownOpen']).toBe(false);
+    expect((comp as any)['dropdownOpen']).toBe(false);
     expect(comp.filteredOptions.length).toBe(0);
-    expect(comp.inputValue).toBe(''); // first-char persistence fix
+    expect(comp.inputValue).toBe('');
   });
 
   it('programmatic navigateOptions updates aria-activedescendant', async () => {
@@ -185,7 +180,7 @@ describe('<autocomplete-multiple-selections>', () => {
   it('disables input and add/clear buttons when disabled', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
-      html: `<autocomplete-multiple-selections disabled add-btn></autocomplete-multiple-selections>`,
+      html: `<autocomplete-multiple-selections disabled add-btn editable></autocomplete-multiple-selections>`,
     });
 
     // give it some state so clear button is rendered
@@ -221,6 +216,237 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(inputWrapper.className).toMatch(/(^|\s)col-sm-8(\s|$)/);
   });
 
+  // ---------- UPDATED: Enter adds even when editable=false (ephemeral), upserts only when editable=true ----------
+
+  it('adds a new value on Enter when there is no match (editable=true) and sorts when autoSort=true', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections input-id="words" editable></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['Orange', 'banana'];
+    await page.waitForChanges();
+
+    comp.inputValue = 'Apple';
+    await page.waitForChanges();
+
+    const input = page.root!.querySelector('input')!;
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(comp.selectedItems).toContain('Apple');
+    expect(comp.options).toEqual(['Apple', 'banana', 'Orange']);
+  });
+
+  it('respects autoSort=false (no resort after insert) when editable', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections input-id="nosort" auto-sort="false" editable></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['Orange', 'Banana'];
+    await page.waitForChanges();
+
+    comp.inputValue = 'Apple';
+    await page.waitForChanges();
+
+    const input = page.root!.querySelector('input')!;
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(comp.options).toEqual(['Orange', 'Banana', 'Apple']);
+    expect(comp.selectedItems).toContain('Apple');
+  });
+
+  it('does not create a duplicate when the typed value already exists (case-insensitive)', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections input-id="dedupe"></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['Apple', 'Banana'];
+    await page.waitForChanges();
+
+    // Type existing option in different case and press Enter
+    comp.inputValue = 'apple';
+    comp.filterOptions();
+    await page.waitForChanges();
+
+    const input = page.root!.querySelector('input')!;
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(comp.options).toEqual(['Apple', 'Banana']);
+    expect(comp.selectedItems.some(s => s.toLowerCase() === 'apple')).toBe(true);
+  });
+
+  it('Add button upserts new value and selects it (and sorts by default) when editable', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections add-btn editable input-id="adder"></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['Beta'];
+    comp.inputValue = 'Alpha';
+    await page.waitForChanges();
+
+    const addBtn = page.root!.querySelector('button.add-btn') as HTMLButtonElement;
+    expect(addBtn).toBeTruthy(); // visible because editable && input has text
+    addBtn.click();
+    await page.waitForChanges();
+
+    expect(comp.selectedItems).toContain('Alpha');
+    expect(comp.options).toEqual(['Alpha', 'Beta']);
+  });
+
+  it('when editable=false: Add button is hidden; Enter selects ephemerally but DOES NOT mutate options', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections add-btn input-id="noedit"></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['Beta'];
+    await page.waitForChanges();
+
+    // Add button should not render
+    expect(page.root!.querySelector('button.add-btn')).toBeNull();
+
+    // Enter on unknown value should NOT insert into options, but should select ephemerally
+    comp.inputValue = 'Alpha';
+    await page.waitForChanges();
+
+    const input = page.root!.querySelector('input')!;
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(comp.options).toEqual(['Beta']);              // unchanged
+    expect(comp.selectedItems).toEqual(['Alpha']);       // ephemeral selection
+  });
+
+  // ---------- NEW: keyboard virtual focus to delete and delete action ----------
+
+  it('ArrowRight moves virtual focus to delete button (for user-added option) and Enter deletes it', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections input-id="id" editable></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+
+    comp.options = ['Predef'];
+    await page.waitForChanges();
+
+    // Add a new user option (this also selects it)
+    comp.inputValue = 'Zeta';
+    await page.waitForChanges();
+    const input = page.root!.querySelector('input')!;
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    // Unselect so it can appear in filteredOptions
+    (comp as any).toggleItem('Zeta');
+    await page.waitForChanges();
+
+    // Now filter so Zeta is visible (and user-added)
+    comp.inputValue = 'z';
+    comp.filterOptions();
+    await page.waitForChanges();
+
+    expect(comp.filteredOptions).toEqual(['Zeta']);
+    expect(comp.focusedOptionIndex).toBe(-1); // not set until nav
+    await comp.navigateOptions(1);            // move to index 0
+    await page.waitForChanges();
+    expect(input.getAttribute('aria-activedescendant')).toBe('id-option-0');
+
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(input.getAttribute('aria-activedescendant')).toBe('id-delete-0');
+
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(comp.options.includes('Zeta')).toBe(false);
+    expect(comp.filteredOptions.includes('Zeta')).toBe(false);
+  });
+
+  // ---------- Blur / outside click behavior ----------
+
+  it('tabbing to Add button does NOT clear the typed input; clicking Add then inserts & selects it', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections add-btn editable input-id="keep"></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['Beta'];
+    comp.inputValue = 'Alpha';
+    await page.waitForChanges();
+
+    const input = page.root!.querySelector('input') as HTMLInputElement;
+    const addBtn = page.root!.querySelector('button.add-btn') as HTMLButtonElement;
+
+    // Simulate tab from input -> Add button
+    input.focus?.();
+    addBtn.focus?.();
+
+    // Make the blur timeout run immediately AND force activeElement to be the Add button.
+    const stSpy = jest.spyOn(window, 'setTimeout').mockImplementation((fn: any) => {
+      try { fn(); } catch {}
+      return 0 as unknown as number;
+    });
+
+    const originalActive = Object.getOwnPropertyDescriptor(document, 'activeElement');
+    Object.defineProperty(document, 'activeElement', { configurable: true, get: () => addBtn });
+
+    try {
+      (comp as any).handleBlur();
+      await page.waitForChanges();
+
+      expect(comp.inputValue).toBe('Alpha');
+
+      addBtn.click();
+      await page.waitForChanges();
+
+      expect(comp.selectedItems).toContain('Alpha');
+      expect(comp.options).toEqual(['Alpha', 'Beta']);
+    } finally {
+      stSpy.mockRestore();
+      if (originalActive) Object.defineProperty(document, 'activeElement', originalActive);
+      else delete (document as any).activeElement;
+    }
+  });
+
+  it('clicking outside closes the dropdown and (by default) does NOT clear the input', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections input-id="outside"></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['One', 'Two'];
+    comp.inputValue = 'o';
+    comp.filterOptions();
+    await page.waitForChanges();
+
+    expect((comp as any)['dropdownOpen']).toBe(true);
+    expect(comp.inputValue).toBe('o');
+
+    // Simulate an outside click: composedPath does NOT include the component root
+    const fakeEvent = { composedPath: () => [document.body] } as any as MouseEvent;
+    (comp as any).handleClickOutside(fakeEvent);
+    await page.waitForChanges();
+
+    expect((comp as any)['dropdownOpen']).toBe(false);
+    expect(comp.filteredOptions.length).toBe(0);
+    expect(comp.inputValue).toBe('o'); // default behavior now preserves input
+  });
+
   // ---------------- SNAPSHOTS ----------------
 
   it('matches snapshot (default render)', async () => {
@@ -243,23 +469,33 @@ describe('<autocomplete-multiple-selections>', () => {
                label="Tags"
                input-id="tags"
                add-btn
+               editable
              ></autocomplete-multiple-selections>`,
     });
 
     const comp = page.rootInstance as AutocompleteMultipleSelections;
     comp.options = ['Alpha', 'Beta', 'Gamma', 'Delta'];
+
+    // Make two selections (dropdown closes each time)
     comp.inputValue = 'a';
     comp.filterOptions();
     await page.waitForChanges();
-
-    // Select two items programmatically (runtime can access "private")
     (comp as any).toggleItem('Alpha');
+    await page.waitForChanges();
+
+    comp.inputValue = 'a';
+    comp.filterOptions();
+    await page.waitForChanges();
     (comp as any).toggleItem('Gamma');
     await page.waitForChanges();
 
-    // Should still be open and show remaining matches
-    expect(comp['dropdownOpen']).toBe(true);
     expect(comp.selectedItems).toEqual(['Alpha', 'Gamma']);
+
+    // Re-open to capture "open with matches" snapshot
+    comp.inputValue = 'a';
+    comp.filterOptions();
+    await page.waitForChanges();
+    expect((comp as any)['dropdownOpen']).toBe(true);
 
     expect(page.root).toMatchSnapshot();
   });

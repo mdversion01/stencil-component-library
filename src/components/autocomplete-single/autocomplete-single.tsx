@@ -4,7 +4,13 @@ import { logInfo, logWarn, logError } from '../../utils/log-debug';
 
 @Component({
   tag: 'autocomplete-single',
-  styleUrls: ['../layout-styles.scss', '../form-styles.scss', '../input-field/input-field-styles.scss', '../input-group/input-group-styles.scss', './autocomplete-input.scss'],
+  styleUrls: [
+    '../layout-styles.scss',
+    '../form-styles.scss',
+    '../input-field/input-field-styles.scss',
+    '../input-group/input-group-styles.scss',
+    './autocomplete-input.scss',
+  ],
   shadow: false,
 })
 export class AutocompleteSingle {
@@ -12,8 +18,7 @@ export class AutocompleteSingle {
 
   // Props
   @Prop({ mutable: true }) options: string[] = [];
-  @Prop() addBtn = false;
-  @Prop() addIcon = '';
+  @Prop() autoSort: boolean = true;
   @Prop() arialabelledBy: string = '';
   @Prop() clearIcon = '';
   @Prop() placeholder = 'Type to search/filter...';
@@ -38,7 +43,7 @@ export class AutocompleteSingle {
   @Prop() labelCol: number = 2;
   @Prop() inputCol: number = 10;
 
-  /** NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4") */
+  /** Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4") */
   @Prop() labelCols: string = '';
   @Prop() inputCols: string = '';
 
@@ -67,11 +72,20 @@ export class AutocompleteSingle {
       logError(this.devMode, 'AutocompleteSingle', `'options' should be an array`, { receivedType: typeof newVal });
       return;
     }
+
+    if (this.autoSort) {
+      const sorted = [...newVal].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+      const changed = sorted.length !== newVal.length || sorted.some((v, i) => v !== newVal[i]);
+      if (changed) {
+        this.options = sorted;
+        return;
+      }
+    }
+
     this.filterOptions();
   }
 
   componentDidLoad() {
-    // Use capture to be resilient to portals/shadow
     document.addEventListener('click', this.handleClickOutside, true);
     this.hasBeenInteractedWith = false;
   }
@@ -112,11 +126,7 @@ export class AutocompleteSingle {
     return this.isHorizontal() || this.isInline();
   }
 
-  /** Convert a compact responsive spec to Bootstrap classes.
-   * Accepts:
-   *  - raw Bootstrap pieces: "col", "col-6", "col-sm-4 col-md-3"
-   *  - compact tokens: "6" => "col-6", "xs-12 sm-6 md-4" => "col-12 col-sm-6 col-md-4"
-   */
+  /** Convert a compact responsive spec to Bootstrap classes. */
   private parseColsSpec(spec?: string): string {
     if (!spec) return '';
     const tokens = spec.trim().split(/\s+/);
@@ -125,20 +135,15 @@ export class AutocompleteSingle {
     for (const t of tokens) {
       if (!t) continue;
 
-      // Already a bootstrap col class? keep it
       if (/^col(-\w+)?(-\d+)?$/.test(t)) {
         out.push(t);
         continue;
       }
-
-      // pure number => col-N
       if (/^\d{1,2}$/.test(t)) {
         const n = Math.max(1, Math.min(12, parseInt(t, 10)));
         out.push(`col-${n}`);
         continue;
       }
-
-      // bp-n => col-bp-n (xs maps to no bp)
       const m = /^(xs|sm|md|lg|xl|xxl)-(\d{1,2})$/.exec(t);
       if (m) {
         const bp = m[1];
@@ -146,59 +151,41 @@ export class AutocompleteSingle {
         out.push(bp === 'xs' ? `col-${n}` : `col-${bp}-${n}`);
         continue;
       }
-
-      // allow plain "col"
       if (t === 'col') {
         out.push('col');
         continue;
       }
 
-      // otherwise ignore unknown token
-      if (this.devMode) {
-        console.warn('[autocomplete-single] Unknown cols token:', t);
-      }
+      if (this.devMode) console.warn('[autocomplete-single] Unknown cols token:', t);
     }
 
-    // de-dup
     return Array.from(new Set(out)).join(' ');
   }
 
-  /** Build final col class for label/input with precedence:
-   *  1) responsive string (labelCols/inputCols)
-   *  2) numeric fallback (labelCol/inputCol) => "col-N"
-   *  3) default "col" if explicitly passed as spec
-   *  4) otherwise '' (stacked layouts)
-   */
   private buildColClass(kind: 'label' | 'input'): string {
     const spec = (kind === 'label' ? this.labelCols : this.inputCols)?.trim();
     const num = kind === 'label' ? this.labelCol : this.inputCol;
 
-    // For horizontal layout we must return something if provided/derived
     if (this.isHorizontal()) {
       if (spec) return this.parseColsSpec(spec);
 
-      // labelHidden => input should be full width unless user overrode via inputCols
       if (kind === 'input' && this.labelHidden) {
         return this.inputCols ? this.parseColsSpec(this.inputCols) : 'col-12';
       }
 
-      // numeric fallback
       if (Number.isFinite(num)) {
         const n = Math.max(0, Math.min(12, Number(num)));
-        if (n === 0) return ''; // e.g., caller may skip rendering label entirely
+        if (n === 0) return '';
         return `col-${n}`;
       }
 
-      // no spec/numeric => allow plain 'col' if user passed it
       return '';
     }
 
-    // Inline: respect user spec if given (they can use 'col' or responsive)
     if (this.isInline()) {
       return spec ? this.parseColsSpec(spec) : '';
     }
 
-    // Stacked: no grid classes
     return '';
   }
 
@@ -207,7 +194,6 @@ export class AutocompleteSingle {
   }
 
   private showRequiredMark() {
-    // show the required star only until the field is "satisfied"
     return this.required && !this.meetsTypingThreshold();
   }
 
@@ -251,14 +237,19 @@ export class AutocompleteSingle {
       }
 
       if (key === 'Enter') {
-        if (this.focusedOptionIndex >= 0) {
+        event.preventDefault();
+
+        // If a dropdown option is focused, select it and emit.
+        if (this.focusedOptionIndex >= 0 && this.filteredOptions[this.focusedOptionIndex]) {
           this.selectOption(this.filteredOptions[this.focusedOptionIndex]);
-        } else {
-          event.preventDefault();
-          this.closeDropdown();
-          input.blur();
-          if (this.required) this.validation = !this.meetsTypingThreshold();
+          return;
         }
+
+        // No focused option: accept the free text as-is (do NOT mutate options).
+        // Leave value in the input so forms can submit it via the input's name.
+        this.closeDropdown();
+        input.blur();
+        if (this.required) this.validation = !this.meetsTypingThreshold();
         return;
       }
 
@@ -277,7 +268,6 @@ export class AutocompleteSingle {
   };
 
   private onDropdownMouseDown = () => {
-    // prevent input blur from closing the dropdown when clicking inside it
     this.suppressBlur = true;
   };
 
@@ -308,8 +298,6 @@ export class AutocompleteSingle {
     }
 
     this.filteredOptions = this.options.filter(opt => opt.toLowerCase().includes(v));
-
-    // ✅ Only open when there are matches
     this.dropdownOpen = this.filteredOptions.length > 0;
   }
 
@@ -351,7 +339,6 @@ export class AutocompleteSingle {
     this.itemSelect.emit(option);
     this.dropdownOpen = false;
 
-    // selection finished: allow normal blur from now on
     this.suppressBlur = false;
 
     setTimeout(() => {
@@ -469,6 +456,31 @@ export class AutocompleteSingle {
     );
   }
 
+  private renderClearIcon() {
+    return (
+      <svg class="fa-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s-12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+      </svg>
+    );
+  }
+
+  private renderClearButton() {
+    if (this.removeClearBtn || !this.inputValue) return null;
+
+    return (
+      <button
+        class="input-group-btn clear clear-btn"
+        role="button"
+        onClick={this.clearInput}
+        aria-label="Clear input"
+        title="Clear input"
+        disabled={this.disabled}
+      >
+        {this.clearIcon ? <i class={this.clearIcon} /> : this.renderClearIcon()}
+      </button>
+    );
+  }
+
   private renderDropdownList(ids: string) {
     return (
       <ul role="listbox" id={`${ids}-listbox`} tabIndex={-1}>
@@ -479,7 +491,7 @@ export class AutocompleteSingle {
             aria-selected={this.focusedOptionIndex === index ? 'true' : 'false'}
             class={{
               'autocomplete-dropdown-item': true,
-              'focused': this.focusedOptionIndex === index,
+              focused: this.focusedOptionIndex === index,
               [`${this.size}`]: !!this.size,
             }}
             onMouseDown={this.onDropdownMouseDown}
@@ -542,52 +554,17 @@ export class AutocompleteSingle {
     return (
       <div class={this.groupClasses()}>
         {this.renderInputField(ids, names)}
-        {this.addBtn ? this.renderAddButton() : null}
         {this.renderClearButton()}
       </div>
-    );
-  }
-
-  private renderAddIcon() {
-    return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-        <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
-      </svg>
-    );
-  }
-
-  private renderAddButton() {
-    return (
-      <button class="input-group-btn add add-btn" role="button" onClick={() => this.itemSelect.emit(this.inputValue)} aria-label="Add item" title="Add item">
-        {this.addIcon ? <i class={this.addIcon} /> : this.renderAddIcon()}
-      </button>
-    );
-  }
-
-  private renderClearIcon() {
-    return (
-      <svg class="fa-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-      </svg>
-    );
-  }
-
-  private renderClearButton() {
-    if (this.removeClearBtn || !this.inputValue) return null;
-
-    return (
-      <button class="input-group-btn clear clear-btn" role="button" onClick={this.clearInput} aria-label="Clear input" title="Clear input">
-        {this.clearIcon ? <i class={this.clearIcon} /> : this.renderClearIcon()}
-      </button>
     );
   }
 
   private renderLayout(ids: string, names: string) {
     const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
 
-    // Build grid classes from new props (or numeric fallbacks)
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
+    const inputColClass =
+      this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     if (this.isRowLayout()) {
       return (

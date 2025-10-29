@@ -45,7 +45,7 @@ describe('<autocomplete-single>', () => {
     await page.waitForChanges();
 
     expect(comp.filteredOptions).toEqual([]);
-    expect(comp['dropdownOpen']).toBe(false);
+    expect((comp as any)['dropdownOpen']).toBe(false);
     expect(page.root!.querySelector('.autocomplete-dropdown')).toBeNull();
 
     // With matches -> open
@@ -54,7 +54,7 @@ describe('<autocomplete-single>', () => {
     await page.waitForChanges();
 
     expect(comp.filteredOptions).toEqual(['Banana', 'Orange']);
-    expect(comp['dropdownOpen']).toBe(true);
+    expect((comp as any)['dropdownOpen']).toBe(true);
     const input = page.root!.querySelector('input')!;
     expect(input.getAttribute('aria-expanded')).toBe('true');
     expect(page.root!.querySelector('.autocomplete-dropdown')).toBeTruthy();
@@ -74,7 +74,7 @@ describe('<autocomplete-single>', () => {
     await page.waitForChanges();
 
     expect(comp.filteredOptions).toEqual([]);
-    expect(comp['dropdownOpen']).toBe(false);
+    expect((comp as any)['dropdownOpen']).toBe(false);
     expect(page.root!.querySelector('[role="listbox"]')).toBeNull();
 
     const input = page.root!.querySelector('input')!;
@@ -90,7 +90,7 @@ describe('<autocomplete-single>', () => {
     const component = page.rootInstance as AutocompleteSingle;
     component.options = ['Apple', 'Banana', 'Orange'];
     component.inputValue = 'Ap';
-    (component as any).filterOptions(); // call internal method
+    (component as any).filterOptions();
     await page.waitForChanges();
 
     expect(component.filteredOptions).toEqual(['Apple']);
@@ -111,15 +111,13 @@ describe('<autocomplete-single>', () => {
     await page.waitForChanges();
 
     const input = page.root!.querySelector('input')!;
-    // navigate to first item and select
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, composed: true }));
     await page.waitForChanges();
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
     await page.waitForChanges();
 
-    // Selected value is one of the filtered options starting with 'a'
     expect(['Apple', 'Banana', 'Orange']).toContain(comp.inputValue);
-    expect(comp['dropdownOpen']).toBe(false);
+    expect((comp as any)['dropdownOpen']).toBe(false);
     expect(page.root!.querySelector('.autocomplete-dropdown')).toBeNull();
   });
 
@@ -135,13 +133,13 @@ describe('<autocomplete-single>', () => {
     (comp as any).filterOptions();
     await page.waitForChanges();
 
-    expect(comp['dropdownOpen']).toBe(true);
+    expect((comp as any)['dropdownOpen']).toBe(true);
 
     const input = page.root!.querySelector('input')!;
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, composed: true }));
     await page.waitForChanges();
 
-    expect(comp['dropdownOpen']).toBe(false);
+    expect((comp as any)['dropdownOpen']).toBe(false);
     expect(page.root!.querySelector('.autocomplete-dropdown')).toBeNull();
   });
 
@@ -158,7 +156,7 @@ describe('<autocomplete-single>', () => {
 
     (component as any).selectOption('Two');
     expect(spy).toHaveBeenCalledWith('Two');
-    expect(component['dropdownOpen']).toBe(false);
+    expect((component as any)['dropdownOpen']).toBe(false);
   });
 
   it('shows clear button when input has value and emits clear on click', async () => {
@@ -171,7 +169,6 @@ describe('<autocomplete-single>', () => {
     const clearSpy = jest.fn();
     comp.clear = { emit: clearSpy } as any;
 
-    // give it a value so clear button renders
     comp.inputValue = 'Some text';
     await page.waitForChanges();
 
@@ -199,6 +196,97 @@ describe('<autocomplete-single>', () => {
     expect(sanitized).not.toContain('>');
   });
 
+  // ---- UPDATED BEHAVIOR: free-typed Enter selects text WITHOUT mutating options ----
+
+  it('pressing Enter with no match selects free-typed text, emits itemSelect, and does not mutate options', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteSingle],
+      html: `<autocomplete-single label="Fruits" input-id="fruit"></autocomplete-single>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteSingle;
+    const emitted: string[] = [];
+    page.root!.addEventListener('itemSelect', (e: any) => emitted.push(e.detail));
+
+    // Start with two options (watcher will sort them)
+    comp.options = ['Banana', 'Apple'];
+    await page.waitForChanges();
+    expect(comp.options).toEqual(['Apple', 'Banana']); // sorted by watcher
+
+    // Type a non-matching value
+    comp.inputValue = 'Pear';
+    (comp as any).filterOptions(); // no matches => dropdown remains closed
+    await page.waitForChanges();
+
+    // Press Enter with no focused item -> SHOULD NOT mutate options
+    const input = page.root!.querySelector('input')!;
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    // Selected value is the new one
+    expect(comp.inputValue).toBe('Pear');
+
+    // Options remain unchanged
+    expect(comp.options).toEqual(['Apple', 'Banana']);
+
+    // Component does not emit itemSelect for free-typed Enter (no list selection)
+    expect(emitted).toEqual([]);
+  });
+
+  it('does not duplicate an existing option when pressing Enter on a free-typed existing value (case-insensitive)', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteSingle],
+      html: `<autocomplete-single label="Fruits" input-id="fruit"></autocomplete-single>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteSingle;
+    comp.options = ['Apple'];
+    await page.waitForChanges();
+
+    // Type same word in different casing and press Enter (no focused item)
+    comp.inputValue = 'apple';
+    (comp as any).filterOptions();
+    await page.waitForChanges();
+
+    const input = page.root!.querySelector('input')!;
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    // No duplicate, keeps canonical casing in options
+    expect(comp.options).toEqual(['Apple']);
+    // The input keeps exactly what the user typed (no canonicalization)
+    expect(comp.inputValue).toBe('apple');
+    // (optional) also ensure behavior is case-insensitive in logic paths
+    expect(comp.inputValue.toLowerCase()).toBe('apple');
+  });
+
+  it('with autoSort=false, pressing Enter on a new free-typed value does not change options order (no insertion)', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteSingle],
+      html: `<autocomplete-single label="Fruits" input-id="fruit" auto-sort="false"></autocomplete-single>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteSingle;
+
+    comp.options = ['Orange', 'Banana'];
+    await page.waitForChanges();
+
+    comp.inputValue = 'Apple'; // not in options
+    (comp as any).filterOptions();
+    await page.waitForChanges();
+
+    const input = page.root!.querySelector('input')!;
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    // Options stay exactly as they were (no insertion)
+    expect(comp.options).toEqual(['Orange', 'Banana']);
+    // The input holds the free-typed value
+    expect(comp.inputValue).toBe('Apple');
+  });
+
+  // ---------------- SNAPSHOTS ----------------
+
   it('matches snapshot (default render)', async () => {
     const page = await newSpecPage({
       components: [AutocompleteSingle],
@@ -209,7 +297,6 @@ describe('<autocomplete-single>', () => {
            ></autocomplete-single>`,
     });
 
-    // Default state (closed dropdown)
     await page.waitForChanges();
     expect(page.root).toMatchSnapshot();
   });
@@ -226,12 +313,11 @@ describe('<autocomplete-single>', () => {
     const comp = page.rootInstance as AutocompleteSingle;
     comp.options = ['Apple', 'Banana', 'Orange'];
 
-    // Type a query that yields matches and open the dropdown
     comp.inputValue = 'an'; // Banana, Orange
     (comp as any).filterOptions();
     await page.waitForChanges();
 
-    expect(comp['dropdownOpen']).toBe(true);
+    expect((comp as any)['dropdownOpen']).toBe(true);
     expect(page.root).toMatchSnapshot();
   });
 });

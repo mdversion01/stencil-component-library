@@ -41,6 +41,25 @@ export class AutocompleteMultiselect {
   @Prop() type = '';
   @Prop({ mutable: true }) validation = false;
   @Prop() validationMessage = '';
+  @Prop() clearInputOnBlurOutside: boolean = false;
+
+  // Which field name to submit selected items under. If it ends with [] we’ll emit one hidden input per item.
+  @Prop() name?: string;
+
+  // Also submit whatever the user has typed (verbatim) under this field name.
+  // Useful for comma-separated free text when editable=false.
+  @Prop() rawInputName?: string;
+
+  // Optional: whether selecting items clears the input.
+  // Default: keep input when NOT editable; clear when editable.
+  @Prop() preserveInputOnSelect?: boolean;
+
+  // Add/Sort behavior
+  @Prop() addNewOnEnter: boolean = true;
+  @Prop() autoSort: boolean = true;
+
+  // Master switch — can users add/delete options at runtime?
+  @Prop() editable: boolean = false;
 
   // Badge Props
   @Prop() badgeVariant = '';
@@ -51,7 +70,7 @@ export class AutocompleteMultiselect {
   @Prop() labelCol: number = 2;
   @Prop() inputCol: number = 10;
 
-  /** NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4") */
+  /** Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4") */
   @Prop() labelCols: string = '';
   @Prop() inputCols: string = '';
 
@@ -64,14 +83,30 @@ export class AutocompleteMultiselect {
   @State() hasBeenInteractedWith = false;
   @State() dropdownOpen = false;
 
-  // Events
+  // track which sub-control is virtually focused in the list
+  @State() focusedPart: 'option' | 'delete' = 'option';
+
+  // prevent blur-then-close when clicking inside dropdown
+  private suppressBlur = false;
+  private closeTimer: number | null = null;
+
+  // track user-added options (predefined options cannot be deleted)
+  private userAddedOptions: Set<string> = new Set();
+
+  // Events (props-down, events-up)
   @Event({ eventName: 'itemSelect' }) itemSelect: EventEmitter<string>;
   @Event() clear: EventEmitter<void>;
   @Event() componentError: EventEmitter<{ message: string; stack?: string }>;
   @Event({ eventName: 'multiSelectChange' }) selectionChange: EventEmitter<string[]>;
-
-  // prevent blur-then-close when clicking inside dropdown
-  private suppressBlur = false;
+  /** 🔔 Hook for hosts to mirror/persist options */
+  @Event({ eventName: 'optionsChange' })
+  optionsChange!: EventEmitter<{
+    options: string[];
+    reason: 'add' | 'delete' | 'replace';
+    value?: string; // the added/removed item, if applicable
+  }>;
+  // emit when a user-added option is deleted
+  @Event({ eventName: 'optionDelete' }) optionDelete: EventEmitter<string>;
 
   // ---------------- Lifecycle / watchers ----------------
 
@@ -81,8 +116,12 @@ export class AutocompleteMultiselect {
       logError(this.devMode, 'AutocompleteMultiselect', `'options' should be an array`, { receivedType: typeof newVal });
       return;
     }
+    // Anything provided via props is considered predefined (not tracked as user-added).
     this.filterOptions();
   }
+
+  // Internal computed flag (don’t mutate the @Prop)
+  private _preserveInputOnSelect = false;
 
   componentDidLoad() {
     document.addEventListener('click', this.handleClickOutside);
@@ -132,6 +171,61 @@ export class AutocompleteMultiselect {
     return this.required && !this.isSatisfiedNow();
   }
 
+  /** Case-insensitive exact-equality check. */
+  private hasOptionCi(value: string): boolean {
+    const t = value.trim().toLowerCase();
+    return (this.options || []).some(o => o.trim().toLowerCase() === t);
+  }
+
+  /** Insert value into options (no-dup, optional sort). Respects editable=false. */
+  private upsertOption(raw: string): void {
+    const value = raw.trim();
+    if (!value) return;
+    if (!this.editable) {
+      logWarn(this.devMode, 'AutocompleteMultiselect', 'Refused upsert: editable=false', { value });
+      return;
+    }
+    if (!Array.isArray(this.options)) this.options = [];
+    if (this.hasOptionCi(value)) return;
+
+    const next = [...this.options, value];
+    this.options = this.autoSort ? next.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })) : next;
+
+    this.userAddedOptions.add(value);
+
+    // 🔔 notify host (hook)
+    this.optionsChange.emit({ options: [...this.options], reason: 'add', value });
+
+    logInfo(this.devMode, 'AutocompleteMultiselect', 'Inserted new option', { value, autoSort: this.autoSort });
+  }
+
+  /** Remove a user-added option (and unselect if selected). */
+  private deleteUserOption(option: string) {
+    if (!this.editable) return;
+    if (!this.userAddedOptions.has(option)) {
+      logWarn(this.devMode, 'AutocompleteMultiselect', 'Refused delete: not a user-added option', { option });
+      return;
+    }
+
+    this.options = (this.options || []).filter(o => o !== option);
+
+    const wasSelected = this.selectedItems.includes(option);
+    if (wasSelected) {
+      this.selectedItems = this.selectedItems.filter(s => s !== option);
+      this.selectionChange.emit(this.selectedItems);
+    }
+
+    this.userAddedOptions.delete(option);
+    this.filterOptions();
+
+    this.optionDelete.emit(option);
+
+    // 🔔 notify host (hook)
+    this.optionsChange.emit({ options: [...this.options], reason: 'delete', value: option });
+
+    logInfo(this.devMode, 'AutocompleteMultiselect', 'Deleted user-added option', { option, wasSelected });
+  }
+
   /** Parse responsive column spec into Bootstrap classes. */
   private parseColsSpec(spec?: string): string {
     if (!spec) return '';
@@ -141,18 +235,15 @@ export class AutocompleteMultiselect {
     for (const t of tokens) {
       if (!t) continue;
 
-      // already a bootstrap class
       if (/^col(-\w+)?(-\d+)?$/.test(t)) {
         out.push(t);
         continue;
       }
-      // number only -> col-N
       if (/^\d{1,2}$/.test(t)) {
         const n = Math.max(1, Math.min(12, parseInt(t, 10)));
         out.push(`col-${n}`);
         continue;
       }
-      // breakpoint-number -> col-bp-n (xs means no bp)
       const m = /^(xs|sm|md|lg|xl|xxl)-(\d{1,2})$/.exec(t);
       if (m) {
         const bp = m[1];
@@ -179,7 +270,6 @@ export class AutocompleteMultiselect {
     if (this.isHorizontal()) {
       if (spec) return this.parseColsSpec(spec);
 
-      // if label is hidden, input should span full width unless overridden
       if (kind === 'input' && this.labelHidden) {
         return this.inputCols ? this.parseColsSpec(this.inputCols) : 'col-12';
       }
@@ -193,12 +283,10 @@ export class AutocompleteMultiselect {
       return '';
     }
 
-    // Inline layout: respect user spec if provided, else none.
     if (this.isInline()) {
       return spec ? this.parseColsSpec(spec) : '';
     }
 
-    // Stacked layout: no grid classes
     return '';
   }
 
@@ -217,7 +305,7 @@ export class AutocompleteMultiselect {
 
   private inputClasses() {
     const sizeClass = this.size === 'sm' ? 'basic-input-sm' : this.size === 'lg' ? 'basic-input-lg' : '';
-    return ['form-control', this.validation || this.error ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    return ['form-control', sizeClass].filter(Boolean).join(' ');
   }
 
   private containerClasses() {
@@ -231,6 +319,10 @@ export class AutocompleteMultiselect {
       .join(' ');
   }
 
+  private getAvailableOptions(): string[] {
+    return (this.options || []).filter(opt => !this.selectedItems.includes(opt));
+  }
+
   // ---------------- Handlers ----------------
 
   private handleFocus = () => {
@@ -241,19 +333,41 @@ export class AutocompleteMultiselect {
     this.isFocused = false;
     if (this.suppressBlur) return;
 
-    setTimeout(() => this.closeDropdown(), 0);
+    if (this.closeTimer) {
+      clearTimeout(this.closeTimer);
+      this.closeTimer = null;
+    }
+
+    this.closeTimer = window.setTimeout(() => {
+      const ae = (document.activeElement as HTMLElement) || null;
+      const stillInComponent = !!ae && this.el.contains(ae);
+
+      if (stillInComponent) {
+        // Close dropdown but DO NOT clear input
+        this.filteredOptions = [];
+        this.focusedOptionIndex = -1;
+        this.focusedPart = 'option';
+        this.dropdownOpen = false;
+      } else {
+        // Left the component: close, optionally clear input
+        this.closeDropdown({ clearInput: this.clearInputOnBlurOutside });
+      }
+
+      this.closeTimer = null;
+    }, 120);
+
     if (this.required) this.validation = !this.isSatisfiedNow();
   };
 
   private handleClickOutside = (e: MouseEvent) => {
     const path = e.composedPath();
     if (!path.includes(this.el)) {
-      this.closeDropdown();
-      this.inputValue = '';
+      this.closeDropdown({ clearInput: this.clearInputOnBlurOutside });
       logInfo(this.devMode, 'AutocompleteMultiselect', 'Click outside - dropdown closed');
     }
   };
 
+  // Keyboard input on the text field
   private handleInput = (event: InputEvent | KeyboardEvent) => {
     const input = event.target as HTMLInputElement;
 
@@ -270,12 +384,64 @@ export class AutocompleteMultiselect {
         this.navigateOptions(-1);
         return;
       }
-      if (key === 'Enter' && this.focusedOptionIndex >= 0) {
-        this.selectOption(this.filteredOptions[this.focusedOptionIndex]);
+      if (key === 'ArrowRight' || key === 'ArrowLeft') {
+        if (this.dropdownOpen && this.focusedOptionIndex >= 0) {
+          const opt = this.filteredOptions[this.focusedOptionIndex];
+          const canDelete = this.editable && this.userAddedOptions.has(opt);
+          if (key === 'ArrowRight' && canDelete) {
+            this.focusedPart = 'delete';
+            event.preventDefault();
+            return;
+          }
+          if (key === 'ArrowLeft') {
+            this.focusedPart = 'option';
+            event.preventDefault();
+            return;
+          }
+        }
+      }
+      if (key === 'Enter') {
+        event.preventDefault();
+
+        // If virtually focused on delete, perform delete
+        if (this.dropdownOpen && this.focusedOptionIndex >= 0 && this.focusedPart === 'delete') {
+          const opt = this.filteredOptions[this.focusedOptionIndex];
+          if (this.editable && this.userAddedOptions.has(opt)) {
+            this.deleteUserOption(opt);
+            return;
+          }
+        }
+
+        const typedRaw = (this.inputValue || '').trim();
+        const typed = typedRaw.toLowerCase();
+        const hasFocusedPick = this.focusedOptionIndex >= 0 && this.filteredOptions[this.focusedOptionIndex];
+        const exactMatch = this.filteredOptions.find(opt => opt.toLowerCase() === typed);
+
+        if (hasFocusedPick) {
+          this.toggleItem(this.filteredOptions[this.focusedOptionIndex]); // closes dropdown
+          return;
+        }
+        if (exactMatch) {
+          this.toggleItem(exactMatch); // closes dropdown
+          return;
+        }
+
+        // Add brand-new value only if editable=true
+        if (this.editable && this.addNewOnEnter && typedRaw) {
+          this.upsertOption(typedRaw);
+          this.toggleItem(typedRaw); // closes dropdown
+          return;
+        }
+
+        logInfo(this.devMode, 'AutocompleteMultiselect', 'Enter ignored — no match and add disabled', {
+          editable: this.editable,
+          addNewOnEnter: this.addNewOnEnter,
+        });
         return;
       }
+
       if (key === 'Escape') {
-        this.closeDropdown();
+        this.closeDropdown({ clearInput: true });
         return;
       }
     } else {
@@ -286,31 +452,48 @@ export class AutocompleteMultiselect {
     }
   };
 
-  private handleAddItem = () => {
-    const value = this.inputValue.trim();
-    if (!value) return;
+  // Buttons inside the dropdown — separate controls for option & delete
 
-    this.itemSelect.emit(value); // let the host handle the add
-    this.inputValue = '';
-    this.validation = false;
-    this.filterOptions(); // refresh dropdown after clearing
-    this.focusedOptionIndex = -1;
-
-    logInfo(this.devMode, 'AutocompleteMultiselect', 'Add button clicked', { value });
-  };
-
-  // keep dropdown open when mousedown inside
-  private onOptionMouseDown = (e: MouseEvent, option: string) => {
+  private onOptionButtonMouseDown = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     this.suppressBlur = true;
+  };
+
+  private onOptionButtonClick = (e: MouseEvent, option: string) => {
+    e.preventDefault();
+    e.stopPropagation();
     this.toggleItem(option);
 
     setTimeout(() => {
       this.suppressBlur = false;
-      const input = this.el.querySelector('input');
-      input?.focus();
+      this.el.querySelector('input')?.focus();
     }, 0);
+  };
+
+  private onDeleteButtonMouseDown = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.suppressBlur = true;
+  };
+
+  private onDeleteButtonClick = (e: MouseEvent, option: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.deleteUserOption(option);
+
+    setTimeout(() => {
+      this.suppressBlur = false;
+      this.el.querySelector('input')?.focus();
+    }, 0);
+  };
+
+  private onRowMouseDown = (e: MouseEvent) => {
+    // Keep focus inside if user presses in the row padding
+    e.preventDefault();
+    e.stopPropagation();
+    this.suppressBlur = true;
+    // We do NOT toggle here; the real toggle happens on the button click
   };
 
   // ---------------- Core Behavior ----------------
@@ -322,6 +505,7 @@ export class AutocompleteMultiselect {
 
     if (newIndex >= 0 && newIndex < this.filteredOptions.length) {
       this.focusedOptionIndex = newIndex;
+      this.focusedPart = 'option';
       setTimeout(() => {
         const items = this.el.querySelectorAll('.autocomplete-dropdown-item');
         if (items[newIndex]) (items[newIndex] as HTMLElement).scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -347,18 +531,37 @@ export class AutocompleteMultiselect {
     }
 
     const v = this.inputValue.trim().toLowerCase();
-    const available = this.options.filter(opt => !this.selectedItems.includes(opt));
+    const available = this.getAvailableOptions();
 
     if (v.length === 0) {
-      // ✅ No typing -> keep it closed (mirrors single’s behavior)
+      // No typing -> keep it closed
       this.filteredOptions = [];
       this.dropdownOpen = false;
       return;
     }
 
     this.filteredOptions = available.filter(opt => opt.toLowerCase().includes(v));
-    // ✅ Only open when there are matches
     this.dropdownOpen = this.filteredOptions.length > 0;
+    this.focusedOptionIndex = 0;
+    this.focusedPart = 'option';
+  }
+
+  /** 🔎 Read current options from the component (for hosts). */
+  @Method()
+  async getOptions(): Promise<string[]> {
+    return [...(this.options || [])];
+  }
+
+  /** 🔧 Replace options from the host (for hosts). Also emits optionsChange('replace'). */
+  @Method()
+  async setOptions(next: string[]): Promise<void> {
+    this.options = Array.isArray(next) ? [...next] : [];
+    // optional: if you want to “forget” which ones were user-added
+    this.userAddedOptions.clear();
+    // re-run filter so UI reflects changes
+    this.filterOptions();
+    // notify host if they rely on one-way events only
+    this.optionsChange.emit({ options: [...this.options], reason: 'replace' });
   }
 
   private toggleItem(option: string) {
@@ -366,47 +569,42 @@ export class AutocompleteMultiselect {
     updated.has(option) ? updated.delete(option) : updated.add(option);
 
     this.selectedItems = Array.from(updated);
-    this.inputValue = '';
     this.selectionChange.emit(this.selectedItems);
 
-    this.validation = this.required && !this.isSatisfiedNow();
-    this.filterOptions();
+    // clear typing so the next character doesn’t stick
+    if (!this._preserveInputOnSelect) {
+      this.inputValue = '';
+    }
 
-    // restore focus for continued typing
+    // keep validation up-to-date
+    this.validation = this.required && !this.isSatisfiedNow();
+
+    // Close the dropdown after each pick
+    this.closeDropdown({ clearInput: false });
+
+    // keep focus in the input for quick next selection
     setTimeout(() => {
       const input = this.el.querySelector('input');
       input?.focus();
     }, 0);
 
-    logInfo(this.devMode, 'AutocompleteMultiselect', 'Toggled item', {
+    logInfo(this.devMode, 'AutocompleteMultiselect', 'Toggled item (dropdown closed)', {
       selected: option,
       currentSelections: this.selectedItems,
     });
   }
 
-  private selectOption(option: string) {
-    if (typeof option !== 'string' || option.trim() === '') {
-      logError(this.devMode, 'AutocompleteMultiselect', 'Invalid option selected', { option });
-      return;
+  private closeDropdown(opts?: { clearInput?: boolean }) {
+    const clear = opts?.clearInput ?? false;
+    if (this.closeTimer) {
+      clearTimeout(this.closeTimer);
+      this.closeTimer = null;
     }
-
-    if (!this.selectedItems.includes(option)) {
-      this.selectedItems = [...this.selectedItems, option];
-      this.selectionChange.emit(this.selectedItems);
-    }
-
-    this.inputValue = '';
-    this.validation = false;
-    this.filterOptions();
-    this.focusedOptionIndex = -1;
-
-    logInfo(this.devMode, 'AutocompleteMultiselect', 'Item selected', { selected: option });
-  }
-
-  private closeDropdown() {
     this.filteredOptions = [];
     this.focusedOptionIndex = -1;
+    this.focusedPart = 'option';
     this.dropdownOpen = false;
+    if (clear) this.inputValue = '';
     logInfo(this.devMode, 'AutocompleteMultiselect', 'Dropdown closed');
   }
 
@@ -418,10 +616,31 @@ export class AutocompleteMultiselect {
     if (this.required) this.validation = !this.isSatisfiedNow();
   }
 
+  // When the add button is shown and clicked, also add to options and select
+  private handleAddItem = () => {
+    const value = this.inputValue.trim();
+    if (!value) return;
+
+    if (!this.editable) {
+      logWarn(this.devMode, 'AutocompleteMultiselect', 'Add ignored: editable=false');
+      return;
+    }
+
+    // Back-compat event
+    this.itemSelect.emit(value);
+
+    // Insert into options and select (toggleItem closes dropdown)
+    this.upsertOption(value);
+    this.toggleItem(value);
+
+    logInfo(this.devMode, 'AutocompleteMultiselect', 'Add button added new option (dropdown closed)', { value });
+  };
+
   private clearAll = () => {
     this.selectedItems = [];
     this.inputValue = '';
     this.filteredOptions = [];
+    this.dropdownOpen = false;
     this.selectionChange.emit([]);
 
     this.hasBeenInteractedWith = true;
@@ -452,16 +671,24 @@ export class AutocompleteMultiselect {
       };
 
       return (
-        <span class={classMap} style={this.parseInlineStyles(this.badgeInlineStyles)} key={item}>
+        <div class={classMap} style={this.parseInlineStyles(this.badgeInlineStyles)} key={item}>
           <span>{item}</span>
           <button onClick={() => this.removeItem(item)} aria-label={`Remove ${item}`} data-tag={item} role="button" class="remove-btn" title="Remove Tag">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
               <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9z" />
             </svg>
           </button>
-        </span>
+        </div>
       );
     });
+  }
+
+  private renderDeleteIcon() {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9z" />
+      </svg>
+    );
   }
 
   private renderAddIcon() {
@@ -473,9 +700,37 @@ export class AutocompleteMultiselect {
   }
 
   private renderAddButton() {
-    if (!this.addBtn) return null;
+    // Show Add button only when user has typed something
+    const shouldShow = this.editable && this.addBtn && this.inputValue.trim().length > 0;
+
+    if (!shouldShow) return null;
+
     return (
-      <button class="input-group-btn add add-btn" role="button" disabled={this.disabled} onClick={this.handleAddItem} aria-label="Add item" title="Add item">
+      <button
+        type="button"
+        class={{
+          'input-group-btn': true,
+          'add': true,
+          'add-btn': true,
+        }}
+        role="button"
+        disabled={this.disabled}
+        onMouseDown={e => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.suppressBlur = true;
+        }}
+        onClick={e => {
+          e.preventDefault();
+          this.handleAddItem();
+          setTimeout(() => {
+            this.suppressBlur = false;
+            this.el.querySelector('input')?.focus();
+          }, 0);
+        }}
+        aria-label="Add item"
+        title="Add item"
+      >
         {this.addIcon ? <i class={this.addIcon} /> : this.renderAddIcon()}
       </button>
     );
@@ -494,7 +749,26 @@ export class AutocompleteMultiselect {
     if (this.removeClearBtn || !hasInputOrSelection) return null;
 
     return (
-      <button class="input-group-btn clear clear-btn" aria-label="Clear input" disabled={this.disabled} title="Clear input" onClick={this.clearAll}>
+      <button
+        type="button"
+        class="input-group-btn clear clear-btn"
+        aria-label="Clear input"
+        disabled={this.disabled}
+        title="Clear input"
+        onMouseDown={e => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.suppressBlur = true;
+        }}
+        onClick={e => {
+          e.preventDefault();
+          this.clearAll();
+          setTimeout(() => {
+            this.suppressBlur = false;
+            this.el.querySelector('input')?.focus();
+          }, 0);
+        }}
+      >
         {this.clearIcon ? <i class={this.clearIcon} /> : this.renderClearIcon()}
       </button>
     );
@@ -518,7 +792,7 @@ export class AutocompleteMultiselect {
     return (
       <input
         id={ids || null}
-        name={names || null}
+        name={this.rawInputName || null}
         role="combobox"
         aria-label={this.labelHidden ? names : null}
         aria-labelledby={this.arialabelledBy}
@@ -526,7 +800,7 @@ export class AutocompleteMultiselect {
         aria-autocomplete="list"
         aria-expanded={this.dropdownOpen ? 'true' : 'false'}
         aria-controls={`${ids}-listbox`}
-        aria-activedescendant={this.focusedOptionIndex >= 0 ? `${ids}-option-${this.focusedOptionIndex}` : undefined}
+        aria-activedescendant={this.focusedOptionIndex >= 0 ? `${ids}-${this.focusedPart}-${this.focusedOptionIndex}` : undefined}
         aria-required={this.required ? 'true' : 'false'}
         aria-haspopup="listbox"
         class={this.inputClasses()}
@@ -548,22 +822,60 @@ export class AutocompleteMultiselect {
   private renderDropdownList(ids: string) {
     return (
       <ul role="listbox" id={`${ids}-listbox`} tabindex="-1">
-        {this.filteredOptions.map((option, i) => (
-          <li
-            id={`${ids}-option-${i}`}
-            role="option"
-            aria-selected={this.focusedOptionIndex === i ? 'true' : 'false'}
-            class={{
-              'autocomplete-dropdown-item': true,
-              'focused': this.focusedOptionIndex === i,
-              [`${this.size}`]: !!this.size,
-            }}
-            onMouseDown={e => this.onOptionMouseDown(e, option)}
-            tabindex="-1"
-          >
-            <span innerHTML={option.replace(/</g, '&lt;').replace(/>/g, '&gt;')} />
-          </li>
-        ))}
+        {this.filteredOptions.map((option, i) => {
+          const isUserAdded = this.userAddedOptions.has(option);
+          const showDelete = this.editable && isUserAdded;
+          return (
+            <li
+              id={`${ids}-row-${i}`}
+              role="option"
+              aria-selected={this.focusedOptionIndex === i ? 'true' : 'false'}
+              class={{
+                'autocomplete-dropdown-item': true,
+                'focused': this.focusedOptionIndex === i,
+                [`${this.size}`]: !!this.size,
+                'deletable': showDelete,
+              }}
+              onMouseDown={this.onRowMouseDown}
+              tabindex="-1"
+            >
+              {/* OPTION BUTTON */}
+              <button
+                id={`${ids}-option-${i}`}
+                type="button"
+                class={{
+                  'option-btn': true,
+                  'virtually-focused': this.focusedOptionIndex === i && this.focusedPart === 'option',
+                }}
+                onMouseDown={e => this.onOptionButtonMouseDown(e)}
+                onClick={e => this.onOptionButtonClick(e, option)}
+                aria-label={`Select ${option}`}
+                tabIndex={-1}
+              >
+                <span innerHTML={option.replace(/</g, '&lt;').replace(/>/g, '&gt;')} />
+              </button>
+
+              {/* DELETE BUTTON (only for user-added options when editable) */}
+              {showDelete ? (
+                <button
+                  type="button"
+                  id={`${ids}-delete-${i}`}
+                  class={{
+                    'delete-btn': true,
+                    'virtually-focused': this.focusedOptionIndex === i && this.focusedPart === 'delete',
+                  }}
+                  aria-label={`Delete ${option}`}
+                  title={`Delete ${option}`}
+                  onMouseDown={this.onDeleteButtonMouseDown}
+                  onClick={e => this.onDeleteButtonClick(e, option)}
+                  tabIndex={-1}
+                >
+                  {this.renderDeleteIcon()}
+                </button>
+              ) : null}
+            </li>
+          );
+        })}
       </ul>
     );
   }
@@ -579,7 +891,7 @@ export class AutocompleteMultiselect {
 
   private renderMessage(kind: 'validation' | 'error', ids: string) {
     const active = kind === 'validation' ? this.validation && !!this.validationMessage : this.error && !!this.errorMessage;
-    if (!active) return '';
+    if (!active) return null;
 
     const message = kind === 'validation' ? this.validationMessage : this.errorMessage;
     const baseId = kind === 'validation' ? `${ids}-validation` : `${ids}-error`;
@@ -613,16 +925,31 @@ export class AutocompleteMultiselect {
     );
   }
 
+  /** Hidden inputs for form submission (selected items + raw typed text). */
+  private renderFormFields() {
+    const selected = this.name ? this.selectedItems.map(v => <input type="hidden" name={this.name!.endsWith('[]') ? this.name! : `${this.name}[]`} value={v} />) : null;
+
+    // If rawInputName is provided, you can either:
+    //  (1) put the name on the visible <input>, OR
+    //  (2) emit a hidden input here.
+    // We'll do (2) only if we are NOT putting name on the visible input.
+    const raw = this.rawInputName ? <input type="hidden" name={this.rawInputName} value={this.inputValue} /> : null;
+
+    return [...(selected ?? []), ...(raw ? [raw] : [])];
+  }
+
   private renderFieldArea(ids: string, names: string) {
     return (
       <div class={this.containerClasses()}>
         <div class="ac-selected-items">{this.renderSelectedItems()}</div>
         <div class="ac-input-container">
-          <div class={{ 'input-group': true }}>
+          <div class={{ 'input-group': true, 'is-invalid': this.validation || this.error }}>
             {this.renderInputField(ids, names)}
             {this.renderAddButton()}
             {this.renderClearButton()}
           </div>
+
+          {this.renderFormFields()}
         </div>
       </div>
     );
@@ -643,10 +970,10 @@ export class AutocompleteMultiselect {
             <div class={inputColClass}>
               {this.renderFieldArea(ids, names)}
               {this.renderDropdown(ids)}
-              {this.isInline() ? this.renderMessage('validation', ids) : ''}
-              {this.isInline() ? this.renderMessage('error', ids) : ''}
-              {this.isHorizontal() ? this.renderMessage('validation', ids) : ''}
-              {this.isHorizontal() ? this.renderMessage('error', ids) : ''}
+              {this.isInline() ? this.renderMessage('validation', ids) : null}
+              {this.isInline() ? this.renderMessage('error', ids) : null}
+              {this.isHorizontal() ? this.renderMessage('validation', ids) : null}
+              {this.isHorizontal() ? this.renderMessage('error', ids) : null}
             </div>
           </div>
         </div>
