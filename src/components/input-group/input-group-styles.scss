@@ -89,7 +89,7 @@
 }
 
 .input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
-  margin-left: 4px !important;
+  margin-left: 0;
 
   &:focus-visible {
     // border-color: #b80000;
@@ -104,7 +104,6 @@
       color: #b80000;
     }
   }
-
 }
 
 /* BS 4 Input Group Styling */
@@ -133,7 +132,7 @@
 }
 
 .input-group-append {
-  margin-left: -1px;
+  margin-left: -1px !important;
 }
 
 .input-group-text {
@@ -248,6 +247,11 @@
   height: calc(1.5em + 0.39rem + 1px);
 }
 
+.input-group-sm > .input-group-prepend,
+.input-group-sm > .input-group-append {
+  height: calc(1.5em + 0.188rem + 1px);
+}
+
 .input-group-lg > .custom-select,
 .input-group-lg > .form-control,
 .input-group-lg > .input-group-append > .btn,
@@ -265,11 +269,26 @@
   height: calc(1.5em + 1rem + 2px);
 }
 
+.input-group-lg > .input-group-prepend,
+.input-group-lg > .input-group-append {
+  height: calc(1.5em + 1.3rem + 3px);
+}
+
+.input-group > .input-group-append > .input-group-text {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.input-group > .input-group-prepend > .input-group-text {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+
 .horizontal .form-input-group-basic label,
 .inline .form-input-group-basic label {
   display: flex;
   align-items: center;
-  justify-content: right;
   font-size: 0.8333rem;
   margin-bottom: 0 !important;
   padding-right: 8px !important;

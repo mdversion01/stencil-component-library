@@ -34,41 +34,38 @@
           validation
           validation-message="Please fill in"
         ></autocomplete-single>
+        <form-component form-layout="inline">
+          <autocomplete-multiselect
+            id="aci3"
+            add-btn
+            input-id="ac-1"
+            editable
+            label="Autocomplete Multiselect"
+            form-layout="inline"
+             required
+            validation
+            validation-message="Please fill in"
+            placeholder="Type to search..."
+            data-autocomplete="true"
+            slot="formField"
+          ></autocomplete-multiselect>
 
-        <autocomplete-multiselect
-          id="aci3"
-          add-btn
-          input-id="ac-1"
-          editable
-          label="Autocomplete Multiselect"
-          form-layout="horizontal"
-          label-cols="col-sm-6 col-md-4"
-          input-cols="col-sm-6 col-md-8"
-          required
-          validation
-          validation-message="Please fill in"
-          placeholder="Type to search..."
-          data-autocomplete="true"
-        ></autocomplete-multiselect>
-
-        <autocomplete-multiple-selections
-          id="aci4"
-          editable
-          input-id="ac-2"
-          label="Autocomplete Multiple Selections"
-          label-size="lg"
-          placeholder="Type to search..."
-          data-autocomplete="true"
-          form-layout="horizontal"
-          label-cols="col-sm-6 col-md-4"
-          input-cols="col-sm-6 col-md-8"
-          required
-          add-btn
-          size="lg"
-          validation
-          validation-message="Please fill in"
-          placeholder="Type to search..."
-        ></autocomplete-multiple-selections>
+          <autocomplete-multiple-selections
+            id="aci4"
+            editable
+            input-id="ac-2"
+            label="Autocomplete Multiple Selections"
+            placeholder="Type to search..."
+            data-autocomplete="true"
+            form-layout="inline"
+            required
+            add-btn
+            validation
+            validation-message="Please fill in"
+            placeholder="Type to search..."
+            slot="formField"
+          ></autocomplete-multiple-selections>
+        </form-component>
       </div>
 
       <!-- <div class="cwrapper">
@@ -631,11 +628,9 @@
 
         <input-field-component form-layout="inline" label="Email" input-id="email" label-col="6" input-col="6"></input-field-component>
 
-        <form-component form-layout="horizontal">
+        <form-component form-layout="inline">
           <input-field-component
-            form-layout="horizontal"
-            label-cols="col-sm-6 col-md-4"
-            input-cols="col-sm-6 col-md-8"
+            form-layout="inline"
             required
             validation
             validation-message="Please enter First name"
@@ -648,9 +643,7 @@
           ></input-field-component>
 
           <input-field-component
-            form-layout="horizontal"
-            label-cols="col-sm-6 col-md-4"
-            input-cols="col-sm-6 col-md-8"
+            form-layout="inline"
             required
             validation
             validation-message="Please enter Last name"
@@ -663,10 +656,27 @@
           ></input-field-component>
         </form-component>
       </div>
+
+      <div class="cwrapper">
+        <form-component form-layout="horizontal">
+          <input-group-component slot="formField" label="Amount" input-id="amount" prepend append append-icon="fa-solid fa-dollar-sign" slot="formField">
+            <span slot="prepend">Total</span>
+          </input-group-component>
+
+          <input-group-component slot="formField" label="Search" input-id="q" prepend append prepend-icon="fa-solid fa-magnifying-glass" other-content slot="formField">
+            <button slot="append" type="button" class="btn btn-outline-secondary">Go</button>
+          </input-group-component>
+        </form-component>
+      </div>
     </app-wrapper>
 
     <script type="module">
       window.addEventListener('DOMContentLoaded', () => {
+        const el = document.querySelector('input-group-component');
+        el.addEventListener('valueChange', e => console.log('valueChange:', e.detail.value));
+        // Back-compat:
+        el.addEventListener('change', e => console.log('change:', e.detail.value));
+
         const aci1 = document.getElementById('aci1');
         const aci1Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
         setTimeout(() => {

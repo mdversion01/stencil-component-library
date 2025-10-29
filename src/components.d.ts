@@ -396,6 +396,44 @@ export namespace Components {
         "validationMessage": string;
         "value": string;
     }
+    interface InputGroupComponent {
+        "appendIcon"?: string;
+        "appendId": string;
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "hasAppend": boolean;
+        "hasPrepend": boolean;
+        "icon": string;
+        "inputCol": number;
+        "inputCols": string;
+        "inputId": string;
+        /**
+          * Kept for API parity; use `size` for visual sizing
+         */
+        "inputSize": string;
+        "label": string;
+        /**
+          * Legacy numeric cols (fallback)
+         */
+        "labelCol": number;
+        /**
+          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+         */
+        "labelCols": string;
+        "labelHidden": boolean;
+        "labelSize": '' | 'sm' | 'lg';
+        "otherContent": boolean;
+        "placeholder": string;
+        "prependIcon"?: string;
+        "prependId": string;
+        "required": boolean;
+        "size": '' | 'sm' | 'lg';
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
+    }
     interface ModalComponent {
         "ariaLabel": string;
         "block": boolean;
@@ -498,6 +536,10 @@ export interface CheckboxComponentCustomEvent<T> extends CustomEvent<T> {
 export interface DropdownComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDropdownComponentElement;
+}
+export interface InputGroupComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInputGroupComponentElement;
 }
 export interface RadioInputComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -718,6 +760,23 @@ declare global {
         prototype: HTMLInputFieldComponentElement;
         new (): HTMLInputFieldComponentElement;
     };
+    interface HTMLInputGroupComponentElementEventMap {
+        "valueChange": { value: string };
+    }
+    interface HTMLInputGroupComponentElement extends Components.InputGroupComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInputGroupComponentElementEventMap>(type: K, listener: (this: HTMLInputGroupComponentElement, ev: InputGroupComponentCustomEvent<HTMLInputGroupComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInputGroupComponentElementEventMap>(type: K, listener: (this: HTMLInputGroupComponentElement, ev: InputGroupComponentCustomEvent<HTMLInputGroupComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLInputGroupComponentElement: {
+        prototype: HTMLInputGroupComponentElement;
+        new (): HTMLInputGroupComponentElement;
+    };
     interface HTMLModalComponentElement extends Components.ModalComponent, HTMLStencilElement {
     }
     var HTMLModalComponentElement: {
@@ -775,6 +834,7 @@ declare global {
         "form-component": HTMLFormComponentElement;
         "icon-component": HTMLIconComponentElement;
         "input-field-component": HTMLInputFieldComponentElement;
+        "input-group-component": HTMLInputGroupComponentElement;
         "modal-component": HTMLModalComponentElement;
         "radio-input-component": HTMLRadioInputComponentElement;
         "toggle-switch-component": HTMLToggleSwitchComponentElement;
@@ -1183,6 +1243,45 @@ declare namespace LocalJSX {
         "validationMessage"?: string;
         "value"?: string;
     }
+    interface InputGroupComponent {
+        "appendIcon"?: string;
+        "appendId"?: string;
+        "disabled"?: boolean;
+        "formId"?: string;
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        "hasAppend"?: boolean;
+        "hasPrepend"?: boolean;
+        "icon"?: string;
+        "inputCol"?: number;
+        "inputCols"?: string;
+        "inputId"?: string;
+        /**
+          * Kept for API parity; use `size` for visual sizing
+         */
+        "inputSize"?: string;
+        "label"?: string;
+        /**
+          * Legacy numeric cols (fallback)
+         */
+        "labelCol"?: number;
+        /**
+          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+         */
+        "labelCols"?: string;
+        "labelHidden"?: boolean;
+        "labelSize"?: '' | 'sm' | 'lg';
+        "onValueChange"?: (event: InputGroupComponentCustomEvent<{ value: string }>) => void;
+        "otherContent"?: boolean;
+        "placeholder"?: string;
+        "prependIcon"?: string;
+        "prependId"?: string;
+        "required"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "type"?: string;
+        "validation"?: boolean;
+        "validationMessage"?: string;
+        "value"?: string;
+    }
     interface ModalComponent {
         "ariaLabel"?: string;
         "block"?: boolean;
@@ -1260,6 +1359,7 @@ declare namespace LocalJSX {
         "form-component": FormComponent;
         "icon-component": IconComponent;
         "input-field-component": InputFieldComponent;
+        "input-group-component": InputGroupComponent;
         "modal-component": ModalComponent;
         "radio-input-component": RadioInputComponent;
         "toggle-switch-component": ToggleSwitchComponent;
@@ -1285,6 +1385,7 @@ declare module "@stencil/core" {
             "form-component": LocalJSX.FormComponent & JSXBase.HTMLAttributes<HTMLFormComponentElement>;
             "icon-component": LocalJSX.IconComponent & JSXBase.HTMLAttributes<HTMLIconComponentElement>;
             "input-field-component": LocalJSX.InputFieldComponent & JSXBase.HTMLAttributes<HTMLInputFieldComponentElement>;
+            "input-group-component": LocalJSX.InputGroupComponent & JSXBase.HTMLAttributes<HTMLInputGroupComponentElement>;
             "modal-component": LocalJSX.ModalComponent & JSXBase.HTMLAttributes<HTMLModalComponentElement>;
             "radio-input-component": LocalJSX.RadioInputComponent & JSXBase.HTMLAttributes<HTMLRadioInputComponentElement>;
             "toggle-switch-component": LocalJSX.ToggleSwitchComponent & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;
