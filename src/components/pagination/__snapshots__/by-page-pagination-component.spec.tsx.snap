@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`by-page-pagination-component snapshot plumage + center 1`] = `
+<by-page-pagination-component>
+  <ul aria-disabled="false" aria-label="Pagination" class="b-pagination by-page justify-content-center pagination pagination-lg plumage" role="menubar">
+    <li class="page-item" role="presentation">
+      <button aria-controls="" aria-label="Go to first page" class="page-link" role="menuitem" tabindex="0" type="button">
+        «
+      </button>
+    </li>
+    <li class="page-item" role="presentation">
+      <button aria-controls="" aria-label="Go to previous page" class="page-link" role="menuitem" tabindex="0" type="button">
+        ‹
+      </button>
+    </li>
+    <li aria-hidden="true" class="page-item" role="presentation">
+      <div class="pages">
+        Page
+        <div aria-labelledby="pageNumberField" class="page-input-wrapper pl-input-container" role="presentation">
+          <label class="sr-only" htmlfor="pageNumberField">
+            Page number
+          </label>
+          <input aria-label="Page number" aria-labelledby="paginationInputLabel paginationDescription" class="page-input pl-form-control pl-input-lg" id="paginationInput" inputmode="numeric" pattern="[0-9]*" type="text" value="10">
+          <div class="b-underline" role="presentation">
+            <div aria-hidden="true" class="b-focus" role="presentation"></div>
+          </div>
+        </div>
+        of 30
+      </div>
+    </li>
+    <li class="page-item" role="presentation">
+      <button aria-controls="" aria-label="Go to next page" class="page-link" role="menuitem" tabindex="0" type="button">
+        ›
+      </button>
+    </li>
+    <li class="page-item" role="presentation">
+      <button aria-controls="" aria-label="Go to last page" class="page-link" role="menuitem" tabindex="0" type="button">
+        »
+      </button>
+    </li>
+  </ul>
+</by-page-pagination-component>
+`;

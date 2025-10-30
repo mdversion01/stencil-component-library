@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`popover-component variant + plumage + super classes applied 1`] = `"<div id="popover_TEST" class="popover popover-auto fade show plumage super-tooltip" role="tooltip" data-popover-placement="auto" tabindex="-1"><div class="popover-arrow"></div> <h3 class="popover-header">V</h3> <div class="popover-body" tabindex="0">C</div></div>"`;

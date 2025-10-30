@@ -16,6 +16,8 @@ $fa-font-path: '/assets/fonts'; // ✅ must be before imports!
 
 @import '../components/elevated-styles.scss';
 
+@import '../components/popover/popover-component-styles.scss';
+
 // :root {
 //   --amber: #ffc107;
 //   --blue: #2196f3;

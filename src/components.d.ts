@@ -257,6 +257,15 @@ export namespace Components {
         "classNames": string;
         "vertical": boolean;
     }
+    interface ByPagePaginationComponent {
+        "controlId"?: string;
+        "currentPage": number;
+        "goToButtons": string;
+        "paginationLayout": '' | 'center' | 'end';
+        "plumage": boolean;
+        "size": '' | 'sm' | 'lg';
+        "totalPages": number;
+    }
     interface CardComponent {
         "actions": boolean;
         "altText": string;
@@ -434,6 +443,15 @@ export namespace Components {
         "validationMessage": string;
         "value": string;
     }
+    interface MinimizePaginationComponent {
+        "controlId"?: string;
+        "currentPage": number;
+        "goToButtons": string;
+        "paginationLayout": '' | 'center' | 'end';
+        "plumage": boolean;
+        "size": '' | 'sm' | 'lg';
+        "totalPages": number;
+    }
     interface ModalComponent {
         "ariaLabel": string;
         "block": boolean;
@@ -464,6 +482,83 @@ export namespace Components {
         "variant": string;
         "verticallyCentered": boolean;
     }
+    interface PaginationComponent {
+        "currentPage": number;
+        "goToButtons": string;
+        "hideEllipsis": boolean;
+        "hideGotoEndButtons": boolean;
+        "limit": number;
+        "pageSize": number;
+        "pageSizeOptions": Array<number | 'All'>;
+        "paginationLayout": '' | 'start' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right';
+        "paginationVariantColor": string;
+        "plumage": boolean;
+        "showDisplayRange": boolean;
+        "showSizeChanger": boolean;
+        "size": '' | 'sm' | 'lg';
+        "totalPages": number;
+        "totalRows": number;
+        "useByPagePagination": boolean;
+        "useMinimizePagination": boolean;
+    }
+    interface PopoverComponent {
+        "arrowOff": boolean;
+        "content": string;
+        "customClass": string;
+        "fallbackPlacement": | 'flip'
+    | 'clockwise'
+    | 'counterclockwise'
+    | 'auto'
+    | 'top'
+    | 'bottom'
+    | 'left'
+    | 'right'
+    | 'topright'
+    | 'topleft'
+    | 'bottomright'
+    | 'bottomleft'
+    | 'lefttop'
+    | 'leftbottom'
+    | 'righttop'
+    | 'rightbottom'
+    | Array<
+        | 'flip'
+        | 'clockwise'
+        | 'counterclockwise'
+        | 'auto'
+        | 'top'
+        | 'bottom'
+        | 'left'
+        | 'right'
+        | 'topright'
+        | 'topleft'
+        | 'bottomright'
+        | 'bottomleft'
+        | 'lefttop'
+        | 'leftbottom'
+        | 'righttop'
+        | 'rightbottom'
+      >;
+        "offset": number;
+        "placement": 'auto' | 'top' | 'bottom' | 'left' | 'right' | 'topright' | 'topleft' | 'bottomright' | 'bottomleft' | 'lefttop' | 'leftbottom' | 'righttop' | 'rightbottom';
+        "plumage": boolean;
+        /**
+          * Keep external attribute name `title`, but avoid reserved prop name.
+         */
+        "popoverTitle": string;
+        /**
+          * Lit's `super` -> internal `superTooltip`, attribute remains `super`.
+         */
+        "superTooltip": boolean;
+        /**
+          * String id or direct HTMLElement
+         */
+        "target"?: string | HTMLElement;
+        "trigger": 'click' | 'hover' | 'focus' | `${'click' | 'hover' | 'focus'} ${'click' | 'hover' | 'focus'}`;
+        "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+        "visible": boolean;
+        "yOffset": number;
+    }
     interface RadioInputComponent {
         "customRadio": boolean;
         "customRadioGroup": boolean;
@@ -482,6 +577,18 @@ export namespace Components {
         "validation": boolean;
         "validationMsg": string;
         "value": string;
+    }
+    interface StandardPaginationComponent {
+        "currentPage": number;
+        "goToButtons": string;
+        "hideEllipsis": boolean;
+        "hideGotoEndButtons": boolean;
+        "limit": number;
+        "paginationLayout": '' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right';
+        "paginationVariantColor": string;
+        "plumage": boolean;
+        "size": '' | 'sm' | 'lg';
+        "totalPages": number;
     }
     interface ToggleSwitchComponent {
         "checked": boolean;
@@ -525,6 +632,10 @@ export interface ButtonComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLButtonComponentElement;
 }
+export interface ByPagePaginationComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLByPagePaginationComponentElement;
+}
 export interface CardComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLCardComponentElement;
@@ -541,9 +652,21 @@ export interface InputGroupComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInputGroupComponentElement;
 }
+export interface MinimizePaginationComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLMinimizePaginationComponentElement;
+}
+export interface PaginationComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPaginationComponentElement;
+}
 export interface RadioInputComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLRadioInputComponentElement;
+}
+export interface StandardPaginationComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLStandardPaginationComponentElement;
 }
 export interface ToggleSwitchComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -685,6 +808,23 @@ declare global {
         prototype: HTMLButtonGroupElement;
         new (): HTMLButtonGroupElement;
     };
+    interface HTMLByPagePaginationComponentElementEventMap {
+        "change-page": { page: number };
+    }
+    interface HTMLByPagePaginationComponentElement extends Components.ByPagePaginationComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLByPagePaginationComponentElementEventMap>(type: K, listener: (this: HTMLByPagePaginationComponentElement, ev: ByPagePaginationComponentCustomEvent<HTMLByPagePaginationComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLByPagePaginationComponentElementEventMap>(type: K, listener: (this: HTMLByPagePaginationComponentElement, ev: ByPagePaginationComponentCustomEvent<HTMLByPagePaginationComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLByPagePaginationComponentElement: {
+        prototype: HTMLByPagePaginationComponentElement;
+        new (): HTMLByPagePaginationComponentElement;
+    };
     interface HTMLCardComponentElementEventMap {
         "customClick": any;
     }
@@ -777,11 +917,52 @@ declare global {
         prototype: HTMLInputGroupComponentElement;
         new (): HTMLInputGroupComponentElement;
     };
+    interface HTMLMinimizePaginationComponentElementEventMap {
+        "change-page": { page: number };
+    }
+    interface HTMLMinimizePaginationComponentElement extends Components.MinimizePaginationComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLMinimizePaginationComponentElementEventMap>(type: K, listener: (this: HTMLMinimizePaginationComponentElement, ev: MinimizePaginationComponentCustomEvent<HTMLMinimizePaginationComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLMinimizePaginationComponentElementEventMap>(type: K, listener: (this: HTMLMinimizePaginationComponentElement, ev: MinimizePaginationComponentCustomEvent<HTMLMinimizePaginationComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLMinimizePaginationComponentElement: {
+        prototype: HTMLMinimizePaginationComponentElement;
+        new (): HTMLMinimizePaginationComponentElement;
+    };
     interface HTMLModalComponentElement extends Components.ModalComponent, HTMLStencilElement {
     }
     var HTMLModalComponentElement: {
         prototype: HTMLModalComponentElement;
         new (): HTMLModalComponentElement;
+    };
+    interface HTMLPaginationComponentElementEventMap {
+        "page-changed": { page: number; pageSize: number };
+        "page-size-changed": { pageSize: number };
+    }
+    interface HTMLPaginationComponentElement extends Components.PaginationComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLPaginationComponentElementEventMap>(type: K, listener: (this: HTMLPaginationComponentElement, ev: PaginationComponentCustomEvent<HTMLPaginationComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLPaginationComponentElementEventMap>(type: K, listener: (this: HTMLPaginationComponentElement, ev: PaginationComponentCustomEvent<HTMLPaginationComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLPaginationComponentElement: {
+        prototype: HTMLPaginationComponentElement;
+        new (): HTMLPaginationComponentElement;
+    };
+    interface HTMLPopoverComponentElement extends Components.PopoverComponent, HTMLStencilElement {
+    }
+    var HTMLPopoverComponentElement: {
+        prototype: HTMLPopoverComponentElement;
+        new (): HTMLPopoverComponentElement;
     };
     interface HTMLRadioInputComponentElementEventMap {
         "groupChange": string;
@@ -799,6 +980,23 @@ declare global {
     var HTMLRadioInputComponentElement: {
         prototype: HTMLRadioInputComponentElement;
         new (): HTMLRadioInputComponentElement;
+    };
+    interface HTMLStandardPaginationComponentElementEventMap {
+        "change-page": { page: number };
+    }
+    interface HTMLStandardPaginationComponentElement extends Components.StandardPaginationComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLStandardPaginationComponentElementEventMap>(type: K, listener: (this: HTMLStandardPaginationComponentElement, ev: StandardPaginationComponentCustomEvent<HTMLStandardPaginationComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLStandardPaginationComponentElementEventMap>(type: K, listener: (this: HTMLStandardPaginationComponentElement, ev: StandardPaginationComponentCustomEvent<HTMLStandardPaginationComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLStandardPaginationComponentElement: {
+        prototype: HTMLStandardPaginationComponentElement;
+        new (): HTMLStandardPaginationComponentElement;
     };
     interface HTMLToggleSwitchComponentElementEventMap {
         "checkedChanged": { id: string; checked: boolean };
@@ -827,6 +1025,7 @@ declare global {
         "badge-component": HTMLBadgeComponentElement;
         "button-component": HTMLButtonComponentElement;
         "button-group": HTMLButtonGroupElement;
+        "by-page-pagination-component": HTMLByPagePaginationComponentElement;
         "card-component": HTMLCardComponentElement;
         "checkbox-component": HTMLCheckboxComponentElement;
         "divider-component": HTMLDividerComponentElement;
@@ -835,8 +1034,12 @@ declare global {
         "icon-component": HTMLIconComponentElement;
         "input-field-component": HTMLInputFieldComponentElement;
         "input-group-component": HTMLInputGroupComponentElement;
+        "minimize-pagination-component": HTMLMinimizePaginationComponentElement;
         "modal-component": HTMLModalComponentElement;
+        "pagination-component": HTMLPaginationComponentElement;
+        "popover-component": HTMLPopoverComponentElement;
         "radio-input-component": HTMLRadioInputComponentElement;
+        "standard-pagination-component": HTMLStandardPaginationComponentElement;
         "toggle-switch-component": HTMLToggleSwitchComponentElement;
     }
 }
@@ -1101,6 +1304,16 @@ declare namespace LocalJSX {
         "classNames"?: string;
         "vertical"?: boolean;
     }
+    interface ByPagePaginationComponent {
+        "controlId"?: string;
+        "currentPage"?: number;
+        "goToButtons"?: string;
+        "onChange-page"?: (event: ByPagePaginationComponentCustomEvent<{ page: number }>) => void;
+        "paginationLayout"?: '' | 'center' | 'end';
+        "plumage"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "totalPages"?: number;
+    }
     interface CardComponent {
         "actions"?: boolean;
         "altText"?: string;
@@ -1282,6 +1495,16 @@ declare namespace LocalJSX {
         "validationMessage"?: string;
         "value"?: string;
     }
+    interface MinimizePaginationComponent {
+        "controlId"?: string;
+        "currentPage"?: number;
+        "goToButtons"?: string;
+        "onChange-page"?: (event: MinimizePaginationComponentCustomEvent<{ page: number }>) => void;
+        "paginationLayout"?: '' | 'center' | 'end';
+        "plumage"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "totalPages"?: number;
+    }
     interface ModalComponent {
         "ariaLabel"?: string;
         "block"?: boolean;
@@ -1304,6 +1527,85 @@ declare namespace LocalJSX {
         "variant"?: string;
         "verticallyCentered"?: boolean;
     }
+    interface PaginationComponent {
+        "currentPage"?: number;
+        "goToButtons"?: string;
+        "hideEllipsis"?: boolean;
+        "hideGotoEndButtons"?: boolean;
+        "limit"?: number;
+        "onPage-changed"?: (event: PaginationComponentCustomEvent<{ page: number; pageSize: number }>) => void;
+        "onPage-size-changed"?: (event: PaginationComponentCustomEvent<{ pageSize: number }>) => void;
+        "pageSize"?: number;
+        "pageSizeOptions"?: Array<number | 'All'>;
+        "paginationLayout"?: '' | 'start' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right';
+        "paginationVariantColor"?: string;
+        "plumage"?: boolean;
+        "showDisplayRange"?: boolean;
+        "showSizeChanger"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "totalPages"?: number;
+        "totalRows"?: number;
+        "useByPagePagination"?: boolean;
+        "useMinimizePagination"?: boolean;
+    }
+    interface PopoverComponent {
+        "arrowOff"?: boolean;
+        "content"?: string;
+        "customClass"?: string;
+        "fallbackPlacement"?: | 'flip'
+    | 'clockwise'
+    | 'counterclockwise'
+    | 'auto'
+    | 'top'
+    | 'bottom'
+    | 'left'
+    | 'right'
+    | 'topright'
+    | 'topleft'
+    | 'bottomright'
+    | 'bottomleft'
+    | 'lefttop'
+    | 'leftbottom'
+    | 'righttop'
+    | 'rightbottom'
+    | Array<
+        | 'flip'
+        | 'clockwise'
+        | 'counterclockwise'
+        | 'auto'
+        | 'top'
+        | 'bottom'
+        | 'left'
+        | 'right'
+        | 'topright'
+        | 'topleft'
+        | 'bottomright'
+        | 'bottomleft'
+        | 'lefttop'
+        | 'leftbottom'
+        | 'righttop'
+        | 'rightbottom'
+      >;
+        "offset"?: number;
+        "placement"?: 'auto' | 'top' | 'bottom' | 'left' | 'right' | 'topright' | 'topleft' | 'bottomright' | 'bottomleft' | 'lefttop' | 'leftbottom' | 'righttop' | 'rightbottom';
+        "plumage"?: boolean;
+        /**
+          * Keep external attribute name `title`, but avoid reserved prop name.
+         */
+        "popoverTitle"?: string;
+        /**
+          * Lit's `super` -> internal `superTooltip`, attribute remains `super`.
+         */
+        "superTooltip"?: boolean;
+        /**
+          * String id or direct HTMLElement
+         */
+        "target"?: string | HTMLElement;
+        "trigger"?: 'click' | 'hover' | 'focus' | `${'click' | 'hover' | 'focus'} ${'click' | 'hover' | 'focus'}`;
+        "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+        "visible"?: boolean;
+        "yOffset"?: number;
+    }
     interface RadioInputComponent {
         "customRadio"?: boolean;
         "customRadioGroup"?: boolean;
@@ -1323,6 +1625,19 @@ declare namespace LocalJSX {
         "validation"?: boolean;
         "validationMsg"?: string;
         "value"?: string;
+    }
+    interface StandardPaginationComponent {
+        "currentPage"?: number;
+        "goToButtons"?: string;
+        "hideEllipsis"?: boolean;
+        "hideGotoEndButtons"?: boolean;
+        "limit"?: number;
+        "onChange-page"?: (event: StandardPaginationComponentCustomEvent<{ page: number }>) => void;
+        "paginationLayout"?: '' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right';
+        "paginationVariantColor"?: string;
+        "plumage"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "totalPages"?: number;
     }
     interface ToggleSwitchComponent {
         "checked"?: boolean;
@@ -1352,6 +1667,7 @@ declare namespace LocalJSX {
         "badge-component": BadgeComponent;
         "button-component": ButtonComponent;
         "button-group": ButtonGroup;
+        "by-page-pagination-component": ByPagePaginationComponent;
         "card-component": CardComponent;
         "checkbox-component": CheckboxComponent;
         "divider-component": DividerComponent;
@@ -1360,8 +1676,12 @@ declare namespace LocalJSX {
         "icon-component": IconComponent;
         "input-field-component": InputFieldComponent;
         "input-group-component": InputGroupComponent;
+        "minimize-pagination-component": MinimizePaginationComponent;
         "modal-component": ModalComponent;
+        "pagination-component": PaginationComponent;
+        "popover-component": PopoverComponent;
         "radio-input-component": RadioInputComponent;
+        "standard-pagination-component": StandardPaginationComponent;
         "toggle-switch-component": ToggleSwitchComponent;
     }
 }
@@ -1378,6 +1698,7 @@ declare module "@stencil/core" {
             "badge-component": LocalJSX.BadgeComponent & JSXBase.HTMLAttributes<HTMLBadgeComponentElement>;
             "button-component": LocalJSX.ButtonComponent & JSXBase.HTMLAttributes<HTMLButtonComponentElement>;
             "button-group": LocalJSX.ButtonGroup & JSXBase.HTMLAttributes<HTMLButtonGroupElement>;
+            "by-page-pagination-component": LocalJSX.ByPagePaginationComponent & JSXBase.HTMLAttributes<HTMLByPagePaginationComponentElement>;
             "card-component": LocalJSX.CardComponent & JSXBase.HTMLAttributes<HTMLCardComponentElement>;
             "checkbox-component": LocalJSX.CheckboxComponent & JSXBase.HTMLAttributes<HTMLCheckboxComponentElement>;
             "divider-component": LocalJSX.DividerComponent & JSXBase.HTMLAttributes<HTMLDividerComponentElement>;
@@ -1386,8 +1707,12 @@ declare module "@stencil/core" {
             "icon-component": LocalJSX.IconComponent & JSXBase.HTMLAttributes<HTMLIconComponentElement>;
             "input-field-component": LocalJSX.InputFieldComponent & JSXBase.HTMLAttributes<HTMLInputFieldComponentElement>;
             "input-group-component": LocalJSX.InputGroupComponent & JSXBase.HTMLAttributes<HTMLInputGroupComponentElement>;
+            "minimize-pagination-component": LocalJSX.MinimizePaginationComponent & JSXBase.HTMLAttributes<HTMLMinimizePaginationComponentElement>;
             "modal-component": LocalJSX.ModalComponent & JSXBase.HTMLAttributes<HTMLModalComponentElement>;
+            "pagination-component": LocalJSX.PaginationComponent & JSXBase.HTMLAttributes<HTMLPaginationComponentElement>;
+            "popover-component": LocalJSX.PopoverComponent & JSXBase.HTMLAttributes<HTMLPopoverComponentElement>;
             "radio-input-component": LocalJSX.RadioInputComponent & JSXBase.HTMLAttributes<HTMLRadioInputComponentElement>;
+            "standard-pagination-component": LocalJSX.StandardPaginationComponent & JSXBase.HTMLAttributes<HTMLStandardPaginationComponentElement>;
             "toggle-switch-component": LocalJSX.ToggleSwitchComponent & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;
         }
     }

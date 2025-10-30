@@ -18,7 +18,7 @@
     <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
      -->
     <app-wrapper>
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <autocomplete-single id="aci1" add-btn label-size="sm" input-id="ac-single1" label="Autocomplete Single"></autocomplete-single>
 
         <autocomplete-single
@@ -66,7 +66,7 @@
             slot="formField"
           ></autocomplete-multiple-selections>
         </form-component>
-      </div>
+      </div> -->
 
       <!-- <div class="cwrapper">
         <badge-component id="badge1" elevation="6" shape="square" background-color="primary">Badge Base</badge-component>
@@ -619,7 +619,7 @@
 
       </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <input-field-component label="First Name" label-size="sm" size="sm" value="" input-id="firstName"></input-field-component>
 
         <input-field-component label="Last Name" value="" input-id="lastName"></input-field-component>
@@ -655,11 +655,13 @@
             slot="formField"
           ></input-field-component>
         </form-component>
-      </div>
+      </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <form-component form-layout="horizontal">
-          <input-group-component slot="formField" label="Amount" input-id="amount" prepend append append-icon="fa-solid fa-dollar-sign" slot="formField">
+          <input-group-component slot="formField" required
+            validation
+            validation-message="Please enter Last name" label="Amount" input-id="amount" prepend append append-icon="fa-solid fa-dollar-sign" slot="formField">
             <span slot="prepend">Total</span>
           </input-group-component>
 
@@ -667,105 +669,346 @@
             <button slot="append" type="button" class="btn btn-outline-secondary">Go</button>
           </input-group-component>
         </form-component>
+      </div> -->
+
+      <!-- <div class="cwrapper"> -->
+        <!-- =========================================================
+=  DEMO 1: Parent -> STANDARD (default)                      =
+========================================================= -->
+        <!-- No flags => renders <standard-pagination> internally -->
+        <!-- <div style="width: 500px">
+          DEMO 1: Parent -> STANDARD (default)<br /><br />
+          <pagination-component
+            current-page="1"
+            total-pages="20"
+            total-rows="200"
+            page-size="10"
+            pagination-layout="center"
+            size="sm"
+            go-to-buttons="icon"
+            pagination-variant-color="primary"
+          ></pagination-component> -->
+          <!-- try: "", "text", "icon" -->
+          <!-- <script type="module">
+            const pager = document.querySelector('pagination-component');
+            pager.addEventListener('page-changed', e => {
+              // why: sync your data fetch / table page
+              const { page, pageSize } = e.detail;
+              console.log('page-changed →', page, pageSize);
+            });
+          </script>
+        </div> -->
+        <!-- =========================================================
+=  DEMO 2: Parent -> MINIMIZE                               =
+========================================================= -->
+        <!-- <div style="width: 500px">
+          DEMO 2: Parent -> MINIMIZE<br /><br />
+          <pagination-component use-minimize-pagination current-page="3" total-pages="12" pagination-layout="end" go-to-buttons=""></pagination-component>
+        </div> -->
+        <!-- =========================================================
+=  DEMO 3: Parent -> BY-PAGE                                =
+========================================================= -->
+        <!-- <div style="width: 500px">
+          DEMO 3: Parent -> BY-PAGE<br /><br />
+          <pagination-component use-by-page-pagination current-page="5" total-pages="42" pagination-layout="center" go-to-buttons="text"></pagination-component>
+        </div>
+
+        <script type="module">
+          // Hook up events (optional)
+          const [demo1, demo2, demo3] = document.querySelectorAll('pagination-component');
+
+          [demo1, demo2, demo3].forEach((el, i) => {
+            el.addEventListener('page-changed', e => {
+              const { page, pageSize } = e.detail;
+              console.log(`Demo ${i + 1} page-changed →`, page, pageSize);
+            });
+            el.addEventListener('page-size-changed', e => {
+              console.log(`Demo ${i + 1} page-size-changed →`, e.detail.pageSize);
+            });
+          });
+        </script> -->
+        <!-- =========================================================
+=  DEMO 4: Parent with SIZE CHANGER + DISPLAY RANGE         =
+========================================================= -->
+        <!-- <div style="width: 500px">
+          DEMO 4: Parent with SIZE CHANGER + DISPLAY RANGE <br /><br />
+          <pagination-component current-page="1" total-rows="1234" show-size-changer show-display-range page-size-options='[10,20,50,100,"All"]' pagination-layout="start"
+            > --><!-- try: center | end | fill-left | fill-right -->
+          <!-- </pagination-component>
+
+          <script type="module">
+            const pager2 = document.querySelectorAll('pagination-component')[1];
+            pager2.addEventListener('page-size-changed', e => {
+              const { pageSize } = e.detail;
+              console.log('page-size-changed →', pageSize);
+            });
+            pager2.addEventListener('page-changed', e => {
+              const { page, pageSize } = e.detail;
+              console.log('page-changed →', page, pageSize);
+            });
+          </script>
+        </div> -->
+        <!-- =========================================================
+=  DEMO 5A: Standalone CHILD (STANDARD)                     =
+========================================================= -->
+
+        <!-- <div style="width: 500px">
+          DEMO 5A: Standalone CHILD (STANDARD)<br /><br />
+          <standard-pagination-component
+            current-page="2"
+            total-pages="9"
+            limit="5"
+            go-to-buttons=""
+            size=""
+            pagination-layout="fill"
+            pagination-variant-color="secondary"
+
+          ></standard-pagination-component>
+
+          <script type="module">
+            const std = document.querySelector('standard-pagination-component');
+            std.addEventListener('change-page', e => {
+              console.log('standard change-page →', e.detail.page);
+            });
+          </script>
+        </div> -->
+        <!-- =========================================================
+=  DEMO 5B: Standalone CHILD (MINIMIZE)                     =
+========================================================= -->
+        <!-- <div style="width: 500px">
+          DEMO 5B: Standalone CHILD (MINIMIZE)<br /><br />
+          <minimize-pagination-component current-page="7" total-pages="15" go-to-buttons="text" size="sm" pagination-layout="end" control-id="my-table"
+            > -->
+            <!-- avoid using 'id' prop; use control-id if needed -->
+             <!-- </minimize-pagination-component> -->
+
+          <!-- <script type="module">
+            const mini = document.querySelector('minimize-pagination-component');
+            mini.addEventListener('change-page', e => {
+              console.log('minimize change-page →', e.detail.page);
+            });
+          </script>
+        </div> -->
+        <!-- =========================================================
+=  DEMO 5C: Standalone CHILD (BY-PAGE)                      =
+========================================================= -->
+        <!-- <div style="width: 500px">
+          DEMO 5C: Standalone CHILD (BY-PAGE)<br /><br />
+          <by-page-pagination-component
+            current-page="12"
+            total-pages="88"
+            go-to-buttons=""
+            size="sm"
+            pagination-layout="center"
+            control-id="my-table"
+          ></by-page-pagination-component>
+
+          <script type="module">
+            const byp = document.querySelector('by-page-pagination-component');
+            byp.addEventListener('change-page', e => {
+              console.log('by-page change-page →', e.detail.page);
+            });
+          </script>
+        </div>
+      </div> -->
+
+      <div class="cwrapper">
+
+ <div class="row">
+      <!-- A) Click trigger (default). Slotted trigger element -->
+      <div>
+        <h4>A. Click (default)</h4>
+        <popover-component title="Hello" content="This pops on click." placement="auto">
+          <button id="btn-a">Click me</button>
+        </popover-component>
       </div>
+
+      <!-- B) Hover trigger -->
+      <div>
+        <h4>B. Hover</h4>
+        <popover-component trigger="hover"
+                           title="Hover title"
+                           content="Shown while hovering."
+                           placement="auto">
+          <button id="btn-b">Hover me</button>
+        </popover-component>
+      </div>
+
+      <!-- C) Focus trigger (keyboard friendly) -->
+      <div>
+        <h4>C. Focus</h4>
+        <popover-component trigger="focus"
+                           title="Focus title"
+                           placement="auto"
+                           content="Appears on focus; hides on blur.">
+          <button id="btn-c">Tab to me</button>
+        </popover-component>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- D) External target by id (no slotted child) -->
+      <div>
+        <h4>D. External target</h4>
+        <button id="external-target">External trigger</button>
+        <popover-component target="external-target"
+                           title="Using target"
+                           placement="auto"
+                           content="Trigger is outside the component."
+                           ></popover-component>
+      </div>
+
+      <!-- E) Variant + plumage + super -->
+      <div>
+        <h4>E. Variant + Plumage + Super</h4>
+        <popover-component title="Styled"
+                           content="Primary + plumage + super-tooltip."
+                           variant="primary"
+                           plumage
+                           super
+                           placement="leftbottom">
+          <button id="btn-e">Styled popover</button>
+        </popover-component>
+      </div>
+
+      <!-- F) arrowOff + offset/yOffset -->
+      <div>
+        <h4>F. Arrow off + offsets</h4>
+        <popover-component title="No Arrow"
+                           content="Arrow removed; positioned with offsets."
+                           arrow-off
+                           placement="auto"
+                           yOffset="10"
+                           offset="8">
+          <button id="btn-f">Offset popover</button>
+        </popover-component>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- G) Fallback behavior: try flip/clockwise chain -->
+      <div>
+        <h4>G. Fallback placement</h4>
+        <popover-component title="Fallback"
+                           content="Will try flip, then clockwise sequence."
+                           placement="right"
+                           fallback-placement='["flip","clockwise"]'>
+          <button id="btn-g">Fallback demo</button>
+        </popover-component>
+      </div>
+
+      <!-- H) Multiple triggers (e.g., "hover focus") -->
+      <div>
+        <h4>H. Multiple triggers</h4>
+        <popover-component title="Multi-trigger"
+                           content="Opens on hover or focus."
+                           trigger="hover focus"
+                           placement="auto">
+          <button id="btn-h">Hover or focus me</button>
+        </popover-component>
+      </div>
+    </div>
+
+
+        </div>
     </app-wrapper>
 
     <script type="module">
-      window.addEventListener('DOMContentLoaded', () => {
-        const el = document.querySelector('input-group-component');
-        el.addEventListener('valueChange', e => console.log('valueChange:', e.detail.value));
-        // Back-compat:
-        el.addEventListener('change', e => console.log('change:', e.detail.value));
+      // window.addEventListener('DOMContentLoaded', () => {
+      //   const el = document.querySelector('input-group-component');
+      //   el.addEventListener('valueChange', e => console.log('valueChange:', e.detail.value));
+      //   // Back-compat:
+      //   el.addEventListener('change', e => console.log('change:', e.detail.value));
 
-        const aci1 = document.getElementById('aci1');
-        const aci1Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
-        setTimeout(() => {
-          aci1.options = aci1Options;
-        }, 300); // delay to allow stencil hydration
+      //   const aci1 = document.getElementById('aci1');
+      //   const aci1Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+      //   setTimeout(() => {
+      //     aci1.options = aci1Options;
+      //   }, 300); // delay to allow stencil hydration
 
-        /***********************************/
+      //   /***********************************/
 
-        const aci2 = document.getElementById('aci2');
-        const aci2Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
-        setTimeout(() => {
-          aci2.options = aci2Options;
-        }, 300); // delay to allow stencil hydration
+      //   const aci2 = document.getElementById('aci2');
+      //   const aci2Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+      //   setTimeout(() => {
+      //     aci2.options = aci2Options;
+      //   }, 300); // delay to allow stencil hydration
 
-        /***********************************/
+      //   /***********************************/
 
-        const aci3 = document.getElementById('aci3');
-        // keep this mutable so we can mirror updates from the component
-        let aci3Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+      //   const aci3 = document.getElementById('aci3');
+      //   // keep this mutable so we can mirror updates from the component
+      //   let aci3Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
 
-        // 1) Push initial options once the component is ready
-        // Either approach works; use ONE of them:
+      //   // 1) Push initial options once the component is ready
+      //   // Either approach works; use ONE of them:
 
-        // A) Using Stencil's componentOnReady()
-        aci3.componentOnReady?.().then(async () => {
-          await aci3.setOptions(aci3Options);
-        });
+      //   // A) Using Stencil's componentOnReady()
+      //   aci3.componentOnReady?.().then(async () => {
+      //     await aci3.setOptions(aci3Options);
+      //   });
 
-        // B) Or using customElements.whenDefined(...)
-        // customElements.whenDefined('autocomplete-multiselect').then(async () => {
-        //   await aci3.setOptions(aci3Options);
-        // });
+      //   // B) Or using customElements.whenDefined(...)
+      //   // customElements.whenDefined('autocomplete-multiselect').then(async () => {
+      //   //   await aci3.setOptions(aci3Options);
+      //   // });
 
-        // 2) Keep your app state in sync when users ADD/DELETE options (editable=true)
-        aci3.addEventListener('optionsChange', e => {
-          const { options, reason, value } = e.detail || {};
-          if (reason === 'replace') {
-            console.log('[aci3 optionsChange]', reason, options);
-          } else {
-            console.log('[aci3 optionsChange]', reason, value, options);
-          }
-          // (optional) persist somewhere (e.g., localStorage / server)
-          // localStorage.setItem('aci3Options', JSON.stringify(aci3Options));
-        });
+      //   // 2) Keep your app state in sync when users ADD/DELETE options (editable=true)
+      //   aci3.addEventListener('optionsChange', e => {
+      //     const { options, reason, value } = e.detail || {};
+      //     if (reason === 'replace') {
+      //       console.log('[aci3 optionsChange]', reason, options);
+      //     } else {
+      //       console.log('[aci3 optionsChange]', reason, value, options);
+      //     }
+      //     // (optional) persist somewhere (e.g., localStorage / server)
+      //     // localStorage.setItem('aci3Options', JSON.stringify(aci3Options));
+      //   });
 
-        // 3) (Optional) react to selection changes
-        aci3.addEventListener('multiSelectChange', e => {
-          console.log('[aci3 selectedItems]', e.detail);
-        });
+      //   // 3) (Optional) react to selection changes
+      //   aci3.addEventListener('multiSelectChange', e => {
+      //     console.log('[aci3 selectedItems]', e.detail);
+      //   });
 
-        // 4) (Optional) replace options later from your app
-        async function refreshFromServer(nextOptions) {
-          await aci3.setOptions(nextOptions); // will also emit optionsChange with reason: 'replace'
-        }
+      //   // 4) (Optional) replace options later from your app
+      //   async function refreshFromServer(nextOptions) {
+      //     await aci3.setOptions(nextOptions); // will also emit optionsChange with reason: 'replace'
+      //   }
 
-        // 5) (Optional) read the current options from the component
-        async function logCurrentOptions() {
-          const opts = await aci3.getOptions();
-          console.log('[aci3 getOptions]', opts);
-        }
+      //   // 5) (Optional) read the current options from the component
+      //   async function logCurrentOptions() {
+      //     const opts = await aci3.getOptions();
+      //     console.log('[aci3 getOptions]', opts);
+      //   }
 
-        /***********************************/
+      //   /***********************************/
 
-        let aci4Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango', 'Bet', 'Betty', 'Bobby', 'Bob', 'Bobby Brown', 'Bobby Blue', 'Bobby Green'];
+      //   let aci4Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango', 'Bet', 'Betty', 'Bobby', 'Bob', 'Bobby Brown', 'Bobby Blue', 'Bobby Green'];
 
-        const aci4 = document.getElementById('aci4');
+      //   const aci4 = document.getElementById('aci4');
 
-        (async () => {
-          if (window.customElements?.whenDefined) {
-            await customElements.whenDefined('autocomplete-multiple-selections');
-          }
-          if (typeof aci4.componentOnReady === 'function') {
-            await aci4.componentOnReady();
-          }
+      //   (async () => {
+      //     if (window.customElements?.whenDefined) {
+      //       await customElements.whenDefined('autocomplete-multiple-selections');
+      //     }
+      //     if (typeof aci4.componentOnReady === 'function') {
+      //       await aci4.componentOnReady();
+      //     }
 
-          // seed options by assigning the prop (the component’s @Watch('options') will pick it up)
-          aci4.options = aci4Options.slice();
+      //     // seed options by assigning the prop (the component’s @Watch('options') will pick it up)
+      //     aci4.options = aci4Options.slice();
 
-          // there is NO optionsChange in this component by default.
-          // You can still listen to selection changes:
-          aci4.addEventListener('multiSelectChange', e => {
-            console.log('[aci4 selectedItems]', e.detail);
-          });
+      //     // there is NO optionsChange in this component by default.
+      //     // You can still listen to selection changes:
+      //     aci4.addEventListener('multiSelectChange', e => {
+      //       console.log('[aci4 selectedItems]', e.detail);
+      //     });
 
-          // If you want to mirror user-added options back to app state,
-          // you must add an `@Event({eventName:'optionsChange'})` inside the component
-          // and emit it when options are upserted/deleted. Otherwise, there’s no hook.
-        })();
-      });
+      //     // If you want to mirror user-added options back to app state,
+      //     // you must add an `@Event({eventName:'optionsChange'})` inside the component
+      //     // and emit it when options are upserted/deleted. Otherwise, there’s no hook.
+      //   })();
+      // });
     </script>
   </body>
 </html>
