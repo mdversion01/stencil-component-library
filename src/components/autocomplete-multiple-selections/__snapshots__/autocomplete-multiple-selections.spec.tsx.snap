@@ -6,7 +6,9 @@ exports[`<autocomplete-multiple-selections> matches snapshot (default render) 1`
     <div>
       <div>
         <label class="form-control-label" htmlfor="tags">
-          Tags
+          <span>
+            Tags
+          </span>
         </label>
         <div>
           <div class="ac-multi-select-container">
@@ -30,7 +32,9 @@ exports[`<autocomplete-multiple-selections> matches snapshot (open with matches 
     <div>
       <div>
         <label class="form-control-label" htmlfor="tags">
-          Tags
+          <span>
+            Tags
+          </span>
         </label>
         <div>
           <div class="ac-multi-select-container">

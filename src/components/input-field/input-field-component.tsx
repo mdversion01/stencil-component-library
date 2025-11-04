@@ -17,6 +17,7 @@ export class InputFieldComponent {
   @Prop() size: '' | 'sm' | 'lg' = '';
   @Prop() label: string = '';
   @Prop() labelSize: '' | 'sm' | 'lg' = '';
+  @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
   @Prop() required: boolean = false;
   @Prop() type: string = 'text';
@@ -75,16 +76,36 @@ export class InputFieldComponent {
       .replace(/\s+/g, '');
   }
 
+  private sanitizeInput(value: string): string {
+    return value.replace(/[<>]/g, '');
+  }
+
   private handleInput = (ev: Event) => {
-    const target = ev.target as HTMLInputElement;
-    if (this._resolvedFormId) {
-      const form = (target as any).form || document.getElementById(this._resolvedFormId);
-      if (form) (target as any).form = form;
-    } else {
-      (target as any).form = null;
-    }
-    this.value = target.value;
-  };
+  const target = ev.target as HTMLInputElement;
+
+  // Keep the form linkage via attribute (form property is read-only)
+  if (this._resolvedFormId) target.setAttribute('form', this._resolvedFormId);
+  else target.removeAttribute('form');
+
+  // Sanitize like autocomplete
+  const clean = this.sanitizeInput(target.value);
+  if (clean !== target.value) target.value = clean; // reflect sanitized text in the UI
+  this.value = clean;
+
+  // Live validation behavior similar to autocomplete
+  if (this.meetsTypingThreshold() && this.validation) {
+    this.validation = false;
+  }
+  if (this.required && this.value.trim() === '') {
+    this.validation = true;
+  }
+};
+
+private handleBlur = () => {
+  if (this.required) {
+    this.validation = !this.meetsTypingThreshold();
+  }
+};
 
   // ----- Layout helpers -----
 
@@ -190,14 +211,22 @@ export class InputFieldComponent {
     return { label, input };
   }
 
+  private meetsTypingThreshold() {
+  return (this.value || '').trim().length >= 3;
+}
+
+  private showAsRequired() {
+    return this.required && !this.meetsTypingThreshold();
+  }
+
   // ----- Render bits -----
 
   private renderInputLabel(ids: string, labelColClass?: string) {
     const classes = [
       'form-control-label',
-      this.required ? 'required' : '',
       this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelHidden ? 'sr-only' : '',
+      this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.validation ? 'invalid' : '',
     ]
@@ -208,7 +237,8 @@ export class InputFieldComponent {
 
     return (
       <label class={classes} htmlFor={ids || undefined}>
-        {text}
+        <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
+        {this.required ? <span class="required">*</span> : ''}
       </label>
     );
   }
@@ -237,6 +267,7 @@ export class InputFieldComponent {
           disabled={this.disabled}
           required={this.required}
           onInput={this.handleInput}
+          onBlur={this.handleBlur}
         />
         {this.validation && this.validationMessage ? (
           <div id="validationMessage" class="invalid-feedback form-text">

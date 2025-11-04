@@ -5,7 +5,12 @@ exports[`autocomplete-multiselect renders full DOM output snapshot for given pro
   <div class="autocomplete-container form-group">
     <div>
       <label class="form-control-label invalid" htmlfor="tagInput">
-        Tags
+        <span>
+          Tags
+        </span>
+        <span class="required">
+          *
+        </span>
       </label>
       <div>
         <div class="ac-multi-select-container is-invalid">

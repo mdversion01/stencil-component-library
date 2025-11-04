@@ -31,6 +31,7 @@ export class AutocompleteSingle {
   @Prop() inputId = '';
   @Prop() label = '';
   @Prop() labelSize: '' | 'sm' | 'lg' = '';
+  @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden = false;
   @Prop() removeClearBtn = false;
   @Prop() size: '' | 'sm' | 'lg' = '';
@@ -193,7 +194,7 @@ export class AutocompleteSingle {
     return this.inputValue.trim().length >= 3;
   }
 
-  private showRequiredMark() {
+  private showAsRequired() {
     return this.required && !this.meetsTypingThreshold();
   }
 
@@ -385,11 +386,11 @@ export class AutocompleteSingle {
   private labelClasses(labelColClass?: string) {
     return [
       'form-control-label',
-      this.showRequiredMark() ? 'required' : '',
       this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.validation ? 'invalid' : '',
       this.labelHidden ? 'sr-only' : '',
+      this.labelAlign === 'right' ? 'align-right' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -417,8 +418,8 @@ export class AutocompleteSingle {
     const text = this.isRowLayout() ? `${this.label}:` : this.label;
     return (
       <label class={this.labelClasses(labelColClass)} htmlFor={ids || undefined}>
-        {text}
-        {this.showRequiredMark() ? '*' : ''}
+        <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
+        {this.required ? <span class="required">*</span> : ''}
       </label>
     );
   }

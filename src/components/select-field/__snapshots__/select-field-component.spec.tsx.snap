@@ -1,0 +1,171 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`select-field-component marks label as required when value is blank and clears after selection 1`] = `
+<select-field-component default-option-txt="Pick one" select-field-id="fruit">
+  <div>
+    <div class="form-group">
+      <label class="form-control-label" htmlfor="fruit">
+        <span>
+          Favorite Fruit
+        </span>
+        <span class="required">
+          *
+        </span>
+      </label>
+      <div>
+        <select aria-invalid="false" aria-labelledby="favoriteFruit" aria-multiselectable="false" aria-required="true" class="form-control form-select" id="fruit" required="" role="listbox">
+          <option value="">
+            Pick one
+          </option>
+          <option aria-label="Apple" selected="" value="apple">
+            Apple
+          </option>
+          <option aria-label="Banana" value="banana">
+            Banana
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+</select-field-component>
+`;
+
+exports[`select-field-component parses options JSON and selects matching value 1`] = `
+<select-field-component>
+  <div>
+    <div class="form-group">
+      <label class="form-control-label">
+        <span></span>
+      </label>
+      <div>
+        <select aria-invalid="false" aria-multiselectable="false" aria-required="false" class="form-control form-select" role="listbox">
+          <option value="">
+            Select an option
+          </option>
+          <option aria-label="Apple" value="apple">
+            Apple
+          </option>
+          <option aria-label="Banana" selected="" value="banana">
+            Banana
+          </option>
+          <option aria-label="Cherry" value="cherry">
+            Cherry
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+</select-field-component>
+`;
+
+exports[`select-field-component renders legacy "--none--" option when id includes sortField; blank default is selected 1`] = `
+<select-field-component default-option-txt="Choose…" id="user-sortField">
+  <div>
+    <div class="form-group">
+      <label class="form-control-label">
+        <span></span>
+      </label>
+      <div>
+        <select aria-invalid="false" aria-multiselectable="false" aria-required="false" class="form-control form-select" role="listbox">
+          <option aria-label="none" value="none">
+            --none--
+          </option>
+          <option selected="" value="">
+            Choose…
+          </option>
+          <option aria-label="Apple" value="apple">
+            Apple
+          </option>
+          <option aria-label="Banana" value="banana">
+            Banana
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+</select-field-component>
+`;
+
+exports[`select-field-component sanitizes defaultOptionTxt and uses it when attribute present 1`] = `
+<select-field-component default-option-txt="<Pick one>">
+  <div>
+    <div class="form-group">
+      <label class="form-control-label">
+        <span></span>
+      </label>
+      <div>
+        <select aria-invalid="false" aria-multiselectable="false" aria-required="false" class="form-control form-select" role="listbox">
+          <option selected="" value="">
+            Pick one
+          </option>
+          <option aria-label="Apple" value="apple">
+            Apple
+          </option>
+          <option aria-label="Banana" value="banana">
+            Banana
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+</select-field-component>
+`;
+
+exports[`select-field-component shows validation message when required and user re-selects blank 1`] = `
+<select-field-component default-option-txt="Pick one" validation-message="Please fill in">
+  <div>
+    <div class="form-group">
+      <label class="form-control-label invalid">
+        <span class="required"></span>
+        <span class="required">
+          *
+        </span>
+      </label>
+      <div>
+        <select aria-describedby="validationMessage" aria-invalid="true" aria-multiselectable="false" aria-required="true" class="form-control form-select is-invalid" required="" role="listbox">
+          <option selected="" value="">
+            Pick one
+          </option>
+          <option aria-label="Apple" value="apple">
+            Apple
+          </option>
+          <option aria-label="Banana" value="banana">
+            Banana
+          </option>
+        </select>
+        <div aria-live="polite" class="form-text invalid-feedback" id="validationMessage">
+          Please fill in
+        </div>
+      </div>
+    </div>
+  </div>
+</select-field-component>
+`;
+
+exports[`select-field-component with value="none", both legacy none and blank default carry selected attribute 1`] = `
+<select-field-component default-option-txt="Choose…" id="user-sortField">
+  <div>
+    <div class="form-group">
+      <label class="form-control-label">
+        <span></span>
+      </label>
+      <div>
+        <select aria-invalid="false" aria-multiselectable="false" aria-required="false" class="form-control form-select" role="listbox">
+          <option aria-label="none" selected="" value="none">
+            --none--
+          </option>
+          <option selected="" value="">
+            Choose…
+          </option>
+          <option aria-label="Apple" value="apple">
+            Apple
+          </option>
+          <option aria-label="Banana" value="banana">
+            Banana
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+</select-field-component>
+`;

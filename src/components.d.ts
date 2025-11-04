@@ -69,6 +69,7 @@ export namespace Components {
         "inputCols": string;
         "inputId": string;
         "label": string;
+        "labelAlign": '' | 'right';
         "labelCol": number;
         /**
           * Responsive columns (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")
@@ -123,6 +124,7 @@ export namespace Components {
         "inputCols": string;
         "inputId": string;
         "label": string;
+        "labelAlign": '' | 'right';
         "labelCol": number;
         /**
           * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
@@ -161,6 +163,7 @@ export namespace Components {
         "inputCols": string;
         "inputId": string;
         "label": string;
+        "labelAlign": '' | 'right';
         /**
           * Back-compat numeric columns (used only if labelCols/inputCols are not provided)
          */
@@ -387,6 +390,7 @@ export namespace Components {
         "inputCols": string;
         "inputId": string;
         "label": string;
+        "labelAlign": '' | 'right';
         /**
           * Legacy numeric cols (fallback)
          */
@@ -559,6 +563,44 @@ export namespace Components {
         "visible": boolean;
         "yOffset": number;
     }
+    interface ProgressDisplayComponent {
+        /**
+          * Immutable public API
+         */
+        "animated": boolean;
+        /**
+          * Accepts JSON string (HTML attr) or array (JS)
+         */
+        "bars": | Array<{
+        value: number;
+        max?: number;
+        variant?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+        striped?: boolean;
+        animated?: boolean;
+        precision?: number;
+        progressAlign?: '' | 'left' | 'right';
+        showProgress?: boolean;
+        showValue?: boolean;
+      }>
+    | string;
+        "circular": boolean;
+        "height": number;
+        "indeterminate": boolean;
+        "lineCap": boolean;
+        "max": number;
+        "multi": boolean;
+        "precision": number;
+        "progressAlign": '' | 'left' | 'right';
+        "rotate"?: number;
+        "showProgress": boolean;
+        "showValue": boolean;
+        "size": number;
+        "striped": boolean;
+        "strokeWidth": number;
+        "styles": string;
+        "value": number;
+        "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+    }
     interface RadioInputComponent {
         "customRadio": boolean;
         "customRadioGroup": boolean;
@@ -577,6 +619,45 @@ export namespace Components {
         "validation": boolean;
         "validationMsg": string;
         "value": string;
+    }
+    interface SelectFieldComponent {
+        "classes": string;
+        "custom": boolean;
+        "defaultOptionTxt": string;
+        "defaultTxt": string;
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "inputCol": number;
+        "inputCols": string;
+        "label": string;
+        "labelAlign": '' | 'right';
+        /**
+          * Legacy numeric cols (fallback)
+         */
+        "labelCol": number;
+        /**
+          * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")
+         */
+        "labelCols": string;
+        "labelHidden": boolean;
+        "labelSize": '' | 'sm' | 'lg';
+        "multiple": boolean;
+        "options": Array<{ value: string; name: string }> | string;
+        "required": boolean;
+        /**
+          * ID attribute for the <select> (Lit: selectFieldId)
+         */
+        "selectFieldId": string;
+        "selected": boolean;
+        "size": '' | 'sm' | 'lg';
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
+        /**
+          * When used with a table, sync with external sort events
+         */
+        "withTable": boolean;
     }
     interface StandardPaginationComponent {
         "currentPage": number;
@@ -663,6 +744,10 @@ export interface PaginationComponentCustomEvent<T> extends CustomEvent<T> {
 export interface RadioInputComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLRadioInputComponentElement;
+}
+export interface SelectFieldComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSelectFieldComponentElement;
 }
 export interface StandardPaginationComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -964,6 +1049,12 @@ declare global {
         prototype: HTMLPopoverComponentElement;
         new (): HTMLPopoverComponentElement;
     };
+    interface HTMLProgressDisplayComponentElement extends Components.ProgressDisplayComponent, HTMLStencilElement {
+    }
+    var HTMLProgressDisplayComponentElement: {
+        prototype: HTMLProgressDisplayComponentElement;
+        new (): HTMLProgressDisplayComponentElement;
+    };
     interface HTMLRadioInputComponentElementEventMap {
         "groupChange": string;
     }
@@ -980,6 +1071,23 @@ declare global {
     var HTMLRadioInputComponentElement: {
         prototype: HTMLRadioInputComponentElement;
         new (): HTMLRadioInputComponentElement;
+    };
+    interface HTMLSelectFieldComponentElementEventMap {
+        "valueChange": { value: string };
+    }
+    interface HTMLSelectFieldComponentElement extends Components.SelectFieldComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSelectFieldComponentElementEventMap>(type: K, listener: (this: HTMLSelectFieldComponentElement, ev: SelectFieldComponentCustomEvent<HTMLSelectFieldComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSelectFieldComponentElementEventMap>(type: K, listener: (this: HTMLSelectFieldComponentElement, ev: SelectFieldComponentCustomEvent<HTMLSelectFieldComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSelectFieldComponentElement: {
+        prototype: HTMLSelectFieldComponentElement;
+        new (): HTMLSelectFieldComponentElement;
     };
     interface HTMLStandardPaginationComponentElementEventMap {
         "change-page": { page: number };
@@ -1038,7 +1146,9 @@ declare global {
         "modal-component": HTMLModalComponentElement;
         "pagination-component": HTMLPaginationComponentElement;
         "popover-component": HTMLPopoverComponentElement;
+        "progress-display-component": HTMLProgressDisplayComponentElement;
         "radio-input-component": HTMLRadioInputComponentElement;
+        "select-field-component": HTMLSelectFieldComponentElement;
         "standard-pagination-component": HTMLStandardPaginationComponentElement;
         "toggle-switch-component": HTMLToggleSwitchComponentElement;
     }
@@ -1104,6 +1214,7 @@ declare namespace LocalJSX {
         "inputCols"?: string;
         "inputId"?: string;
         "label"?: string;
+        "labelAlign"?: '' | 'right';
         "labelCol"?: number;
         /**
           * Responsive columns (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")
@@ -1157,6 +1268,7 @@ declare namespace LocalJSX {
         "inputCols"?: string;
         "inputId"?: string;
         "label"?: string;
+        "labelAlign"?: '' | 'right';
         "labelCol"?: number;
         /**
           * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
@@ -1203,6 +1315,7 @@ declare namespace LocalJSX {
         "inputCols"?: string;
         "inputId"?: string;
         "label"?: string;
+        "labelAlign"?: '' | 'right';
         /**
           * Back-compat numeric columns (used only if labelCols/inputCols are not provided)
          */
@@ -1438,6 +1551,7 @@ declare namespace LocalJSX {
         "inputCols"?: string;
         "inputId"?: string;
         "label"?: string;
+        "labelAlign"?: '' | 'right';
         /**
           * Legacy numeric cols (fallback)
          */
@@ -1606,6 +1720,44 @@ declare namespace LocalJSX {
         "visible"?: boolean;
         "yOffset"?: number;
     }
+    interface ProgressDisplayComponent {
+        /**
+          * Immutable public API
+         */
+        "animated"?: boolean;
+        /**
+          * Accepts JSON string (HTML attr) or array (JS)
+         */
+        "bars"?: | Array<{
+        value: number;
+        max?: number;
+        variant?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+        striped?: boolean;
+        animated?: boolean;
+        precision?: number;
+        progressAlign?: '' | 'left' | 'right';
+        showProgress?: boolean;
+        showValue?: boolean;
+      }>
+    | string;
+        "circular"?: boolean;
+        "height"?: number;
+        "indeterminate"?: boolean;
+        "lineCap"?: boolean;
+        "max"?: number;
+        "multi"?: boolean;
+        "precision"?: number;
+        "progressAlign"?: '' | 'left' | 'right';
+        "rotate"?: number;
+        "showProgress"?: boolean;
+        "showValue"?: boolean;
+        "size"?: number;
+        "striped"?: boolean;
+        "strokeWidth"?: number;
+        "styles"?: string;
+        "value"?: number;
+        "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+    }
     interface RadioInputComponent {
         "customRadio"?: boolean;
         "customRadioGroup"?: boolean;
@@ -1625,6 +1777,46 @@ declare namespace LocalJSX {
         "validation"?: boolean;
         "validationMsg"?: string;
         "value"?: string;
+    }
+    interface SelectFieldComponent {
+        "classes"?: string;
+        "custom"?: boolean;
+        "defaultOptionTxt"?: string;
+        "defaultTxt"?: string;
+        "disabled"?: boolean;
+        "formId"?: string;
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        "inputCol"?: number;
+        "inputCols"?: string;
+        "label"?: string;
+        "labelAlign"?: '' | 'right';
+        /**
+          * Legacy numeric cols (fallback)
+         */
+        "labelCol"?: number;
+        /**
+          * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")
+         */
+        "labelCols"?: string;
+        "labelHidden"?: boolean;
+        "labelSize"?: '' | 'sm' | 'lg';
+        "multiple"?: boolean;
+        "onValueChange"?: (event: SelectFieldComponentCustomEvent<{ value: string }>) => void;
+        "options"?: Array<{ value: string; name: string }> | string;
+        "required"?: boolean;
+        /**
+          * ID attribute for the <select> (Lit: selectFieldId)
+         */
+        "selectFieldId"?: string;
+        "selected"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "validation"?: boolean;
+        "validationMessage"?: string;
+        "value"?: string;
+        /**
+          * When used with a table, sync with external sort events
+         */
+        "withTable"?: boolean;
     }
     interface StandardPaginationComponent {
         "currentPage"?: number;
@@ -1680,7 +1872,9 @@ declare namespace LocalJSX {
         "modal-component": ModalComponent;
         "pagination-component": PaginationComponent;
         "popover-component": PopoverComponent;
+        "progress-display-component": ProgressDisplayComponent;
         "radio-input-component": RadioInputComponent;
+        "select-field-component": SelectFieldComponent;
         "standard-pagination-component": StandardPaginationComponent;
         "toggle-switch-component": ToggleSwitchComponent;
     }
@@ -1711,7 +1905,9 @@ declare module "@stencil/core" {
             "modal-component": LocalJSX.ModalComponent & JSXBase.HTMLAttributes<HTMLModalComponentElement>;
             "pagination-component": LocalJSX.PaginationComponent & JSXBase.HTMLAttributes<HTMLPaginationComponentElement>;
             "popover-component": LocalJSX.PopoverComponent & JSXBase.HTMLAttributes<HTMLPopoverComponentElement>;
+            "progress-display-component": LocalJSX.ProgressDisplayComponent & JSXBase.HTMLAttributes<HTMLProgressDisplayComponentElement>;
             "radio-input-component": LocalJSX.RadioInputComponent & JSXBase.HTMLAttributes<HTMLRadioInputComponentElement>;
+            "select-field-component": LocalJSX.SelectFieldComponent & JSXBase.HTMLAttributes<HTMLSelectFieldComponentElement>;
             "standard-pagination-component": LocalJSX.StandardPaginationComponent & JSXBase.HTMLAttributes<HTMLStandardPaginationComponentElement>;
             "toggle-switch-component": LocalJSX.ToggleSwitchComponent & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;
         }

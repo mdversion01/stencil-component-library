@@ -48,12 +48,18 @@
 .inline label {
   display: flex;
   align-items: center;
-  // justify-content: right;
+  justify-content: left;
   margin-bottom: 0 !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
   padding-right: 0 !important;
   position: relative;
+}
+
+.horizontal label {
+  &.align-right {
+    justify-content: right;
+  }
 }
 
 // .horizontal label {
@@ -220,7 +226,7 @@
 .was-validated :invalid ~ .invalid-tooltip,
 .is-invalid ~ .invalid-feedback,
 .is-invalid ~ .invalid-tooltip {
-    display: block !important;
+  display: block !important;
 }
 
 // // .invalid {
@@ -293,7 +299,8 @@
   font-size: 1.125rem !important;
 }
 
-.inline, .horizontal {
+.inline,
+.horizontal {
   .form-control-label {
     align-items: start !important;
     padding-top: 7px !important;

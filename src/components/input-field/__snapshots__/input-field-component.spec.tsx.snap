@@ -5,7 +5,9 @@ exports[`<input-field-component> matches snapshot (default stacked layout) 1`] =
   <div>
     <div class="form-group">
       <label class="form-control-label" htmlfor="first">
-        First Name
+        <span>
+          First Name
+        </span>
       </label>
       <div>
         <input aria-labelledby="firstName" class="form-control" id="first" name="firstName" placeholder="First Name" type="text" value="Ada">
@@ -20,7 +22,9 @@ exports[`<input-field-component> matches snapshot (horizontal with validation) 1
   <div class="horizontal">
     <div class="form-group row">
       <label class="col-12 col-form-label col-sm-3 form-control-label invalid no-padding" htmlfor="email">
-        Email:
+        <span>
+          Email:
+        </span>
       </label>
       <div class="col-12 col-sm-9">
         <div>

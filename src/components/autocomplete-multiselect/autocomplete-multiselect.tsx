@@ -34,6 +34,7 @@ export class AutocompleteMultiselect {
   @Prop() inputId = '';
   @Prop() label = '';
   @Prop() labelSize: '' | 'sm' | 'lg' = '';
+  @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden = false;
   @Prop() removeClearBtn = false;
   @Prop() size: '' | 'sm' | 'lg' = '';
@@ -167,7 +168,7 @@ export class AutocompleteMultiselect {
     return this.inputValue.trim().length >= 3 || this.selectedItems.length > 0;
   }
 
-  private showRequiredMark(): boolean {
+  private showAsRequired(): boolean {
     return this.required && !this.isSatisfiedNow();
   }
 
@@ -293,8 +294,8 @@ export class AutocompleteMultiselect {
   private labelClasses(labelColClass?: string) {
     return [
       'form-control-label',
-      this.showRequiredMark() ? 'required' : '',
       this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.validation ? 'invalid' : '',
       this.labelHidden ? 'sr-only' : '',
@@ -780,8 +781,8 @@ export class AutocompleteMultiselect {
 
     return (
       <label class={this.labelClasses(labelColClass)} htmlFor={ids || undefined}>
-        {text}
-        {this.showRequiredMark() ? '*' : ''}
+        <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
+        {this.required ? <span class="required">*</span> : ''}
       </label>
     );
   }
