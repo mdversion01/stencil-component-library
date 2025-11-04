@@ -18,7 +18,7 @@
     <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
      -->
     <app-wrapper>
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <autocomplete-single id="aci1" add-btn label-size="sm" input-id="ac-single1" label="Autocomplete Single"></autocomplete-single>
 
         <autocomplete-single
@@ -66,7 +66,7 @@
             slot="formField"
           ></autocomplete-multiple-selections>
         </form-component>
-      </div>
+      </div> -->
 
       <!-- <div class="cwrapper">
         <badge-component id="badge1" elevation="6" shape="square" background-color="primary">Badge Base</badge-component>
@@ -619,7 +619,7 @@
 
       </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <input-field-component label="First Name" label-size="sm" size="sm" value="" input-id="firstName"></input-field-component>
 
         <input-field-component label="Last Name" value="" input-id="lastName"></input-field-component>
@@ -655,7 +655,7 @@
             slot="formField"
           ></input-field-component>
         </form-component>
-      </div>
+      </div> -->
 
       <!-- <div class="cwrapper">
         <form-component form-layout="horizontal">
@@ -1078,7 +1078,7 @@
                 </div> -->
       <!-- </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <select-field-component
         form-layout="horizontal"
           label="Favorite Fruit"
@@ -1099,6 +1099,41 @@
     {"value":"cherry","name":"Cherry"}
   ]'
         ></select-field-component>
+      </div> -->
+
+      <div class="cwrapper">
+        <slider-manager-component  type="basic" label="Range:" min="0" max="100"></slider-manager-component>
+        <br /><br />
+        <basic-slider-component hide-text-boxes slider-thumb-label variant="primary" plumage value="30" min="0" max="100" unit="%"></basic-slider-component>
+
+        <discrete-slider-component label="Size" selected-index="2" string-values='["XS","S","M","L","XL"]' tick-labels></discrete-slider-component>
+
+        <multi-range-slider-component
+          label="Price range"
+          lower-value="10"
+          upper-value="60"
+          min="0"
+          max="100"
+          unit="$"
+          snap-to-ticks
+          tick-values="[0,10,20,30,40,50,60,70,80,90,100]"
+        ></multi-range-slider-component>
+
+        <hr />
+
+        <slider-manager-component
+          type="multi"
+          label="Distance"
+          lower-value="2"
+          upper-value="8"
+          min="0"
+          max="10"
+          unit="mi"
+          variant="danger"
+          snap-to-ticks
+          tick-values="[0,2,4,6,8,10]"
+          slider-thumb-label
+        ></slider-manager-component>
       </div>
     </app-wrapper>
 

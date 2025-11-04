@@ -22,6 +22,7 @@
 | `inputCols`         | `input-cols`         |                                                                                        | `string`                         | `''`                         |
 | `inputId`           | `input-id`           |                                                                                        | `string`                         | `''`                         |
 | `label`             | `label`              |                                                                                        | `string`                         | `''`                         |
+| `labelAlign`        | `label-align`        |                                                                                        | `"" \| "right"`                  | `''`                         |
 | `labelCol`          | `label-col`          | Back-compat numeric columns (used only if labelCols/inputCols are not provided)        | `number`                         | `2`                          |
 | `labelCols`         | `label-cols`         | Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4") | `string`                         | `''`                         |
 | `labelHidden`       | `label-hidden`       |                                                                                        | `boolean`                        | `false`                      |

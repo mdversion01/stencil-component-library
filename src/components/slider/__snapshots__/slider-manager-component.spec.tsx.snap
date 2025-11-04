@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`slider-manager-component reacts to type changes at runtime: runtime-switch/snapshot 1`] = `
+<slider-manager-component type="discrete">
+  <discrete-slider-component>
+    <div class="discrete stub"><pre class="props">{"kind":"discrete","label":"Dynamic","selectedIndex":0,"stringValues":[],"plumage":false,"tickLabels":false,"variant":"","disabled":false,"hideRightTextBox":false}</pre>
+    </div>
+  </discrete-slider-component>
+</slider-manager-component>
+`;
+
+exports[`slider-manager-component renders BASIC by default and forwards props: basic/default-snapshot 1`] = `
+<slider-manager-component type="basic">
+  <basic-slider-component>
+    <div class="basic stub"><pre class="props">{"kind":"basic","label":"Speed","value":42,"min":0,"max":120,"unit":"%","plumage":true,"sliderThumbLabel":true,"snapToTicks":true,"tickLabels":true,"tickValues":[0,20,40,60,80,100,120],"variant":"primary","hideTextBoxes":false,"hideLeftTextBox":false,"hideRightTextBox":true,"disabled":false}</pre>
+    </div>
+  </basic-slider-component>
+</slider-manager-component>
+`;
+
+exports[`slider-manager-component renders DISCRETE and forwards props: discrete/snapshot 1`] = `
+<slider-manager-component type="discrete">
+  <discrete-slider-component>
+    <div class="discrete stub"><pre class="props">{"kind":"discrete","label":"Quality","selectedIndex":2,"stringValues":["Low","Med","High","Ultra"],"plumage":true,"tickLabels":true,"variant":"success","disabled":true,"hideRightTextBox":true}</pre>
+    </div>
+  </discrete-slider-component>
+</slider-manager-component>
+`;
+
+exports[`slider-manager-component switches to MULTI and forwards props: multi/snapshot 1`] = `
+<slider-manager-component type="multi">
+  <multi-range-slider-component>
+    <div class="multi stub"><pre class="props">{"kind":"multi","label":"Range","lowerValue":10,"upperValue":90,"min":0,"max":100,"unit":"","plumage":false,"sliderThumbLabel":false,"snapToTicks":true,"tickLabels":false,"tickValues":[0,25,50,75,100],"variant":"warning","hideTextBoxes":true,"hideLeftTextBox":false,"hideRightTextBox":false,"disabled":false}</pre>
+    </div>
+  </multi-range-slider-component>
+</slider-manager-component>
+`;

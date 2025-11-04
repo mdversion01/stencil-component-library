@@ -20,6 +20,8 @@ $fa-font-path: '/assets/fonts'; // ✅ must be before imports!
 
 @import '../components/progress-display/progress-display-styles.scss';
 
+@import '../components/slider/slider-component-styles.scss';
+
 // :root {
 //   --amber: #ffc107;
 //   --blue: #2196f3;

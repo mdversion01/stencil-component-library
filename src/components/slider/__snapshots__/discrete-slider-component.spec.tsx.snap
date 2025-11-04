@@ -1,0 +1,193 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`discrete-slider-component drag updates index based on position: drag-behavior 1`] = `
+<discrete-slider-component selected-index="0" string-values="[&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,&quot;E&quot;]">
+  <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div class="slider-controls">
+        <div class="slider-background-track" style="width: 100%;"></div>
+        <div class="slider-moving-track" style="width: 100%;"></div>
+        <div class="slider-thumb-container" role="presentation" tabindex="0" style="left: 100%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Slider thumb" class="slider-thumb" role="slider" tabindex="-1"></div>
+        </div>
+        <div class="slider-ticks">
+          <div>
+            <div class="slider-tick" style="left: 0%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 25%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 50%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 75%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 100%; top: calc(50% - 10px);"></div>
+          </div>
+        </div>
+      </div>
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        E
+      </div>
+    </div>
+  </div>
+</discrete-slider-component>
+`;
+
+exports[`discrete-slider-component hideRightTextBox hides the right value output: hide-right-textbox 1`] = `
+<discrete-slider-component hide-right-text-box="" selected-index="2" string-values="[&quot;Red&quot;,&quot;Green&quot;,&quot;Blue&quot;]">
+  <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div class="slider-controls">
+        <div class="slider-background-track" style="width: 100%;"></div>
+        <div class="slider-moving-track" style="width: 100%;"></div>
+        <div class="slider-thumb-container" role="presentation" tabindex="0" style="left: 100%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Slider thumb" class="slider-thumb" role="slider" tabindex="-1"></div>
+        </div>
+        <div class="slider-ticks">
+          <div>
+            <div class="slider-tick" style="left: 0%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 50%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 100%; top: calc(50% - 10px);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</discrete-slider-component>
+`;
+
+exports[`discrete-slider-component keyboard navigation changes selectedIndex and emits events: keyboard-nav 1`] = `
+<discrete-slider-component selected-index="1" string-values="[&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;]">
+  <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div class="slider-controls">
+        <div class="slider-background-track" style="width: 100%;"></div>
+        <div class="slider-moving-track" style="width: 100%;"></div>
+        <div class="slider-thumb-container slider-thumb-container-active" role="presentation" tabindex="0" style="left: 100%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Slider thumb" class="slider-thumb" role="slider" tabindex="-1"></div>
+        </div>
+        <div class="slider-ticks">
+          <div>
+            <div class="slider-tick" style="left: 0%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 33.33333333333333%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 66.66666666666666%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 100%; top: calc(50% - 10px);"></div>
+          </div>
+        </div>
+      </div>
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        D
+      </div>
+    </div>
+  </div>
+</discrete-slider-component>
+`;
+
+exports[`discrete-slider-component parses stringValues from JSON attribute and respects selectedIndex: json-values-and-selected-index 1`] = `
+<discrete-slider-component selected-index="2" string-values="[&quot;Low&quot;,&quot;Med&quot;,&quot;High&quot;,&quot;Ultra&quot;]" tick-labels="">
+  <div aria-disabled="false" aria-label="Quality" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <label class="form-control-label" id="slider-input-label">
+      Quality High
+    </label>
+    <div class="slider-container">
+      <div class="slider-controls">
+        <div class="slider-background-track" style="width: 100%;"></div>
+        <div class="slider-moving-track" style="width: 67%;"></div>
+        <div class="slider-thumb-container" role="presentation" tabindex="0" style="left: 67%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Slider thumb" class="slider-thumb" role="slider" tabindex="-1"></div>
+        </div>
+        <div class="slider-ticks">
+          <div>
+            <div class="slider-tick" style="left: 0%; top: calc(50% - 10px);"></div>
+            <div class="slider-tick-label" style="left: 0%; transform: translateX(-50%);">
+              Low
+            </div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 33.33333333333333%; top: calc(50% - 10px);"></div>
+            <div class="slider-tick-label" style="left: 33.33333333333333%; transform: translateX(-50%);">
+              Med
+            </div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 66.66666666666666%; top: calc(50% - 10px);"></div>
+            <div class="slider-tick-label" style="left: 66.66666666666666%; transform: translateX(-50%);">
+              High
+            </div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 100%; top: calc(50% - 10px);"></div>
+            <div class="slider-tick-label" style="left: 100%; transform: translateX(-50%);">
+              Ultra
+            </div>
+          </div>
+        </div>
+      </div>
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        High
+      </div>
+    </div>
+  </div>
+</discrete-slider-component>
+`;
+
+exports[`discrete-slider-component renders with defaults (snapshot): default-render 1`] = `
+<discrete-slider-component>
+  <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div class="slider-controls">
+        <div class="slider-background-track" style="width: 100%;"></div>
+        <div class="slider-moving-track" style="width: 0%;"></div>
+        <div class="slider-thumb-container" role="presentation" tabindex="0" style="left: 0%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Slider thumb" class="slider-thumb" role="slider" tabindex="-1"></div>
+        </div>
+        <div class="slider-ticks"></div>
+      </div>
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox"></div>
+    </div>
+  </div>
+</discrete-slider-component>
+`;
+
+exports[`discrete-slider-component variant class is applied to moving track and thumb container: variant-warning 1`] = `
+<discrete-slider-component selected-index="1" string-values="[&quot;X&quot;,&quot;Y&quot;,&quot;Z&quot;]">
+  <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div class="slider-controls">
+        <div class="slider-background-track" style="width: 100%;"></div>
+        <div class="slider-moving-track warning" style="width: 50%;"></div>
+        <div class="slider-thumb-container warning" role="presentation" tabindex="0" style="left: 50%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Slider thumb" class="slider-thumb warning" role="slider" tabindex="-1"></div>
+        </div>
+        <div class="slider-ticks">
+          <div>
+            <div class="slider-tick" style="left: 0%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 50%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 100%; top: calc(50% - 10px);"></div>
+          </div>
+        </div>
+      </div>
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        Y
+      </div>
+    </div>
+  </div>
+</discrete-slider-component>
+`;

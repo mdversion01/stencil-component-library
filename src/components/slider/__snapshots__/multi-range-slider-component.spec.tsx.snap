@@ -1,0 +1,410 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`multi-range-slider-component drag lower and upper thumbs updates values (no snap): drag-both-thumbs 1`] = `
+<multi-range-slider-component lower-value="20" upper-value="80">
+  <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-left" role="textbox">
+        25
+      </div>
+      <div class="slider-min-value">
+        0
+      </div>
+      <div class="slider-controls">
+        <div class="lower-thumb slider-thumb-container" style="left: calc(25% - 5px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Lower value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="slider-thumb" role="slider" tabindex="0" style="left: 25%;"></div>
+        </div>
+        <div class="multi slider-track" style="width: 25%;"></div>
+        <div class="multi slider-track" style="left: 25%; right: 25%;"></div>
+        <div class="multi slider-track" style="width: 25%;"></div>
+        <div class="slider-thumb-container upper-thumb" style="left: calc(75% - 8px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Upper value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="slider-thumb" role="slider" tabindex="0" style="left: calc(75% + 3px);"></div>
+        </div>
+      </div>
+      <div class="slider-max-value">
+        100
+      </div>
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        75
+      </div>
+    </div>
+  </div>
+</multi-range-slider-component>
+`;
+
+exports[`multi-range-slider-component hideTextBoxes hides both; individual flags hide respective side: hide-both-textboxes 1`] = `
+<multi-range-slider-component hide-text-boxes="">
+  <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div class="slider-min-value">
+        0
+      </div>
+      <div class="slider-controls">
+        <div class="lower-thumb slider-thumb-container" style="left: calc(25% - 5px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Lower value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="slider-thumb" role="slider" tabindex="0" style="left: 25%;"></div>
+        </div>
+        <div class="multi slider-track" style="width: 25%;"></div>
+        <div class="multi slider-track" style="left: 25%; right: 25%;"></div>
+        <div class="multi slider-track" style="width: 25%;"></div>
+        <div class="slider-thumb-container upper-thumb" style="left: calc(75% - 8px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Upper value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="slider-thumb" role="slider" tabindex="0" style="left: calc(75% + 3px);"></div>
+        </div>
+      </div>
+      <div class="slider-max-value">
+        100
+      </div>
+    </div>
+  </div>
+</multi-range-slider-component>
+`;
+
+exports[`multi-range-slider-component hideTextBoxes hides both; individual flags hide respective side: hide-left-textbox 1`] = `
+<multi-range-slider-component hide-left-text-box="">
+  <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div class="slider-min-value">
+        0
+      </div>
+      <div class="slider-controls">
+        <div class="lower-thumb slider-thumb-container" style="left: calc(25% - 5px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Lower value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="slider-thumb" role="slider" tabindex="0" style="left: 25%;"></div>
+        </div>
+        <div class="multi slider-track" style="width: 25%;"></div>
+        <div class="multi slider-track" style="left: 25%; right: 25%;"></div>
+        <div class="multi slider-track" style="width: 25%;"></div>
+        <div class="slider-thumb-container upper-thumb" style="left: calc(75% - 8px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Upper value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="slider-thumb" role="slider" tabindex="0" style="left: calc(75% + 3px);"></div>
+        </div>
+      </div>
+      <div class="slider-max-value">
+        100
+      </div>
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        75
+      </div>
+    </div>
+  </div>
+</multi-range-slider-component>
+`;
+
+exports[`multi-range-slider-component hideTextBoxes hides both; individual flags hide respective side: hide-right-textbox 1`] = `
+<multi-range-slider-component hide-right-text-box="">
+  <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-left" role="textbox">
+        25
+      </div>
+      <div class="slider-min-value">
+        0
+      </div>
+      <div class="slider-controls">
+        <div class="lower-thumb slider-thumb-container" style="left: calc(25% - 5px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Lower value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="slider-thumb" role="slider" tabindex="0" style="left: 25%;"></div>
+        </div>
+        <div class="multi slider-track" style="width: 25%;"></div>
+        <div class="multi slider-track" style="left: 25%; right: 25%;"></div>
+        <div class="multi slider-track" style="width: 25%;"></div>
+        <div class="slider-thumb-container upper-thumb" style="left: calc(75% - 8px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Upper value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="slider-thumb" role="slider" tabindex="0" style="left: calc(75% + 3px);"></div>
+        </div>
+      </div>
+      <div class="slider-max-value">
+        100
+      </div>
+    </div>
+  </div>
+</multi-range-slider-component>
+`;
+
+exports[`multi-range-slider-component keyboard arrows/Home/End adjust lower/upper values and emit rangeChange: keyboard-nav 1`] = `
+<multi-range-slider-component lower-value="2" upper-value="8">
+  <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-left" role="textbox">
+        9
+      </div>
+      <div class="slider-min-value">
+        0
+      </div>
+      <div class="slider-controls">
+        <div class="lower-thumb slider-thumb-container slider-thumb-container-active" style="left: calc(90% - 5px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Lower value" aria-valuemax="10" aria-valuemin="0" aria-valuenow="9" class="slider-thumb" role="slider" tabindex="0" style="left: 90%;"></div>
+        </div>
+        <div class="multi slider-track" style="width: 90%;"></div>
+        <div class="multi slider-track" style="left: 90%; right: 0%;"></div>
+        <div class="multi slider-track" style="width: 0%;"></div>
+        <div class="slider-thumb-container slider-thumb-container-active upper-thumb" style="left: calc(100% - 8px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Upper value" aria-valuemax="10" aria-valuemin="0" aria-valuenow="10" class="slider-thumb" role="slider" tabindex="0" style="left: calc(100% + 3px);"></div>
+        </div>
+      </div>
+      <div class="slider-max-value">
+        10
+      </div>
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        10
+      </div>
+    </div>
+  </div>
+</multi-range-slider-component>
+`;
+
+exports[`multi-range-slider-component label vs sliderThumbLabel rendering: label-mode 1`] = `
+<multi-range-slider-component lower-value="10" upper-value="20">
+  <div aria-disabled="false" aria-label="Range" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <label class="form-control-label" id="slider-input-label">
+      Range 10
+    </label>
+    <div class="slider-container">
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-left" role="textbox">
+        10
+      </div>
+      <div class="slider-min-value">
+        0
+      </div>
+      <div class="slider-controls">
+        <div class="lower-thumb slider-thumb-container" style="left: calc(10% - 5px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Lower value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="10" class="slider-thumb" role="slider" tabindex="0" style="left: 10%;"></div>
+        </div>
+        <div class="multi slider-track" style="width: 10%;"></div>
+        <div class="multi slider-track" style="left: 10%; right: 80%;"></div>
+        <div class="multi slider-track" style="width: 80%;"></div>
+        <div class="slider-thumb-container upper-thumb" style="left: calc(20% - 8px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Upper value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="20" class="slider-thumb" role="slider" tabindex="0" style="left: calc(20% + 3px);"></div>
+        </div>
+      </div>
+      <div class="slider-max-value">
+        100
+      </div>
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        20
+      </div>
+    </div>
+  </div>
+</multi-range-slider-component>
+`;
+
+exports[`multi-range-slider-component label vs sliderThumbLabel rendering: thumb-label-mode 1`] = `
+<multi-range-slider-component slider-thumb-label="">
+  <div aria-disabled="false" aria-label="Range" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-left" role="textbox">
+        25
+      </div>
+      <div class="slider-min-value">
+        0
+      </div>
+      <div class="slider-controls">
+        <div class="lower-thumb slider-thumb-container" style="left: calc(25% - 5px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Lower value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="slider-thumb" role="slider" tabindex="0" style="left: 25%;"></div>
+          <div class="slider-thumb-label" style="position: absolute; left: 25%; transform: translateX(-30%) translateY(30%) translateY(-100%) rotate(45deg);">
+            <div>
+              <span>
+                25
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="multi slider-track" style="width: 25%;"></div>
+        <div class="multi slider-track" style="left: 25%; right: 25%;"></div>
+        <div class="multi slider-track" style="width: 25%;"></div>
+        <div class="slider-thumb-container upper-thumb" style="left: calc(75% - 8px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Upper value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="slider-thumb" role="slider" tabindex="0" style="left: calc(75% + 3px);"></div>
+          <div class="slider-thumb-label" style="position: absolute; left: calc(75% + 3px); transform: translateX(-30%) translateY(30%) translateY(-100%) rotate(45deg);">
+            <div>
+              <span>
+                75
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slider-max-value">
+        100
+      </div>
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        75
+      </div>
+    </div>
+  </div>
+</multi-range-slider-component>
+`;
+
+exports[`multi-range-slider-component parses tickValues JSON and renders tick labels: ticks-and-labels 1`] = `
+<multi-range-slider-component lower-value="20" tick-labels="" tick-values="[0,25,50,75,100]" upper-value="80">
+  <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-left" role="textbox">
+        20
+      </div>
+      <div class="slider-min-value">
+        0%
+      </div>
+      <div class="slider-controls">
+        <div class="lower-thumb slider-thumb-container" style="left: calc(20% - 5px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Lower value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="20" class="slider-thumb" role="slider" tabindex="0" style="left: 20%;"></div>
+        </div>
+        <div class="multi slider-track" style="width: 20%;"></div>
+        <div class="multi slider-track" style="left: 20%; right: 20%;"></div>
+        <div class="multi slider-track" style="width: 20%;"></div>
+        <div class="slider-thumb-container upper-thumb" style="left: calc(80% - 8px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Upper value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="80" class="slider-thumb" role="slider" tabindex="0" style="left: calc(80% + 3px);"></div>
+        </div>
+        <div class="slider-ticks">
+          <div>
+            <div class="slider-tick" style="left: 0%; top: calc(50% - 10px);"></div>
+            <div class="slider-tick-label" style="left: 0%; transform: translateX(-50%);">
+              0%
+            </div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 25%; top: calc(50% - 10px);"></div>
+            <div class="slider-tick-label" style="left: 25%; transform: translateX(-50%);">
+              25%
+            </div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 50%; top: calc(50% - 10px);"></div>
+            <div class="slider-tick-label" style="left: 50%; transform: translateX(-50%);">
+              50%
+            </div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 75%; top: calc(50% - 10px);"></div>
+            <div class="slider-tick-label" style="left: 75%; transform: translateX(-50%);">
+              75%
+            </div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 100%; top: calc(50% - 10px);"></div>
+            <div class="slider-tick-label" style="left: 100%; transform: translateX(-50%);">
+              100%
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slider-max-value">
+        100%
+      </div>
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        80
+      </div>
+    </div>
+  </div>
+</multi-range-slider-component>
+`;
+
+exports[`multi-range-slider-component renders with defaults (snapshot): default-render 1`] = `
+<multi-range-slider-component>
+  <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-left" role="textbox">
+        25
+      </div>
+      <div class="slider-min-value">
+        0
+      </div>
+      <div class="slider-controls">
+        <div class="lower-thumb slider-thumb-container" style="left: calc(25% - 5px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Lower value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="slider-thumb" role="slider" tabindex="0" style="left: 25%;"></div>
+        </div>
+        <div class="multi slider-track" style="width: 25%;"></div>
+        <div class="multi slider-track" style="left: 25%; right: 25%;"></div>
+        <div class="multi slider-track" style="width: 25%;"></div>
+        <div class="slider-thumb-container upper-thumb" style="left: calc(75% - 8px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Upper value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="slider-thumb" role="slider" tabindex="0" style="left: calc(75% + 3px);"></div>
+        </div>
+      </div>
+      <div class="slider-max-value">
+        100
+      </div>
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        75
+      </div>
+    </div>
+  </div>
+</multi-range-slider-component>
+`;
+
+exports[`multi-range-slider-component snapToTicks snaps to nearest tick on drag: snap-to-ticks 1`] = `
+<multi-range-slider-component lower-value="10" snap-to-ticks="" tick-values="[0,20,40,60,80,100]" upper-value="90">
+  <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-left" role="textbox">
+        40
+      </div>
+      <div class="slider-min-value">
+        0
+      </div>
+      <div class="slider-controls">
+        <div class="lower-thumb slider-thumb-container" style="left: calc(40% - 5px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Lower value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="40" class="slider-thumb" role="slider" tabindex="0" style="left: 40%;"></div>
+        </div>
+        <div class="multi slider-track" style="width: 40%;"></div>
+        <div class="multi slider-track" style="left: 40%; right: 10%;"></div>
+        <div class="multi slider-track" style="width: 10%;"></div>
+        <div class="slider-thumb-container upper-thumb" style="left: calc(90% - 8px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Upper value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="90" class="slider-thumb" role="slider" tabindex="0" style="left: calc(90% + 3px);"></div>
+        </div>
+        <div class="slider-ticks">
+          <div>
+            <div class="slider-tick" style="left: 0%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 20%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 40%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 60%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 80%; top: calc(50% - 10px);"></div>
+          </div>
+          <div>
+            <div class="slider-tick" style="left: 100%; top: calc(50% - 10px);"></div>
+          </div>
+        </div>
+      </div>
+      <div class="slider-max-value">
+        100
+      </div>
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        90
+      </div>
+    </div>
+  </div>
+</multi-range-slider-component>
+`;
+
+exports[`multi-range-slider-component variant class applied to thumbs/tracks: variant-info 1`] = `
+<multi-range-slider-component>
+  <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
+    <div class="slider-container">
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-left" role="textbox">
+        25
+      </div>
+      <div class="slider-min-value">
+        0
+      </div>
+      <div class="slider-controls">
+        <div class="info lower-thumb slider-thumb-container" style="left: calc(25% - 5px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Lower value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="info slider-thumb" role="slider" tabindex="0" style="left: 25%;"></div>
+        </div>
+        <div class="info multi slider-track" style="width: 25%;"></div>
+        <div class="info multi slider-track" style="left: 25%; right: 25%;"></div>
+        <div class="multi slider-track" style="width: 25%;"></div>
+        <div class="info slider-thumb-container upper-thumb" style="left: calc(75% - 8px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-label="Upper value" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" class="info slider-thumb" role="slider" tabindex="0" style="left: calc(75% + 3px);"></div>
+        </div>
+      </div>
+      <div class="slider-max-value">
+        100
+      </div>
+      <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        75
+      </div>
+    </div>
+  </div>
+</multi-range-slider-component>
+`;

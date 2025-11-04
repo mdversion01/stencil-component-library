@@ -215,6 +215,27 @@ export namespace Components {
         "variant": string;
         "zIndex": string;
     }
+    interface BasicSliderComponent {
+        "disabled": boolean;
+        "hideLeftTextBox": boolean;
+        "hideRightTextBox": boolean;
+        "hideTextBoxes": boolean;
+        "label": string;
+        "max": number;
+        "min": number;
+        "plumage": boolean;
+        "sliderThumbLabel": boolean;
+        "snapToTicks": boolean;
+        "tickLabels": boolean;
+        /**
+          * Accepts array or JSON string in HTML
+         */
+        "tickValues": number[] | string;
+        "ticks": number | '';
+        "unit": string;
+        "value": number;
+        "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+    }
     interface ButtonComponent {
         "absolute": boolean;
         "accordion": boolean;
@@ -304,6 +325,20 @@ export namespace Components {
         "validation": boolean;
         "validationMsg": string;
         "value": string;
+    }
+    interface DiscreteSliderComponent {
+        "disabled": boolean;
+        "hideRightTextBox": boolean;
+        "label": string;
+        "plumage": boolean;
+        "selectedIndex": number;
+        /**
+          * Accepts array or JSON string in HTML
+         */
+        "stringValues": string[] | string;
+        "tickLabels": boolean;
+        "unit": string;
+        "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface DividerComponent {
         "dashed": boolean;
@@ -486,6 +521,27 @@ export namespace Components {
         "variant": string;
         "verticallyCentered": boolean;
     }
+    interface MultiRangeSliderComponent {
+        "disabled": boolean;
+        "hideLeftTextBox": boolean;
+        "hideRightTextBox": boolean;
+        "hideTextBoxes": boolean;
+        "label": string;
+        "lowerValue": number;
+        "max": number;
+        "min": number;
+        "plumage": boolean;
+        "sliderThumbLabel": boolean;
+        "snapToTicks": boolean;
+        "tickLabels": boolean;
+        /**
+          * Accepts array or JSON string in HTML
+         */
+        "tickValues": number[] | string;
+        "unit": string;
+        "upperValue": number;
+        "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+    }
     interface PaginationComponent {
         "currentPage": number;
         "goToButtons": string;
@@ -659,6 +715,31 @@ export namespace Components {
          */
         "withTable": boolean;
     }
+    interface SliderManagerComponent {
+        "disabled": boolean;
+        "hideLeftTextBox": boolean;
+        "hideRightTextBox": boolean;
+        "hideTextBoxes": boolean;
+        "label": string;
+        "lowerValue": number;
+        "max": number;
+        "min": number;
+        "plumage": boolean;
+        "selectedIndex": number;
+        "sliderThumbLabel": boolean;
+        "snapToTicks": boolean;
+        "stringValues": string[];
+        "tickLabels": boolean;
+        "tickValues": number[];
+        /**
+          * 'basic' | 'multi' | 'discrete'
+         */
+        "type": 'basic' | 'multi' | 'discrete';
+        "unit": string;
+        "upperValue": number;
+        "value": number;
+        "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+    }
     interface StandardPaginationComponent {
         "currentPage": number;
         "goToButtons": string;
@@ -709,6 +790,10 @@ export interface BadgeComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBadgeComponentElement;
 }
+export interface BasicSliderComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBasicSliderComponentElement;
+}
 export interface ButtonComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLButtonComponentElement;
@@ -725,6 +810,10 @@ export interface CheckboxComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLCheckboxComponentElement;
 }
+export interface DiscreteSliderComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDiscreteSliderComponentElement;
+}
 export interface DropdownComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDropdownComponentElement;
@@ -736,6 +825,10 @@ export interface InputGroupComponentCustomEvent<T> extends CustomEvent<T> {
 export interface MinimizePaginationComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLMinimizePaginationComponentElement;
+}
+export interface MultiRangeSliderComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLMultiRangeSliderComponentElement;
 }
 export interface PaginationComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -870,6 +963,23 @@ declare global {
         prototype: HTMLBadgeComponentElement;
         new (): HTMLBadgeComponentElement;
     };
+    interface HTMLBasicSliderComponentElementEventMap {
+        "valueChange": { value: number };
+    }
+    interface HTMLBasicSliderComponentElement extends Components.BasicSliderComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBasicSliderComponentElementEventMap>(type: K, listener: (this: HTMLBasicSliderComponentElement, ev: BasicSliderComponentCustomEvent<HTMLBasicSliderComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBasicSliderComponentElementEventMap>(type: K, listener: (this: HTMLBasicSliderComponentElement, ev: BasicSliderComponentCustomEvent<HTMLBasicSliderComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBasicSliderComponentElement: {
+        prototype: HTMLBasicSliderComponentElement;
+        new (): HTMLBasicSliderComponentElement;
+    };
     interface HTMLButtonComponentElementEventMap {
         "customClick": any;
     }
@@ -943,6 +1053,24 @@ declare global {
     var HTMLCheckboxComponentElement: {
         prototype: HTMLCheckboxComponentElement;
         new (): HTMLCheckboxComponentElement;
+    };
+    interface HTMLDiscreteSliderComponentElementEventMap {
+        "indexChange": { index: number };
+        "valueChange": { value: string };
+    }
+    interface HTMLDiscreteSliderComponentElement extends Components.DiscreteSliderComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDiscreteSliderComponentElementEventMap>(type: K, listener: (this: HTMLDiscreteSliderComponentElement, ev: DiscreteSliderComponentCustomEvent<HTMLDiscreteSliderComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDiscreteSliderComponentElementEventMap>(type: K, listener: (this: HTMLDiscreteSliderComponentElement, ev: DiscreteSliderComponentCustomEvent<HTMLDiscreteSliderComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLDiscreteSliderComponentElement: {
+        prototype: HTMLDiscreteSliderComponentElement;
+        new (): HTMLDiscreteSliderComponentElement;
     };
     interface HTMLDividerComponentElement extends Components.DividerComponent, HTMLStencilElement {
     }
@@ -1025,6 +1153,23 @@ declare global {
         prototype: HTMLModalComponentElement;
         new (): HTMLModalComponentElement;
     };
+    interface HTMLMultiRangeSliderComponentElementEventMap {
+        "rangeChange": { lowerValue: number; upperValue: number };
+    }
+    interface HTMLMultiRangeSliderComponentElement extends Components.MultiRangeSliderComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLMultiRangeSliderComponentElementEventMap>(type: K, listener: (this: HTMLMultiRangeSliderComponentElement, ev: MultiRangeSliderComponentCustomEvent<HTMLMultiRangeSliderComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLMultiRangeSliderComponentElementEventMap>(type: K, listener: (this: HTMLMultiRangeSliderComponentElement, ev: MultiRangeSliderComponentCustomEvent<HTMLMultiRangeSliderComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLMultiRangeSliderComponentElement: {
+        prototype: HTMLMultiRangeSliderComponentElement;
+        new (): HTMLMultiRangeSliderComponentElement;
+    };
     interface HTMLPaginationComponentElementEventMap {
         "page-changed": { page: number; pageSize: number };
         "page-size-changed": { pageSize: number };
@@ -1089,6 +1234,12 @@ declare global {
         prototype: HTMLSelectFieldComponentElement;
         new (): HTMLSelectFieldComponentElement;
     };
+    interface HTMLSliderManagerComponentElement extends Components.SliderManagerComponent, HTMLStencilElement {
+    }
+    var HTMLSliderManagerComponentElement: {
+        prototype: HTMLSliderManagerComponentElement;
+        new (): HTMLSliderManagerComponentElement;
+    };
     interface HTMLStandardPaginationComponentElementEventMap {
         "change-page": { page: number };
     }
@@ -1131,11 +1282,13 @@ declare global {
         "autocomplete-multiselect": HTMLAutocompleteMultiselectElement;
         "autocomplete-single": HTMLAutocompleteSingleElement;
         "badge-component": HTMLBadgeComponentElement;
+        "basic-slider-component": HTMLBasicSliderComponentElement;
         "button-component": HTMLButtonComponentElement;
         "button-group": HTMLButtonGroupElement;
         "by-page-pagination-component": HTMLByPagePaginationComponentElement;
         "card-component": HTMLCardComponentElement;
         "checkbox-component": HTMLCheckboxComponentElement;
+        "discrete-slider-component": HTMLDiscreteSliderComponentElement;
         "divider-component": HTMLDividerComponentElement;
         "dropdown-component": HTMLDropdownComponentElement;
         "form-component": HTMLFormComponentElement;
@@ -1144,11 +1297,13 @@ declare global {
         "input-group-component": HTMLInputGroupComponentElement;
         "minimize-pagination-component": HTMLMinimizePaginationComponentElement;
         "modal-component": HTMLModalComponentElement;
+        "multi-range-slider-component": HTMLMultiRangeSliderComponentElement;
         "pagination-component": HTMLPaginationComponentElement;
         "popover-component": HTMLPopoverComponentElement;
         "progress-display-component": HTMLProgressDisplayComponentElement;
         "radio-input-component": HTMLRadioInputComponentElement;
         "select-field-component": HTMLSelectFieldComponentElement;
+        "slider-manager-component": HTMLSliderManagerComponentElement;
         "standard-pagination-component": HTMLStandardPaginationComponentElement;
         "toggle-switch-component": HTMLToggleSwitchComponentElement;
     }
@@ -1371,6 +1526,28 @@ declare namespace LocalJSX {
         "variant"?: string;
         "zIndex"?: string;
     }
+    interface BasicSliderComponent {
+        "disabled"?: boolean;
+        "hideLeftTextBox"?: boolean;
+        "hideRightTextBox"?: boolean;
+        "hideTextBoxes"?: boolean;
+        "label"?: string;
+        "max"?: number;
+        "min"?: number;
+        "onValueChange"?: (event: BasicSliderComponentCustomEvent<{ value: number }>) => void;
+        "plumage"?: boolean;
+        "sliderThumbLabel"?: boolean;
+        "snapToTicks"?: boolean;
+        "tickLabels"?: boolean;
+        /**
+          * Accepts array or JSON string in HTML
+         */
+        "tickValues"?: number[] | string;
+        "ticks"?: number | '';
+        "unit"?: string;
+        "value"?: number;
+        "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+    }
     interface ButtonComponent {
         "absolute"?: boolean;
         "accordion"?: boolean;
@@ -1464,6 +1641,22 @@ declare namespace LocalJSX {
         "validation"?: boolean;
         "validationMsg"?: string;
         "value"?: string;
+    }
+    interface DiscreteSliderComponent {
+        "disabled"?: boolean;
+        "hideRightTextBox"?: boolean;
+        "label"?: string;
+        "onIndexChange"?: (event: DiscreteSliderComponentCustomEvent<{ index: number }>) => void;
+        "onValueChange"?: (event: DiscreteSliderComponentCustomEvent<{ value: string }>) => void;
+        "plumage"?: boolean;
+        "selectedIndex"?: number;
+        /**
+          * Accepts array or JSON string in HTML
+         */
+        "stringValues"?: string[] | string;
+        "tickLabels"?: boolean;
+        "unit"?: string;
+        "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface DividerComponent {
         "dashed"?: boolean;
@@ -1640,6 +1833,28 @@ declare namespace LocalJSX {
         "titleAttr"?: string;
         "variant"?: string;
         "verticallyCentered"?: boolean;
+    }
+    interface MultiRangeSliderComponent {
+        "disabled"?: boolean;
+        "hideLeftTextBox"?: boolean;
+        "hideRightTextBox"?: boolean;
+        "hideTextBoxes"?: boolean;
+        "label"?: string;
+        "lowerValue"?: number;
+        "max"?: number;
+        "min"?: number;
+        "onRangeChange"?: (event: MultiRangeSliderComponentCustomEvent<{ lowerValue: number; upperValue: number }>) => void;
+        "plumage"?: boolean;
+        "sliderThumbLabel"?: boolean;
+        "snapToTicks"?: boolean;
+        "tickLabels"?: boolean;
+        /**
+          * Accepts array or JSON string in HTML
+         */
+        "tickValues"?: number[] | string;
+        "unit"?: string;
+        "upperValue"?: number;
+        "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface PaginationComponent {
         "currentPage"?: number;
@@ -1818,6 +2033,31 @@ declare namespace LocalJSX {
          */
         "withTable"?: boolean;
     }
+    interface SliderManagerComponent {
+        "disabled"?: boolean;
+        "hideLeftTextBox"?: boolean;
+        "hideRightTextBox"?: boolean;
+        "hideTextBoxes"?: boolean;
+        "label"?: string;
+        "lowerValue"?: number;
+        "max"?: number;
+        "min"?: number;
+        "plumage"?: boolean;
+        "selectedIndex"?: number;
+        "sliderThumbLabel"?: boolean;
+        "snapToTicks"?: boolean;
+        "stringValues"?: string[];
+        "tickLabels"?: boolean;
+        "tickValues"?: number[];
+        /**
+          * 'basic' | 'multi' | 'discrete'
+         */
+        "type"?: 'basic' | 'multi' | 'discrete';
+        "unit"?: string;
+        "upperValue"?: number;
+        "value"?: number;
+        "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+    }
     interface StandardPaginationComponent {
         "currentPage"?: number;
         "goToButtons"?: string;
@@ -1857,11 +2097,13 @@ declare namespace LocalJSX {
         "autocomplete-multiselect": AutocompleteMultiselect;
         "autocomplete-single": AutocompleteSingle;
         "badge-component": BadgeComponent;
+        "basic-slider-component": BasicSliderComponent;
         "button-component": ButtonComponent;
         "button-group": ButtonGroup;
         "by-page-pagination-component": ByPagePaginationComponent;
         "card-component": CardComponent;
         "checkbox-component": CheckboxComponent;
+        "discrete-slider-component": DiscreteSliderComponent;
         "divider-component": DividerComponent;
         "dropdown-component": DropdownComponent;
         "form-component": FormComponent;
@@ -1870,11 +2112,13 @@ declare namespace LocalJSX {
         "input-group-component": InputGroupComponent;
         "minimize-pagination-component": MinimizePaginationComponent;
         "modal-component": ModalComponent;
+        "multi-range-slider-component": MultiRangeSliderComponent;
         "pagination-component": PaginationComponent;
         "popover-component": PopoverComponent;
         "progress-display-component": ProgressDisplayComponent;
         "radio-input-component": RadioInputComponent;
         "select-field-component": SelectFieldComponent;
+        "slider-manager-component": SliderManagerComponent;
         "standard-pagination-component": StandardPaginationComponent;
         "toggle-switch-component": ToggleSwitchComponent;
     }
@@ -1890,11 +2134,13 @@ declare module "@stencil/core" {
             "autocomplete-multiselect": LocalJSX.AutocompleteMultiselect & JSXBase.HTMLAttributes<HTMLAutocompleteMultiselectElement>;
             "autocomplete-single": LocalJSX.AutocompleteSingle & JSXBase.HTMLAttributes<HTMLAutocompleteSingleElement>;
             "badge-component": LocalJSX.BadgeComponent & JSXBase.HTMLAttributes<HTMLBadgeComponentElement>;
+            "basic-slider-component": LocalJSX.BasicSliderComponent & JSXBase.HTMLAttributes<HTMLBasicSliderComponentElement>;
             "button-component": LocalJSX.ButtonComponent & JSXBase.HTMLAttributes<HTMLButtonComponentElement>;
             "button-group": LocalJSX.ButtonGroup & JSXBase.HTMLAttributes<HTMLButtonGroupElement>;
             "by-page-pagination-component": LocalJSX.ByPagePaginationComponent & JSXBase.HTMLAttributes<HTMLByPagePaginationComponentElement>;
             "card-component": LocalJSX.CardComponent & JSXBase.HTMLAttributes<HTMLCardComponentElement>;
             "checkbox-component": LocalJSX.CheckboxComponent & JSXBase.HTMLAttributes<HTMLCheckboxComponentElement>;
+            "discrete-slider-component": LocalJSX.DiscreteSliderComponent & JSXBase.HTMLAttributes<HTMLDiscreteSliderComponentElement>;
             "divider-component": LocalJSX.DividerComponent & JSXBase.HTMLAttributes<HTMLDividerComponentElement>;
             "dropdown-component": LocalJSX.DropdownComponent & JSXBase.HTMLAttributes<HTMLDropdownComponentElement>;
             "form-component": LocalJSX.FormComponent & JSXBase.HTMLAttributes<HTMLFormComponentElement>;
@@ -1903,11 +2149,13 @@ declare module "@stencil/core" {
             "input-group-component": LocalJSX.InputGroupComponent & JSXBase.HTMLAttributes<HTMLInputGroupComponentElement>;
             "minimize-pagination-component": LocalJSX.MinimizePaginationComponent & JSXBase.HTMLAttributes<HTMLMinimizePaginationComponentElement>;
             "modal-component": LocalJSX.ModalComponent & JSXBase.HTMLAttributes<HTMLModalComponentElement>;
+            "multi-range-slider-component": LocalJSX.MultiRangeSliderComponent & JSXBase.HTMLAttributes<HTMLMultiRangeSliderComponentElement>;
             "pagination-component": LocalJSX.PaginationComponent & JSXBase.HTMLAttributes<HTMLPaginationComponentElement>;
             "popover-component": LocalJSX.PopoverComponent & JSXBase.HTMLAttributes<HTMLPopoverComponentElement>;
             "progress-display-component": LocalJSX.ProgressDisplayComponent & JSXBase.HTMLAttributes<HTMLProgressDisplayComponentElement>;
             "radio-input-component": LocalJSX.RadioInputComponent & JSXBase.HTMLAttributes<HTMLRadioInputComponentElement>;
             "select-field-component": LocalJSX.SelectFieldComponent & JSXBase.HTMLAttributes<HTMLSelectFieldComponentElement>;
+            "slider-manager-component": LocalJSX.SliderManagerComponent & JSXBase.HTMLAttributes<HTMLSliderManagerComponentElement>;
             "standard-pagination-component": LocalJSX.StandardPaginationComponent & JSXBase.HTMLAttributes<HTMLStandardPaginationComponentElement>;
             "toggle-switch-component": LocalJSX.ToggleSwitchComponent & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;
         }
