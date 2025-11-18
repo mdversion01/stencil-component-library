@@ -229,6 +229,18 @@
   border-bottom-right-radius: 0;
 }
 
+.input-group-sm > .custom-select:not(:first-child),
+.input-group-sm > .form-control:not(:first-child) {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.input-group-sm > .custom-select:not(:last-child),
+.input-group-sm > .form-control:not(:last-child) {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
 .input-group-sm > .custom-select,
 .input-group-sm > .form-control,
 .input-group-sm > .input-group-append > .btn,
@@ -251,6 +263,47 @@
 .input-group-sm > .input-group-append {
   height: calc(1.5em + 0.188rem + 1px);
 }
+
+.input-group-sm:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating),
+.input-group-sm:not(.has-validation) > .dropdown-toggle:nth-last-child(n + 3),
+.input-group-sm:not(.has-validation) > .form-floating:not(:last-child) > .form-control,
+.input-group-sm:not(.has-validation) > .form-floating:not(:last-child) > .form-select {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.input-group-sm > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.input-group-sm > .custom-select,
+.input-group-sm > .form-control,
+.input-group-sm > .input-group-append > .btn,
+.input-group-sm > .input-group-append > .input-group-text,
+.input-group-sm > .input-group-prepend > .btn,
+.input-group-sm > .input-group-prepend > .input-group-text {
+  padding: 0.25rem 0.5rem !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.input-group-sm>.custom-select, .input-group-sm>.form-control:not(textarea) {
+    height: calc(1.25rem + 0.5rem + 0px);
+}
+
+.input-group-sm .input-group-append .btn,
+.input-group-sm .input-group-append {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.input-group-sm .input-group-prepend .btn,
+.input-group-sm .input-group-prepend {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
 
 .input-group-lg > .custom-select,
 .input-group-lg > .form-control,
@@ -283,7 +336,6 @@
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
-
 
 .horizontal .form-input-group-basic label,
 .inline .form-input-group-basic label {

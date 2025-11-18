@@ -23,6 +23,8 @@ export class PaginationComponent {
   @Prop() paginationLayout: '' | 'start' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right' = '';
   @Prop() paginationVariantColor: string = '';
   @Prop() plumage: boolean = false;
+  @Prop() tableId: string = '';
+  @Prop() position: 'top' | 'bottom' | 'both' = 'bottom';
   @Prop() totalRows: number = 0;
   @Prop() useMinimizePagination: boolean = false;
   @Prop() useByPagePagination: boolean = false;
@@ -126,11 +128,15 @@ export class PaginationComponent {
   private renderSizeChanger() {
     const sizeCls = this.size === 'sm' ? 'select-sm' : this.size === 'lg' ? 'select-lg' : '';
     const wrapperCls = 'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
+
+    // ✅ build a unique, stable id; no unary + (that coerces to number)
+    const selectId = this.tableId ? `pageSize-${this.tableId}-${this.position}` : 'pageSize';
+
     return (
       <div class={wrapperCls}>
-        <label htmlFor="pageSize">Items per page: </label>
+        <label htmlFor={selectId}>Items per page: </label>
         <select
-          id="pageSize"
+          id={selectId}
           onChange={this._handlePageSizeChange}
           class={`form-select form-control ${sizeCls}`}
           aria-label="selectField"
@@ -152,12 +158,15 @@ export class PaginationComponent {
   private renderPlumageStyleSizeChanger() {
     const sizeCls = this.size === 'sm' ? 'select-sm' : this.size === 'lg' ? 'select-lg' : '';
     const wrapperCls = 'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
+
+    const selectId = this.tableId ? `pageSize-${this.tableId}-${this.position}` : 'pageSize';
+
     return (
       <div class={wrapperCls}>
-        <label htmlFor="pageSize">Items per page: </label>
+        <label htmlFor={selectId}>Items per page: </label>
         <div class="pl-input-container" role="presentation" aria-labelledby="selectField">
           <select
-            id="pageSize"
+            id={selectId}
             class={`form-select form-control ${sizeCls}`}
             aria-label="selectField"
             aria-labelledby="selectField"

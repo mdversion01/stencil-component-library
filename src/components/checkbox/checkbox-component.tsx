@@ -1,15 +1,13 @@
-import { Component, Prop, h, State, Event, EventEmitter } from '@stencil/core';
+import { Component, Prop, h, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
 
 @Component({
   tag: 'checkbox-component',
-  styleUrls: [
-    './checkbox.scss',
-    '../form-styles.scss',
-    '../custom-form-inputs.scss'
-  ],
+  styleUrls: ['./checkbox.scss', '../form-styles.scss', '../custom-form-inputs.scss'],
   shadow: false,
 })
 export class CheckboxComponent {
+  @Element() host!: HTMLElement;
+
   @Prop() checkbox = false;
   @Prop() checkboxGroup = false;
   @Prop() customCheckbox = false;
@@ -25,7 +23,7 @@ export class CheckboxComponent {
   @Prop() labelTxt = '';
   @Prop() required = false;
   @Prop() size = '';
-  @Prop() checked: boolean = false;
+  @Prop() checked: boolean = false; // @Prop({ mutable: true, reflect: true }) checked = false; // Only if you need mutable prop
   @Prop() disabled: boolean = false;
   @Prop() validation = false;
   @Prop() validationMsg = '';
@@ -36,6 +34,14 @@ export class CheckboxComponent {
   @State() singleChecked = false;
 
   @Event() groupChange: EventEmitter<string[]>;
+
+  @Event() toggle: EventEmitter<{ checked: boolean; value: string; inputId: string }>;
+
+  @Watch('checked')
+  onCheckedPropChange(next: boolean) {
+    // keep internal state in sync when parent updates prop
+    this.singleChecked = !!next;
+  }
 
   componentWillLoad() {
     if (Array.isArray(this.groupOptions)) {
@@ -49,8 +55,16 @@ export class CheckboxComponent {
       }
     }
 
+    // Initialize single from prop so it renders correctly on first paint
+    this.singleChecked = !!this.checked;
+
     this.checkedValues = this.parsedOptions.filter(opt => opt.checked).map(opt => opt.value);
   }
+
+  // @Watch('checked')
+  // syncSingleFromProp(newVal: boolean) {
+  //   this.singleChecked = !!newVal;
+  // }
 
   private handleGroupChange(event: Event, value: string) {
     const target = event.target as HTMLInputElement;
@@ -71,6 +85,13 @@ export class CheckboxComponent {
   private handleSingleChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.singleChecked = target.checked;
+   // this.checked = target.checked; // keep prop+state in sync for re-renders
+
+    // 🔊 Emit an event parents can listen to (your dropdown uses onToggle)
+    this.toggle.emit({ checked: this.singleChecked, value: this.value, inputId: this.inputId });
+
+    // (Optional) also bubble a generic change for consumers who rely on it
+    this.host.dispatchEvent(new CustomEvent('change', { detail: { checked: this.singleChecked }, bubbles: true, composed: true }));
   }
 
   render() {
@@ -135,6 +156,8 @@ export class CheckboxComponent {
             type="checkbox"
             name={this.name}
             value={this.value}
+            // ✅ CRITICAL: bind "checked" so parent-controlled state reflects in UI
+            checked={this.singleChecked}
             disabled={this.disabled}
             required={this.required}
             aria-checked={this.singleChecked ? 'true' : 'false'}

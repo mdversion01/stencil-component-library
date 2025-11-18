@@ -32,9 +32,10 @@
 
 ## Events
 
-| Event         | Description | Type                    |
-| ------------- | ----------- | ----------------------- |
-| `groupChange` |             | `CustomEvent<string[]>` |
+| Event         | Description | Type                                                                 |
+| ------------- | ----------- | -------------------------------------------------------------------- |
+| `groupChange` |             | `CustomEvent<string[]>`                                              |
+| `toggle`      |             | `CustomEvent<{ checked: boolean; value: string; inputId: string; }>` |
 
 
 ## Dependencies

@@ -28,7 +28,7 @@ export class DropdownComponent {
   @Prop() tableId = '';
   @Prop() titleAttr = '';
   @Prop() icon = '';
-@Prop() iconSize?: number;
+  @Prop() iconSize?: number;
   @Prop() autoFocusSubmenu = false;
   @Prop() menuOffsetY = 0;
   @Prop() submenuOffsetX = 0;
@@ -51,17 +51,21 @@ export class DropdownComponent {
   private cleanupAutoUpdate: (() => void) | null = null;
   private submenuTimeout: ReturnType<typeof setTimeout> | null = null; // why: hover-intent delay
   private isSubmenuToggle(el: any): boolean {
-  return !!el && el.classList?.contains('dropdown-submenu-toggle');
-}
-
+    return !!el && el.classList?.contains('dropdown-submenu-toggle');
+  }
 
   private focusFirstIn(container: Element | null) {
     const first = this.getFocusableItems(container || undefined)[0];
     first?.focus();
   }
 
+  private toKey = (o: any) => (o?.key ?? o?.value ?? o?.name ?? '') as string;
+
   setOptions(opts: DropdownItem[]) {
     this.options = [...opts];
+    // announce so hosts/listeners (and your table wiring) see fresh items
+    const detail = { items: this.options };
+    this.host?.dispatchEvent(new CustomEvent('items-changed', { detail, bubbles: true, composed: true }));
   }
 
   componentDidLoad() {
@@ -91,6 +95,47 @@ export class DropdownComponent {
 
   handleOutsideClick = (event: MouseEvent) => {
     if (!this.host.contains(event.target as Node)) this.closeDropdown();
+  };
+
+  // private getItemId = (it: any): string => (it?.value ?? it?.name ?? it?.inputId ?? it?.key ?? '') as string;
+
+  private handleCheckboxToggle = (item: DropdownItem, index: number) => {
+    const opts = Array.isArray(this.options) ? [...this.options] : [];
+
+    // ✅ reuse the helper so `toKey` is actually read
+    const i = typeof index === 'number' ? index : opts.findIndex(o => this.toKey(o) === this.toKey(item));
+
+    if (i < 0) return;
+
+    const updated = { ...opts[i], checked: !opts[i].checked };
+    opts[i] = updated;
+    this.options = opts;
+
+    this.itemSelected.emit({ item: updated, index: i });
+
+    const detail = { items: this.options };
+    this.host.dispatchEvent(new CustomEvent('items-changed', { detail, bubbles: true, composed: true }));
+    this.host.dispatchEvent(
+      new CustomEvent('selection-changed', {
+        detail: { items: this.options.filter(o => o?.checked) },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+
+    // ✅ Use toKey for canonical payload sent to the table
+    const tableId = this.tableId || this.host.getAttribute('table-id') || '';
+    const payload = this.options.map(o => ({
+      key: this.toKey(o),
+      checked: !!o.checked,
+    }));
+
+    document.dispatchEvent(
+      new CustomEvent('filter-fields-changed', {
+        detail: { tableId, items: payload },
+        bubbles: false,
+      }),
+    );
   };
 
   toggleDropdown = () => {
@@ -389,7 +434,7 @@ export class DropdownComponent {
       const submenuId = `submenu-${currentId}`;
       const effectiveListType = item.customListType ?? this.listType;
 
-      if (!item.inputId) item.inputId = `dd-input-${currentId}`;
+      if (!item.inputId) item.inputId = `dd-input-${parentIndex}-${this.toKey(item) || index}`;
 
       if (item.isDivider) {
         return <div class="dropdown-divider" role="separator"></div>;
@@ -441,7 +486,7 @@ export class DropdownComponent {
               size={this.size}
               checked={!!item.checked}
               disabled={!!item.disabled}
-              onToggle={() => this.itemSelected.emit({ item, index })}
+              onToggle={() => this.handleCheckboxToggle(item, index)}
             />
           </div>
         );
@@ -456,7 +501,7 @@ export class DropdownComponent {
               size={this.size}
               checked={!!item.checked}
               disabled={!!item.disabled}
-              onToggle={() => this.itemSelected.emit({ item, index })}
+              onToggle={() => this.handleCheckboxToggle(item, index)}
             />
           </div>
         );
@@ -494,6 +539,22 @@ export class DropdownComponent {
         {this.renderNestedItems(this.options, '')}
       </div>
     );
+  }
+
+  async clearSelections() {
+    const opts = Array.isArray(this.options) ? this.options.map(o => ({ ...o, checked: false })) : [];
+    this.options = opts;
+
+    // Re-render + local announcements
+    this.host?.dispatchEvent(new CustomEvent('items-changed', { detail: { items: opts }, bubbles: true, composed: true }));
+    this.host?.dispatchEvent(new CustomEvent('selection-changed', { detail: { items: [] }, bubbles: true, composed: true }));
+
+    // Document-level event the table listens for
+    const tableId = this.tableId || this.host.getAttribute('table-id') || '';
+    document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId, items: [] }, bubbles: false }));
+
+    // Let layout settle if callers await us
+    await Promise.resolve();
   }
 
   render() {

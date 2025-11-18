@@ -6,8 +6,10 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DropdownItem } from "./components/dropdown/dropdown-types";
+import { Field, SelectMode, SortOrder, Variant } from "./components/table/table-component";
 import { ToggleItem } from "./components/toggle-switch/toggle-switch-types";
 export { DropdownItem } from "./components/dropdown/dropdown-types";
+export { Field, SelectMode, SortOrder, Variant } from "./components/table/table-component";
 export { ToggleItem } from "./components/toggle-switch/toggle-switch-types";
 export namespace Components {
     interface AccordionComponent {
@@ -553,9 +555,11 @@ export namespace Components {
         "paginationLayout": '' | 'start' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right';
         "paginationVariantColor": string;
         "plumage": boolean;
+        "position": 'top' | 'bottom' | 'both';
         "showDisplayRange": boolean;
         "showSizeChanger": boolean;
         "size": '' | 'sm' | 'lg';
+        "tableId": string;
         "totalPages": number;
         "totalRows": number;
         "useByPagePagination": boolean;
@@ -752,6 +756,86 @@ export namespace Components {
         "size": '' | 'sm' | 'lg';
         "totalPages": number;
     }
+    interface SvgComponent {
+        /**
+          * Fill color applied to slotted <svg>. Defaults to 'currentColor'.
+         */
+        "fill": string;
+        /**
+          * Height applied to slotted <svg> (px). Omit/0 to leave as-is.
+         */
+        "height"?: number;
+        /**
+          * Forwarded to the slotted <svg> as aria-hidden. Use "true" or "false". Using a different prop name avoids clashing with HTMLElement.ariaHidden.
+         */
+        "svgAriaHidden"?: 'true' | 'false';
+        /**
+          * Forwarded to the slotted <svg> as aria-label (avoids clashing with HTMLElement.ariaLabel).
+         */
+        "svgAriaLabel"?: string;
+        /**
+          * Optional margin wrapper around the slotted <svg>: '', 'left', or 'right'.
+         */
+        "svgMargin": '' | 'left' | 'right';
+        /**
+          * Width applied to slotted <svg> (px). Omit/0 to leave as-is.
+         */
+        "width"?: number;
+    }
+    interface TableComponent {
+        "border": boolean;
+        "bordered": boolean;
+        "borderless": boolean;
+        "caption": '' | 'top' | 'bottom';
+        "cloneFooter": boolean;
+        "currentPage": number;
+        "dark": boolean;
+        "dropdownId": string;
+        "expandedRows": number[];
+        "fields": Field[];
+        "filterText": string;
+        "fixed": boolean;
+        "goToButtons": string;
+        "headerDark": boolean;
+        "headerLight": boolean;
+        "hideEllipsis": boolean;
+        "hideGotoEndButtons": boolean;
+        "hover": boolean;
+        "items": any[];
+        "noBorderCollapsed": boolean;
+        "originalItems": any[];
+        "pageSizeOptions": Array<number | 'All'>;
+        "paginationLayout": string;
+        "paginationLimit": number;
+        "paginationPosition": 'top' | 'bottom' | 'both';
+        "paginationSize": '' | 'sm' | 'lg';
+        "paginationVariantColor": string;
+        "plumage": boolean;
+        "resetSort": () => Promise<void>;
+        "responsive": boolean;
+        "rowsPerPage": number;
+        "selectMode": SelectMode;
+        "selectedFilterFields": string[];
+        "selectedRows": any[];
+        "selectedVariant": string;
+        "showDisplayRange": boolean;
+        "showSizeChanger": boolean;
+        "size": '' | 'sm';
+        "sortCriteria": Array<{ key: string; order: SortOrder | 'none' }>;
+        "sortField": string;
+        "sortOrder": SortOrder;
+        "sortOrderDisabled": boolean;
+        "sortable": boolean;
+        "stacked": boolean;
+        "sticky": boolean;
+        "striped": boolean;
+        "tableId": string;
+        "tableVariant": Variant | 'table';
+        "totalRows": number;
+        "useByPagePagination": boolean;
+        "useMinimizePagination": boolean;
+        "usePagination": boolean;
+    }
     interface ToggleSwitchComponent {
         "checked": boolean;
         "customSwitch": boolean;
@@ -845,6 +929,10 @@ export interface SelectFieldComponentCustomEvent<T> extends CustomEvent<T> {
 export interface StandardPaginationComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLStandardPaginationComponentElement;
+}
+export interface TableComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLTableComponentElement;
 }
 export interface ToggleSwitchComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1039,6 +1127,7 @@ declare global {
     };
     interface HTMLCheckboxComponentElementEventMap {
         "groupChange": string[];
+        "toggle": { checked: boolean; value: string; inputId: string };
     }
     interface HTMLCheckboxComponentElement extends Components.CheckboxComponent, HTMLStencilElement {
         addEventListener<K extends keyof HTMLCheckboxComponentElementEventMap>(type: K, listener: (this: HTMLCheckboxComponentElement, ev: CheckboxComponentCustomEvent<HTMLCheckboxComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1257,6 +1346,32 @@ declare global {
         prototype: HTMLStandardPaginationComponentElement;
         new (): HTMLStandardPaginationComponentElement;
     };
+    interface HTMLSvgComponentElement extends Components.SvgComponent, HTMLStencilElement {
+    }
+    var HTMLSvgComponentElement: {
+        prototype: HTMLSvgComponentElement;
+        new (): HTMLSvgComponentElement;
+    };
+    interface HTMLTableComponentElementEventMap {
+        "sort-field-updated": { value: string };
+        "sort-order-updated": { value: string };
+        "sort-changed": { field: string; order: string };
+        "row-selected": any[];
+    }
+    interface HTMLTableComponentElement extends Components.TableComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLTableComponentElementEventMap>(type: K, listener: (this: HTMLTableComponentElement, ev: TableComponentCustomEvent<HTMLTableComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLTableComponentElementEventMap>(type: K, listener: (this: HTMLTableComponentElement, ev: TableComponentCustomEvent<HTMLTableComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLTableComponentElement: {
+        prototype: HTMLTableComponentElement;
+        new (): HTMLTableComponentElement;
+    };
     interface HTMLToggleSwitchComponentElementEventMap {
         "checkedChanged": { id: string; checked: boolean };
     }
@@ -1305,6 +1420,8 @@ declare global {
         "select-field-component": HTMLSelectFieldComponentElement;
         "slider-manager-component": HTMLSliderManagerComponentElement;
         "standard-pagination-component": HTMLStandardPaginationComponentElement;
+        "svg-component": HTMLSvgComponentElement;
+        "table-component": HTMLTableComponentElement;
         "toggle-switch-component": HTMLToggleSwitchComponentElement;
     }
 }
@@ -1636,6 +1753,7 @@ declare namespace LocalJSX {
         "name"?: string;
         "noPadding"?: boolean;
         "onGroupChange"?: (event: CheckboxComponentCustomEvent<string[]>) => void;
+        "onToggle"?: (event: CheckboxComponentCustomEvent<{ checked: boolean; value: string; inputId: string }>) => void;
         "required"?: boolean;
         "size"?: string;
         "validation"?: boolean;
@@ -1869,9 +1987,11 @@ declare namespace LocalJSX {
         "paginationLayout"?: '' | 'start' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right';
         "paginationVariantColor"?: string;
         "plumage"?: boolean;
+        "position"?: 'top' | 'bottom' | 'both';
         "showDisplayRange"?: boolean;
         "showSizeChanger"?: boolean;
         "size"?: '' | 'sm' | 'lg';
+        "tableId"?: string;
         "totalPages"?: number;
         "totalRows"?: number;
         "useByPagePagination"?: boolean;
@@ -2071,6 +2191,89 @@ declare namespace LocalJSX {
         "size"?: '' | 'sm' | 'lg';
         "totalPages"?: number;
     }
+    interface SvgComponent {
+        /**
+          * Fill color applied to slotted <svg>. Defaults to 'currentColor'.
+         */
+        "fill"?: string;
+        /**
+          * Height applied to slotted <svg> (px). Omit/0 to leave as-is.
+         */
+        "height"?: number;
+        /**
+          * Forwarded to the slotted <svg> as aria-hidden. Use "true" or "false". Using a different prop name avoids clashing with HTMLElement.ariaHidden.
+         */
+        "svgAriaHidden"?: 'true' | 'false';
+        /**
+          * Forwarded to the slotted <svg> as aria-label (avoids clashing with HTMLElement.ariaLabel).
+         */
+        "svgAriaLabel"?: string;
+        /**
+          * Optional margin wrapper around the slotted <svg>: '', 'left', or 'right'.
+         */
+        "svgMargin"?: '' | 'left' | 'right';
+        /**
+          * Width applied to slotted <svg> (px). Omit/0 to leave as-is.
+         */
+        "width"?: number;
+    }
+    interface TableComponent {
+        "border"?: boolean;
+        "bordered"?: boolean;
+        "borderless"?: boolean;
+        "caption"?: '' | 'top' | 'bottom';
+        "cloneFooter"?: boolean;
+        "currentPage"?: number;
+        "dark"?: boolean;
+        "dropdownId"?: string;
+        "expandedRows"?: number[];
+        "fields"?: Field[];
+        "filterText"?: string;
+        "fixed"?: boolean;
+        "goToButtons"?: string;
+        "headerDark"?: boolean;
+        "headerLight"?: boolean;
+        "hideEllipsis"?: boolean;
+        "hideGotoEndButtons"?: boolean;
+        "hover"?: boolean;
+        "items"?: any[];
+        "noBorderCollapsed"?: boolean;
+        "onRow-selected"?: (event: TableComponentCustomEvent<any[]>) => void;
+        "onSort-changed"?: (event: TableComponentCustomEvent<{ field: string; order: string }>) => void;
+        "onSort-field-updated"?: (event: TableComponentCustomEvent<{ value: string }>) => void;
+        "onSort-order-updated"?: (event: TableComponentCustomEvent<{ value: string }>) => void;
+        "originalItems"?: any[];
+        "pageSizeOptions"?: Array<number | 'All'>;
+        "paginationLayout"?: string;
+        "paginationLimit"?: number;
+        "paginationPosition"?: 'top' | 'bottom' | 'both';
+        "paginationSize"?: '' | 'sm' | 'lg';
+        "paginationVariantColor"?: string;
+        "plumage"?: boolean;
+        "responsive"?: boolean;
+        "rowsPerPage"?: number;
+        "selectMode"?: SelectMode;
+        "selectedFilterFields"?: string[];
+        "selectedRows"?: any[];
+        "selectedVariant"?: string;
+        "showDisplayRange"?: boolean;
+        "showSizeChanger"?: boolean;
+        "size"?: '' | 'sm';
+        "sortCriteria"?: Array<{ key: string; order: SortOrder | 'none' }>;
+        "sortField"?: string;
+        "sortOrder"?: SortOrder;
+        "sortOrderDisabled"?: boolean;
+        "sortable"?: boolean;
+        "stacked"?: boolean;
+        "sticky"?: boolean;
+        "striped"?: boolean;
+        "tableId"?: string;
+        "tableVariant"?: Variant | 'table';
+        "totalRows"?: number;
+        "useByPagePagination"?: boolean;
+        "useMinimizePagination"?: boolean;
+        "usePagination"?: boolean;
+    }
     interface ToggleSwitchComponent {
         "checked"?: boolean;
         "customSwitch"?: boolean;
@@ -2120,6 +2323,8 @@ declare namespace LocalJSX {
         "select-field-component": SelectFieldComponent;
         "slider-manager-component": SliderManagerComponent;
         "standard-pagination-component": StandardPaginationComponent;
+        "svg-component": SvgComponent;
+        "table-component": TableComponent;
         "toggle-switch-component": ToggleSwitchComponent;
     }
 }
@@ -2157,6 +2362,8 @@ declare module "@stencil/core" {
             "select-field-component": LocalJSX.SelectFieldComponent & JSXBase.HTMLAttributes<HTMLSelectFieldComponentElement>;
             "slider-manager-component": LocalJSX.SliderManagerComponent & JSXBase.HTMLAttributes<HTMLSliderManagerComponentElement>;
             "standard-pagination-component": LocalJSX.StandardPaginationComponent & JSXBase.HTMLAttributes<HTMLStandardPaginationComponentElement>;
+            "svg-component": LocalJSX.SvgComponent & JSXBase.HTMLAttributes<HTMLSvgComponentElement>;
+            "table-component": LocalJSX.TableComponent & JSXBase.HTMLAttributes<HTMLTableComponentElement>;
             "toggle-switch-component": LocalJSX.ToggleSwitchComponent & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;
         }
     }

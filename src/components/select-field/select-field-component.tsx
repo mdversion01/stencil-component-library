@@ -372,11 +372,11 @@ export class SelectFieldComponent {
 
     const role = this.multiple ? 'combobox' : 'listbox';
 
+    const hasPlaceholder = (this.defaultOptionTxt ?? '').trim().length > 0;
     // 👇 decide if we should show a default blank option + which label to use
-    const needsDefaultBlank = !this.multiple && (this.value === '' || this.value === 'none' || this.defaultOptionTxt !== undefined);
-
+    const needsDefaultBlank = !this.multiple && (this.value === '' || this.value === 'none') && hasPlaceholder;
     // when attribute is present with no value, fall back to built-in label
-    const defaultLabel = this._safeDefaultOptionTxt;
+    const defaultLabel = hasPlaceholder ? this._safeDefaultOptionTxt : '';
 
     return (
       <div>

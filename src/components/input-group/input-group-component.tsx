@@ -104,12 +104,6 @@ export class InputGroupComponent {
     const target = ev.target as HTMLInputElement;
 
     // Keep the real input’s form association in sync (like input-field-component)
-    if (this._computedFormId) {
-      const form = (target as any).form || document.getElementById(this._computedFormId);
-      if (form) (target as any).form = form;
-    } else {
-      (target as any).form = null;
-    }
 
     this.value = target.value;
 
