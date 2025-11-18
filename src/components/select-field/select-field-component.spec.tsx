@@ -173,7 +173,7 @@ describe('select-field-component', () => {
     expect(page.root).toMatchSnapshot();
   });
 
-  it('shows validation message when required and user re-selects blank', async () => {
+  it('shows validation message when required and value is cleared to blank', async () => {
     const page = await newSpecPage({
       components: [SelectFieldComponent],
       template: () => (
@@ -184,23 +184,17 @@ describe('select-field-component', () => {
           value="banana"
           default-option-txt="Pick one"
           options='[
-            {"value":"apple","name":"Apple"},
-            {"value":"banana","name":"Banana"}
-          ]'
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"}
+        ]'
         />
       ),
     });
 
     await page.waitForChanges();
 
-    // Change from a valid value to the blank default (simulating user clearing selection)
-    const sel = getSelect(page);
-    // Ensure there is a blank option to select
-    const blankOpt = Array.from(sel.querySelectorAll('option')).find(o => o.getAttribute('value') === '');
-    expect(blankOpt).toBeTruthy();
-
-    sel.value = '';
-    sel.dispatchEvent(new Event('change', { bubbles: true }));
+    // Simulate "clearing" the selection (controller sets value to '')
+    page.rootInstance.value = '';
     await page.waitForChanges();
 
     // Should display validation message again

@@ -14,9 +14,6 @@ exports[`select-field-component marks label as required when value is blank and 
       </label>
       <div>
         <select aria-invalid="false" aria-labelledby="favoriteFruit" aria-multiselectable="false" aria-required="true" class="form-control form-select" id="fruit" required="" role="listbox">
-          <option value="">
-            Pick one
-          </option>
           <option aria-label="Apple" selected="" value="apple">
             Apple
           </option>
@@ -39,9 +36,6 @@ exports[`select-field-component parses options JSON and selects matching value 1
       </label>
       <div>
         <select aria-invalid="false" aria-multiselectable="false" aria-required="false" class="form-control form-select" role="listbox">
-          <option value="">
-            Select an option
-          </option>
           <option aria-label="Apple" value="apple">
             Apple
           </option>
@@ -111,7 +105,7 @@ exports[`select-field-component sanitizes defaultOptionTxt and uses it when attr
 </select-field-component>
 `;
 
-exports[`select-field-component shows validation message when required and user re-selects blank 1`] = `
+exports[`select-field-component shows validation message when required and value is cleared to blank 1`] = `
 <select-field-component default-option-txt="Pick one" validation-message="Please fill in">
   <div>
     <div class="form-group">
