@@ -7,9 +7,11 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DropdownItem } from "./components/dropdown/dropdown-types";
 import { Field, SelectMode, SortOrder, Variant } from "./components/table/table-component";
+import { ToastItem, ToastPosition, ToastVariant } from "./components/toasts/toasts-component";
 import { ToggleItem } from "./components/toggle-switch/toggle-switch-types";
 export { DropdownItem } from "./components/dropdown/dropdown-types";
 export { Field, SelectMode, SortOrder, Variant } from "./components/table/table-component";
+export { ToastItem, ToastPosition, ToastVariant } from "./components/toasts/toasts-component";
 export { ToggleItem } from "./components/toggle-switch/toggle-switch-types";
 export namespace Components {
     interface AccordionComponent {
@@ -836,6 +838,105 @@ export namespace Components {
         "useMinimizePagination": boolean;
         "usePagination": boolean;
     }
+    interface ToastsComponent {
+        /**
+          * Optional header content (string/JSX) appearing next to the title (e.g., timestamp).
+         */
+        "additionalHeaderContent"?: any;
+        /**
+          * If true, new toasts append to the end; otherwise they prepend (newest on top).
+         */
+        "appendToast": boolean;
+        "bodyClass"?: string;
+        /**
+          * Optional custom content for the body (string/JSX). Prefer using slots in apps.
+         */
+        "customContent"?: any;
+        /**
+          * Default lifespan in ms for auto-dismiss toasts.
+         */
+        "duration": number;
+        /**
+          * Default header/body helper classes.
+         */
+        "headerClass"?: string;
+        /**
+          * If true, use the “plumage icon” layout on compact plumage variant.
+         */
+        "iconPlumageStyle": boolean;
+        /**
+          * When true, use polite/status instead of alert/assertive on aria-live for new toasts.
+         */
+        "isStatus": boolean;
+        /**
+          * Optional default message for simple string-only toasts.
+         */
+        "message"?: string;
+        /**
+          * Disable fade-in/out transitions globally.
+         */
+        "noAnimation": boolean;
+        /**
+          * If true, hide the × close button by default.
+         */
+        "noCloseButton": boolean;
+        /**
+          * Prevent hover from pausing auto-hide globally.
+         */
+        "noHoverPause": boolean;
+        /**
+          * Make toasts persistent by default (no auto-hide).
+         */
+        "persistent": boolean;
+        /**
+          * If true, use the Plumage toast style.
+         */
+        "plumageToast": boolean;
+        /**
+          * If true with plumageToast, render the “max” layout.
+         */
+        "plumageToastMax": boolean;
+        /**
+          * Where the toaster tray is anchored.
+         */
+        "position": ToastPosition;
+        /**
+          * Remove toast immediately.
+         */
+        "removeToast": (id: number) => Promise<void>;
+        /**
+          * Show a toast. Returns the id of the created toast.
+         */
+        "showToast": (opts?: Partial<Omit<ToastItem, "id" | "state">>) => Promise<number>;
+        /**
+          * If true, use the “solid” toast style (Bootstrap-like) instead of bordered.
+         */
+        "solidToast": boolean;
+        /**
+          * Start fade-out, then remove.
+         */
+        "startRemoveToast": (id: number) => Promise<void>;
+        /**
+          * Default icon symbol id (from the inline sprite) for new toasts.
+         */
+        "svgIcon"?: string;
+        /**
+          * Default time label (ZULU).
+         */
+        "time": string;
+        /**
+          * (Optional) id used inside nested elements; does not override the host element id
+         */
+        "toastId": string;
+        /**
+          * Optional default title for new toasts. (Renamed from reserved `title`.)
+         */
+        "toastTitle"?: string;
+        /**
+          * Variant color for new toasts (can be overridden per-toast via showToast opts).
+         */
+        "variant": ToastVariant;
+    }
     interface ToggleSwitchComponent {
         "checked": boolean;
         "customSwitch": boolean;
@@ -1372,6 +1473,12 @@ declare global {
         prototype: HTMLTableComponentElement;
         new (): HTMLTableComponentElement;
     };
+    interface HTMLToastsComponentElement extends Components.ToastsComponent, HTMLStencilElement {
+    }
+    var HTMLToastsComponentElement: {
+        prototype: HTMLToastsComponentElement;
+        new (): HTMLToastsComponentElement;
+    };
     interface HTMLToggleSwitchComponentElementEventMap {
         "checkedChanged": { id: string; checked: boolean };
     }
@@ -1422,6 +1529,7 @@ declare global {
         "standard-pagination-component": HTMLStandardPaginationComponentElement;
         "svg-component": HTMLSvgComponentElement;
         "table-component": HTMLTableComponentElement;
+        "toasts-component": HTMLToastsComponentElement;
         "toggle-switch-component": HTMLToggleSwitchComponentElement;
     }
 }
@@ -2274,6 +2382,93 @@ declare namespace LocalJSX {
         "useMinimizePagination"?: boolean;
         "usePagination"?: boolean;
     }
+    interface ToastsComponent {
+        /**
+          * Optional header content (string/JSX) appearing next to the title (e.g., timestamp).
+         */
+        "additionalHeaderContent"?: any;
+        /**
+          * If true, new toasts append to the end; otherwise they prepend (newest on top).
+         */
+        "appendToast"?: boolean;
+        "bodyClass"?: string;
+        /**
+          * Optional custom content for the body (string/JSX). Prefer using slots in apps.
+         */
+        "customContent"?: any;
+        /**
+          * Default lifespan in ms for auto-dismiss toasts.
+         */
+        "duration"?: number;
+        /**
+          * Default header/body helper classes.
+         */
+        "headerClass"?: string;
+        /**
+          * If true, use the “plumage icon” layout on compact plumage variant.
+         */
+        "iconPlumageStyle"?: boolean;
+        /**
+          * When true, use polite/status instead of alert/assertive on aria-live for new toasts.
+         */
+        "isStatus"?: boolean;
+        /**
+          * Optional default message for simple string-only toasts.
+         */
+        "message"?: string;
+        /**
+          * Disable fade-in/out transitions globally.
+         */
+        "noAnimation"?: boolean;
+        /**
+          * If true, hide the × close button by default.
+         */
+        "noCloseButton"?: boolean;
+        /**
+          * Prevent hover from pausing auto-hide globally.
+         */
+        "noHoverPause"?: boolean;
+        /**
+          * Make toasts persistent by default (no auto-hide).
+         */
+        "persistent"?: boolean;
+        /**
+          * If true, use the Plumage toast style.
+         */
+        "plumageToast"?: boolean;
+        /**
+          * If true with plumageToast, render the “max” layout.
+         */
+        "plumageToastMax"?: boolean;
+        /**
+          * Where the toaster tray is anchored.
+         */
+        "position"?: ToastPosition;
+        /**
+          * If true, use the “solid” toast style (Bootstrap-like) instead of bordered.
+         */
+        "solidToast"?: boolean;
+        /**
+          * Default icon symbol id (from the inline sprite) for new toasts.
+         */
+        "svgIcon"?: string;
+        /**
+          * Default time label (ZULU).
+         */
+        "time"?: string;
+        /**
+          * (Optional) id used inside nested elements; does not override the host element id
+         */
+        "toastId"?: string;
+        /**
+          * Optional default title for new toasts. (Renamed from reserved `title`.)
+         */
+        "toastTitle"?: string;
+        /**
+          * Variant color for new toasts (can be overridden per-toast via showToast opts).
+         */
+        "variant"?: ToastVariant;
+    }
     interface ToggleSwitchComponent {
         "checked"?: boolean;
         "customSwitch"?: boolean;
@@ -2325,6 +2520,7 @@ declare namespace LocalJSX {
         "standard-pagination-component": StandardPaginationComponent;
         "svg-component": SvgComponent;
         "table-component": TableComponent;
+        "toasts-component": ToastsComponent;
         "toggle-switch-component": ToggleSwitchComponent;
     }
 }
@@ -2364,6 +2560,7 @@ declare module "@stencil/core" {
             "standard-pagination-component": LocalJSX.StandardPaginationComponent & JSXBase.HTMLAttributes<HTMLStandardPaginationComponentElement>;
             "svg-component": LocalJSX.SvgComponent & JSXBase.HTMLAttributes<HTMLSvgComponentElement>;
             "table-component": LocalJSX.TableComponent & JSXBase.HTMLAttributes<HTMLTableComponentElement>;
+            "toasts-component": LocalJSX.ToastsComponent & JSXBase.HTMLAttributes<HTMLToastsComponentElement>;
             "toggle-switch-component": LocalJSX.ToggleSwitchComponent & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;
         }
     }
