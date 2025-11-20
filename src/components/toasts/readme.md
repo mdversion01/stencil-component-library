@@ -57,9 +57,9 @@ Show a toast. Returns the id of the created toast.
 
 #### Parameters
 
-| Name   | Type                                                                                                                                                                                                                                                                                                                                       | Description |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
-| `opts` | `{ time?: string; content?: any; duration?: number; noHoverPause?: boolean; persistent?: boolean; svgIcon?: string; headerClass?: string; bodyClass?: string; isStatus?: boolean; noCloseButton?: boolean; iconPlumageStyle?: boolean; toastTitle?: string; additionalHdrContent?: any; variantClass?: ToastVariant; hideTimeout?: any; }` |             |
+| Name   | Type                                                                                                                                                                                                                                                                                                                                                             | Description |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `opts` | `{ time?: string; content?: any; duration?: number; noHoverPause?: boolean; persistent?: boolean; svgIcon?: string; headerClass?: string; bodyClass?: string; isStatus?: boolean; noCloseButton?: boolean; iconPlumageStyle?: boolean; toastTitle?: string; contentHtml?: string; additionalHdrContent?: any; variantClass?: ToastVariant; hideTimeout?: any; }` |             |
 
 #### Returns
 
