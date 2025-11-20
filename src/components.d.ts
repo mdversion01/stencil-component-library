@@ -9,10 +9,12 @@ import { DropdownItem } from "./components/dropdown/dropdown-types";
 import { Field, SelectMode, SortOrder, Variant } from "./components/table/table-component";
 import { ToastItem, ToastPosition, ToastVariant } from "./components/toasts/toasts-component";
 import { ToggleItem } from "./components/toggle-switch/toggle-switch-types";
+import { TooltipPosition, TooltipVariant } from "./components/tooltip/tooltip-component";
 export { DropdownItem } from "./components/dropdown/dropdown-types";
 export { Field, SelectMode, SortOrder, Variant } from "./components/table/table-component";
 export { ToastItem, ToastPosition, ToastVariant } from "./components/toasts/toasts-component";
 export { ToggleItem } from "./components/toggle-switch/toggle-switch-types";
+export { TooltipPosition, TooltipVariant } from "./components/tooltip/tooltip-component";
 export namespace Components {
     interface AccordionComponent {
         "accordion": boolean;
@@ -954,6 +956,50 @@ export namespace Components {
         "validationMessage": string;
         "value": string;
     }
+    interface TooltipComponent {
+        /**
+          * Enable/disable fade animation class
+         */
+        "animation": boolean;
+        /**
+          * Optional CSS selector to append tooltip into (defaults to body)
+         */
+        "container"?: string | null;
+        /**
+          * Additional classes to apply to tooltip; can be a string
+         */
+        "customClass": string;
+        "hide": () => Promise<void>;
+        /**
+          * If true, treat content as HTML and use innerHTML (TRUSTED CONTENT ONLY)
+         */
+        "htmlContent": boolean;
+        /**
+          * Message fallback when no title/data-original-title supplied
+         */
+        "message": string;
+        /**
+          * Initial/forced placement; use "auto" to choose best fit
+         */
+        "position": TooltipPosition;
+        "show": () => Promise<void>;
+        /**
+          * Title/content string; if empty, falls back to `title`/`data-original-title` attributes or `message`
+         */
+        "tooltipTitle"?: string;
+        /**
+          * Space-separated triggers: "hover", "focus", "click", "manual"
+         */
+        "trigger": string;
+        /**
+          * Contextual color variant
+         */
+        "variant": TooltipVariant;
+        /**
+          * If true, the tooltip is currently visible (manual control)
+         */
+        "visible": boolean;
+    }
 }
 export interface AccordionComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1496,6 +1542,12 @@ declare global {
         prototype: HTMLToggleSwitchComponentElement;
         new (): HTMLToggleSwitchComponentElement;
     };
+    interface HTMLTooltipComponentElement extends Components.TooltipComponent, HTMLStencilElement {
+    }
+    var HTMLTooltipComponentElement: {
+        prototype: HTMLTooltipComponentElement;
+        new (): HTMLTooltipComponentElement;
+    };
     interface HTMLElementTagNameMap {
         "accordion-component": HTMLAccordionComponentElement;
         "accordion-container": HTMLAccordionContainerElement;
@@ -1531,6 +1583,7 @@ declare global {
         "table-component": HTMLTableComponentElement;
         "toasts-component": HTMLToastsComponentElement;
         "toggle-switch-component": HTMLToggleSwitchComponentElement;
+        "tooltip-component": HTMLTooltipComponentElement;
     }
 }
 declare namespace LocalJSX {
@@ -2487,6 +2540,48 @@ declare namespace LocalJSX {
         "validationMessage"?: string;
         "value"?: string;
     }
+    interface TooltipComponent {
+        /**
+          * Enable/disable fade animation class
+         */
+        "animation"?: boolean;
+        /**
+          * Optional CSS selector to append tooltip into (defaults to body)
+         */
+        "container"?: string | null;
+        /**
+          * Additional classes to apply to tooltip; can be a string
+         */
+        "customClass"?: string;
+        /**
+          * If true, treat content as HTML and use innerHTML (TRUSTED CONTENT ONLY)
+         */
+        "htmlContent"?: boolean;
+        /**
+          * Message fallback when no title/data-original-title supplied
+         */
+        "message"?: string;
+        /**
+          * Initial/forced placement; use "auto" to choose best fit
+         */
+        "position"?: TooltipPosition;
+        /**
+          * Title/content string; if empty, falls back to `title`/`data-original-title` attributes or `message`
+         */
+        "tooltipTitle"?: string;
+        /**
+          * Space-separated triggers: "hover", "focus", "click", "manual"
+         */
+        "trigger"?: string;
+        /**
+          * Contextual color variant
+         */
+        "variant"?: TooltipVariant;
+        /**
+          * If true, the tooltip is currently visible (manual control)
+         */
+        "visible"?: boolean;
+    }
     interface IntrinsicElements {
         "accordion-component": AccordionComponent;
         "accordion-container": AccordionContainer;
@@ -2522,6 +2617,7 @@ declare namespace LocalJSX {
         "table-component": TableComponent;
         "toasts-component": ToastsComponent;
         "toggle-switch-component": ToggleSwitchComponent;
+        "tooltip-component": TooltipComponent;
     }
 }
 export { LocalJSX as JSX };
@@ -2562,6 +2658,7 @@ declare module "@stencil/core" {
             "table-component": LocalJSX.TableComponent & JSXBase.HTMLAttributes<HTMLTableComponentElement>;
             "toasts-component": LocalJSX.ToastsComponent & JSXBase.HTMLAttributes<HTMLToastsComponentElement>;
             "toggle-switch-component": LocalJSX.ToggleSwitchComponent & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;
+            "tooltip-component": LocalJSX.TooltipComponent & JSXBase.HTMLAttributes<HTMLTooltipComponentElement>;
         }
     }
 }

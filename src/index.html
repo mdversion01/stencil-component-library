@@ -29,6 +29,46 @@
         margin: 0;
         transform: scaleY(-1);
       }
+
+      .purple {
+        background-color: purple !important;
+      }
+
+      .tooltip.tooltip-top .tooltip-arrow.purple {
+        border-width: 0.5rem 0.375rem 0 !important;
+        background-color: transparent !important;
+      }
+
+      .tooltip.tooltip-top .tooltip-arrow.purple {
+        border-color: purple transparent transparent transparent !important;
+      }
+
+      .tooltip.tooltip-bottom .tooltip-arrow.purple {
+        border-width: 0 0.375rem 0.5rem 0.375rem !important;
+        background-color: transparent !important;
+      }
+
+      .tooltip.tooltip-bottom .tooltip-arrow.purple {
+        border-color: transparent transparent purple transparent !important;
+      }
+
+      .tooltip.tooltip-left .tooltip-arrow.purple {
+        border-width: 0.375rem 0.5rem 0.375rem 0 !important;
+        background-color: transparent !important;
+      }
+
+      .tooltip.tooltip-left .tooltip-arrow.purple {
+        border-color: transparent transparent transparent purple !important;
+      }
+
+      .tooltip.tooltip-right .tooltip-arrow.purple {
+        border-width: 0.375rem 0.5rem 0.375rem 0 !important;
+        background-color: transparent !important;
+      }
+
+      .tooltip.tooltip-right .tooltip-arrow.purple {
+        border-color: transparent purple transparent transparent !important;
+      }
     </style>
   </head>
   <body>
@@ -1363,13 +1403,13 @@
         </section> -->
       <!-- </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <section class="display-box-demo">
           <button class="btn btn-secondary btn-sm" onclick="showNotification1c()">Show Toast</button>
           <button class="btn btn-secondary btn-sm" onclick="showCustomNotification1d()">Show Custom Toast</button>
           <button class="btn btn-secondary btn-sm" onclick="simulateStackedNotifications()">Simulate RealTime Stacked Notifications</button>
 
-          <!-- 🔁 Stencil tag name -->
+
           <toasts-component id="toast1c" position="bottom-left"></toasts-component>
 
           <div style="margin-top: 15px">
@@ -1438,13 +1478,123 @@
         <section class="display-box-demo">
           <button class="btn btn-secondary btn-sm" onclick="showNotification2b()">Show Plumage Toast Max</button>
 
-          <!-- If you keep bottom-center, extend ToastPosition + CSS -->
+          !-- If you keep bottom-center, extend ToastPosition + CSS --
           <toasts-component id="toast2b" position="bottom-right" plumage-toast plumage-toast-max append-toast></toasts-component>
 
           <div style="margin-top: 15px; max-width: 500px;" >
             <div style="margin-bottom: 5px; font-size: 0.75rem">Plumage Toast Max Styling Example:</div>
             <toasts-component id="toast4" position="" plumage-toast plumage-toast-max></toasts-component>
           </div>
+        </section>
+      </div> -->
+
+      <div class="cwrapper">
+        <section class="display-box-demo">
+          <div style="display: flex; justify-content: space-evenly; flex-wrap: wrap">
+            <div style="margin: 0 10px 10px 0">
+              <tooltip-component data-placement="top" data-original-title="Tooltip on top" data-trigger="hover focus" trigger="click">
+                <button-component btn-text="Tooltip on top" size="sm" variant="secondary"></button-component>
+              </tooltip-component>
+            </div>
+            <div style="margin: 0 10px 10px 0">
+              <tooltip-component data-placement="right" data-original-title="Tooltip on the right" data-trigger="hover focus">
+                <button-component btn-text="Tooltip on right" size="sm" variant="secondary"></button-component>
+              </tooltip-component>
+            </div>
+            <div style="margin: 0 10px 10px 0">
+              <tooltip-component data-placement="left" data-original-title="Tooltip on the left" data-trigger="hover focus">
+                <button-component btn-text="Tooltip on left" size="sm" variant="secondary"></button-component>
+              </tooltip-component>
+            </div>
+            <div style="margin: 0 10px 10px 0">
+              <tooltip-component data-placement="bottom" data-original-title="Tooltip on the bottom" data-trigger="hover focus">
+                <button-component btn-text="Tooltip on bottom" size="sm" variant="secondary"></button-component>
+              </tooltip-component>
+            </div>
+            <div style="margin: 0 10px 10px 0">
+              <tooltip-component data-placement="auto" data-original-title="Tooltip placement set to auto" data-trigger="hover focus">
+                <button-component btn-text="Hover over me!" size="sm" variant="secondary"></button-component>
+              </tooltip-component>
+            </div>
+          </div>
+        </section>
+
+        <section class="display-box-demo">
+          <div style="display: flex; justify-content: space-evenly; flex-wrap: wrap">
+            <div style="margin: 0 10px 10px 0">
+              <tooltip-component
+                data-placement="top"
+                data-original-title="<span style='display: flex;'><icon-component icon='fas fa-tachometer-alt'>
+                      </icon-component> Tooltip with icon component</span>"
+                data-trigger="hover focus"
+                data-html
+              >
+                <button-component btn-text="Tooltip with icon component" size="sm" variant="secondary"></button-component>
+              </tooltip-component>
+            </div>
+            <div style="margin: 0 10px 10px 0">
+              <tooltip-component data-html data-placement="top" data-original-title="<em>Tooltip</em> with <strong>HTML</strong> added for styling." data-trigger="hover focus">
+                <button-component btn-text="Tooltip with HTML" size="sm" variant="secondary"></button-component>
+              </tooltip-component>
+            </div>
+            <div style="margin: 0 10px 10px 0">
+              <tooltip-component
+                data-placement="top"
+                data-original-title="<span><i class='fa fa-tachometer'>
+                      </i> Tooltip with icon</span>"
+                data-trigger="hover focus"
+                data-html
+              >
+                <button-component btn-text="Tooltip with icon" size="sm" variant="secondary"></button-component>
+              </tooltip-component>
+            </div>
+          </div>
+        </section>
+
+        <section class="display-box-demo">
+          <div style="display: flex; justify-content: space-evenly; flex-wrap: wrap">
+            <div style="margin: 0 10px 10px 0">
+              <tooltip-component data-placement="top" data-original-title="Informational" data-trigger="hover focus" variant="info">
+                <button-component btn-text="Informational" size="sm" variant="secondary"></button-component>
+              </tooltip-component>
+            </div>
+            <div style="margin: 0 10px 10px 0">
+              <tooltip-component data-placement="top" data-original-title="Danger" data-trigger="hover focus" variant="danger">
+                <button-component btn-text="Danger" size="sm" variant="secondary"></button-component>
+              </tooltip-component>
+            </div>
+            <div style="margin: 0 10px 10px 0">
+              <tooltip-component data-placement="top" data-original-title="Warning" data-trigger="hover focus" variant="warning">
+                <button-component btn-text="Warning" size="sm" variant="secondary"></button-component>
+              </tooltip-component>
+            </div>
+            <div style="margin: 0 10px 10px 0">
+              <tooltip-component position="top" data-original-title="Success" data-trigger="hover focus" variant="success">
+                <button-component btn-text="Success" size="sm" variant="secondary"></button-component>
+              </tooltip-component>
+            </div>
+            <div style="margin: 0 10px 10px 0">
+              <tooltip-component position="top" data-original-title="Custom class color" data-trigger="hover focus" customClass="purple">
+                <button-component btn-text="Custom class" size="sm" variant="secondary"></button-component>
+              </tooltip-component>
+            </div>
+          </div>
+        </section>
+
+        <section class="display-box-demo">
+          <p>
+            Placeholder text to demonstrate some
+            <tooltip-component data-placement="top" data-original-title="Default tooltip" data-trigger="hover focus"> <a href="#">inline links</a></tooltip-component>
+            with tooltips. This is now just filler, no killer. Content placed here just to mimic the presence of
+            <tooltip-component data-placement="top" data-original-title="Another tooltip" data-trigger="hover focus"> <a href="#">real text</a></tooltip-component
+            >. And all that just to give you an idea of how tooltips would look when used in real-world situations. So hopefully you've now seen how
+            <tooltip-component data-placement="top" data-original-title="Another one here too" data-trigger="hover focus"
+              ><a href="#">these tooltips on links</a></tooltip-component
+            >
+            can work in practice, once you use them on
+            <tooltip-component data-placement="top" data-original-title="And the last tip!" data-trigger="hover focus"><a href="#">your own</a></tooltip-component>
+            site or project.
+          </p>
         </section>
       </div>
     </app-wrapper>
@@ -2158,259 +2308,264 @@
       //   wireTableFiltering('table99', 'filterInput-table99', 'filterByItems-table99');
       // });
 
-      window.addEventListener('DOMContentLoaded', () => {
-        const toast1 = document.getElementById('toast1');
-        toast1.showToast({
-          toastTitle: 'Solid Toast',
-          content: 'This is a solid toast example!',
-          duration: 5000,
-          svgIcon: 'exclamation-triangle-outline',
-          persistent: true,
-          variant: toast1.variant, // (uses component default if set)
-        });
+      // ---------- Toast notifications demo wiring ---------- //
+      // window.addEventListener('DOMContentLoaded', () => {
+      //   const toast1 = document.getElementById('toast1');
+      //   toast1.showToast({
+      //     toastTitle: 'Solid Toast',
+      //     content: 'This is a solid toast example!',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-triangle-outline',
+      //     persistent: true,
+      //     variant: toast1.variant, // (uses component default if set)
+      //   });
 
-        const toast1g = document.getElementById('toast1g');
-        toast1g.showToast({
-          toastTitle: 'Solid Toast',
-          content: 'This is a solid toast example!',
-          duration: 5000,
-          svgIcon: 'exclamation-triangle-outline',
-          persistent: true,
-          variantClass: 'primary',
-        });
+      //   const toast1g = document.getElementById('toast1g');
+      //   toast1g.showToast({
+      //     toastTitle: 'Solid Toast',
+      //     content: 'This is a solid toast example!',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-triangle-outline',
+      //     persistent: true,
+      //     variantClass: 'primary',
+      //   });
 
-        const toast1d = document.getElementById('toast1d');
-        toast1d.showToast({
-          toastTitle: 'Solid Toast',
-          content: 'This is a solid toast example!',
-          duration: 5000,
-          svgIcon: 'exclamation-triangle-outline',
-          persistent: true,
-          variantClass: 'secondary',
-        });
+      //   const toast1d = document.getElementById('toast1d');
+      //   toast1d.showToast({
+      //     toastTitle: 'Solid Toast',
+      //     content: 'This is a solid toast example!',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-triangle-outline',
+      //     persistent: true,
+      //     variantClass: 'secondary',
+      //   });
 
-        const toast1e = document.getElementById('toast1e');
-        toast1e.showToast({
-          toastTitle: 'Solid Toast',
-          content: 'This is a solid toast example!',
-          duration: 5000,
-          svgIcon: 'exclamation-triangle-outline',
-          persistent: true,
-          variantClass: 'danger',
-        });
+      //   const toast1e = document.getElementById('toast1e');
+      //   toast1e.showToast({
+      //     toastTitle: 'Solid Toast',
+      //     content: 'This is a solid toast example!',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-triangle-outline',
+      //     persistent: true,
+      //     variantClass: 'danger',
+      //   });
 
-        const toast1f = document.getElementById('toast1f');
-        toast1f.showToast({
-          toastTitle: 'Solid Toast',
-          content: 'This is a solid toast example!',
-          duration: 5000,
-          svgIcon: 'exclamation-triangle-outline',
-          persistent: true,
-          variantClass: 'success',
-        });
+      //   const toast1f = document.getElementById('toast1f');
+      //   toast1f.showToast({
+      //     toastTitle: 'Solid Toast',
+      //     content: 'This is a solid toast example!',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-triangle-outline',
+      //     persistent: true,
+      //     variantClass: 'success',
+      //   });
 
-        const toast2 = document.getElementById('toast2');
-        toast2.showToast({
-          toastTitle: 'Plumage Toast',
-          content: 'This is a Plumage styled toast example!',
-          duration: 5000,
-          svgIcon: 'exclamation-circle-fill',
-          persistent: true,
-          noCloseButton: true,
-          iconPlumageStyle: true,
-          variantClass: 'info',
-        });
+      //   const toast2 = document.getElementById('toast2');
+      //   toast2.showToast({
+      //     toastTitle: 'Plumage Toast',
+      //     content: 'This is a Plumage styled toast example!',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-circle-fill',
+      //     persistent: true,
+      //     noCloseButton: true,
+      //     iconPlumageStyle: true,
+      //     variantClass: 'info',
+      //   });
 
-        const toast3 = document.getElementById('toast3');
-        toast3.showToast({
-          toastTitle: 'Title Text',
-          content: 'This is a default toast example!',
-          additionalHdrContent: '43 seconds ago',
-          duration: 5000,
-          svgIcon: 'exclamation-triangle-outline',
-          persistent: true,
-        });
+      //   const toast3 = document.getElementById('toast3');
+      //   toast3.showToast({
+      //     toastTitle: 'Title Text',
+      //     content: 'This is a default toast example!',
+      //     additionalHdrContent: '43 seconds ago',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-triangle-outline',
+      //     persistent: true,
+      //   });
 
-        const toast3a = document.getElementById('toast3a');
-        toast3a.showToast({
-          toastTitle: 'Title Text',
-          content: 'This is a default toast example!',
-          additionalHdrContent: '43 seconds ago',
-          duration: 5000,
-          svgIcon: 'exclamation-triangle-outline',
-          persistent: true,
-          variantClass: 'primary',
-        });
+      //   const toast3a = document.getElementById('toast3a');
+      //   toast3a.showToast({
+      //     toastTitle: 'Title Text',
+      //     content: 'This is a default toast example!',
+      //     additionalHdrContent: '43 seconds ago',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-triangle-outline',
+      //     persistent: true,
+      //     variantClass: 'primary',
+      //   });
 
-        const toast3b = document.getElementById('toast3b');
-        toast3b.showToast({
-          toastTitle: 'Title Text',
-          content: 'This is a default toast example!',
-          additionalHdrContent: '43 seconds ago',
-          duration: 5000,
-          svgIcon: 'exclamation-triangle-outline',
-          persistent: true,
-          variantClass: 'danger',
-        });
+      //   const toast3b = document.getElementById('toast3b');
+      //   toast3b.showToast({
+      //     toastTitle: 'Title Text',
+      //     content: 'This is a default toast example!',
+      //     additionalHdrContent: '43 seconds ago',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-triangle-outline',
+      //     persistent: true,
+      //     variantClass: 'danger',
+      //   });
 
-        const toast3c = document.getElementById('toast3c');
-        toast3c.showToast({
-          toastTitle: 'Title Text',
-          content: 'This is a default toast example!',
-          additionalHdrContent: '43 seconds ago',
-          duration: 5000,
-          svgIcon: 'exclamation-triangle-outline',
-          persistent: true,
-          variantClass: 'warning',
-        });
+      //   const toast3c = document.getElementById('toast3c');
+      //   toast3c.showToast({
+      //     toastTitle: 'Title Text',
+      //     content: 'This is a default toast example!',
+      //     additionalHdrContent: '43 seconds ago',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-triangle-outline',
+      //     persistent: true,
+      //     variantClass: 'warning',
+      //   });
 
-        const toast3d = document.getElementById('toast3d');
-        toast3d.showToast({
-          toastTitle: 'Title Text',
-          content: 'This is a default toast example!',
-          additionalHdrContent: '43 seconds ago',
-          duration: 5000,
-          svgIcon: 'exclamation-triangle-outline',
-          persistent: true,
-          variantClass: 'success',
-        });
+      //   const toast3d = document.getElementById('toast3d');
+      //   toast3d.showToast({
+      //     toastTitle: 'Title Text',
+      //     content: 'This is a default toast example!',
+      //     additionalHdrContent: '43 seconds ago',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-triangle-outline',
+      //     persistent: true,
+      //     variantClass: 'success',
+      //   });
 
-        const toast4 = document.getElementById('toast4');
-        // If you enable innerHTML (see patch below), you can pass markup strings:
-        toast4.showToast({
-          toastTitle: 'Plumage Toast Max',
-          contentHtml: '<div><div>This is data</div><div>This is data</div></div>',
-          duration: 7000,
-          svgIcon: 'exclamation-circle-fill',
-          persistent: true,
-          iconPlumageStyle: true,
-          variantClass: 'danger',
-        });
-      });
+      //   const toast4 = document.getElementById('toast4');
+      //   // If you enable innerHTML (see patch below), you can pass markup strings:
+      //   toast4.showToast({
+      //     toastTitle: 'Plumage Toast Max',
+      //     contentHtml: '<div><div>This is data</div><div>This is data</div></div>',
+      //     duration: 7000,
+      //     svgIcon: 'exclamation-circle-fill',
+      //     persistent: true,
+      //     iconPlumageStyle: true,
+      //     variantClass: 'danger',
+      //   });
+      // });
 
-      window.showNotification1a = function () {
-        const t = document.getElementById('toast1a');
-        t.showToast({
-          content: 'This is a toast message!',
-          variantClass: 'primary',
-          duration: 5000,
-          svgIcon: 'exclamation-triangle-outline',
-          persistent: false,
-          noHoverPause: true,
-        });
-      };
+      // window.showNotification1a = function () {
+      //   const t = document.getElementById('toast1a');
+      //   t.showToast({
+      //     content: 'This is a toast message!',
+      //     variantClass: 'primary',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-triangle-outline',
+      //     persistent: false,
+      //     noHoverPause: true,
+      //   });
+      // };
 
-      window.showCustomNotification1b = function () {
-        const t = document.getElementById('toast1a');
-        t.showToast({
-          content: 'This is a custom toast with an icon!',
-          variantClass: 'light',
-          duration: 7000,
-          svgIcon: 'info-fill',
-          persistent: false,
-        });
-      };
+      // window.showCustomNotification1b = function () {
+      //   const t = document.getElementById('toast1a');
+      //   t.showToast({
+      //     content: 'This is a custom toast with an icon!',
+      //     variantClass: 'light',
+      //     duration: 7000,
+      //     svgIcon: 'info-fill',
+      //     persistent: false,
+      //   });
+      // };
 
-      window.showNotification1c = function () {
-        const t = document.getElementById('toast1c');
-        t.showToast({
-          toastTitle: 'Title Text',
-          content: 'This is a toast message!',
-          additionalHdrContent: '43 seconds ago',
-          variantClass: 'primary',
-          duration: 5000,
-          svgIcon: 'exclamation-triangle-outline',
-          persistent: false,
-        });
-      };
+      // window.showNotification1c = function () {
+      //   const t = document.getElementById('toast1c');
+      //   t.showToast({
+      //     toastTitle: 'Title Text',
+      //     content: 'This is a toast message!',
+      //     additionalHdrContent: '43 seconds ago',
+      //     variantClass: 'primary',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-triangle-outline',
+      //     persistent: false,
+      //   });
+      // };
 
-      window.showCustomNotification1d = function () {
-        const t = document.getElementById('toast1c');
-        t.showToast({
-          toastTitle: 'Title Text',
-          contentHtml: '<div><div>This is data</div><div>This is data</div></div>', // ← trusted HTML
-          additionalHdrContent: '43 seconds ago',
-          variantClass: 'danger',
-          duration: 5000,
-          svgIcon: 'exclamation-triangle-outline',
-          persistent: false,
-        });
-      };
+      // window.showCustomNotification1d = function () {
+      //   const t = document.getElementById('toast1c');
+      //   t.showToast({
+      //     toastTitle: 'Title Text',
+      //     contentHtml: '<div><div>This is data</div><div>This is data</div></div>', // ← trusted HTML
+      //     additionalHdrContent: '43 seconds ago',
+      //     variantClass: 'danger',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-triangle-outline',
+      //     persistent: false,
+      //   });
+      // };
 
-      window.showNotification2a = function () {
-        const t = document.getElementById('toast2a');
-        t.showToast({
-          toastTitle: 'Title Text',
-          content: 'This is a Plumage Styled toast message!',
-          duration: 5000,
-          svgIcon: 'exclamation-circle-fill',
-          persistent: false,
-          noCloseButton: false,
-          iconPlumageStyle: true,
-          variantClass: 'danger',
-        });
-      };
+      // window.showNotification2a = function () {
+      //   const t = document.getElementById('toast2a');
+      //   t.showToast({
+      //     toastTitle: 'Title Text',
+      //     content: 'This is a Plumage Styled toast message!',
+      //     duration: 5000,
+      //     svgIcon: 'exclamation-circle-fill',
+      //     persistent: false,
+      //     noCloseButton: false,
+      //     iconPlumageStyle: true,
+      //     variantClass: 'danger',
+      //   });
+      // };
 
-      window.showNotification2b = function () {
-        const t = document.getElementById('toast2b');
-        t.showToast({
-          toastTitle: "Plumage Toast Max",
-          contentHtml: `<div slot="custom-content">
-            <div>This is data</div>
-            <div>This is data</div>
-          </div>`,
-          duration: 7000,
-          svgIcon: 'exclamation-circle-fill',
-          persistent: false,
-          noCloseButton: false,
-          iconPlumageStyle: true,
-          variantClass: 'danger',
-        });
-      };
+      // window.showNotification2b = function () {
+      //   const t = document.getElementById('toast2b');
+      //   t.showToast({
+      //     toastTitle: "Plumage Toast Max",
+      //     contentHtml: `<div slot="custom-content">
+      //       <div>This is data</div>
+      //       <div>This is data</div>
+      //     </div>`,
+      //     duration: 7000,
+      //     svgIcon: 'exclamation-circle-fill',
+      //     persistent: false,
+      //     noCloseButton: false,
+      //     iconPlumageStyle: true,
+      //     variantClass: 'danger',
+      //   });
+      // };
 
-      // Simulate real-time notifications
-      (function simulateRealTimeNotifications() {
-        const types = ['error', 'update', 'news'];
-        const messages = {
-          error: 'An error toast example!',
-          update: 'System update toast example!',
-          news: 'Breaking news alert/toast example !',
-        };
-        const variants = { error: 'danger', update: 'info', news: 'primary' };
-        const icons = {
-          error: 'exclamation-triangle-fill',
-          update: 'info-fill',
-          news: 'check-circle-fill',
-        };
+      // // Simulate real-time notifications
+      // (function simulateRealTimeNotifications() {
+      //   const types = ['error', 'update', 'news'];
+      //   const messages = {
+      //     error: 'An error toast example!',
+      //     update: 'System update toast example!',
+      //     news: 'Breaking news alert/toast example !',
+      //   };
+      //   const variants = { error: 'danger', update: 'info', news: 'primary' };
+      //   const icons = {
+      //     error: 'exclamation-triangle-fill',
+      //     update: 'info-fill',
+      //     news: 'check-circle-fill',
+      //   };
 
-        setInterval(() => {
-          const type = types[Math.floor(Math.random() * types.length)];
-          const t = document.getElementById('toast1a');
-          t.showToast({
-            toastTitle: type[0].toUpperCase() + type.slice(1),
-            content: messages[type],
-            variantClass: variants[type],
-            duration: 7000,
-            svgIcon: icons[type],
-            persistent: false,
-          });
-        }, 10000);
-      })();
+      //   setInterval(() => {
+      //     const type = types[Math.floor(Math.random() * types.length)];
+      //     const t = document.getElementById('toast1a');
+      //     t.showToast({
+      //       toastTitle: type[0].toUpperCase() + type.slice(1),
+      //       content: messages[type],
+      //       variantClass: variants[type],
+      //       duration: 7000,
+      //       svgIcon: icons[type],
+      //       persistent: false,
+      //     });
+      //   }, 10000);
+      // })();
 
-      window.simulateStackedNotifications = function () {
-        const t = document.getElementById('toast1c');
-        const notifications = [
-          { toastTitle: 'Title Text 1', content: 'Stacked Notification 1', variantClass: 'info', additionalHdrContent: '43 seconds ago' },
-          { toastTitle: 'Title Text 2', content: 'Stacked Notification 2', variantClass: 'danger' },
-          { toastTitle: 'Title Text 3', content: 'Stacked Notification 3', variantClass: 'success' },
-        ];
+      // window.simulateStackedNotifications = function () {
+      //   const t = document.getElementById('toast1c');
+      //   const notifications = [
+      //     { toastTitle: 'Title Text 1', content: 'Stacked Notification 1', variantClass: 'info', additionalHdrContent: '43 seconds ago' },
+      //     { toastTitle: 'Title Text 2', content: 'Stacked Notification 2', variantClass: 'danger' },
+      //     { toastTitle: 'Title Text 3', content: 'Stacked Notification 3', variantClass: 'success' },
+      //   ];
 
-        let delay = 0;
-        notifications.forEach(n => {
-          setTimeout(() => t.showToast({ ...n, duration: 10000, svgIcon: 'exclamation-triangle-outline', persistent: false }), delay);
-          delay += 2000;
-        });
-      };
+      //   let delay = 0;
+      //   notifications.forEach(n => {
+      //     setTimeout(() => t.showToast({ ...n, duration: 10000, svgIcon: 'exclamation-triangle-outline', persistent: false }), delay);
+      //     delay += 2000;
+      //   });
+      // };
+
+      // ---------- End Toast notifications demo wiring ---------- //
+
+      // ------------- Tooltip demo wiring ------------- //
     </script>
   </body>
 </html>
