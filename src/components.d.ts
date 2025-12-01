@@ -569,6 +569,75 @@ export namespace Components {
         "useByPagePagination": boolean;
         "useMinimizePagination": boolean;
     }
+    interface PlumageTimepickerComponent {
+        /**
+          * Accessible label for the input
+         */
+        "ariaLabel": string;
+        /**
+          * ID of the external label element (for aria-labelledby)
+         */
+        "ariaLabelledby": string;
+        /**
+          * (Used in Lit markup for underline states)
+         */
+        "disabled"?: boolean;
+        /**
+          * Force-validate and sync input -> dropdown
+         */
+        "forceTimeUpdate": () => Promise<void>;
+        "forceTimeUpdatePublic": () => Promise<void>;
+        /**
+          * Hide seconds UI / value
+         */
+        "hideSeconds": boolean;
+        /**
+          * Hide the toggle/launch button for the timepicker popover
+         */
+        "hideTimepickerBtn": boolean;
+        /**
+          * (Renamed from reserved `id`) ID passed to the internal input
+         */
+        "inputId": string;
+        /**
+          * Name attribute for the inner input
+         */
+        "inputName": string;
+        /**
+          * Width (px) for the input element
+         */
+        "inputWidth"?: number | string;
+        /**
+          * Use 24-hour format by default (mutable: toggled by the component)
+         */
+        "isTwentyFourHourFormat": boolean;
+        /**
+          * Whether the current value is considered valid (mutable: set by validation)
+         */
+        "isValid": boolean;
+        "labelText": string;
+        "showLabel"?: boolean;
+        /**
+          * Optional size variant: '', 'sm', 'lg'
+         */
+        "size": string;
+        /**
+          * Force show only 12-hour controls/options
+         */
+        "twelveHourOnly": boolean;
+        /**
+          * Force show only 24-hour controls/options
+         */
+        "twentyFourHourOnly": boolean;
+        /**
+          * (Used in Lit markup for underline states)
+         */
+        "validation"?: boolean;
+        /**
+          * Validation message to show (mutable: set/cleared by the component)
+         */
+        "validationMessage": string;
+    }
     interface PopoverComponent {
         "arrowOff": boolean;
         "content": string;
@@ -839,6 +908,126 @@ export namespace Components {
         "useByPagePagination": boolean;
         "useMinimizePagination": boolean;
         "usePagination": boolean;
+    }
+    interface TimepickerComponent {
+        /**
+          * Accessible label for the input
+         */
+        "ariaLabel": string;
+        /**
+          * ID of the external label element (for aria-labelledby)
+         */
+        "ariaLabelledby": string;
+        /**
+          * Force-validate and sync input -> dropdown
+         */
+        "forceTimeUpdate": () => Promise<void>;
+        /**
+          * Hide seconds UI / value
+         */
+        "hideSeconds": boolean;
+        /**
+          * Hide the toggle/launch button for the timepicker popover
+         */
+        "hideTimepickerBtn": boolean;
+        /**
+          * (Renamed from reserved `id`) ID passed to the internal input
+         */
+        "inputId": string;
+        /**
+          * Name attribute for the inner input
+         */
+        "inputName": string;
+        /**
+          * Width (px) for the input element
+         */
+        "inputWidth"?: number | string;
+        /**
+          * Use 24-hour format by default (mutable: toggled by the component)
+         */
+        "isTwentyFourHourFormat": boolean;
+        /**
+          * Whether the current value is considered valid (mutable: set by validation)
+         */
+        "isValid": boolean;
+        "labelText": string;
+        "showLabel"?: boolean;
+        /**
+          * Optional size variant: '', 'sm', 'lg'
+         */
+        "size": string;
+        /**
+          * Force show only 12-hour controls/options
+         */
+        "twelveHourOnly": boolean;
+        /**
+          * Force show only 24-hour controls/options
+         */
+        "twentyFourHourOnly": boolean;
+        /**
+          * Validation message to show (mutable: set/cleared by the component)
+         */
+        "validationMessage": string;
+    }
+    interface TimepickerManager {
+        /**
+          * Accessible label for the input
+         */
+        "ariaLabel": string;
+        /**
+          * ID of the external label element (for aria-labelledby)
+         */
+        "ariaLabelledby": string;
+        /**
+          * Hide seconds UI / value
+         */
+        "hideSeconds": boolean;
+        /**
+          * Hide the toggle/launch button for the timepicker popover
+         */
+        "hideTimepickerBtn": boolean;
+        /**
+          * ID to pass to inner input(s)
+         */
+        "inputId": string;
+        /**
+          * Name attribute for the inner input
+         */
+        "inputName": string;
+        /**
+          * Width (px) for the input element
+         */
+        "inputWidth": number;
+        /**
+          * Use 24-hour format by default
+         */
+        "isTwentyFourHourFormat": boolean;
+        /**
+          * Whether the current value is considered valid
+         */
+        "isValid": boolean;
+        "labelText": string;
+        "showLabel"?: boolean;
+        /**
+          * Optional size variant (e.g., 'sm', 'lg')
+         */
+        "size": string;
+        /**
+          * Force show only 12-hour controls/options
+         */
+        "twelveHourOnly": boolean;
+        /**
+          * Force show only 24-hour controls/options
+         */
+        "twentyFourHourOnly": boolean;
+        /**
+          * Choose which implementation to render: false = <timepicker-component>, true = <plumage-timepicker-component>
+         */
+        "usePlTimepicker": boolean;
+        /**
+          * Validation message to show (if any)
+         */
+        "validationMessage": string;
     }
     interface ToastsComponent {
         /**
@@ -1424,6 +1613,12 @@ declare global {
         prototype: HTMLPaginationComponentElement;
         new (): HTMLPaginationComponentElement;
     };
+    interface HTMLPlumageTimepickerComponentElement extends Components.PlumageTimepickerComponent, HTMLStencilElement {
+    }
+    var HTMLPlumageTimepickerComponentElement: {
+        prototype: HTMLPlumageTimepickerComponentElement;
+        new (): HTMLPlumageTimepickerComponentElement;
+    };
     interface HTMLPopoverComponentElement extends Components.PopoverComponent, HTMLStencilElement {
     }
     var HTMLPopoverComponentElement: {
@@ -1519,6 +1714,18 @@ declare global {
         prototype: HTMLTableComponentElement;
         new (): HTMLTableComponentElement;
     };
+    interface HTMLTimepickerComponentElement extends Components.TimepickerComponent, HTMLStencilElement {
+    }
+    var HTMLTimepickerComponentElement: {
+        prototype: HTMLTimepickerComponentElement;
+        new (): HTMLTimepickerComponentElement;
+    };
+    interface HTMLTimepickerManagerElement extends Components.TimepickerManager, HTMLStencilElement {
+    }
+    var HTMLTimepickerManagerElement: {
+        prototype: HTMLTimepickerManagerElement;
+        new (): HTMLTimepickerManagerElement;
+    };
     interface HTMLToastsComponentElement extends Components.ToastsComponent, HTMLStencilElement {
     }
     var HTMLToastsComponentElement: {
@@ -1573,6 +1780,7 @@ declare global {
         "modal-component": HTMLModalComponentElement;
         "multi-range-slider-component": HTMLMultiRangeSliderComponentElement;
         "pagination-component": HTMLPaginationComponentElement;
+        "plumage-timepicker-component": HTMLPlumageTimepickerComponentElement;
         "popover-component": HTMLPopoverComponentElement;
         "progress-display-component": HTMLProgressDisplayComponentElement;
         "radio-input-component": HTMLRadioInputComponentElement;
@@ -1581,6 +1789,8 @@ declare global {
         "standard-pagination-component": HTMLStandardPaginationComponentElement;
         "svg-component": HTMLSvgComponentElement;
         "table-component": HTMLTableComponentElement;
+        "timepicker-component": HTMLTimepickerComponentElement;
+        "timepicker-manager": HTMLTimepickerManagerElement;
         "toasts-component": HTMLToastsComponentElement;
         "toggle-switch-component": HTMLToggleSwitchComponentElement;
         "tooltip-component": HTMLTooltipComponentElement;
@@ -2158,6 +2368,70 @@ declare namespace LocalJSX {
         "useByPagePagination"?: boolean;
         "useMinimizePagination"?: boolean;
     }
+    interface PlumageTimepickerComponent {
+        /**
+          * Accessible label for the input
+         */
+        "ariaLabel"?: string;
+        /**
+          * ID of the external label element (for aria-labelledby)
+         */
+        "ariaLabelledby"?: string;
+        /**
+          * (Used in Lit markup for underline states)
+         */
+        "disabled"?: boolean;
+        /**
+          * Hide seconds UI / value
+         */
+        "hideSeconds"?: boolean;
+        /**
+          * Hide the toggle/launch button for the timepicker popover
+         */
+        "hideTimepickerBtn"?: boolean;
+        /**
+          * (Renamed from reserved `id`) ID passed to the internal input
+         */
+        "inputId"?: string;
+        /**
+          * Name attribute for the inner input
+         */
+        "inputName"?: string;
+        /**
+          * Width (px) for the input element
+         */
+        "inputWidth"?: number | string;
+        /**
+          * Use 24-hour format by default (mutable: toggled by the component)
+         */
+        "isTwentyFourHourFormat"?: boolean;
+        /**
+          * Whether the current value is considered valid (mutable: set by validation)
+         */
+        "isValid"?: boolean;
+        "labelText"?: string;
+        "showLabel"?: boolean;
+        /**
+          * Optional size variant: '', 'sm', 'lg'
+         */
+        "size"?: string;
+        /**
+          * Force show only 12-hour controls/options
+         */
+        "twelveHourOnly"?: boolean;
+        /**
+          * Force show only 24-hour controls/options
+         */
+        "twentyFourHourOnly"?: boolean;
+        /**
+          * (Used in Lit markup for underline states)
+         */
+        "validation"?: boolean;
+        /**
+          * Validation message to show (mutable: set/cleared by the component)
+         */
+        "validationMessage"?: string;
+    }
     interface PopoverComponent {
         "arrowOff"?: boolean;
         "content"?: string;
@@ -2435,6 +2709,122 @@ declare namespace LocalJSX {
         "useMinimizePagination"?: boolean;
         "usePagination"?: boolean;
     }
+    interface TimepickerComponent {
+        /**
+          * Accessible label for the input
+         */
+        "ariaLabel"?: string;
+        /**
+          * ID of the external label element (for aria-labelledby)
+         */
+        "ariaLabelledby"?: string;
+        /**
+          * Hide seconds UI / value
+         */
+        "hideSeconds"?: boolean;
+        /**
+          * Hide the toggle/launch button for the timepicker popover
+         */
+        "hideTimepickerBtn"?: boolean;
+        /**
+          * (Renamed from reserved `id`) ID passed to the internal input
+         */
+        "inputId"?: string;
+        /**
+          * Name attribute for the inner input
+         */
+        "inputName"?: string;
+        /**
+          * Width (px) for the input element
+         */
+        "inputWidth"?: number | string;
+        /**
+          * Use 24-hour format by default (mutable: toggled by the component)
+         */
+        "isTwentyFourHourFormat"?: boolean;
+        /**
+          * Whether the current value is considered valid (mutable: set by validation)
+         */
+        "isValid"?: boolean;
+        "labelText"?: string;
+        "showLabel"?: boolean;
+        /**
+          * Optional size variant: '', 'sm', 'lg'
+         */
+        "size"?: string;
+        /**
+          * Force show only 12-hour controls/options
+         */
+        "twelveHourOnly"?: boolean;
+        /**
+          * Force show only 24-hour controls/options
+         */
+        "twentyFourHourOnly"?: boolean;
+        /**
+          * Validation message to show (mutable: set/cleared by the component)
+         */
+        "validationMessage"?: string;
+    }
+    interface TimepickerManager {
+        /**
+          * Accessible label for the input
+         */
+        "ariaLabel"?: string;
+        /**
+          * ID of the external label element (for aria-labelledby)
+         */
+        "ariaLabelledby"?: string;
+        /**
+          * Hide seconds UI / value
+         */
+        "hideSeconds"?: boolean;
+        /**
+          * Hide the toggle/launch button for the timepicker popover
+         */
+        "hideTimepickerBtn"?: boolean;
+        /**
+          * ID to pass to inner input(s)
+         */
+        "inputId"?: string;
+        /**
+          * Name attribute for the inner input
+         */
+        "inputName"?: string;
+        /**
+          * Width (px) for the input element
+         */
+        "inputWidth"?: number;
+        /**
+          * Use 24-hour format by default
+         */
+        "isTwentyFourHourFormat"?: boolean;
+        /**
+          * Whether the current value is considered valid
+         */
+        "isValid"?: boolean;
+        "labelText"?: string;
+        "showLabel"?: boolean;
+        /**
+          * Optional size variant (e.g., 'sm', 'lg')
+         */
+        "size"?: string;
+        /**
+          * Force show only 12-hour controls/options
+         */
+        "twelveHourOnly"?: boolean;
+        /**
+          * Force show only 24-hour controls/options
+         */
+        "twentyFourHourOnly"?: boolean;
+        /**
+          * Choose which implementation to render: false = <timepicker-component>, true = <plumage-timepicker-component>
+         */
+        "usePlTimepicker"?: boolean;
+        /**
+          * Validation message to show (if any)
+         */
+        "validationMessage"?: string;
+    }
     interface ToastsComponent {
         /**
           * Optional header content (string/JSX) appearing next to the title (e.g., timestamp).
@@ -2607,6 +2997,7 @@ declare namespace LocalJSX {
         "modal-component": ModalComponent;
         "multi-range-slider-component": MultiRangeSliderComponent;
         "pagination-component": PaginationComponent;
+        "plumage-timepicker-component": PlumageTimepickerComponent;
         "popover-component": PopoverComponent;
         "progress-display-component": ProgressDisplayComponent;
         "radio-input-component": RadioInputComponent;
@@ -2615,6 +3006,8 @@ declare namespace LocalJSX {
         "standard-pagination-component": StandardPaginationComponent;
         "svg-component": SvgComponent;
         "table-component": TableComponent;
+        "timepicker-component": TimepickerComponent;
+        "timepicker-manager": TimepickerManager;
         "toasts-component": ToastsComponent;
         "toggle-switch-component": ToggleSwitchComponent;
         "tooltip-component": TooltipComponent;
@@ -2648,6 +3041,7 @@ declare module "@stencil/core" {
             "modal-component": LocalJSX.ModalComponent & JSXBase.HTMLAttributes<HTMLModalComponentElement>;
             "multi-range-slider-component": LocalJSX.MultiRangeSliderComponent & JSXBase.HTMLAttributes<HTMLMultiRangeSliderComponentElement>;
             "pagination-component": LocalJSX.PaginationComponent & JSXBase.HTMLAttributes<HTMLPaginationComponentElement>;
+            "plumage-timepicker-component": LocalJSX.PlumageTimepickerComponent & JSXBase.HTMLAttributes<HTMLPlumageTimepickerComponentElement>;
             "popover-component": LocalJSX.PopoverComponent & JSXBase.HTMLAttributes<HTMLPopoverComponentElement>;
             "progress-display-component": LocalJSX.ProgressDisplayComponent & JSXBase.HTMLAttributes<HTMLProgressDisplayComponentElement>;
             "radio-input-component": LocalJSX.RadioInputComponent & JSXBase.HTMLAttributes<HTMLRadioInputComponentElement>;
@@ -2656,6 +3050,8 @@ declare module "@stencil/core" {
             "standard-pagination-component": LocalJSX.StandardPaginationComponent & JSXBase.HTMLAttributes<HTMLStandardPaginationComponentElement>;
             "svg-component": LocalJSX.SvgComponent & JSXBase.HTMLAttributes<HTMLSvgComponentElement>;
             "table-component": LocalJSX.TableComponent & JSXBase.HTMLAttributes<HTMLTableComponentElement>;
+            "timepicker-component": LocalJSX.TimepickerComponent & JSXBase.HTMLAttributes<HTMLTimepickerComponentElement>;
+            "timepicker-manager": LocalJSX.TimepickerManager & JSXBase.HTMLAttributes<HTMLTimepickerManagerElement>;
             "toasts-component": LocalJSX.ToastsComponent & JSXBase.HTMLAttributes<HTMLToastsComponentElement>;
             "toggle-switch-component": LocalJSX.ToggleSwitchComponent & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;
             "tooltip-component": LocalJSX.TooltipComponent & JSXBase.HTMLAttributes<HTMLTooltipComponentElement>;

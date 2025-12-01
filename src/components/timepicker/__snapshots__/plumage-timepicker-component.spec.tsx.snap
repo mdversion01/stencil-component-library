@@ -1,0 +1,225 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`plumage-timepicker-component hides the label (sr-only) when "show-label" is omitted 1`] = `
+<plumage-timepicker-component input-id="a1" label-text="Hidden label test">
+  <div class="plumage">
+    <div class="time-picker-container">
+      <div class="mr-2 time-picker">
+        <label class="sr-only" htmlfor="a1" id="time-label">
+          Hidden label test
+        </label>
+        <div class="timepicker-group">
+          <div class="dd-position">
+            <div class="input-group">
+              <input aria-controls="time-dropdown" aria-describedby="validation-message" aria-invalid="false" aria-label="Time Picker" aria-labelledby="time-label" class="form-control time-input" id="a1" maxlength="8" name="time" placeholder="Enter Time" role="textbox" type="text" value="00:00:00">
+              <div class="input-group-append">
+                <button aria-label="Clear Time" class="clear-button" role="button">
+                  <i class="fa-times-circle fas"></i>
+                </button>
+                <button aria-label="Open Timepicker" class="btn input-group-text time-icon time-icon-btn" role="button" tabindex="0">
+                  <i class="fa fa-clock"></i>
+                </button>
+              </div>
+            </div>
+            <div class="b-underline" role="presentation">
+              <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
+            </div>
+            <div aria-labelledby="time-label" class="hidden time-dropdown" role="listbox" tabindex="0">
+              <div class="time-spinner-wrapper">
+                <div class="time-spinner">
+                  <button aria-label="Increment Hour" class="arrow up" data-type="hour" role="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-activedescendant="active-hour" aria-selected="false" class="hour-display" id="active-hour" role="option" tabindex="0">
+                    00
+                  </span>
+                  <button aria-label="Decrement Hour" class="arrow down" data-type="hour" role="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+                <div class="time-spinner-colon">
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                </div>
+                <div class="time-spinner">
+                  <button aria-label="Increment Minute" class="arrow up" data-type="minute" role="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-activedescendant="active-minute" aria-selected="false" class="minute-display" id="active-minute" role="option" tabindex="0">
+                    00
+                  </span>
+                  <button aria-label="Decrement Minute" class="arrow down" data-type="minute" role="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+                <div class="time-spinner-colon">
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                </div>
+                <div class="time-spinner">
+                  <button aria-label="Increment Second" class="arrow up" data-type="second" role="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-activedescendant="active-second" aria-selected="false" class="second-display" id="active-second" role="option" tabindex="0">
+                    00
+                  </span>
+                  <button aria-label="Decrement Second" class="arrow down" data-type="second" role="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+                <div aria-hidden="true" class="am-pm-spinner hidden time-spinner">
+                  <button aria-label="Increment AM/PM" class="arrow up" data-type="ampm" role="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-activedescendant="active-ampm" aria-selected="false" class="ampm-display" id="active-ampm" role="option" tabindex="0"></span>
+                  <button aria-label="Decrement AM/PM" class="arrow down" data-type="ampm" role="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="time-spinner-close">
+                <button aria-label="Close" class="btn btn-outline-primary btn-sm btntext close-button">
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+          <button aria-label="Switch to 12 Hour Format" class="btn btn--outlined toggle-format-btn" role="button">
+            <svg class="format-btn" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>
+                Switch to 12 Hour Format
+              </title>
+              <path d="M13 2V4C17 4.5 20 7.8 20 11.9C20 15.1 18.1 17.9 15.3 19.2L13 17V22H18L16.8 20.8C19.9 19.1 22 15.8 22 12C22 6.8 18 2.5 13 2M11 2C9.1 2.2 7.2 3 5.7 4.2L7.1 5.6C8.2 4.8 9.6 4.2 11 4V2M4.2 5.7C3 7.2 2.2 9.1 2 11H4C4.2 9.6 4.8 8.2 5.6 7.1L4.2 5.7M2 13C2.2 14.9 3 16.8 4.2 18.3L5.6 16.9C4.8 15.8 4.2 14.4 4 13H2M7.1 18.4L5.7 19.8C7.2 21 9.1 21.8 11 22V20C9.6 19.8 8.2 19.2 7.1 18.4M12 8V10H15V11H14C12.9 11 12 11.9 12 13V16H17V14H14V13H15C16.1 13 17 12.1 17 11V10C17 8.9 16.1 8 15 8H12M7 8V10H8V16H10V8H7Z"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="hidden validation-message" id="validation-message" role="alert"></div>
+        <div class="hidden warning-message" id="warning-message" role="alert">
+          <i class="fa fa-exclamation-triangle"></i>
+          Time values cannot exceed the limits.
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-timepicker-component>
+`;
+
+exports[`plumage-timepicker-component shows the label when "show-label" is present and respects label text/id 1`] = `
+<plumage-timepicker-component input-id="my-time" label-text="Pick a time" show-label="">
+  <div class="plumage">
+    <div class="time-picker-container">
+      <div class="mr-2 time-picker">
+        <label htmlfor="my-time" id="time-label">
+          Pick a time
+        </label>
+        <div class="timepicker-group">
+          <div class="dd-position">
+            <div class="input-group">
+              <input aria-controls="time-dropdown" aria-describedby="validation-message" aria-invalid="false" aria-label="Time Picker" aria-labelledby="time-label" class="form-control time-input" id="my-time" maxlength="8" name="time" placeholder="Enter Time" role="textbox" type="text" value="00:00:00">
+              <div class="input-group-append">
+                <button aria-label="Clear Time" class="clear-button" role="button">
+                  <i class="fa-times-circle fas"></i>
+                </button>
+                <button aria-label="Open Timepicker" class="btn input-group-text time-icon time-icon-btn" role="button" tabindex="0">
+                  <i class="fa fa-clock"></i>
+                </button>
+              </div>
+            </div>
+            <div class="b-underline" role="presentation">
+              <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
+            </div>
+            <div aria-labelledby="time-label" class="hidden time-dropdown" role="listbox" tabindex="0">
+              <div class="time-spinner-wrapper">
+                <div class="time-spinner">
+                  <button aria-label="Increment Hour" class="arrow up" data-type="hour" role="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-activedescendant="active-hour" aria-selected="false" class="hour-display" id="active-hour" role="option" tabindex="0">
+                    00
+                  </span>
+                  <button aria-label="Decrement Hour" class="arrow down" data-type="hour" role="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+                <div class="time-spinner-colon">
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                </div>
+                <div class="time-spinner">
+                  <button aria-label="Increment Minute" class="arrow up" data-type="minute" role="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-activedescendant="active-minute" aria-selected="false" class="minute-display" id="active-minute" role="option" tabindex="0">
+                    00
+                  </span>
+                  <button aria-label="Decrement Minute" class="arrow down" data-type="minute" role="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+                <div class="time-spinner-colon">
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                </div>
+                <div class="time-spinner">
+                  <button aria-label="Increment Second" class="arrow up" data-type="second" role="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-activedescendant="active-second" aria-selected="false" class="second-display" id="active-second" role="option" tabindex="0">
+                    00
+                  </span>
+                  <button aria-label="Decrement Second" class="arrow down" data-type="second" role="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+                <div aria-hidden="true" class="am-pm-spinner hidden time-spinner">
+                  <button aria-label="Increment AM/PM" class="arrow up" data-type="ampm" role="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-activedescendant="active-ampm" aria-selected="false" class="ampm-display" id="active-ampm" role="option" tabindex="0"></span>
+                  <button aria-label="Decrement AM/PM" class="arrow down" data-type="ampm" role="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="time-spinner-close">
+                <button aria-label="Close" class="btn btn-outline-primary btn-sm btntext close-button">
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+          <button aria-label="Switch to 12 Hour Format" class="btn btn--outlined toggle-format-btn" role="button">
+            <svg class="format-btn" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>
+                Switch to 12 Hour Format
+              </title>
+              <path d="M13 2V4C17 4.5 20 7.8 20 11.9C20 15.1 18.1 17.9 15.3 19.2L13 17V22H18L16.8 20.8C19.9 19.1 22 15.8 22 12C22 6.8 18 2.5 13 2M11 2C9.1 2.2 7.2 3 5.7 4.2L7.1 5.6C8.2 4.8 9.6 4.2 11 4V2M4.2 5.7C3 7.2 2.2 9.1 2 11H4C4.2 9.6 4.8 8.2 5.6 7.1L4.2 5.7M2 13C2.2 14.9 3 16.8 4.2 18.3L5.6 16.9C4.8 15.8 4.2 14.4 4 13H2M7.1 18.4L5.7 19.8C7.2 21 9.1 21.8 11 22V20C9.6 19.8 8.2 19.2 7.1 18.4M12 8V10H15V11H14C12.9 11 12 11.9 12 13V16H17V14H14V13H15C16.1 13 17 12.1 17 11V10C17 8.9 16.1 8 15 8H12M7 8V10H8V16H10V8H7Z"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="hidden validation-message" id="validation-message" role="alert"></div>
+        <div class="hidden warning-message" id="warning-message" role="alert">
+          <i class="fa fa-exclamation-triangle"></i>
+          Time values cannot exceed the limits.
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-timepicker-component>
+`;

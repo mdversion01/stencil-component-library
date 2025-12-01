@@ -721,15 +721,17 @@
         </form-component>
       </div> -->
 
-      <!-- <div class="cwrapper">
+      <div class="cwrapper">
         <form-component>
-          <input-group-component slot="formField" label="Amount" input-id="amount" append append-icon="fa-solid fa-dollar-sign" slot="formField"> </input-group-component>
+          <input-group-component slot="formField" label="Amount" size="sm" input-id="amount" validation other-content append prepend prepend-icon="fa-solid fa-dollar-sign">
+        <button-component slot="append" size="sm" type="button" variant="secondary">Go</button-component>
+        </input-group-component>
 
-          <input-group-component slot="formField" size="sm" label="Search" input-id="q" prepend append prepend-icon="fa-solid fa-magnifying-glass" other-content slot="formField">
-            <button-component slot="append" type="button" size="sm" variant="secondary">Go</button-component>
+          <input-group-component slot="formField" label="Search" input-id="q"  validation  append  other-content>
+            <button-component slot="append" type="button" variant="secondary">Go</button-component>
           </input-group-component>
         </form-component>
-      </div> -->
+      </div>
 
       <!-- <div class="cwrapper"> -->
       <!-- =========================================================
@@ -1488,7 +1490,7 @@
         </section>
       </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <section class="display-box-demo">
           <div style="display: flex; justify-content: space-evenly; flex-wrap: wrap">
             <div style="margin: 0 10px 10px 0">
@@ -1596,6 +1598,33 @@
             site or project.
           </p>
         </section>
+      </div> -->
+
+      <div class="cwrapper">
+         <section class="display-box-demo">
+                <div class="timepicker-wrapper" style="width: 500px;">
+                  <timepicker-manager use-pl-timepicker size="lg" input-id="one" show-label label-text="Add Time"></timepicker-manager>
+                </div>
+              </section>
+
+               <section class="display-box-demo">
+  <!-- Force 24-hour ONLY (no toggle) -->
+  <div class="timepicker-wrapper" style="margin-bottom:20px;width:210px;">
+    <timepicker-manager size="sm"></timepicker-manager>
+  </div>
+
+  <!-- Force 12-hour ONLY (no toggle) -->
+  <div class="timepicker-wrapper" style="width:210px;">
+    <timepicker-manager size="lg" show-label></timepicker-manager>
+  </div>
+
+  <div class="timepicker-wrapper" style="width:210px;">
+    <timepicker-manager ></timepicker-manager>
+  </div>
+
+  <timepicker-component></timepicker-component>
+<plumage-timepicker-component size="sm"></plumage-timepicker-component>
+</section>
       </div>
     </app-wrapper>
 

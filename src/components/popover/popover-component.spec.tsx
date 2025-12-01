@@ -70,21 +70,20 @@ describe('popover-component', () => {
     expect(cmp.popoverTitle).toBe('Hello');
 
     // lightweight structural snapshot
-    expect(normalize(page.root!.outerHTML)).toMatchInlineSnapshot(`"<popover-component title="Hello"><button id="t" tabindex="0" aria-describedby="popover_TEST">Trigger</button></popover-component>"`);
+    expect(normalize(page.root!.outerHTML)).toMatchInlineSnapshot(
+      `"<popover-component title="Hello"><button id="t" tabindex="0" aria-describedby="popover_TEST">Trigger</button></popover-component>"`,
+    );
   });
 
   test('click trigger shows popover with header/body, positions it', async () => {
     const page = await newSpecPage({
       components: [PopoverComponent],
       template: () => (
-        <popover-component title="Header" content="Body text" variant="primary" plumage super>
+        <popover-component title="Header" content="Body text" variant="primary" plumage super placement="auto">
           <button id="t">T</button>
         </popover-component>
       ),
     });
-
-    (page.rootInstance as PopoverComponent).placement = 'auto';
-    await page.waitForChanges();
 
     const btn = page.root!.querySelector('#t') as HTMLButtonElement;
     btn.click();

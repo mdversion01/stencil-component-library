@@ -1,5 +1,5 @@
 // src/components/input-group/input-group-component.tsx
-import { Component, h, Prop, Element, State, Event, EventEmitter, Watch } from '@stencil/core';
+import { Component, h, Prop, Element, State, Event, EventEmitter, Watch, Fragment } from '@stencil/core';
 
 @Component({
   tag: 'input-group-component',
@@ -234,8 +234,8 @@ export class InputGroupComponent {
   }
 
   private inputClasses() {
-    const sizeClass = this.size === 'sm' ? 'basic-input-sm' : this.size === 'lg' ? 'basic-input-lg' : '';
-    return ['form-control', this.validation ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    // const sizeClass = this.size === 'sm' ? 'basic-input-sm' : this.size === 'lg' ? 'basic-input-lg' : '';
+    return ['form-control', this.validation ? 'is-invalid' : ''].filter(Boolean).join(' '); // , sizeClass
   }
 
   private groupSizeClass() {
@@ -265,12 +265,13 @@ export class InputGroupComponent {
       <div class={{ 'input-group': true, [this.groupSizeClass()]: !!this.groupSizeClass(), 'is-invalid': this.validation }}>
         {/* Prepend */}
         {this.hasPrepend ? (
-          <div class={{ 'input-group-prepend': true, 'is-invalid': this.validation }}>
+          // <div class={{ 'input-group-prepend': true, 'is-invalid': this.validation }}>
+          <Fragment>
             {(() => {
               const sideIcon = this.prependIcon ?? this.icon; // ← side-specific wins, then global, else slot
               if (sideIcon) {
                 return (
-                  <span class="input-group-text">
+                  <span class={`input-group-text ${this.validation ? 'is-invalid' : ''}`}>
                     <i class={sideIcon} />
                   </span>
                 );
@@ -278,12 +279,13 @@ export class InputGroupComponent {
               return this.otherContent ? (
                 <slot name="prepend" />
               ) : (
-                <span class="input-group-text" id={this.prependId || undefined}>
+                <span class={`input-group-text ${this.validation ? 'is-invalid' : ''}`} id={this.prependId || undefined}>
                   <slot name="prepend" />
                 </span>
               );
             })()}
-          </div>
+          </Fragment>
+          // </div>
         ) : null}
 
         {/* Input */}
@@ -305,12 +307,12 @@ export class InputGroupComponent {
 
         {/* Append */}
         {this.hasAppend ? (
-          <div class={{ 'input-group-append': true, 'is-invalid': this.validation }}>
+          <Fragment>
             {(() => {
               const sideIcon = this.appendIcon ?? this.icon; // ← side-specific wins, then global, else slot
               if (sideIcon) {
                 return (
-                  <span class="input-group-text">
+                  <span class={`input-group-text ${this.validation ? 'is-invalid' : ''}`}>
                     <i class={sideIcon} />
                   </span>
                 );
@@ -318,12 +320,12 @@ export class InputGroupComponent {
               return this.otherContent ? (
                 <slot name="append" />
               ) : (
-                <span class="input-group-text" id={this.appendId || undefined}>
+                <span class={`input-group-text ${this.validation ? 'is-invalid' : ''}`} id={this.appendId || undefined}>
                   <slot name="append" />
                 </span>
               );
             })()}
-          </div>
+          </Fragment>
         ) : null}
       </div>
     );
