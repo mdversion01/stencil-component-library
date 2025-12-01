@@ -1,15 +1,15 @@
-// src/components/input-field/input-field-component.tsx
+// src/components/plumage-input-field/plumage-input-field-component.tsx
 import { Component, h, Prop, Element, State, Watch, Event, EventEmitter } from '@stencil/core';
 
 @Component({
-  tag: 'input-field-component',
-  styleUrls: ['../layout-styles.scss', '../form-styles.scss', './input-field-styles.scss'],
+  tag: 'plumage-input-field-component',
+  styleUrls: ['../layout-styles.scss', '../form-styles.scss', './plumage-input-field-styles.scss'],
   shadow: false,
 })
-export class InputFieldComponent {
+export class PlumageInputFieldComponent {
   @Element() host!: HTMLElement;
 
-  // ----- Props (unchanged signatures; do NOT mutate these directly) -----
+  // ----- Public props -----
   @Prop() disabled: boolean = false;
   @Prop({ mutable: true }) formId: string = '';
   @Prop({ mutable: true }) formLayout: '' | 'horizontal' | 'inline' = '';
@@ -21,41 +21,42 @@ export class InputFieldComponent {
   @Prop() labelHidden: boolean = false;
   @Prop() required: boolean = false;
   @Prop() type: string = 'text';
-  @Prop() validation: boolean = false;         // external control
+  @Prop() validation: boolean = false;
   @Prop() validationMessage: string = '';
-  @Prop() value: string = '';                  // external value
+  @Prop() value: string = '';
   @Prop() placeholder?: string;
 
   /** Legacy numeric cols (fallback) */
   @Prop() labelCol: number = 2;
   @Prop() inputCol: number = 10;
 
-  /** NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4") */
+  /** NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") */
   @Prop() labelCols: string = '';
   @Prop() inputCols: string = '';
 
-  // ----- Internal state mirrors (OK to mutate) -----
-  @State() private valueState: string = '';
+  // ----- Internal state -----
   @State() private validationState: boolean = false;
-
-  // Internal
+  @State() private valueState: string = '';
   @State() _resolvedFormId: string = '';
   private inputEl?: HTMLInputElement;
 
-  // (Optional) let parents listen for value changes
+  // Let parents observe user edits (optional but handy)
   @Event() valueChange!: EventEmitter<string>;
 
-  // Keep state in sync when parent updates props
+  // ---------- watchers ----------
   @Watch('value')
-  onValuePropChange(newVal: string) {
-    this.valueState = newVal ?? '';
+  syncValue(v: string) {
+    this.valueState = v ?? '';
   }
+
   @Watch('validation')
-  onValidationPropChange(newVal: boolean) {
+  syncValidation(newVal: boolean) {
     this.validationState = !!newVal;
   }
 
+  // ---------- lifecycle ----------
   connectedCallback() {
+    // Inherit from nearest <form-component> once (if not already set)
     const formComponent = this.host.closest('form-component') as any;
     const fcFormId = formComponent?.formId;
     const fcLayout = formComponent?.formLayout;
@@ -69,9 +70,16 @@ export class InputFieldComponent {
       }
     }
 
-    // seed state from incoming props
+    // Seed internal mirrors from incoming props
     this.valueState = this.value ?? '';
     this.validationState = !!this.validation;
+
+    // Restore underline behavior: collapse on outside click
+    document.addEventListener('click', this.handleDocumentClick, true);
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener('click', this.handleDocumentClick, true);
   }
 
   componentDidLoad() {
@@ -90,17 +98,48 @@ export class InputFieldComponent {
     else this.inputEl.removeAttribute('form');
   }
 
+  // ---------- underline/focus interactions ----------
+  private handleInteraction = (event: Event) => {
+    // avoid bubbling to the document’s outside-click handler
+    event.stopPropagation();
+
+    const bFocusDiv = this.host.querySelector<HTMLDivElement>('.b-focus');
+    const input = this.host.querySelector<HTMLInputElement>('input.form-control');
+    const isInputFocused = event.target === input;
+
+    if (bFocusDiv) {
+      if (isInputFocused) {
+        // focused: expand underline from left
+        bFocusDiv.style.width = '100%';
+        bFocusDiv.style.left = '0';
+      } else {
+        // any other interaction inside container: still show focus bar
+        bFocusDiv.style.width = '100%';
+        bFocusDiv.style.left = '0';
+      }
+    }
+  };
+
+  private handleDocumentClick = () => {
+    // clicked outside: collapse underline to center
+    const bFocusDiv = this.host.querySelector<HTMLDivElement>('.b-focus');
+    if (bFocusDiv) {
+      bFocusDiv.style.width = '0';
+      bFocusDiv.style.left = '50%';
+    }
+  };
+
+  // ---------- utils ----------
   private camelCase(str: string) {
     if (!str) return '';
-    return str
-      .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase()))
-      .replace(/\s+/g, '');
+    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase())).replace(/\s+/g, '');
   }
 
   private sanitizeInput(value: string): string {
     return value.replace(/[<>]/g, '');
   }
 
+  // ---------- input/validation ----------
   private meetsTypingThreshold() {
     return (this.valueState || '').trim().length >= 3;
   }
@@ -109,23 +148,23 @@ export class InputFieldComponent {
     return this.required && !this.meetsTypingThreshold();
   }
 
-  // ----- Input handlers: update *state*, not @Prop()s -----
+  // Update *state* not the @Prop()s
   private handleInput = (ev: Event) => {
     const target = ev.target as HTMLInputElement;
 
-    // Keep the form linkage via attribute (form property is read-only)
+    // Keep the form linkage via attribute (the DOM property is not meant to be assigned directly)
     if (this._resolvedFormId) target.setAttribute('form', this._resolvedFormId);
     else target.removeAttribute('form');
 
-    // Sanitize like autocomplete
+    // Sanitize and reflect sanitized text in UI
     const clean = this.sanitizeInput(target.value);
     if (clean !== target.value) target.value = clean;
 
-    // mutate internal state (OK) instead of Prop (not OK)
+    // Update internal value mirror (NOT the @Prop())
     this.valueState = clean;
     this.valueChange.emit(this.valueState);
 
-    // Live validation behavior using internal state
+    // Live validation behavior
     if (this.meetsTypingThreshold() && this.validationState) {
       this.validationState = false;
     }
@@ -135,25 +174,43 @@ export class InputFieldComponent {
   };
 
   private handleBlur = () => {
+    this.handleDocumentClick(); // collapse underline
     if (this.required) {
       this.validationState = !this.meetsTypingThreshold();
     }
   };
 
-  // ----- Layout helpers (unchanged) -----
-  private isHorizontal() { return this.formLayout === 'horizontal'; }
-  private isInline() { return this.formLayout === 'inline'; }
+  // ---------- layout helpers ----------
+  private isHorizontal() {
+    return this.formLayout === 'horizontal';
+  }
+  private isInline() {
+    return this.formLayout === 'inline';
+  }
 
   private parseColsSpec(spec?: string): string {
     if (!spec) return '';
     const tokens = spec.trim().split(/\s+/);
     const out: string[] = [];
+
     for (const t of tokens) {
       if (!t) continue;
-      if (/^col(-\w+)?(-\d+)?$/.test(t)) { out.push(t); continue; }
-      if (/^\d{1,2}$/.test(t)) { out.push(`col-${Math.max(1, Math.min(12, parseInt(t, 10)))}`); continue; }
+      if (/^col(-\w+)?(-\d+)?$/.test(t)) {
+        out.push(t);
+        continue;
+      }
+      if (/^\d{1,2}$/.test(t)) {
+        const n = Math.max(1, Math.min(12, parseInt(t, 10)));
+        out.push(`col-${n}`);
+        continue;
+      }
       const m = /^(xs|sm|md|lg|xl|xxl)-(\d{1,2})$/.exec(t);
-      if (m) { out.push(m[1] === 'xs' ? `col-${m[2]}` : `col-${m[1]}-${m[2]}`); continue; }
+      if (m) {
+        const bp = m[1];
+        const n = Math.max(1, Math.min(12, parseInt(m[2], 10)));
+        out.push(bp === 'xs' ? `col-${n}` : `col-${bp}-${n}`);
+        continue;
+      }
       if (t === 'col') out.push('col');
     }
     return Array.from(new Set(out)).join(' ');
@@ -176,7 +233,10 @@ export class InputFieldComponent {
       return '';
     }
 
-    if (this.isInline()) return spec ? this.parseColsSpec(spec) : '';
+    if (this.isInline()) {
+      return spec ? this.parseColsSpec(spec) : '';
+    }
+
     return '';
   }
 
@@ -193,8 +253,8 @@ export class InputFieldComponent {
 
     if (this.isHorizontal() && !this.labelCols && !this.inputCols && label + input !== 12) {
       console.error(
-        '[input-field-component] For formLayout="horizontal", labelCol + inputCol must equal 12. ' +
-          `Received: ${this.labelCol} + ${this.inputCol} = ${Number(this.labelCol) + Number(this.inputCol)}. Falling back to 2/10.`
+        '[plumage-input-field-component] For formLayout="horizontal", labelCol + inputCol must equal 12. ' +
+          `Received: ${this.labelCol} + ${this.inputCol} = ${Number(this.labelCol) + Number(this.inputCol)}. Falling back to 2/10.`,
       );
       return { label: DEFAULT_LABEL, input: DEFAULT_INPUT };
     }
@@ -202,7 +262,7 @@ export class InputFieldComponent {
     return { label, input };
   }
 
-  // ----- Render bits (swap value/validation usage to *_State) -----
+  // ---------- render bits ----------
   private renderInputLabel(ids: string, labelColClass?: string) {
     const classes = [
       'form-control-label',
@@ -211,9 +271,11 @@ export class InputFieldComponent {
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.validationState ? 'invalid' : '',
-    ].filter(Boolean).join(' ');
+    ]
+      .filter(Boolean)
+      .join(' ');
 
-    const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
+    const text = this.isHorizontal() || this.isInline() ? `${this.label}` : this.label;
 
     return (
       <label class={classes} htmlFor={ids || undefined}>
@@ -224,15 +286,13 @@ export class InputFieldComponent {
   }
 
   private renderInput(ids: string, names: string) {
-    const sizeClass = this.size === 'sm' ? 'basic-input-sm' : this.size === 'lg' ? 'basic-input-lg' : '';
+    const sizeClass = this.size === 'sm' ? 'input-sm' : this.size === 'lg' ? 'input-lg' : '';
     const classes = ['form-control', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
 
-    const placeholder = this.labelHidden
-      ? this.label || this.placeholder || 'Placeholder Text'
-      : this.label || this.placeholder || 'Placeholder Text';
+    const placeholder = this.labelHidden ? this.label || this.placeholder || 'Placeholder Text' : this.label || this.placeholder || 'Placeholder Text';
 
     return (
-      <div>
+      <div class="input-container" role="presentation" aria-labelledby={names || undefined} onClick={this.handleInteraction}>
         <input
           ref={el => (this.inputEl = el as HTMLInputElement)}
           id={ids || undefined}
@@ -247,8 +307,14 @@ export class InputFieldComponent {
           disabled={this.disabled}
           required={this.required}
           onInput={this.handleInput}
+          onFocus={this.handleInteraction}
           onBlur={this.handleBlur}
         />
+        {/* Underline/focus bar */}
+        <div class={`b-underline${this.validationState ? ' invalid' : ''}`} role="presentation">
+          <div class={`b-focus${this.disabled ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`} role="presentation" aria-hidden="true" />
+        </div>
+
         {this.validationState && this.validationMessage ? (
           <div id="validationMessage" class="invalid-feedback form-text">
             {this.validationMessage}
@@ -267,26 +333,17 @@ export class InputFieldComponent {
     if (this.isHorizontal()) groupClasses.push('row');
     else if (this.isInline()) groupClasses.push('row', 'inline');
 
-    // Keep numeric validation behavior if string specs not in use
+    // keep numeric validation behavior if string specs not in use
     this.getComputedCols();
 
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass =
-      this.isHorizontal()
-        ? this.buildColClass('input') || undefined
-        : this.isInline()
-        ? this.buildColClass('input') || undefined
-        : undefined;
+    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     return (
-      <div class={outerClass}>
+      <div class={`plumage${outerClass}`}>
         <div class={groupClasses.join(' ')}>
           {this.renderInputLabel(ids, labelColClass)}
-          {this.isHorizontal() ? (
-            <div class={inputColClass}>{this.renderInput(ids, names)}</div>
-          ) : (
-            this.renderInput(ids, names)
-          )}
+          {this.isHorizontal() ? <div class={inputColClass}>{this.renderInput(ids, names)}</div> : this.renderInput(ids, names)}
         </div>
       </div>
     );

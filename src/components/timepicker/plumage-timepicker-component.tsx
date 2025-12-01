@@ -674,7 +674,7 @@ export class PlumageTimepickerComponent {
                     onKeyDown={this._handleEnterKeyOnly}
                   />
 
-                  <div class="input-group-append">
+                  {/* <div class="input-group-append"> */}
                     <button class="clear-button" aria-label="Clear Time" role="button" onClick={this._clearTime}>
                       <i class="fas fa-times-circle" />
                     </button>
@@ -691,7 +691,7 @@ export class PlumageTimepickerComponent {
                         <i class="fa fa-clock" />
                       </button>
                     )}
-                  </div>
+                  {/* </div> */}
                 </div>
                 {/* underline / focus bar group */}
                 <div class={`b-underline${this.validation ? ' invalid' : ''}`} role="presentation">

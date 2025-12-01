@@ -12,14 +12,12 @@ exports[`plumage-timepicker-component hides the label (sr-only) when "show-label
           <div class="dd-position">
             <div class="input-group">
               <input aria-controls="time-dropdown" aria-describedby="validation-message" aria-invalid="false" aria-label="Time Picker" aria-labelledby="time-label" class="form-control time-input" id="a1" maxlength="8" name="time" placeholder="Enter Time" role="textbox" type="text" value="00:00:00">
-              <div class="input-group-append">
-                <button aria-label="Clear Time" class="clear-button" role="button">
-                  <i class="fa-times-circle fas"></i>
-                </button>
-                <button aria-label="Open Timepicker" class="btn input-group-text time-icon time-icon-btn" role="button" tabindex="0">
-                  <i class="fa fa-clock"></i>
-                </button>
-              </div>
+              <button aria-label="Clear Time" class="clear-button" role="button">
+                <i class="fa-times-circle fas"></i>
+              </button>
+              <button aria-label="Open Timepicker" class="btn input-group-text time-icon time-icon-btn" role="button" tabindex="0">
+                <i class="fa fa-clock"></i>
+              </button>
             </div>
             <div class="b-underline" role="presentation">
               <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
@@ -124,14 +122,12 @@ exports[`plumage-timepicker-component shows the label when "show-label" is prese
           <div class="dd-position">
             <div class="input-group">
               <input aria-controls="time-dropdown" aria-describedby="validation-message" aria-invalid="false" aria-label="Time Picker" aria-labelledby="time-label" class="form-control time-input" id="my-time" maxlength="8" name="time" placeholder="Enter Time" role="textbox" type="text" value="00:00:00">
-              <div class="input-group-append">
-                <button aria-label="Clear Time" class="clear-button" role="button">
-                  <i class="fa-times-circle fas"></i>
-                </button>
-                <button aria-label="Open Timepicker" class="btn input-group-text time-icon time-icon-btn" role="button" tabindex="0">
-                  <i class="fa fa-clock"></i>
-                </button>
-              </div>
+              <button aria-label="Clear Time" class="clear-button" role="button">
+                <i class="fa-times-circle fas"></i>
+              </button>
+              <button aria-label="Open Timepicker" class="btn input-group-text time-icon time-icon-btn" role="button" tabindex="0">
+                <i class="fa fa-clock"></i>
+              </button>
             </div>
             <div class="b-underline" role="presentation">
               <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>

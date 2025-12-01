@@ -30,6 +30,13 @@
 | `value`             | `value`              |                                                                                             | `string`                         | `''`        |
 
 
+## Events
+
+| Event         | Description | Type                  |
+| ------------- | ----------- | --------------------- |
+| `valueChange` |             | `CustomEvent<string>` |
+
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

@@ -38,14 +38,14 @@ describe('<input-field-component>', () => {
     try {
       const page = await newSpecPage({
         components: [InputFieldComponent],
-        html: `<input-field-component label="Email" input-id="email" value="test@site.com"></input-field-component>`,
+        html: `<input-field-component label="Email" input-id="email" value="new@site.com"></input-field-component>`,
       });
 
       const comp = page.rootInstance as InputFieldComponent;
       const input = page.root!.querySelector('input') as HTMLInputElement;
 
       // Initial binding
-      expect(input.value).toBe('test@site.com');
+      expect(input.value).toBe('new@site.com');
 
       // Simulate typing
       input.value = 'new@site.com';

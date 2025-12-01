@@ -683,14 +683,14 @@
 
       </div> -->
 
-      <!-- <div class="cwrapper">
+      <div class="cwrapper">
         <input-field-component label="First Name" label-size="sm" size="sm" value="" input-id="firstName"></input-field-component>
 
         <input-field-component label="Last Name" value="" input-id="lastName"></input-field-component>
 
         <input-field-component label="Email" required validation validation-message="Please enter a valid email" value="" input-id="email" size="lg"></input-field-component>
 
-        <input-field-component form-layout="inline" label="Email" input-id="email2" label-col="6" input-col="6"></input-field-component>
+        <input-field-component form-layout="horizontal" label="Email" input-id="email2" label-col="6" input-col="6" label-align="right"></input-field-component>
 
         <form-component form-layout="inline">
           <input-field-component
@@ -719,18 +719,28 @@
             slot="formField"
           ></input-field-component>
         </form-component>
-      </div> -->
+      </div>
 
       <div class="cwrapper">
         <form-component>
           <input-group-component slot="formField" label="Amount" size="sm" input-id="amount" validation other-content append prepend prepend-icon="fa-solid fa-dollar-sign">
-        <button-component slot="append" size="sm" type="button" variant="secondary">Go</button-component>
-        </input-group-component>
+            <button-component slot="append" size="sm" type="button" variant="secondary">Go</button-component>
+          </input-group-component>
 
-          <input-group-component slot="formField" label="Search" input-id="q"  validation  append  other-content>
+          <input-group-component slot="formField" label="Search" input-id="q" validation append other-content>
             <button-component slot="append" type="button" variant="secondary">Go</button-component>
           </input-group-component>
         </form-component>
+
+        <plumage-input-field-component size="sm" label="Test Label2" required validation validation-message="Please enter First name"></plumage-input-field-component>
+
+        <plumage-input-field-component label="Test Label" label-hidden></plumage-input-field-component>
+
+        <plumage-input-field-component size="lg" label="Test Label2"></plumage-input-field-component>
+
+        <plumage-input-field-component label="Test Label" form-layout="inline" required validation validation-message="Please enter First name"></plumage-input-field-component>
+
+        <plumage-input-field-component label-align="right" label="Test Label" label-col="6" input-col="6" form-layout="horizontal" required validation validation-message="Please enter First name"></plumage-input-field-component>
       </div>
 
       <!-- <div class="cwrapper"> -->
@@ -1601,30 +1611,30 @@
       </div> -->
 
       <div class="cwrapper">
-         <section class="display-box-demo">
-                <div class="timepicker-wrapper" style="width: 500px;">
-                  <timepicker-manager use-pl-timepicker size="lg" input-id="one" show-label label-text="Add Time"></timepicker-manager>
-                </div>
-              </section>
+        <section class="display-box-demo">
+          <div class="timepicker-wrapper" style="width: 500px">
+            <timepicker-manager use-pl-timepicker size="lg" input-id="one" show-label label-text="Add Time"></timepicker-manager>
+          </div>
+        </section>
 
-               <section class="display-box-demo">
-  <!-- Force 24-hour ONLY (no toggle) -->
-  <div class="timepicker-wrapper" style="margin-bottom:20px;width:210px;">
-    <timepicker-manager size="sm"></timepicker-manager>
-  </div>
+        <section class="display-box-demo">
+          <!-- Force 24-hour ONLY (no toggle) -->
+          <div class="timepicker-wrapper" style="margin-bottom: 20px; width: 210px">
+            <timepicker-manager size="sm"></timepicker-manager>
+          </div>
 
-  <!-- Force 12-hour ONLY (no toggle) -->
-  <div class="timepicker-wrapper" style="width:210px;">
-    <timepicker-manager size="lg" show-label></timepicker-manager>
-  </div>
+          <!-- Force 12-hour ONLY (no toggle) -->
+          <div class="timepicker-wrapper" style="width: 210px">
+            <timepicker-manager size="lg" show-label></timepicker-manager>
+          </div>
 
-  <div class="timepicker-wrapper" style="width:210px;">
-    <timepicker-manager ></timepicker-manager>
-  </div>
+          <div class="timepicker-wrapper" style="width: 210px">
+            <timepicker-manager></timepicker-manager>
+          </div>
 
-  <timepicker-component></timepicker-component>
-<plumage-timepicker-component size="sm"></plumage-timepicker-component>
-</section>
+          <timepicker-component></timepicker-component>
+          <plumage-timepicker-component size="sm"></plumage-timepicker-component>
+        </section>
       </div>
     </app-wrapper>
 

@@ -569,6 +569,33 @@ export namespace Components {
         "useByPagePagination": boolean;
         "useMinimizePagination": boolean;
     }
+    interface PlumageInputFieldComponent {
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "inputCol": number;
+        "inputCols": string;
+        "inputId": string;
+        "label": string;
+        "labelAlign": '' | 'right';
+        /**
+          * Legacy numeric cols (fallback)
+         */
+        "labelCol": number;
+        /**
+          * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+         */
+        "labelCols": string;
+        "labelHidden": boolean;
+        "labelSize": '' | 'sm' | 'lg';
+        "placeholder"?: string;
+        "required": boolean;
+        "size": '' | 'sm' | 'lg';
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
+    }
     interface PlumageTimepickerComponent {
         /**
           * Accessible label for the input
@@ -1238,6 +1265,10 @@ export interface DropdownComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDropdownComponentElement;
 }
+export interface InputFieldComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLInputFieldComponentElement;
+}
 export interface InputGroupComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLInputGroupComponentElement;
@@ -1253,6 +1284,10 @@ export interface MultiRangeSliderComponentCustomEvent<T> extends CustomEvent<T> 
 export interface PaginationComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLPaginationComponentElement;
+}
+export interface PlumageInputFieldComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPlumageInputFieldComponentElement;
 }
 export interface RadioInputComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1532,7 +1567,18 @@ declare global {
         prototype: HTMLIconComponentElement;
         new (): HTMLIconComponentElement;
     };
+    interface HTMLInputFieldComponentElementEventMap {
+        "valueChange": string;
+    }
     interface HTMLInputFieldComponentElement extends Components.InputFieldComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLInputFieldComponentElementEventMap>(type: K, listener: (this: HTMLInputFieldComponentElement, ev: InputFieldComponentCustomEvent<HTMLInputFieldComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLInputFieldComponentElementEventMap>(type: K, listener: (this: HTMLInputFieldComponentElement, ev: InputFieldComponentCustomEvent<HTMLInputFieldComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLInputFieldComponentElement: {
         prototype: HTMLInputFieldComponentElement;
@@ -1612,6 +1658,23 @@ declare global {
     var HTMLPaginationComponentElement: {
         prototype: HTMLPaginationComponentElement;
         new (): HTMLPaginationComponentElement;
+    };
+    interface HTMLPlumageInputFieldComponentElementEventMap {
+        "valueChange": string;
+    }
+    interface HTMLPlumageInputFieldComponentElement extends Components.PlumageInputFieldComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLPlumageInputFieldComponentElementEventMap>(type: K, listener: (this: HTMLPlumageInputFieldComponentElement, ev: PlumageInputFieldComponentCustomEvent<HTMLPlumageInputFieldComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLPlumageInputFieldComponentElementEventMap>(type: K, listener: (this: HTMLPlumageInputFieldComponentElement, ev: PlumageInputFieldComponentCustomEvent<HTMLPlumageInputFieldComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLPlumageInputFieldComponentElement: {
+        prototype: HTMLPlumageInputFieldComponentElement;
+        new (): HTMLPlumageInputFieldComponentElement;
     };
     interface HTMLPlumageTimepickerComponentElement extends Components.PlumageTimepickerComponent, HTMLStencilElement {
     }
@@ -1780,6 +1843,7 @@ declare global {
         "modal-component": HTMLModalComponentElement;
         "multi-range-slider-component": HTMLMultiRangeSliderComponentElement;
         "pagination-component": HTMLPaginationComponentElement;
+        "plumage-input-field-component": HTMLPlumageInputFieldComponentElement;
         "plumage-timepicker-component": HTMLPlumageTimepickerComponentElement;
         "popover-component": HTMLPopoverComponentElement;
         "progress-display-component": HTMLProgressDisplayComponentElement;
@@ -2244,6 +2308,7 @@ declare namespace LocalJSX {
         "labelCols"?: string;
         "labelHidden"?: boolean;
         "labelSize"?: '' | 'sm' | 'lg';
+        "onValueChange"?: (event: InputFieldComponentCustomEvent<string>) => void;
         "placeholder"?: string;
         "required"?: boolean;
         "size"?: '' | 'sm' | 'lg';
@@ -2367,6 +2432,34 @@ declare namespace LocalJSX {
         "totalRows"?: number;
         "useByPagePagination"?: boolean;
         "useMinimizePagination"?: boolean;
+    }
+    interface PlumageInputFieldComponent {
+        "disabled"?: boolean;
+        "formId"?: string;
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        "inputCol"?: number;
+        "inputCols"?: string;
+        "inputId"?: string;
+        "label"?: string;
+        "labelAlign"?: '' | 'right';
+        /**
+          * Legacy numeric cols (fallback)
+         */
+        "labelCol"?: number;
+        /**
+          * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+         */
+        "labelCols"?: string;
+        "labelHidden"?: boolean;
+        "labelSize"?: '' | 'sm' | 'lg';
+        "onValueChange"?: (event: PlumageInputFieldComponentCustomEvent<string>) => void;
+        "placeholder"?: string;
+        "required"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "type"?: string;
+        "validation"?: boolean;
+        "validationMessage"?: string;
+        "value"?: string;
     }
     interface PlumageTimepickerComponent {
         /**
@@ -2997,6 +3090,7 @@ declare namespace LocalJSX {
         "modal-component": ModalComponent;
         "multi-range-slider-component": MultiRangeSliderComponent;
         "pagination-component": PaginationComponent;
+        "plumage-input-field-component": PlumageInputFieldComponent;
         "plumage-timepicker-component": PlumageTimepickerComponent;
         "popover-component": PopoverComponent;
         "progress-display-component": ProgressDisplayComponent;
@@ -3041,6 +3135,7 @@ declare module "@stencil/core" {
             "modal-component": LocalJSX.ModalComponent & JSXBase.HTMLAttributes<HTMLModalComponentElement>;
             "multi-range-slider-component": LocalJSX.MultiRangeSliderComponent & JSXBase.HTMLAttributes<HTMLMultiRangeSliderComponentElement>;
             "pagination-component": LocalJSX.PaginationComponent & JSXBase.HTMLAttributes<HTMLPaginationComponentElement>;
+            "plumage-input-field-component": LocalJSX.PlumageInputFieldComponent & JSXBase.HTMLAttributes<HTMLPlumageInputFieldComponentElement>;
             "plumage-timepicker-component": LocalJSX.PlumageTimepickerComponent & JSXBase.HTMLAttributes<HTMLPlumageTimepickerComponentElement>;
             "popover-component": LocalJSX.PopoverComponent & JSXBase.HTMLAttributes<HTMLPopoverComponentElement>;
             "progress-display-component": LocalJSX.ProgressDisplayComponent & JSXBase.HTMLAttributes<HTMLProgressDisplayComponentElement>;
