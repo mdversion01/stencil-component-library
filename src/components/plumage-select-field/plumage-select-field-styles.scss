@@ -60,7 +60,7 @@ label {
 }
 
 label {
-  font-size: 0.75rem;
+  // font-size: 0.75rem;
   position: relative;
 }
 
@@ -81,7 +81,7 @@ label {
 
 .form-group .form-control-label,
 .form-group label {
-  font-size: 0.75rem;
+  // font-size: 0.75rem;
   font-weight: 400;
   line-height: 1.1;
   margin-bottom: 0.25rem;
@@ -153,24 +153,24 @@ label {
 }
 
 /* Underline the input */
-.b-underline {
-  background-color: #ccc;
-  display: block;
-  height: 1px;
-  position: relative;
-  transition: 0.4s;
-  width: 100%;
-}
+// .b-underline {
+//   background-color: #ccc;
+//   display: block;
+//   height: 1px;
+//   position: relative;
+//   transition: 0.4s;
+//   width: 100%;
+// }
 
-.b-focus {
-  background-color: #2680eb;
-  bottom: 0;
-  height: 1px;
-  left: 50%;
-  position: absolute;
-  transition: 0.4s;
-  width: 0;
-}
+// .b-focus {
+//   background-color: #2680eb;
+//   bottom: 0;
+//   height: 1px;
+//   left: 50%;
+//   position: absolute;
+//   transition: 0.4s;
+//   width: 0;
+// }
 
 .custom-select {
   display: inline-block;
@@ -237,24 +237,24 @@ label {
 }
 
 /* Underline the input */
-.b-underline {
-  background-color: #ccc;
-  display: block;
-  height: 1px;
-  position: relative;
-  transition: 0.4s;
-  width: 100%;
-}
+// .b-underline {
+//   background-color: #ccc;
+//   display: block;
+//   height: 1px;
+//   position: relative;
+//   transition: 0.4s;
+//   width: 100%;
+// }
 
-.b-focus {
-  background-color: #2680eb;
-  bottom: 0;
-  height: 1px;
-  left: 50%;
-  position: absolute;
-  transition: 0.4s;
-  width: 0;
-}
+// .b-focus {
+//   background-color: #2680eb;
+//   bottom: 0;
+//   height: 1px;
+//   left: 50%;
+//   position: absolute;
+//   transition: 0.4s;
+//   width: 0;
+// }
 
 :disabled.b-focus,
 .disabled.b-focus {

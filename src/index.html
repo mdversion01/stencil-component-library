@@ -712,8 +712,6 @@
             validation
             validation-message="Please enter Last name"
             label="Last Name"
-            label-size="sm"
-            size="sm"
             value=""
             input-id="input-6"
             slot="formField"
@@ -723,24 +721,108 @@
 
       <div class="cwrapper">
         <form-component>
-          <input-group-component slot="formField" label="Amount" size="sm" input-id="amount" validation other-content append prepend prepend-icon="fa-solid fa-dollar-sign">
+          <input-group-component
+            form-layout="horizontal"
+            slot="formField"
+            label="Amount"
+            size="sm"
+            input-id="amount"
+            required
+            validation
+            validation-message="Please enter First name"
+            other-content
+            append
+            prepend
+            prepend-icon="fa-solid fa-dollar-sign"
+          >
             <button-component slot="append" size="sm" type="button" variant="secondary">Go</button-component>
           </input-group-component>
 
-          <input-group-component slot="formField" label="Search" input-id="q" validation append other-content>
+          <input-group-component form-layout="inline" slot="formField" label="Search" input-id="q" validation validation-message="Please enter First name" append other-content>
             <button-component slot="append" type="button" variant="secondary">Go</button-component>
           </input-group-component>
         </form-component>
 
-        <plumage-input-field-component size="sm" label="Test Label2" required validation validation-message="Please enter First name"></plumage-input-field-component>
+        <plumage-input-field-component
+          input-id="input-1"
+          size="sm"
+          label="Test Label2"
+          required
+          validation
+          validation-message="Please enter First name"
+        ></plumage-input-field-component>
 
-        <plumage-input-field-component label="Test Label" label-hidden></plumage-input-field-component>
+        <plumage-input-field-component input-id="input-2" label="Test Label" label-hidden></plumage-input-field-component>
 
-        <plumage-input-field-component size="lg" label="Test Label2"></plumage-input-field-component>
+        <plumage-input-field-component input-id="input-3" size="lg" label="Test Label2"></plumage-input-field-component>
 
-        <plumage-input-field-component label="Test Label" form-layout="inline" required validation validation-message="Please enter First name"></plumage-input-field-component>
+        <plumage-input-field-component
+          input-id="input-4"
+          label="Test Label"
+          form-layout="inline"
+          required
+          validation
+          validation-message="Please enter First name"
+        ></plumage-input-field-component>
 
-        <plumage-input-field-component label-align="right" label="Test Label" label-col="6" input-col="6" form-layout="horizontal" required validation validation-message="Please enter First name"></plumage-input-field-component>
+        <plumage-input-field-component
+          input-id="input-5"
+          label-align="right"
+          label="Test Label"
+          label-col="6"
+          input-col="6"
+          form-layout="horizontal"
+          required
+          validation
+          validation-message="Please enter First name"
+        ></plumage-input-field-component>
+
+        <plumage-input-group-component
+          input-id="pl-input-group-1"
+          label="Test Label"
+          size="sm"
+          append-field
+          prepend-field
+          prepend-icon="fa-solid fa-dollar-sign"
+          required
+          validation
+          validation-message="Please enter First name"
+        >
+          <button-component slot="append" size="sm" type="button">Go</button-component>
+        </plumage-input-group-component>
+
+        <plumage-input-group-component
+          input-id="pl-input-group-3"
+          label="Test Label"
+          form-layout="horizontal"
+          append-field
+          prepend-field
+          prepend-icon="fa-solid fa-dollar-sign"
+          required
+          validation
+          validation-message="Please enter First name"
+        >
+          <button-component slot="append" size="sm" type="button">Go</button-component>
+        </plumage-input-group-component>
+
+        <plumage-input-group-component
+          input-id="pl-input-group-2"
+          label="Test Label"
+           form-layout="inline"
+          append-field
+          append-icon="fa-solid fa-dollar-sign"
+          prepend-field
+          prepend-icon="fa-solid fa-dollar-sign"
+          required
+          validation
+          validation-message="Please enter First name"
+        >
+        </plumage-input-group-component>
+
+        <plumage-input-group-component
+          plumage-search
+        >
+        </plumage-input-group-component>
       </div>
 
       <!-- <div class="cwrapper"> -->

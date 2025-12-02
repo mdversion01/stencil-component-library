@@ -59,9 +59,7 @@ describe('<plumage-input-field-component>', () => {
     expect(inputWrapper).toBeTruthy();
 
     // Snapshot of horizontal version (structure)
-    expect(normalize(root.outerHTML)).toMatchInlineSnapshot(
-      `"<plumage-input-field-component label="Amount" input-id="amount" form-layout="horizontal" label-cols="sm-3" input-cols="sm-9" size="lg"><div class="plumage horizontal"><div class="form-group row"><label class="form-control-label col-sm-3 no-padding col-form-label" htmlfor="amount"><span>Amount</span></label><div class="col-sm-9"><div class="input-container" role="presentation" aria-labelledby="amount"><input id="amount" name="amount" type="text" class="form-control input-lg" placeholder="Amount" aria-labelledby="amount"><div class="b-underline" role="presentation"><div class="b-focus" role="presentation" aria-hidden="true"></div></div></div></div></div></div></plumage-input-field-component>"`,
-    );
+    expect(normalize(root.outerHTML)).toMatchInlineSnapshot(`"<plumage-input-field-component label="Amount" input-id="amount" form-layout="horizontal" label-cols="sm-3" input-cols="sm-9" size="lg"><div class="plumage horizontal"><div class="form-group row"><label class="form-control-label col-sm-3 no-padding col-form-label" htmlfor="amount"><span>Amount:</span></label><div class="col-sm-9"><div class="input-container" role="presentation" aria-labelledby="amount"><input id="amount" name="amount" type="text" class="form-control input-lg" placeholder="Amount" aria-labelledby="amount"><div class="b-underline" role="presentation"><div class="b-focus" role="presentation" aria-hidden="true"></div></div></div></div></div></div></plumage-input-field-component>"`);
   });
 
   it('shows validation UI when validation=true', async () => {

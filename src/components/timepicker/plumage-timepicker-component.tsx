@@ -8,7 +8,7 @@ import { Component, h, Prop, Element, State, Method, Fragment } from '@stencil/c
     '../utilities-styles.scss',
     '../button/button.scss',
     '../plumage-input-field/plumage-input-field-styles.scss',
-    '../plumage-input-group/plumage-input-group-styles.scss',
+    // '../plumage-input-group/plumage-input-group-styles.scss',
   ],
   shadow: false,
 })

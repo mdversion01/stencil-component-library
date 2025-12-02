@@ -64,7 +64,7 @@ label {
 }
 
 label {
-  font-size: 0.75rem;
+  // font-size: 0.75rem;
   position: relative;
 }
 
@@ -85,7 +85,7 @@ label {
 
 .form-group .form-control-label,
 .form-group label {
-  font-size: 0.75rem;
+  // font-size: 0.75rem;
   font-weight: 400;
   line-height: 1.1;
   margin-bottom: 0.25rem;
@@ -231,10 +231,10 @@ label {
   color: #b30009;
 }
 
-.invalid.b-underline,
-.invalid.b-focus {
-  background-color: #b30009;
-}
+// .invalid.b-underline,
+// .invalid.b-focus {
+//   background-color: #b30009;
+// }
 
 .form-select.form-control:invalid,
 .form-select.form-control.is-invalid {

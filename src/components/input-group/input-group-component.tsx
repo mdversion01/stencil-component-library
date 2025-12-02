@@ -265,7 +265,6 @@ export class InputGroupComponent {
       <div class={{ 'input-group': true, [this.groupSizeClass()]: !!this.groupSizeClass(), 'is-invalid': this.validation }}>
         {/* Prepend */}
         {this.hasPrepend ? (
-          // <div class={{ 'input-group-prepend': true, 'is-invalid': this.validation }}>
           <Fragment>
             {(() => {
               const sideIcon = this.prependIcon ?? this.icon; // ← side-specific wins, then global, else slot
@@ -285,7 +284,6 @@ export class InputGroupComponent {
               );
             })()}
           </Fragment>
-          // </div>
         ) : null}
 
         {/* Input */}
