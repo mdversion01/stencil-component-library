@@ -55,17 +55,13 @@
 }
 
 .invalid-feedback {
+  color: #b30009 !important;
   display: block !important;
   font-size: 0.75rem !important;
 }
 
 .is-invalid ::placeholder {
   color: #b30009 !important;
-}
-
-:not(.is-invalid) ~ .invalid-feedback,
-:not(.was-validated) ~ .invalid-feedback {
-  display: none !important;
 }
 
 .was-validated :invalid ~ .invalid-feedback,

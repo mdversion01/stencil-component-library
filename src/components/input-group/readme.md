@@ -33,9 +33,9 @@
 | `required`          | `required`           |                                                                                             | `boolean`                        | `false`     |
 | `size`              | `size`               |                                                                                             | `"" \| "lg" \| "sm"`             | `''`        |
 | `type`              | `type`               |                                                                                             | `string`                         | `''`        |
-| `validation`        | `validation`         |                                                                                             | `boolean`                        | `false`     |
+| `validation`        | `validation`         | External validation flag (rendered with UX overrides)                                       | `boolean`                        | `false`     |
 | `validationMessage` | `validation-message` |                                                                                             | `string`                         | `''`        |
-| `value`             | `value`              |                                                                                             | `string`                         | `''`        |
+| `value`             | `value`              | External value (mutable for back-compat)                                                    | `string`                         | `''`        |
 
 
 ## Events

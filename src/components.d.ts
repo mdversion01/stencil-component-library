@@ -332,6 +332,36 @@ export namespace Components {
         "validationMsg": string;
         "value": string;
     }
+    interface DatepickerComponent {
+        "appendId": string;
+        /**
+          * Reserved-name fixes kept
+         */
+        "appendProp": boolean;
+        "calendar": boolean;
+        "currentMonth": number;
+        "currentYear": number;
+        "dateFormat": 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        "disabled": boolean;
+        "displayContextExamples": boolean;
+        "dropdownOpen": boolean;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "icon": string;
+        "inputId": string;
+        "isCalendarFocused": boolean;
+        "label": string;
+        "labelHidden": boolean;
+        "placeholder": string;
+        "plumage": boolean;
+        "prependId": string;
+        "prependProp": boolean;
+        "required": boolean;
+        "size": '' | 'sm' | 'lg';
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
+        "warningMessage": string;
+    }
     interface DiscreteSliderComponent {
         "disabled": boolean;
         "hideRightTextBox": boolean;
@@ -484,8 +514,14 @@ export namespace Components {
         "required": boolean;
         "size": '' | 'sm' | 'lg';
         "type": string;
+        /**
+          * External validation flag (rendered with UX overrides)
+         */
         "validation": boolean;
         "validationMessage": string;
+        /**
+          * External value (mutable for back-compat)
+         */
         "value": string;
     }
     interface MinimizePaginationComponent {
@@ -1308,6 +1344,10 @@ export interface CheckboxComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLCheckboxComponentElement;
 }
+export interface DatepickerComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDatepickerComponentElement;
+}
 export interface DiscreteSliderComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDiscreteSliderComponentElement;
@@ -1568,6 +1608,23 @@ declare global {
     var HTMLCheckboxComponentElement: {
         prototype: HTMLCheckboxComponentElement;
         new (): HTMLCheckboxComponentElement;
+    };
+    interface HTMLDatepickerComponentElementEventMap {
+        "date-selected": { formattedDate: string };
+    }
+    interface HTMLDatepickerComponentElement extends Components.DatepickerComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDatepickerComponentElementEventMap>(type: K, listener: (this: HTMLDatepickerComponentElement, ev: DatepickerComponentCustomEvent<HTMLDatepickerComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDatepickerComponentElementEventMap>(type: K, listener: (this: HTMLDatepickerComponentElement, ev: DatepickerComponentCustomEvent<HTMLDatepickerComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLDatepickerComponentElement: {
+        prototype: HTMLDatepickerComponentElement;
+        new (): HTMLDatepickerComponentElement;
     };
     interface HTMLDiscreteSliderComponentElementEventMap {
         "indexChange": { index: number };
@@ -1904,6 +1961,7 @@ declare global {
         "by-page-pagination-component": HTMLByPagePaginationComponentElement;
         "card-component": HTMLCardComponentElement;
         "checkbox-component": HTMLCheckboxComponentElement;
+        "datepicker-component": HTMLDatepickerComponentElement;
         "discrete-slider-component": HTMLDiscreteSliderComponentElement;
         "divider-component": HTMLDividerComponentElement;
         "dropdown-component": HTMLDropdownComponentElement;
@@ -2268,6 +2326,37 @@ declare namespace LocalJSX {
         "validationMsg"?: string;
         "value"?: string;
     }
+    interface DatepickerComponent {
+        "appendId"?: string;
+        /**
+          * Reserved-name fixes kept
+         */
+        "appendProp"?: boolean;
+        "calendar"?: boolean;
+        "currentMonth"?: number;
+        "currentYear"?: number;
+        "dateFormat"?: 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        "disabled"?: boolean;
+        "displayContextExamples"?: boolean;
+        "dropdownOpen"?: boolean;
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        "icon"?: string;
+        "inputId"?: string;
+        "isCalendarFocused"?: boolean;
+        "label"?: string;
+        "labelHidden"?: boolean;
+        "onDate-selected"?: (event: DatepickerComponentCustomEvent<{ formattedDate: string }>) => void;
+        "placeholder"?: string;
+        "plumage"?: boolean;
+        "prependId"?: string;
+        "prependProp"?: boolean;
+        "required"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "validation"?: boolean;
+        "validationMessage"?: string;
+        "value"?: string;
+        "warningMessage"?: string;
+    }
     interface DiscreteSliderComponent {
         "disabled"?: boolean;
         "hideRightTextBox"?: boolean;
@@ -2425,8 +2514,14 @@ declare namespace LocalJSX {
         "required"?: boolean;
         "size"?: '' | 'sm' | 'lg';
         "type"?: string;
+        /**
+          * External validation flag (rendered with UX overrides)
+         */
         "validation"?: boolean;
         "validationMessage"?: string;
+        /**
+          * External value (mutable for back-compat)
+         */
         "value"?: string;
     }
     interface MinimizePaginationComponent {
@@ -3204,6 +3299,7 @@ declare namespace LocalJSX {
         "by-page-pagination-component": ByPagePaginationComponent;
         "card-component": CardComponent;
         "checkbox-component": CheckboxComponent;
+        "datepicker-component": DatepickerComponent;
         "discrete-slider-component": DiscreteSliderComponent;
         "divider-component": DividerComponent;
         "dropdown-component": DropdownComponent;
@@ -3250,6 +3346,7 @@ declare module "@stencil/core" {
             "by-page-pagination-component": LocalJSX.ByPagePaginationComponent & JSXBase.HTMLAttributes<HTMLByPagePaginationComponentElement>;
             "card-component": LocalJSX.CardComponent & JSXBase.HTMLAttributes<HTMLCardComponentElement>;
             "checkbox-component": LocalJSX.CheckboxComponent & JSXBase.HTMLAttributes<HTMLCheckboxComponentElement>;
+            "datepicker-component": LocalJSX.DatepickerComponent & JSXBase.HTMLAttributes<HTMLDatepickerComponentElement>;
             "discrete-slider-component": LocalJSX.DiscreteSliderComponent & JSXBase.HTMLAttributes<HTMLDiscreteSliderComponentElement>;
             "divider-component": LocalJSX.DividerComponent & JSXBase.HTMLAttributes<HTMLDividerComponentElement>;
             "dropdown-component": LocalJSX.DropdownComponent & JSXBase.HTMLAttributes<HTMLDropdownComponentElement>;

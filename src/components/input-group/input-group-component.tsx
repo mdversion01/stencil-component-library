@@ -20,7 +20,7 @@ export class InputGroupComponent {
   @Prop({ mutable: true }) formLayout: '' | 'horizontal' | 'inline' = '';
 
   @Prop() icon: string = '';
-  // props (add these)
+  // Side-specific icons
   @Prop() prependIcon?: string;
   @Prop() appendIcon?: string;
 
@@ -42,9 +42,11 @@ export class InputGroupComponent {
   @Prop() size: '' | 'sm' | 'lg' = '';
   @Prop() type: string = '';
 
+  /** External validation flag (rendered with UX overrides) */
   @Prop({ mutable: true }) validation: boolean = false;
   @Prop() validationMessage: string = '';
 
+  /** External value (mutable for back-compat) */
   @Prop({ mutable: true }) value: string = '';
 
   /** Legacy numeric cols (fallback) */
@@ -55,7 +57,9 @@ export class InputGroupComponent {
   @Prop() labelCols: string = '';
   @Prop() inputCols: string = '';
 
+  // ----- State -----
   @State() _computedFormId: string = '';
+  @State() private valueState: string = ''; // mirror used for UX helpers
 
   private inputEl?: HTMLInputElement;
 
@@ -81,6 +85,9 @@ export class InputGroupComponent {
 
     // Cache for render bindings (kept for compatibility with previous version)
     this._computedFormId = this.formId || '';
+
+    // seed state mirror
+    this.valueState = this.value ?? '';
   }
 
   componentDidLoad() {
@@ -93,10 +100,33 @@ export class InputGroupComponent {
     this.applyFormAttribute();
   }
 
+  @Watch('value')
+  onValuePropChange(newVal: string) {
+    // keep UX state mirror in sync with external updates
+    this.valueState = newVal ?? '';
+  }
+
   private applyFormAttribute() {
     if (!this.inputEl) return;
     if (this._computedFormId) this.inputEl.setAttribute('form', this._computedFormId);
     else this.inputEl.removeAttribute('form');
+  }
+
+  // ----- Typing/required UX helpers (re-added) -----
+  private meetsTypingThreshold() {
+    return (this.valueState || '').trim().length >= 3;
+  }
+
+  private showAsRequired() {
+    return this.required && !this.meetsTypingThreshold();
+  }
+
+  /** Effective invalid state for rendering:
+   *  - honors external `validation`
+   *  - but removes "is-invalid" styling once the typing threshold is met
+   */
+  private isInvalidNow() {
+    return this.validation && !this.meetsTypingThreshold();
   }
 
   // ----- Handlers -----
@@ -104,8 +134,12 @@ export class InputGroupComponent {
     const target = ev.target as HTMLInputElement;
 
     // Keep the real input’s form association in sync (like input-field-component)
+    if (this._computedFormId) target.setAttribute('form', this._computedFormId);
+    else target.removeAttribute('form');
 
+    // Update both prop (for back-compat/controlled usage) and state mirror (for UX helpers)
     this.value = target.value;
+    this.valueState = target.value;
 
     // Stencil event
     this.valueChange.emit({ value: this.value });
@@ -223,19 +257,18 @@ export class InputGroupComponent {
   private labelClasses(labelColClass?: string) {
     return [
       'form-control-label',
-      this.required ? 'required' : '',
+      this.showAsRequired() ? 'required' : '',
       this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelHidden ? 'sr-only' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
-      this.validation ? 'invalid' : '',
+      this.isInvalidNow() ? 'invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
   }
 
   private inputClasses() {
-    // const sizeClass = this.size === 'sm' ? 'basic-input-sm' : this.size === 'lg' ? 'basic-input-lg' : '';
-    return ['form-control', this.validation ? 'is-invalid' : ''].filter(Boolean).join(' '); // , sizeClass
+    return ['form-control', this.isInvalidNow() ? 'is-invalid' : ''].filter(Boolean).join(' ');
   }
 
   private groupSizeClass() {
@@ -250,8 +283,8 @@ export class InputGroupComponent {
 
     return (
       <label class={this.labelClasses(labelColClass)} htmlFor={ids || undefined}>
-        {text}
-        {this.required ? '*' : ''}
+        <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
+        {this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
@@ -259,18 +292,18 @@ export class InputGroupComponent {
   private renderInputBlock(ids: string, names: string) {
     const placeholder = this.labelHidden ? this.placeholder || this.label || 'Placeholder Text' : this.placeholder || this.label || 'Placeholder Text';
 
-    const ariaDescribedBy = this.validation ? `${ids}-validation` : undefined;
+    const ariaDescribedBy = this.isInvalidNow() ? `${ids}-validation` : undefined;
 
     return (
-      <div class={{ 'input-group': true, [this.groupSizeClass()]: !!this.groupSizeClass(), 'is-invalid': this.validation }}>
+      <div class={{ 'input-group': true, [this.groupSizeClass()]: !!this.groupSizeClass(), 'is-invalid': this.isInvalidNow() }}>
         {/* Prepend */}
         {this.hasPrepend ? (
           <Fragment>
             {(() => {
-              const sideIcon = this.prependIcon ?? this.icon; // ← side-specific wins, then global, else slot
+              const sideIcon = this.prependIcon ?? this.icon; // side-specific wins, then global, else slot
               if (sideIcon) {
                 return (
-                  <span class={`input-group-text ${this.validation ? 'is-invalid' : ''}`}>
+                  <span class={`input-group-text ${this.isInvalidNow() ? 'is-invalid' : ''}`}>
                     <i class={sideIcon} />
                   </span>
                 );
@@ -278,7 +311,7 @@ export class InputGroupComponent {
               return this.otherContent ? (
                 <slot name="prepend" />
               ) : (
-                <span class={`input-group-text ${this.validation ? 'is-invalid' : ''}`} id={this.prependId || undefined}>
+                <span class={`input-group-text ${this.isInvalidNow() ? 'is-invalid' : ''}`} id={this.prependId || undefined}>
                   <slot name="prepend" />
                 </span>
               );
@@ -307,10 +340,10 @@ export class InputGroupComponent {
         {this.hasAppend ? (
           <Fragment>
             {(() => {
-              const sideIcon = this.appendIcon ?? this.icon; // ← side-specific wins, then global, else slot
+              const sideIcon = this.appendIcon ?? this.icon; // side-specific wins, then global, else slot
               if (sideIcon) {
                 return (
-                  <span class={`input-group-text ${this.validation ? 'is-invalid' : ''}`}>
+                  <span class={`input-group-text ${this.isInvalidNow() ? 'is-invalid' : ''}`}>
                     <i class={sideIcon} />
                   </span>
                 );
@@ -318,7 +351,7 @@ export class InputGroupComponent {
               return this.otherContent ? (
                 <slot name="append" />
               ) : (
-                <span class={`input-group-text ${this.validation ? 'is-invalid' : ''}`} id={this.appendId || undefined}>
+                <span class={`input-group-text ${this.isInvalidNow() ? 'is-invalid' : ''}`} id={this.appendId || undefined}>
                   <slot name="append" />
                 </span>
               );
@@ -330,7 +363,7 @@ export class InputGroupComponent {
   }
 
   private renderValidation(ids: string) {
-    if (!this.validation || !this.validationMessage) return null;
+    if (!this.isInvalidNow() || !this.validationMessage) return null;
     return (
       <div id={`${ids}-validation`} class="invalid-feedback" aria-live="polite">
         {this.validationMessage}

@@ -683,7 +683,7 @@
 
       </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <input-field-component label="First Name" label-size="sm" size="sm" value="" input-id="firstName"></input-field-component>
 
         <input-field-component label="Last Name" value="" input-id="lastName"></input-field-component>
@@ -717,9 +717,9 @@
             slot="formField"
           ></input-field-component>
         </form-component>
-      </div>
+      </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <form-component>
           <input-group-component
             form-layout="horizontal"
@@ -823,7 +823,7 @@
           plumage-search
         >
         </plumage-input-group-component>
-      </div>
+      </div> -->
 
       <!-- <div class="cwrapper"> -->
       <!-- =========================================================
@@ -1692,7 +1692,7 @@
         </section>
       </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <section class="display-box-demo">
           <div class="timepicker-wrapper" style="width: 500px">
             <timepicker-manager use-pl-timepicker size="lg" input-id="one" show-label label-text="Add Time"></timepicker-manager>
@@ -1700,12 +1700,12 @@
         </section>
 
         <section class="display-box-demo">
-          <!-- Force 24-hour ONLY (no toggle) -->
+
           <div class="timepicker-wrapper" style="margin-bottom: 20px; width: 210px">
             <timepicker-manager size="sm"></timepicker-manager>
           </div>
 
-          <!-- Force 12-hour ONLY (no toggle) -->
+
           <div class="timepicker-wrapper" style="width: 210px">
             <timepicker-manager size="lg" show-label></timepicker-manager>
           </div>
@@ -1717,6 +1717,24 @@
           <timepicker-component></timepicker-component>
           <plumage-timepicker-component size="sm"></plumage-timepicker-component>
         </section>
+      </div> -->
+
+      <div class="cwrapper">
+        <div style="margin-bottom: 20px">
+          <datepicker-component calendar></datepicker-component>
+        </div>
+
+        <div style="width: 210px">
+          <datepicker-component date-format="MM-DD-YYYY"  form-layout="inline" required validation validation-message="Invalid date"></datepicker-component>
+        </div>
+
+        <div style="margin-bottom: 20px">
+          <datepicker-component calendar plumage disabled></datepicker-component>
+        </div>
+
+        <div style="width: 210px">
+          <datepicker-component date-format="MM-DD-YYYY" form-layout="inline" plumage required validation validation-message="Invalid date"></datepicker-component>
+        </div>
       </div>
     </app-wrapper>
 

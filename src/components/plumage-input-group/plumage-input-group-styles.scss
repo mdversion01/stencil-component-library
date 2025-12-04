@@ -205,27 +205,28 @@
     border-radius: 0 !important;
   }
 
+
   /* =========================
        Input Underline
     ========================== */
-  // .b-underline {
-  //   background-color: #ccc;
-  //   display: block;
-  //   height: 0.01rem;
-  //   position: relative;
-  //   transition: 0.4s;
-  //   width: 100%;
-  // }
+  .b-underline {
+    background-color: #ccc;
+    display: block;
+    height: 0.01rem;
+    position: relative;
+    transition: 0.4s;
+    width: 100%;
+  }
 
-  // .b-focus {
-  //   background-color: #2680eb;
-  //   bottom: 0;
-  //   height: 0.01rem;
-  //   left: 50%;
-  //   position: absolute;
-  //   transition: 0.4s;
-  //   width: 0;
-  // }
+  .b-focus {
+    background-color: #2680eb;
+    bottom: 0;
+    height: 0.01rem;
+    left: 50%;
+    position: absolute;
+    transition: 0.4s;
+    width: 0;
+  }
 }
 
 /* =========================================
