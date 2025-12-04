@@ -345,20 +345,52 @@ export namespace Components {
         "disabled": boolean;
         "displayContextExamples": boolean;
         "dropdownOpen": boolean;
+        /**
+          * Layout & sizing
+         */
         "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * Icon & ids
+         */
         "icon": string;
+        "inputCol": number;
+        "inputCols": string;
         "inputId": string;
         "isCalendarFocused": boolean;
+        /**
+          * Label & placeholder
+         */
         "label": string;
+        /**
+          * Legacy numeric cols (fallback)
+         */
+        "labelCol": number;
+        /**
+          * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+         */
+        "labelCols": string;
         "labelHidden": boolean;
+        "labelSize": '' | 'sm' | 'lg';
         "placeholder": string;
+        /**
+          * Visual theme
+         */
         "plumage": boolean;
         "prependId": string;
+        /**
+          * Prepend/append
+         */
         "prependProp": boolean;
+        /**
+          * Validation
+         */
         "required": boolean;
         "size": '' | 'sm' | 'lg';
         "validation": boolean;
         "validationMessage": string;
+        /**
+          * Value (kept for API parity)
+         */
         "value": string;
         "warningMessage": string;
     }
@@ -2339,21 +2371,53 @@ declare namespace LocalJSX {
         "disabled"?: boolean;
         "displayContextExamples"?: boolean;
         "dropdownOpen"?: boolean;
+        /**
+          * Layout & sizing
+         */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * Icon & ids
+         */
         "icon"?: string;
+        "inputCol"?: number;
+        "inputCols"?: string;
         "inputId"?: string;
         "isCalendarFocused"?: boolean;
+        /**
+          * Label & placeholder
+         */
         "label"?: string;
+        /**
+          * Legacy numeric cols (fallback)
+         */
+        "labelCol"?: number;
+        /**
+          * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+         */
+        "labelCols"?: string;
         "labelHidden"?: boolean;
+        "labelSize"?: '' | 'sm' | 'lg';
         "onDate-selected"?: (event: DatepickerComponentCustomEvent<{ formattedDate: string }>) => void;
         "placeholder"?: string;
+        /**
+          * Visual theme
+         */
         "plumage"?: boolean;
         "prependId"?: string;
+        /**
+          * Prepend/append
+         */
         "prependProp"?: boolean;
+        /**
+          * Validation
+         */
         "required"?: boolean;
         "size"?: '' | 'sm' | 'lg';
         "validation"?: boolean;
         "validationMessage"?: string;
+        /**
+          * Value (kept for API parity)
+         */
         "value"?: string;
         "warningMessage"?: string;
     }

@@ -3,43 +3,43 @@
 exports[`tooltip-component applies right placement class and renders on click: host__click_right 1`] = `
 <tooltip-component data-original-title="On the right" data-placement="right" data-trigger="click" id="tip3" visible="">
   <!---->
-  <button aria-describedby="tooltip_909t447w3" data-placement="right" data-toggle="tooltip" id="t3" tabindex="0">
+  <button aria-describedby="tooltip_6m4s2qjxr" data-placement="right" data-toggle="tooltip" id="t3" tabindex="0">
     Click me
   </button>
 </tooltip-component>
 `;
 
-exports[`tooltip-component applies right placement class and renders on click: tooltip__click_right 1`] = `"<div id="tooltip_909t447w3" class="tooltip tooltip-right fade show animated" role="tooltip" aria-live="assertive" style="position: absolute; top: 0px; left: 0px;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 0; pointer-events: none;"></div><div id="tooltip_909t447w3-content" class="tooltip-inner" style="position: relative;">On the right</div></div>"`;
+exports[`tooltip-component applies right placement class and renders on click: tooltip__click_right 1`] = `"<div id="tooltip_6m4s2qjxr" class="tooltip tooltip-right fade show animated" role="tooltip" aria-live="assertive" style="position: absolute; top: 0px; left: 0px;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 0; pointer-events: none;"></div><div id="tooltip_6m4s2qjxr-content" class="tooltip-inner" style="position: relative;">On the right</div></div>"`;
 
 exports[`tooltip-component manual mode: show()/hide() only when trigger includes "manual": host__manual_show 1`] = `
 <tooltip-component data-original-title="Manual tip" data-trigger="manual" id="tip4" visible="">
   <!---->
-  <button aria-describedby="tooltip_bvzxhytve" data-placement="top" data-toggle="tooltip" id="t4" tabindex="0">
+  <button aria-describedby="tooltip_9vaoxa781" data-placement="top" data-toggle="tooltip" id="t4" tabindex="0">
     Manual
   </button>
 </tooltip-component>
 `;
 
-exports[`tooltip-component manual mode: show()/hide() only when trigger includes "manual": tooltip__manual_show 1`] = `"<div id="tooltip_bvzxhytve" class="tooltip tooltip-top fade show animated" role="tooltip" aria-live="assertive" style="position: absolute; top: 0px; left: 0px;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 0; pointer-events: none;"></div><div id="tooltip_bvzxhytve-content" class="tooltip-inner" style="position: relative;">Manual tip</div></div>"`;
+exports[`tooltip-component manual mode: show()/hide() only when trigger includes "manual": tooltip__manual_show 1`] = `"<div id="tooltip_9vaoxa781" class="tooltip tooltip-top fade show animated" role="tooltip" aria-live="assertive" style="position: absolute; top: 0px; left: 0px;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 0; pointer-events: none;"></div><div id="tooltip_9vaoxa781-content" class="tooltip-inner" style="position: relative;">Manual tip</div></div>"`;
 
 exports[`tooltip-component renders HTML content when provided and matches snapshot: host__hover_html 1`] = `
 <tooltip-component data-html data-original-title="<span><strong>Hi</strong> <em>there</em></span>" data-trigger="hover focus" id="tip2" visible="">
   <!---->
-  <button aria-describedby="tooltip_7yxx3ye9m" data-placement="top" data-toggle="tooltip" id="t2" tabindex="0">
+  <button aria-describedby="tooltip_1bn0h4m29" data-placement="top" data-toggle="tooltip" id="t2" tabindex="0">
     Hover me
   </button>
 </tooltip-component>
 `;
 
-exports[`tooltip-component renders HTML content when provided and matches snapshot: tooltip__hover_html 1`] = `"<div id="tooltip_7yxx3ye9m" class="tooltip tooltip-top fade show animated" role="tooltip" aria-live="assertive" style="position: absolute; top: 0px; left: 0px;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 0; pointer-events: none;"></div><div id="tooltip_7yxx3ye9m-content" class="tooltip-inner" style="position: relative;"><span><strong>Hi</strong> <em>there</em></span></div></div>"`;
+exports[`tooltip-component renders HTML content when provided and matches snapshot: tooltip__hover_html 1`] = `"<div id="tooltip_1bn0h4m29" class="tooltip tooltip-top fade show animated" role="tooltip" aria-live="assertive" style="position: absolute; top: 0px; left: 0px;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 0; pointer-events: none;"></div><div id="tooltip_1bn0h4m29-content" class="tooltip-inner" style="position: relative;"><span><strong>Hi</strong> <em>there</em></span></div></div>"`;
 
 exports[`tooltip-component renders on hover with plain text and matches snapshot: host__hover_plain 1`] = `
 <tooltip-component data-original-title="Plain tooltip" data-trigger="hover focus" id="tip1" visible="">
   <!---->
-  <button aria-describedby="tooltip_5ppsygcdk" data-placement="top" data-toggle="tooltip" id="t1" tabindex="0">
+  <button aria-describedby="tooltip_iw42sv4xt" data-placement="top" data-toggle="tooltip" id="t1" tabindex="0">
     Hover me
   </button>
 </tooltip-component>
 `;
 
-exports[`tooltip-component renders on hover with plain text and matches snapshot: tooltip__hover_plain 1`] = `"<div id="tooltip_5ppsygcdk" class="tooltip tooltip-top fade show animated" role="tooltip" aria-live="assertive" style="position: absolute; top: 0px; left: 0px;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 0; pointer-events: none;"></div><div id="tooltip_5ppsygcdk-content" class="tooltip-inner" style="position: relative;">Plain tooltip</div></div>"`;
+exports[`tooltip-component renders on hover with plain text and matches snapshot: tooltip__hover_plain 1`] = `"<div id="tooltip_iw42sv4xt" class="tooltip tooltip-top fade show animated" role="tooltip" aria-live="assertive" style="position: absolute; top: 0px; left: 0px;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 0; pointer-events: none;"></div><div id="tooltip_iw42sv4xt-content" class="tooltip-inner" style="position: relative;">Plain tooltip</div></div>"`;

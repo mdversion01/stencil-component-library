@@ -49,35 +49,57 @@ export class Datepicker {
   @Prop({ mutable: true, reflect: true }) disabled: boolean = false;
   @Prop({ mutable: true, reflect: true }) displayContextExamples: boolean = false;
   @Prop({ mutable: true, reflect: true }) dropdownOpen: boolean = false;
+
+  /** Layout & sizing */
   @Prop({ mutable: true, reflect: true }) formLayout: '' | 'horizontal' | 'inline' = '';
+  @Prop({ mutable: true, reflect: true }) size: '' | 'sm' | 'lg' = '';
+
+  /** Icon & ids */
   @Prop({ mutable: true, reflect: true }) icon: string = 'fas fa-calendar-alt';
   @Prop({ mutable: true, reflect: true }) inputId: string = 'datepicker';
-  @Prop({ mutable: true, reflect: true }) isCalendarFocused: boolean = false;
+
+  /** Label & placeholder */
   @Prop({ mutable: true, reflect: true }) label: string = 'Date Picker';
   @Prop({ mutable: true, reflect: true }) labelHidden: boolean = false;
+  @Prop() labelSize: '' | 'sm' | 'lg' = '';
   @Prop({ mutable: true, reflect: true }) placeholder: string = 'YYYY-MM-DD';
+
+  /** Visual theme */
   @Prop({ mutable: true, reflect: true }) plumage: boolean = false;
 
+  /** Prepend/append */
   @Prop({ attribute: 'prepend', mutable: true, reflect: true }) prependProp: boolean = false;
   @Prop({ mutable: true, reflect: true }) prependId: string = '';
 
+  /** Validation */
   @Prop({ mutable: true, reflect: true }) required: boolean = false;
-  @Prop({ mutable: true, reflect: true }) size: '' | 'sm' | 'lg' = '';
   @Prop({ mutable: true, reflect: true }) validation: boolean = false;
   @Prop({ mutable: true, reflect: true }) validationMessage: string = '';
-  @Prop({ mutable: true, reflect: true }) value: string = '';
   @Prop({ mutable: true, reflect: true }) warningMessage: string = '';
+
+  /** Value (kept for API parity) */
+  @Prop({ mutable: true, reflect: true }) value: string = '';
+
+  /** NEW: configurable Bootstrap grid like other inputs */
+  /** Legacy numeric cols (fallback) */
+  @Prop() labelCol: number = 2;
+  @Prop() inputCol: number = 10;
+
+  /** NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") */
+  @Prop() labelCols: string = '';
+  @Prop() inputCols: string = '';
 
   @State() selectedDate: Date | null = null;
   @State() selectedMonth: number | null = null;
   @State() selectedYear: number | null = null;
+
+  @Prop({ mutable: true, reflect: true }) isCalendarFocused: boolean = false;
 
   @Event({ eventName: 'date-selected' }) dateSelected!: EventEmitter<{ formattedDate: string }>;
 
   /** === Watchers === */
   @Watch('dateFormat')
   onDateFormatChange() {
-    // Only mirror dateFormat into placeholder if user did NOT provide a custom placeholder
     if (!this.userProvidedPlaceholder) {
       this.placeholder = this.dateFormat;
     }
@@ -86,9 +108,7 @@ export class Datepicker {
 
   @Watch('placeholder')
   onPlaceholderChange() {
-    // Keep the flag in sync for runtime attribute changes
     this.userProvidedPlaceholder = this.host.hasAttribute('placeholder');
-    // If placeholder attribute was removed, fall back to dateFormat
     if (!this.userProvidedPlaceholder) {
       this.placeholder = this.dateFormat;
     }
@@ -96,11 +116,9 @@ export class Datepicker {
 
   /** === Lifecycle === */
   componentWillLoad() {
-    // Detect user-provided attributes (DOM attributes are kebab-case)
     this.userProvidedPlaceholder = this.host.hasAttribute('placeholder');
     this.userProvidedDateFormat = this.host.hasAttribute('date-format');
 
-    // Warn only if BOTH were explicitly provided by the user
     if (this.userProvidedPlaceholder && this.userProvidedDateFormat) {
       console.warn(
         '[datepicker-component] You provided both `placeholder` and `dateFormat`. ' +
@@ -109,14 +127,15 @@ export class Datepicker {
       );
     }
 
-    // If user did not provide a placeholder, default it to the (possibly user-provided) dateFormat
     if (!this.userProvidedPlaceholder) {
       this.placeholder = this.dateFormat;
     }
+
+    // Validate numeric fallbacks early (no-op if string specs used)
+    this.getComputedCols();
   }
 
   componentDidLoad() {
-    // Calendar exists in DOM (inside dropdown) even when closed => safe to render grid.
     this.renderCalendar(this.currentMonth, this.currentYear);
     this.updateSelectedDateDisplay('No date selected');
 
@@ -178,6 +197,99 @@ export class Datepicker {
     return this.required && !this.selectedDate;
   }
 
+  /** Layout helpers (match other components) */
+  private isHorizontal() {
+    return this.formLayout === 'horizontal';
+  }
+  private isInline() {
+    return this.formLayout === 'inline';
+  }
+
+  /** Parse responsive column spec into Bootstrap classes. */
+  private parseColsSpec(spec?: string): string {
+    if (!spec) return '';
+    const tokens = spec.trim().split(/\s+/);
+    const out: string[] = [];
+
+    for (const t of tokens) {
+      if (!t) continue;
+
+      if (/^col(-\w+)?(-\d+)?$/.test(t)) {
+        out.push(t);
+        continue;
+      }
+      if (/^\d{1,2}$/.test(t)) {
+        const n = Math.max(1, Math.min(12, parseInt(t, 10)));
+        out.push(`col-${n}`);
+        continue;
+      }
+      const m = /^(xs|sm|md|lg|xl|xxl)-(\d{1,2})$/.exec(t);
+      if (m) {
+        const bp = m[1];
+        const n = Math.max(1, Math.min(12, parseInt(m[2], 10)));
+        out.push(bp === 'xs' ? `col-${n}` : `col-${bp}-${n}`);
+        continue;
+      }
+      if (t === 'col') {
+        out.push('col');
+        continue;
+      }
+      // unknown token -> ignore
+    }
+
+    return Array.from(new Set(out)).join(' ');
+  }
+
+  /** Build final col class (string spec > numeric fallback > special cases). */
+  private buildColClass(kind: 'label' | 'input'): string {
+    const spec = (kind === 'label' ? this.labelCols : this.inputCols)?.trim();
+
+    if (this.isHorizontal()) {
+      if (spec) return this.parseColsSpec(spec);
+
+      if (kind === 'input' && this.labelHidden) {
+        return this.inputCols ? this.parseColsSpec(this.inputCols) : 'col-12';
+      }
+
+      const num = kind === 'label' ? this.labelCol : this.inputCol;
+      if (Number.isFinite(num as any)) {
+        const n = Math.max(0, Math.min(12, Number(num)));
+        if (n === 0) return '';
+        return `col-${n}`;
+      }
+      return '';
+    }
+
+    if (this.isInline()) {
+      return spec ? this.parseColsSpec(spec) : '';
+    }
+
+    return '';
+  }
+
+  /** Numeric validation (used only when string specs aren’t provided). */
+  private getComputedCols() {
+    const DEFAULT_LABEL = 2;
+    const DEFAULT_INPUT = 10;
+
+    if (this.isHorizontal() && this.labelHidden) return { label: 0, input: 12 };
+
+    const lbl = Number(this.labelCol);
+    const inp = Number(this.inputCol);
+    const label = Number.isFinite(lbl) ? Math.max(1, Math.min(11, lbl)) : DEFAULT_LABEL;
+    const input = Number.isFinite(inp) ? Math.max(1, Math.min(11, inp)) : DEFAULT_INPUT;
+
+    if (this.isHorizontal() && !this.labelCols && !this.inputCols && label + input !== 12) {
+      console.error(
+        '[datepicker-component] For formLayout="horizontal", labelCol + inputCol must equal 12. ' +
+          `Received: ${this.labelCol} + ${this.inputCol} = ${Number(this.labelCol) + Number(this.inputCol)}. Falling back to 2/10.`,
+      );
+      return { label: DEFAULT_LABEL, input: DEFAULT_INPUT };
+    }
+
+    return { label, input };
+  }
+
   private toggleDropdown = () => {
     this.preventClose = true;
     this.dropdownOpen = !this.dropdownOpen;
@@ -185,7 +297,6 @@ export class Datepicker {
     if (this.dropdownOpen) {
       const inputVal = (this.inputElement?.value || '').trim();
       if (!inputVal) {
-        // Opening with empty value — do NOT clear invalid here; just reset calendar layout.
         this.clearInputField(true /* preserveValidation */, false /* markInvalid */);
         this.updateSelectedDateDisplay(null as any);
       } else {
@@ -209,7 +320,7 @@ export class Datepicker {
     this.popperInstance = createPopper(this.inputElement, dropdown, {
       placement: 'bottom-start',
       modifiers: [
-        { name: 'offset', options: { offset: [0, 4] } },
+        { name: 'offset,', options: { offset: [0, 4] } } as any, // keep config shape; TypeScript sometimes fusses in Stencil envs
         { name: 'preventOverflow', options: { boundary: 'viewport' } },
       ],
     });
@@ -247,7 +358,6 @@ export class Datepicker {
     else if (formatted.length < inputValue.length) newCursor--;
     input.setSelectionRange(newCursor, newCursor);
 
-    // If user has cleared the field via typing, mark invalid again
     if (formatted === '') {
       this.clearInputField(false /* preserveValidation */, true /* markInvalid */);
       return;
@@ -259,7 +369,6 @@ export class Datepicker {
   private handleInputBlur = (e: Event) => {
     const val = (e.target as HTMLInputElement).value.trim();
     if (!val) {
-      // On blur of an empty field -> mark invalid again
       this.clearInputField(false /* preserveValidation */, true /* markInvalid */);
       return;
     }
@@ -273,7 +382,6 @@ export class Datepicker {
       this.updateSelectedDateDisplay(parsed);
       this.selectedDate = parsed;
 
-      // valid typed date -> clear invalid/required visuals now
       this.validation = false;
       this.validationMessage = '';
       this.warningMessage = '';
@@ -318,7 +426,6 @@ export class Datepicker {
       this.updateInputField(fmt);
       this.updateSelectedDateDisplay(this.formatDateLong(this.selectedDate));
     }
-    // Do NOT overwrite placeholder here if the user provided one; handled in watcher.
     if (!this.userProvidedPlaceholder) {
       this.placeholder = this.dateFormat;
     }
@@ -471,7 +578,6 @@ export class Datepicker {
       this.updateActiveDateElements();
       this.updateSelectedDateElements(long);
 
-      // A real date was picked -> clear invalid/required visuals now
       this.validation = false;
       this.validationMessage = '';
       this.warningMessage = '';
@@ -511,15 +617,15 @@ export class Datepicker {
   private setActiveState() {
     const activeSpan = this.qs('.active');
     if (activeSpan) {
-      activeSpan.classList.remove('active', 'btn-primary', 'focus');
-      activeSpan.classList.add('btn-outline-light', 'text-dark');
+      (activeSpan as HTMLElement).classList.remove('active', 'btn-primary', 'focus');
+      (activeSpan as HTMLElement).classList.add('btn-outline-light', 'text-dark');
     }
     if (this.selectedDate) {
       const id = `cell-${this.selectedDate.getUTCFullYear()}-${String(this.selectedDate.getUTCMonth() + 1).padStart(2, '0')}-${String(this.selectedDate.getUTCDate()).padStart(
         2,
         '0',
       )}`;
-      const el = this.qs<HTMLElement>(`#${CSS.escape(id)}`);
+      const el = this.qs<HTMLElement>(`#${(window as any).CSS?.escape ? (window as any).CSS.escape(id) : id}`);
       if (el) {
         const span = el.querySelector('span')!;
         span.classList.add('active', 'btn-primary', 'focus');
@@ -689,13 +795,11 @@ export class Datepicker {
 
     if (event.key === 'Backspace') {
       if ((inputField?.value.trim() || '') === '') {
-        // Backspace on empty -> add back invalid classes
         this.clearInputField(false /* preserveValidation */, true /* markInvalid */);
         return;
       }
     }
 
-    // Do not attempt grid navigation from the input element here.
     if (event.key === 'Enter' || event.key === ' ') {
       this.handleEnterKeyPress(event);
     }
@@ -706,18 +810,15 @@ export class Datepicker {
     const grid = this.qs<HTMLElement>('.calendar-grid');
     if (!grid) return;
 
-    // must be focusing a grid cell
     const currentFocus = (this.host.shadowRoot ? this.host.shadowRoot.activeElement : document.activeElement) as HTMLElement | null;
     if (!currentFocus || !grid.contains(currentFocus)) return;
 
-    // Select focused day
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       this.handleEnterKeyPress(event);
       return;
     }
 
-    // Navigate with arrows
     if (!event.key.startsWith('Arrow')) return;
     event.preventDefault();
 
@@ -756,9 +857,9 @@ export class Datepicker {
 
     const targetCell = cells[newIndex];
     const targetSpan = targetCell.querySelector('span')!;
-    this.qs<HTMLElement>('.calendar-grid-item span.focus')?.classList.remove('focus'); // visual focus
+    this.qs<HTMLElement>('.calendar-grid-item span.focus')?.classList.remove('focus');
     targetSpan.classList.add('focus');
-    targetCell.focus(); // DOM focus stays on cell
+    targetCell.focus();
     this.updateActiveDateElements();
   };
 
@@ -802,7 +903,6 @@ export class Datepicker {
     this.updateSelectedDateDisplay(formatted);
     this.setActiveState();
 
-    // Picking "Today" is a selection -> clear invalid/required visuals
     this.validation = false;
     this.validationMessage = '';
     this.warningMessage = '';
@@ -854,7 +954,6 @@ export class Datepicker {
     this.renderCalendar(this.currentMonth, this.currentYear);
 
     if (markInvalid) {
-      // Always mark invalid again when explicitly cleared
       this.validation = true;
       if (!this.validationMessage) {
         this.validationMessage = 'Please select a date.';
@@ -872,7 +971,7 @@ export class Datepicker {
 
   private updateCalendarWithParsedDate(date: Date) {
     if (!date || isNaN(date.getTime())) {
-      this.clearInputField(false, true); // invalid if parse failed and we cleared
+      this.clearInputField(false, true);
       return;
     }
     this.selectedDate = date;
@@ -885,7 +984,6 @@ export class Datepicker {
       this.updateSelectedDateDisplay(formatted);
     }
 
-    // valid parsed date -> clear invalid/required visuals
     this.validation = false;
     this.validationMessage = '';
     this.warningMessage = '';
@@ -894,7 +992,6 @@ export class Datepicker {
   }
 
   private validateInput(value: string) {
-    // Empty input should show invalid until a date is selected
     if (value.trim() === '') {
       this.validation = true;
       if (!this.validationMessage) this.validationMessage = 'Please select a date.';
@@ -1101,14 +1198,18 @@ export class Datepicker {
     );
   }
 
-  private renderDropdown() {
-    return (
-      <div class={`dropdown${this.dropdownOpen ? ' open' : ''}`}>
-        <div class="dropdown-content" role="dialog" aria-modal={true as any} aria-labelledby="datepicker-desc">
-          {this.renderDatePickerView()}
-        </div>
-      </div>
-    );
+  /* == RENDER helpers for label/input layout (classic & plumage) == */
+
+  private labelClassBase() {
+    return ['form-control-label', this.showAsRequired() ? 'required' : '', this.labelHidden ? 'sr-only' : '', this.validation ? 'invalid' : ''].filter(Boolean).join(' ');
+  }
+
+  private labelClassHorizontal(labelColClass: string) {
+    return [this.labelClassBase(), labelColClass, 'no-padding', `col-form-label${this.labelSize === 'sm' ? '-sm' : this.labelSize === 'lg' ? '-lg' : ''}`].filter(Boolean).join(' ');
+  }
+
+  private groupSizeClass() {
+    return this.size === 'sm' ? 'input-group-sm' : this.size === 'lg' ? 'input-group-lg' : '';
   }
 
   private renderAppend() {
@@ -1142,27 +1243,31 @@ export class Datepicker {
   }
 
   private renderInputGroupClassic() {
-    const groupRow = this.formLayout === 'horizontal' || this.formLayout === 'inline';
+    const isRow = this.isHorizontal() || this.isInline();
+
+    // Compute col classes
+    const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
+    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
+
+    const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
+
+    // Validate numeric fallbacks if needed (no-op when string specs provided)
+    this.getComputedCols();
+
     return (
       <Fragment>
-        <div class={`form-group form-input-group-basic ${this.formLayout} ${groupRow ? ' row' : ''}`}>
-          <label
-            class={`form-control-label${this.showAsRequired() ? ' required' : ''}${this.labelHidden ? ' sr-only' : ''}${
-              this.formLayout === 'horizontal' ? ' col-md-2 no-padding' : ''
-            }${this.validation ? ' invalid' : ''}`}
-            htmlFor={this.inputId}
-            aria-hidden="true"
-          >
-            <span class={this.showAsRequired() ? 'required' : ''}>{this.label}</span>
-            {this.required ? <span class="required">*</span> : null}
-          </label>
+        <div class={['form-group', 'form-input-group-basic', this.formLayout || '', isRow ? 'row' : ''].filter(Boolean).join(' ')}>
+          {/* Label */}
+          {this.labelHidden ? null : (
+            <label class={this.isHorizontal() ? this.labelClassHorizontal(labelColClass) : this.labelClassBase()} htmlFor={this.inputId} aria-hidden="true">
+              <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
+              {this.required ? <span class="required">*</span> : null}
+            </label>
+          )}
 
-          <div class={this.formLayout === 'horizontal' ? 'col-md-10 no-padding' : undefined}>
-            <div
-              class={`input-group${this.size === 'sm' ? ' input-group-sm' : this.size === 'lg' ? ' input-group-lg' : ''}${this.validation ? ' is-invalid' : ''}`}
-              role="group"
-              aria-label="Date Picker Group"
-            >
+          {/* Input column */}
+          <div class={this.isHorizontal() ? inputColClass : undefined}>
+            <div class={['input-group', this.groupSizeClass(), this.validation ? 'is-invalid' : ''].filter(Boolean).join(' ')} role="group" aria-label="Date Picker Group">
               {this.prependProp ? this.renderPrepend() : null}
 
               <div class="drp-input-field">
@@ -1207,27 +1312,29 @@ export class Datepicker {
   }
 
   private renderInputGroupPlumage() {
-    const isRow = this.formLayout === 'horizontal' || this.formLayout === 'inline';
-    return (
-      <div class={`plumage${this.formLayout ? ` ${this.formLayout}` : ''}`}>
-        <div class={`form-group form-input-group ${this.formLayout} ${isRow ? ' row' : ''}`}>
-          <label
-            class={`form-control-label${this.showAsRequired() ? ' required' : ''}${this.labelHidden ? ' sr-only' : ''}${
-              this.formLayout === 'horizontal' ? ' col-md-2 no-padding' : ''
-            }${this.validation ? ' invalid' : ''}`}
-            htmlFor={this.inputId}
-            aria-hidden="true"
-          >
-            <span class={this.showAsRequired() ? 'required' : ''}>{this.label}</span>
-            {this.required ? <span class="required">*</span> : null}
-          </label>
+    const isRow = this.isHorizontal() || this.isInline();
 
-          <div class={this.formLayout === 'horizontal' ? 'col-md-10 no-padding' : undefined}>
-            <div
-              class={`input-group${this.size === 'sm' ? ' input-group-sm' : this.size === 'lg' ? ' input-group-lg' : ''}${this.disabled ? ' disabled' : ''}`}
-              role="group"
-              aria-label="Date Picker Group"
-            >
+    const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
+    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
+
+    const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
+
+    this.getComputedCols();
+
+    return (
+      <div class={['plumage', this.formLayout ? this.formLayout : ''].filter(Boolean).join(' ')}>
+        <div class={['form-group', 'form-input-group', this.formLayout || '', isRow ? 'row' : ''].filter(Boolean).join(' ')}>
+          {/* Label */}
+          {this.labelHidden ? null : (
+            <label class={this.isHorizontal() ? this.labelClassHorizontal(labelColClass) : this.labelClassBase()} htmlFor={this.inputId} aria-hidden="true">
+              <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
+              {this.required ? <span class="required">*</span> : null}
+            </label>
+          )}
+
+          {/* Input column */}
+          <div class={this.isHorizontal() ? inputColClass : undefined}>
+            <div class={['input-group', this.groupSizeClass(), this.disabled ? 'disabled' : ''].filter(Boolean).join(' ')} role="group" aria-label="Date Picker Group">
               {this.prependProp ? (
                 <button
                   onClick={this.toggleDropdown}
@@ -1309,6 +1416,16 @@ export class Datepicker {
     );
   }
 
+  private renderDropdown() {
+    return (
+      <div class={`dropdown${this.dropdownOpen ? ' open' : ''}`}>
+        <div class="dropdown-content" role="dialog" aria-modal={true as any} aria-labelledby="datepicker-desc">
+          {this.renderDatePickerView()}
+        </div>
+      </div>
+    );
+  }
+
   private handleCalendarFocus() {
     const first = this.qs<HTMLElement>('.calendar-grid-item span');
     if (first) {
@@ -1339,7 +1456,6 @@ export class Datepicker {
     this.renderCalendar(this.currentMonth, this.currentYear);
     this.setActiveState();
 
-    // selecting from external event implies valid selection
     this.validation = false;
     this.validationMessage = '';
     this.warningMessage = '';
