@@ -332,6 +332,59 @@ export namespace Components {
         "validationMsg": string;
         "value": string;
     }
+    interface DateRangePickerComponent {
+        "appendId": string;
+        /**
+          * was `append`, renamed to avoid reserved name
+         */
+        "appendProp": boolean;
+        "ariaLabel": string;
+        /**
+          * Programmatically clear the selection and reset
+         */
+        "clear": () => Promise<void>;
+        "dateFormat": 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        "disabled": boolean;
+        /**
+          * '', 'horizontal', or 'inline'
+         */
+        "formLayout": '' | 'horizontal' | 'inline';
+        "icon": string;
+        "inputId": string;
+        "joinBy": string;
+        "label": string;
+        "labelHidden": boolean;
+        /**
+          * External placeholder prop (immutable). We derive a default into state.
+         */
+        "placeholder"?: string;
+        "plumage": boolean;
+        "prependId": string;
+        /**
+          * was `prepend`, renamed to avoid reserved name
+         */
+        "prependProp": boolean;
+        /**
+          * Render only the picker (no input group); disables OK button
+         */
+        "rangePicker": boolean;
+        "required": boolean;
+        "showIso": boolean;
+        "showLong": boolean;
+        /**
+          * Allow host to control the OK/Close button; we'll mask it off when rangePicker = true
+         */
+        "showOkButton": boolean;
+        /**
+          * Use these to control output format of start/end labels
+         */
+        "showYmd": boolean;
+        "size": '' | 'sm' | 'lg';
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
+        "warningMessage": string;
+    }
     interface DatepickerComponent {
         "appendId": string;
         /**
@@ -1376,6 +1429,10 @@ export interface CheckboxComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLCheckboxComponentElement;
 }
+export interface DateRangePickerComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDateRangePickerComponentElement;
+}
 export interface DatepickerComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDatepickerComponentElement;
@@ -1640,6 +1697,26 @@ declare global {
     var HTMLCheckboxComponentElement: {
         prototype: HTMLCheckboxComponentElement;
         new (): HTMLCheckboxComponentElement;
+    };
+    interface HTMLDateRangePickerComponentElementEventMap {
+        "date-range-updated": {
+    startDate: string;
+    endDate: string;
+  };
+    }
+    interface HTMLDateRangePickerComponentElement extends Components.DateRangePickerComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDateRangePickerComponentElementEventMap>(type: K, listener: (this: HTMLDateRangePickerComponentElement, ev: DateRangePickerComponentCustomEvent<HTMLDateRangePickerComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDateRangePickerComponentElementEventMap>(type: K, listener: (this: HTMLDateRangePickerComponentElement, ev: DateRangePickerComponentCustomEvent<HTMLDateRangePickerComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLDateRangePickerComponentElement: {
+        prototype: HTMLDateRangePickerComponentElement;
+        new (): HTMLDateRangePickerComponentElement;
     };
     interface HTMLDatepickerComponentElementEventMap {
         "date-selected": { formattedDate: string };
@@ -1993,6 +2070,7 @@ declare global {
         "by-page-pagination-component": HTMLByPagePaginationComponentElement;
         "card-component": HTMLCardComponentElement;
         "checkbox-component": HTMLCheckboxComponentElement;
+        "date-range-picker-component": HTMLDateRangePickerComponentElement;
         "datepicker-component": HTMLDatepickerComponentElement;
         "discrete-slider-component": HTMLDiscreteSliderComponentElement;
         "divider-component": HTMLDividerComponentElement;
@@ -2357,6 +2435,62 @@ declare namespace LocalJSX {
         "validation"?: boolean;
         "validationMsg"?: string;
         "value"?: string;
+    }
+    interface DateRangePickerComponent {
+        "appendId"?: string;
+        /**
+          * was `append`, renamed to avoid reserved name
+         */
+        "appendProp"?: boolean;
+        "ariaLabel"?: string;
+        "dateFormat"?: 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        "disabled"?: boolean;
+        /**
+          * '', 'horizontal', or 'inline'
+         */
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        "icon"?: string;
+        "inputId"?: string;
+        "joinBy"?: string;
+        "label"?: string;
+        "labelHidden"?: boolean;
+        /**
+          * Fired when a valid date range is set via OK button or input parsing
+         */
+        "onDate-range-updated"?: (event: DateRangePickerComponentCustomEvent<{
+    startDate: string;
+    endDate: string;
+  }>) => void;
+        /**
+          * External placeholder prop (immutable). We derive a default into state.
+         */
+        "placeholder"?: string;
+        "plumage"?: boolean;
+        "prependId"?: string;
+        /**
+          * was `prepend`, renamed to avoid reserved name
+         */
+        "prependProp"?: boolean;
+        /**
+          * Render only the picker (no input group); disables OK button
+         */
+        "rangePicker"?: boolean;
+        "required"?: boolean;
+        "showIso"?: boolean;
+        "showLong"?: boolean;
+        /**
+          * Allow host to control the OK/Close button; we'll mask it off when rangePicker = true
+         */
+        "showOkButton"?: boolean;
+        /**
+          * Use these to control output format of start/end labels
+         */
+        "showYmd"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "validation"?: boolean;
+        "validationMessage"?: string;
+        "value"?: string;
+        "warningMessage"?: string;
     }
     interface DatepickerComponent {
         "appendId"?: string;
@@ -3363,6 +3497,7 @@ declare namespace LocalJSX {
         "by-page-pagination-component": ByPagePaginationComponent;
         "card-component": CardComponent;
         "checkbox-component": CheckboxComponent;
+        "date-range-picker-component": DateRangePickerComponent;
         "datepicker-component": DatepickerComponent;
         "discrete-slider-component": DiscreteSliderComponent;
         "divider-component": DividerComponent;
@@ -3410,6 +3545,7 @@ declare module "@stencil/core" {
             "by-page-pagination-component": LocalJSX.ByPagePaginationComponent & JSXBase.HTMLAttributes<HTMLByPagePaginationComponentElement>;
             "card-component": LocalJSX.CardComponent & JSXBase.HTMLAttributes<HTMLCardComponentElement>;
             "checkbox-component": LocalJSX.CheckboxComponent & JSXBase.HTMLAttributes<HTMLCheckboxComponentElement>;
+            "date-range-picker-component": LocalJSX.DateRangePickerComponent & JSXBase.HTMLAttributes<HTMLDateRangePickerComponentElement>;
             "datepicker-component": LocalJSX.DatepickerComponent & JSXBase.HTMLAttributes<HTMLDatepickerComponentElement>;
             "discrete-slider-component": LocalJSX.DiscreteSliderComponent & JSXBase.HTMLAttributes<HTMLDiscreteSliderComponentElement>;
             "divider-component": LocalJSX.DividerComponent & JSXBase.HTMLAttributes<HTMLDividerComponentElement>;
