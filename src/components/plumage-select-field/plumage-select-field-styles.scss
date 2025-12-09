@@ -88,12 +88,16 @@
     margin-bottom: 0.25rem;
   }
 
-  .horizontal .form-group .form-control-label,
-  .horizontal .form-group label,
   .inline .form-group .form-control-label,
   .inline .form-group label {
     margin-bottom: 0;
     white-space: nowrap;
+  }
+
+  .horizontal .form-group .form-control-label,
+  .horizontal .form-group label {
+    margin-bottom: 0;
+    white-space: normal;
   }
 
   .inline .form-group .form-control-label,

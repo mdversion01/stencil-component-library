@@ -1729,7 +1729,7 @@
         </div>
 
         <div style="margin-bottom: 20px">
-          <datepicker-component calendar plumage disabled></datepicker-component>
+          <datepicker-component calendar plumage></datepicker-component>
         </div>
 
         <div style="width: 210px">
@@ -1737,19 +1737,31 @@
         </div>
 
         <div>
-          <date-range-picker-component show-long range-picker></date-range-picker-component>
+          <date-range-picker-component size="sm" range-picker></date-range-picker-component>
         </div>
 
         <div style="width: 325px">
-          <date-range-picker-component show-long></date-range-picker-component>
+          <date-range-picker-component input-id="drp-1" form-layout="inline" show-long required validation validation-message="Invalid date"></date-range-picker-component>
         </div>
 
         <div>
-          <date-range-picker-component plumage show-iso range-picker></date-range-picker-component>
+          <date-range-picker-component size="sm" plumage show-iso range-picker></date-range-picker-component>
         </div>
 
         <div style="width: 325px">
-          <date-range-picker-component plumage show-ymd ></date-range-picker-component>
+          <date-range-picker-component plumage show-ymd required validation validation-message="Invalid date"></date-range-picker-component>
+        </div>
+
+        <div>
+          <date-range-time-picker-component size="sm" range-time-picker date-format="MM-DD-YYYY" show-duration></date-range-time-picker-component>
+        </div>
+
+        <div>
+          <date-range-time-picker-component size="sm" range-time-picker plumage date-format="MM-DD-YYYY" show-duration></date-range-time-picker-component>
+        </div>
+
+        <div style="width: 554px">
+          <date-range-time-picker-component size="sm" show-long is-twenty-four-hour-format="false" form-layout="inline" plumage show-duration required validation validation-message="Invalid date"></date-range-time-picker-component>
         </div>
       </div>
     </app-wrapper>

@@ -1054,7 +1054,7 @@ export class Datepicker {
   private renderDatePickerView() {
     return (
       <div class="date-picker">
-        <div class={`dp-single-calendar${this.plumage ? ' plumage' : ''}`} aria-label={'Date Picker'} role="region">
+        <div class="dp-single-calendar" aria-label={'Date Picker'} role="region">
           <div class="calendar-inner" dir="ltr" lang="en-US" role="group" aria-describedby="calendar-wrapper">
             <header class="datepicker" title="Selected Date">
               <output aria-live="polite" aria-atomic="true" class="selected-date form-control form-control-sm text-center" id="selected-date" role="status" tabIndex={-1}>
@@ -1322,7 +1322,7 @@ export class Datepicker {
     this.getComputedCols();
 
     return (
-      <div class={['plumage', this.formLayout ? this.formLayout : ''].filter(Boolean).join(' ')}>
+      <div class={this.formLayout ? this.formLayout : ''}>
         <div class={['form-group', 'form-input-group', this.formLayout || '', isRow ? 'row' : ''].filter(Boolean).join(' ')}>
           {/* Label */}
           {this.labelHidden ? null : (
@@ -1469,7 +1469,14 @@ export class Datepicker {
     this.currentDate();
   }
 
+  // render() {
+  //   return this.calendar ? this.renderDatePickerView() : this.renderInputs();
+  // }
+
   render() {
-    return this.calendar ? this.renderDatePickerView() : this.renderInputs();
+    if (this.calendar) return this.plumage ? <div class="plumage">{this.renderDatePickerView()}</div> : this.renderDatePickerView();
+    return this.plumage ? <div class="plumage">{this.renderInputs()}</div> : this.renderInputs();
   }
 }
+
+

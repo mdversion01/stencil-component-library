@@ -350,9 +350,19 @@ export namespace Components {
          */
         "formLayout": '' | 'horizontal' | 'inline';
         "icon": string;
+        "inputCol": number;
+        "inputCols": string;
         "inputId": string;
         "joinBy": string;
         "label": string;
+        /**
+          * Legacy numeric cols (fallback)
+         */
+        "labelCol": number;
+        /**
+          * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+         */
+        "labelCols": string;
         "labelHidden": boolean;
         /**
           * External placeholder prop (immutable). We derive a default into state.
@@ -376,7 +386,68 @@ export namespace Components {
          */
         "showOkButton": boolean;
         /**
-          * Use these to control output format of start/end labels
+          * Use these to control output format of start/end labels (display only)
+         */
+        "showYmd": boolean;
+        "size": '' | 'sm' | 'lg';
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
+        "warningMessage": string;
+    }
+    /**
+     * <date-range-time-picker-component>
+     * Date+time range picker with free-typing, calendar navigation,
+     * ISO / numeric / long display modes, and synchronized dropdown.
+     */
+    interface DateRangeTimePickerComponent {
+        "appendId": string;
+        "appendProp": boolean;
+        "ariaLabel": string;
+        "clear": () => Promise<void>;
+        "dateFormat": 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        "disabled": boolean;
+        /**
+          * '', 'horizontal', or 'inline'
+         */
+        "formLayout": '' | 'horizontal' | 'inline';
+        "icon": string;
+        "inputCol": number;
+        "inputCols": string;
+        "inputId": string;
+        /**
+          * Time options
+         */
+        "isTwentyFourHourFormat": boolean;
+        "joinBy": string;
+        "label": string;
+        /**
+          * Grid like date-range-picker-component
+         */
+        "labelCol": number;
+        "labelCols": string;
+        "labelHidden": boolean;
+        /**
+          * External placeholder (immutable). We derive default into state.
+         */
+        "placeholder"?: string;
+        "plumage": boolean;
+        "prependId": string;
+        "prependProp": boolean;
+        /**
+          * Render only the picker; disables OK button
+         */
+        "rangeTimePicker": boolean;
+        "required": boolean;
+        "showDuration": boolean;
+        "showIso": boolean;
+        "showLong": boolean;
+        /**
+          * Allow host to control the OK/Close button; masked when rangeTimePicker
+         */
+        "showOkButton": boolean;
+        /**
+          * Output flags
          */
         "showYmd": boolean;
         "size": '' | 'sm' | 'lg';
@@ -1433,6 +1504,10 @@ export interface DateRangePickerComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDateRangePickerComponentElement;
 }
+export interface DateRangeTimePickerComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLDateRangeTimePickerComponentElement;
+}
 export interface DatepickerComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLDatepickerComponentElement;
@@ -1700,8 +1775,10 @@ declare global {
     };
     interface HTMLDateRangePickerComponentElementEventMap {
         "date-range-updated": {
-    startDate: string;
-    endDate: string;
+    startDate: string; // display string (same as input)
+    endDate: string; // display string (same as input)
+    startDateIso: string; // YYYY-MM-DD
+    endDateIso: string; // YYYY-MM-DD
   };
     }
     interface HTMLDateRangePickerComponentElement extends Components.DateRangePickerComponent, HTMLStencilElement {
@@ -1717,6 +1794,38 @@ declare global {
     var HTMLDateRangePickerComponentElement: {
         prototype: HTMLDateRangePickerComponentElement;
         new (): HTMLDateRangePickerComponentElement;
+    };
+    interface HTMLDateRangeTimePickerComponentElementEventMap {
+        "date-time-updated": {
+    startDate: string;
+    endDate: string;
+    startTime: string;
+    endTime: string;
+    duration: string;
+    startDateIso?: string; // YYYY-MM-DD
+    endDateIso?: string; // YYYY-MM-DD
+    startDateTimeIso?: string; // YYYY-MM-DDTHH:mm:ss.sssZ
+    endDateTimeIso?: string; // YYYY-MM-DDTHH:mm:ss.sssZ
+  };
+    }
+    /**
+     * <date-range-time-picker-component>
+     * Date+time range picker with free-typing, calendar navigation,
+     * ISO / numeric / long display modes, and synchronized dropdown.
+     */
+    interface HTMLDateRangeTimePickerComponentElement extends Components.DateRangeTimePickerComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLDateRangeTimePickerComponentElementEventMap>(type: K, listener: (this: HTMLDateRangeTimePickerComponentElement, ev: DateRangeTimePickerComponentCustomEvent<HTMLDateRangeTimePickerComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLDateRangeTimePickerComponentElementEventMap>(type: K, listener: (this: HTMLDateRangeTimePickerComponentElement, ev: DateRangeTimePickerComponentCustomEvent<HTMLDateRangeTimePickerComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLDateRangeTimePickerComponentElement: {
+        prototype: HTMLDateRangeTimePickerComponentElement;
+        new (): HTMLDateRangeTimePickerComponentElement;
     };
     interface HTMLDatepickerComponentElementEventMap {
         "date-selected": { formattedDate: string };
@@ -2071,6 +2180,7 @@ declare global {
         "card-component": HTMLCardComponentElement;
         "checkbox-component": HTMLCheckboxComponentElement;
         "date-range-picker-component": HTMLDateRangePickerComponentElement;
+        "date-range-time-picker-component": HTMLDateRangeTimePickerComponentElement;
         "datepicker-component": HTMLDatepickerComponentElement;
         "discrete-slider-component": HTMLDiscreteSliderComponentElement;
         "divider-component": HTMLDividerComponentElement;
@@ -2450,16 +2560,28 @@ declare namespace LocalJSX {
          */
         "formLayout"?: '' | 'horizontal' | 'inline';
         "icon"?: string;
+        "inputCol"?: number;
+        "inputCols"?: string;
         "inputId"?: string;
         "joinBy"?: string;
         "label"?: string;
+        /**
+          * Legacy numeric cols (fallback)
+         */
+        "labelCol"?: number;
+        /**
+          * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+         */
+        "labelCols"?: string;
         "labelHidden"?: boolean;
         /**
-          * Fired when a valid date range is set via OK button or input parsing
+          * Emits both human-readable (matches input/display) and ISO (YYYY-MM-DD) values
          */
         "onDate-range-updated"?: (event: DateRangePickerComponentCustomEvent<{
-    startDate: string;
-    endDate: string;
+    startDate: string; // display string (same as input)
+    endDate: string; // display string (same as input)
+    startDateIso: string; // YYYY-MM-DD
+    endDateIso: string; // YYYY-MM-DD
   }>) => void;
         /**
           * External placeholder prop (immutable). We derive a default into state.
@@ -2483,7 +2605,78 @@ declare namespace LocalJSX {
          */
         "showOkButton"?: boolean;
         /**
-          * Use these to control output format of start/end labels
+          * Use these to control output format of start/end labels (display only)
+         */
+        "showYmd"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "validation"?: boolean;
+        "validationMessage"?: string;
+        "value"?: string;
+        "warningMessage"?: string;
+    }
+    /**
+     * <date-range-time-picker-component>
+     * Date+time range picker with free-typing, calendar navigation,
+     * ISO / numeric / long display modes, and synchronized dropdown.
+     */
+    interface DateRangeTimePickerComponent {
+        "appendId"?: string;
+        "appendProp"?: boolean;
+        "ariaLabel"?: string;
+        "dateFormat"?: 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        "disabled"?: boolean;
+        /**
+          * '', 'horizontal', or 'inline'
+         */
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        "icon"?: string;
+        "inputCol"?: number;
+        "inputCols"?: string;
+        "inputId"?: string;
+        /**
+          * Time options
+         */
+        "isTwentyFourHourFormat"?: boolean;
+        "joinBy"?: string;
+        "label"?: string;
+        /**
+          * Grid like date-range-picker-component
+         */
+        "labelCol"?: number;
+        "labelCols"?: string;
+        "labelHidden"?: boolean;
+        "onDate-time-updated"?: (event: DateRangeTimePickerComponentCustomEvent<{
+    startDate: string;
+    endDate: string;
+    startTime: string;
+    endTime: string;
+    duration: string;
+    startDateIso?: string; // YYYY-MM-DD
+    endDateIso?: string; // YYYY-MM-DD
+    startDateTimeIso?: string; // YYYY-MM-DDTHH:mm:ss.sssZ
+    endDateTimeIso?: string; // YYYY-MM-DDTHH:mm:ss.sssZ
+  }>) => void;
+        /**
+          * External placeholder (immutable). We derive default into state.
+         */
+        "placeholder"?: string;
+        "plumage"?: boolean;
+        "prependId"?: string;
+        "prependProp"?: boolean;
+        /**
+          * Render only the picker; disables OK button
+         */
+        "rangeTimePicker"?: boolean;
+        "required"?: boolean;
+        "showDuration"?: boolean;
+        "showIso"?: boolean;
+        "showLong"?: boolean;
+        /**
+          * Allow host to control the OK/Close button; masked when rangeTimePicker
+         */
+        "showOkButton"?: boolean;
+        /**
+          * Output flags
          */
         "showYmd"?: boolean;
         "size"?: '' | 'sm' | 'lg';
@@ -3498,6 +3691,7 @@ declare namespace LocalJSX {
         "card-component": CardComponent;
         "checkbox-component": CheckboxComponent;
         "date-range-picker-component": DateRangePickerComponent;
+        "date-range-time-picker-component": DateRangeTimePickerComponent;
         "datepicker-component": DatepickerComponent;
         "discrete-slider-component": DiscreteSliderComponent;
         "divider-component": DividerComponent;
@@ -3546,6 +3740,12 @@ declare module "@stencil/core" {
             "card-component": LocalJSX.CardComponent & JSXBase.HTMLAttributes<HTMLCardComponentElement>;
             "checkbox-component": LocalJSX.CheckboxComponent & JSXBase.HTMLAttributes<HTMLCheckboxComponentElement>;
             "date-range-picker-component": LocalJSX.DateRangePickerComponent & JSXBase.HTMLAttributes<HTMLDateRangePickerComponentElement>;
+            /**
+             * <date-range-time-picker-component>
+             * Date+time range picker with free-typing, calendar navigation,
+             * ISO / numeric / long display modes, and synchronized dropdown.
+             */
+            "date-range-time-picker-component": LocalJSX.DateRangeTimePickerComponent & JSXBase.HTMLAttributes<HTMLDateRangeTimePickerComponentElement>;
             "datepicker-component": LocalJSX.DatepickerComponent & JSXBase.HTMLAttributes<HTMLDatepickerComponentElement>;
             "discrete-slider-component": LocalJSX.DiscreteSliderComponent & JSXBase.HTMLAttributes<HTMLDiscreteSliderComponentElement>;
             "divider-component": LocalJSX.DividerComponent & JSXBase.HTMLAttributes<HTMLDividerComponentElement>;

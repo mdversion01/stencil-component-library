@@ -12,6 +12,7 @@
 .input-group {
   .btn {
     height: 100%;
+    z-index: 0 !important;
 
     &:first-child {
       border-top-right-radius: 0;

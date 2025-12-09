@@ -8,6 +8,11 @@
   .am-pm-toggle {
     width: 28px;
     cursor: pointer;
+    border-style: none;
+    background-color: transparent;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
   }
 
   article,
@@ -338,11 +343,24 @@
     font-weight: bold;
     display: flex;
     align-items: center;
+
+    &.iso,
+    &.long {
+      font-size: 0.75rem;
+    }
+
+    &.long {
+      white-space: nowrap;
+    }
   }
 
-  .date-range-display .start-end-ranges .start-date,
+  .date-range-display .start-end-ranges .start-date {
+    padding: 0;
+    margin-right: 0.3rem;
+  }
+
   .date-range-display .start-end-ranges .end-date {
-    padding: 0 5px;
+    margin: 0 0.3rem;
   }
 
   .date-ranges {
@@ -352,8 +370,7 @@
   }
 
   div.drtp,
-  div.input-group-append,
-  div.input-group-prepend {
+  div.input-group {
     outline: none !important;
   }
 
@@ -379,8 +396,7 @@
     position: relative;
   }
 
-  .dropdown-wrapper .dropdown,
-  .plumage.dropdown-wrapper .dropdown {
+  .dropdown-wrapper .dropdown {
     z-index: 1;
     width: inherit;
   }
@@ -423,9 +439,7 @@
   }
 
   .drp-input-field:hover .clear-input-button,
-  .drp-input-field:focus-within .clear-input-button,
-  .plumage .drp-input-field:hover .clear-input-button,
-  .plumage .drp-input-field:focus-within .clear-input-button {
+  .drp-input-field:focus-within .clear-input-button {
     opacity: 1;
     visibility: visible;
   }
@@ -450,20 +464,16 @@
     border-radius: 0.25rem;
   }
 
-  .drtp .calendar-icon,
-  .plumage .drtp-plumage .calendar-icon {
+  .drtp .calendar-icon {
     transition: opacity 0.2s ease-in-out, color 0.2s ease-in-out;
   }
 
-  .drtp:hover .calendar-icon,
-  .plumage .drtp-plumage:hover .calendar-icon {
+  .drtp:hover .calendar-icon {
     opacity: 0; /* Hide the calendar icon when the input is hovered */
   }
 
   .drtp:hover .clear-input-button,
-  .drtp:focus-within .clear-input-button,
-  .plumage .drtp-plumage:hover .clear-input-button,
-  .plumage .drtp-plumage:focus-within .clear-input-button {
+  .drtp:focus-within .clear-input-button {
     opacity: 1;
     visibility: visible;
   }
@@ -511,7 +521,10 @@
   .drtp.input-group-sm .clear-input-button,
   .drtp-plumage.input-group-sm .clear-input-button {
     right: 0;
-    top: 2px;
+    top: 5px;
+    min-height: 28px;
+    font-size: 0.875rem;
+    padding: 0.1rem 0.3rem 0 0.3rem !important;
   }
 
   .dtrp-field-container {
@@ -524,7 +537,9 @@
   }
 
   .duration {
-    margin-left: 5px;
+    margin-left: 0.3rem;
+    white-space: nowrap;
+    font-size: 0.75rem;
   }
 
   .flex-fill {
@@ -685,147 +700,12 @@
     opacity: 0;
   } */
 
-  .input-group-append .calendar-button {
+  .input-group .calendar-button {
     border-top: 1px solid rgb(206, 212, 218);
     border-bottom: 1px solid rgb(206, 212, 218);
     border-right: 1px solid rgb(206, 212, 218);
     border-left: none;
     border-radius: 0 0.2rem 0.2rem 0;
-  }
-
-  .input-group-prepend .calendar-button {
-    border-top: 1px solid rgb(206, 212, 218);
-    border-bottom: 1px solid rgb(206, 212, 218);
-    border-left: 1px solid rgb(206, 212, 218);
-    border-right: none;
-    border-radius: 0.2rem 0 0 0.2rem;
-  }
-
-  .plumage .calendar-button {
-    border: none;
-  }
-
-  .plumage .calendar-button:hover {
-    color: #1f1f1f;
-    background-color: transparent !important;
-  }
-
-  .plumage .calendar {
-    border: none;
-    padding: 0 !important;
-  }
-
-  .plumage .calendar .calendar-grid-caption {
-    padding: 0.25rem;
-    font-size: 0.875rem;
-    border: none;
-  }
-
-  .plumage .calendar .calendar-grid-weekdays {
-    margin: 0;
-  }
-
-  .plumage .calendar .calendar-grid-weekdays .small,
-  .plumage .calendar .calendar-grid-weekdays small {
-    font-size: 80%;
-    font-weight: 400;
-  }
-
-  .plumage .calendar-inner {
-    padding: 0;
-  }
-
-  .plumage .calendar-nav .btn {
-    padding: 0.25rem;
-    margin: 0.125rem;
-    font-size: 0.8333rem;
-    height: 1.375rem;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-  }
-
-  .plumage .calendar-wrapper {
-    display: flex;
-    border-width: 1px 0 0;
-  }
-
-  .plumage .date-range-display {
-    border-width: 0;
-  }
-
-  .plumage .dp-calendar:first-child {
-    border-right: 1px solid rgb(204, 204, 204) !important;
-    margin-right: 0;
-  }
-
-  .plumage .ok-button {
-    border-top: 1px solid #e1e1e1;
-  }
-
-  .plumage .input-group {
-    border: none;
-    border-radius: 0;
-    padding: 0 !important;
-  }
-
-  .plumage .input-group:hover {
-    border-color: transparent;
-  }
-
-  .plumage .input-group.focus {
-    background-color: transparent;
-    border-color: transparent;
-    outline: 0px;
-    box-shadow: none;
-    border-radius: 0;
-  }
-
-  .plumage .input-group-text {
-    border: none;
-  }
-
-  .plumage .range-picker-nav {
-    padding: 5px 10px 3px;
-  }
-
-  .plumage .range-picker-nav-btn,
-  .plumage .reset-btn {
-    border: none !important;
-  }
-
-  .plumage.range-picker-wrapper {
-    padding: 0;
-    max-width: 544px;
-    border: 1px solid #e1e1e1;
-    border-radius: 5px;
-  }
-
-  .plumage.range-picker-wrapper footer {
-    border-width: 0 0 1px;
-  }
-
-  .plumage .selected-date {
-    padding: 0.25rem;
-    font-size: 80%;
-    border: none;
-  }
-
-  .plumage .time-input {
-    font-size: 0.833rem !important;
-    border: none;
-  }
-
-  .plumage .time-input:focus {
-    outline: none;
-    border: none;
-    box-shadow: none;
-  }
-
-  .plumage .input-group-prepend.is-invalid > .calendar-button:hover,
-  .plumage .input-group-append.is-invalid > .calendar-button:hover {
-    color: #6e2226;
-    background-color: transparent !important;
   }
 
   .pt-2,
@@ -863,7 +743,7 @@
 
   .range-picker-wrapper {
     padding: 5px;
-    max-width: 558px;
+    max-width: 598px;
     border: 1px solid #e1e1e1;
     border-radius: 5px;
   }
@@ -942,7 +822,8 @@
     border-radius: 0 !important;
   }
 
-  .selected-range-active, .selected-range-active .focus,
+  .selected-range-active,
+  .selected-range-active .focus,
   .selected-range-active span:focus {
     color: rgb(255, 255, 255) !important;
     background-color: rgb(0, 98, 204);
@@ -981,14 +862,14 @@
   }
 
   .time-input {
-    width: 50px;
-    padding: 0.05rem 0.4rem;
+    width: 44px;
+    padding: 0.05rem 0.2rem;
     font-size: 0.833rem;
-    margin: 0 5px 0 0;
+    margin: 0.06rem 0 0 0;
   }
 
   .to-spacing {
-    padding: 0 0.5rem;
+    padding: 0 0.13rem;
   }
 
   .warning-message {
@@ -996,5 +877,161 @@
     font-size: 0.8333rem;
     margin: 0.5rem 0 0;
     text-align: center;
+  }
+}
+
+.plumage {
+  .date-picker {
+    .dropdown-wrapper .dropdown {
+      z-index: 1;
+      width: inherit;
+    }
+
+    .drp-input-field:hover .clear-input-button,
+    .drp-input-field:focus-within .clear-input-button {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    // .drtp-plumage .calendar-icon {
+    //   transition: opacity 0.2s ease-in-out, color 0.2s ease-in-out;
+
+    //   &:hover .calendar-icon {
+    //     opacity: 0; /* Hide the calendar icon when the input is hovered */
+    //   }
+    // }
+
+    // .drtp-plumage:hover .clear-input-button,
+    // .drtp-plumage:focus-within .clear-input-button {
+    //   opacity: 1;
+    //   visibility: visible;
+    // }
+  }
+
+  .calendar-button {
+    border: none;
+
+    &:hover {
+      color: #1f1f1f;
+      background-color: transparent !important;
+    }
+  }
+
+  .calendar {
+    border: none;
+    padding: 0 !important;
+
+    .calendar-grid-caption {
+      padding: 0.25rem;
+      font-size: 0.875rem;
+      border: none;
+    }
+
+    .calendar-grid-weekdays {
+      margin: 0;
+
+      .small,
+      small {
+        font-size: 80%;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .calendar-inner {
+    padding: 0;
+  }
+
+  .calendar-nav .btn {
+    padding: 0.25rem;
+    margin: 0.125rem;
+    font-size: 0.8333rem;
+    height: 1.375rem;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  .calendar-wrapper {
+    display: flex;
+    border-width: 1px 0 0;
+  }
+
+  .date-range-display {
+    border-width: 0;
+  }
+
+  .dp-calendar:first-child {
+    border-right: 1px solid rgb(204, 204, 204) !important;
+    margin-right: 0;
+  }
+
+  .ok-button {
+    border-top: 1px solid #e1e1e1;
+  }
+
+  .input-group {
+    border: none;
+    border-radius: 0;
+    padding: 0 !important;
+
+    &:hover {
+      border-color: transparent;
+    }
+
+    &.focus {
+      background-color: transparent;
+      border-color: transparent;
+      outline: 0px;
+      box-shadow: none;
+      border-radius: 0;
+    }
+  }
+
+  .input-group-text {
+    border: none;
+  }
+
+  .range-picker-nav {
+    padding: 5px 10px 3px;
+  }
+
+  .range-picker-nav-btn,
+  .reset-btn {
+    border: none !important;
+  }
+
+  .range-picker-wrapper {
+    padding: 0;
+    max-width: 598px;
+    border: 1px solid #e1e1e1;
+    border-radius: 5px;
+
+    footer {
+      border-width: 0 0 1px;
+    }
+  }
+
+  .selected-date {
+    padding: 0.25rem;
+    font-size: 80%;
+    border: none;
+  }
+
+  .time-input {
+    font-size: 0.833rem !important;
+    border: none;
+
+    &:focus {
+      outline: none;
+      border: none;
+      box-shadow: none;
+    }
+  }
+
+  // .input-group.is-invalid > .calendar-button:hover,
+  .input-group.is-invalid > .calendar-button:hover {
+    color: #6e2226;
+    background-color: transparent !important;
   }
 }
