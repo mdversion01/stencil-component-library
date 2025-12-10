@@ -66,6 +66,9 @@ export namespace Components {
         "clearInputOnBlurOutside": boolean;
         "devMode": boolean;
         "disabled": boolean;
+        /**
+          * Can users add/delete options at runtime?
+         */
         "editable": boolean;
         "error": boolean;
         "errorMessage": string;
@@ -90,6 +93,9 @@ export namespace Components {
         "navigateOptions": (direction: number) => Promise<void>;
         "options": string[];
         "placeholder": string;
+        /**
+          * Keep the typed text after a selection? Default false (clear).
+         */
         "preserveInputOnSelect"?: boolean;
         /**
           * Also submit whatever the user typed under this name (verbatim).
@@ -145,6 +151,10 @@ export namespace Components {
         "preserveInputOnSelect"?: boolean;
         "rawInputName"?: string;
         "removeClearBtn": boolean;
+        /**
+          * Back-compat: remove first match of a value (callable by hosts)
+         */
+        "removeItem": (value: string) => Promise<void>;
         "required": boolean;
         /**
           * 🔧 Replace options from the host (for hosts). Also emits optionsChange('replace').
@@ -171,11 +181,11 @@ export namespace Components {
         "label": string;
         "labelAlign": '' | 'right';
         /**
-          * Back-compat numeric columns (used only if labelCols/inputCols are not provided)
+          * Back-compat numeric columns
          */
         "labelCol": number;
         /**
-          * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+          * Responsive column class specs
          */
         "labelCols": string;
         "labelHidden": boolean;
@@ -629,6 +639,7 @@ export namespace Components {
         "labelHidden": boolean;
         "labelSize": '' | 'sm' | 'lg';
         "placeholder"?: string;
+        "readOnly": boolean;
         "required": boolean;
         "size": '' | 'sm' | 'lg';
         "type": string;
@@ -2263,6 +2274,9 @@ declare namespace LocalJSX {
         "clearInputOnBlurOutside"?: boolean;
         "devMode"?: boolean;
         "disabled"?: boolean;
+        /**
+          * Can users add/delete options at runtime?
+         */
         "editable"?: boolean;
         "error"?: boolean;
         "errorMessage"?: string;
@@ -2291,6 +2305,9 @@ declare namespace LocalJSX {
         "onOptionDelete"?: (event: AutocompleteMultipleSelectionsCustomEvent<string>) => void;
         "options"?: string[];
         "placeholder"?: string;
+        /**
+          * Keep the typed text after a selection? Default false (clear).
+         */
         "preserveInputOnSelect"?: boolean;
         /**
           * Also submit whatever the user typed under this name (verbatim).
@@ -2375,11 +2392,11 @@ declare namespace LocalJSX {
         "label"?: string;
         "labelAlign"?: '' | 'right';
         /**
-          * Back-compat numeric columns (used only if labelCols/inputCols are not provided)
+          * Back-compat numeric columns
          */
         "labelCol"?: number;
         /**
-          * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+          * Responsive column class specs
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
@@ -2863,6 +2880,7 @@ declare namespace LocalJSX {
         "labelSize"?: '' | 'sm' | 'lg';
         "onValueChange"?: (event: InputFieldComponentCustomEvent<string>) => void;
         "placeholder"?: string;
+        "readOnly"?: boolean;
         "required"?: boolean;
         "size"?: '' | 'sm' | 'lg';
         "type"?: string;

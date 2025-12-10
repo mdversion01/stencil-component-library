@@ -198,23 +198,27 @@ describe('datepicker-component', () => {
 
   // ------------------------------ interactions -----------------------------
 
-  it('input -> clear -> blur transitions to invalid when required', async () => {
+  it('input -> clear -> blur transitions to invalid when required (validation enabled)', async () => {
+    // IMPORTANT: validation attribute must be present to enable visual/ARIA invalid state
     const page = await makePage(`
-      <datepicker-component required label="Date"></datepicker-component>
-    `);
+    <datepicker-component required validation label="Date"></datepicker-component>
+  `);
 
     const host = page.root as HTMLElement;
     const input = find<HTMLInputElement>(host, 'input.form-control');
     expect(input).toBeTruthy();
 
+    // type a value
     input!.value = '01/02/2022';
     input!.dispatchEvent(new page.win.Event('input', { bubbles: true }));
     await page.waitForChanges();
 
+    // clear it
     input!.value = '';
     input!.dispatchEvent(new page.win.Event('input', { bubbles: true }));
     await page.waitForChanges();
 
+    // blur should trigger invalid state when validation is enabled
     input!.dispatchEvent(new page.win.Event('blur', { bubbles: true }));
     await page.waitForChanges();
 
@@ -222,6 +226,9 @@ describe('datepicker-component', () => {
     const hasInvalidClass = !!find(host, '.is-invalid') || input!.getAttribute('aria-invalid') === 'true' || formGroup?.classList.contains('has-danger');
 
     expect(hasInvalidClass).toBe(true);
+
+    // (optional but helpful) also confirm validation message renders when provided
+    // expect(find(host, '.invalid-feedback')).toBeTruthy();
   });
 
   it('warns once when both placeholder and dateFormat are provided', async () => {

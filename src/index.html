@@ -75,7 +75,7 @@
     <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
      -->
     <app-wrapper>
-      <!-- <div class="cwrapper">
+      <div class="cwrapper">
         <autocomplete-single id="aci1" add-btn label-size="sm" input-id="ac-single1" label="Autocomplete Single"></autocomplete-single>
 
         <autocomplete-single
@@ -87,24 +87,27 @@
           label-cols="col"
           input-cols="col"
           size="sm"
+          clear-icon="fa-solid fa-xmark"
           required
           validation
           validation-message="Please fill in"
         ></autocomplete-single>
-        <form-component form-layout="inline">
+
+        <form-component>
           <autocomplete-multiselect
             id="aci3"
             add-btn
             input-id="ac-1"
             editable
             label="Autocomplete Multiselect"
-            form-layout="inline"
-             required
+            required
             validation
             validation-message="Please fill in"
             placeholder="Type to search..."
             data-autocomplete="true"
             slot="formField"
+            editable
+            add-btn
           ></autocomplete-multiselect>
 
           <autocomplete-multiple-selections
@@ -114,16 +117,17 @@
             label="Autocomplete Multiple Selections"
             placeholder="Type to search..."
             data-autocomplete="true"
-            form-layout="inline"
             required
             add-btn
             validation
             validation-message="Please fill in"
             placeholder="Type to search..."
             slot="formField"
+            editable
+            size="lg"
           ></autocomplete-multiple-selections>
         </form-component>
-      </div> -->
+      </div>
 
       <!-- <div class="cwrapper">
         <badge-component id="badge1" elevation="6" shape="square" background-color="primary">Badge Base</badge-component>
@@ -683,18 +687,17 @@
 
       </div> -->
 
-      <!-- <div class="cwrapper">
-        <input-field-component label="First Name" label-size="sm" size="sm" value="" input-id="firstName"></input-field-component>
+      <div class="cwrapper">
+        <input-field-component label="First Name" label-size="sm" size="sm" value="" input-id="firstName" read-only></input-field-component>
 
         <input-field-component label="Last Name" value="" input-id="lastName"></input-field-component>
 
         <input-field-component label="Email" required validation validation-message="Please enter a valid email" value="" input-id="email" size="lg"></input-field-component>
 
-        <input-field-component form-layout="horizontal" label="Email" input-id="email2" label-col="6" input-col="6" label-align="right"></input-field-component>
+        <input-field-component form-layout="horizontal" label="Email" input-id="email2"></input-field-component>
 
-        <form-component form-layout="inline">
+        <form-component>
           <input-field-component
-            form-layout="inline"
             required
             validation
             validation-message="Please enter First name"
@@ -707,7 +710,6 @@
           ></input-field-component>
 
           <input-field-component
-            form-layout="inline"
             required
             validation
             validation-message="Please enter Last name"
@@ -716,16 +718,28 @@
             input-id="input-6"
             slot="formField"
           ></input-field-component>
-        </form-component>
-      </div> -->
 
-      <!-- <div class="cwrapper">
+          <input-field-component
+            required
+            validation
+            validation-message="Please enter Last name"
+            label="Last Name"
+            value=""
+            input-id="input-6"
+            slot="formField"
+            size="lg"
+            label-size="lg"
+          ></input-field-component>
+        </form-component>
+      </div>
+
+      <div class="cwrapper">
         <form-component>
           <input-group-component
             form-layout="horizontal"
             slot="formField"
             label="Amount"
-            size="sm"
+            size="lg"
             input-id="amount"
             required
             validation
@@ -735,7 +749,7 @@
             prepend
             prepend-icon="fa-solid fa-dollar-sign"
           >
-            <button-component slot="append" size="sm" type="button" variant="secondary">Go</button-component>
+            <button-component slot="append" size="lg" type="button" variant="secondary">Go</button-component>
           </input-group-component>
 
           <input-group-component form-layout="inline" slot="formField" label="Search" input-id="q" validation validation-message="Please enter First name" append other-content>
@@ -823,7 +837,7 @@
           plumage-search
         >
         </plumage-input-group-component>
-      </div> -->
+      </div>
 
       <!-- <div class="cwrapper"> -->
       <!-- =========================================================
@@ -1719,13 +1733,13 @@
         </section>
       </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <div style="margin-bottom: 20px">
           <datepicker-component calendar></datepicker-component>
         </div>
 
         <div style="width: 210px">
-          <datepicker-component date-format="MM-DD-YYYY" label-cols="col-md-4 col-sm-6" input-col="8" required validation validation-message="Invalid date"></datepicker-component>
+          <datepicker-component input-id="dp-test" date-format="MM-DD-YYYY" size="lg"></datepicker-component>
         </div>
 
         <div style="margin-bottom: 20px">
@@ -1763,10 +1777,10 @@
         <div style="width: 554px">
           <date-range-time-picker-component size="sm" show-long is-twenty-four-hour-format="false" form-layout="inline" plumage show-duration required validation validation-message="Invalid date"></date-range-time-picker-component>
         </div>
-      </div>
+      </div> -->
     </app-wrapper>
 
-    <!-- <script type="module">
+    <script type="module">
       // window.addEventListener('DOMContentLoaded', () => {
       // const progressComp = document.getElementById("progressComp");
       //   let value2 = 0;
@@ -1786,110 +1800,110 @@
       //   });
       // });
 
-      // window.addEventListener('DOMContentLoaded', () => {
-      //   const el = document.querySelector('input-group-component');
-      //   el.addEventListener('valueChange', e => console.log('valueChange:', e.detail.value));
-      //   // Back-compat:
-      //   el.addEventListener('change', e => console.log('change:', e.detail.value));
+      window.addEventListener('DOMContentLoaded', () => {
+        // const el = document.querySelector('input-group-component');
+        // el.addEventListener('valueChange', e => console.log('valueChange:', e.detail.value));
+        // // Back-compat:
+        // el.addEventListener('change', e => console.log('change:', e.detail.value));
 
-      //   const aci1 = document.getElementById('aci1');
-      //   const aci1Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
-      //   setTimeout(() => {
-      //     aci1.options = aci1Options;
-      //   }, 300); // delay to allow stencil hydration
+        const aci1 = document.getElementById('aci1');
+        const aci1Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+        setTimeout(() => {
+          aci1.options = aci1Options;
+        }, 300); // delay to allow stencil hydration
 
-      //   /***********************************/
+        //   /***********************************/
 
-      //   const aci2 = document.getElementById('aci2');
-      //   const aci2Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
-      //   setTimeout(() => {
-      //     aci2.options = aci2Options;
-      //   }, 300); // delay to allow stencil hydration
+        const aci2 = document.getElementById('aci2');
+        const aci2Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+        setTimeout(() => {
+          aci2.options = aci2Options;
+        }, 300); // delay to allow stencil hydration
 
-      //   /***********************************/
+        //   /***********************************/
 
-      //   const aci3 = document.getElementById('aci3');
-      //   // keep this mutable so we can mirror updates from the component
-      //   let aci3Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+        const aci3 = document.getElementById('aci3');
+        // keep this mutable so we can mirror updates from the component
+        let aci3Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
 
-      //   // 1) Push initial options once the component is ready
-      //   // Either approach works; use ONE of them:
+        // 1) Push initial options once the component is ready
+        // Either approach works; use ONE of them:
 
-      //   // A) Using Stencil's componentOnReady()
-      //   aci3.componentOnReady?.().then(async () => {
-      //     await aci3.setOptions(aci3Options);
-      //   });
+        // A) Using Stencil's componentOnReady()
+        aci3.componentOnReady?.().then(async () => {
+          await aci3.setOptions(aci3Options);
+        });
 
-      //   // B) Or using customElements.whenDefined(...)
-      //   // customElements.whenDefined('autocomplete-multiselect').then(async () => {
-      //   //   await aci3.setOptions(aci3Options);
-      //   // });
+        // B) Or using customElements.whenDefined(...)
+        // customElements.whenDefined('autocomplete-multiselect').then(async () => {
+        //   await aci3.setOptions(aci3Options);
+        // });
 
-      //   // 2) Keep your app state in sync when users ADD/DELETE options (editable=true)
-      //   aci3.addEventListener('optionsChange', e => {
-      //     const { options, reason, value } = e.detail || {};
-      //     if (reason === 'replace') {
-      //       console.log('[aci3 optionsChange]', reason, options);
-      //     } else {
-      //       console.log('[aci3 optionsChange]', reason, value, options);
-      //     }
-      //     // (optional) persist somewhere (e.g., localStorage / server)
-      //     // localStorage.setItem('aci3Options', JSON.stringify(aci3Options));
-      //   });
+        // 2) Keep your app state in sync when users ADD/DELETE options (editable=true)
+        aci3.addEventListener('optionsChange', e => {
+          const { options, reason, value } = e.detail || {};
+          if (reason === 'replace') {
+            console.log('[aci3 optionsChange]', reason, options);
+          } else {
+            console.log('[aci3 optionsChange]', reason, value, options);
+          }
+          // (optional) persist somewhere (e.g., localStorage / server)
+          localStorage.setItem('aci3Options', JSON.stringify(aci3Options));
+        });
 
-      //   // 3) (Optional) react to selection changes
-      //   aci3.addEventListener('multiSelectChange', e => {
-      //     console.log('[aci3 selectedItems]', e.detail);
-      //   });
+        // 3) (Optional) react to selection changes
+        aci3.addEventListener('multiSelectChange', e => {
+          console.log('[aci3 selectedItems]', e.detail);
+        });
 
-      //   // 4) (Optional) replace options later from your app
-      //   async function refreshFromServer(nextOptions) {
-      //     await aci3.setOptions(nextOptions); // will also emit optionsChange with reason: 'replace'
-      //   }
+        //   // 4) (Optional) replace options later from your app
+        async function refreshFromServer(nextOptions) {
+          await aci3.setOptions(nextOptions); // will also emit optionsChange with reason: 'replace'
+        }
 
-      //   // 5) (Optional) read the current options from the component
-      //   async function logCurrentOptions() {
-      //     const opts = await aci3.getOptions();
-      //     console.log('[aci3 getOptions]', opts);
-      //   }
+        //   // 5) (Optional) read the current options from the component
+        async function logCurrentOptions() {
+          const opts = await aci3.getOptions();
+          console.log('[aci3 getOptions]', opts);
+        }
 
-      //   /***********************************/
+        //   /***********************************/
 
-      //   let aci4Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango', 'Bet', 'Betty', 'Bobby', 'Bob', 'Bobby Brown', 'Bobby Blue', 'Bobby Green'];
+        let aci4Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango', 'Bet', 'Betty', 'Bobby', 'Bob', 'Bobby Brown', 'Bobby Blue', 'Bobby Green'];
 
-      //   const aci4 = document.getElementById('aci4');
+        const aci4 = document.getElementById('aci4');
 
-      //   (async () => {
-      //     if (window.customElements?.whenDefined) {
-      //       await customElements.whenDefined('autocomplete-multiple-selections');
-      //     }
-      //     if (typeof aci4.componentOnReady === 'function') {
-      //       await aci4.componentOnReady();
-      //     }
+        (async () => {
+          if (window.customElements?.whenDefined) {
+            await customElements.whenDefined('autocomplete-multiple-selections');
+          }
+          if (typeof aci4.componentOnReady === 'function') {
+            await aci4.componentOnReady();
+          }
 
-      //     // seed options by assigning the prop (the component’s @Watch('options') will pick it up)
-      //     aci4.options = aci4Options.slice();
+         // seed options by assigning the prop (the component’s @Watch('options') will pick it up)
+          aci4.options = aci4Options.slice();
 
-      //     // there is NO optionsChange in this component by default.
-      //     // You can still listen to selection changes:
-      //     aci4.addEventListener('multiSelectChange', e => {
-      //       console.log('[aci4 selectedItems]', e.detail);
-      //     });
+          // there is NO optionsChange in this component by default.
+          // You can still listen to selection changes:
+          aci4.addEventListener('multiSelectChange', e => {
+            console.log('[aci4 selectedItems]', e.detail);
+          });
 
-      //     // If you want to mirror user-added options back to app state,
-      //     // you must add an `@Event({eventName:'optionsChange'})` inside the component
-      //     // and emit it when options are upserted/deleted. Otherwise, there’s no hook.
-      //   })();
-      // });
+           // If you want to mirror user-added options back to app state,
+          // you must add an `@Event({eventName:'optionsChange'})` inside the component
+          // and emit it when options are upserted/deleted. Otherwise, there’s no hook.
+        })();
+      });
 
       // const dynamicButton = document.getElementById("dynamicPopoverBtn");
       // const popoverDynamic = document.getElementById("dynamicPopover");
       // popoverDynamic.title = "Dynamic Popover Title";
       // popoverDynamic.content = "Here is some <strong>dynamic</strong> content.";
       // popoverDynamic.target = dynamicButton;
-    </script> -->
+    </script>
 
-    <script type="module">
+    <!-- <script type="module">
       // Define reusable data sets
       // ---------- Data ----------
       // const basicItems = [
@@ -2733,6 +2747,6 @@
       // ---------- End Toast notifications demo wiring ---------- //
 
       // ------------- Tooltip demo wiring ------------- //
-    </script>
+    </script> -->
   </body>
 </html>

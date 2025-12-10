@@ -1,3 +1,59 @@
+
+
+
+
+// .is-invalid ::placeholder {
+//   color: #b30009 !important;
+// }
+
+// .was-validated :invalid ~ .invalid-feedback,
+// .was-validated :invalid ~ .invalid-tooltip,
+// .is-invalid ~ .invalid-feedback,
+// .is-invalid ~ .invalid-tooltip {
+//   display: block !important;
+// }
+
+// .basic-input-sm {
+//   padding: 0.25rem 0.5rem !important;
+//   font-size: 0.75rem !important;
+//   line-height: 1.5 !important;
+//   border-radius: 0.2rem !important;
+//   min-height: 0px !important;
+//   max-height: 28px !important;
+// }
+
+// .basic-input-lg {
+//   padding: 0.5rem 0.5rem !important;
+//   font-size: 1.125rem !important;
+//   line-height: 1.5 !important;
+//   border-radius: 0.3rem !important;
+// }
+
+
+/* ------------- New Styles ------------- */
+
+label, .label {
+  margin-bottom: 0.25rem !important;
+}
+
+.label-sm {
+  font-size: 0.75rem !important;
+}
+
+.label-lg {
+  font-size: 1.125rem !important;
+}
+
+.inline {
+  .col-form-label {
+    margin-right: 0.5rem !important;
+  }
+}
+
+.invalid-feedback {
+  font-size: 0.75rem !important;
+}
+
 .horizontal label,
 .inline label {
   display: flex;
@@ -54,52 +110,11 @@
   padding: 0 0.5rem;
 }
 
-.invalid-feedback {
-  color: #b30009 !important;
-  display: block !important;
-  font-size: 0.75rem !important;
-}
-
-.is-invalid ::placeholder {
-  color: #b30009 !important;
-}
-
-.was-validated :invalid ~ .invalid-feedback,
-.was-validated :invalid ~ .invalid-tooltip,
-.is-invalid ~ .invalid-feedback,
-.is-invalid ~ .invalid-tooltip {
-  display: block !important;
-}
-
-.basic-input-sm {
-  padding: 0.25rem 0.5rem !important;
-  font-size: 0.75rem !important;
-  line-height: 1.5 !important;
-  border-radius: 0.2rem !important;
-  min-height: 0px !important;
-  max-height: 28px !important;
-}
-
-.basic-input-lg {
-  padding: 0.5rem 0.5rem !important;
-  font-size: 1.125rem !important;
-  line-height: 1.5 !important;
-  border-radius: 0.3rem !important;
-}
-
-.label-sm {
-  font-size: 0.75rem !important;
-}
-
-.label-lg {
-  font-size: 1.125rem !important;
-}
-
 .inline,
 .horizontal {
   .form-control-label {
     align-items: start !important;
-    padding-top: 7px !important;
+    padding-top: 6px !important;
   }
 
   .label-sm {

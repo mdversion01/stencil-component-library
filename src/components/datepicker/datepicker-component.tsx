@@ -27,6 +27,9 @@ export class Datepicker {
   private userProvidedPlaceholder = false;
   private userProvidedDateFormat = false;
 
+  // Gate format validation behavior strictly by presence of the attribute
+  private validationEnabled = false;
+
   /** Query helpers (work with shadow or light DOM) */
   private root(): DocumentFragment | HTMLElement {
     return this.host.shadowRoot ?? this.host;
@@ -119,6 +122,9 @@ export class Datepicker {
     this.userProvidedPlaceholder = this.host.hasAttribute('placeholder');
     this.userProvidedDateFormat = this.host.hasAttribute('date-format');
 
+    // Gate validation solely by presence of the attribute in HTML
+    this.validationEnabled = this.host.hasAttribute('validation');
+
     if (this.userProvidedPlaceholder && this.userProvidedDateFormat) {
       console.warn(
         '[datepicker-component] You provided both `placeholder` and `dateFormat`. ' +
@@ -173,6 +179,18 @@ export class Datepicker {
     }
     document.removeEventListener('click', this.handleOutsideClick, true);
     this.destroyPopper();
+  }
+
+  /** === Validation helper (only used when validation attribute is present) === */
+  private setValidation(next: { on?: boolean; msg?: string; warn?: string } = {}) {
+    if (!this.validationEnabled) return;
+    if (typeof next.on === 'boolean') this.validation = next.on;
+    if (typeof next.msg === 'string') this.validationMessage = next.msg;
+    if (typeof next.warn === 'string') this.warningMessage = next.warn;
+    if (!next.msg && !next.warn && next.on === false) {
+      this.validationMessage = '';
+      this.warningMessage = '';
+    }
   }
 
   /** === UI helpers === */
@@ -234,7 +252,6 @@ export class Datepicker {
         out.push('col');
         continue;
       }
-      // unknown token -> ignore
     }
 
     return Array.from(new Set(out)).join(' ');
@@ -252,12 +269,9 @@ export class Datepicker {
       }
 
       const num = kind === 'label' ? this.labelCol : this.inputCol;
-      if (Number.isFinite(num as any)) {
-        const n = Math.max(0, Math.min(12, Number(num)));
-        if (n === 0) return '';
-        return `col-${n}`;
-      }
-      return '';
+      const n = Math.max(0, Math.min(12, Number(num)));
+      if (n === 0) return '';
+      return `col-${n}`;
     }
 
     if (this.isInline()) {
@@ -314,13 +328,21 @@ export class Datepicker {
     }
   };
 
+  /** Close helper used after selection (no-op in standalone calendar mode) */
+  private closeDropdown = () => {
+    if (this.calendar) return;
+    if (!this.dropdownOpen) return;
+    this.dropdownOpen = false;
+    this.destroyPopper();
+  };
+
   private createPopperInstance() {
     const dropdown = this.qs<HTMLElement>('.dropdown');
     if (!this.inputElement || !dropdown) return;
     this.popperInstance = createPopper(this.inputElement, dropdown, {
       placement: 'bottom-start',
       modifiers: [
-        { name: 'offset,', options: { offset: [0, 4] } } as any, // keep config shape; TypeScript sometimes fusses in Stencil envs
+        { name: 'offset', options: { offset: [0, 4] } } as any,
         { name: 'preventOverflow', options: { boundary: 'viewport' } },
       ],
     });
@@ -359,7 +381,8 @@ export class Datepicker {
     input.setSelectionRange(newCursor, newCursor);
 
     if (formatted === '') {
-      this.clearInputField(false /* preserveValidation */, true /* markInvalid */);
+      // DO NOT mark invalid unless the `validation` attribute is present
+      this.clearInputField(false /* preserveValidation */, this.validationEnabled /* markInvalid */);
       return;
     }
 
@@ -369,11 +392,15 @@ export class Datepicker {
   private handleInputBlur = (e: Event) => {
     const val = (e.target as HTMLInputElement).value.trim();
     if (!val) {
-      this.clearInputField(false /* preserveValidation */, true /* markInvalid */);
+      // DO NOT mark invalid unless the `validation` attribute is present
+      this.clearInputField(false /* preserveValidation */, this.validationEnabled /* markInvalid */);
       return;
     }
-    this.validateInput(val);
-    if (this.validation) return;
+
+    if (this.validationEnabled) {
+      this.validateInput(val);
+      if (this.validation) return;
+    }
 
     const parsed = this.parseDate(val);
     if (parsed) {
@@ -382,9 +409,7 @@ export class Datepicker {
       this.updateSelectedDateDisplay(parsed);
       this.selectedDate = parsed;
 
-      this.validation = false;
-      this.validationMessage = '';
-      this.warningMessage = '';
+      this.setValidation({ on: false });
 
       this.renderCalendar(this.currentMonth, this.currentYear);
     }
@@ -576,11 +601,9 @@ export class Datepicker {
       this.updateSelectedDateDisplay(long);
       this.updateSelectedDateElements(long);
       this.updateActiveDateElements();
-      this.updateSelectedDateElements(long);
 
-      this.validation = false;
-      this.validationMessage = '';
-      this.warningMessage = '';
+      // turn off any active validation (when enabled)
+      this.setValidation({ on: false });
 
       this.qs('.calendar')?.classList.add('focus');
       this.isCalendarFocused = true;
@@ -589,6 +612,9 @@ export class Datepicker {
       this.qs<HTMLElement>('.calendar')?.setAttribute('aria-activedescendant', `cell-${formattedDate}`);
 
       this.dateSelected.emit({ formattedDate: long });
+
+      // Close dropdown after successful selection
+      this.closeDropdown();
     }
 
     if (isActive) return;
@@ -621,10 +647,7 @@ export class Datepicker {
       (activeSpan as HTMLElement).classList.add('btn-outline-light', 'text-dark');
     }
     if (this.selectedDate) {
-      const id = `cell-${this.selectedDate.getUTCFullYear()}-${String(this.selectedDate.getUTCMonth() + 1).padStart(2, '0')}-${String(this.selectedDate.getUTCDate()).padStart(
-        2,
-        '0',
-      )}`;
+      const id = `cell-${this.selectedDate.getUTCFullYear()}-${String(this.selectedDate.getUTCMonth() + 1).padStart(2, '0')}-${String(this.selectedDate.getUTCDate()).padStart(2, '0')}`;
       const el = this.qs<HTMLElement>(`#${(window as any).CSS?.escape ? (window as any).CSS.escape(id) : id}`);
       if (el) {
         const span = el.querySelector('span')!;
@@ -785,7 +808,8 @@ export class Datepicker {
 
       if (isActive && !isPrev && !isNext) return;
       this.handleDayClick({ target: focusedSpan } as any);
-      this.toggleDropdown();
+      // close after keyboard selection
+      this.closeDropdown();
     }
   };
 
@@ -795,7 +819,8 @@ export class Datepicker {
 
     if (event.key === 'Backspace') {
       if ((inputField?.value.trim() || '') === '') {
-        this.clearInputField(false /* preserveValidation */, true /* markInvalid */);
+        // DO NOT mark invalid unless the `validation` attribute is present
+        this.clearInputField(false /* preserveValidation */, this.validationEnabled /* markInvalid */);
         return;
       }
     }
@@ -903,9 +928,7 @@ export class Datepicker {
     this.updateSelectedDateDisplay(formatted);
     this.setActiveState();
 
-    this.validation = false;
-    this.validationMessage = '';
-    this.warningMessage = '';
+    this.setValidation({ on: false });
   };
 
   private updateInitialContext() {
@@ -953,25 +976,19 @@ export class Datepicker {
     this.currentYear = now.getFullYear();
     this.renderCalendar(this.currentMonth, this.currentYear);
 
-    if (markInvalid) {
-      this.validation = true;
-      if (!this.validationMessage) {
-        this.validationMessage = 'Please select a date.';
-      }
-      this.warningMessage = '';
+    if (markInvalid && this.validationEnabled) {
+      this.setValidation({ on: true, msg: this.validationMessage || 'Please select a date.' });
       return;
     }
 
-    if (!preserveValidation) {
-      this.validation = false;
-      this.validationMessage = '';
-      this.warningMessage = '';
+    if (!preserveValidation && this.validationEnabled) {
+      this.setValidation({ on: false });
     }
   };
 
   private updateCalendarWithParsedDate(date: Date) {
     if (!date || isNaN(date.getTime())) {
-      this.clearInputField(false, true);
+      this.clearInputField(false, this.validationEnabled);
       return;
     }
     this.selectedDate = date;
@@ -984,26 +1001,23 @@ export class Datepicker {
       this.updateSelectedDateDisplay(formatted);
     }
 
-    this.validation = false;
-    this.validationMessage = '';
-    this.warningMessage = '';
+    this.setValidation({ on: false });
 
     this.setActiveState();
   }
 
   private validateInput(value: string) {
+    if (!this.validationEnabled) return;
+
     if (value.trim() === '') {
-      this.validation = true;
-      if (!this.validationMessage) this.validationMessage = 'Please select a date.';
+      this.setValidation({ on: true, msg: this.validationMessage || 'Please select a date.' });
       return;
     }
 
-    this.validationMessage = '';
-    this.validation = false;
+    this.setValidation({ on: false });
 
     const trigger = (msg: string) => {
-      this.validation = true;
-      this.validationMessage = msg;
+      this.setValidation({ on: true, msg });
     };
 
     let parts: string[], y: string | null, m: number | null, d: number | null;
@@ -1046,8 +1060,7 @@ export class Datepicker {
       }
     }
 
-    this.validation = false;
-    this.validationMessage = '';
+    this.setValidation({ on: false });
   }
 
   /** === Views === */
@@ -1201,11 +1214,20 @@ export class Datepicker {
   /* == RENDER helpers for label/input layout (classic & plumage) == */
 
   private labelClassBase() {
-    return ['form-control-label', this.showAsRequired() ? 'required' : '', this.labelHidden ? 'sr-only' : '', this.validation ? 'invalid' : ''].filter(Boolean).join(' ');
+    return [
+      'form-control-label',
+      this.showAsRequired() ? 'required' : '',
+      this.labelHidden ? 'sr-only' : '',
+      this.validationEnabled && this.validation ? 'invalid' : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
   }
 
   private labelClassHorizontal(labelColClass: string) {
-    return [this.labelClassBase(), labelColClass, 'no-padding', `col-form-label${this.labelSize === 'sm' ? '-sm' : this.labelSize === 'lg' ? '-lg' : ''}`].filter(Boolean).join(' ');
+    return [this.labelClassBase(), labelColClass, 'no-padding', `col-form-label${this.labelSize === 'sm' ? '-sm' : this.labelSize === 'lg' ? '-lg' : ''}`]
+      .filter(Boolean)
+      .join(' ');
   }
 
   private groupSizeClass() {
@@ -1216,7 +1238,7 @@ export class Datepicker {
     return (
       <button
         onClick={this.toggleDropdown}
-        class={`calendar-button btn input-group-text${this.validation ? ' is-invalid' : ''}`}
+        class={`calendar-button btn${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text`}
         aria-label="Toggle Calendar Picker"
         aria-haspopup="dialog"
         aria-expanded={this.dropdownOpen ? 'true' : 'false'}
@@ -1231,7 +1253,7 @@ export class Datepicker {
     return (
       <button
         onClick={this.toggleDropdown}
-        class={`calendar-button btn input-group-text${this.validation ? ' is-invalid' : ''}`}
+        class={`calendar-button btn${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text`}
         aria-label="Toggle Calendar Picker"
         aria-haspopup="dialog"
         aria-expanded={this.dropdownOpen ? 'true' : 'false'}
@@ -1245,13 +1267,11 @@ export class Datepicker {
   private renderInputGroupClassic() {
     const isRow = this.isHorizontal() || this.isInline();
 
-    // Compute col classes
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
     const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
 
-    // Validate numeric fallbacks if needed (no-op when string specs provided)
     this.getComputedCols();
 
     return (
@@ -1267,14 +1287,14 @@ export class Datepicker {
 
           {/* Input column */}
           <div class={this.isHorizontal() ? inputColClass : undefined}>
-            <div class={['input-group', this.groupSizeClass(), this.validation ? 'is-invalid' : ''].filter(Boolean).join(' ')} role="group" aria-label="Date Picker Group">
+            <div class={['input-group', this.groupSizeClass()].filter(Boolean).join(' ')} role="group" aria-label="Date Picker Group">
               {this.prependProp ? this.renderPrepend() : null}
 
               <div class="drp-input-field">
                 <input
                   id={this.inputId}
                   type="text"
-                  class={`form-control${this.validation ? ' is-invalid' : ''}`}
+                  class={`form-control${this.validationEnabled && this.validation ? ' is-invalid' : ''}`}
                   placeholder={this.placeholder}
                   value={this.selectedDate ? this.formatDate(this.selectedDate) : ''}
                   onInput={this.handleInputChange}
@@ -1282,11 +1302,12 @@ export class Datepicker {
                   disabled={this.disabled}
                   aria-label="Selected Date"
                   aria-describedby="datepicker-desc"
+                  aria-invalid={this.validationEnabled && this.validation ? 'true' : null}
                 />
                 {this.selectedDate ? (
                   <button
-                    onClick={() => this.clearInputField(false, true)}
-                    class={`clear-input-button${this.validation ? ' is-invalid' : ''}`}
+                    onClick={() => this.clearInputField(false, this.validationEnabled)}
+                    class="clear-input-button"
                     aria-label="Clear Field"
                     role="button"
                   >
@@ -1298,7 +1319,7 @@ export class Datepicker {
               {this.appendProp ? this.renderAppend() : null}
             </div>
 
-            {this.validation ? (
+            {this.validationEnabled && this.validation ? (
               this.warningMessage ? (
                 <div class="invalid-feedback warning">{this.warningMessage}</div>
               ) : (
@@ -1338,7 +1359,7 @@ export class Datepicker {
               {this.prependProp ? (
                 <button
                   onClick={this.toggleDropdown}
-                  class={`calendar-button btn input-group-text${this.validation ? ' is-invalid' : ''}`}
+                  class="calendar-button btn input-group-text"
                   aria-label="Toggle Calendar Picker"
                   aria-haspopup="dialog"
                   aria-expanded={this.dropdownOpen ? 'true' : 'false'}
@@ -1354,7 +1375,7 @@ export class Datepicker {
                 <input
                   id={this.inputId}
                   type="text"
-                  class={`form-control${this.validation ? ' is-invalid' : ''}`}
+                  class={`form-control${this.validationEnabled && this.validation ? ' is-invalid' : ''}`}
                   placeholder={this.placeholder}
                   value={this.selectedDate ? this.formatDate(this.selectedDate) : ''}
                   onFocus={this.handleInteraction}
@@ -1362,11 +1383,12 @@ export class Datepicker {
                   onInput={this.handleInputChange}
                   name="selectedDate"
                   aria-label="Selected Date"
-                  aria-describedby={this.validation ? 'validationMessage' : 'datepicker-desc'}
+                  aria-describedby={this.validationEnabled && this.validation ? 'validationMessage' : 'datepicker-desc'}
+                  aria-invalid={this.validationEnabled && this.validation ? 'true' : null}
                   disabled={this.disabled}
                 />
                 {this.selectedDate ? (
-                  <button onClick={() => this.clearInputField(false, true)} class="clear-input-button" aria-label="Clear Field" role="button">
+                  <button onClick={() => this.clearInputField(false, this.validationEnabled)} class="clear-input-button" aria-label="Clear Field" role="button">
                     <i class="fas fa-times-circle" />
                   </button>
                 ) : null}
@@ -1375,7 +1397,7 @@ export class Datepicker {
               {this.appendProp ? (
                 <button
                   onClick={this.toggleDropdown}
-                  class={`calendar-button btn input-group-text${this.validation ? ' is-invalid' : ''}`}
+                  class="calendar-button btn input-group-text"
                   aria-label="Toggle Calendar Picker"
                   aria-haspopup="dialog"
                   aria-expanded={this.dropdownOpen ? 'true' : 'false'}
@@ -1388,11 +1410,11 @@ export class Datepicker {
               ) : null}
             </div>
 
-            <div class={`b-underline${this.validation ? ' invalid' : ''}`} role="presentation">
-              <div class={`b-focus${this.disabled ? ' disabled' : ''}${this.validation ? ' invalid' : ''}`} role="presentation" aria-hidden="true"></div>
+            <div class={`b-underline${this.validationEnabled && this.validation ? ' invalid' : ''}`} role="presentation">
+              <div class={`b-focus${this.disabled ? ' disabled' : ''}${this.validationEnabled && this.validation ? ' invalid' : ''}`} role="presentation" aria-hidden="true"></div>
             </div>
 
-            {this.validation ? (
+            {this.validationEnabled && this.validation ? (
               this.warningMessage ? (
                 <div class="invalid-feedback warning">{this.warningMessage}</div>
               ) : (
@@ -1456,9 +1478,7 @@ export class Datepicker {
     this.renderCalendar(this.currentMonth, this.currentYear);
     this.setActiveState();
 
-    this.validation = false;
-    this.validationMessage = '';
-    this.warningMessage = '';
+    this.setValidation({ on: false });
   }
 
   @Listen('reset-picker')
@@ -1469,14 +1489,8 @@ export class Datepicker {
     this.currentDate();
   }
 
-  // render() {
-  //   return this.calendar ? this.renderDatePickerView() : this.renderInputs();
-  // }
-
   render() {
     if (this.calendar) return this.plumage ? <div class="plumage">{this.renderDatePickerView()}</div> : this.renderDatePickerView();
     return this.plumage ? <div class="plumage">{this.renderInputs()}</div> : this.renderInputs();
   }
 }
-
-

@@ -22,6 +22,7 @@
 | `labelHidden`       | `label-hidden`       |                                                                                             | `boolean`                        | `false`     |
 | `labelSize`         | `label-size`         |                                                                                             | `"" \| "lg" \| "sm"`             | `''`        |
 | `placeholder`       | `placeholder`        |                                                                                             | `string`                         | `undefined` |
+| `readOnly`          | `read-only`          |                                                                                             | `boolean`                        | `false`     |
 | `required`          | `required`           |                                                                                             | `boolean`                        | `false`     |
 | `size`              | `size`               |                                                                                             | `"" \| "lg" \| "sm"`             | `''`        |
 | `type`              | `type`               |                                                                                             | `string`                         | `'text'`    |

@@ -4,13 +4,7 @@ import { logInfo, logWarn, logError } from '../../utils/log-debug';
 
 @Component({
   tag: 'autocomplete-single',
-  styleUrls: [
-    '../layout-styles.scss',
-    '../form-styles.scss',
-    '../input-field/input-field-styles.scss',
-    '../input-group/input-group-styles.scss',
-    './autocomplete-input.scss',
-  ],
+  styleUrls: ['../layout-styles.scss', '../form-styles.scss', '../input-field/input-field-styles.scss', '../input-group/input-group-styles.scss', './autocomplete-input.scss'],
   shadow: false,
 })
 export class AutocompleteSingle {
@@ -40,24 +34,23 @@ export class AutocompleteSingle {
   @Prop({ mutable: true }) validation = false;
   @Prop() validationMessage = '';
 
-  /** Back-compat numeric columns (used only if labelCols/inputCols are not provided) */
+  /** Back-compat numeric columns */
   @Prop() labelCol: number = 2;
   @Prop() inputCol: number = 10;
 
-  /** Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4") */
+  /** Responsive column class specs */
   @Prop() labelCols: string = '';
   @Prop() inputCols: string = '';
 
   // State
   @State() inputValue = '';
   @State() filteredOptions: string[] = [];
-  @State() focusedOptionIndex = -1;
+  @State() focusedOptionIndex = -1; // no virtual focus until user navigates
   @State() selectedOptionIndex = -1;
   @State() isFocused = false;
   @State() hasBeenInteractedWith = false;
   @State() dropdownOpen = false;
 
-  /** while clicking inside the dropdown, don't let input blur close it */
   private suppressBlur = false;
 
   // Events
@@ -65,15 +58,13 @@ export class AutocompleteSingle {
   @Event() clear: EventEmitter<void>;
   @Event() componentError: EventEmitter<{ message: string; stack?: string }>;
 
-  // --- Lifecycle / watchers ---------------------------------------------------
-
+  // --- Lifecycle / watchers ---
   @Watch('options')
   handleOptionsChange(newVal: string[]) {
     if (!Array.isArray(newVal)) {
       logError(this.devMode, 'AutocompleteSingle', `'options' should be an array`, { receivedType: typeof newVal });
       return;
     }
-
     if (this.autoSort) {
       const sorted = [...newVal].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
       const changed = sorted.length !== newVal.length || sorted.some((v, i) => v !== newVal[i]);
@@ -82,7 +73,6 @@ export class AutocompleteSingle {
         return;
       }
     }
-
     this.filterOptions();
   }
 
@@ -93,49 +83,40 @@ export class AutocompleteSingle {
 
   componentWillLoad() {
     this.hasBeenInteractedWith = false;
-
-    if (!Array.isArray(this.options)) {
-      logError(this.devMode, 'AutocompleteSingle', `Expected 'options' to be an array, got ${typeof this.options}`);
-    }
-
-    if (!this.label) {
-      logWarn(this.devMode, 'AutocompleteSingle', 'Missing label prop; accessibility may be impacted');
-    }
+    if (!Array.isArray(this.options)) logError(this.devMode, 'AutocompleteSingle', `Expected 'options' to be an array, got ${typeof this.options}`);
+    if (!this.label) logWarn(this.devMode, 'AutocompleteSingle', 'Missing label prop; accessibility may be impacted');
   }
 
   disconnectedCallback() {
     document.removeEventListener('click', this.handleClickOutside, true);
   }
 
-  // --- Utils -----------------------------------------------------------------
-
+  // --- Utils ---
   private camelCase(str: string): string {
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase())).replace(/\s+/g, '');
   }
 
+  /** Sanitize user-typed input: strip tags, remove control chars, trim, cap length. */
   private sanitizeInput(value: string): string {
-    return value.replace(/[<>]/g, '');
+    if (typeof value !== 'string') return '';
+    // remove HTML tags
+    let v = value.replace(/<[^>]*>/g, '');
+    // remove control characters (except common whitespace)
+    v = v.replace(/[\u0000-\u001F\u007F]/g, '');
+    // collapse whitespace
+    v = v.replace(/\s+/g, ' ').trim();
+    // cap length
+    const MAX_LEN = 512;
+    if (v.length > MAX_LEN) v = v.slice(0, MAX_LEN);
+    return v;
   }
 
-  private isHorizontal() {
-    return this.formLayout === 'horizontal';
-  }
-  private isInline() {
-    return this.formLayout === 'inline';
-  }
-  private isRowLayout() {
-    return this.isHorizontal() || this.isInline();
-  }
-
-  /** Convert a compact responsive spec to Bootstrap classes. */
   private parseColsSpec(spec?: string): string {
     if (!spec) return '';
     const tokens = spec.trim().split(/\s+/);
     const out: string[] = [];
-
     for (const t of tokens) {
       if (!t) continue;
-
       if (/^col(-\w+)?(-\d+)?$/.test(t)) {
         out.push(t);
         continue;
@@ -156,10 +137,8 @@ export class AutocompleteSingle {
         out.push('col');
         continue;
       }
-
       if (this.devMode) console.warn('[autocomplete-single] Unknown cols token:', t);
     }
-
     return Array.from(new Set(out)).join(' ');
   }
 
@@ -169,54 +148,37 @@ export class AutocompleteSingle {
 
     if (this.isHorizontal()) {
       if (spec) return this.parseColsSpec(spec);
-
-      if (kind === 'input' && this.labelHidden) {
-        return this.inputCols ? this.parseColsSpec(this.inputCols) : 'col-12';
-      }
-
+      if (kind === 'input' && this.labelHidden) return this.inputCols ? this.parseColsSpec(this.inputCols) : 'col-12';
       if (Number.isFinite(num)) {
         const n = Math.max(0, Math.min(12, Number(num)));
-        if (n === 0) return '';
-        return `col-${n}`;
+        return n === 0 ? '' : `col-${n}`;
       }
-
       return '';
     }
-
-    if (this.isInline()) {
-      return spec ? this.parseColsSpec(spec) : '';
-    }
-
+    if (this.isInline()) return spec ? this.parseColsSpec(spec) : '';
     return '';
   }
 
   private meetsTypingThreshold() {
     return this.inputValue.trim().length >= 3;
   }
-
   private showAsRequired() {
     return this.required && !this.meetsTypingThreshold();
   }
 
-  // --- Handlers --------------------------------------------------------------
-
+  // --- Handlers ---
   private handleFocus = () => {
     this.isFocused = true;
   };
 
   private handleBlur = () => {
     this.isFocused = false;
-
     if (this.suppressBlur) {
       this.suppressBlur = false;
       return;
     }
-
     setTimeout(() => this.closeDropdown(), 0);
-
-    if (this.required) {
-      this.validation = !this.meetsTypingThreshold();
-    }
+    if (this.required) this.validation = !this.meetsTypingThreshold();
   };
 
   private handleInput = (event: InputEvent | KeyboardEvent) => {
@@ -227,27 +189,55 @@ export class AutocompleteSingle {
 
       if (key === 'ArrowDown') {
         event.preventDefault();
+        if (!this.dropdownOpen && this.filteredOptions.length > 0) this.openDropdown({ withFocus: false });
         this.navigateOptions(1);
         return;
       }
 
       if (key === 'ArrowUp') {
         event.preventDefault();
+        if (!this.dropdownOpen && this.filteredOptions.length > 0) this.openDropdown({ withFocus: false });
         this.navigateOptions(-1);
+        return;
+      }
+
+      if (key === 'Home') {
+        event.preventDefault();
+        if (!this.dropdownOpen && this.filteredOptions.length > 0) this.openDropdown({ withFocus: false });
+        this.setFocusIndex(0);
+        return;
+      }
+
+      if (key === 'End') {
+        event.preventDefault();
+        const len = this.filteredOptions.length;
+        if (len > 0) {
+          if (!this.dropdownOpen) this.openDropdown({ withFocus: false });
+          this.setFocusIndex(len - 1);
+        }
+        return;
+      }
+
+      if (key === 'PageDown') {
+        event.preventDefault();
+        if (!this.dropdownOpen && this.filteredOptions.length > 0) this.openDropdown({ withFocus: false });
+        this.pageNavigate(1); // wrap
+        return;
+      }
+
+      if (key === 'PageUp') {
+        event.preventDefault();
+        if (!this.dropdownOpen && this.filteredOptions.length > 0) this.openDropdown({ withFocus: false });
+        this.pageNavigate(-1); // wrap
         return;
       }
 
       if (key === 'Enter') {
         event.preventDefault();
-
-        // If a dropdown option is focused, select it and emit.
         if (this.focusedOptionIndex >= 0 && this.filteredOptions[this.focusedOptionIndex]) {
           this.selectOption(this.filteredOptions[this.focusedOptionIndex]);
           return;
         }
-
-        // No focused option: accept the free text as-is (do NOT mutate options).
-        // Leave value in the input so forms can submit it via the input's name.
         this.closeDropdown();
         input.blur();
         if (this.required) this.validation = !this.meetsTypingThreshold();
@@ -259,10 +249,10 @@ export class AutocompleteSingle {
         return;
       }
     } else {
+      // Sanitize user-typed value on every input
       this.inputValue = this.sanitizeInput(input.value);
       this.filterOptions();
       this.hasBeenInteractedWith = true;
-
       if (this.meetsTypingThreshold() && this.validation) this.validation = false;
       if (this.required && this.inputValue.trim() === '') this.validation = true;
     }
@@ -277,53 +267,100 @@ export class AutocompleteSingle {
     if (!path.includes(this.el)) this.closeDropdown();
   };
 
-  // --- Core behavior ---------------------------------------------------------
+  // --- Core behavior ---
+  private openDropdown(opts?: { withFocus?: boolean }) {
+    const withFocus = !!opts?.withFocus;
+    const wasOpen = this.dropdownOpen;
+    this.dropdownOpen = true;
+    if (withFocus && (!wasOpen || this.focusedOptionIndex < 0)) {
+      this.focusedOptionIndex = 0;
+      requestAnimationFrame(() => this.ensureOptionInView(this.focusedOptionIndex));
+    }
+  }
 
   private filterOptions() {
     if (!Array.isArray(this.options)) {
-      logError(this.devMode, 'AutocompleteSingle', `'options' must be an array`, {
-        receivedType: typeof this.options,
-        value: this.options,
-      });
+      logError(this.devMode, 'AutocompleteSingle', `'options' must be an array`, { receivedType: typeof this.options, value: this.options });
       this.filteredOptions = [];
       this.dropdownOpen = false;
+      this.focusedOptionIndex = -1;
       return;
     }
 
+    // filter against sanitized query
     const v = this.inputValue.trim().toLowerCase();
 
     if (v.length === 0) {
       this.filteredOptions = [];
       this.dropdownOpen = false;
+      this.focusedOptionIndex = -1;
       return;
     }
 
-    this.filteredOptions = this.options.filter(opt => opt.toLowerCase().includes(v));
-    this.dropdownOpen = this.filteredOptions.length > 0;
+    const nextFiltered = this.options.filter(opt => (opt || '').toLowerCase().includes(v));
+    const opening = !this.dropdownOpen && nextFiltered.length > 0;
+
+    this.filteredOptions = nextFiltered;
+
+    if (nextFiltered.length === 0) {
+      this.dropdownOpen = false;
+      this.focusedOptionIndex = -1;
+      return;
+    }
+
+    if (opening) {
+      this.openDropdown({ withFocus: false }); // open without virtual focus
+      this.focusedOptionIndex = -1;
+    } else {
+      if (this.focusedOptionIndex >= nextFiltered.length) this.focusedOptionIndex = -1;
+    }
+  }
+
+  private setFocusIndex(index: number) {
+    if (!this.dropdownOpen || this.filteredOptions.length === 0) return;
+    const len = this.filteredOptions.length;
+    const clamped = Math.max(0, Math.min(len - 1, index));
+    this.focusedOptionIndex = clamped;
+    requestAnimationFrame(() => this.ensureOptionInView(clamped));
+  }
+
+  private getPageSize(): number {
+    const dropdown = this.el.querySelector('.autocomplete-dropdown');
+    const item = this.el.querySelector('.autocomplete-dropdown-item') as HTMLElement | null;
+    const visible = dropdown instanceof HTMLElement && item ? Math.floor(dropdown.clientHeight / Math.max(1, item.clientHeight)) : 0;
+    return visible > 0 ? visible : 5; // fallback
+  }
+
+  private pageNavigate(direction: 1 | -1) {
+    if (!this.dropdownOpen || this.filteredOptions.length === 0) return;
+    const len = this.filteredOptions.length;
+    const page = this.getPageSize();
+
+    let idx = this.focusedOptionIndex;
+    if (idx < 0) {
+      // first page nav enters the list
+      idx = direction > 0 ? 0 : len - 1;
+    } else {
+      const delta = direction > 0 ? page : -page;
+      // wrap using modulo
+      idx = (((idx + delta) % len) + len) % len;
+    }
+    this.setFocusIndex(idx);
   }
 
   private ensureOptionInView(index: number) {
-    setTimeout(() => {
-      const items = this.el.querySelectorAll('.autocomplete-dropdown-item');
-      if (items && index >= 0 && index < items.length) {
-        (items[index] as HTMLElement).scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      }
-    }, 0);
+    const items = this.el.querySelectorAll('.autocomplete-dropdown-item');
+    if (items && index >= 0 && index < items.length) {
+      (items[index] as HTMLElement).scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
   }
 
   private navigateOptions(direction: number) {
-    const newIndex = this.focusedOptionIndex + direction;
-    if (!Array.isArray(this.filteredOptions)) return;
-
-    if (newIndex >= 0 && newIndex < this.filteredOptions.length) {
-      this.focusedOptionIndex = newIndex;
-      this.ensureOptionInView(newIndex);
-    } else {
-      logWarn(this.devMode, 'AutocompleteSingle', 'Navigation index out of bounds', {
-        attemptedIndex: newIndex,
-        totalOptions: this.filteredOptions.length,
-      });
-    }
+    if (!this.dropdownOpen || this.filteredOptions.length === 0) return;
+    const len = this.filteredOptions.length;
+    let newIndex = this.focusedOptionIndex;
+    newIndex = newIndex < 0 ? (direction > 0 ? 0 : len - 1) : (newIndex + direction + len) % len; // wrap for arrows
+    this.setFocusIndex(newIndex);
   }
 
   private selectOption(option: string) {
@@ -332,22 +369,22 @@ export class AutocompleteSingle {
       return;
     }
 
-    this.inputValue = option;
+    // Options come from dev-provided list; assign as text (input value is not HTML)
+    this.inputValue = this.sanitizeInput(option);
     this.filteredOptions = [];
     this.focusedOptionIndex = -1;
     this.selectedOptionIndex = this.options.indexOf(option);
     this.validation = false;
-    this.itemSelect.emit(option);
-    this.dropdownOpen = false;
 
+    // Emit the (sanitized) selection for safety
+    this.itemSelect.emit(this.inputValue);
+
+    this.dropdownOpen = false;
     this.suppressBlur = false;
 
-    setTimeout(() => {
-      const input = this.el.querySelector('input');
-      input?.focus();
-    }, 0);
+    setTimeout(() => this.el.querySelector('input')?.focus(), 0);
 
-    logInfo(this.devMode, 'AutocompleteSingle', 'Item selected', { selected: option });
+    logInfo(this.devMode, 'AutocompleteSingle', 'Item selected', { selected: this.inputValue });
   }
 
   private closeDropdown() {
@@ -362,10 +399,8 @@ export class AutocompleteSingle {
     this.filteredOptions = [];
     this.focusedOptionIndex = -1;
     this.selectedOptionIndex = -1;
-
     this.hasBeenInteractedWith = true;
     this.dropdownOpen = false;
-
     if (this.required && this.hasBeenInteractedWith) this.validation = true;
 
     this.clear.emit();
@@ -381,23 +416,23 @@ export class AutocompleteSingle {
     return true;
   }
 
-  // --- Render helpers --------------------------------------------------------
-
+  // --- Render helpers ---
   private labelClasses(labelColClass?: string) {
     return [
       'form-control-label',
       this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
-      this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
-      this.validation ? 'invalid' : '',
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
+      this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
+      this.isInline() ? `col-form-label` : '',
+      this.validation ? 'invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
   }
 
   private inputClasses() {
-    const sizeClass = this.size === 'sm' ? 'basic-input-sm' : this.size === 'lg' ? 'basic-input-lg' : '';
+    const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
     return ['form-control', this.validation || this.error ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
   }
 
@@ -413,6 +448,16 @@ export class AutocompleteSingle {
       .join(' ');
   }
 
+  private isHorizontal() {
+    return this.formLayout === 'horizontal';
+  }
+  private isInline() {
+    return this.formLayout === 'inline';
+  }
+  private isRowLayout() {
+    return this.isHorizontal() || this.isInline();
+  }
+
   private renderInputLabel(ids: string, labelColClass?: string) {
     if (this.labelHidden) return null;
     const text = this.isRowLayout() ? `${this.label}:` : this.label;
@@ -426,7 +471,6 @@ export class AutocompleteSingle {
 
   private renderInputField(ids: string, names: string) {
     const placeholder = this.label || this.placeholder || 'Placeholder Text';
-
     return (
       <input
         id={ids || null}
@@ -457,27 +501,11 @@ export class AutocompleteSingle {
     );
   }
 
-  private renderClearIcon() {
-    return (
-      <svg class="fa-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s-12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-      </svg>
-    );
-  }
-
   private renderClearButton() {
     if (this.removeClearBtn || !this.inputValue) return null;
-
     return (
-      <button
-        class="input-group-btn clear clear-btn"
-        role="button"
-        onClick={this.clearInput}
-        aria-label="Clear input"
-        title="Clear input"
-        disabled={this.disabled}
-      >
-        {this.clearIcon ? <i class={this.clearIcon} /> : this.renderClearIcon()}
+      <button class="clear-btn" role="button" onClick={this.clearInput} aria-label="Clear input" title="Clear input" disabled={this.disabled}>
+        <i class={this.clearIcon || 'fas fa-times'} />
       </button>
     );
   }
@@ -492,14 +520,16 @@ export class AutocompleteSingle {
             aria-selected={this.focusedOptionIndex === index ? 'true' : 'false'}
             class={{
               'autocomplete-dropdown-item': true,
-              focused: this.focusedOptionIndex === index,
+              'focused': this.focusedOptionIndex === index,
+              'virtually-focused': this.focusedOptionIndex === index,
               [`${this.size}`]: !!this.size,
             }}
             onMouseDown={this.onDropdownMouseDown}
             onClick={() => this.selectOption(option)}
             tabIndex={-1}
           >
-            <span innerHTML={option.replace(/</g, '&lt;').replace(/>/g, '&gt;')} />
+            {/* SAFE: render as text node; no innerHTML */}
+            <span>{option}</span>
           </li>
         ))}
       </ul>
@@ -509,7 +539,7 @@ export class AutocompleteSingle {
   private renderDropdown(ids: string) {
     if (!this.dropdownOpen) return null;
     return (
-      <div class="autocomplete-dropdown" aria-live="polite" onMouseDown={this.onDropdownMouseDown}>
+      <div class="autocomplete-dropdown single" aria-live="polite" onMouseDown={this.onDropdownMouseDown}>
         {this.renderDropdownList(ids)}
       </div>
     );
@@ -518,7 +548,6 @@ export class AutocompleteSingle {
   private renderMessage(kind: 'validation' | 'error', ids: string) {
     const active = kind === 'validation' ? this.validation && !!this.validationMessage : this.error && !!this.errorMessage;
     if (!active) return '';
-
     const message = kind === 'validation' ? this.validationMessage : this.errorMessage;
     const baseId = kind === 'validation' ? `${ids}-validation` : `${ids}-error`;
     const baseClass = kind === 'validation' ? 'invalid-feedback' : 'error-message';
@@ -562,10 +591,8 @@ export class AutocompleteSingle {
 
   private renderLayout(ids: string, names: string) {
     const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
-
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass =
-      this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
+    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     if (this.isRowLayout()) {
       return (
@@ -599,8 +626,7 @@ export class AutocompleteSingle {
     );
   }
 
-  // --- Render root -----------------------------------------------------------
-
+  // --- Render root ---
   render() {
     const ids = this.camelCase(this.inputId).replace(/ /g, '');
     const names = this.camelCase(this.label).replace(/ /g, '');

@@ -233,12 +233,12 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                         </span>
                       </div>
                       <div aria-label="December 9, 2025" class="calendar-grid-item" data-date="2025-12-09" data-day="9" data-month="12" data-year="2025" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                           9
                         </span>
                       </div>
                       <div aria-label="December 10, 2025" class="calendar-grid-item" data-date="2025-12-10" data-day="10" data-month="12" data-year="2025" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
                           10
                         </span>
                       </div>
@@ -908,12 +908,12 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                         </span>
                       </div>
                       <div aria-label="December 9, 2025" class="calendar-grid-item" data-date="2025-12-09" data-day="9" data-month="12" data-year="2025" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                           9
                         </span>
                       </div>
                       <div aria-label="December 10, 2025" class="calendar-grid-item" data-date="2025-12-10" data-day="10" data-month="12" data-year="2025" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
                           10
                         </span>
                       </div>

@@ -285,6 +285,25 @@ describe('<autocomplete-single>', () => {
     expect(comp.inputValue).toBe('Apple');
   });
 
+  it('removes control chars (incl. tabs/newlines), collapses spaces, caps length to 512', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteSingle],
+      html: `<autocomplete-single></autocomplete-single>`,
+    });
+
+    const c = page.rootInstance as AutocompleteSingle;
+
+    // \u0007 and \u0008 are control chars; tabs/newlines are also removed by the sanitizer.
+    const withControls = 'a\u0007\u0008 b\t\tc   \n d';
+    const sanitized = (c as any)['sanitizeInput'](withControls);
+    // After removing tabs/newlines and collapsing spaces, "b\t\tc" => "bc"
+    expect(sanitized).toBe('a bc d');
+
+    const long = 'x'.repeat(600);
+    const capped = (c as any)['sanitizeInput'](long);
+    expect(capped.length).toBe(512);
+  });
+
   // ---------------- SNAPSHOTS ----------------
 
   it('matches snapshot (default render)', async () => {

@@ -199,8 +199,8 @@
   }
 
   .calendar-button:focus {
-    outline: none;
-    box-shadow: none;
+    outline: none !important;
+    box-shadow: none !important;
   }
 
   .calendar-button.is-invalid {
@@ -416,7 +416,9 @@
 
   .drp-input-field {
     position: relative;
+    display: flex;
     width: 100%;
+    align-items: center;
   }
 
   .drp-input-field .form-control {
@@ -424,6 +426,36 @@
     border-radius: 0.2rem 0 0 0.2rem;
     padding: 0.4rem 0.75rem;
   }
+
+  .input-group-lg > .drp-input-field > .form-control,
+  .input-group-lg > .drp-input-field > .form-select,
+  .input-group-lg > .drp-input-field > .input-group-text,
+  .input-group-lg > .drp-input-field > .btn {
+    padding: 0.5rem 1rem;
+    font-size: 1.25rem;
+  }
+
+  .input-group-sm > .drp-input-field > .form-control,
+  .input-group-sm > .drp-input-field > .form-select,
+  .input-group-sm > .drp-input-field > .input-group-text,
+  .input-group-sm > .drp-input-field > .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .input-group-sm .btn-sm {
+    font-size: 0.875rem !important;
+    height: 28px;
+    min-width: 32px;
+    padding: 0 12px !important;
+  }
+
+  // .input-group-lg .btn-lg {
+  //   font-size: 0.875rem !important;
+  //   height: 28px;
+  //   min-width: 32px;
+  //   padding: 0 12px !important;
+  // }
 
   .drp-input-field .clear-input-button {
     opacity: 0;
@@ -442,6 +474,11 @@
   .drp-input-field:focus-within .clear-input-button {
     opacity: 1;
     visibility: visible;
+  }
+
+  .input-group-sm .drp-input-field .clear-input-button {
+    right: -2px;
+    top: 8px;
   }
 
   .drtp {
@@ -509,7 +546,7 @@
     top: 11px;
   }
 
-  .drtp .input-group-prepend .calendar-icon {
+  .drtp .input-group .calendar-icon {
     padding-right: 0 !important;
   }
 
@@ -685,20 +722,14 @@
     border-color: #b30009 !important;
   }
 
-  .input-group-append,
-  .input-group-prepend {
+  .input-group {
     pointer-events: auto;
   }
 
-  .input-group-prepend.is-invalid > .calendar-button:hover,
-  .input-group-append.is-invalid > .calendar-button:hover {
+  .input-group.is-invalid > .calendar-button:hover {
     color: #fff;
     background-color: rgb(179, 0, 9);
   }
-
-  /* .input-group.focus .calendar-button {
-    opacity: 0;
-  } */
 
   .input-group .calendar-button {
     border-top: 1px solid rgb(206, 212, 218);

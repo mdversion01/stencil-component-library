@@ -54,7 +54,7 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(page.root!.querySelector('[role="listbox"]')).toBeTruthy();
   });
 
-  it('selects multiple items (dropdown now closes after each pick)', async () => {
+  it('selects multiple items (dropdown closes or stays open per API; this component keeps it open on Enter path)', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
       html: `<autocomplete-multiple-selections input-id="tags"></autocomplete-multiple-selections>`,
@@ -63,7 +63,7 @@ describe('<autocomplete-multiple-selections>', () => {
     const comp = page.rootInstance as AutocompleteMultipleSelections;
     comp.options = ['Alpha', 'Beta', 'Gamma'];
 
-    // Select "Alpha"
+    // Select "Alpha" via direct toggle (this closes dropdown)
     comp.inputValue = 'a';
     comp.filterOptions();
     await page.waitForChanges();
@@ -84,6 +84,74 @@ describe('<autocomplete-multiple-selections>', () => {
     expect((comp as any)['dropdownOpen']).toBe(false);
   });
 
+  it('sanitizes typed input (strips tags & control chars; collapses whitespace; caps to 512) and mirrors rawInputName hidden field', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections raw-input-name="raw"></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    const input = page.root!.querySelector('input') as HTMLInputElement;
+
+    input.value = '  <b>  A \t B </b> \n  C  ';
+    input.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(comp.inputValue).toBe('A B C');
+    const hiddenRaw = page.root!.querySelector('input[type="hidden"][name="raw"]') as HTMLInputElement;
+    expect(hiddenRaw).toBeTruthy();
+    expect(hiddenRaw.value).toBe('A B C');
+
+    // length cap
+    input.value = 'x'.repeat(600);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    await page.waitForChanges();
+    expect(comp.inputValue.length).toBe(512);
+  });
+
+  it('renders option text safely as text nodes (no HTML injection)', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections input-id="safe" label="Safe"></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['<b>Bold</b>', '<img src=x onerror=alert(1)>', 'Okay'];
+    comp.inputValue = '<'; // match first two
+    comp.filterOptions();
+    await page.waitForChanges();
+
+    const list = page.root!.querySelector('#safe-listbox')!;
+    // Should NOT render real <b> or <img> tags inside options
+    expect(list.querySelector('b')).toBeNull();
+    expect(list.querySelector('img')).toBeNull();
+
+    const texts = Array.from(list.querySelectorAll('li span')).map(n => n.textContent);
+    expect(texts).toEqual(['<b>Bold</b>', '<img src=x onerror=alert(1)>']);
+  });
+
+  it('clicking the input closes an open dropdown without clearing input or losing focus', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections input-id="clicker"></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['One', 'Two', 'Three'];
+    comp.inputValue = 'o';
+    comp.filterOptions();
+    await page.waitForChanges();
+
+    expect((comp as any).dropdownOpen).toBe(true);
+
+    const input = page.root!.querySelector('input')!;
+    input.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect((comp as any).dropdownOpen).toBe(false);
+    expect(comp.inputValue).toBe('o');
+  });
+
   it('validates as invalid when required and nothing selected', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
@@ -98,7 +166,7 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(page.root!.textContent).toContain('Select at least one');
   });
 
-  it('handles keyboard navigation and Enter toggling selection', async () => {
+  it('handles keyboard navigation: ArrowDown enters list and Enter toggles selection (keeps dropdown open on Enter path)', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
       html: `<autocomplete-multiple-selections></autocomplete-multiple-selections>`,
@@ -117,6 +185,8 @@ describe('<autocomplete-multiple-selections>', () => {
 
     expect(comp.selectedItems.length).toBe(1);
     expect(['Alpha', 'Beta', 'Gamma']).toContain(comp.selectedItems[0]);
+    // Enter path uses keepDropdownOpen: true
+    expect((comp as any).dropdownOpen).toBe(true);
   });
 
   it('assigns correct aria attributes and roles', async () => {
@@ -135,7 +205,7 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(input.getAttribute('aria-haspopup')).toBe('listbox');
   });
 
-  it('Escape closes the dropdown and clears the input', async () => {
+  it('Escape closes the dropdown and clears the input (clearInput=true path)', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
       html: `<autocomplete-multiple-selections></autocomplete-multiple-selections>`,
@@ -157,7 +227,7 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(comp.inputValue).toBe('');
   });
 
-  it('programmatic navigateOptions updates aria-activedescendant', async () => {
+  it('aria-activedescendant updates after ArrowDown (listEntered=true, focus first option)', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
       html: `<autocomplete-multiple-selections input-id="id"></autocomplete-multiple-selections>`,
@@ -165,12 +235,13 @@ describe('<autocomplete-multiple-selections>', () => {
 
     const comp = page.rootInstance as AutocompleteMultipleSelections;
     comp.options = ['Apple', 'Banana', 'Cherry'];
-    comp.inputValue = 'a';
+    comp.inputValue = 'a'; // Apple, Banana
     comp.filterOptions();
     await page.waitForChanges();
 
-    const input: HTMLInputElement = page.root!.querySelector('input')!;
-    await comp.navigateOptions(1);
+    const input = page.root!.querySelector('input')!;
+    // Use ArrowDown to enter the list; programmatic navigateOptions doesn't flip listEntered
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, composed: true }));
     await page.waitForChanges();
 
     expect(comp.focusedOptionIndex).toBe(0);
@@ -216,7 +287,7 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(inputWrapper.className).toMatch(/(^|\s)col-sm-8(\s|$)/);
   });
 
-  // ---------- UPDATED: Enter adds even when editable=false (ephemeral), upserts only when editable=true ----------
+  // ---------- Enter adds even when editable=false (ephemeral), upserts only when editable=true ----------
 
   it('adds a new value on Enter when there is no match (editable=true) and sorts when autoSort=true', async () => {
     const page = await newSpecPage({
@@ -359,15 +430,18 @@ describe('<autocomplete-multiple-selections>', () => {
 
     expect(comp.filteredOptions).toEqual(['Zeta']);
     expect(comp.focusedOptionIndex).toBe(-1); // not set until nav
-    await comp.navigateOptions(1);            // move to index 0
+
+    // Enter list and focus first item
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, composed: true }));
     await page.waitForChanges();
     expect(input.getAttribute('aria-activedescendant')).toBe('id-option-0');
 
+    // Move virtual focus to delete
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, composed: true }));
     await page.waitForChanges();
-
     expect(input.getAttribute('aria-activedescendant')).toBe('id-delete-0');
 
+    // Press Enter to delete
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
     await page.waitForChanges();
 
@@ -476,7 +550,7 @@ describe('<autocomplete-multiple-selections>', () => {
     const comp = page.rootInstance as AutocompleteMultipleSelections;
     comp.options = ['Alpha', 'Beta', 'Gamma', 'Delta'];
 
-    // Make two selections (dropdown closes each time)
+    // Make two selections (dropdown closes each time for toggleItem)
     comp.inputValue = 'a';
     comp.filterOptions();
     await page.waitForChanges();

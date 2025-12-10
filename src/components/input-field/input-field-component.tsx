@@ -1,5 +1,5 @@
 // src/components/input-field/input-field-component.tsx
-import { Component, h, Prop, Element, State, Watch, Event, EventEmitter } from '@stencil/core';
+import { Component, h, Prop, Element, State, Watch, Event, EventEmitter, Fragment } from '@stencil/core';
 
 @Component({
   tag: 'input-field-component',
@@ -19,6 +19,7 @@ export class InputFieldComponent {
   @Prop() labelSize: '' | 'sm' | 'lg' = '';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
+  @Prop() readOnly: boolean = false;
   @Prop() required: boolean = false;
   @Prop() type: string = 'text';
   @Prop() validation: boolean = false;         // external control
@@ -210,6 +211,7 @@ export class InputFieldComponent {
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
+      this.isInline() ? `col-form-label` : '',
       this.validationState ? 'invalid' : '',
     ].filter(Boolean).join(' ');
 
@@ -224,7 +226,7 @@ export class InputFieldComponent {
   }
 
   private renderInput(ids: string, names: string) {
-    const sizeClass = this.size === 'sm' ? 'basic-input-sm' : this.size === 'lg' ? 'basic-input-lg' : '';
+    const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
     const classes = ['form-control', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
 
     const placeholder = this.labelHidden
@@ -232,7 +234,7 @@ export class InputFieldComponent {
       : this.label || this.placeholder || 'Placeholder Text';
 
     return (
-      <div>
+      <Fragment>
         <input
           ref={el => (this.inputEl = el as HTMLInputElement)}
           id={ids || undefined}
@@ -246,6 +248,7 @@ export class InputFieldComponent {
           aria-describedby={this.validationState ? 'validationMessage' : undefined}
           disabled={this.disabled}
           required={this.required}
+          readOnly={this.readOnly}
           onInput={this.handleInput}
           onBlur={this.handleBlur}
         />
@@ -254,7 +257,7 @@ export class InputFieldComponent {
             {this.validationMessage}
           </div>
         ) : null}
-      </div>
+      </Fragment>
     );
   }
 
@@ -283,9 +286,9 @@ export class InputFieldComponent {
         <div class={groupClasses.join(' ')}>
           {this.renderInputLabel(ids, labelColClass)}
           {this.isHorizontal() ? (
-            <div class={inputColClass}>{this.renderInput(ids, names)}</div>
+            <div class={inputColClass}>{this.validationState ? <div>{this.renderInput(ids, names)}</div> : this.renderInput(ids, names)}</div>
           ) : (
-            this.renderInput(ids, names)
+            this.validationState ? <div>{this.renderInput(ids, names)}</div> : this.renderInput(ids, names)
           )}
         </div>
       </div>

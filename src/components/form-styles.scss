@@ -141,55 +141,6 @@ input[type='radio'] {
   width: auto !important;
 }
 
-.autocomplete-dropdown-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  .option-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    padding: 0;
-    margin: 0;
-
-    // &.virtually-focused {
-    //   outline: 2px solid; // or your theme focus ring
-    //   outline-offset: 2px;
-    // }
-  }
-
-  &:has(.virtually-focused) {
-    //outline: 2px solid; // or your theme focus ring
-    //outline-offset: 2px;
-    box-shadow: inset 0 0 0 2px #2680eb;
-  }
-
-  .delete-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    margin-left: 0.25rem;
-
-    svg {
-      fill: #666;
-      width: 0.75rem;
-      height: 0.75rem;
-    }
-
-    &:hover svg,
-    &.virtually-focused svg {
-      fill: #b30009;
-    }
-  }
-}
-
 // Plumage Search Bar
 
 /* .search-bar-container {

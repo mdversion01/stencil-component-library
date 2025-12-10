@@ -10,6 +10,11 @@
 }
 
 .input-group {
+  position: relative;
+  display: flex;
+  align-items: center !important;
+  width: 100%;
+
   .btn {
     height: 100%;
     z-index: 0 !important;

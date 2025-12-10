@@ -21,7 +21,7 @@
 | `clearInputOnBlurOutside` | `clear-input-on-blur-outside` |                                                                                  | `boolean`                        | `false`                      |
 | `devMode`                 | `dev-mode`                    |                                                                                  | `boolean`                        | `false`                      |
 | `disabled`                | `disabled`                    |                                                                                  | `boolean`                        | `false`                      |
-| `editable`                | `editable`                    |                                                                                  | `boolean`                        | `false`                      |
+| `editable`                | `editable`                    | Can users add/delete options at runtime?                                         | `boolean`                        | `false`                      |
 | `error`                   | `error`                       |                                                                                  | `boolean`                        | `false`                      |
 | `errorMessage`            | `error-message`               |                                                                                  | `string`                         | `''`                         |
 | `formId`                  | `form-id`                     |                                                                                  | `string`                         | `''`                         |
@@ -38,7 +38,7 @@
 | `name`                    | `name`                        | Field name for selected items; if it ends with [] one input per item is emitted. | `string`                         | `undefined`                  |
 | `options`                 | `options`                     |                                                                                  | `string[]`                       | `[]`                         |
 | `placeholder`             | `placeholder`                 |                                                                                  | `string`                         | `'Type to search/filter...'` |
-| `preserveInputOnSelect`   | `preserve-input-on-select`    |                                                                                  | `boolean`                        | `undefined`                  |
+| `preserveInputOnSelect`   | `preserve-input-on-select`    | Keep the typed text after a selection? Default false (clear).                    | `boolean`                        | `undefined`                  |
 | `rawInputName`            | `raw-input-name`              | Also submit whatever the user typed under this name (verbatim).                  | `string`                         | `undefined`                  |
 | `removeBtnBorder`         | `remove-btn-border`           |                                                                                  | `boolean`                        | `false`                      |
 | `removeClearBtn`          | `remove-clear-btn`            |                                                                                  | `boolean`                        | `false`                      |

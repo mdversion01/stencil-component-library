@@ -9,9 +9,7 @@ exports[`<input-field-component> matches snapshot (default stacked layout) 1`] =
           First Name
         </span>
       </label>
-      <div>
-        <input aria-labelledby="firstName" class="form-control" id="first" name="firstName" placeholder="First Name" type="text" value="Ada">
-      </div>
+      <input aria-labelledby="firstName" class="form-control" id="first" name="firstName" placeholder="First Name" type="text" value="Ada">
     </div>
   </div>
 </input-field-component>

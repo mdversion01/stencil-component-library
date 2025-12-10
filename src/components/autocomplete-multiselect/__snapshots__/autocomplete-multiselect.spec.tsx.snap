@@ -4,7 +4,7 @@ exports[`autocomplete-multiselect renders full DOM output snapshot for given pro
 <autocomplete-multiselect add-btn="" badge-inline-styles="background-color: red; color: white;" badge-shape="rounded" badge-variant="danger" editable="" error="" error-message="Invalid input" input-id="tag-input" label="Tags" required="" validation-message="Required field.">
   <div class="autocomplete-container form-group">
     <div>
-      <label class="form-control-label invalid" htmlfor="tagInput">
+      <label class="form-control-label" htmlfor="tagInput">
         <span>
           Tags
         </span>
@@ -19,25 +19,21 @@ exports[`autocomplete-multiselect renders full DOM output snapshot for given pro
               <span>
                 Two
               </span>
-              <button aria-label="Remove Two" class="remove-btn" data-tag="Two" role="button" title="Remove Tag">
+              <button aria-label="Remove Two" class="remove-btn" data-tag="Two" role="button" title="Remove Tag" type="button">
                 <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9z"></path>
+                  <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s-9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9z"></path>
                 </svg>
               </button>
             </div>
           </div>
           <div class="ac-input-container">
             <div class="input-group is-invalid">
-              <input aria-activedescendant="tagInput-option-0" aria-autocomplete="list" aria-controls="tagInput-listbox" aria-describedby="tagInput-validation" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="" aria-required="true" autocomplete="off" class="form-control" id="tagInput" inputmode="text" placeholder="Tags" role="combobox" spellcheck="false" type="" value="T">
-              <button aria-label="Add item" class="add add-btn input-group-btn" role="button" title="Add item" type="button">
-                <svg viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"></path>
-                </svg>
+              <input aria-autocomplete="list" aria-controls="tagInput-listbox" aria-describedby="tagInput-validation" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="" aria-required="true" autocomplete="off" class="form-control is-invalid" id="tagInput" inputmode="text" placeholder="Tags" role="combobox" spellcheck="false" type="" value="T">
+              <button aria-label="Add item" class="add-btn" role="button" title="Add item" type="button">
+                <i class="fa-plus fas"></i>
               </button>
               <button aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
-                <svg class="fa-icon" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s-12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></path>
-                </svg>
+                <i class="fa-times fas"></i>
               </button>
             </div>
           </div>

@@ -74,6 +74,59 @@ describe('autocomplete-multiselect', () => {
     expect(comp.filteredOptions).toEqual(['Apple']);
   });
 
+  it('sanitizes typed input on input event (strips tags, control chars; collapses whitespace; caps length)', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultiselect],
+      html: `<autocomplete-multiselect raw-input-name="raw"></autocomplete-multiselect>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultiselect;
+    const inputEl = page.root!.querySelector('input') as HTMLInputElement;
+
+    // Simulate user typing with tags, tabs/newlines and extra spaces
+    inputEl.value = '  <b>  A \t B </b> \n  C  ';
+    inputEl.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    // Expect sanitized to "A B C"
+    expect(comp.inputValue).toBe('A B C');
+
+    // Hidden raw input mirrors sanitized value
+    const hiddenRaw = page.root!.querySelector('input[type="hidden"][name="raw"]') as HTMLInputElement;
+    expect(hiddenRaw).toBeTruthy();
+    expect(hiddenRaw.value).toBe('A B C');
+
+    // Length cap
+    inputEl.value = 'x'.repeat(600);
+    inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+    await page.waitForChanges();
+    expect((page.rootInstance as any).inputValue.length).toBe(512);
+  });
+
+  it('renders option text safely as text nodes (no HTML injection)', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultiselect],
+      html: `<autocomplete-multiselect input-id="safe" label="Safe"></autocomplete-multiselect>`,
+    });
+    const comp = page.rootInstance as AutocompleteMultiselect;
+    comp.options = ['<b>Bold</b>', '<img src=x onerror=alert(1)>', 'Okay'];
+    comp.inputValue = '<';
+    await comp.filterOptions();
+    await page.waitForChanges();
+
+    // Opened list
+    expect((comp as any).dropdownOpen).toBe(true);
+
+    const row = page.root!.querySelector('[id="safe-listbox"]')!;
+    // There should be no actual <b> or <img> element rendered by the options
+    expect(row.querySelector('b')).toBeNull();
+    expect(row.querySelector('img')).toBeNull();
+
+    // The visible text should contain only the items that match the filter ("<")
+    const texts = Array.from(row.querySelectorAll('li span')).map(n => n.textContent);
+    expect(texts).toEqual(['<b>Bold</b>', '<img src=x onerror=alert(1)>']);
+  });
+
   it('selects and toggles item correctly', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultiselect],
@@ -136,6 +189,30 @@ describe('autocomplete-multiselect', () => {
     expect(comp.options).toEqual(['Apple', 'Banana', 'Orange']);
     expect(comp.selectedItems).toContain('Apple');
     expect(comp.inputValue).toBe('');
+  });
+
+  it('sanitizes value before upsert when adding new option on Enter', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultiselect],
+      html: `<autocomplete-multiselect editable></autocomplete-multiselect>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultiselect;
+    comp.options = ['Banana', 'Orange'];
+
+    // includes tag + controls + extra spaces
+    const inputEl = page.root!.querySelector('input') as HTMLInputElement;
+    inputEl.value = '  <b>  Kiwi\u0007 </b> ';
+    inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+    await page.waitForChanges();
+
+    inputEl.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await page.waitForChanges();
+
+    // Should insert sanitized "Kiwi"
+    expect(comp.options).toContain('Kiwi');
+    // No raw "<" left in options
+    expect(comp.options.find(o => /</.test(o))).toBeUndefined();
   });
 
   // auto-sort disabled preserves insertion order
@@ -257,30 +334,42 @@ describe('autocomplete-multiselect', () => {
     const comp = page.rootInstance as AutocompleteMultiselect;
     comp.options = ['One', 'Two', 'Three'];
     comp.inputValue = 'T';
-    await comp.filterOptions();
+    await comp.filterOptions(); // -> ['Two','Three']
     await page.waitForChanges();
 
     const input = page.root!.querySelector('input')!;
-    // Enter should pick the first filtered option ('Two')
+    // Need to enter the list (ArrowDown) before Enter will choose the focused item
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, composed: true }));
+    await page.waitForChanges();
+
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
     await page.waitForChanges();
 
-    expect(comp.selectedItems).toContain('Two');
+    expect(comp.selectedItems).toContain('Two'); // picks first focused item
     expect(comp.inputValue).toBe('');
   });
 
-  it('aria-activedescendant updates on focus change', async () => {
+  it('aria-activedescendant updates after ArrowDown to enter list & focus first item', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultiselect],
-      html: `<autocomplete-multiselect options='["A", "B"]' input-id="letters"></autocomplete-multiselect>`,
+      html: `<autocomplete-multiselect input-id="letters" label="Letters"></autocomplete-multiselect>`,
     });
     const comp = page.rootInstance as AutocompleteMultiselect;
-    comp.inputValue = 'B';
+
+    // Provide options programmatically (attribute string would not be parsed)
+    comp.options = ['A', 'B'];
+
+    // Type to get filtered options > 0
+    comp.inputValue = 'b';
     await comp.filterOptions();
-    comp.focusedOptionIndex = 0;
     await page.waitForChanges();
+
     const input = page.root!.querySelector('input')!;
-    expect(input.getAttribute('aria-activedescendant')).toContain('letters-option-0');
+    // ArrowDown should set listEntered=true and focusedOptionIndex=0
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(input.getAttribute('aria-activedescendant')).toBe('letters-option-0');
   });
 
   it('scrolls focused item into view', async () => {
@@ -292,10 +381,11 @@ describe('autocomplete-multiselect', () => {
 
     comp.options = ['One', 'Two', 'Three'];
     comp.inputValue = 'o';
-    await comp.filterOptions();
+    await comp.filterOptions(); // dropdownOpen should be true
     comp.focusedOptionIndex = -1;
     await page.waitForChanges();
 
+    // Mock querySelectorAll to return fake items with scrollIntoView
     const originalQS = HTMLElement.prototype.querySelectorAll;
     const fakeItems = ['One', 'Two', 'Three'].map(() => {
       const li = document.createElement('li') as any;
@@ -304,14 +394,17 @@ describe('autocomplete-multiselect', () => {
     });
     (HTMLElement.prototype.querySelectorAll as any) = jest.fn(() => fakeItems as any);
 
+    // Ensure RAF callbacks run immediately (setFocusIndex uses requestAnimationFrame)
+    const originalRAF = (global as any).requestAnimationFrame;
+    (global as any).requestAnimationFrame = (cb: Function) => { cb(); return 1; };
+
     try {
-      jest.useFakeTimers();
-      await comp.navigateOptions(1);
-      jest.runAllTimers();
+      await comp.navigateOptions(1); // move to index 0 and trigger ensureOptionInView
+      await page.waitForChanges();
       expect(fakeItems[0].scrollIntoView as any).toHaveBeenCalled();
     } finally {
       HTMLElement.prototype.querySelectorAll = originalQS as any;
-      jest.useRealTimers();
+      (global as any).requestAnimationFrame = originalRAF;
     }
   });
 
@@ -475,7 +568,6 @@ describe('autocomplete-multiselect', () => {
   });
 
   // ---- New: optionsChange hook + setOptions/getOptions API ----
-
   it('emits optionsChange on add (reason="add") and delete (reason="delete")', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultiselect],

@@ -98,6 +98,22 @@ Type: `Promise<void>`
 
 
 
+### `removeItem(value: string) => Promise<void>`
+
+Back-compat: remove first match of a value (callable by hosts)
+
+#### Parameters
+
+| Name    | Type     | Description |
+| ------- | -------- | ----------- |
+| `value` | `string` |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `setOptions(next: string[]) => Promise<void>`
 
 🔧 Replace options from the host (for hosts). Also emits optionsChange('replace').
