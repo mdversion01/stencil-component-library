@@ -76,9 +76,18 @@
      -->
     <app-wrapper>
       <div class="cwrapper">
-        <autocomplete-single id="aci1" add-btn label-size="sm" input-id="ac-single1" label="Autocomplete Single"></autocomplete-single>
-
         <autocomplete-single
+          id="aci1"
+          required
+          validation
+          validation-message="Please fill in"
+          add-btn
+          label-size="sm"
+          input-id="ac-single1"
+          label="Autocomplete Single"
+        ></autocomplete-single>
+
+        <!-- <autocomplete-single
           id="aci2"
           input-id="ac-single2"
           form-layout="horizontal"
@@ -91,7 +100,18 @@
           required
           validation
           validation-message="Please fill in"
-        ></autocomplete-single>
+        ></autocomplete-single> -->
+
+        <plumage-autocomplete-single
+          id="aci2"
+          input-id="ac-single2"
+          label="Autocomplete Single"
+          clear-icon="fa-solid fa-xmark"
+          size="sm"
+          required
+          validation
+          validation-message="Please fill in"
+        ></plumage-autocomplete-single>
 
         <form-component>
           <autocomplete-multiselect
@@ -1324,7 +1344,7 @@
         ]'
         ></plumage-select-field-component>
 
-         <plumage-select-field-component
+        <plumage-select-field-component
           label="Favorite Fruit"
           select-field-id="fruit"
           form-layout="inline"
@@ -1336,7 +1356,7 @@
         ]'
         ></plumage-select-field-component>
 
-         <plumage-select-field-component
+        <plumage-select-field-component
           label="Favorite Fruit"
           select-field-id="fruit"
           value=""
@@ -1350,7 +1370,7 @@
         ]'
         ></plumage-select-field-component>
 
-         <plumage-select-field-component
+        <plumage-select-field-component
           label="Favorite Fruit"
           multiple
           required

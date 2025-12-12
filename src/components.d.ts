@@ -778,6 +778,50 @@ export namespace Components {
         "useByPagePagination": boolean;
         "useMinimizePagination": boolean;
     }
+    interface PlumageAutocompleteSingle {
+        /**
+          * id(s) of label(s) that label this input (space-separated).
+         */
+        "arialabelledBy": string;
+        "autoSort": boolean;
+        "clearIcon": string;
+        "devMode": boolean;
+        "disabled": boolean;
+        "error": boolean;
+        "errorMessage": string;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "inputCol": number;
+        "inputCols": string;
+        "inputId": string;
+        "label": string;
+        "labelAlign": '' | 'right';
+        /**
+          * Numeric fallback columns
+         */
+        "labelCol": number;
+        /**
+          * Responsive column class specs
+         */
+        "labelCols": string;
+        "labelHidden": boolean;
+        "labelSize": '' | 'sm' | 'lg';
+        "options": string[];
+        "placeholder"?: string;
+        "removeClearBtn": boolean;
+        "required": boolean;
+        "size": '' | 'sm' | 'lg';
+        "type": string;
+        /**
+          * Validation controlled externally (prop remains source of truth)
+         */
+        "validation": boolean;
+        "validationMessage": string;
+        /**
+          * Value controlled externally (don’t mutate the prop)
+         */
+        "value": string;
+    }
     interface PlumageInputFieldComponent {
         "disabled": boolean;
         "formId": string;
@@ -1591,6 +1635,10 @@ export interface PaginationComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLPaginationComponentElement;
 }
+export interface PlumageAutocompleteSingleCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPlumageAutocompleteSingleElement;
+}
 export interface PlumageInputFieldComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLPlumageInputFieldComponentElement;
@@ -2044,6 +2092,26 @@ declare global {
         prototype: HTMLPaginationComponentElement;
         new (): HTMLPaginationComponentElement;
     };
+    interface HTMLPlumageAutocompleteSingleElementEventMap {
+        "itemSelect": string;
+        "clear": void;
+        "componentError": { message: string; stack?: string };
+        "valueChange": string;
+    }
+    interface HTMLPlumageAutocompleteSingleElement extends Components.PlumageAutocompleteSingle, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLPlumageAutocompleteSingleElementEventMap>(type: K, listener: (this: HTMLPlumageAutocompleteSingleElement, ev: PlumageAutocompleteSingleCustomEvent<HTMLPlumageAutocompleteSingleElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLPlumageAutocompleteSingleElementEventMap>(type: K, listener: (this: HTMLPlumageAutocompleteSingleElement, ev: PlumageAutocompleteSingleCustomEvent<HTMLPlumageAutocompleteSingleElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLPlumageAutocompleteSingleElement: {
+        prototype: HTMLPlumageAutocompleteSingleElement;
+        new (): HTMLPlumageAutocompleteSingleElement;
+    };
     interface HTMLPlumageInputFieldComponentElementEventMap {
         "valueChange": string;
     }
@@ -2265,6 +2333,7 @@ declare global {
         "modal-component": HTMLModalComponentElement;
         "multi-range-slider-component": HTMLMultiRangeSliderComponentElement;
         "pagination-component": HTMLPaginationComponentElement;
+        "plumage-autocomplete-single": HTMLPlumageAutocompleteSingleElement;
         "plumage-input-field-component": HTMLPlumageInputFieldComponentElement;
         "plumage-input-group-component": HTMLPlumageInputGroupComponentElement;
         "plumage-select-field-component": HTMLPlumageSelectFieldComponentElement;
@@ -3078,6 +3147,54 @@ declare namespace LocalJSX {
         "useByPagePagination"?: boolean;
         "useMinimizePagination"?: boolean;
     }
+    interface PlumageAutocompleteSingle {
+        /**
+          * id(s) of label(s) that label this input (space-separated).
+         */
+        "arialabelledBy"?: string;
+        "autoSort"?: boolean;
+        "clearIcon"?: string;
+        "devMode"?: boolean;
+        "disabled"?: boolean;
+        "error"?: boolean;
+        "errorMessage"?: string;
+        "formId"?: string;
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        "inputCol"?: number;
+        "inputCols"?: string;
+        "inputId"?: string;
+        "label"?: string;
+        "labelAlign"?: '' | 'right';
+        /**
+          * Numeric fallback columns
+         */
+        "labelCol"?: number;
+        /**
+          * Responsive column class specs
+         */
+        "labelCols"?: string;
+        "labelHidden"?: boolean;
+        "labelSize"?: '' | 'sm' | 'lg';
+        "onClear"?: (event: PlumageAutocompleteSingleCustomEvent<void>) => void;
+        "onComponentError"?: (event: PlumageAutocompleteSingleCustomEvent<{ message: string; stack?: string }>) => void;
+        "onItemSelect"?: (event: PlumageAutocompleteSingleCustomEvent<string>) => void;
+        "onValueChange"?: (event: PlumageAutocompleteSingleCustomEvent<string>) => void;
+        "options"?: string[];
+        "placeholder"?: string;
+        "removeClearBtn"?: boolean;
+        "required"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "type"?: string;
+        /**
+          * Validation controlled externally (prop remains source of truth)
+         */
+        "validation"?: boolean;
+        "validationMessage"?: string;
+        /**
+          * Value controlled externally (don’t mutate the prop)
+         */
+        "value"?: string;
+    }
     interface PlumageInputFieldComponent {
         "disabled"?: boolean;
         "formId"?: string;
@@ -3825,6 +3942,7 @@ declare namespace LocalJSX {
         "modal-component": ModalComponent;
         "multi-range-slider-component": MultiRangeSliderComponent;
         "pagination-component": PaginationComponent;
+        "plumage-autocomplete-single": PlumageAutocompleteSingle;
         "plumage-input-field-component": PlumageInputFieldComponent;
         "plumage-input-group-component": PlumageInputGroupComponent;
         "plumage-select-field-component": PlumageSelectFieldComponent;
@@ -3880,6 +3998,7 @@ declare module "@stencil/core" {
             "modal-component": LocalJSX.ModalComponent & JSXBase.HTMLAttributes<HTMLModalComponentElement>;
             "multi-range-slider-component": LocalJSX.MultiRangeSliderComponent & JSXBase.HTMLAttributes<HTMLMultiRangeSliderComponentElement>;
             "pagination-component": LocalJSX.PaginationComponent & JSXBase.HTMLAttributes<HTMLPaginationComponentElement>;
+            "plumage-autocomplete-single": LocalJSX.PlumageAutocompleteSingle & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteSingleElement>;
             "plumage-input-field-component": LocalJSX.PlumageInputFieldComponent & JSXBase.HTMLAttributes<HTMLPlumageInputFieldComponentElement>;
             "plumage-input-group-component": LocalJSX.PlumageInputGroupComponent & JSXBase.HTMLAttributes<HTMLPlumageInputGroupComponentElement>;
             "plumage-select-field-component": LocalJSX.PlumageSelectFieldComponent & JSXBase.HTMLAttributes<HTMLPlumageSelectFieldComponentElement>;
