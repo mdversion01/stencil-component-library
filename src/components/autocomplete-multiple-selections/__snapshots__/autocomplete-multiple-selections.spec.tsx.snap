@@ -44,9 +44,7 @@ exports[`<autocomplete-multiple-selections> matches snapshot (open with matches 
                   Alpha
                 </span>
                 <button aria-label="Remove Alpha" class="remove-btn" data-tag="Alpha" role="button" title="Remove Tag" type="button">
-                  <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s-9.4 24.6 0 33.9l-47 47 47 47c-9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9z"></path>
-                  </svg>
+                  <i class="fa-circle-xmark fa-solid"></i>
                 </button>
               </div>
               <div class="badge">
@@ -54,9 +52,7 @@ exports[`<autocomplete-multiple-selections> matches snapshot (open with matches 
                   Gamma
                 </span>
                 <button aria-label="Remove Gamma" class="remove-btn" data-tag="Gamma" role="button" title="Remove Tag" type="button">
-                  <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s-9.4 24.6 0 33.9l-47 47 47 47c-9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9z"></path>
-                  </svg>
+                  <i class="fa-circle-xmark fa-solid"></i>
                 </button>
               </div>
             </div>

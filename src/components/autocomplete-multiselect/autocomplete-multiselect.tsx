@@ -166,9 +166,15 @@ export class AutocompleteMultiselect {
     return v;
   }
 
-  private isHorizontal() { return this.formLayout === 'horizontal'; }
-  private isInline() { return this.formLayout === 'inline'; }
-  private isRowLayout() { return this.isHorizontal() || this.isInline(); }
+  private isHorizontal() {
+    return this.formLayout === 'horizontal';
+  }
+  private isInline() {
+    return this.formLayout === 'inline';
+  }
+  private isRowLayout() {
+    return this.isHorizontal() || this.isInline();
+  }
 
   private isSatisfiedNow(): boolean {
     return this.inputValue.trim().length >= 3 || this.selectedItems.length > 0;
@@ -480,8 +486,8 @@ export class AutocompleteMultiselect {
 
         // Add brand-new value only if editable=true
         if (this.editable && this.addNewOnEnter && typedRaw) {
-          this.upsertOption(typedRaw);  // will sanitize
-          this.toggleItem(typedRaw);    // typedRaw is sanitized in input, ok
+          this.upsertOption(typedRaw); // will sanitize
+          this.toggleItem(typedRaw); // typedRaw is sanitized in input, ok
           return;
         }
 
@@ -590,7 +596,7 @@ export class AutocompleteMultiselect {
 
     let idx = this.focusedOptionIndex < 0 ? (direction > 0 ? 0 : len - 1) : this.focusedOptionIndex;
     const delta = direction > 0 ? page : -page;
-    idx = ((idx + delta) % len + len) % len; // wrap pages
+    idx = (((idx + delta) % len) + len) % len; // wrap pages
 
     this.setFocusIndex(idx);
   }
@@ -737,10 +743,7 @@ export class AutocompleteMultiselect {
   private removeItemAt(index: number) {
     if (index < 0 || index >= this.selectedItems.length) return;
     const removed = this.selectedItems[index];
-    this.selectedItems = [
-      ...this.selectedItems.slice(0, index),
-      ...this.selectedItems.slice(index + 1),
-    ];
+    this.selectedItems = [...this.selectedItems.slice(0, index), ...this.selectedItems.slice(index + 1)];
     this.selectionChange.emit(this.selectedItems);
 
     // Keep suggestions in sync but force dropdown to remain closed
@@ -817,18 +820,8 @@ export class AutocompleteMultiselect {
       return (
         <div class={classMap} style={this.parseInlineStyles(this.badgeInlineStyles)} key={`${item}-${index}`}>
           <span>{item}</span>
-          <button
-            type="button"
-            onClick={() => this.removeItemAt(index)}
-            aria-label={`Remove ${item}`}
-            data-tag={item}
-            role="button"
-            class="remove-btn"
-            title="Remove Tag"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s-9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9z" />
-            </svg>
+          <button type="button" onClick={() => this.removeItemAt(index)} aria-label={`Remove ${item}`} data-tag={item} role="button" class="remove-btn" title="Remove Tag">
+            <i class="fa-solid fa-circle-xmark" />
           </button>
         </div>
       );
@@ -837,7 +830,7 @@ export class AutocompleteMultiselect {
 
   private renderDeleteIcon() {
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s-9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9z"/></svg>
+      <i class="fa-solid fa-circle-xmark" />
     );
   }
 
@@ -903,7 +896,7 @@ export class AutocompleteMultiselect {
           }, 0);
         }}
       >
-       <i class={this.clearIcon || "fas fa-times"} />
+        <i class={this.clearIcon || 'fas fa-times'} />
       </button>
     );
   }

@@ -78,8 +78,9 @@ export class DateRangePickerComponent {
   @Prop() labelCol: number = 2;
   @Prop() inputCol: number = 10;
 
-  /** NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") */
+  /** Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for label column when formLayout is "horizontal" */
   @Prop() labelCols: string = '';
+  /** Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for input column when formLayout is "horizontal" */
   @Prop() inputCols: string = '';
 
   // -------------------- internal state --------------------

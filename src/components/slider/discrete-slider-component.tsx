@@ -164,53 +164,55 @@ export class DiscreteSliderComponent {
     const val = this._values[this.selectedIndex] ?? '';
 
     return (
-      <div dir="ltr" class="slider" role="slider" aria-label={this.label || undefined} aria-orientation="horizontal" aria-disabled={this.disabled ? 'true' : 'false'}>
-        {this.label ? (
-          <label id="slider-input-label" class="form-control-label">
-            {this.label} {val}
-          </label>
-        ) : null}
+      <div class="slider-wrapper">
+        <div dir="ltr" class="slider" role="slider" aria-label={this.label || undefined} aria-orientation="horizontal" aria-disabled={this.disabled ? 'true' : 'false'}>
+          {this.label ? (
+            <label id="slider-input-label" class="form-control-label">
+              {this.label} {val}
+            </label>
+          ) : null}
 
-        <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
-          <div class="slider-controls" onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}>
-            <div class="slider-background-track" style={{ width: '100%' }} />
-            <div class={`slider-moving-track ${color}`} style={{ width: `${pct}%` }} />
-            <div
-              class={`${this.disabled ? '' : 'slider-thumb-container'} ${color}`}
-              style={{ left: `${pct}%`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
-              onMouseDown={this.onDragStart}
-              role="presentation"
-              tabIndex={this.disabled ? -1 : 0}
-            >
-              {this.plumage ? (
-                <div class={`slider-handle ${color}`} role="slider" aria-label="Slider thumb" tabIndex={-1} />
-              ) : (
-                <div class={`slider-thumb ${color}`} role="slider" aria-label="Slider thumb" tabIndex={-1} />
-              )}
+          <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
+            <div class="slider-controls" onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}>
+              <div class="slider-background-track" style={{ width: '100%' }} />
+              <div class={`slider-moving-track ${color}`} style={{ width: `${pct}%` }} />
+              <div
+                class={`${this.disabled ? '' : 'slider-thumb-container'} ${color}`}
+                style={{ left: `${pct}%`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
+                onMouseDown={this.onDragStart}
+                role="presentation"
+                tabIndex={this.disabled ? -1 : 0}
+              >
+                {this.plumage ? (
+                  <div class={`slider-handle ${color}`} role="slider" aria-label="Slider thumb" tabIndex={-1} />
+                ) : (
+                  <div class={`slider-thumb ${color}`} role="slider" aria-label="Slider thumb" tabIndex={-1} />
+                )}
+              </div>
+
+              <div class="slider-ticks">
+                {this._values.map((tick, index) => {
+                  const pos = (index / Math.max(1, this._values.length - 1)) * 100;
+                  return (
+                    <div>
+                      <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} onClick={() => this.setIndex(index)} />
+                      {this.tickLabels ? (
+                        <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
+                          {tick}
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
-            <div class="slider-ticks">
-              {this._values.map((tick, index) => {
-                const pos = (index / Math.max(1, this._values.length - 1)) * 100;
-                return (
-                  <div>
-                    <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} onClick={() => this.setIndex(index)} />
-                    {this.tickLabels ? (
-                      <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
-                        {tick}
-                      </div>
-                    ) : null}
-                  </div>
-                );
-              })}
-            </div>
+            {!this.hideRightTextBox && (
+              <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-right">
+                {val}
+              </div>
+            )}
           </div>
-
-          {!this.hideRightTextBox && (
-            <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-right">
-              {val}
-            </div>
-          )}
         </div>
       </div>
     );

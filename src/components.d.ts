@@ -361,6 +361,9 @@ export namespace Components {
         "formLayout": '' | 'horizontal' | 'inline';
         "icon": string;
         "inputCol": number;
+        /**
+          * Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for input column when formLayout is "horizontal"
+         */
         "inputCols": string;
         "inputId": string;
         "joinBy": string;
@@ -370,7 +373,7 @@ export namespace Components {
          */
         "labelCol": number;
         /**
-          * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+          * Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for label column when formLayout is "horizontal"
          */
         "labelCols": string;
         "labelHidden": boolean;
@@ -422,6 +425,9 @@ export namespace Components {
          */
         "formLayout": '' | 'horizontal' | 'inline';
         "icon": string;
+        /**
+          * Grid like date-range-picker-component
+         */
         "inputCol": number;
         "inputCols": string;
         "inputId": string;
@@ -850,6 +856,33 @@ export namespace Components {
          */
         "value": string;
     }
+    interface PlumageSelectFieldComponent {
+        "classes": string;
+        "custom": boolean;
+        "defaultOptionTxt": string;
+        "defaultTxt": string;
+        "disabled": boolean;
+        "fieldHeight": number;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "inputCol": number;
+        "inputCols": string;
+        "label": string;
+        "labelCol": number;
+        "labelCols": string;
+        "labelHidden": boolean;
+        "labelSize": '' | 'sm' | 'default' | 'lg';
+        "multiple": boolean;
+        "options": Array<{ value: string; name: string }> | string;
+        "required": boolean;
+        "selectFieldId": string;
+        "selected": boolean;
+        "size": '' | 'sm' | 'lg';
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string | string[];
+        "withTable": boolean;
+    }
     interface PlumageTimepickerComponent {
         /**
           * Accessible label for the input
@@ -1040,6 +1073,10 @@ export namespace Components {
         "defaultOptionTxt": string;
         "defaultTxt": string;
         "disabled": boolean;
+        /**
+          * Native <select size>; useful for visually taller lists (single or multiple)
+         */
+        "fieldHeight": number;
         "formId": string;
         "formLayout": '' | 'horizontal' | 'inline';
         "inputCol": number;
@@ -1055,7 +1092,7 @@ export namespace Components {
          */
         "labelCols": string;
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        "labelSize": '' | 'sm' | 'default' | 'lg';
         "multiple": boolean;
         "options": Array<{ value: string; name: string }> | string;
         "required": boolean;
@@ -1067,7 +1104,10 @@ export namespace Components {
         "size": '' | 'sm' | 'lg';
         "validation": boolean;
         "validationMessage": string;
-        "value": string;
+        /**
+          * Single: string; Multiple: string[]
+         */
+        "value": string | string[];
         /**
           * When used with a table, sync with external sort events
          */
@@ -1559,6 +1599,10 @@ export interface PlumageInputGroupComponentCustomEvent<T> extends CustomEvent<T>
     detail: T;
     target: HTMLPlumageInputGroupComponentElement;
 }
+export interface PlumageSelectFieldComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPlumageSelectFieldComponentElement;
+}
 export interface RadioInputComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLRadioInputComponentElement;
@@ -2034,6 +2078,23 @@ declare global {
         prototype: HTMLPlumageInputGroupComponentElement;
         new (): HTMLPlumageInputGroupComponentElement;
     };
+    interface HTMLPlumageSelectFieldComponentElementEventMap {
+        "valueChange": string | string[];
+    }
+    interface HTMLPlumageSelectFieldComponentElement extends Components.PlumageSelectFieldComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLPlumageSelectFieldComponentElementEventMap>(type: K, listener: (this: HTMLPlumageSelectFieldComponentElement, ev: PlumageSelectFieldComponentCustomEvent<HTMLPlumageSelectFieldComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLPlumageSelectFieldComponentElementEventMap>(type: K, listener: (this: HTMLPlumageSelectFieldComponentElement, ev: PlumageSelectFieldComponentCustomEvent<HTMLPlumageSelectFieldComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLPlumageSelectFieldComponentElement: {
+        prototype: HTMLPlumageSelectFieldComponentElement;
+        new (): HTMLPlumageSelectFieldComponentElement;
+    };
     interface HTMLPlumageTimepickerComponentElement extends Components.PlumageTimepickerComponent, HTMLStencilElement {
     }
     var HTMLPlumageTimepickerComponentElement: {
@@ -2070,7 +2131,7 @@ declare global {
         new (): HTMLRadioInputComponentElement;
     };
     interface HTMLSelectFieldComponentElementEventMap {
-        "valueChange": { value: string };
+        "valueChange": { value: string | string[] };
     }
     interface HTMLSelectFieldComponentElement extends Components.SelectFieldComponent, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSelectFieldComponentElementEventMap>(type: K, listener: (this: HTMLSelectFieldComponentElement, ev: SelectFieldComponentCustomEvent<HTMLSelectFieldComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2206,6 +2267,7 @@ declare global {
         "pagination-component": HTMLPaginationComponentElement;
         "plumage-input-field-component": HTMLPlumageInputFieldComponentElement;
         "plumage-input-group-component": HTMLPlumageInputGroupComponentElement;
+        "plumage-select-field-component": HTMLPlumageSelectFieldComponentElement;
         "plumage-timepicker-component": HTMLPlumageTimepickerComponentElement;
         "popover-component": HTMLPopoverComponentElement;
         "progress-display-component": HTMLProgressDisplayComponentElement;
@@ -2578,6 +2640,9 @@ declare namespace LocalJSX {
         "formLayout"?: '' | 'horizontal' | 'inline';
         "icon"?: string;
         "inputCol"?: number;
+        /**
+          * Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for input column when formLayout is "horizontal"
+         */
         "inputCols"?: string;
         "inputId"?: string;
         "joinBy"?: string;
@@ -2587,7 +2652,7 @@ declare namespace LocalJSX {
          */
         "labelCol"?: number;
         /**
-          * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+          * Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for label column when formLayout is "horizontal"
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
@@ -2647,6 +2712,9 @@ declare namespace LocalJSX {
          */
         "formLayout"?: '' | 'horizontal' | 'inline';
         "icon"?: string;
+        /**
+          * Grid like date-range-picker-component
+         */
         "inputCol"?: number;
         "inputCols"?: string;
         "inputId"?: string;
@@ -3090,6 +3158,34 @@ declare namespace LocalJSX {
          */
         "value"?: string;
     }
+    interface PlumageSelectFieldComponent {
+        "classes"?: string;
+        "custom"?: boolean;
+        "defaultOptionTxt"?: string;
+        "defaultTxt"?: string;
+        "disabled"?: boolean;
+        "fieldHeight"?: number;
+        "formId"?: string;
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        "inputCol"?: number;
+        "inputCols"?: string;
+        "label"?: string;
+        "labelCol"?: number;
+        "labelCols"?: string;
+        "labelHidden"?: boolean;
+        "labelSize"?: '' | 'sm' | 'default' | 'lg';
+        "multiple"?: boolean;
+        "onValueChange"?: (event: PlumageSelectFieldComponentCustomEvent<string | string[]>) => void;
+        "options"?: Array<{ value: string; name: string }> | string;
+        "required"?: boolean;
+        "selectFieldId"?: string;
+        "selected"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "validation"?: boolean;
+        "validationMessage"?: string;
+        "value"?: string | string[];
+        "withTable"?: boolean;
+    }
     interface PlumageTimepickerComponent {
         /**
           * Accessible label for the input
@@ -3276,6 +3372,10 @@ declare namespace LocalJSX {
         "defaultOptionTxt"?: string;
         "defaultTxt"?: string;
         "disabled"?: boolean;
+        /**
+          * Native <select size>; useful for visually taller lists (single or multiple)
+         */
+        "fieldHeight"?: number;
         "formId"?: string;
         "formLayout"?: '' | 'horizontal' | 'inline';
         "inputCol"?: number;
@@ -3291,9 +3391,9 @@ declare namespace LocalJSX {
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        "labelSize"?: '' | 'sm' | 'default' | 'lg';
         "multiple"?: boolean;
-        "onValueChange"?: (event: SelectFieldComponentCustomEvent<{ value: string }>) => void;
+        "onValueChange"?: (event: SelectFieldComponentCustomEvent<{ value: string | string[] }>) => void;
         "options"?: Array<{ value: string; name: string }> | string;
         "required"?: boolean;
         /**
@@ -3304,7 +3404,10 @@ declare namespace LocalJSX {
         "size"?: '' | 'sm' | 'lg';
         "validation"?: boolean;
         "validationMessage"?: string;
-        "value"?: string;
+        /**
+          * Single: string; Multiple: string[]
+         */
+        "value"?: string | string[];
         /**
           * When used with a table, sync with external sort events
          */
@@ -3724,6 +3827,7 @@ declare namespace LocalJSX {
         "pagination-component": PaginationComponent;
         "plumage-input-field-component": PlumageInputFieldComponent;
         "plumage-input-group-component": PlumageInputGroupComponent;
+        "plumage-select-field-component": PlumageSelectFieldComponent;
         "plumage-timepicker-component": PlumageTimepickerComponent;
         "popover-component": PopoverComponent;
         "progress-display-component": ProgressDisplayComponent;
@@ -3778,6 +3882,7 @@ declare module "@stencil/core" {
             "pagination-component": LocalJSX.PaginationComponent & JSXBase.HTMLAttributes<HTMLPaginationComponentElement>;
             "plumage-input-field-component": LocalJSX.PlumageInputFieldComponent & JSXBase.HTMLAttributes<HTMLPlumageInputFieldComponentElement>;
             "plumage-input-group-component": LocalJSX.PlumageInputGroupComponent & JSXBase.HTMLAttributes<HTMLPlumageInputGroupComponentElement>;
+            "plumage-select-field-component": LocalJSX.PlumageSelectFieldComponent & JSXBase.HTMLAttributes<HTMLPlumageSelectFieldComponentElement>;
             "plumage-timepicker-component": LocalJSX.PlumageTimepickerComponent & JSXBase.HTMLAttributes<HTMLPlumageTimepickerComponentElement>;
             "popover-component": LocalJSX.PopoverComponent & JSXBase.HTMLAttributes<HTMLPopoverComponentElement>;
             "progress-display-component": LocalJSX.ProgressDisplayComponent & JSXBase.HTMLAttributes<HTMLProgressDisplayComponentElement>;

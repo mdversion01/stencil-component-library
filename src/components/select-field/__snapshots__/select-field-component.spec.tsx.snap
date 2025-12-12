@@ -13,7 +13,10 @@ exports[`select-field-component marks label as required when value is blank and 
         </span>
       </label>
       <div>
-        <select aria-invalid="false" aria-labelledby="favoriteFruit" aria-multiselectable="false" aria-required="true" class="form-control form-select" id="fruit" required="" role="listbox">
+        <select aria-invalid="false" aria-labelledby="favoriteFruit" aria-multiselectable="false" aria-required="true" class="form-select" id="fruit" required="" role="listbox">
+          <option value="">
+            Pick one
+          </option>
           <option aria-label="Apple" selected="" value="apple">
             Apple
           </option>
@@ -35,7 +38,10 @@ exports[`select-field-component parses options JSON and selects matching value 1
         <span></span>
       </label>
       <div>
-        <select aria-invalid="false" aria-multiselectable="false" aria-required="false" class="form-control form-select" role="listbox">
+        <select aria-invalid="false" aria-multiselectable="false" aria-required="false" class="form-select" role="listbox">
+          <option value="">
+            Select an option
+          </option>
           <option aria-label="Apple" value="apple">
             Apple
           </option>
@@ -52,7 +58,7 @@ exports[`select-field-component parses options JSON and selects matching value 1
 </select-field-component>
 `;
 
-exports[`select-field-component renders legacy "--none--" option when id includes sortField; blank default is selected 1`] = `
+exports[`select-field-component renders legacy "--none--" when id includes sortField; blank default is NOT rendered; none not selected for value="" 1`] = `
 <select-field-component default-option-txt="Choose…" id="user-sortField">
   <div>
     <div class="form-group">
@@ -60,12 +66,9 @@ exports[`select-field-component renders legacy "--none--" option when id include
         <span></span>
       </label>
       <div>
-        <select aria-invalid="false" aria-multiselectable="false" aria-required="false" class="form-control form-select" role="listbox">
+        <select aria-invalid="false" aria-multiselectable="false" aria-required="false" class="form-select" role="listbox">
           <option aria-label="none" value="none">
             --none--
-          </option>
-          <option selected="" value="">
-            Choose…
           </option>
           <option aria-label="Apple" value="apple">
             Apple
@@ -88,7 +91,7 @@ exports[`select-field-component sanitizes defaultOptionTxt and uses it when attr
         <span></span>
       </label>
       <div>
-        <select aria-invalid="false" aria-multiselectable="false" aria-required="false" class="form-control form-select" role="listbox">
+        <select aria-invalid="false" aria-multiselectable="false" aria-required="false" class="form-select" role="listbox">
           <option selected="" value="">
             Pick one
           </option>
@@ -116,7 +119,7 @@ exports[`select-field-component shows validation message when required and value
         </span>
       </label>
       <div>
-        <select aria-describedby="validationMessage" aria-invalid="true" aria-multiselectable="false" aria-required="true" class="form-control form-select is-invalid" required="" role="listbox">
+        <select aria-describedby="validationMessage" aria-invalid="true" aria-multiselectable="false" aria-required="true" class="form-select is-invalid" required="" role="listbox">
           <option selected="" value="">
             Pick one
           </option>
@@ -136,7 +139,7 @@ exports[`select-field-component shows validation message when required and value
 </select-field-component>
 `;
 
-exports[`select-field-component with value="none", both legacy none and blank default carry selected attribute 1`] = `
+exports[`select-field-component with value="none" and sortField id, legacy none is selected; blank default still NOT rendered 1`] = `
 <select-field-component default-option-txt="Choose…" id="user-sortField">
   <div>
     <div class="form-group">
@@ -144,12 +147,9 @@ exports[`select-field-component with value="none", both legacy none and blank de
         <span></span>
       </label>
       <div>
-        <select aria-invalid="false" aria-multiselectable="false" aria-required="false" class="form-control form-select" role="listbox">
+        <select aria-invalid="false" aria-multiselectable="false" aria-required="false" class="form-select" role="listbox">
           <option aria-label="none" selected="" value="none">
             --none--
-          </option>
-          <option selected="" value="">
-            Choose…
           </option>
           <option aria-label="Apple" value="apple">
             Apple

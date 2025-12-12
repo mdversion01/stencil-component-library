@@ -234,159 +234,161 @@ export class MultiRangeSliderComponent {
     const hideRight = this.hideTextBoxes || this.hideRightTextBox;
 
     return (
-      <div
-        dir="ltr"
-        class="slider"
-        role="slider"
-        aria-label={this.label || undefined}
-        aria-orientation="horizontal"
-        aria-disabled={this.disabled ? 'true' : 'false'}
-        onKeyDown={this.onKeyDown}
-      >
-        {this.sliderThumbLabel || !this.label ? null : (
-          <label id="slider-input-label" class="form-control-label">
-            {this.label} {(upperPct - lowerPct).toFixed(0)}
-            {this.unit}
-          </label>
-        )}
-
-        <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
-           {!hideLeft && (
-            <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-left">
-              {Math.round(this.lowerValue)}
-            </div>
+      <div class="slider-wrapper">
+        <div
+          dir="ltr"
+          class="slider"
+          role="slider"
+          aria-label={this.label || undefined}
+          aria-orientation="horizontal"
+          aria-disabled={this.disabled ? 'true' : 'false'}
+          onKeyDown={this.onKeyDown}
+        >
+          {this.sliderThumbLabel || !this.label ? null : (
+            <label id="slider-input-label" class="form-control-label">
+              {this.label} {(upperPct - lowerPct).toFixed(0)}
+              {this.unit}
+            </label>
           )}
 
-          <div class="slider-min-value">
-            {this.min}
-            {this.unit}
-          </div>
-
-          <div class="slider-controls">
-            {/* Lower thumb */}
-            <div
-              class={`${this.disabled ? '' : 'slider-thumb-container'} lower-thumb ${color}`}
-              style={{ left: `calc(${lowerPct}% - 5px)`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
-              onMouseDown={e => this.onThumbMouseDown(e, 'lower')}
-            >
-              {this.plumage ? (
-                <div
-                  class={`slider-handle ${color}`}
-                  style={{ left: `${lowerPct}%` }}
-                  role="slider"
-                  aria-valuemin={String(this.min)}
-                  aria-valuemax={String(this.max)}
-                  aria-valuenow={String(this.lowerValue)}
-                  aria-label="Lower value"
-                  tabIndex={this.disabled ? -1 : 0}
-                />
-              ) : (
-                <div
-                  class={`slider-thumb ${color}`}
-                  style={{ left: `${lowerPct}%` }}
-                  role="slider"
-                  aria-valuemin={String(this.min)}
-                  aria-valuemax={String(this.max)}
-                  aria-valuenow={String(this.lowerValue)}
-                  aria-label="Lower value"
-                  tabIndex={this.disabled ? -1 : 0}
-                />
-              )}
-              {this.sliderThumbLabel ? (
-                <div
-                  class={`slider-thumb-label ${color}`}
-                  style={{ position: 'absolute', left: `${lowerPct}%`, transform: 'translateX(-30%) translateY(30%) translateY(-100%) rotate(45deg)' }}
-                >
-                  <div>
-                    <span>
-                      {Math.round(this.lowerValue)}
-                      {this.unit}
-                    </span>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-
-            {/* Tracks */}
-            <div class={`slider-track multi ${color}`} style={{ width: `${lowerPct}%` }} />
-            <div class={`slider-track multi ${color}`} style={{ left: `${lowerPct}%`, right: `${100 - upperPct}%` }} />
-            <div class="slider-track multi" style={{ width: `${100 - upperPct}%` }} />
-
-            {/* Upper thumb */}
-            <div
-              class={`${this.disabled ? '' : 'slider-thumb-container'} upper-thumb ${color}`}
-              style={{ left: `calc(${upperPct}% - 8px)`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
-              onMouseDown={e => this.onThumbMouseDown(e, 'upper')}
-            >
-              {this.plumage ? (
-                <div
-                  class={`slider-handle ${color}`}
-                  style={{ left: `calc(${upperPct}% + 3px)` }}
-                  role="slider"
-                  aria-valuemin={String(this.min)}
-                  aria-valuemax={String(this.max)}
-                  aria-valuenow={String(this.upperValue)}
-                  aria-label="Upper value"
-                  tabIndex={this.disabled ? -1 : 0}
-                />
-              ) : (
-                <div
-                  class={`slider-thumb ${color}`}
-                  style={{ left: `calc(${upperPct}% + 3px)` }}
-                  role="slider"
-                  aria-valuemin={String(this.min)}
-                  aria-valuemax={String(this.max)}
-                  aria-valuenow={String(this.upperValue)}
-                  aria-label="Upper value"
-                  tabIndex={this.disabled ? -1 : 0}
-                />
-              )}
-              {this.sliderThumbLabel ? (
-                <div
-                  class={`slider-thumb-label ${color}`}
-                  style={{ position: 'absolute', left: `calc(${upperPct}% + 3px)`, transform: 'translateX(-30%) translateY(30%) translateY(-100%) rotate(45deg)' }}
-                >
-                  <div>
-                    <span>
-                      {Math.round(this.upperValue)}
-                      {this.unit}
-                    </span>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-
-            {/* Optional ticks */}
-            {this._ticks.length > 0 ? (
-              <div class="slider-ticks">
-                {this._ticks.map((tick, index) => {
-                  const pos = ((tick - this.min) / Math.max(1e-9, this.max - this.min)) * 100;
-                  return (
-                    <div>
-                      <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} />
-                      {this.tickLabels ? (
-                        <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
-                          {this._ticks[index] ?? tick}
-                          {this.unit}
-                        </div>
-                      ) : null}
-                    </div>
-                  );
-                })}
+          <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
+            {!hideLeft && (
+              <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-left">
+                {Math.round(this.lowerValue)}
               </div>
-            ) : null}
-          </div>
+            )}
 
-          <div class="slider-max-value">
-            {this.max}
-            {this.unit}
-          </div>
-
-          {!hideRight && (
-            <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-right">
-              {Math.round(this.upperValue)}
+            <div class="slider-min-value">
+              {this.min}
+              {this.unit}
             </div>
-          )}
+
+            <div class="slider-controls">
+              {/* Lower thumb */}
+              <div
+                class={`${this.disabled ? '' : 'slider-thumb-container'} lower-thumb ${color}`}
+                style={{ left: `calc(${lowerPct}% - 5px)`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
+                onMouseDown={e => this.onThumbMouseDown(e, 'lower')}
+              >
+                {this.plumage ? (
+                  <div
+                    class={`slider-handle ${color}`}
+                    style={{ left: `${lowerPct}%` }}
+                    role="slider"
+                    aria-valuemin={String(this.min)}
+                    aria-valuemax={String(this.max)}
+                    aria-valuenow={String(this.lowerValue)}
+                    aria-label="Lower value"
+                    tabIndex={this.disabled ? -1 : 0}
+                  />
+                ) : (
+                  <div
+                    class={`slider-thumb ${color}`}
+                    style={{ left: `${lowerPct}%` }}
+                    role="slider"
+                    aria-valuemin={String(this.min)}
+                    aria-valuemax={String(this.max)}
+                    aria-valuenow={String(this.lowerValue)}
+                    aria-label="Lower value"
+                    tabIndex={this.disabled ? -1 : 0}
+                  />
+                )}
+                {this.sliderThumbLabel ? (
+                  <div
+                    class={`slider-thumb-label ${color}`}
+                    style={{ position: 'absolute', left: `${lowerPct}%`, transform: 'translateX(-30%) translateY(30%) translateY(-100%) rotate(45deg)' }}
+                  >
+                    <div>
+                      <span>
+                        {Math.round(this.lowerValue)}
+                        {this.unit}
+                      </span>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+
+              {/* Tracks */}
+              <div class={`slider-track multi ${color}`} style={{ width: `${lowerPct}%` }} />
+              <div class={`slider-track multi ${color}`} style={{ left: `${lowerPct}%`, right: `${100 - upperPct}%` }} />
+              <div class="slider-track multi" style={{ width: `${100 - upperPct}%` }} />
+
+              {/* Upper thumb */}
+              <div
+                class={`${this.disabled ? '' : 'slider-thumb-container'} upper-thumb ${color}`}
+                style={{ left: `calc(${upperPct}% - 8px)`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
+                onMouseDown={e => this.onThumbMouseDown(e, 'upper')}
+              >
+                {this.plumage ? (
+                  <div
+                    class={`slider-handle ${color}`}
+                    style={{ left: `calc(${upperPct}% + 3px)` }}
+                    role="slider"
+                    aria-valuemin={String(this.min)}
+                    aria-valuemax={String(this.max)}
+                    aria-valuenow={String(this.upperValue)}
+                    aria-label="Upper value"
+                    tabIndex={this.disabled ? -1 : 0}
+                  />
+                ) : (
+                  <div
+                    class={`slider-thumb ${color}`}
+                    style={{ left: `calc(${upperPct}% + 3px)` }}
+                    role="slider"
+                    aria-valuemin={String(this.min)}
+                    aria-valuemax={String(this.max)}
+                    aria-valuenow={String(this.upperValue)}
+                    aria-label="Upper value"
+                    tabIndex={this.disabled ? -1 : 0}
+                  />
+                )}
+                {this.sliderThumbLabel ? (
+                  <div
+                    class={`slider-thumb-label ${color}`}
+                    style={{ position: 'absolute', left: `calc(${upperPct}% + 3px)`, transform: 'translateX(-30%) translateY(30%) translateY(-100%) rotate(45deg)' }}
+                  >
+                    <div>
+                      <span>
+                        {Math.round(this.upperValue)}
+                        {this.unit}
+                      </span>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+
+              {/* Optional ticks */}
+              {this._ticks.length > 0 ? (
+                <div class="slider-ticks">
+                  {this._ticks.map((tick, index) => {
+                    const pos = ((tick - this.min) / Math.max(1e-9, this.max - this.min)) * 100;
+                    return (
+                      <div>
+                        <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} />
+                        {this.tickLabels ? (
+                          <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
+                            {this._ticks[index] ?? tick}
+                            {this.unit}
+                          </div>
+                        ) : null}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : null}
+            </div>
+
+            <div class="slider-max-value">
+              {this.max}
+              {this.unit}
+            </div>
+
+            {!hideRight && (
+              <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-right">
+                {Math.round(this.upperValue)}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );

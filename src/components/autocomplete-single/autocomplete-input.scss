@@ -1,10 +1,6 @@
-// AutocompleteInput styles
-*,
-::after,
-::before {
-  box-sizing: border-box;
-}
-
+/* =========================================================
+   Autocomplete — Core container & shared bits
+   ========================================================= */
 .autocomplete-container {
   .input-group {
     flex-wrap: nowrap !important;
@@ -19,6 +15,7 @@
     margin-top: 0 !important;
   }
 
+  /* ---------------- Single-select shell ---------------- */
   .autocomplete-single-select {
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
@@ -42,25 +39,27 @@
     }
 
     &.is-invalid-focused {
-      border-color: #dc3545 !important; /* Fallback for --bs-form-invalid-border-color */
-      box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important; /* Fallback for --bs-danger-rgb */
+      border-color: #dc3545 !important; /* fallback */
+      box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important; /* fallback */
     }
 
     &.is-invalid {
       border-color: #b30009;
-    }
 
-    &.is-invalid ::placeholder {
-      color: #b30009 !important;
-    }
+      ::placeholder {
+        color: #b30009 !important;
+      }
 
-    &.is-invalid > .add-btn,
-    &.is-invalid > .clear-btn {
-      color: #b30009;
+      > .add-btn,
+      > .clear-btn {
+        color: #b30009;
+      }
     }
   }
 
-  .clear-btn {
+  /* ---------------- Utility icon buttons ---------------- */
+  .clear-btn,
+  .add-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -71,35 +70,37 @@
     &:focus,
     &:focus-visible {
       cursor: pointer;
-      color: #b80000;
       outline: none;
+    }
+  }
+
+  .clear-btn {
+    &:hover,
+    &:focus,
+    &:focus-visible {
+      color: #b80000;
     }
   }
 
   .add-btn {
     color: #006108;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background: transparent;
-
 
     &:hover,
     &:focus,
     &:focus-visible {
-      cursor: pointer;
       color: #008f0c;
-      outline: none;
     }
-  }
 
-  .add-btn i:focus-visible {
-    color: #008f0c;
-    outline: 1px solid #008f0c;
+    i:focus-visible {
+      color: #008f0c;
+      outline: 1px solid #008f0c;
+    }
   }
 }
 
+/* =========================================================
+   Autocomplete — Dropdown
+   ========================================================= */
 .autocomplete-dropdown {
   position: absolute;
   min-width: 150px;
@@ -110,51 +111,63 @@
   border: 1px solid #ccc;
   margin-top: 1px;
   z-index: 1000;
+
+  &.single .virtually-focused {
+    box-shadow: inset 0 0 0 2px #2680eb;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
 }
 
-.autocomplete-dropdown.single .virtually-focused {
-  box-shadow: inset 0 0 0 2px #2680eb;
-}
-
-.autocomplete-dropdown ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.autocomplete-dropdown-item {
-  padding: 5px 10px;
-  cursor: pointer;
-}
-.autocomplete-dropdown-item:hover {
-  background-color: #f2f2f2;
-}
-
-.autocomplete-dropdown-item.focused {
-  background-color: #eee;
-  // color: #212529;
-}
-
-.autocomplete-dropdown-item.key-selected {
-  background-color: #5a5a5a;
-  color: #fff;
-}
-
-.autocomplete-dropdown-item:active {
-  background-color: #2680eb;
-  color: #fff !important;
-  text-decoration: none;
-}
-
-.autocomplete-dropdown-item.key-selected.focused {
-  background-color: #3a3a3a;
-  color: #fff;
-}
-
+/* Items + states + controls */
 .autocomplete-dropdown-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 5px 10px;
+  cursor: pointer;
+
+  /* size variants */
+  &.sm {
+    font-size: 0.75rem;
+  }
+  &.lg {
+    font-size: 1.2rem;
+  }
+
+  &:hover {
+    background-color: #f2f2f2;
+  }
+  &.focused {
+    background-color: #eee;
+  }
+  &.key-selected {
+    background-color: #5a5a5a;
+    color: #fff;
+  }
+  &:active {
+    background-color: #2680eb;
+    color: #fff !important;
+    text-decoration: none;
+  }
+
+  &:active .option-btn {
+    color: #fff !important;
+  }
+
+  &.key-selected.focused {
+    background-color: #3a5a3a;
+    color: #fff;
+  } /* slight contrast tweak */
+
+  /* “virtual focus” ring when a child gets virtual focus */
+  &:has(.virtually-focused) {
+    box-shadow: inset 0 0 0 2px #2680eb;
+  }
 
   .option-btn {
     background: transparent;
@@ -168,10 +181,6 @@
     width: 100%;
   }
 
-  &:has(.virtually-focused) {
-    box-shadow: inset 0 0 0 2px #2680eb;
-  }
-
   .delete-btn {
     background: transparent;
     border: none;
@@ -181,39 +190,36 @@
     justify-content: center;
     padding: 0;
     margin-left: 0.25rem;
+    color: #666;
+    width: 0.75rem;
+    height: 0.75rem;
 
-    svg {
-      fill: #666;
-      width: 0.75rem;
-      height: 0.75rem;
-    }
-
-    &:hover svg,
-    &.virtually-focused svg {
-      fill: #b30009;
+    &:hover,
+    &.virtually-focused {
+      color: #b30009;
     }
   }
 }
 
+/* Empty state */
 .autocomplete-dropdown-no-results {
   padding: 0.5rem 1rem;
   color: #888;
   font-style: italic;
   cursor: default;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 
   &.sm {
     font-size: 0.75rem;
   }
-
   &.lg {
     font-size: 1.2rem;
   }
 }
 
+/* =========================================================
+   Autocomplete — Layout helpers
+   ========================================================= */
 .ac-combobox-container {
   margin-bottom: 0.25rem;
   position: relative;
@@ -223,14 +229,6 @@
 .ac-input-container {
   display: flex;
   flex: 1 1 auto;
-}
-
-.autocomplete-dropdown-item.sm {
-  font-size: 0.75rem;
-}
-
-.autocomplete-dropdown-item.lg {
-  font-size: 1.2rem;
 }
 
 .button-brdr {
@@ -258,4 +256,170 @@
 
 .form-group {
   position: relative;
+}
+
+/* =========================================================
+   Autocomplete — Multi-select shell
+   ========================================================= */
+.ac-multi-select-container {
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+
+  .input-group {
+    flex-wrap: nowrap !important;
+
+    .form-control {
+      border: none;
+      display: flex !important;
+      flex: 1 1 auto !important;
+      padding: 0.375rem 0.75rem;
+      width: 100%;
+    }
+
+    > .input-group-btn {
+      border: none;
+    }
+  }
+
+  /* invalid */
+  &:invalid,
+  &.is-invalid {
+    border-color: #b30009;
+
+    ::placeholder {
+      color: #b30009 !important;
+    }
+  }
+
+  /* focus */
+  .form-control:focus {
+    background-color: transparent;
+    border-color: none;
+    color: #383838;
+    outline: 0;
+    box-shadow: none;
+  }
+
+  &.ac-focused {
+    border-color: #9bc4f6 !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+  }
+
+  /* size heights */
+  &.sm {
+    min-height: 36px;
+
+    .input-group-btn {
+      min-height: 32px;
+    }
+  }
+
+  &.lg {
+    min-height: 48px;
+  }
+
+  .input-sm {
+    min-height: 34px;
+  }
+  .input-lg {
+    min-height: 46px;
+  }
+}
+
+/* =========================================================
+   Autocomplete — Selected badges
+   ========================================================= */
+.ac-selected-items {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: auto;
+  max-height: 100px;
+  padding-top: 2px;
+
+  .badge {
+    align-items: center;
+    background-color: transparent;
+    border: 1px solid #8e8e8e;
+    color: #000;
+    display: flex;
+    font-size: 0.75rem;
+    height: 30px;
+    justify-content: center;
+    margin: 0.15rem;
+    padding: 0.15rem 0.5rem !important;
+    position: relative;
+
+    &.sm {
+      font-size: 0.65rem !important;
+      height: 28px;
+    }
+    &.lg {
+      font-size: 1rem !important;
+      height: 38px;
+    }
+
+    &.square {
+      border-radius: 0;
+    }
+    &.pill {
+      border-radius: 1.75rem;
+      padding: 0.25rem 0.5rem;
+    }
+
+    span {
+      margin-right: 0.5rem;
+      margin-top: -0.1rem;
+    }
+
+    .remove-btn {
+      background-color: transparent;
+      border: none;
+      border-radius: 25%;
+      margin: 0;
+      padding: 0;
+      height: 1rem;
+      width: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666666;
+
+      &:hover,
+      &:focus {
+        color: #b30009;
+        outline: none;
+      }
+    }
+  }
+
+  /* Themed badges — keep remove button legible */
+  .text-bg-primary,
+  .text-bg-secondary,
+  .text-bg-success,
+  .text-bg-danger,
+  .text-bg-dark {
+    .remove-btn {
+      color: #fff;
+
+      &:hover,
+      &focus {
+        color: #f7caca;
+      }
+    }
+  }
+
+  .text-bg-warning,
+  .text-bg-info {
+    .remove-btn {
+      color: #fff;
+
+      &:hover,
+      &focus {
+        color: #a90000;
+      }
+    }
+  }
 }

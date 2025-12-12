@@ -1,68 +1,56 @@
-.input-group-text.is-invalid {
-  border-color: var(--bs-form-invalid-border-color);
-  color: #b30009;
-}
+// ---------------------------------------------
+// Tokens
+// ---------------------------------------------
+$danger: #b30009;
+$invalid-border: var(--bs-form-invalid-border-color, #b30009);
+$radius-sm: 0.25rem;
+$radius-md: 0.375rem;
+$radius-lg: 0.5rem;
 
-.input-group.is-invalid {
+// ---------------------------------------------
+// Helpers
+// ---------------------------------------------
+@mixin input-group-btn-radii($r) {
   .btn {
-    border-color: var(--bs-form-invalid-border-color);
-  }
-}
-
-.input-group {
-  position: relative;
-  display: flex;
-  align-items: center !important;
-  width: 100%;
-
-  .btn {
-    height: 100%;
-    z-index: 0 !important;
-
     &:first-child {
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
-      border-top-left-radius: 0.375rem;
-      border-bottom-left-radius: 0.375rem;
+      border-top-left-radius: $r;
+      border-bottom-left-radius: $r;
     }
-
     &:last-child {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
-      border-top-right-radius: 0.375rem;
-      border-bottom-right-radius: 0.375rem;
+      border-top-right-radius: $r;
+      border-bottom-right-radius: $r;
     }
   }
+}
 
-  &.input-group-sm {
-    .btn:first-child {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-      border-top-left-radius: 0.25rem;
-      border-bottom-left-radius: 0.25rem;
-    }
+// ---------------------------------------------
+// Invalid states
+// ---------------------------------------------
+.input-group-text.is-invalid {
+  border-color: $invalid-border;
+  color: $danger;
+}
 
-    .btn:last-child {
-      border-top-right-radius: 0.25rem;
-      border-bottom-right-radius: 0.25rem;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
+.input-group.is-invalid {
+  .btn { border-color: $invalid-border; }
+}
+
+// ---------------------------------------------
+// Input group buttons
+// ---------------------------------------------
+.input-group {
+  .btn {
+    height: 100%;
+    z-index: 0 !important;
   }
 
-  &.input-group-lg {
-    .btn:first-child {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-      border-top-left-radius: 0.5rem;
-      border-bottom-left-radius: 0.5rem;
-    }
+  // default size (md)
+  @include input-group-btn-radii($radius-md);
 
-    .btn:last-child {
-      border-top-right-radius: 0.5rem;
-      border-bottom-right-radius: 0.5rem;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-  }
+  &.input-group-sm { @include input-group-btn-radii($radius-sm); }
+  &.input-group-lg { @include input-group-btn-radii($radius-lg); }
 }

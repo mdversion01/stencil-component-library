@@ -72,20 +72,20 @@ describe('select-field-component', () => {
     expect(page.root).toMatchSnapshot();
   });
 
-  it('renders legacy "--none--" option when id includes sortField; blank default is selected', async () => {
+  it('renders legacy "--none--" when id includes sortField; blank default is NOT rendered; none not selected for value=""', async () => {
     const page = await newSpecPage({
       components: [SelectFieldComponent],
       template: () => (
         // id includes "sortField" => legacy "--none--" option appears
-        // IMPORTANT: value="" so only the blank default is selected
+        // IMPORTANT: value="" => legacy none should not be selected
         <select-field-component
           id="user-sortField"
           value=""
           default-option-txt="Choose…"
           options='[
-          {"value":"apple","name":"Apple"},
-          {"value":"banana","name":"Banana"}
-        ]'
+            {"value":"apple","name":"Apple"},
+            {"value":"banana","name":"Banana"}
+          ]'
         />
       ),
     });
@@ -98,18 +98,17 @@ describe('select-field-component', () => {
     const blank = options.find(o => o.getAttribute('value') === '');
     const legacyNone = options.find(o => o.getAttribute('value') === 'none');
 
-    expect(blank).toBeTruthy();
+    // blank default is suppressed for sortField
+    expect(blank).toBeUndefined();
     expect(legacyNone).toBeTruthy();
 
-    // With value="" the blank default is selected and legacy none is NOT selected
-    expect(blank!.hasAttribute('selected')).toBe(true);
     expect(legacyNone!.textContent).toBe('--none--');
     expect(legacyNone!.hasAttribute('selected')).toBe(false);
 
     expect(page.root).toMatchSnapshot();
   });
 
-  it('with value="none", both legacy none and blank default carry selected attribute', async () => {
+  it('with value="none" and sortField id, legacy none is selected; blank default still NOT rendered', async () => {
     const page = await newSpecPage({
       components: [SelectFieldComponent],
       template: () => (
@@ -118,9 +117,9 @@ describe('select-field-component', () => {
           value="none"
           default-option-txt="Choose…"
           options='[
-          {"value":"apple","name":"Apple"},
-          {"value":"banana","name":"Banana"}
-        ]'
+            {"value":"apple","name":"Apple"},
+            {"value":"banana","name":"Banana"}
+          ]'
         />
       ),
     });
@@ -131,7 +130,8 @@ describe('select-field-component', () => {
     const blank = options.find(o => o.getAttribute('value') === '');
     const legacyNone = options.find(o => o.getAttribute('value') === 'none');
 
-    expect(blank!.hasAttribute('selected')).toBe(true);
+    expect(blank).toBeUndefined();
+    expect(legacyNone).toBeTruthy();
     expect(legacyNone!.hasAttribute('selected')).toBe(true);
 
     expect(page.root).toMatchSnapshot();
@@ -184,9 +184,9 @@ describe('select-field-component', () => {
           value="banana"
           default-option-txt="Pick one"
           options='[
-          {"value":"apple","name":"Apple"},
-          {"value":"banana","name":"Banana"}
-        ]'
+            {"value":"apple","name":"Apple"},
+            {"value":"banana","name":"Banana"}
+          ]'
         />
       ),
     });

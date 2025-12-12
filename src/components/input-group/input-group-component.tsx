@@ -129,6 +129,21 @@ export class InputGroupComponent {
     return this.validation && !this.meetsTypingThreshold();
   }
 
+  /** Sanitize user-typed input: strip tags, remove control chars, trim, cap length. */
+  private sanitizeInput(value: string): string {
+    if (typeof value !== 'string') return '';
+    // remove HTML tags
+    let v = value.replace(/<[^>]*>/g, '');
+    // remove control characters (except common whitespace)
+    v = v.replace(/[\u0000-\u001F\u007F]/g, '');
+    // collapse whitespace
+    v = v.replace(/\s+/g, ' ').trim();
+    // cap length
+    const MAX_LEN = 512;
+    if (v.length > MAX_LEN) v = v.slice(0, MAX_LEN);
+    return v;
+  }
+
   // ----- Handlers -----
   private handleInput = (ev: Event) => {
     const target = ev.target as HTMLInputElement;
@@ -137,9 +152,14 @@ export class InputGroupComponent {
     if (this._computedFormId) target.setAttribute('form', this._computedFormId);
     else target.removeAttribute('form');
 
+    // Sanitize typed value on every input
+    const sanitized = this.sanitizeInput(target.value);
+    // reflect sanitized text back to the input so UI matches internal state
+    if (sanitized !== target.value) target.value = sanitized;
+
     // Update both prop (for back-compat/controlled usage) and state mirror (for UX helpers)
-    this.value = target.value;
-    this.valueState = target.value;
+    this.value = sanitized;
+    this.valueState = sanitized;
 
     // Stencil event
     this.valueChange.emit({ value: this.value });
@@ -377,7 +397,7 @@ export class InputGroupComponent {
     const names = this.camelCase(this.label).replace(/ /g, '');
 
     const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
-    const groupClasses = ['form-group', 'form-input-group-basic'];
+    const groupClasses = ['form-group'];
 
     if (this.isHorizontal()) groupClasses.push('row', 'horizontal');
     else if (this.isInline()) groupClasses.push('row', 'inline');

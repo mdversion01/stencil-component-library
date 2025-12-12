@@ -1,4 +1,3 @@
-// src/components/select-field/select-field-component.tsx
 import { Component, h, Prop, State, Element, Event, EventEmitter, Watch } from '@stencil/core';
 
 type _SelectOption = { value: string; name: string };
@@ -19,6 +18,9 @@ export class SelectFieldComponent {
 
   @Prop() disabled: boolean = false;
 
+  /** Native <select size>; useful for visually taller lists (single or multiple) */
+  @Prop() fieldHeight: number = null;
+
   @Prop({ mutable: true }) formLayout: '' | 'horizontal' | 'inline' = '';
   @Prop({ mutable: true }) formId: string = '';
 
@@ -30,7 +32,7 @@ export class SelectFieldComponent {
   @Prop() size: '' | 'sm' | 'lg' = '';
 
   @Prop() label: string = '';
-  @Prop() labelSize: '' | 'sm' | 'lg' = '';
+  @Prop() labelSize: '' | 'sm' | 'default' | 'lg' = '';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
 
@@ -40,7 +42,8 @@ export class SelectFieldComponent {
   @Prop({ mutable: true }) validation: boolean = false;
   @Prop() validationMessage: string = '';
 
-  @Prop({ mutable: true }) value: string = 'none';
+  /** Single: string; Multiple: string[] */
+  @Prop({ mutable: true }) value: string | string[] = 'none';
 
   /** When used with a table, sync with external sort events */
   @Prop() withTable: boolean = false;
@@ -63,7 +66,7 @@ export class SelectFieldComponent {
   private sortOrderHandler = (e: any) => this.updateSortOrder(e);
 
   // Avoid native "change" event name for Stencil Event; we still dispatch a DOM CustomEvent('change') for back-compat.
-  @Event() valueChange: EventEmitter<{ value: string }>;
+  @Event() valueChange: EventEmitter<{ value: string | string[] }>;
 
   // ----- Lifecycle / Interop with <form-component> -----
   connectedCallback() {
@@ -97,8 +100,12 @@ export class SelectFieldComponent {
 
   componentDidLoad() {
     this.applyFormAttribute();
-    // Ensure initial value is reflected in the select element
-    if (this.selectEl && typeof this.value === 'string') {
+    if (!this.selectEl) return;
+
+    // Reflect initial value into the select element without stomping native selection anchor
+    if (this.multiple && Array.isArray(this.value)) {
+      this.applyMultiSelection(this.selectEl, this.value);
+    } else if (!this.multiple && typeof this.value === 'string') {
       this.selectEl.value = this.value;
     }
   }
@@ -123,13 +130,23 @@ export class SelectFieldComponent {
   }
 
   @Watch('value')
-  onValueChange(newVal: string) {
-    if (this.selectEl && typeof newVal === 'string') {
+  onValueChange(newVal: string | string[]) {
+    if (!this.selectEl) return;
+
+    if (this.multiple && Array.isArray(newVal)) {
+      this.applyMultiSelection(this.selectEl, newVal);
+    } else if (!this.multiple && typeof newVal === 'string') {
       this.selectEl.value = newVal;
       this.selectEl.selectedIndex = this.selectEl.selectedIndex; // nudge
-      this.clearValidationIfSatisfied(this.selectEl);
-      // (optional) if you want to *re-apply* validation automatically on blank:
-      if (this.required && this.isEmptySelection(this.selectEl)) this.validation = true;
+    }
+
+    // keep validation state coherent
+    this.clearValidationIfSatisfied(this.selectEl);
+    if (this.required && this.isEmptySelection(this.selectEl)) this.validation = true;
+
+    // If user (or code) left only default selected in multiple mode while validation is shown, keep it invalid
+    if (this.multiple && this.validation && this.isDefaultOnlySelected(this.selectEl)) {
+      this.validation = true;
     }
   }
 
@@ -183,6 +200,27 @@ export class SelectFieldComponent {
     return (v ?? '').replace(/[<>]/g, '');
   }
 
+  private applyMultiSelection(sel?: HTMLSelectElement, v?: string[] | string) {
+    if (!sel || !Array.isArray(v)) return;
+    const set = new Set(v);
+    for (const opt of Array.from(sel.options)) {
+      opt.selected = set.has(opt.value);
+    }
+  }
+
+  /** Multiple mode helper: is the *only* selected option the default blank ""? */
+  private isDefaultOnlySelected(el?: HTMLSelectElement): boolean {
+    if (!this.multiple) return false;
+    if (el) {
+      const selected = Array.from(el.selectedOptions);
+      return selected.length === 1 && selected[0].value === '';
+    }
+    if (Array.isArray(this.value)) {
+      return this.value.length === 1 && this.value[0] === '';
+    }
+    return false;
+  }
+
   // ----- Layout helpers (mirrors input-field-component) -----
   private isHorizontal() {
     return this.formLayout === 'horizontal';
@@ -219,7 +257,7 @@ export class SelectFieldComponent {
         out.push('col');
         continue;
       }
-      // Unknown token: ignore (or log in dev mode)
+      // Unknown token: ignore
     }
 
     return Array.from(new Set(out)).join(' ');
@@ -277,34 +315,39 @@ export class SelectFieldComponent {
   }
 
   // ----- Validation helper -----
-  private isRequirementSatisfied(value: string, el?: HTMLSelectElement) {
-    if (!this.required) return true;
-    if (this.multiple) {
-      // any selected option
-      if (el) return el.selectedOptions && el.selectedOptions.length > 0;
-      return Array.isArray(value) ? (value as any).length > 0 : !!value; // fallback
+  private isRequirementSatisfied(value: string | string[], el?: HTMLSelectElement) {
+    if (!this.required && !this.validation) {
+      // if neither required nor validation UI requested, consider satisfied
+      return true;
     }
-    // single: treat '' and 'none' as not selected
-    return value !== '' && value !== 'none';
+
+    // Special case: multiple + ONLY default selected => not satisfied
+    if (this.multiple && this.isDefaultOnlySelected(el)) {
+      return false;
+    }
+
+    if (this.multiple) {
+      if (el) return el.selectedOptions && el.selectedOptions.length > 0;
+      return Array.isArray(value) ? value.length > 0 : !!value;
+    }
+
+    return typeof value === 'string' && value !== '' && value !== 'none';
   }
 
   private clearValidationIfSatisfied(el?: HTMLSelectElement) {
     if (this.validation && this.isRequirementSatisfied(this.value, el)) {
-      this.validation = false; // removes classes & hides message
-      // optionally keep the message text for next time; if you want to clear it too:
-      // this.validationMessage = '';
+      this.validation = false;
     }
   }
 
   // ----- Validation / "required now" helpers -----
   private isEmptySelection(el?: HTMLSelectElement) {
     if (this.multiple) {
+      if (this.isDefaultOnlySelected(el)) return true; // treat default-only as empty
       if (el) return el.selectedOptions && el.selectedOptions.length === 0;
-      // fallback if needed (value for multi may be managed elsewhere)
-      return true;
+      return Array.isArray(this.value) ? this.value.length === 0 : true;
     }
-    // For single select, treat '' and 'none' as “no value”
-    return this.value === '' || this.value === 'none';
+    return typeof this.value === 'string' && (this.value === '' || this.value === 'none');
   }
 
   /** Should the label show as required *right now*? */
@@ -316,21 +359,28 @@ export class SelectFieldComponent {
   private handleChange = (ev: Event) => {
     const sel = ev.target as HTMLSelectElement;
 
-    // Keep the `form` linkage via attribute only (read-only property!)
-    // If you really need to update it here, just set/remove the attribute:
+    // Keep the `form` linkage via attribute only
     if (this._resolvedFormId) sel.setAttribute('form', this._resolvedFormId);
     else sel.removeAttribute('form');
 
-    // Update value + fire events
-    this.value = sel.value;
+    if (this.multiple) {
+      const vals = Array.from(sel.selectedOptions).map(o => o.value);
+      this.value = vals;
+      this.valueChange.emit({ value: vals });
 
-    // ⬇️ Clear validation if now satisfied
-    this.clearValidationIfSatisfied(sel);
+      // If validation UI is on (or required), default-only => invalid
+      if (this.validation || this.required) {
+        this.validation = !this.isRequirementSatisfied(vals, sel);
+      }
+    } else {
+      this.value = sel.value;
+      this.valueChange.emit({ value: this.value });
 
-    // Optional re-apply validation when user re-selects blank default:
-    if (this.required && this.isEmptySelection(sel)) this.validation = true;
+      if (this.validation || this.required) {
+        this.validation = !this.isRequirementSatisfied(this.value, sel);
+      }
+    }
 
-    this.valueChange.emit({ value: this.value });
     // Back-compat custom event
     this.host.dispatchEvent(new CustomEvent('change', { detail: { value: this.value }, bubbles: true }));
   };
@@ -341,10 +391,10 @@ export class SelectFieldComponent {
 
     const classes = [
       'form-control-label',
-      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'default' ? 'label-default' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
-      this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
+      this.isHorizontal() ? `${labelColClass} no-padding` : '',
       this.validation ? 'invalid' : '',
     ]
       .filter(Boolean)
@@ -364,19 +414,18 @@ export class SelectFieldComponent {
   private renderSelectField(ids: string, names: string) {
     const selectClassParts = [
       this.custom ? 'custom-select' : 'form-select',
-      'form-control',
       this.validation ? 'is-invalid' : '',
-      this.size === 'sm' ? 'basic-input-sm' : this.size === 'lg' ? 'basic-input-lg' : '',
+      this.size === 'sm' ? 'form-select-sm' : this.size === 'lg' ? 'form-select-lg' : '',
       this.classes || '',
     ].filter(Boolean);
 
     const role = this.multiple ? 'combobox' : 'listbox';
 
     const hasPlaceholder = (this.defaultOptionTxt ?? '').trim().length > 0;
-    // 👇 decide if we should show a default blank option + which label to use
-    const includeDefaultBlank = !this.multiple && (this.value === '' || this.value === 'none') && hasPlaceholder;
-    // when attribute is present with no value, fall back to built-in label
     const defaultLabel = hasPlaceholder ? this._safeDefaultOptionTxt : '';
+    // ✅ Always show when provided (except special sortField case).
+    //    In multiple mode here we allow selecting it (as you requested earlier), and now mark invalid if it’s sole selection.
+    const showDefaultOption = hasPlaceholder && !(this.host.id && this.host.id.includes('sortField'));
 
     return (
       <div>
@@ -394,29 +443,38 @@ export class SelectFieldComponent {
           aria-invalid={this.validation ? 'true' : 'false'}
           aria-multiselectable={this.multiple ? 'true' : 'false'}
           role={role}
+          size={this.fieldHeight || undefined}
           form={this._resolvedFormId || undefined}
           onChange={this.handleChange}
         >
           {/* legacy table "none" sentinel */}
           {this.host.id && this.host.id.includes('sortField') ? (
-            <option value="none" aria-label="none" selected={this.value === 'none'}>
+            <option value="none" aria-label="none" selected={typeof this.value === 'string' && this.value === 'none'}>
               --none--
             </option>
           ) : null}
 
-          {/* ✅ default blank option driven by value/attribute */}
-          {includeDefaultBlank ? (
-            <option value="" selected={this.value === '' || this.value === 'none'}>
+          {/* ✅ default option stays in the list always when provided */}
+          {showDefaultOption ? (
+            <option
+              value=""
+              // Note: in multiple mode we allow it to be selectable; we enforce invalid state when it’s the only selection.
+              selected={!this.multiple && typeof this.value === 'string' && (this.value === '' || this.value === 'none')}
+            >
               {defaultLabel}
             </option>
           ) : null}
 
           {/* real options */}
-          {(this._options || []).map(opt => (
-            <option value={opt.value} aria-label={opt.name} selected={opt.value === this.value}>
-              {opt.name}
-            </option>
-          ))}
+          {(this._options || []).map(opt => {
+            const selected = this.multiple ? Array.isArray(this.value) && this.value.includes(opt.value) : typeof this.value === 'string' && opt.value === this.value;
+
+            return (
+              <option value={opt.value} aria-label={opt.name} selected={selected}>
+                {opt.name}
+              </option>
+            );
+          })}
         </select>
 
         {this.validation && this.validationMessage ? (

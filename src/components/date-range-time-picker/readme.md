@@ -23,7 +23,7 @@ ISO / numeric / long display modes, and synchronized dropdown.
 | `disabled`               | `disabled`                   |                                                                        | `boolean`                        | `false`                  |
 | `formLayout`             | `form-layout`                | '', 'horizontal', or 'inline'                                          | `"" \| "horizontal" \| "inline"` | `''`                     |
 | `icon`                   | `icon`                       |                                                                        | `string`                         | `'fas fa-calendar-alt'`  |
-| `inputCol`               | `input-col`                  |                                                                        | `number`                         | `10`                     |
+| `inputCol`               | `input-col`                  | Grid like date-range-picker-component                                  | `number`                         | `10`                     |
 | `inputCols`              | `input-cols`                 |                                                                        | `string`                         | `''`                     |
 | `inputId`                | `input-id`                   |                                                                        | `string`                         | `'date-range-time'`      |
 | `isTwentyFourHourFormat` | `is-twenty-four-hour-format` | Time options                                                           | `boolean`                        | `true`                   |

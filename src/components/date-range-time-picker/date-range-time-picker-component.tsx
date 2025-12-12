@@ -74,6 +74,7 @@ export class DateRangeTimePickerComponent {
 
   /** Grid like date-range-picker-component */
   @Prop() labelCol: number = 2;
+  /** Grid like date-range-picker-component */
   @Prop() inputCol: number = 10;
   @Prop() labelCols: string = '';
   @Prop() inputCols: string = '';

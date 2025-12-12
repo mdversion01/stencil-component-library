@@ -98,8 +98,19 @@ export class InputFieldComponent {
       .replace(/\s+/g, '');
   }
 
+  /** Sanitize user-typed input: strip tags, remove control chars, trim, cap length. */
   private sanitizeInput(value: string): string {
-    return value.replace(/[<>]/g, '');
+    if (typeof value !== 'string') return '';
+    // remove HTML tags
+    let v = value.replace(/<[^>]*>/g, '');
+    // remove control characters (except common whitespace)
+    v = v.replace(/[\u0000-\u001F\u007F]/g, '');
+    // collapse whitespace
+    v = v.replace(/\s+/g, ' ').trim();
+    // cap length
+    const MAX_LEN = 512;
+    if (v.length > MAX_LEN) v = v.slice(0, MAX_LEN);
+    return v;
   }
 
   private meetsTypingThreshold() {

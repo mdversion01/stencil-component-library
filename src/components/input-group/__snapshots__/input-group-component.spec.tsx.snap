@@ -4,7 +4,7 @@ exports[`<input-group-component> horizontal with numeric fallback cols (labelCol
 <input-group-component append="" form-layout="horizontal" input-col="9" input-id="code" label="Code" label-col="3" prepend="">
   <!---->
   <div class="horizontal">
-    <div class="form-group form-input-group-basic horizontal row">
+    <div class="form-group horizontal row">
       <label class="col-3 col-form-label form-control-label no-padding" htmlfor="code">
         <span>
           Code:
@@ -34,7 +34,7 @@ exports[`<input-group-component> mixes slot on append and icon on prepend using 
 <input-group-component append="" input-id="q" label="Search" other-content="" prepend="" prepend-icon="fa-solid fa-magnifying-glass">
   <!---->
   <div>
-    <div class="form-group form-input-group-basic">
+    <div class="form-group">
       <label class="form-control-label" htmlfor="q">
         <span>
           Search
@@ -60,7 +60,7 @@ exports[`<input-group-component> renders (stacked) with default props 1`] = `
 <input-group-component input-id="user" label="Username">
   <!---->
   <div>
-    <div class="form-group form-input-group-basic">
+    <div class="form-group">
       <label class="form-control-label" htmlfor="user">
         <span>
           Username
@@ -80,7 +80,7 @@ exports[`<input-group-component> renders horizontal layout with responsive cols,
 <input-group-component append="" append-icon="fa-solid fa-dollar-sign" form-layout="horizontal" input-cols="xs-12 sm-8" input-id="amount" label="Amount" label-cols="xs-12 sm-4" prepend="">
   <!---->
   <div class="horizontal">
-    <div class="form-group form-input-group-basic horizontal row">
+    <div class="form-group horizontal row">
       <label class="col-12 col-form-label col-sm-4 form-control-label no-padding" htmlfor="amount">
         <span>
           Amount:

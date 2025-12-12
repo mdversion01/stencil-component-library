@@ -230,97 +230,99 @@ export class BasicSliderComponent {
     const hideRight = this.hideTextBoxes || this.hideRightTextBox;
 
     return (
-      <div
-        dir="ltr"
-        class="slider"
-        aria-label={this.label || undefined}
-        role="slider"
-        aria-valuemin={String(this.min)}
-        aria-valuemax={String(this.max)}
-        aria-valuenow={String(Math.round(this.value))}
-        aria-orientation="horizontal"
-        aria-disabled={this.disabled ? 'true' : 'false'}
-      >
-        {this.sliderThumbLabel || !this.label ? null : (
-          <label id="slider-input-label" class="form-control-label">
-            {this.label} {Math.round(this.value)}
-            {this.unit}
-          </label>
-        )}
-
-        <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
-          {!hideLeft && (
-            <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-left">
-              {Math.round(this.value)}
-            </div>
+      <div class="slider-wrapper">
+        <div
+          dir="ltr"
+          class="slider"
+          aria-label={this.label || undefined}
+          role="slider"
+          aria-valuemin={String(this.min)}
+          aria-valuemax={String(this.max)}
+          aria-valuenow={String(Math.round(this.value))}
+          aria-orientation="horizontal"
+          aria-disabled={this.disabled ? 'true' : 'false'}
+        >
+          {this.sliderThumbLabel || !this.label ? null : (
+            <label id="slider-input-label" class="form-control-label">
+              {this.label} {Math.round(this.value)}
+              {this.unit}
+            </label>
           )}
 
-          <div class="slider-min-value">
-            {this.min}
-            {this.unit}
-          </div>
+          <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
+            {!hideLeft && (
+              <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-left">
+                {Math.round(this.value)}
+              </div>
+            )}
 
-          <div class="slider-controls" onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp}>
-            <div class="slider-background-track" style={{ width: '100%' }} />
-            <div class={`slider-moving-track ${color}`} style={{ width: `${pct}%` }} />
-            <div
-              class={`${this.disabled ? '' : 'slider-thumb-container'} ${color}`}
-              style={{ left: `${pct}%`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
-              onMouseDown={this.onDragStart}
-              role="presentation"
-              tabIndex={this.disabled ? -1 : 0}
-            >
-              {this.plumage ? (
-                <div class={`slider-handle ${color}`} role="slider" aria-label="Slider thumb" tabIndex={-1} />
-              ) : (
-                <div class={`slider-thumb ${color}`} role="slider" aria-label="Slider thumb" tabIndex={-1} />
-              )}
+            <div class="slider-min-value">
+              {this.min}
+              {this.unit}
+            </div>
 
-              {this.sliderThumbLabel ? (
-                <div
-                  class={`slider-thumb-label ${color}`}
-                  style={{ position: 'absolute', left: `${pct}%`, transform: 'translateX(-50%) translateY(30%) translateY(-100%) rotate(45deg)' }}
-                >
-                  <div>
-                    <span>
-                      {Math.round(this.value)}
-                      {this.unit}
-                    </span>
+            <div class="slider-controls" onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp}>
+              <div class="slider-background-track" style={{ width: '100%' }} />
+              <div class={`slider-moving-track ${color}`} style={{ width: `${pct}%` }} />
+              <div
+                class={`${this.disabled ? '' : 'slider-thumb-container'} ${color}`}
+                style={{ left: `${pct}%`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
+                onMouseDown={this.onDragStart}
+                role="presentation"
+                tabIndex={this.disabled ? -1 : 0}
+              >
+                {this.plumage ? (
+                  <div class={`slider-handle ${color}`} role="slider" aria-label="Slider thumb" tabIndex={-1} />
+                ) : (
+                  <div class={`slider-thumb ${color}`} role="slider" aria-label="Slider thumb" tabIndex={-1} />
+                )}
+
+                {this.sliderThumbLabel ? (
+                  <div
+                    class={`slider-thumb-label ${color}`}
+                    style={{ position: 'absolute', left: `${pct}%`, transform: 'translateX(-50%) translateY(30%) translateY(-100%) rotate(45deg)' }}
+                  >
+                    <div>
+                      <span>
+                        {Math.round(this.value)}
+                        {this.unit}
+                      </span>
+                    </div>
                   </div>
+                ) : null}
+              </div>
+
+              {showTicks ? (
+                <div class="slider-ticks">
+                  {this._ticks.map(tick => {
+                    const pos = ((tick - this.min) / Math.max(1e-9, this.max - this.min)) * 100;
+                    return (
+                      <div>
+                        <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} />
+                        {this.tickLabels ? (
+                          <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
+                            {tick}
+                            {typeof tick === 'number' ? this.unit : ''}
+                          </div>
+                        ) : null}
+                      </div>
+                    );
+                  })}
                 </div>
               ) : null}
             </div>
 
-            {showTicks ? (
-              <div class="slider-ticks">
-                {this._ticks.map(tick => {
-                  const pos = ((tick - this.min) / Math.max(1e-9, this.max - this.min)) * 100;
-                  return (
-                    <div>
-                      <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} />
-                      {this.tickLabels ? (
-                        <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
-                          {tick}
-                          {typeof tick === 'number' ? this.unit : ''}
-                        </div>
-                      ) : null}
-                    </div>
-                  );
-                })}
-              </div>
-            ) : null}
-          </div>
-
-          <div class="slider-max-value">
-            {this.max}
-            {this.unit}
-          </div>
-
-          {!hideRight && (
-            <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-right">
-              {Math.round(this.value)}
+            <div class="slider-max-value">
+              {this.max}
+              {this.unit}
             </div>
-          )}
+
+            {!hideRight && (
+              <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-right">
+                {Math.round(this.value)}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );

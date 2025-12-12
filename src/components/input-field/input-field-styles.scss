@@ -1,81 +1,100 @@
+// ---------------------------------------------
+// Tokens
+// ---------------------------------------------
+$danger:        #b30009;
+$label-sm:      0.875rem;
+$label-default: 1rem;
+$label-lg:      1.125rem;
 
+// ---------------------------------------------
+// Helpers
+// ---------------------------------------------
+@mixin placeholder-color($c) {
+  &::placeholder { color: $c !important; }
+}
 
-
-
-// .is-invalid ::placeholder {
-//   color: #b30009 !important;
-// }
-
-// .was-validated :invalid ~ .invalid-feedback,
-// .was-validated :invalid ~ .invalid-tooltip,
-// .is-invalid ~ .invalid-feedback,
-// .is-invalid ~ .invalid-tooltip {
-//   display: block !important;
-// }
-
-// .basic-input-sm {
-//   padding: 0.25rem 0.5rem !important;
-//   font-size: 0.75rem !important;
-//   line-height: 1.5 !important;
-//   border-radius: 0.2rem !important;
-//   min-height: 0px !important;
-//   max-height: 28px !important;
-// }
-
-// .basic-input-lg {
-//   padding: 0.5rem 0.5rem !important;
-//   font-size: 1.125rem !important;
-//   line-height: 1.5 !important;
-//   border-radius: 0.3rem !important;
-// }
-
-
-/* ------------- New Styles ------------- */
-
-label, .label {
+// ---------------------------------------------
+// Base label styles
+// ---------------------------------------------
+label,
+.label {
   margin-bottom: 0.25rem !important;
 }
 
-.label-sm {
-  font-size: 0.75rem !important;
-}
+.label-sm      { font-size: $label-sm !important; }
+.label-default { font-size: $label-default !important; }
+.label-lg      { font-size: $label-lg !important; }
 
-.label-lg {
-  font-size: 1.125rem !important;
-}
-
+// Inline layout tweaks
 .inline {
-  .col-form-label {
-    margin-right: 0.5rem !important;
-  }
+  .col-form-label { margin-right: 0.5rem !important; }
 }
 
+// Validation feedback
 .invalid-feedback {
   font-size: 0.75rem !important;
 }
 
+// Invalid input placeholder color
+.was-validated .form-control:invalid,
+.form-control.is-invalid {
+  @include placeholder-color($danger);
+}
+
+// ---------------------------------------------
+// Horizontal / Inline label rows
+// ---------------------------------------------
 .horizontal label,
 .inline label {
   display: flex;
   align-items: center;
   justify-content: left;
   margin-bottom: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  padding-right: 0 !important;
+  padding: 0 !important;
   position: relative;
 }
 
-.horizontal label {
-  &.align-right {
-    justify-content: right;
+.horizontal label.align-right { justify-content: right; }
+
+// Invalid label positioning inside row
+.horizontal .form-group .form-control-label.invalid,
+.inline     .form-group .form-control-label.invalid {
+  position: relative;
+}
+
+// Row label spacing rules
+.inline .form-group .form-control-label,
+.inline .form-group label {
+  margin-bottom: 0;
+  white-space: nowrap;
+  padding: 0 0.5rem;
+}
+
+.horizontal .form-group .form-control-label,
+.horizontal .form-group label {
+  margin-bottom: 0;
+  white-space: normal;
+}
+
+// Size-aligned top padding in inline/horizontal
+.inline,
+.horizontal {
+  .form-control-label { align-items: start !important; padding-top: 6px !important; }
+  .label-sm           { align-items: start !important; padding-top: 5px !important; }
+  .label-default      { align-items: start !important; padding-top: 7px !important; }
+  .label-lg           { align-items: start !important; padding-top: 9px !important; }
+
+  // Multi-select input min width
+  .ac-multi-select-container .input-group .form-control {
+    min-width: 240px;
   }
 }
 
+// ---------------------------------------------
+// Responsive adjustments
+// ---------------------------------------------
 @media (max-width: 575px) {
-  .row > * {
-    flex-shrink: 1 !important;
-  }
+  .row > * { flex-shrink: 1 !important; }
 
   .horizontal label {
     display: block;
@@ -85,49 +104,5 @@ label, .label {
   .horizontal label,
   .inline label {
     margin-bottom: 0.25rem !important;
-  }
-}
-
-.horizontal .form-group .form-control-label.invalid,
-.inline .form-group .form-control-label.invalid {
-  position: relative;
-}
-
-.inline .form-group .form-control-label,
-.inline .form-group label {
-  margin-bottom: 0;
-  white-space: nowrap;
-}
-
-.horizontal .form-group .form-control-label,
-.horizontal .form-group label {
-  margin-bottom: 0;
-  white-space: normal;
-}
-
-.inline .form-group .form-control-label,
-.inline .form-group label {
-  padding: 0 0.5rem;
-}
-
-.inline,
-.horizontal {
-  .form-control-label {
-    align-items: start !important;
-    padding-top: 6px !important;
-  }
-
-  .label-sm {
-    align-items: start !important;
-    padding-top: 5px !important;
-  }
-
-  .label-lg {
-    align-items: start !important;
-    padding-top: 9px !important;
-  }
-
-  .ac-multi-select-container .input-group .form-control {
-    min-width: 240px;
   }
 }

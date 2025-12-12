@@ -135,8 +135,19 @@ export class PlumageInputFieldComponent {
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase())).replace(/\s+/g, '');
   }
 
+  /** Sanitize user-typed input: strip tags, remove control chars, trim, cap length. */
   private sanitizeInput(value: string): string {
-    return value.replace(/[<>]/g, '');
+    if (typeof value !== 'string') return '';
+    // keep inner text, remove only angle brackets (so "Ber<lin>" → "Berlin")
+    let v = value.replace(/[<>]/g, '');
+    // remove control characters (except common whitespace)
+    v = v.replace(/[\u0000-\u001F\u007F]/g, '');
+    // collapse whitespace
+    v = v.replace(/\s+/g, ' ').trim();
+    // cap length
+    const MAX_LEN = 512;
+    if (v.length > MAX_LEN) v = v.slice(0, MAX_LEN);
+    return v;
   }
 
   // ---------- input/validation ----------

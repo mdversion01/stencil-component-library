@@ -736,7 +736,6 @@
       <div class="cwrapper">
         <form-component>
           <input-group-component
-            form-layout="horizontal"
             slot="formField"
             label="Amount"
             size="lg"
@@ -816,13 +815,13 @@
           validation
           validation-message="Please enter First name"
         >
-          <button-component slot="append" size="sm" type="button">Go</button-component>
+          <button-component slot="append" outlined variant="secondary" size="sm" type="button">Go</button-component>
         </plumage-input-group-component>
 
         <plumage-input-group-component
           input-id="pl-input-group-2"
           label="Test Label"
-           form-layout="inline"
+          form-layout="inline"
           append-field
           append-icon="fa-solid fa-dollar-sign"
           prepend-field
@@ -833,10 +832,7 @@
         >
         </plumage-input-group-component>
 
-        <plumage-input-group-component
-          plumage-search
-        >
-        </plumage-input-group-component>
+        <plumage-input-group-component plumage-search> </plumage-input-group-component>
       </div>
 
       <!-- <div class="cwrapper"> -->
@@ -1246,28 +1242,131 @@
                 </div> -->
       <!-- </div> -->
 
-      <!-- <div class="cwrapper">
+      <div class="cwrapper">
         <select-field-component
-        form-layout="horizontal"
+          field-height="4"
           label="Favorite Fruit"
-          label-size="sm"
+          form-layout="horizontal"
           size="sm"
           select-field-id="fruit"
-          input-cols="col-md-9"
-          label-cols="col-md-3"
-          label-align="right"
+          value=""
+          required
+          validation
+          validation-message="Please make a selection"
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></select-field-component>
+
+        <select-field-component
+          custom
+          label="Favorite Fruit"
+          form-layout="horizontal"
+          size="sm"
+          select-field-id="fruit"
+          value=""
+          required
+          validation
+          validation-message="Please make a selection"
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></select-field-component>
+
+        <select-field-component
+          label="Favorite Fruit"
+          select-field-id="fruit"
+          value=""
           multiple
           required
           validation
-          validation-message="Please fill in"
+          validation-message="Please make a selection"
+          show-default-in-multiple
+          field-height="3"
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></select-field-component>
+
+        <select-field-component
+          label="Favorite Fruit"
+          size="lg"
+          select-field-id="fruit"
           value=""
           options='[
           {"value":"apple","name":"Apple"},
-    {"value":"banana","name":"Banana"},
-    {"value":"cherry","name":"Cherry"}
-  ]'
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
         ></select-field-component>
-      </div> -->
+
+        <plumage-select-field-component
+          label="Favorite Fruit"
+          select-field-id="fruit"
+          form-layout="horizontal"
+          custom
+          size="sm"
+          field-height="3"
+          value=""
+          required
+          validation
+          validation-message="Please make a selection"
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></plumage-select-field-component>
+
+         <plumage-select-field-component
+          label="Favorite Fruit"
+          select-field-id="fruit"
+          form-layout="inline"
+          value=""
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></plumage-select-field-component>
+
+         <plumage-select-field-component
+          label="Favorite Fruit"
+          select-field-id="fruit"
+          value=""
+          required
+          validation
+          validation-message="Please make a selection"
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></plumage-select-field-component>
+
+         <plumage-select-field-component
+          label="Favorite Fruit"
+          multiple
+          required
+          validation
+          validation-message="Please make a selection"
+          show-default-in-multiple
+          field-height="2"
+          select-field-id="fruit"
+          value=""
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></plumage-select-field-component>
+      </div>
 
       <!-- <div class="cwrapper">
         <slider-manager-component  type="basic" label="Range:" min="0" max="100"></slider-manager-component>
@@ -1881,7 +1980,7 @@
             await aci4.componentOnReady();
           }
 
-         // seed options by assigning the prop (the component’s @Watch('options') will pick it up)
+          // seed options by assigning the prop (the component’s @Watch('options') will pick it up)
           aci4.options = aci4Options.slice();
 
           // there is NO optionsChange in this component by default.
@@ -1890,7 +1989,7 @@
             console.log('[aci4 selectedItems]', e.detail);
           });
 
-           // If you want to mirror user-added options back to app state,
+          // If you want to mirror user-added options back to app state,
           // you must add an `@Event({eventName:'optionsChange'})` inside the component
           // and emit it when options are upserted/deleted. Otherwise, there’s no hook.
         })();

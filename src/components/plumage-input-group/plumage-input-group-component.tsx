@@ -160,8 +160,19 @@ export class PlumageInputGroupComponent {
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase())).replace(/\s+/g, '');
   }
 
+  /** Sanitize user-typed input: strip tags, remove control chars, trim, cap length. */
   private sanitizeInput(value: string): string {
-    return value.replace(/[<>]/g, '');
+    if (typeof value !== 'string') return '';
+    // keep inner text, remove only angle brackets (so "Ber<lin>" → "Berlin")
+    let v = value.replace(/[<>]/g, '');
+    // remove control characters (except common whitespace)
+    v = v.replace(/[\u0000-\u001F\u007F]/g, '');
+    // collapse whitespace
+    v = v.replace(/\s+/g, ' ').trim();
+    // cap length
+    const MAX_LEN = 512;
+    if (v.length > MAX_LEN) v = v.slice(0, MAX_LEN);
+    return v;
   }
 
   private meetsTypingThreshold() {
@@ -443,11 +454,10 @@ export class PlumageInputGroupComponent {
   private renderPlumageSearch(ids: string, names: string) {
     return (
       <div class="input-group search-bar-container mb-3" onClick={this.handleInteraction}>
-        <div class="input-group-prepend" id="prepend-search">
-          <span class="search-bar-icon">
-            <i class="fas fa-search" />
-          </span>
-        </div>
+        <span class="search-bar-icon" id="prepend-search">
+          <i class="fas fa-search" />
+        </span>
+
         <input
           type="text"
           class="form-control search-bar"
@@ -505,7 +515,13 @@ export class PlumageInputGroupComponent {
       <div class={`plumage${outerClass}`}>
         <div class={groupClasses.join(' ')}>
           {this.renderLabel(ids, labelColClass)}
-          {this.isHorizontal() ? <div class={inputColClass}>{this.renderInput(ids, names)}</div> :  this.isInline() ? <div>{this.renderInput(ids, names)}</div> : this.renderInput(ids, names)}
+          {this.isHorizontal() ? (
+            <div class={inputColClass}>{this.renderInput(ids, names)}</div>
+          ) : this.isInline() ? (
+            <div>{this.renderInput(ids, names)}</div>
+          ) : (
+            this.renderInput(ids, names)
+          )}
         </div>
       </div>
     );
