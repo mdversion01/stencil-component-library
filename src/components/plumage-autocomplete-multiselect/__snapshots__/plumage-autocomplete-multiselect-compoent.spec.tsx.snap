@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`plumage-autocomplete-multiselect-component filters, navigates, selects via keyboard; badges render; dropdown closes 1`] = `
+<plumage-autocomplete-multiselect-component input-id="Fruit" label="Fruit">
+  <div class="plumage">
+    <div class="autocomplete-container form-group">
+      <div>
+        <label class="form-control-label" htmlfor="fruit">
+          <span>
+            Fruit
+          </span>
+        </label>
+        <div>
+          <div class="ac-multi-select-container">
+            <div class="ac-selected-items">
+              <div class="badge">
+                <span>
+                  Apple
+                </span>
+                <button aria-label="Remove Apple" class="remove-btn" data-tag="Apple" role="button" title="Remove Tag" type="button">
+                  <i class="fa-circle-xmark fa-solid"></i>
+                </button>
+              </div>
+              <div class="badge">
+                <span>
+                  Grape
+                </span>
+                <button aria-label="Remove Grape" class="remove-btn" data-tag="Grape" role="button" title="Remove Tag" type="button">
+                  <i class="fa-circle-xmark fa-solid"></i>
+                </button>
+              </div>
+            </div>
+            <div class="ac-input-container">
+              <div class="input-group">
+                <input aria-autocomplete="list" aria-controls="fruit-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="fruit" inputmode="text" placeholder="Fruit" role="combobox" type="text" value="">
+                <button aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
+                  <i class="fa-times fas"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="b-underline" role="presentation">
+            <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-autocomplete-multiselect-component>
+`;
+
+exports[`plumage-autocomplete-multiselect-component renders (stacked) and matches snapshot 1`] = `
+<plumage-autocomplete-multiselect-component input-id="Fruits" label="Fruits">
+  <div class="plumage">
+    <div class="autocomplete-container form-group">
+      <div>
+        <label class="form-control-label" htmlfor="fruits">
+          <span>
+            Fruits
+          </span>
+        </label>
+        <div>
+          <div class="ac-multi-select-container">
+            <div class="ac-selected-items"></div>
+            <div class="ac-input-container">
+              <div class="input-group">
+                <input aria-autocomplete="list" aria-controls="fruits-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="fruits" inputmode="text" placeholder="Fruits" role="combobox" type="text" value="">
+              </div>
+            </div>
+          </div>
+          <div class="b-underline" role="presentation">
+            <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-autocomplete-multiselect-component>
+`;

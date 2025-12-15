@@ -115,7 +115,7 @@
 
         <form-component>
           <autocomplete-multiselect
-            id="aci3"
+            id=""
             add-btn
             input-id="ac-1"
             editable
@@ -130,8 +130,24 @@
             add-btn
           ></autocomplete-multiselect>
 
+          <plumage-autocomplete-multiselect-component
+            id="aci3"
+            add-btn
+            input-id="ac-1"
+            editable
+            label="Autocomplete Multiselect"
+            required
+            validation
+            validation-message="Please fill in"
+            placeholder="Type to search..."
+            data-autocomplete="true"
+            slot="formField"
+            editable
+            add-btn
+          ></plumage-autocomplete-multiselect-component>
+
           <autocomplete-multiple-selections
-            id="aci4"
+            id=""
             editable
             input-id="ac-2"
             label="Autocomplete Multiple Selections"
@@ -143,9 +159,24 @@
             validation-message="Please fill in"
             placeholder="Type to search..."
             slot="formField"
-            editable
             size="lg"
           ></autocomplete-multiple-selections>
+
+          <plumage-autocomplete-multiple-selections-component
+            id="aci4"
+            editable
+            input-id="ac-21"
+            label="Autocomplete Multiple Selections"
+            placeholder="Type to search..."
+            data-autocomplete="true"
+            placeholder="Type to search..."
+            slot="formField"
+            required
+            add-btn
+            validation
+            validation-message="Please fill in"
+            placeholder="Type to search..."
+          ></plumage-autocomplete-multiple-selections-component>
         </form-component>
       </div>
 

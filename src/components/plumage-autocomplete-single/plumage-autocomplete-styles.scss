@@ -64,6 +64,8 @@
     display: flex;
     flex-wrap: wrap;
     width: 100%;
+    border: none !important;
+    border-radius: 0;
   }
 
   .ac-selected-items {
@@ -71,7 +73,7 @@
     flex-wrap: wrap;
   }
 
-  .ac-multi-select-container .input-group-append .input-group-btn {
+  .ac-multi-select-container .input-group-btn {
     border: none;
   }
 
@@ -104,6 +106,11 @@
   .ac-input-container .ac-input-group input:focus {
     box-shadow: none;
     outline: none;
+  }
+
+  .ac-multi-select-container:invalid,
+  .ac-multi-select-container.is-invalid {
+    border-color: transparent !important;
   }
 
   .autocomplete-dropdown-item.sm {

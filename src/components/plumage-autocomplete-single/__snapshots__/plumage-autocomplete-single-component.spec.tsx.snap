@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`plumage-autocomplete-single filters on input and selects an option; dropdown closes and value is set 1`] = `
+<plumage-autocomplete-single input-id="acs">
+  <div class="plumage">
+    <div class="autocomplete-container form-group">
+      <div>
+        <label class="form-control-label" htmlfor="acs">
+          <span>
+            City
+          </span>
+        </label>
+        <div>
+          <div class="autocomplete-single-select input-group">
+            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="acs" inputmode="text" name="city" placeholder="City" role="combobox" type="text" value="Apple">
+            <button aria-label="Clear input" class="clear-btn" role="button" title="Clear input">
+              <i class="fa-times fas"></i>
+            </button>
+          </div>
+          <div class="b-underline" role="presentation">
+            <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-autocomplete-single>
+`;
+
+exports[`plumage-autocomplete-single renders stacked layout with underline present (not invalid by default) 1`] = `
+<plumage-autocomplete-single input-id="acs">
+  <div class="plumage">
+    <div class="autocomplete-container form-group">
+      <div>
+        <label class="form-control-label" htmlfor="acs">
+          <span>
+            City
+          </span>
+        </label>
+        <div>
+          <div class="autocomplete-single-select input-group">
+            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="acs" inputmode="text" name="city" placeholder="City" role="combobox" type="text" value="">
+          </div>
+          <div class="b-underline" role="presentation">
+            <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-autocomplete-single>
+`;
+
+exports[`plumage-autocomplete-single required + blur marks invalid and shows validation message; underline reflects invalid state 1`] = `
+<plumage-autocomplete-single input-id="acs" validation-message="Please fill in">
+  <div class="plumage">
+    <div class="autocomplete-container form-group">
+      <div>
+        <label class="form-control-label invalid" htmlfor="acs">
+          <span class="required">
+            City
+          </span>
+          <span class="required">
+            *
+          </span>
+        </label>
+        <div>
+          <div class="autocomplete-single-select input-group is-invalid">
+            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-describedby="acs-validation" aria-expanded="false" aria-haspopup="listbox" aria-required="true" autocomplete="off" class="form-control is-invalid" id="acs" inputmode="text" name="city" placeholder="City" role="combobox" type="text" value="">
+          </div>
+          <div class="b-underline invalid" role="presentation">
+            <div aria-hidden="true" class="b-focus invalid" role="presentation" style="width: 0; left: 50%;"></div>
+          </div>
+          <div aria-live="polite" class="invalid-feedback" id="acs-validation">
+            Please fill in
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-autocomplete-single>
+`;

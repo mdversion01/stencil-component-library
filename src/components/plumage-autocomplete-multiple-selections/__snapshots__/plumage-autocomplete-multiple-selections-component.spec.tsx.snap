@@ -1,0 +1,279 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`plumage-autocomplete-multiple-selections-component closes dropdown on outside click: after-outside-click-dropdown-closed 1`] = `
+<plumage-autocomplete-multiple-selections-component input-id="pets">
+  <div class="plumage">
+    <div class="autocomplete-container form-group">
+      <div>
+        <label class="form-control-label" htmlfor="pets">
+          <span>
+            Pets
+          </span>
+        </label>
+        <div>
+          <div class="ac-multi-select-container">
+            <div class="ac-selected-items"></div>
+            <div class="ac-input-container">
+              <div class="input-group">
+                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Pets" role="combobox" type="text" value="e">
+                <button aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
+                  <i class="fa-times fas"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="b-underline" role="presentation">
+            <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-autocomplete-multiple-selections-component>
+`;
+
+exports[`plumage-autocomplete-multiple-selections-component keeps dropdown open after selecting an item via mouse (mousedown + click): after-selection-dropdown-stays-open 1`] = `
+<plumage-autocomplete-multiple-selections-component input-id="pets">
+  <div class="plumage">
+    <div class="autocomplete-container form-group">
+      <div>
+        <label class="form-control-label" htmlfor="pets">
+          <span>
+            Pets
+          </span>
+        </label>
+        <div>
+          <div class="ac-multi-select-container">
+            <div class="ac-selected-items">
+              <div class="badge">
+                <span>
+                  Ant
+                </span>
+                <button aria-label="Remove Ant" class="remove-btn" data-tag="Ant" role="button" title="Remove Tag" type="button">
+                  <i class="fa-circle-xmark fa-solid"></i>
+                </button>
+              </div>
+            </div>
+            <div class="ac-input-container">
+              <div class="input-group">
+                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="true" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Pets" role="combobox" type="text" value="">
+                <button aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
+                  <i class="fa-times fas"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="b-underline" role="presentation">
+            <div aria-hidden="true" class="b-focus" role="presentation" style="width: 100%; left: 0;"></div>
+          </div>
+          <div aria-live="polite" class="autocomplete-dropdown">
+            <ul id="pets-listbox" role="listbox" tabindex="-1">
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="pets-row-0" role="option" tabindex="-1">
+                <button aria-label="Select Ape" class="option-btn" id="pets-option-0" tabindex="-1" type="button">
+                  <span>
+                    Ape
+                  </span>
+                </button>
+              </li>
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="pets-row-1" role="option" tabindex="-1">
+                <button aria-label="Select Bear" class="option-btn" id="pets-option-1" tabindex="-1" type="button">
+                  <span>
+                    Bear
+                  </span>
+                </button>
+              </li>
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="pets-row-2" role="option" tabindex="-1">
+                <button aria-label="Select Bee" class="option-btn" id="pets-option-2" tabindex="-1" type="button">
+                  <span>
+                    Bee
+                  </span>
+                </button>
+              </li>
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="pets-row-3" role="option" tabindex="-1">
+                <button aria-label="Select Cat" class="option-btn" id="pets-option-3" tabindex="-1" type="button">
+                  <span>
+                    Cat
+                  </span>
+                </button>
+              </li>
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="pets-row-4" role="option" tabindex="-1">
+                <button aria-label="Select Dog" class="option-btn" id="pets-option-4" tabindex="-1" type="button">
+                  <span>
+                    Dog
+                  </span>
+                </button>
+              </li>
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="pets-row-5" role="option" tabindex="-1">
+                <button aria-label="Select Eagle" class="option-btn" id="pets-option-5" tabindex="-1" type="button">
+                  <span>
+                    Eagle
+                  </span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-autocomplete-multiple-selections-component>
+`;
+
+exports[`plumage-autocomplete-multiple-selections-component opens dropdown on typing and filters options (snapshot): after-typing-a-dropdown-open 1`] = `
+<plumage-autocomplete-multiple-selections-component input-id="pets">
+  <div class="plumage">
+    <div class="autocomplete-container form-group">
+      <div>
+        <label class="form-control-label" htmlfor="pets">
+          <span>
+            Pets
+          </span>
+        </label>
+        <div>
+          <div class="ac-multi-select-container">
+            <div class="ac-selected-items"></div>
+            <div class="ac-input-container">
+              <div class="input-group">
+                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="true" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Pets" role="combobox" type="text" value="a">
+                <button aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
+                  <i class="fa-times fas"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="b-underline" role="presentation">
+            <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
+          </div>
+          <div aria-live="polite" class="autocomplete-dropdown">
+            <ul id="pets-listbox" role="listbox" tabindex="-1">
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="pets-row-0" role="option" tabindex="-1">
+                <button aria-label="Select Ant" class="option-btn" id="pets-option-0" tabindex="-1" type="button">
+                  <span>
+                    Ant
+                  </span>
+                </button>
+              </li>
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="pets-row-1" role="option" tabindex="-1">
+                <button aria-label="Select Ape" class="option-btn" id="pets-option-1" tabindex="-1" type="button">
+                  <span>
+                    Ape
+                  </span>
+                </button>
+              </li>
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="pets-row-2" role="option" tabindex="-1">
+                <button aria-label="Select Bear" class="option-btn" id="pets-option-2" tabindex="-1" type="button">
+                  <span>
+                    Bear
+                  </span>
+                </button>
+              </li>
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="pets-row-3" role="option" tabindex="-1">
+                <button aria-label="Select Cat" class="option-btn" id="pets-option-3" tabindex="-1" type="button">
+                  <span>
+                    Cat
+                  </span>
+                </button>
+              </li>
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="pets-row-4" role="option" tabindex="-1">
+                <button aria-label="Select Eagle" class="option-btn" id="pets-option-4" tabindex="-1" type="button">
+                  <span>
+                    Eagle
+                  </span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-autocomplete-multiple-selections-component>
+`;
+
+exports[`plumage-autocomplete-multiple-selections-component renders and matches snapshot (initial): initial-render 1`] = `
+<plumage-autocomplete-multiple-selections-component input-id="pets">
+  <div class="plumage">
+    <div class="autocomplete-container form-group">
+      <div>
+        <label class="form-control-label" htmlfor="pets">
+          <span>
+            Pets
+          </span>
+        </label>
+        <div>
+          <div class="ac-multi-select-container">
+            <div class="ac-selected-items"></div>
+            <div class="ac-input-container">
+              <div class="input-group">
+                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Pets" role="combobox" type="text" value="">
+              </div>
+            </div>
+          </div>
+          <div class="b-underline" role="presentation">
+            <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-autocomplete-multiple-selections-component>
+`;
+
+exports[`plumage-autocomplete-multiple-selections-component typing after a selection cancels the keep-open mode and re-filters: after-typing-again-cancels-keep-open-and-refilters 1`] = `
+<plumage-autocomplete-multiple-selections-component input-id="pets">
+  <div class="plumage">
+    <div class="autocomplete-container form-group">
+      <div>
+        <label class="form-control-label" htmlfor="pets">
+          <span>
+            Pets
+          </span>
+        </label>
+        <div>
+          <div class="ac-multi-select-container">
+            <div class="ac-selected-items">
+              <div class="badge">
+                <span>
+                  Ant
+                </span>
+                <button aria-label="Remove Ant" class="remove-btn" data-tag="Ant" role="button" title="Remove Tag" type="button">
+                  <i class="fa-circle-xmark fa-solid"></i>
+                </button>
+              </div>
+            </div>
+            <div class="ac-input-container">
+              <div class="input-group">
+                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="true" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Pets" role="combobox" type="text" value="be">
+                <button aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
+                  <i class="fa-times fas"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="b-underline" role="presentation">
+            <div aria-hidden="true" class="b-focus" role="presentation" style="width: 100%; left: 0;"></div>
+          </div>
+          <div aria-live="polite" class="autocomplete-dropdown">
+            <ul id="pets-listbox" role="listbox" tabindex="-1">
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="pets-row-0" role="option" tabindex="-1">
+                <button aria-label="Select Bear" class="option-btn" id="pets-option-0" tabindex="-1" type="button">
+                  <span>
+                    Bear
+                  </span>
+                </button>
+              </li>
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="pets-row-1" role="option" tabindex="-1">
+                <button aria-label="Select Bee" class="option-btn" id="pets-option-1" tabindex="-1" type="button">
+                  <span>
+                    Bee
+                  </span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-autocomplete-multiple-selections-component>
+`;

@@ -778,6 +778,119 @@ export namespace Components {
         "useByPagePagination": boolean;
         "useMinimizePagination": boolean;
     }
+    interface PlumageAutocompleteMultipleSelectionsComponent {
+        "addBtn": boolean;
+        "addIcon": string;
+        "addNewOnEnter": boolean;
+        "arialabelledBy": string;
+        "autoSort": boolean;
+        "badgeInlineStyles": string;
+        "badgeShape": string;
+        "badgeVariant": string;
+        "clearIcon": string;
+        "clearInputOnBlurOutside": boolean;
+        "devMode": boolean;
+        "disabled": boolean;
+        "editable": boolean;
+        "error": boolean;
+        "errorMessage": string;
+        "filterOptions": () => Promise<void>;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "getOptions": () => Promise<string[]>;
+        "inputCol": number;
+        "inputCols": string;
+        "inputId": string;
+        "label": string;
+        "labelAlign": '' | 'right';
+        "labelCol": number;
+        /**
+          * Responsive columns
+         */
+        "labelCols": string;
+        "labelHidden": boolean;
+        "labelSize": '' | 'sm' | 'lg';
+        /**
+          * Submit names
+         */
+        "name"?: string;
+        "navigateOptions": (direction: number) => Promise<void>;
+        "options": string[];
+        "placeholder": string;
+        /**
+          * Behavior switches
+         */
+        "preserveInputOnSelect"?: boolean;
+        "rawInputName"?: string;
+        "removeBtnBorder": boolean;
+        "removeClearBtn": boolean;
+        "removeItem": (value: string) => Promise<void>;
+        "required": boolean;
+        "setOptions": (next: string[]) => Promise<void>;
+        "size": '' | 'sm' | 'lg';
+        "type": string;
+        /**
+          * Validation controlled externally; mirrored to state for visuals.
+         */
+        "validation": boolean;
+        "validationMessage": string;
+    }
+    interface PlumageAutocompleteMultiselectComponent {
+        "addBtn": boolean;
+        "addIcon": string;
+        "addNewOnEnter": boolean;
+        "arialabelledBy": string;
+        "autoSort": boolean;
+        "badgeInlineStyles": string;
+        "badgeShape": string;
+        "badgeVariant": string;
+        "clearIcon": string;
+        "clearInputOnBlurOutside": boolean;
+        "devMode": boolean;
+        "disabled": boolean;
+        "editable": boolean;
+        "error": boolean;
+        "errorMessage": string;
+        "filterOptions": () => Promise<void>;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "getOptions": () => Promise<string[]>;
+        "inputCol": number;
+        "inputCols": string;
+        "inputId": string;
+        "label": string;
+        "labelAlign": '' | 'right';
+        "labelCol": number;
+        /**
+          * Responsive column class specs
+         */
+        "labelCols": string;
+        "labelHidden": boolean;
+        "labelSize": '' | 'sm' | 'lg';
+        /**
+          * Submit names
+         */
+        "name"?: string;
+        "navigateOptions": (direction: number) => Promise<void>;
+        "options": string[];
+        "placeholder": string;
+        /**
+          * Behavior switches
+         */
+        "preserveInputOnSelect"?: boolean;
+        "rawInputName"?: string;
+        "removeClearBtn": boolean;
+        "removeItem": (value: string) => Promise<void>;
+        "required": boolean;
+        "setOptions": (next: string[]) => Promise<void>;
+        "size": '' | 'sm' | 'lg';
+        "type": string;
+        /**
+          * Validation controlled externally; we mirror to state for visuals (don’t mutate prop in user-land).
+         */
+        "validation": boolean;
+        "validationMessage": string;
+    }
     interface PlumageAutocompleteSingle {
         /**
           * id(s) of label(s) that label this input (space-separated).
@@ -1635,6 +1748,14 @@ export interface PaginationComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLPaginationComponentElement;
 }
+export interface PlumageAutocompleteMultipleSelectionsComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPlumageAutocompleteMultipleSelectionsComponentElement;
+}
+export interface PlumageAutocompleteMultiselectComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPlumageAutocompleteMultiselectComponentElement;
+}
 export interface PlumageAutocompleteSingleCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLPlumageAutocompleteSingleElement;
@@ -2092,6 +2213,58 @@ declare global {
         prototype: HTMLPaginationComponentElement;
         new (): HTMLPaginationComponentElement;
     };
+    interface HTMLPlumageAutocompleteMultipleSelectionsComponentElementEventMap {
+        "itemSelect": string;
+        "clear": void;
+        "componentError": { message: string; stack?: string };
+        "multiSelectChange": string[];
+        "optionsChange": {
+    options: string[];
+    reason: 'add' | 'delete' | 'replace';
+    value?: string;
+  };
+        "optionDelete": string;
+    }
+    interface HTMLPlumageAutocompleteMultipleSelectionsComponentElement extends Components.PlumageAutocompleteMultipleSelectionsComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLPlumageAutocompleteMultipleSelectionsComponentElementEventMap>(type: K, listener: (this: HTMLPlumageAutocompleteMultipleSelectionsComponentElement, ev: PlumageAutocompleteMultipleSelectionsComponentCustomEvent<HTMLPlumageAutocompleteMultipleSelectionsComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLPlumageAutocompleteMultipleSelectionsComponentElementEventMap>(type: K, listener: (this: HTMLPlumageAutocompleteMultipleSelectionsComponentElement, ev: PlumageAutocompleteMultipleSelectionsComponentCustomEvent<HTMLPlumageAutocompleteMultipleSelectionsComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLPlumageAutocompleteMultipleSelectionsComponentElement: {
+        prototype: HTMLPlumageAutocompleteMultipleSelectionsComponentElement;
+        new (): HTMLPlumageAutocompleteMultipleSelectionsComponentElement;
+    };
+    interface HTMLPlumageAutocompleteMultiselectComponentElementEventMap {
+        "itemSelect": string;
+        "clear": void;
+        "componentError": { message: string; stack?: string };
+        "multiSelectChange": string[];
+        "optionsChange": {
+    options: string[];
+    reason: 'add' | 'delete' | 'replace';
+    value?: string;
+  };
+        "optionDelete": string;
+    }
+    interface HTMLPlumageAutocompleteMultiselectComponentElement extends Components.PlumageAutocompleteMultiselectComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLPlumageAutocompleteMultiselectComponentElementEventMap>(type: K, listener: (this: HTMLPlumageAutocompleteMultiselectComponentElement, ev: PlumageAutocompleteMultiselectComponentCustomEvent<HTMLPlumageAutocompleteMultiselectComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLPlumageAutocompleteMultiselectComponentElementEventMap>(type: K, listener: (this: HTMLPlumageAutocompleteMultiselectComponentElement, ev: PlumageAutocompleteMultiselectComponentCustomEvent<HTMLPlumageAutocompleteMultiselectComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLPlumageAutocompleteMultiselectComponentElement: {
+        prototype: HTMLPlumageAutocompleteMultiselectComponentElement;
+        new (): HTMLPlumageAutocompleteMultiselectComponentElement;
+    };
     interface HTMLPlumageAutocompleteSingleElementEventMap {
         "itemSelect": string;
         "clear": void;
@@ -2333,6 +2506,8 @@ declare global {
         "modal-component": HTMLModalComponentElement;
         "multi-range-slider-component": HTMLMultiRangeSliderComponentElement;
         "pagination-component": HTMLPaginationComponentElement;
+        "plumage-autocomplete-multiple-selections-component": HTMLPlumageAutocompleteMultipleSelectionsComponentElement;
+        "plumage-autocomplete-multiselect-component": HTMLPlumageAutocompleteMultiselectComponentElement;
         "plumage-autocomplete-single": HTMLPlumageAutocompleteSingleElement;
         "plumage-input-field-component": HTMLPlumageInputFieldComponentElement;
         "plumage-input-group-component": HTMLPlumageInputGroupComponentElement;
@@ -3147,6 +3322,129 @@ declare namespace LocalJSX {
         "useByPagePagination"?: boolean;
         "useMinimizePagination"?: boolean;
     }
+    interface PlumageAutocompleteMultipleSelectionsComponent {
+        "addBtn"?: boolean;
+        "addIcon"?: string;
+        "addNewOnEnter"?: boolean;
+        "arialabelledBy"?: string;
+        "autoSort"?: boolean;
+        "badgeInlineStyles"?: string;
+        "badgeShape"?: string;
+        "badgeVariant"?: string;
+        "clearIcon"?: string;
+        "clearInputOnBlurOutside"?: boolean;
+        "devMode"?: boolean;
+        "disabled"?: boolean;
+        "editable"?: boolean;
+        "error"?: boolean;
+        "errorMessage"?: string;
+        "formId"?: string;
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        "inputCol"?: number;
+        "inputCols"?: string;
+        "inputId"?: string;
+        "label"?: string;
+        "labelAlign"?: '' | 'right';
+        "labelCol"?: number;
+        /**
+          * Responsive columns
+         */
+        "labelCols"?: string;
+        "labelHidden"?: boolean;
+        "labelSize"?: '' | 'sm' | 'lg';
+        /**
+          * Submit names
+         */
+        "name"?: string;
+        "onClear"?: (event: PlumageAutocompleteMultipleSelectionsComponentCustomEvent<void>) => void;
+        "onComponentError"?: (event: PlumageAutocompleteMultipleSelectionsComponentCustomEvent<{ message: string; stack?: string }>) => void;
+        "onItemSelect"?: (event: PlumageAutocompleteMultipleSelectionsComponentCustomEvent<string>) => void;
+        "onMultiSelectChange"?: (event: PlumageAutocompleteMultipleSelectionsComponentCustomEvent<string[]>) => void;
+        "onOptionDelete"?: (event: PlumageAutocompleteMultipleSelectionsComponentCustomEvent<string>) => void;
+        "onOptionsChange"?: (event: PlumageAutocompleteMultipleSelectionsComponentCustomEvent<{
+    options: string[];
+    reason: 'add' | 'delete' | 'replace';
+    value?: string;
+  }>) => void;
+        "options"?: string[];
+        "placeholder"?: string;
+        /**
+          * Behavior switches
+         */
+        "preserveInputOnSelect"?: boolean;
+        "rawInputName"?: string;
+        "removeBtnBorder"?: boolean;
+        "removeClearBtn"?: boolean;
+        "required"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "type"?: string;
+        /**
+          * Validation controlled externally; mirrored to state for visuals.
+         */
+        "validation"?: boolean;
+        "validationMessage"?: string;
+    }
+    interface PlumageAutocompleteMultiselectComponent {
+        "addBtn"?: boolean;
+        "addIcon"?: string;
+        "addNewOnEnter"?: boolean;
+        "arialabelledBy"?: string;
+        "autoSort"?: boolean;
+        "badgeInlineStyles"?: string;
+        "badgeShape"?: string;
+        "badgeVariant"?: string;
+        "clearIcon"?: string;
+        "clearInputOnBlurOutside"?: boolean;
+        "devMode"?: boolean;
+        "disabled"?: boolean;
+        "editable"?: boolean;
+        "error"?: boolean;
+        "errorMessage"?: string;
+        "formId"?: string;
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        "inputCol"?: number;
+        "inputCols"?: string;
+        "inputId"?: string;
+        "label"?: string;
+        "labelAlign"?: '' | 'right';
+        "labelCol"?: number;
+        /**
+          * Responsive column class specs
+         */
+        "labelCols"?: string;
+        "labelHidden"?: boolean;
+        "labelSize"?: '' | 'sm' | 'lg';
+        /**
+          * Submit names
+         */
+        "name"?: string;
+        "onClear"?: (event: PlumageAutocompleteMultiselectComponentCustomEvent<void>) => void;
+        "onComponentError"?: (event: PlumageAutocompleteMultiselectComponentCustomEvent<{ message: string; stack?: string }>) => void;
+        "onItemSelect"?: (event: PlumageAutocompleteMultiselectComponentCustomEvent<string>) => void;
+        "onMultiSelectChange"?: (event: PlumageAutocompleteMultiselectComponentCustomEvent<string[]>) => void;
+        "onOptionDelete"?: (event: PlumageAutocompleteMultiselectComponentCustomEvent<string>) => void;
+        "onOptionsChange"?: (event: PlumageAutocompleteMultiselectComponentCustomEvent<{
+    options: string[];
+    reason: 'add' | 'delete' | 'replace';
+    value?: string;
+  }>) => void;
+        "options"?: string[];
+        "placeholder"?: string;
+        /**
+          * Behavior switches
+         */
+        "preserveInputOnSelect"?: boolean;
+        "rawInputName"?: string;
+        "removeClearBtn"?: boolean;
+        "required"?: boolean;
+        "size"?: '' | 'sm' | 'lg';
+        "type"?: string;
+        /**
+          * Validation controlled externally; we mirror to state for visuals (don’t mutate prop in user-land).
+         */
+        "validation"?: boolean;
+        "validationMessage"?: string;
+    }
     interface PlumageAutocompleteSingle {
         /**
           * id(s) of label(s) that label this input (space-separated).
@@ -3942,6 +4240,8 @@ declare namespace LocalJSX {
         "modal-component": ModalComponent;
         "multi-range-slider-component": MultiRangeSliderComponent;
         "pagination-component": PaginationComponent;
+        "plumage-autocomplete-multiple-selections-component": PlumageAutocompleteMultipleSelectionsComponent;
+        "plumage-autocomplete-multiselect-component": PlumageAutocompleteMultiselectComponent;
         "plumage-autocomplete-single": PlumageAutocompleteSingle;
         "plumage-input-field-component": PlumageInputFieldComponent;
         "plumage-input-group-component": PlumageInputGroupComponent;
@@ -3998,6 +4298,8 @@ declare module "@stencil/core" {
             "modal-component": LocalJSX.ModalComponent & JSXBase.HTMLAttributes<HTMLModalComponentElement>;
             "multi-range-slider-component": LocalJSX.MultiRangeSliderComponent & JSXBase.HTMLAttributes<HTMLMultiRangeSliderComponentElement>;
             "pagination-component": LocalJSX.PaginationComponent & JSXBase.HTMLAttributes<HTMLPaginationComponentElement>;
+            "plumage-autocomplete-multiple-selections-component": LocalJSX.PlumageAutocompleteMultipleSelectionsComponent & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteMultipleSelectionsComponentElement>;
+            "plumage-autocomplete-multiselect-component": LocalJSX.PlumageAutocompleteMultiselectComponent & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteMultiselectComponentElement>;
             "plumage-autocomplete-single": LocalJSX.PlumageAutocompleteSingle & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteSingleElement>;
             "plumage-input-field-component": LocalJSX.PlumageInputFieldComponent & JSXBase.HTMLAttributes<HTMLPlumageInputFieldComponentElement>;
             "plumage-input-group-component": LocalJSX.PlumageInputGroupComponent & JSXBase.HTMLAttributes<HTMLPlumageInputGroupComponentElement>;
