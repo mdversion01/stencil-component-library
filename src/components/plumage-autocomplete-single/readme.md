@@ -26,7 +26,7 @@
 | `labelCol`          | `label-col`          | Numeric fallback columns                                        | `number`                         | `2`         |
 | `labelCols`         | `label-cols`         | Responsive column class specs                                   | `string`                         | `''`        |
 | `labelHidden`       | `label-hidden`       |                                                                 | `boolean`                        | `false`     |
-| `labelSize`         | `label-size`         |                                                                 | `"" \| "lg" \| "sm"`             | `''`        |
+| `labelSize`         | `label-size`         |                                                                 | `"base" \| "lg" \| "sm" \| "xs"` | `'sm'`      |
 | `options`           | `options`            |                                                                 | `string[]`                       | `[]`        |
 | `placeholder`       | `placeholder`        |                                                                 | `string`                         | `undefined` |
 | `removeClearBtn`    | `remove-clear-btn`   |                                                                 | `boolean`                        | `false`     |

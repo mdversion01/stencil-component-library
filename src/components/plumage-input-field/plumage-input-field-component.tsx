@@ -16,7 +16,7 @@ export class PlumageInputFieldComponent {
   @Prop() inputId: string = '';
   @Prop() size: '' | 'sm' | 'lg' = '';
   @Prop() label: string = '';
-  @Prop() labelSize: '' | 'sm' | 'lg' = '';
+  @Prop() labelSize: 'base' | 'xs' | 'sm' | 'lg' = 'sm';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
   @Prop() required: boolean = false;
@@ -277,7 +277,7 @@ export class PlumageInputFieldComponent {
   private renderInputLabel(ids: string, labelColClass?: string) {
     const classes = [
       'form-control-label',
-      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
@@ -297,7 +297,7 @@ export class PlumageInputFieldComponent {
   }
 
   private renderInput(ids: string, names: string) {
-    const sizeClass = this.size === 'sm' ? 'input-sm' : this.size === 'lg' ? 'input-lg' : '';
+    const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
     const classes = ['form-control', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
 
     const placeholder = this.labelHidden ? this.label || this.placeholder || 'Placeholder Text' : this.label || this.placeholder || 'Placeholder Text';

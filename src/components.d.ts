@@ -85,7 +85,7 @@ export namespace Components {
          */
         "labelCols": string;
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         /**
           * Field name for selected items; if it ends with [] one input per item is emitted.
          */
@@ -143,7 +143,7 @@ export namespace Components {
          */
         "labelCols": string;
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         "name"?: string;
         "navigateOptions": (direction: number) => Promise<void>;
         "options": string[];
@@ -189,7 +189,7 @@ export namespace Components {
          */
         "labelCols": string;
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         "options": string[];
         "placeholder": string;
         "removeClearBtn": boolean;
@@ -643,7 +643,7 @@ export namespace Components {
          */
         "labelCols": string;
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        "labelSize": '' | 'xs' | 'sm' | 'lg';
         "placeholder"?: string;
         "readOnly": boolean;
         "required": boolean;
@@ -670,6 +670,7 @@ export namespace Components {
          */
         "inputSize": string;
         "label": string;
+        "labelAlign": '' | 'right';
         /**
           * Legacy numeric cols (fallback)
          */
@@ -679,7 +680,7 @@ export namespace Components {
          */
         "labelCols": string;
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         "otherContent": boolean;
         "placeholder": string;
         "prependIcon"?: string;
@@ -809,7 +810,7 @@ export namespace Components {
          */
         "labelCols": string;
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         /**
           * Submit names
          */
@@ -866,7 +867,7 @@ export namespace Components {
          */
         "labelCols": string;
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         /**
           * Submit names
          */
@@ -918,7 +919,7 @@ export namespace Components {
          */
         "labelCols": string;
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         "options": string[];
         "placeholder"?: string;
         "removeClearBtn": boolean;
@@ -953,7 +954,7 @@ export namespace Components {
          */
         "labelCols": string;
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         "placeholder"?: string;
         "required": boolean;
         "size": '' | 'sm' | 'lg';
@@ -964,7 +965,7 @@ export namespace Components {
     }
     interface PlumageInputGroupComponent {
         /**
-          * NEW names replacing append/prepend
+          * Side fields: support BOTH old and new attribute spellings. Current attributes: prepend/append Legacy attributes:  prepend-field/append-field
          */
         "appendField": boolean;
         "appendIcon"?: string;
@@ -990,7 +991,9 @@ export namespace Components {
          */
         "labelCols": string;
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        "legacyAppendField": boolean;
+        "legacyPrependField": boolean;
         "otherContent": boolean;
         "placeholder"?: string;
         /**
@@ -1025,10 +1028,11 @@ export namespace Components {
         "inputCol": number;
         "inputCols": string;
         "label": string;
+        "labelAlign": '' | 'right';
         "labelCol": number;
         "labelCols": string;
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'default' | 'lg';
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         "multiple": boolean;
         "options": Array<{ value: string; name: string }> | string;
         "required": boolean;
@@ -1249,7 +1253,7 @@ export namespace Components {
          */
         "labelCols": string;
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'default' | 'lg';
+        "labelSize": '' | 'xs' | 'sm' | 'lg';
         "multiple": boolean;
         "options": Array<{ value: string; name: string }> | string;
         "required": boolean;
@@ -2599,7 +2603,7 @@ declare namespace LocalJSX {
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         /**
           * Field name for selected items; if it ends with [] one input per item is emitted.
          */
@@ -2656,7 +2660,7 @@ declare namespace LocalJSX {
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         "name"?: string;
         "onClear"?: (event: AutocompleteMultiselectCustomEvent<void>) => void;
         "onComponentError"?: (event: AutocompleteMultiselectCustomEvent<{ message: string; stack?: string }>) => void;
@@ -2706,7 +2710,7 @@ declare namespace LocalJSX {
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         "onClear"?: (event: AutocompleteSingleCustomEvent<void>) => void;
         "onComponentError"?: (event: AutocompleteSingleCustomEvent<{ message: string; stack?: string }>) => void;
         "onItemSelect"?: (event: AutocompleteSingleCustomEvent<string>) => void;
@@ -3189,7 +3193,7 @@ declare namespace LocalJSX {
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        "labelSize"?: '' | 'xs' | 'sm' | 'lg';
         "onValueChange"?: (event: InputFieldComponentCustomEvent<string>) => void;
         "placeholder"?: string;
         "readOnly"?: boolean;
@@ -3217,6 +3221,7 @@ declare namespace LocalJSX {
          */
         "inputSize"?: string;
         "label"?: string;
+        "labelAlign"?: '' | 'right';
         /**
           * Legacy numeric cols (fallback)
          */
@@ -3226,7 +3231,7 @@ declare namespace LocalJSX {
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         "onValueChange"?: (event: InputGroupComponentCustomEvent<{ value: string }>) => void;
         "otherContent"?: boolean;
         "placeholder"?: string;
@@ -3351,7 +3356,7 @@ declare namespace LocalJSX {
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         /**
           * Submit names
          */
@@ -3413,7 +3418,7 @@ declare namespace LocalJSX {
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         /**
           * Submit names
          */
@@ -3472,7 +3477,7 @@ declare namespace LocalJSX {
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         "onClear"?: (event: PlumageAutocompleteSingleCustomEvent<void>) => void;
         "onComponentError"?: (event: PlumageAutocompleteSingleCustomEvent<{ message: string; stack?: string }>) => void;
         "onItemSelect"?: (event: PlumageAutocompleteSingleCustomEvent<string>) => void;
@@ -3511,7 +3516,7 @@ declare namespace LocalJSX {
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         "onValueChange"?: (event: PlumageInputFieldComponentCustomEvent<string>) => void;
         "placeholder"?: string;
         "required"?: boolean;
@@ -3523,7 +3528,7 @@ declare namespace LocalJSX {
     }
     interface PlumageInputGroupComponent {
         /**
-          * NEW names replacing append/prepend
+          * Side fields: support BOTH old and new attribute spellings. Current attributes: prepend/append Legacy attributes:  prepend-field/append-field
          */
         "appendField"?: boolean;
         "appendIcon"?: string;
@@ -3549,7 +3554,9 @@ declare namespace LocalJSX {
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
+        "legacyAppendField"?: boolean;
+        "legacyPrependField"?: boolean;
         "onValueChange"?: (event: PlumageInputGroupComponentCustomEvent<string>) => void;
         "otherContent"?: boolean;
         "placeholder"?: string;
@@ -3585,10 +3592,11 @@ declare namespace LocalJSX {
         "inputCol"?: number;
         "inputCols"?: string;
         "label"?: string;
+        "labelAlign"?: '' | 'right';
         "labelCol"?: number;
         "labelCols"?: string;
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'default' | 'lg';
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         "multiple"?: boolean;
         "onValueChange"?: (event: PlumageSelectFieldComponentCustomEvent<string | string[]>) => void;
         "options"?: Array<{ value: string; name: string }> | string;
@@ -3806,7 +3814,7 @@ declare namespace LocalJSX {
          */
         "labelCols"?: string;
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'default' | 'lg';
+        "labelSize"?: '' | 'xs' | 'sm' | 'lg';
         "multiple"?: boolean;
         "onValueChange"?: (event: SelectFieldComponentCustomEvent<{ value: string | string[] }>) => void;
         "options"?: Array<{ value: string; name: string }> | string;

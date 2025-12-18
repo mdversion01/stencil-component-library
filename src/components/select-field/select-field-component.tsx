@@ -32,7 +32,7 @@ export class SelectFieldComponent {
   @Prop() size: '' | 'sm' | 'lg' = '';
 
   @Prop() label: string = '';
-  @Prop() labelSize: '' | 'sm' | 'default' | 'lg' = '';
+  @Prop() labelSize: '' | 'xs' | 'sm' | 'lg' = 'sm';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
 
@@ -391,7 +391,7 @@ export class SelectFieldComponent {
 
     const classes = [
       'form-control-label',
-      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'default' ? 'label-default' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding` : '',

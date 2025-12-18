@@ -33,7 +33,7 @@ export class AutocompleteMultipleSelections {
   @Prop({ mutable: true }) errorMessage = '';
   @Prop() inputId: string = '';
   @Prop() label: string = '';
-  @Prop() labelSize: '' | 'sm' | 'lg' = '';
+  @Prop() labelSize: 'base' | 'xs' | 'sm' | 'lg' = 'sm';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
   @Prop() removeClearBtn: boolean = false;
@@ -807,7 +807,7 @@ export class AutocompleteMultipleSelections {
 
     const classes = [
       'form-control-label',
-      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.validation ? 'invalid' : '',
@@ -826,9 +826,21 @@ export class AutocompleteMultipleSelections {
     );
   }
 
+  private groupClasses() {
+    const sizeClass = this.size === 'sm' ? 'input-group-sm' : this.size === 'lg' ? 'input-group-lg' : '';
+    return [
+      'input-group',
+      this.validation ? 'is-invalid' : '',
+      this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '',
+      sizeClass,
+    ]
+      .filter(Boolean)
+      .join(' ');
+  }
+
   private renderInputField(ids: string, names: string) {
-    const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
-    const classes = ['form-control', this.validation || this.error ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    // const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
+    const classes = ['form-control', this.validation || this.error ? 'is-invalid' : ''].filter(Boolean).join(' '); //, sizeClass
     const placeholder = this.labelHidden ? this.label || this.placeholder || 'Placeholder Text' : this.label || this.placeholder || 'Placeholder Text';
 
     return (
@@ -968,13 +980,12 @@ export class AutocompleteMultipleSelections {
         class={{
           'ac-multi-select-container': true,
           'is-invalid': this.validation,
-          [`${this.size}`]: !!this.size,
           [this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '']: true,
         }}
       >
         <div class="ac-selected-items">{this.renderSelectedItems()}</div>
         <div class="ac-input-container">
-          <div class={{ 'input-group': true, 'is-invalid': this.validation || this.error }}>
+          <div class={this.groupClasses()}>
             {this.renderInputField(ids, names)}
             {this.renderAddButton()}
             {this.renderClearButton()}

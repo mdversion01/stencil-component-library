@@ -33,7 +33,7 @@ export class AutocompleteMultiselect {
   @Prop({ mutable: true }) errorMessage = '';
   @Prop() inputId = '';
   @Prop() label = '';
-  @Prop() labelSize: '' | 'sm' | 'lg' = '';
+  @Prop() labelSize: 'base' | 'xs' | 'sm' | 'lg' = 'sm';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden = false;
   @Prop() removeClearBtn = false;
@@ -307,7 +307,7 @@ export class AutocompleteMultiselect {
   private labelClasses(labelColClass?: string) {
     return [
       'form-control-label',
-      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.labelHidden ? 'sr-only' : '',
@@ -317,8 +317,20 @@ export class AutocompleteMultiselect {
   }
 
   private inputClasses() {
-    const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
-    return ['form-control', this.validation || this.error ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    // const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
+    return ['form-control', this.validation || this.error ? 'is-invalid' : '',].filter(Boolean).join(' '); // sizeClass
+  }
+
+  private groupClasses() {
+    const sizeClass = this.size === 'sm' ? 'input-group-sm' : this.size === 'lg' ? 'input-group-lg' : '';
+    return [
+      'input-group',
+      this.validation ? 'is-invalid' : '',
+      this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '',
+      sizeClass,
+    ]
+      .filter(Boolean)
+      .join(' ');
   }
 
   private containerClasses() {
@@ -326,7 +338,7 @@ export class AutocompleteMultiselect {
       'ac-multi-select-container',
       this.validation ? 'is-invalid' : '',
       this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '',
-      this.size || '',
+      // this.size || '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -1067,8 +1079,8 @@ export class AutocompleteMultiselect {
     return (
       <div class={this.containerClasses()}>
         <div class="ac-selected-items">{this.renderSelectedItems()}</div>
-        <div class="ac-input-container">
-          <div class={{ 'input-group': true, 'is-invalid': this.validation || this.error }}>
+        <div class="ac-input-container-multi">
+          <div class={this.groupClasses()}>
             {this.renderInputField(ids, names)}
             {this.renderAddButton()}
             {this.renderClearButton()}

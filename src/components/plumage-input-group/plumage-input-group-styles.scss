@@ -1,6 +1,6 @@
-// ---------------------------------------------
+// =============================================
 // Tokens
-// ---------------------------------------------
+// =============================================
 $gray-100: #f5f5f5;
 $gray-200: #e1e1e1;
 $gray-250: #eaeaea;
@@ -13,9 +13,9 @@ $brand: #2680eb;
 
 $radius: 0.25rem;
 
-// ---------------------------------------------
+// =============================================
 // Mixins
-// ---------------------------------------------
+// =============================================
 @mixin input-reset-focus {
   &:focus {
     box-shadow: none;
@@ -41,11 +41,33 @@ $radius: 0.25rem;
   transition: 0.4s;
 }
 
-// ---------------------------------------------
-// Plumage timepicker scope
-// ---------------------------------------------
+/* Generate label padding when a container contains a matching input-group.
+   $scope prefixes selectors (e.g., ".plumage ").
+   $label is a *string* selector for the label target.
+   $groups is a list of *string* selectors for the input-group(s). */
+@mixin label-pt-when-has-group($scope, $label, $pt, $groups) {
+  // Stacked: direct child input-group
+  @each $g in $groups {
+    #{$scope}.form-group:has(> #{$g}) > #{$label} {
+      padding-top: $pt !important;
+    }
+  }
+
+  // Row (horizontal/inline): input-group anywhere under the row.form-group
+  @each $g in $groups {
+    #{$scope}.row.form-group:has(#{$g}) #{$label} {
+      padding-top: $pt !important;
+    }
+  }
+}
+
+// =============================================
+// Plumage scope
+// =============================================
 .plumage {
+  // -----------------------------
   // Inline layout container spacing
+  // -----------------------------
   .form-input-group.inline {
     display: flex;
 
@@ -54,9 +76,14 @@ $radius: 0.25rem;
     }
   }
 
-  /* =========================
-       Input Group Layout
-     ========================= */
+  // -----------------------------
+  // Input Group Layout
+  // -----------------------------
+  .autocomplete-container .autocomplete-single-select {
+    border: none;
+    border-radius: none;
+  }
+
   .input-group {
     position: relative;
     display: flex;
@@ -66,7 +93,9 @@ $radius: 0.25rem;
     width: 100%;
 
     // Remove default focus ring on inputs in group
-    input { @include input-reset-focus; }
+    input {
+      @include input-reset-focus;
+    }
 
     /* Common children inside input-group */
     > .custom-file,
@@ -79,12 +108,18 @@ $radius: 0.25rem;
       line-height: 1.5;
     }
 
-    /* Padding tweaks for first/other controls */
-    > .form-control:first-child { padding-left: 0.5rem; }
-    > .form-control:not(:first-child) { padding-left: 0; }
+    /* Padding tweaks */
+    > .form-control:first-child {
+      padding-left: 0.5rem;
+    }
+    > .form-control:not(:first-child) {
+      padding-left: 0;
+    }
 
     &:last-child {
-      .input-group-text { border: 0; }
+      .input-group-text {
+        border: 0;
+      }
     }
 
     .btn {
@@ -95,7 +130,7 @@ $radius: 0.25rem;
     }
   }
 
-  /* Text-like add-ons */
+  // Add-on text
   .input-group-text {
     display: flex;
     align-items: center;
@@ -109,10 +144,12 @@ $radius: 0.25rem;
     text-align: center;
     white-space: nowrap;
 
-    &.is-invalid { color: #b30009; }
+    &.is-invalid {
+      color: #b30009;
+    }
   }
 
-  /* Generic button placed inside input group */
+  // Generic button inside input group
   .input-group-btn {
     display: flex;
     align-items: center;
@@ -131,16 +168,19 @@ $radius: 0.25rem;
     height: 100%;
   }
 
-  /* SM size */
+  // -----------------------------
+  // Size variants
+  // -----------------------------
   .input-group-sm {
-    @include input-group-size(0.25rem, 0.5rem, 0.833rem);
-    > .form-control { padding: 0.25rem 0.5rem 0.25rem 0; }
+    @include input-group-size(0.25rem, 0.5rem, 0.875rem);
+    > .form-control {
+      padding: 0.25rem 0.5rem 0.25rem 0;
+    }
   }
 
-  /* LG size */
   .input-group-lg {
     min-width: 240px !important;
-    @include input-group-size(0.25rem, 1rem, 1.25rem);
+    @include input-group-size(0.25rem, 1rem, 1.125rem);
 
     > .form-control {
       width: 135px;
@@ -149,9 +189,23 @@ $radius: 0.25rem;
     }
   }
 
-  /* =========================
-       States / Validation
-     ========================= */
+  // Ensure text sizes are consistent (explicit overrides)
+  .input-group > .form-control {
+    font-size: 1rem !important;
+  }
+  .input-group-xs > .form-control {
+    font-size: 0.75rem !important;
+  }
+  .input-group-sm > .form-control {
+    font-size: 0.875rem !important;
+  }
+  .input-group-lg > .form-control {
+    font-size: 1.125rem !important;
+  }
+
+  // -----------------------------
+  // States / Validation
+  // -----------------------------
   .form-input-group label {
     margin-bottom: 0.25rem !important;
   }
@@ -199,7 +253,7 @@ $radius: 0.25rem;
   }
 
   .input-group-lg .clear-button {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     min-height: 38px;
     padding: 0.5rem 1rem !important;
   }
@@ -215,9 +269,9 @@ $radius: 0.25rem;
     border-radius: 0 !important;
   }
 
-  /* =========================
-       Input Underline
-     ========================= */
+  // -----------------------------
+  // Input Underline (focus bar)
+  // -----------------------------
   .b-underline {
     background-color: $gray-400;
     display: block;
@@ -236,10 +290,9 @@ $radius: 0.25rem;
   }
 }
 
-/* =========================================
-   (Optional) Search Bar styles near control
-   (kept out of .plumage to reuse elsewhere)
-========================================= */
+// =============================================
+// Search Bar (outside .plumage for reuse)
+// =============================================
 .search-bar-container {
   align-items: center;
   background-color: $gray-200;
@@ -251,7 +304,9 @@ $radius: 0.25rem;
   padding: 0;
   width: unset;
 
-  &.input-group { flex-wrap: nowrap; }
+  &.input-group {
+    flex-wrap: nowrap;
+  }
 
   &:focus,
   &:hover,
@@ -310,4 +365,47 @@ $radius: 0.25rem;
   font-size: 0.75rem;
   line-height: 50%;
   padding: 0 0.5rem;
+}
+
+// =============================================
+// Smart label padding via :has()
+// (single block; everything generated by mixins)
+// =============================================
+@supports selector(:has(*)) {
+  $scope: '.plumage ';
+
+  // Define group-size selectors as strings
+  $groups-sm: ('div.input-group.input-group-sm', 'div.input-group.input-sm');
+  $groups-lg: ('div.input-group.input-group-lg', 'div.input-group.input-lg');
+  $groups-base: ('div.input-group');
+
+  // ----- LG groups -----
+  // label-sm -> 14px
+  @include label-pt-when-has-group($scope, 'label.form-control-label.label-sm', 14px, $groups-lg);
+  // default label -> 12px
+  @include label-pt-when-has-group($scope, 'label.form-control-label', 12px, $groups-lg);
+  // label-xs -> 15px
+  @include label-pt-when-has-group($scope, 'label.form-control-label.label-xs', 15px, $groups-lg);
+  // label-lg -> 12px
+  @include label-pt-when-has-group($scope, 'label.form-control-label.label-lg', 12px, $groups-lg);
+
+  // ----- SM groups -----
+  // label-xs -> 8px
+  @include label-pt-when-has-group($scope, 'label.form-control-label.label-xs', 8px, $groups-sm);
+  // default label -> 5px
+  @include label-pt-when-has-group($scope, 'label.form-control-label', 5px, $groups-sm);
+  // label-sm -> 6px
+  @include label-pt-when-has-group($scope, 'label.form-control-label.label-sm', 6px, $groups-sm);
+  // label-lg -> 3px
+  @include label-pt-when-has-group($scope, 'label.form-control-label.label-lg', 3px, $groups-sm);
+
+  // ----- Base (any) input-group -----
+  // label-lg -> 8px
+  @include label-pt-when-has-group($scope, 'label.form-control-label.label-lg', 8px, $groups-base);
+  // label-sm -> 12px
+  @include label-pt-when-has-group($scope, 'label.form-control-label.label-sm', 12px, $groups-base);
+  // label-xs -> 13px
+  @include label-pt-when-has-group($scope, 'label.form-control-label.label-xs', 13px, $groups-base);
+  // default label -> 11px
+  @include label-pt-when-has-group($scope, 'label.form-control-label', 11px, $groups-base);
 }

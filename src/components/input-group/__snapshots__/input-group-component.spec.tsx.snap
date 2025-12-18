@@ -5,7 +5,7 @@ exports[`<input-group-component> horizontal with numeric fallback cols (labelCol
   <!---->
   <div class="horizontal">
     <div class="form-group horizontal row">
-      <label class="col-3 col-form-label form-control-label no-padding" htmlfor="code">
+      <label class="col-3 col-form-label form-control-label label-sm no-padding" htmlfor="code">
         <span>
           Code:
         </span>
@@ -35,7 +35,7 @@ exports[`<input-group-component> mixes slot on append and icon on prepend using 
   <!---->
   <div>
     <div class="form-group">
-      <label class="form-control-label" htmlfor="q">
+      <label class="form-control-label label-sm" htmlfor="q">
         <span>
           Search
         </span>
@@ -61,7 +61,7 @@ exports[`<input-group-component> renders (stacked) with default props 1`] = `
   <!---->
   <div>
     <div class="form-group">
-      <label class="form-control-label" htmlfor="user">
+      <label class="form-control-label label-sm" htmlfor="user">
         <span>
           Username
         </span>
@@ -81,7 +81,7 @@ exports[`<input-group-component> renders horizontal layout with responsive cols,
   <!---->
   <div class="horizontal">
     <div class="form-group horizontal row">
-      <label class="col-12 col-form-label col-sm-4 form-control-label no-padding" htmlfor="amount">
+      <label class="col-12 col-form-label col-sm-4 form-control-label label-sm no-padding" htmlfor="amount">
         <span>
           Amount:
         </span>

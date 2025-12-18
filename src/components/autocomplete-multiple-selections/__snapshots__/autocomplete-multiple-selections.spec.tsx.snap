@@ -5,7 +5,7 @@ exports[`<autocomplete-multiple-selections> matches snapshot (default render) 1`
   <div class="autocomplete-container form-group">
     <div>
       <div>
-        <label class="form-control-label" htmlfor="tags">
+        <label class="form-control-label label-sm" htmlfor="tags">
           <span>
             Tags
           </span>
@@ -31,7 +31,7 @@ exports[`<autocomplete-multiple-selections> matches snapshot (open with matches 
   <div class="autocomplete-container form-group">
     <div>
       <div>
-        <label class="form-control-label" htmlfor="tags">
+        <label class="form-control-label label-sm" htmlfor="tags">
           <span>
             Tags
           </span>

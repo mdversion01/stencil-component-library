@@ -37,7 +37,7 @@ export class PlumageAutocompleteSingle {
   @Prop() inputId: string = '';
   @Prop() label: string = '';
   @Prop() labelHidden: boolean = false;
-  @Prop() labelSize: '' | 'sm' | 'lg' = '';
+  @Prop() labelSize: 'base' | 'xs' | 'sm' | 'lg' = 'sm';
   @Prop() labelAlign: '' | 'right' = '';
 
   @Prop() removeClearBtn = false;
@@ -609,7 +609,7 @@ export class PlumageAutocompleteSingle {
   private labelClasses(labelColClass?: string) {
     return [
       'form-control-label',
-      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
@@ -620,13 +620,14 @@ export class PlumageAutocompleteSingle {
   }
 
   private inputClasses() {
-    const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
+
     // Match input-group: reflect validationState for visual invalid
-    return ['form-control', this.validationState || this.error ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    return ['form-control', this.validationState || this.error ? 'is-invalid' : ''].filter(Boolean).join(' ');
   }
 
   private groupClasses() {
-    return ['input-group', 'autocomplete-single-select', this.validationState ? 'is-invalid' : '', this.size || ''].filter(Boolean).join(' ');
+    const sizeClass = this.size === 'sm' ? 'input-group-sm' : this.size === 'lg' ? 'input-group-lg' : '';
+    return ['input-group', 'autocomplete-single-select', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
   }
 
   private renderInputLabel(ids: string, labelColClass?: string) {
@@ -790,8 +791,10 @@ export class PlumageAutocompleteSingle {
             <div class={inputColClass}>
               {this.renderFieldArea(ids, names)}
               {this.renderDropdown(ids)}
-              {this.renderMessage('validation', ids)}
-              {this.renderMessage('error', ids)}
+              {this.isInline() ? this.renderMessage('validation', ids) : null}
+              {this.isInline() ? this.renderMessage('error', ids) : null}
+              {this.isHorizontal() ? this.renderMessage('validation', ids) : null}
+              {this.isHorizontal() ? this.renderMessage('error', ids) : null}
             </div>
           </div>
         </div>

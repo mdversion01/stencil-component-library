@@ -34,7 +34,7 @@
 | `labelCol`                | `label-col`                   |                                                                                  | `number`                         | `2`                          |
 | `labelCols`               | `label-cols`                  | Responsive columns (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")         | `string`                         | `''`                         |
 | `labelHidden`             | `label-hidden`                |                                                                                  | `boolean`                        | `false`                      |
-| `labelSize`               | `label-size`                  |                                                                                  | `"" \| "lg" \| "sm"`             | `''`                         |
+| `labelSize`               | `label-size`                  |                                                                                  | `"base" \| "lg" \| "sm" \| "xs"` | `'sm'`                       |
 | `name`                    | `name`                        | Field name for selected items; if it ends with [] one input per item is emitted. | `string`                         | `undefined`                  |
 | `options`                 | `options`                     |                                                                                  | `string[]`                       | `[]`                         |
 | `placeholder`             | `placeholder`                 |                                                                                  | `string`                         | `'Type to search/filter...'` |

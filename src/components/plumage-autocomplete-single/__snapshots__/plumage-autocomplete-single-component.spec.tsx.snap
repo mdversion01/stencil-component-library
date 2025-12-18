@@ -5,7 +5,7 @@ exports[`plumage-autocomplete-single filters on input and selects an option; dro
   <div class="plumage">
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label" htmlfor="acs">
+        <label class="form-control-label label-sm" htmlfor="acs">
           <span>
             City
           </span>
@@ -32,7 +32,7 @@ exports[`plumage-autocomplete-single renders stacked layout with underline prese
   <div class="plumage">
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label" htmlfor="acs">
+        <label class="form-control-label label-sm" htmlfor="acs">
           <span>
             City
           </span>
@@ -56,7 +56,7 @@ exports[`plumage-autocomplete-single required + blur marks invalid and shows val
   <div class="plumage">
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label invalid" htmlfor="acs">
+        <label class="form-control-label invalid label-sm" htmlfor="acs">
           <span class="required">
             City
           </span>

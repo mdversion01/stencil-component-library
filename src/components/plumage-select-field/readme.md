@@ -20,10 +20,11 @@
 | `inputCol`          | `input-col`          |             | `number`                                       | `10`                 |
 | `inputCols`         | `input-cols`         |             | `string`                                       | `''`                 |
 | `label`             | `label`              |             | `string`                                       | `''`                 |
+| `labelAlign`        | `label-align`        |             | `"" \| "right"`                                | `''`                 |
 | `labelCol`          | `label-col`          |             | `number`                                       | `2`                  |
 | `labelCols`         | `label-cols`         |             | `string`                                       | `''`                 |
 | `labelHidden`       | `label-hidden`       |             | `boolean`                                      | `false`              |
-| `labelSize`         | `label-size`         |             | `"" \| "default" \| "lg" \| "sm"`              | `''`                 |
+| `labelSize`         | `label-size`         |             | `"base" \| "lg" \| "sm" \| "xs"`               | `'sm'`               |
 | `multiple`          | `multiple`           |             | `boolean`                                      | `false`              |
 | `options`           | `options`            |             | `string \| { value: string; name: string; }[]` | `[]`                 |
 | `required`          | `required`           |             | `boolean`                                      | `false`              |

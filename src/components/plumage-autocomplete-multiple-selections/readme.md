@@ -34,7 +34,7 @@
 | `labelCol`                | `label-col`                   |                                                                  | `number`                         | `2`                          |
 | `labelCols`               | `label-cols`                  | Responsive columns                                               | `string`                         | `''`                         |
 | `labelHidden`             | `label-hidden`                |                                                                  | `boolean`                        | `false`                      |
-| `labelSize`               | `label-size`                  |                                                                  | `"" \| "lg" \| "sm"`             | `''`                         |
+| `labelSize`               | `label-size`                  |                                                                  | `"base" \| "lg" \| "sm" \| "xs"` | `'sm'`                       |
 | `name`                    | `name`                        | Submit names                                                     | `string`                         | `undefined`                  |
 | `options`                 | `options`                     |                                                                  | `string[]`                       | `[]`                         |
 | `placeholder`             | `placeholder`                 |                                                                  | `string`                         | `'Type to search/filter...'` |

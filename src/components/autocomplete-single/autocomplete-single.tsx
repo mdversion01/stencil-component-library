@@ -24,7 +24,7 @@ export class AutocompleteSingle {
   @Prop({ mutable: true }) errorMessage = '';
   @Prop() inputId = '';
   @Prop() label = '';
-  @Prop() labelSize: '' | 'sm' | 'lg' = '';
+  @Prop() labelSize: 'base' | 'xs' | 'sm' | 'lg' = 'sm';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden = false;
   @Prop() removeClearBtn = false;
@@ -420,7 +420,7 @@ export class AutocompleteSingle {
   private labelClasses(labelColClass?: string) {
     return [
       'form-control-label',
-      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
@@ -432,17 +432,18 @@ export class AutocompleteSingle {
   }
 
   private inputClasses() {
-    const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
-    return ['form-control', this.validation || this.error ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    // const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
+    return ['form-control', this.validation || this.error ? 'is-invalid' : ''].filter(Boolean).join(' '); // , sizeClass
   }
 
   private groupClasses() {
+    const sizeClass = this.size === 'sm' ? 'input-group-sm' : this.size === 'lg' ? 'input-group-lg' : '';
     return [
       'input-group',
       'autocomplete-single-select',
       this.validation ? 'is-invalid' : '',
       this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '',
-      this.size || '',
+      sizeClass,
     ]
       .filter(Boolean)
       .join(' ');

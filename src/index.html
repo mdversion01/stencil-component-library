@@ -82,9 +82,12 @@
           validation
           validation-message="Please fill in"
           add-btn
+          size="sm"
           label-size="sm"
           input-id="ac-single1"
           label="Autocomplete Single"
+          form-layout="horizontal"
+          label-align="right"
         ></autocomplete-single>
 
         <!-- <autocomplete-single
@@ -111,6 +114,8 @@
           required
           validation
           validation-message="Please fill in"
+          form-layout="horizontal"
+          label-align="right"
         ></plumage-autocomplete-single>
 
         <form-component>
@@ -128,6 +133,9 @@
             slot="formField"
             editable
             add-btn
+            form-layout="horizontal"
+            label-align="right"
+            size="sm"
           ></autocomplete-multiselect>
 
           <plumage-autocomplete-multiselect-component
@@ -136,6 +144,8 @@
             input-id="ac-1"
             editable
             label="Autocomplete Multiselect"
+            label-size="xs"
+            size="lg"
             required
             validation
             validation-message="Please fill in"
@@ -144,6 +154,8 @@
             slot="formField"
             editable
             add-btn
+            form-layout="horizontal"
+            label-align="right"
           ></plumage-autocomplete-multiselect-component>
 
           <autocomplete-multiple-selections
@@ -151,6 +163,7 @@
             editable
             input-id="ac-2"
             label="Autocomplete Multiple Selections"
+            label-size="lg"
             placeholder="Type to search..."
             data-autocomplete="true"
             required
@@ -160,6 +173,8 @@
             placeholder="Type to search..."
             slot="formField"
             size="lg"
+            form-layout="horizontal"
+            label-align="right"
           ></autocomplete-multiple-selections>
 
           <plumage-autocomplete-multiple-selections-component
@@ -171,11 +186,15 @@
             data-autocomplete="true"
             placeholder="Type to search..."
             slot="formField"
+            size="lg"
+            label-size="xs"
             required
             add-btn
             validation
             validation-message="Please fill in"
             placeholder="Type to search..."
+            form-layout="horizontal"
+            label-align="right"
           ></plumage-autocomplete-multiple-selections-component>
         </form-component>
       </div>
@@ -739,14 +758,43 @@
       </div> -->
 
       <div class="cwrapper">
-        <input-field-component label="First Name" label-size="sm" size="sm" value="" input-id="firstName" read-only></input-field-component>
+        <input-field-component label="First Name" label-size="xs" size="sm" value="" input-id="firstName" form-layout="horizontal" label-align="right"></input-field-component>
 
-        <input-field-component label="Last Name" value="" input-id="lastName"></input-field-component>
+        <plumage-input-field-component
+          label="First Name"
+          label-size="lg"
+          size="sm"
+          value=""
+          input-id="firstName"
+          form-layout="horizontal"
+          label-align="right"
+        ></plumage-input-field-component>
 
-        <input-field-component label="Email" required validation validation-message="Please enter a valid email" value="" input-id="email" size="lg"></input-field-component>
+        <input-field-component label="Last Name" value="" input-id="lastName" label-size="base" size="lg" form-layout="horizontal" label-align="right"></input-field-component>
 
-        <input-field-component form-layout="horizontal" label="Email" input-id="email2"></input-field-component>
+        <plumage-input-field-component
+          label="Last Name"
+          value=""
+          input-id="lastName"
+          label-size="base"
+          size="sm"
+          form-layout="horizontal"
+          label-align="right"
+        ></plumage-input-field-component>
 
+        <input-field-component label="Email" value="" input-id="email" size="lg" form-layout="horizontal" label-size="xs" label-align="right"></input-field-component>
+
+        <plumage-input-field-component
+          label="Email"
+          value=""
+          input-id="email"
+          size="lg"
+          label-size="xs"
+          form-layout="horizontal"
+          label-align="right"
+        ></plumage-input-field-component>
+      </div>
+      <!--
         <form-component>
           <input-field-component
             required
@@ -782,32 +830,95 @@
             label-size="lg"
           ></input-field-component>
         </form-component>
-      </div>
+      </div> -->
 
       <div class="cwrapper">
         <form-component>
           <input-group-component
             slot="formField"
             label="Amount"
-            size="lg"
-            input-id="amount"
-            required
-            validation
-            validation-message="Please enter First name"
+            label-size="lg"
+            size="sm"
+            input-id="amount1"
             other-content
             append
             prepend
             prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
           >
-            <button-component slot="append" size="lg" type="button" variant="secondary">Go</button-component>
-          </input-group-component>
-
-          <input-group-component form-layout="inline" slot="formField" label="Search" input-id="q" validation validation-message="Please enter First name" append other-content>
             <button-component slot="append" type="button" variant="secondary">Go</button-component>
           </input-group-component>
+
+          <plumage-input-group-component
+            slot="formField"
+            input-id="pl-input-group-1"
+            label="Test Label"
+            label-size="xs"
+            other-content
+            append
+            prepend
+            prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
+          >
+            <button-component slot="append" type="button">Go</button-component>
+          </plumage-input-group-component>
+
+          <input-group-component slot="formField" label="Amount" input-id="amount" other-content append form-layout="horizontal" label-align="right">
+            <button-component slot="append" type="button" variant="secondary">Go</button-component>
+          </input-group-component>
+
+          <plumage-input-group-component
+            slot="formField"
+            input-id="pl-input-group-3"
+            label="Test Label"
+            append
+            prepend
+            prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
+          >
+            <button-component slot="append" outlined variant="secondary" size="sm" type="button">Go</button-component>
+          </plumage-input-group-component>
+
+          <input-group-component
+            slot="formField"
+            label="Amount"
+            size="lg"
+            input-id="amount2"
+            append
+            append-icon="fa-solid fa-dollar-sign"
+            prepend
+            prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
+          >
+          </input-group-component>
+
+          <plumage-input-group-component
+            slot="formField"
+            input-id="pl-input-group-2"
+            label="Test Label"
+            size="lg"
+            label-size="xs"
+            append
+            append-icon="fa-solid fa-dollar-sign"
+            prepend
+            prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
+          >
+          </plumage-input-group-component>
+
+          <input-group-component slot="formField" label="Search" input-id="q" append other-content>
+            <button-component slot="append" type="button" variant="secondary">Go</button-component>
+          </input-group-component>
+
+          <plumage-input-group-component slot="formField" label="Search" plumage-search> </plumage-input-group-component>
         </form-component>
 
-        <plumage-input-field-component
+        <!-- <plumage-input-field-component
           input-id="input-1"
           size="sm"
           label="Test Label2"
@@ -839,51 +950,7 @@
           required
           validation
           validation-message="Please enter First name"
-        ></plumage-input-field-component>
-
-        <plumage-input-group-component
-          input-id="pl-input-group-1"
-          label="Test Label"
-          size="sm"
-          append-field
-          prepend-field
-          prepend-icon="fa-solid fa-dollar-sign"
-          required
-          validation
-          validation-message="Please enter First name"
-        >
-          <button-component slot="append" size="sm" type="button">Go</button-component>
-        </plumage-input-group-component>
-
-        <plumage-input-group-component
-          input-id="pl-input-group-3"
-          label="Test Label"
-          form-layout="horizontal"
-          append-field
-          prepend-field
-          prepend-icon="fa-solid fa-dollar-sign"
-          required
-          validation
-          validation-message="Please enter First name"
-        >
-          <button-component slot="append" outlined variant="secondary" size="sm" type="button">Go</button-component>
-        </plumage-input-group-component>
-
-        <plumage-input-group-component
-          input-id="pl-input-group-2"
-          label="Test Label"
-          form-layout="inline"
-          append-field
-          append-icon="fa-solid fa-dollar-sign"
-          prepend-field
-          prepend-icon="fa-solid fa-dollar-sign"
-          required
-          validation
-          validation-message="Please enter First name"
-        >
-        </plumage-input-group-component>
-
-        <plumage-input-group-component plumage-search> </plumage-input-group-component>
+        ></plumage-input-field-component> -->
       </div>
 
       <!-- <div class="cwrapper"> -->
@@ -1295,32 +1362,13 @@
 
       <div class="cwrapper">
         <select-field-component
-          field-height="4"
           label="Favorite Fruit"
+          label-size="lg"
+          size="lg"
+          select-field-id="fruit1"
           form-layout="horizontal"
-          size="sm"
-          select-field-id="fruit"
+          label-align="right"
           value=""
-          required
-          validation
-          validation-message="Please make a selection"
-          options='[
-          {"value":"apple","name":"Apple"},
-          {"value":"banana","name":"Banana"},
-          {"value":"cherry","name":"Cherry"}
-        ]'
-        ></select-field-component>
-
-        <select-field-component
-          custom
-          label="Favorite Fruit"
-          form-layout="horizontal"
-          size="sm"
-          select-field-id="fruit"
-          value=""
-          required
-          validation
-          validation-message="Please make a selection"
           options='[
           {"value":"apple","name":"Apple"},
           {"value":"banana","name":"Banana"},
@@ -1330,14 +1378,12 @@
 
         <select-field-component
           label="Favorite Fruit"
-          select-field-id="fruit"
+          label-size="lg"
+          size="sm"
+          select-field-id="fruit2"
+          form-layout="horizontal"
+          label-align="right"
           value=""
-          multiple
-          required
-          validation
-          validation-message="Please make a selection"
-          show-default-in-multiple
-          field-height="3"
           options='[
           {"value":"apple","name":"Apple"},
           {"value":"banana","name":"Banana"},
@@ -1348,7 +1394,9 @@
         <select-field-component
           label="Favorite Fruit"
           size="lg"
-          select-field-id="fruit"
+          form-layout="horizontal"
+          label-align="right"
+          select-field-id="fruit3"
           value=""
           options='[
           {"value":"apple","name":"Apple"},
@@ -1359,26 +1407,11 @@
 
         <plumage-select-field-component
           label="Favorite Fruit"
-          select-field-id="fruit"
+          select-field-id="fruit4"
           form-layout="horizontal"
-          custom
-          size="sm"
-          field-height="3"
-          value=""
-          required
-          validation
-          validation-message="Please make a selection"
-          options='[
-          {"value":"apple","name":"Apple"},
-          {"value":"banana","name":"Banana"},
-          {"value":"cherry","name":"Cherry"}
-        ]'
-        ></plumage-select-field-component>
-
-        <plumage-select-field-component
-          label="Favorite Fruit"
-          select-field-id="fruit"
-          form-layout="inline"
+          label-align="right"
+          label-size="lg"
+          size="lg"
           value=""
           options='[
           {"value":"apple","name":"Apple"},
@@ -1389,9 +1422,25 @@
 
         <plumage-select-field-component
           label="Favorite Fruit"
-          select-field-id="fruit"
+          select-field-id="fruit5"
+          form-layout="horizontal"
+          label-align="right"
           value=""
-          required
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></plumage-select-field-component>
+
+        <plumage-select-field-component
+          label="Favorite Fruit"
+          select-field-id="fruit6"
+          form-layout="horizontal"
+          label-align="right"
+          value=""
+          size="lg"
+           required
           validation
           validation-message="Please make a selection"
           options='[
@@ -1401,7 +1450,7 @@
         ]'
         ></plumage-select-field-component>
 
-        <plumage-select-field-component
+        <!-- <plumage-select-field-component
           label="Favorite Fruit"
           multiple
           required
@@ -1416,7 +1465,7 @@
           {"value":"banana","name":"Banana"},
           {"value":"cherry","name":"Cherry"}
         ]'
-        ></plumage-select-field-component>
+        ></plumage-select-field-component> -->
       </div>
 
       <!-- <div class="cwrapper">

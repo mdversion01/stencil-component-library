@@ -5,7 +5,7 @@ exports[`plumage-autocomplete-multiselect-component filters, navigates, selects 
   <div class="plumage">
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label" htmlfor="fruit">
+        <label class="form-control-label label-sm" htmlfor="fruit">
           <span>
             Fruit
           </span>
@@ -30,7 +30,7 @@ exports[`plumage-autocomplete-multiselect-component filters, navigates, selects 
                 </button>
               </div>
             </div>
-            <div class="ac-input-container">
+            <div class="ac-input-container-multi">
               <div class="input-group">
                 <input aria-autocomplete="list" aria-controls="fruit-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="fruit" inputmode="text" placeholder="Fruit" role="combobox" type="text" value="">
                 <button aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
@@ -54,7 +54,7 @@ exports[`plumage-autocomplete-multiselect-component renders (stacked) and matche
   <div class="plumage">
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label" htmlfor="fruits">
+        <label class="form-control-label label-sm" htmlfor="fruits">
           <span>
             Fruits
           </span>
@@ -62,7 +62,7 @@ exports[`plumage-autocomplete-multiselect-component renders (stacked) and matche
         <div>
           <div class="ac-multi-select-container">
             <div class="ac-selected-items"></div>
-            <div class="ac-input-container">
+            <div class="ac-input-container-multi">
               <div class="input-group">
                 <input aria-autocomplete="list" aria-controls="fruits-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="fruits" inputmode="text" placeholder="Fruits" role="combobox" type="text" value="">
               </div>

@@ -5,7 +5,7 @@ type _SelectOption = { value: string; name: string };
 
 @Component({
   tag: 'plumage-select-field-component',
-  styleUrls: ['../layout-styles.scss', '../form-styles.scss', './plumage-select-field-styles.scss'],
+  styleUrls: ['../layout-styles.scss', '../form-styles.scss', '../plumage-input-field/plumage-input-field-styles.scss', './plumage-select-field-styles.scss'],
   shadow: false,
 })
 export class PlumageSelectFieldComponent {
@@ -25,7 +25,8 @@ export class PlumageSelectFieldComponent {
   @Prop() selected: boolean = false;
   @Prop() size: '' | 'sm' | 'lg' = '';
   @Prop() label: string = '';
-  @Prop() labelSize: '' | 'sm' | 'default' | 'lg' = '';
+  @Prop() labelSize: 'base' | 'xs' | 'sm' | 'lg' = 'sm';
+  @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
   @Prop() multiple: boolean = false;
   @Prop() required: boolean = false;
@@ -407,7 +408,8 @@ export class PlumageSelectFieldComponent {
 
     const classes = [
       'form-control-label',
-      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'default' ? 'label-default' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding` : '',
       isInvalidNow ? 'invalid' : '',
     ]
@@ -425,7 +427,7 @@ export class PlumageSelectFieldComponent {
   }
 
   private renderSelectField(ids: string, names: string) {
-    const sizeClass = this.size === 'sm' ? 'select-sm' : this.size === 'lg' ? 'select-lg' : '';
+    const sizeClass = this.size === 'sm' ? 'form-select-sm' : this.size === 'lg' ? 'form-select-lg' : '';
     const baseClass = this.custom ? 'custom-select' : 'form-select';
     const role = this.multiple ? 'combobox' : 'listbox';
 

@@ -61,7 +61,7 @@ describe('plumage-select-field-component', () => {
 <plumage-select-field-component default-option-txt="<Pick one>">
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label">
+      <label class="form-control-label label-sm">
         <span></span>
       </label>
       <div class="input-container" role="presentation">
@@ -112,7 +112,7 @@ describe('plumage-select-field-component', () => {
 <plumage-select-field-component>
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label">
+      <label class="form-control-label label-sm">
         <span></span>
       </label>
       <div class="input-container" role="presentation">
@@ -171,7 +171,7 @@ describe('plumage-select-field-component', () => {
 <plumage-select-field-component default-option-txt="Choose…" id="some-sortField">
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label">
+      <label class="form-control-label label-sm">
         <span></span>
       </label>
       <div class="input-container" role="presentation">
@@ -226,7 +226,7 @@ describe('plumage-select-field-component', () => {
 <plumage-select-field-component default-option-txt="Choose…" id="some-sortField">
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label">
+      <label class="form-control-label label-sm">
         <span></span>
       </label>
       <div class="input-container" role="presentation">
@@ -286,7 +286,7 @@ describe('plumage-select-field-component', () => {
 <plumage-select-field-component default-option-txt="Pick one" select-field-id="fruit">
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label" htmlfor="fruit">
+      <label class="form-control-label label-sm" htmlfor="fruit">
         <span>
           Favorite Fruit
         </span>
@@ -363,7 +363,7 @@ describe('plumage-select-field-component', () => {
 <plumage-select-field-component default-option-txt="Pick one" validation-message="Please choose at least one">
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label invalid">
+      <label class="form-control-label invalid label-sm">
         <span></span>
       </label>
       <div class="input-container" role="presentation">

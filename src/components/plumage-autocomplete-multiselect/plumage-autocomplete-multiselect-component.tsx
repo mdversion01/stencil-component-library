@@ -35,7 +35,7 @@ export class PlumageAutocompleteMultiselectComponent {
 
   @Prop() inputId = '';
   @Prop() label = '';
-  @Prop() labelSize: '' | 'sm' | 'lg' = '';
+  @Prop() labelSize: 'base' | 'xs' | 'sm' | 'lg' = 'sm';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden = false;
 
@@ -49,8 +49,8 @@ export class PlumageAutocompleteMultiselectComponent {
   @Prop() validationMessage = '';
 
   /** Submit names */
-  @Prop() name?: string;          // selected items
-  @Prop() rawInputName?: string;  // raw typed text
+  @Prop() name?: string; // selected items
+  @Prop() rawInputName?: string; // raw typed text
 
   /** Behavior switches */
   @Prop() preserveInputOnSelect?: boolean; // optional override
@@ -238,9 +238,15 @@ export class PlumageAutocompleteMultiselectComponent {
     return v;
   }
 
-  private isHorizontal() { return this.formLayout === 'horizontal'; }
-  private isInline() { return this.formLayout === 'inline'; }
-  private isRowLayout() { return this.isHorizontal() || this.isInline(); }
+  private isHorizontal() {
+    return this.formLayout === 'horizontal';
+  }
+  private isInline() {
+    return this.formLayout === 'inline';
+  }
+  private isRowLayout() {
+    return this.isHorizontal() || this.isInline();
+  }
 
   private isSatisfiedNow(): boolean {
     return this.inputValue.trim().length >= 3 || this.selectedItems.length > 0;
@@ -307,8 +313,14 @@ export class PlumageAutocompleteMultiselectComponent {
     for (const t of tokens) {
       if (!t) continue;
 
-      if (/^col(-\w+)?(-\d+)?$/.test(t)) { out.push(t); continue; }
-      if (/^\d{1,2}$/.test(t)) { out.push(`col-${Math.max(1, Math.min(12, parseInt(t, 10)))}`); continue; }
+      if (/^col(-\w+)?(-\d+)?$/.test(t)) {
+        out.push(t);
+        continue;
+      }
+      if (/^\d{1,2}$/.test(t)) {
+        out.push(`col-${Math.max(1, Math.min(12, parseInt(t, 10)))}`);
+        continue;
+      }
 
       const m = /^(xs|sm|md|lg|xl|xxl)-(\d{1,2})$/.exec(t);
       if (m) {
@@ -317,7 +329,10 @@ export class PlumageAutocompleteMultiselectComponent {
         out.push(bp === 'xs' ? `col-${n}` : `col-${bp}-${n}`);
         continue;
       }
-      if (t === 'col') { out.push('col'); continue; }
+      if (t === 'col') {
+        out.push('col');
+        continue;
+      }
 
       if (this.devMode) console.warn('[plumage-autocomplete-multiselect] Unknown cols token:', t);
     }
@@ -346,18 +361,24 @@ export class PlumageAutocompleteMultiselectComponent {
   private labelClasses(labelColClass?: string) {
     return [
       'form-control-label',
-      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.validationState ? 'invalid' : '',
-    ].filter(Boolean).join(' ');
+    ]
+      .filter(Boolean)
+      .join(' ');
   }
 
   private inputClasses() {
-    const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
     // Visual invalid reflects validationState OR error (parity with plumage single)
-    return ['form-control', this.validationState || this.error ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    return ['form-control', this.validationState || this.error ? 'is-invalid' : ''].filter(Boolean).join(' ');
+  }
+
+  private groupClasses() {
+    const sizeClass = this.size === 'sm' ? 'input-group-sm' : this.size === 'lg' ? 'input-group-lg' : '';
+    return ['input-group', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
   }
 
   private containerClasses() {
@@ -365,8 +386,10 @@ export class PlumageAutocompleteMultiselectComponent {
       'ac-multi-select-container',
       this.validationState ? 'is-invalid' : '',
       // this.isFocused ? 'ac-focused' : '',
-      this.size || '',
-    ].filter(Boolean).join(' ');
+      // this.size || '',
+    ]
+      .filter(Boolean)
+      .join(' ');
   }
 
   private getAvailableOptions(): string[] {
@@ -1089,8 +1112,8 @@ export class PlumageAutocompleteMultiselectComponent {
       <Fragment>
         <div class={this.containerClasses()}>
           <div class="ac-selected-items">{this.renderSelectedItems()}</div>
-          <div class="ac-input-container">
-            <div class={{ 'input-group': true, 'is-invalid': this.validationState || this.error }}>
+          <div class="ac-input-container-multi">
+            <div class={this.groupClasses()}>
               {this.renderInputField(ids, names)}
               {this.renderAddButton()}
               {this.renderClearButton()}
@@ -1117,8 +1140,7 @@ export class PlumageAutocompleteMultiselectComponent {
     const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
 
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass =
-      this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
+    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     if (this.isRowLayout()) {
       return (
@@ -1164,6 +1186,10 @@ export class PlumageAutocompleteMultiselectComponent {
   render() {
     const ids = this.camelCase(this.inputId).replace(/ /g, '');
     const names = this.camelCase(this.label).replace(/ /g, '');
-    return <div class="plumage"><div class={{ 'autocomplete-container': true, 'form-group': true }}>{this.renderLayout(ids, names)}</div></div>;
+    return (
+      <div class="plumage">
+        <div class={{ 'autocomplete-container': true, 'form-group': true }}>{this.renderLayout(ids, names)}</div>
+      </div>
+    );
   }
 }

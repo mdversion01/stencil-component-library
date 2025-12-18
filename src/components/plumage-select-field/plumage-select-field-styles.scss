@@ -1,6 +1,6 @@
-// -------------------------------------------------
+// =================================================
 // Tokens
-// -------------------------------------------------
+// =================================================
 $color-text:        #495057;
 $color-border:      #ced4da;
 $color-focus-ring:  rgba(0, 123, 255, 0.25);
@@ -9,19 +9,19 @@ $color-danger:      #b30009;
 $color-disabled-bg: #f5f5f5;
 $color-muted:       #6c757d;
 
-$label-sm:          0.875rem;
-$label-default:     1rem;
-$label-lg:          1.125rem;
+$label-xs: 0.75rem;
+$label-sm: 0.875rem;
+$label-lg: 1.125rem;
 
-$col-form-ptb:      calc(0.375rem + 1px);
-$underline-height:  1px;
+$col-form-ptb:     calc(0.375rem + 1px);
+$underline-height: 1px;
 
 // Bootstrap-like custom select arrow
 $custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
 
-// -------------------------------------------------
+// =================================================
 // Helpers
-// -------------------------------------------------
+// =================================================
 @mixin placeholder-color($c) {
   &::-webkit-input-placeholder { color: $c; }
   &:-moz-placeholder           { color: $c; opacity: 1; }
@@ -31,55 +31,47 @@ $custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.
   &::placeholder               { color: $c; }
 }
 
-// -------------------------------------------------
+// =================================================
 // Plumage scope
-// -------------------------------------------------
+// =================================================
 .plumage {
-  // Base input resets
+  // Base input reset
   input {
-    font-family: inherit;
-    font-size: inherit;
+    font: inherit;
     line-height: inherit;
     margin: 0;
     overflow: visible;
   }
 
-  // -------- Layout wrappers --------
+  // ---------- Layout wrappers ----------
   .form-group {
     padding: 5px 15px;
     margin-bottom: 0.25rem;
     text-align: left;
   }
 
-  .input-container {
-    position: relative;
-    text-align: left;
-  }
-
-  .form-group.input-container {
-    margin-bottom: 0.25rem;
-  }
+  .input-container { position: relative; text-align: left; }
+  .form-group.input-container { margin-bottom: 0.25rem; }
 
   .horizontal {
     .form-group { padding: 5px; }
     .input-container { padding: 0 15px; }
   }
-
   .inline .input-container { padding: 0 15px; }
 
-  // -------- Labels --------
+  // ---------- Labels ----------
   label {
     display: inline-block;
-    margin-bottom: 0.5rem;
     position: relative;
+    margin-bottom: 0.5rem;
   }
 
-  .label-sm      { font-size: $label-sm !important; }
-  .label-default { font-size: $label-default !important; }
-  .label-lg      { font-size: $label-lg !important; }
+  .label-xs { font-size: $label-xs !important; }
+  .label-sm { font-size: $label-sm !important; }
+  .label-lg { font-size: $label-lg !important; }
 
   .horizontal label,
-  .inline label {
+  .inline     label {
     display: flex;
     align-items: center;
     justify-content: left;
@@ -125,23 +117,23 @@ $custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.
   .inline     .form-group .form-control-label.invalid {
     position: relative;
     align-items: normal;
-    padding-top: 12px;
+    // padding-top: 12px; // (reference)
   }
 
   // Align by size within inline/horizontal
   .inline,
   .horizontal {
-    .form-control-label     { align-items: start !important; padding-top: 6px !important; }
-    .label-sm               { align-items: start !important; padding-top: 5px !important; }
-    .label-default          { align-items: start !important; padding-top: 7px !important; }
-    .label-lg               { align-items: start !important; padding-top: 9px !important; }
+    .form-control-label { align-items: start !important; padding-top: 6px !important; }
+    .label-xs          { align-items: start !important; padding-top: 4px !important; }
+    .label-sm          { align-items: start !important; padding-top: 5px !important; }
+    label              { align-items: start !important; padding-top: 7px !important; }
+    .label-lg          { align-items: start !important; padding-top: 9px !important; }
   }
 
-  // -------- Inputs / form-control --------
+  // ---------- Inputs / form-control ----------
   .form-control {
     display: block;
     width: 100%;
-    padding: 0.375rem 0.75rem;
     font-size: 1rem;
     line-height: 1.5;
     color: $color-text;
@@ -151,20 +143,7 @@ $custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.
     border-radius: 0.25rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
-    &.input-sm {
-      padding: 4px 0.5rem;
-      font-size: 0.8333rem;
-    }
-
-    &.input-lg {
-      padding: 8px 0.5rem;
-      font-size: 1rem;
-      line-height: 1.5;
-    }
-
-    &:disabled {
-      background-color: $color-disabled-bg;
-    }
+    &:disabled { background-color: $color-disabled-bg; }
 
     &:focus {
       background-color: transparent;
@@ -180,21 +159,18 @@ $custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.
     }
   }
 
-  // -------- Selects inside input-container --------
+  // Selects inside input-container
   .input-container select {
     border: none;
-    font-size: 0.9375rem;
+    font-size: 1rem;
     font-weight: 300;
     line-height: 1.2;
     transition: border-color 0.25s ease;
 
-    &:focus {
-      box-shadow: none;
-      outline: none;
-    }
+    &:focus { box-shadow: none; outline: none; }
   }
 
-  // -------- Custom select (Bootstrap-like) --------
+  // ---------- Custom select (Bootstrap-like) ----------
   .custom-select {
     display: inline-block;
     width: 100%;
@@ -212,9 +188,7 @@ $custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.
     &:focus {
       border-color: #80bdff;
       outline: 0;
-      box-shadow:
-        inset 0 1px 2px rgb(0 0 0 / 8%),
-        0 0 5px rgb(128 189 255 / 50%);
+      box-shadow: inset 0 1px 2px rgb(0 0 0 / 8%), 0 0 5px rgb(128 189 255 / 50%);
     }
 
     &[multiple],
@@ -229,27 +203,27 @@ $custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.
       background-color: #e9ecef;
     }
 
-    // Hide default caret in IE11
-    &::-ms-expand { opacity: 0; }
+    &::-ms-expand { opacity: 0; } // hide default caret in IE11
   }
 
+  // Size variants for selects (inside input-container)
   .input-container {
-    .select-sm {
+    .form-select-sm {
       height: calc(1.8125rem + 2px);
       padding-top: 0.375rem;
       padding-bottom: 0.375rem;
       font-size: 0.833rem;
     }
 
-    .select-lg {
+    .form-select-lg {
       height: calc(2.875rem + 2px);
       padding-top: 0.375rem;
       padding-bottom: 0.375rem;
-      font-size: 1.25rem;
+      font-size: 1.125rem;
     }
   }
 
-  // -------- Underline / focus bar --------
+  // ---------- Underline / focus bar ----------
   .b-underline {
     background-color: #ccc;
     display: block;
@@ -272,7 +246,7 @@ $custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.
     &.disabled { background-color: transparent; }
   }
 
-  // -------- Validation --------
+  // ---------- Validation ----------
   .invalid-feedback {
     color: $color-danger;
     margin-top: 0.25rem;
@@ -289,17 +263,48 @@ $custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.
     &.is-invalid { border-color: $color-danger; }
   }
 
-  // Keep placeholder red in invalid state
   .form-control.is-invalid { @include placeholder-color($color-danger); }
 
-  // Added styling: red text for invalid single selects (Bootstrap parity)
+  // Red text for invalid single selects (Bootstrap parity)
   .was-validated {
     .form-select:invalid:not([multiple]):not([size]),
     .form-select:invalid:not([multiple])[size='1'] { color: $color-danger; }
   }
-
   .form-select.is-invalid:not([multiple]):not([size]),
-  .form-select.is-invalid:not([multiple])[size='1'] {
-    color: $color-danger;
+  .form-select.is-invalid:not([multiple])[size='1'] { color: $color-danger; }
+}
+
+// =================================================
+// :has() label alignment (consolidated + DRY)
+// =================================================
+@supports selector(:has(*)) {
+  // Base: sync padding-top for labels when a specific select exists.
+  @mixin has-select-label-pt($sel, $pt) {
+    .plumage .form-group:has(> #{$sel}) > label.form-control-label { padding-top: $pt !important; }
+    .plumage .row.form-group:has(#{$sel})  label.form-control-label { padding-top: $pt !important; }
   }
+
+  // Size-class variant for labels (.label-xs / .label-sm / .label-lg)
+  @mixin has-select-label-size-pt($sel, $size-class, $pt) {
+    .plumage .form-group:has(> #{$sel}) > label.form-control-label.#{$size-class} { padding-top: $pt !important; }
+    .plumage .row.form-group:has(#{$sel})  label.form-control-label.#{$size-class} { padding-top: $pt !important; }
+  }
+
+  // ----- Default select (.form-select) -----
+  @include has-select-label-pt('select.form-select', 8px);
+  @include has-select-label-size-pt('select.form-select', label-sm, 8px);
+  @include has-select-label-size-pt('select.form-select', label-xs, 9px);
+  @include has-select-label-size-pt('select.form-select', label-lg, 5px);
+
+  // ----- Small select (.form-select-sm) -----
+  @include has-select-label-pt('select.form-select.form-select-sm', 7px);
+  @include has-select-label-size-pt('select.form-select.form-select-sm', label-sm, 7px);
+  @include has-select-label-size-pt('select.form-select.form-select-sm', label-xs, 9px);
+  @include has-select-label-size-pt('select.form-select.form-select-sm', label-lg, 4px);
+
+  // ----- Large select (.form-select-lg) -----
+  @include has-select-label-pt('select.form-select.form-select-lg', 17px);
+  @include has-select-label-size-pt('select.form-select.form-select-lg', label-sm, 17px);
+  @include has-select-label-size-pt('select.form-select.form-select-lg', label-xs, 19px);
+  @include has-select-label-size-pt('select.form-select.form-select-lg', label-lg, 14px);
 }

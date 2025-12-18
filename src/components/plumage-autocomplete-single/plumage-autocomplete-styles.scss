@@ -1,63 +1,110 @@
+/* =============================================
+   Tokens
+============================================= */
+$gray-50:  #fff;
+$gray-200: #ccc;
+$gray-300: #eaeaea;
+$gray-400: #f2f2f2;
+$gray-600: #8e8e8e;
+$gray-700: #666;
+$danger:   #b30000;
+$brand:    #2680eb;
+
+$z-dropdown: 1000;
+$z-input:    5;
+
+$radius-pill: 1rem;
+
+$fs-sm: 0.75rem;
+$fs-md: 1rem;
+$fs-lg: 1.2rem;
+
+/* =============================================
+   Tiny helpers
+============================================= */
+@mixin reset-btn {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+@mixin plain-input {
+  border: none !important;
+  box-shadow: none;
+  outline: none;
+}
+
+/* =============================================
+   Plumage scope
+============================================= */
 .plumage {
-  input {
-    width: 300px;
-    padding: 10px;
-    font-size: 16px;
+  /* Base input width (can be overridden locally) */
+  input { width: 300px; }
+
+  /* Label alignment tweaks in row layouts */
+  .inline .label-sm,
+  .horizontal .label-sm {
+    align-items: start !important;
+    padding-top: 7px !important;
   }
 
+  /* ===========================================
+     Single-select container (keep invalid quiet)
+  =========================================== */
+  .autocomplete-container {
+    .autocomplete-single-select.is-invalid {
+      border-color: transparent !important;
+    }
+  }
+
+  /* ===========================================
+     Dropdown
+  =========================================== */
   .autocomplete-dropdown {
     position: absolute;
+    z-index: $z-dropdown;
+    margin-top: 1px;
     min-width: 150px;
     max-width: 300px;
     max-height: 200px;
     overflow-y: auto;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    margin-top: 1px;
-    z-index: 1000;
-  }
+    background-color: $gray-50;
+    border: 1px solid $gray-200;
 
-  .autocomplete-dropdown ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
   }
 
   .autocomplete-dropdown-item {
     padding: 5px 10px;
     cursor: pointer;
-  }
-  .autocomplete-dropdown-item:hover {
-    background-color: #f2f2f2;
+
+    &.sm { font-size: $fs-sm; }
+    &.lg { font-size: $fs-lg; }
+
+    &:hover { background-color: $gray-400; }
+    &:active {
+      background-color: $brand;
+      color: $gray-50;
+      text-decoration: none;
+    }
+
+    &.focused       { background-color: #eee; }
+    &.key-selected  { background-color: #5a5a5a; color: $gray-50; }
+    &.key-selected.focused { background-color: #3a3a3a; color: $gray-50; }
   }
 
-  .autocomplete-dropdown-item:active {
-    background-color: #2680eb;
-    color: #fff;
-    text-decoration: none;
-  }
-
-  .autocomplete-dropdown-item.focused {
-    background-color: #eee;
-  }
-
-  .autocomplete-dropdown-item.key-selected {
-    background-color: #5a5a5a;
-    color: #fff;
-  }
-
-  .autocomplete-dropdown-item.key-selected.focused {
-    background-color: #3a3a3a;
-    color: #fff;
-  }
-
-  .ac-form-control {
-    border-right: none;
-  }
+  /* ===========================================
+     Combobox / Multi-select containers
+  =========================================== */
+  .ac-form-control { border-right: none; }
 
   .ac-combobox-container {
-    margin-bottom: 0.25rem;
     position: relative;
+    margin-bottom: 0.25rem;
   }
 
   .ac-multi-select-container {
@@ -66,6 +113,11 @@
     width: 100%;
     border: none !important;
     border-radius: 0;
+
+    &:invalid,
+    &.is-invalid { border-color: transparent !important; }
+
+    .input-group-btn { border: none; }
   }
 
   .ac-selected-items {
@@ -73,138 +125,116 @@
     flex-wrap: wrap;
   }
 
-  .ac-multi-select-container .input-group-btn {
-    border: none;
-  }
-
   .ac-basic-container,
-  .ac-input-container {
+  .ac-input-container,
+  .ac-input-container-multi {
     display: flex;
     flex: 1 1 auto;
   }
 
-  .ac-input-container .ac-input-group {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    width: 100%;
+  .ac-input-container {
+    .ac-input-group {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      width: 100%;
+
+      > .form-control:first-child { padding-left: 0.5rem; }
+
+      .form-control {
+        @include plain-input;
+        display: flex !important;
+        flex: 1 1 200px;
+        width: 200px;
+        padding: 0.375rem 0.75rem;
+      }
+
+      input:focus { @include plain-input; }
+    }
   }
 
-  .ac-input-container .ac-input-group .form-control {
-    border: none !important;
-    display: flex !important;
-    flex: 1 1 200px;
-    padding: 0.375rem 0.75rem;
-    width: 200px;
-  }
-
-  .ac-input-container .ac-input-group > .form-control:first-child {
-    padding-left: 0.5rem;
-  }
-
-  .ac-input-container .ac-input-group input:focus {
-    box-shadow: none;
-    outline: none;
-  }
-
-  .ac-multi-select-container:invalid,
-  .ac-multi-select-container.is-invalid {
-    border-color: transparent !important;
-  }
-
-  .autocomplete-dropdown-item.sm {
-    font-size: 0.75rem;
-  }
-
-  .autocomplete-dropdown-item.lg {
-    font-size: 1.2rem;
-  }
-
-  .error-message {
-    color: #b30000;
-    margin-top: 4px;
-    font-size: 11px;
-  }
-
+  /* ===========================================
+     Badges (selected chips)
+  =========================================== */
   .badge {
     align-items: center;
-    background-color: transparent !important;
-    border: 1px solid #8e8e8e !important;
-    border-radius: 1rem;
-    color: #000000;
-    display: flex;
-    font-size: 0.75rem;
-    height: 30px;
     justify-content: center;
+    position: relative;
+
+    display: flex;
+    height: 30px;
     margin: 0.25rem;
     padding: 0.35rem 0.5rem;
-    position: relative;
+
+    font-size: $fs-sm;
+    color: #000;
+
+    background-color: transparent !important;
+    border: 1px solid $gray-600 !important;
+    border-radius: $radius-pill;
+
+    span {
+      cursor: pointer;
+      margin-right: 0.5rem;
+      margin-top: -0.1rem;
+    }
+
+    .remove-btn {
+      @include reset-btn;
+      border-radius: 25%;
+      width: 16px;
+      height: 16px;
+
+      svg {
+        cursor: pointer;
+        position: relative;
+        z-index: 1;
+
+        width: 1rem;
+        height: 1rem;
+        fill: $gray-700;
+      }
+
+      &:hover svg,
+      &:focus svg { fill: #ff5d6d; }
+    }
   }
 
-  .badge span {
-    cursor: pointer;
-    margin-right: 0.5rem;
-    margin-top: -0.1rem;
-  }
-
-  .badge .remove-btn {
-    background-color: transparent;
-    border: none;
-    border-radius: 25%;
-    margin: 0;
-    padding: 0;
-    height: 16px;
-    width: 16px;
-  }
-
-  .badge .remove-btn svg {
-    cursor: pointer;
-    fill: #666666;
-    height: 1rem;
-    position: relative;
-    width: 1rem;
-    z-index: 1;
-  }
-
-  .badge .remove-btn:hover svg,
-  .badge .remove-btn:focus svg {
-    fill: #ff5d6d;
-    outline: none;
-  }
-
+  /* ===========================================
+     Input group (within autocomplete)
+  =========================================== */
   .input-group {
-    height: 100%;
     position: relative;
-    z-index: 5;
+    z-index: $z-input;
+
+    .input-group-btn {
+      @include reset-btn;
+      color: #999;
+      padding: 0.275rem 0.75rem;
+
+      &.clear {
+        &:hover        { color: #b80000; }
+        &:focus-visible {
+          color: #b80000;
+          outline: 1px solid #b80000;
+        }
+      }
+    }
+
+    &.is-invalid > .input-group-btn.clear {
+      color: #b30009;
+      border-color: transparent !important;
+    }
   }
 
-  .input-group .input-group-btn {
-    color: #999999;
-    padding: 0.275rem 0.75rem;
-    background-color: transparent;
-  }
+  /* ===========================================
+     Validation
+  =========================================== */
+  .invalid-feedback { color: $danger !important; }
 
-  .input-group .input-group-btn.clear:hover {
-    color: #b80000;
-    outline: none;
-  }
-
-  .input-group .input-group-btn.clear:focus-visible {
-    color: #b80000;
-    outline: 1px solid #b80000;
-  }
-
-  .input-group.is-invalid > .input-group-btn.clear {
-    color: #b30009;
-    border-color: #b30009;
-  }
-
-  .invalid-feedback {
-    color: #b30000 !important;
-  }
-
-  .form-group {
-    position: relative;
-  }
+  /* ===========================================
+     Form group positioning
+  =========================================== */
+  .form-group { position: relative; }
 }

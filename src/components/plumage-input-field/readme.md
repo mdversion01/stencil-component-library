@@ -20,7 +20,7 @@
 | `labelCol`          | `label-col`          | Legacy numeric cols (fallback)                                                 | `number`                         | `2`         |
 | `labelCols`         | `label-cols`         | NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") | `string`                         | `''`        |
 | `labelHidden`       | `label-hidden`       |                                                                                | `boolean`                        | `false`     |
-| `labelSize`         | `label-size`         |                                                                                | `"" \| "lg" \| "sm"`             | `''`        |
+| `labelSize`         | `label-size`         |                                                                                | `"base" \| "lg" \| "sm" \| "xs"` | `'sm'`      |
 | `placeholder`       | `placeholder`        |                                                                                | `string`                         | `undefined` |
 | `required`          | `required`           |                                                                                | `boolean`                        | `false`     |
 | `size`              | `size`               |                                                                                | `"" \| "lg" \| "sm"`             | `''`        |

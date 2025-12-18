@@ -24,7 +24,7 @@
 | `labelCol`          | `label-col`          | Legacy numeric cols (fallback)                                                      | `number`                                       | `2`                  |
 | `labelCols`         | `label-cols`         | Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4") | `string`                                       | `''`                 |
 | `labelHidden`       | `label-hidden`       |                                                                                     | `boolean`                                      | `false`              |
-| `labelSize`         | `label-size`         |                                                                                     | `"" \| "default" \| "lg" \| "sm"`              | `''`                 |
+| `labelSize`         | `label-size`         |                                                                                     | `"" \| "lg" \| "sm" \| "xs"`                   | `'sm'`               |
 | `multiple`          | `multiple`           |                                                                                     | `boolean`                                      | `false`              |
 | `options`           | `options`            |                                                                                     | `string \| { value: string; name: string; }[]` | `[]`                 |
 | `required`          | `required`           |                                                                                     | `boolean`                                      | `false`              |
