@@ -22,10 +22,11 @@
 | `inputId`           | `input-id`           |                                                                                             | `string`                         | `''`        |
 | `inputSize`         | `input-size`         | Kept for API parity; use `size` for visual sizing                                           | `string`                         | `''`        |
 | `label`             | `label`              |                                                                                             | `string`                         | `''`        |
+| `labelAlign`        | `label-align`        |                                                                                             | `"" \| "right"`                  | `''`        |
 | `labelCol`          | `label-col`          | Legacy numeric cols (fallback)                                                              | `number`                         | `2`         |
 | `labelCols`         | `label-cols`         | NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4") | `string`                         | `''`        |
 | `labelHidden`       | `label-hidden`       |                                                                                             | `boolean`                        | `false`     |
-| `labelSize`         | `label-size`         |                                                                                             | `"" \| "lg" \| "sm"`             | `''`        |
+| `labelSize`         | `label-size`         |                                                                                             | `"base" \| "lg" \| "sm" \| "xs"` | `'sm'`      |
 | `otherContent`      | `other-content`      |                                                                                             | `boolean`                        | `false`     |
 | `placeholder`       | `placeholder`        |                                                                                             | `string`                         | `''`        |
 | `prependIcon`       | `prepend-icon`       |                                                                                             | `string`                         | `undefined` |

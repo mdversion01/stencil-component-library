@@ -30,7 +30,8 @@ export class InputGroupComponent {
   @Prop() inputSize: string = '';
 
   @Prop() label: string = '';
-  @Prop() labelSize: '' | 'sm' | 'lg' = '';
+  @Prop() labelSize: 'base' | 'xs' | 'sm' | 'lg' = 'sm';
+   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
   @Prop() otherContent: boolean = false;
   @Prop() placeholder: string = '';
@@ -278,7 +279,8 @@ export class InputGroupComponent {
     return [
       'form-control-label',
       this.showAsRequired() ? 'required' : '',
-      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelAlign === 'right' ? 'align-right' : '',
       this.labelHidden ? 'sr-only' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.isInvalidNow() ? 'invalid' : '',

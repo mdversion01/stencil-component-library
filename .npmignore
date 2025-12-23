@@ -1,0 +1,15 @@
+# Exclude dev-only content from the published package
+# (Prefer using the "files" whitelist in package.json; this is a fallback)
+src/
+.storybook/
+stories/
+.storybook-cache/
+storybook-static/
+tests/
+__tests__/
+node_modules/
+coverage/
+.vscode/
+.idea/
+*.log
+.DS_Store

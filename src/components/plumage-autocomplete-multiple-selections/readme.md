@@ -34,9 +34,9 @@
 | `labelCol`                | `label-col`                   |                                                                  | `number`                         | `2`                          |
 | `labelCols`               | `label-cols`                  | Responsive columns                                               | `string`                         | `''`                         |
 | `labelHidden`             | `label-hidden`                |                                                                  | `boolean`                        | `false`                      |
-| `labelSize`               | `label-size`                  |                                                                  | `"" \| "lg" \| "sm"`             | `''`                         |
+| `labelSize`               | `label-size`                  |                                                                  | `"base" \| "lg" \| "sm" \| "xs"` | `'sm'`                       |
 | `name`                    | `name`                        | Submit names                                                     | `string`                         | `undefined`                  |
-| `options`                 | `options`                     |                                                                  | `string[]`                       | `[]`                         |
+| `options`                 | --                            |                                                                  | `string[]`                       | `[]`                         |
 | `placeholder`             | `placeholder`                 |                                                                  | `string`                         | `'Type to search/filter...'` |
 | `preserveInputOnSelect`   | `preserve-input-on-select`    | Behavior switches                                                | `boolean`                        | `undefined`                  |
 | `rawInputName`            | `raw-input-name`              |                                                                  | `string`                         | `undefined`                  |
@@ -58,7 +58,7 @@
 | `itemSelect`        |             | `CustomEvent<string>`                                                                         |
 | `multiSelectChange` |             | `CustomEvent<string[]>`                                                                       |
 | `optionDelete`      |             | `CustomEvent<string>`                                                                         |
-| `optionsChange`     |             | `CustomEvent<{ options: string[]; reason: "replace" \| "add" \| "delete"; value?: string; }>` |
+| `optionsChange`     |             | `CustomEvent<{ options: string[]; reason: "replace" \| "delete" \| "add"; value?: string; }>` |
 
 
 ## Methods

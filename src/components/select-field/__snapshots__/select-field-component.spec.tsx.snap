@@ -4,7 +4,7 @@ exports[`select-field-component marks label as required when value is blank and 
 <select-field-component default-option-txt="Pick one" select-field-id="fruit">
   <div>
     <div class="form-group">
-      <label class="form-control-label" htmlfor="fruit">
+      <label class="form-control-label label-sm" htmlfor="fruit">
         <span>
           Favorite Fruit
         </span>
@@ -34,7 +34,7 @@ exports[`select-field-component parses options JSON and selects matching value 1
 <select-field-component>
   <div>
     <div class="form-group">
-      <label class="form-control-label">
+      <label class="form-control-label label-sm">
         <span></span>
       </label>
       <div>
@@ -62,7 +62,7 @@ exports[`select-field-component renders legacy "--none--" when id includes sortF
 <select-field-component default-option-txt="Choose…" id="user-sortField">
   <div>
     <div class="form-group">
-      <label class="form-control-label">
+      <label class="form-control-label label-sm">
         <span></span>
       </label>
       <div>
@@ -87,7 +87,7 @@ exports[`select-field-component sanitizes defaultOptionTxt and uses it when attr
 <select-field-component default-option-txt="<Pick one>">
   <div>
     <div class="form-group">
-      <label class="form-control-label">
+      <label class="form-control-label label-sm">
         <span></span>
       </label>
       <div>
@@ -112,7 +112,7 @@ exports[`select-field-component shows validation message when required and value
 <select-field-component default-option-txt="Pick one" validation-message="Please fill in">
   <div>
     <div class="form-group">
-      <label class="form-control-label invalid">
+      <label class="form-control-label invalid label-sm">
         <span class="required"></span>
         <span class="required">
           *
@@ -143,7 +143,7 @@ exports[`select-field-component with value="none" and sortField id, legacy none 
 <select-field-component default-option-txt="Choose…" id="user-sortField">
   <div>
     <div class="form-group">
-      <label class="form-control-label">
+      <label class="form-control-label label-sm">
         <span></span>
       </label>
       <div>

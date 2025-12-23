@@ -1,64 +1,165 @@
-.plumage {
-  .input-container {
-    position: relative;
-    text-align: left;
-  }
+// =============================================
+// Tokens
+// =============================================
+$danger: #b30009;
 
-  .horizontal .input-container,
-  .inline .input-container {
-    padding: 0 15px;
-  }
+$label-sizes: (
+  xs: (font: 0.75rem,  pad: 4px),
+  sm: (font: 0.875rem, pad: 7px),
+  lg: (font: 1.125rem, pad: 11px),
+  base: (pad: 7px),
+);
 
-  .form-group.input-container {
-    margin-bottom: 0.25rem;
-  }
+// For :has() rules
+$inputs-sm: (
+  'input.form-control.form-control-sm',
+  'input.form-control.input-sm'
+);
 
-  label {
-    display: inline-block;
-    margin-bottom: 0.5rem;
-  }
+$inputs-lg: (
+  'input.form-control.form-control-lg',
+  'input.form-control.input-lg'
+);
 
-  .horizontal label,
-  .inline label {
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    margin-bottom: 0;
-    position: relative;
-  }
+$inputs-base: (
+  'input.form-control'
+);
 
-  .horizontal label {
-    &.align-right {
-      justify-content: right;
+$input-wrappers: (
+  '.ac-input-container',
+  '.input-container'
+);
+
+// =============================================
+// Mixins
+// =============================================
+@mixin placeholder-color($c) {
+  &::placeholder { color: $c !important; }
+}
+
+/* Generate padding-top on the LABEL when a container contains a matching INPUT.
+   $scope lets us prefix all selectors (e.g., ".plumage "). */
+@mixin label-pt-when-has($scope, $label-sel, $pt, $input-selectors) {
+  // Stacked: direct child input
+  @each $inp in $input-selectors {
+    #{$scope}.form-group:has(> #{$inp}) > #{$label-sel} {
+      padding-top: $pt !important;
     }
   }
 
+  // Stacked: input inside wrapper
+  @each $inp in $input-selectors {
+    @each $wrap in $input-wrappers {
+      #{$scope}.form-group:has(#{$wrap} #{$inp}) > #{$label-sel} {
+        padding-top: $pt !important;
+      }
+    }
+  }
+
+  // Row (horizontal/inline): input anywhere under the row.form-group
+  @each $inp in $input-selectors {
+    #{$scope}.row.form-group:has(#{$inp}) #{$label-sel} {
+      padding-top: $pt !important;
+    }
+    @each $wrap in $input-wrappers {
+      #{$scope}.row.form-group:has(#{$wrap} #{$inp}) #{$label-sel} {
+        padding-top: $pt !important;
+      }
+    }
+  }
+}
+
+// =============================================
+// Base: .plumage
+// =============================================
+.plumage {
+  // -------- Labels (sizes) --------
+  @each $key, $vals in $label-sizes {
+    @if $key != base {
+      .label-#{$key} {
+        font-size: map-get($vals, font) !important;
+      }
+    }
+  }
+
+  // -------- Containers & Layout --------
+  .input-container {
+    position: relative;
+    text-align: left;
+
+    // within horizontal/inline layouts
+    .horizontal &,
+    .inline & {
+      padding: 0 15px;
+    }
+  }
+
+  .form-group.input-container { margin-bottom: 0.25rem; }
+
   label {
-    // font-size: 0.75rem;
+    display: inline-block;
     position: relative;
+    margin-bottom: 0.5rem;
+
+    .horizontal &,
+    .inline & {
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      margin-bottom: 0;
+    }
+
+    .horizontal &.align-right { justify-content: right; }
   }
 
-  .horizontal .form-group .form-control-label.invalid,
-  .inline .form-group .form-control-label.invalid {
-    position: relative;
-    align-items: normal;
-    padding-top: 12px;
+  .form-group {
+    .form-control-label,
+    label {
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 0;
+    }
   }
 
+  // Row-aligned label padding baselines
   .inline .form-control-label,
   .horizontal .form-control-label {
-    align-items: start !important;
-    padding-top: 3px !important;
+    align-items: flex-start !important;
+    padding-top: 3px !important; // base control-label offset
   }
 
-  .form-group .form-control-label,
-  .form-group label {
-    // font-size: 0.75rem;
-    font-weight: 400;
-    line-height: 1.1;
-    margin-bottom: 0;
+  // Invalid state (kept for future fine-tune)
+  .inline .form-group .form-control-label.invalid,
+  .horizontal .form-group .form-control-label.invalid {
+    position: relative;
+    align-items: normal;
   }
 
+  // Fine-tune per-size label padding in row layouts from the map
+  .inline,
+  .horizontal {
+    .label-xs {
+      align-items: flex-start !important;
+      padding-top: map-get(map-get($label-sizes, xs), pad) !important;
+    }
+    .label-sm {
+      align-items: flex-start !important;
+      padding-top: map-get(map-get($label-sizes, sm), pad) !important;
+    }
+    .label-lg {
+      align-items: flex-start !important;
+      padding-top: map-get(map-get($label-sizes, lg), pad) !important;
+    }
+    label {
+      align-items: flex-start !important;
+      padding-top: map-get(map-get($label-sizes, base), pad) !important;
+    }
+
+    // Multi-select input min width
+    .ac-multi-select-container .input-group .form-control { min-width: 240px; }
+  }
+
+  // -------- Inputs --------
   .form-control {
     background-color: transparent;
     background-clip: padding-box;
@@ -66,147 +167,144 @@
     border-radius: 0;
     color: #383838;
     display: block;
-    // font-size: 0.8333rem;
-    font-size: 1rem;
+    width: 100%;
     font-weight: 400;
     line-height: 1.2;
-    /* height: calc(1.2em + 0.75rem); */
-    padding: 0.175rem 0.5rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    width: 100%;
-  }
 
-  .form-control:disabled {
-    background-color: #f5f5f5;
-  }
+    &:focus {
+      background-color: transparent;
+      border-color: #9bc4f6;
+      color: #383838;
+      outline: 0;
+      box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%);
+    }
 
-  .form-control.input-sm {
-    padding: 4px 0.5rem;
-    font-size: 0.8333rem;
-  }
+    &:disabled { background-color: #f5f5f5; }
 
-  .form-control.input-lg {
-    padding: 8px 0.5rem;
-    font-size: 1rem;
-    line-height: 1.5;
+    &.is-invalid,
+    &:invalid {
+      padding-right: calc(1.5em + 0.75rem);
+      background-repeat: no-repeat;
+      background-position: center right calc(-1em + 1.5rem);
+      background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23e34850' viewBox='0 0 24 24'%3e%3cpath d='M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10S2 17.514 2 12 6.486 2 12 2zm0 18c4.411 0 8-3.589 8-8s-3.589-8-8-8-8 3.589-8 8 3.589 8 8 8z'/%3e%3cpath d='M13 7h-2v6h2V7zm0 8h-2v2h2v-2z'/%3e%3c/svg%3e");
+    }
+
+    &.is-invalid { @include placeholder-color($danger); }
   }
 
   .input-container input {
     border: none;
-    font-size: 0.9375rem;
     font-weight: 300;
     line-height: 1.2;
     transition: border-color 0.25s ease;
+
+    &:focus {
+      box-shadow: none;
+      outline: none;
+    }
   }
 
-  .form-control:focus {
-    background-color: transparent;
-    border-color: #9bc4f6;
-    color: #383838;
-    outline: 0;
-    box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%);
-  }
-
-  .input-container input:focus {
-    /* border-bottom: 1px solid #2680eb; */
-    box-shadow: none;
-    outline: none;
-  }
-
-  /* Underline the input */
+  // -------- Underline (focus bar) --------
   .b-underline {
-    background-color: #ccc;
-    display: block;
+    width: 100%;
     height: 1px;
     position: relative;
+    display: block;
+    background-color: #ccc;
     transition: 0.4s;
-    width: 100%;
+
+    &.invalid {
+      background-color: #b30009;
+      height: 1px;
+    }
   }
 
   .b-focus {
-    background-color: #2680eb;
-    bottom: 0;
-    height: 1px;
-    left: 50%;
     position: absolute;
-    transition: 0.4s;
+    bottom: 0;
+    left: 50%;
     width: 0;
+    height: 1px;
+    background-color: #2680eb;
+    transition: 0.4s;
+
+    &.disabled,
+    &:disabled { background-color: transparent; }
+
+    &.invalid {
+      background-color: #b30009;
+      height: 1px;
+    }
   }
 
-  :disabled.b-focus,
-  .disabled.b-focus {
-    background-color: transparent;
-  }
-
+  // -------- Validation messages --------
   .invalid-feedback {
-    color: #b30009;
-    /* display: none; */
     margin-top: 0.25rem;
     font-size: 0.75rem;
-  }
-
-  .invalid {
     color: #b30009;
   }
 
-  .invalid.b-underline,
-  .invalid.b-focus {
-    background-color: #b30009;
-    height: 1px;
+  .invalid { color: #b30009; }
+}
+
+// =============================================
+// Responsive tweaks
+// =============================================
+@media (max-width: 575px) {
+  .plumage .row > * { flex-shrink: 1 !important; }
+
+  .plumage .horizontal label {
+    display: block;
+    justify-content: left;
   }
 
-  .form-control:invalid,
-  .form-control.is-invalid {
-    // border-color: #b30009;
-    padding-right: calc(1.5em + 0.75rem);
-    background-repeat: no-repeat;
-    background-position: center right calc(-1em + 1.5rem);
-    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23e34850' viewBox='0 0 24 24'%3e%3cpath d='M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10S2 17.514 2 12 6.486 2 12 2zm0 18c4.411 0 8-3.589 8-8s-3.589-8-8-8-8 3.589-8 8 3.589 8 8 8z'/%3e%3cpath d='M13 7h-2v6h2V7zm0 8h-2v2h2v-2z'/%3e%3c/svg%3e");
+  .plumage .horizontal label,
+  .plumage .inline label {
+    margin-bottom: 0.25rem !important;
   }
+}
 
-  .form-control.is-invalid::-webkit-input-placeholder {
-    /* WebKit, Blink, Edge */
-    color: #b30009;
-  }
-  .form-control.is-invalid:-moz-placeholder {
-    /* Mozilla Firefox 4 to 18 */
-    color: #b30009;
-    opacity: 1;
-  }
-  .form-control.is-invalid::-moz-placeholder {
-    /* Mozilla Firefox 19+ */
-    color: #b30009;
-    opacity: 1;
-  }
-  .form-control.is-invalid:-ms-input-placeholder {
-    /* Internet Explorer 10-11 */
-    color: #b30009;
-  }
-  .form-control.is-invalid::-ms-input-placeholder {
-    /* Microsoft Edge */
-    color: #b30009;
-  }
+// =============================================
+// Smart label padding via :has()
+// Keep selectors as *strings*, interpolate in the mixin.
+// =============================================
+@supports selector(:has(*)) {
+  $scope: '.plumage ';
 
-  .form-control.is-invalid::placeholder {
-    /* Most modern browsers support this now. */
-    color: #b30009;
-  }
+  // Your requested combos/values:
+// Small input + large label
+  @include label-pt-when-has($scope, 'label.form-control-label.label-lg', 6px, $inputs-sm);
 
-  .input-container > .input-sm,
-  .input-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-    line-height: 1.5;
-    border-radius: 0.2rem;
-    min-height: 0px;
-  }
+  // Small input + xs label
+  @include label-pt-when-has($scope, 'label.form-control-label.label-xs', 6px, $inputs-sm);
 
-  .input-container > .input-lg,
-  .input-lg {
-    padding: 0.5rem 0.5rem;
-    font-size: 1.125rem;
-    line-height: 1.5;
-    border-radius: 0.3rem;
-  }
+  // Small input + sm label
+  @include label-pt-when-has($scope, 'label.form-control-label.label-sm', 5px, $inputs-sm);
+
+  // Large input + xs label
+  @include label-pt-when-has($scope, 'label.form-control-label.label-xs', 16px, $inputs-lg);
+
+  // Large input + sm label
+  @include label-pt-when-has($scope, 'label.form-control-label.label-sm', 13px, $inputs-lg);
+
+  // Large input + lg label
+  @include label-pt-when-has($scope, 'label.form-control-label.label-lg', 8px, $inputs-lg);
+
+  // Large input + default label
+  @include label-pt-when-has($scope, 'label.form-control-label', 10px, $inputs-lg);
+
+  // Base input + default label
+  @include label-pt-when-has($scope, 'label.form-control-label', 8px, $inputs-base);
+
+  // Base input + xs label
+  @include label-pt-when-has($scope, 'label.form-control-label.label-xs', 13px, $inputs-base);
+
+  // Base input + sm label
+  @include label-pt-when-has($scope, 'label.form-control-label.label-sm', 10px, $inputs-base);
+
+  // Base input + lg label
+  @include label-pt-when-has($scope, 'label.form-control-label.label-lg', 4px, $inputs-base);
+
 }

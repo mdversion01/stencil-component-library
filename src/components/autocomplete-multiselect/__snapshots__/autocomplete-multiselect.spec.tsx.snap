@@ -4,7 +4,7 @@ exports[`autocomplete-multiselect renders full DOM output snapshot for given pro
 <autocomplete-multiselect add-btn="" badge-inline-styles="background-color: red; color: white;" badge-shape="rounded" badge-variant="danger" editable="" error="" error-message="Invalid input" input-id="tag-input" label="Tags" required="" validation-message="Required field.">
   <div class="autocomplete-container form-group">
     <div>
-      <label class="form-control-label" htmlfor="tagInput">
+      <label class="form-control-label label-sm" htmlfor="tagInput">
         <span>
           Tags
         </span>
@@ -24,7 +24,7 @@ exports[`autocomplete-multiselect renders full DOM output snapshot for given pro
               </button>
             </div>
           </div>
-          <div class="ac-input-container">
+          <div class="ac-input-container-multi">
             <div class="input-group is-invalid">
               <input aria-autocomplete="list" aria-controls="tagInput-listbox" aria-describedby="tagInput-validation" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="" aria-required="true" autocomplete="off" class="form-control is-invalid" id="tagInput" inputmode="text" placeholder="Tags" role="combobox" spellcheck="false" type="" value="T">
               <button aria-label="Add item" class="add-btn" role="button" title="Add item" type="button">

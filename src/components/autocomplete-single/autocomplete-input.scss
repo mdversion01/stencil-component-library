@@ -227,7 +227,8 @@
 }
 
 .ac-basic-container,
-.ac-input-container {
+.ac-input-container,
+.ac-input-container-multi {
   display: flex;
   flex: 1 1 auto;
 }
@@ -298,7 +299,7 @@
   /* focus */
   .form-control:focus {
     background-color: transparent;
-    border-color: none;
+    border-color: transparent !important;
     color: #383838;
     outline: 0;
     box-shadow: none;
@@ -322,12 +323,6 @@
     min-height: 48px;
   }
 
-  .input-sm {
-    min-height: 34px;
-  }
-  .input-lg {
-    min-height: 46px;
-  }
 }
 
 /* =========================================================
@@ -424,3 +419,4 @@
     }
   }
 }
+

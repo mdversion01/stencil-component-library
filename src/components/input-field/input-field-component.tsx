@@ -16,7 +16,7 @@ export class InputFieldComponent {
   @Prop() inputId: string = '';
   @Prop() size: '' | 'sm' | 'lg' = '';
   @Prop() label: string = '';
-  @Prop() labelSize: '' | 'sm' | 'lg' = '';
+  @Prop() labelSize: '' | 'xs' | 'sm' | 'lg' = 'sm';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
   @Prop() readOnly: boolean = false;
@@ -218,7 +218,7 @@ export class InputFieldComponent {
   private renderInputLabel(ids: string, labelColClass?: string) {
     const classes = [
       'form-control-label',
-      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',

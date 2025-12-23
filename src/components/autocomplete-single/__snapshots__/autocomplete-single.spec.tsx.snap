@@ -4,7 +4,7 @@ exports[`<autocomplete-single> matches snapshot (default render) 1`] = `
 <autocomplete-single input-id="fruit" label="Fruits" placeholder="Type to search...">
   <div class="autocomplete-container form-group">
     <div>
-      <label class="form-control-label" htmlfor="fruit">
+      <label class="form-control-label label-sm" htmlfor="fruit">
         <span>
           Fruits
         </span>
@@ -23,7 +23,7 @@ exports[`<autocomplete-single> matches snapshot (dropdown open with matches) 1`]
 <autocomplete-single input-id="fruit" label="Fruits">
   <div class="autocomplete-container form-group">
     <div>
-      <label class="form-control-label" htmlfor="fruit">
+      <label class="form-control-label label-sm" htmlfor="fruit">
         <span>
           Fruits
         </span>

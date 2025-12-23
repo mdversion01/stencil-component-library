@@ -59,7 +59,7 @@ Show a toast. Returns the id of the created toast.
 
 | Name   | Type                                                                                                                                                                                                                                                                                                                                                             | Description |
 | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `opts` | `{ time?: string; content?: any; duration?: number; noHoverPause?: boolean; persistent?: boolean; svgIcon?: string; headerClass?: string; bodyClass?: string; isStatus?: boolean; noCloseButton?: boolean; iconPlumageStyle?: boolean; toastTitle?: string; contentHtml?: string; additionalHdrContent?: any; variantClass?: ToastVariant; hideTimeout?: any; }` |             |
+| `opts` | `{ duration?: number; noHoverPause?: boolean; persistent?: boolean; svgIcon?: string; headerClass?: string; bodyClass?: string; isStatus?: boolean; noCloseButton?: boolean; iconPlumageStyle?: boolean; toastTitle?: string; time?: string; content?: any; contentHtml?: string; additionalHdrContent?: any; variantClass?: ToastVariant; hideTimeout?: any; }` |             |
 
 #### Returns
 

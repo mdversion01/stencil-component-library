@@ -34,9 +34,9 @@
 | `labelCol`                | `label-col`                   |                                                                                        | `number`                         | `2`                          |
 | `labelCols`               | `label-cols`                  | Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4") | `string`                         | `''`                         |
 | `labelHidden`             | `label-hidden`                |                                                                                        | `boolean`                        | `false`                      |
-| `labelSize`               | `label-size`                  |                                                                                        | `"" \| "lg" \| "sm"`             | `''`                         |
+| `labelSize`               | `label-size`                  |                                                                                        | `"base" \| "lg" \| "sm" \| "xs"` | `'sm'`                       |
 | `name`                    | `name`                        |                                                                                        | `string`                         | `undefined`                  |
-| `options`                 | `options`                     |                                                                                        | `string[]`                       | `[]`                         |
+| `options`                 | --                            |                                                                                        | `string[]`                       | `[]`                         |
 | `placeholder`             | `placeholder`                 |                                                                                        | `string`                         | `'Type to search/filter...'` |
 | `preserveInputOnSelect`   | `preserve-input-on-select`    |                                                                                        | `boolean`                        | `undefined`                  |
 | `rawInputName`            | `raw-input-name`              |                                                                                        | `string`                         | `undefined`                  |
@@ -57,7 +57,7 @@
 | `itemSelect`        |                                             | `CustomEvent<string>`                                                                         |
 | `multiSelectChange` |                                             | `CustomEvent<string[]>`                                                                       |
 | `optionDelete`      |                                             | `CustomEvent<string>`                                                                         |
-| `optionsChange`     | 🔔 Hook for hosts to mirror/persist options | `CustomEvent<{ options: string[]; reason: "replace" \| "add" \| "delete"; value?: string; }>` |
+| `optionsChange`     | 🔔 Hook for hosts to mirror/persist options | `CustomEvent<{ options: string[]; reason: "replace" \| "delete" \| "add"; value?: string; }>` |
 
 
 ## Methods

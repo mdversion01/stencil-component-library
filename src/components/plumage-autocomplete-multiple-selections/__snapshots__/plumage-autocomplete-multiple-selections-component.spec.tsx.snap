@@ -5,7 +5,7 @@ exports[`plumage-autocomplete-multiple-selections-component closes dropdown on o
   <div class="plumage">
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label" htmlfor="pets">
+        <label class="form-control-label label-sm" htmlfor="pets">
           <span>
             Pets
           </span>
@@ -37,7 +37,7 @@ exports[`plumage-autocomplete-multiple-selections-component keeps dropdown open 
   <div class="plumage">
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label" htmlfor="pets">
+        <label class="form-control-label label-sm" htmlfor="pets">
           <span>
             Pets
           </span>
@@ -124,7 +124,7 @@ exports[`plumage-autocomplete-multiple-selections-component opens dropdown on ty
   <div class="plumage">
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label" htmlfor="pets">
+        <label class="form-control-label label-sm" htmlfor="pets">
           <span>
             Pets
           </span>
@@ -195,7 +195,7 @@ exports[`plumage-autocomplete-multiple-selections-component renders and matches 
   <div class="plumage">
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label" htmlfor="pets">
+        <label class="form-control-label label-sm" htmlfor="pets">
           <span>
             Pets
           </span>
@@ -224,7 +224,7 @@ exports[`plumage-autocomplete-multiple-selections-component typing after a selec
   <div class="plumage">
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label" htmlfor="pets">
+        <label class="form-control-label label-sm" htmlfor="pets">
           <span>
             Pets
           </span>

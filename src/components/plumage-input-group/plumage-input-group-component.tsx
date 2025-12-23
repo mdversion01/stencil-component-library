@@ -3,7 +3,12 @@ import { Component, h, Prop, Element, State, Watch, Event, EventEmitter } from '
 
 @Component({
   tag: 'plumage-input-group-component',
-  styleUrls: ['../layout-styles.scss', '../plumage-input-field/plumage-input-field-styles.scss', './plumage-input-group-styles.scss', '../form-styles.scss'],
+  styleUrls: [
+    '../layout-styles.scss',
+    '../plumage-input-field/plumage-input-field-styles.scss',
+    './plumage-input-group-styles.scss',
+    '../form-styles.scss',
+  ],
   shadow: false,
 })
 export class PlumageInputGroupComponent {
@@ -18,7 +23,7 @@ export class PlumageInputGroupComponent {
   @Prop() inputId: string = '';
   @Prop() label: string = '';
   @Prop() labelHidden: boolean = false;
-  @Prop() labelSize: '' | 'sm' | 'lg' = '';
+  @Prop() labelSize: 'base' | 'xs' | 'sm' | 'lg' = 'sm';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() required: boolean = false;
 
@@ -37,9 +42,18 @@ export class PlumageInputGroupComponent {
   @Prop() icon: string = ''; // e.g. "fa-solid fa-dollar-sign"
   @Prop() otherContent: boolean = false; // when true, raw slot is used without wrapper span
 
-  /** NEW names replacing append/prepend */
-  @Prop() appendField: boolean = false;
-  @Prop() prependField: boolean = false;
+  /**
+   * Side fields: support BOTH old and new attribute spellings.
+   * Current attributes: prepend/append
+   * Legacy attributes:  prepend-field/append-field
+   */
+  @Prop({ attribute: 'append' }) appendField: boolean = false;
+  @Prop({ attribute: 'prepend' }) prependField: boolean = false;
+
+  // Legacy aliases (to match tests using prepend-field/append-field)
+  @Prop({ attribute: 'append-field' }) legacyAppendField: boolean = false;
+  @Prop({ attribute: 'prepend-field' }) legacyPrependField: boolean = false;
+
   @Prop() appendId: string = '';
   @Prop() prependId: string = '';
   @Prop() appendIcon?: string;
@@ -320,7 +334,7 @@ export class PlumageInputGroupComponent {
   private renderLabel(ids: string, labelColClass?: string) {
     const classes = [
       'form-control-label',
-      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
@@ -340,7 +354,9 @@ export class PlumageInputGroupComponent {
   }
 
   private renderPrepend() {
-    if (!this.prependField) return null;
+    // support both spellings
+    const showPrepend = this.prependField || this.legacyPrependField;
+    if (!showPrepend) return null;
 
     const classes = [this.validationState ? 'is-invalid' : ''].filter(Boolean).join(' ');
     if (this.prependIcon) {
@@ -367,7 +383,9 @@ export class PlumageInputGroupComponent {
   }
 
   private renderAppend() {
-    if (!this.appendField) return null;
+    // support both spellings
+    const showAppend = this.appendField || this.legacyAppendField;
+    if (!showAppend) return null;
 
     const classes = [this.validationState ? 'is-invalid' : ''].filter(Boolean).join(' ');
     if (this.appendIcon) {
@@ -378,9 +396,10 @@ export class PlumageInputGroupComponent {
       );
     }
     if (this.otherContent) {
-      return <slot name="append" />;
+      return <div class={classes}><slot name="append" /></div>;
     }
-    return <slot name="append" />;
+    // default: raw slot (keeps your existing snapshot)
+    return <span class={classes}><slot name="append" /></span>;
   }
 
   private renderInput(ids: string, names: string) {
@@ -509,7 +528,11 @@ export class PlumageInputGroupComponent {
     this.getComputedCols();
 
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
+    const inputColClass = this.isHorizontal()
+      ? this.buildColClass('input') || undefined
+      : this.isInline()
+      ? this.buildColClass('input') || undefined
+      : undefined;
 
     return (
       <div class={`plumage${outerClass}`}>

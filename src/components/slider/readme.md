@@ -21,9 +21,9 @@
 | `selectedIndex`    | `selected-index`      |                                  | `number`                                                                                   | `0`       |
 | `sliderThumbLabel` | `slider-thumb-label`  |                                  | `boolean`                                                                                  | `false`   |
 | `snapToTicks`      | `snap-to-ticks`       |                                  | `boolean`                                                                                  | `false`   |
-| `stringValues`     | `string-values`       |                                  | `string[]`                                                                                 | `[]`      |
+| `stringValues`     | --                    |                                  | `string[]`                                                                                 | `[]`      |
 | `tickLabels`       | `tick-labels`         |                                  | `boolean`                                                                                  | `false`   |
-| `tickValues`       | `tick-values`         |                                  | `number[]`                                                                                 | `[]`      |
+| `tickValues`       | --                    |                                  | `number[]`                                                                                 | `[]`      |
 | `type`             | `type`                | 'basic' \| 'multi' \| 'discrete' | `"basic" \| "discrete" \| "multi"`                                                         | `'basic'` |
 | `unit`             | `unit`                |                                  | `string`                                                                                   | `''`      |
 | `upperValue`       | `upper-value`         |                                  | `number`                                                                                   | `75`      |

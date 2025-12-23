@@ -15,11 +15,11 @@
 | `inline`            | `inline`             |             | `boolean`                      | `false`                    |
 | `inputId`           | `input-id`           |             | `string`                       | `''`                       |
 | `labelTxt`          | `label-txt`          |             | `string`                       | `''`                       |
-| `newToggleTxt`      | `new-toggle-txt`     |             | `{ on: string; off: string; }` | `{ on: 'On', off: 'Off' }` |
+| `newToggleTxt`      | --                   |             | `{ on: string; off: string; }` | `{ on: 'On', off: 'Off' }` |
 | `required`          | `required`           |             | `boolean`                      | `false`                    |
 | `size`              | `size`               |             | `string`                       | `''`                       |
 | `switches`          | `switches`           |             | `boolean`                      | `false`                    |
-| `switchesArray`     | `switches-array`     |             | `ToggleItem[]`                 | `[]`                       |
+| `switchesArray`     | --                   |             | `ToggleItem[]`                 | `[]`                       |
 | `toggleTxt`         | `toggle-txt`         |             | `boolean`                      | `false`                    |
 | `validation`        | `validation`         |             | `boolean`                      | `false`                    |
 | `validationMessage` | `validation-message` |             | `string`                       | `''`                       |

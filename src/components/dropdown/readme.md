@@ -20,7 +20,7 @@
 | `listType`         | `list-type`          |             | `string`         | `'default'`  |
 | `menuOffsetY`      | `menu-offset-y`      |             | `number`         | `0`          |
 | `name`             | `name`               |             | `string`         | `''`         |
-| `options`          | `options`            |             | `DropdownItem[]` | `[]`         |
+| `options`          | --                   |             | `DropdownItem[]` | `[]`         |
 | `outlined`         | `outlined`           |             | `boolean`        | `false`      |
 | `ripple`           | `ripple`             |             | `boolean`        | `false`      |
 | `shape`            | `shape`              |             | `string`         | `''`         |

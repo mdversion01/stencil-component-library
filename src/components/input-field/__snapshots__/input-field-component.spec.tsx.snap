@@ -4,7 +4,7 @@ exports[`<input-field-component> matches snapshot (default stacked layout) 1`] =
 <input-field-component input-id="first" label="First Name" value="Ada">
   <div>
     <div class="form-group">
-      <label class="form-control-label" htmlfor="first">
+      <label class="form-control-label label-sm" htmlfor="first">
         <span>
           First Name
         </span>
@@ -19,7 +19,7 @@ exports[`<input-field-component> matches snapshot (horizontal with validation) 1
 <input-field-component form-layout="horizontal" input-cols="xs-12 sm-9" input-id="email" label="Email" label-cols="xs-12 sm-3" validation="" validation-message="Please enter a valid email." value="">
   <div class="horizontal">
     <div class="form-group row">
-      <label class="col-12 col-form-label col-sm-3 form-control-label invalid no-padding" htmlfor="email">
+      <label class="col-12 col-form-label col-sm-3 form-control-label invalid label-sm no-padding" htmlfor="email">
         <span>
           Email:
         </span>

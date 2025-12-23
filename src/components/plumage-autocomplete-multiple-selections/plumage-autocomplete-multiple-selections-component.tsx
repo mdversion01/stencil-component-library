@@ -35,7 +35,7 @@ export class PlumageAutocompleteMultipleSelectionsComponent {
 
   @Prop() inputId: string = '';
   @Prop() label: string = '';
-  @Prop() labelSize: '' | 'sm' | 'lg' = '';
+  @Prop() labelSize: 'base' | 'xs' | 'sm' | 'lg' = 'sm';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
 
@@ -361,7 +361,7 @@ export class PlumageAutocompleteMultipleSelectionsComponent {
   private labelClasses(labelColClass?: string) {
     return [
       'form-control-label',
-      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
+      this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
@@ -372,12 +372,18 @@ export class PlumageAutocompleteMultipleSelectionsComponent {
   }
 
   private inputClasses() {
-    const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
-    return ['form-control', this.validationState || this.error ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    // const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
+    return ['form-control', this.validationState || this.error ? 'is-invalid' : ''].filter(Boolean).join(' '); // , sizeClass
   }
 
+  private groupClasses() {
+    const sizeClass = this.size === 'sm' ? 'input-group-sm' : this.size === 'lg' ? 'input-group-lg' : '';
+    return ['input-group', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+  }
+
+
   private containerClasses() {
-    return ['ac-multi-select-container', this.validationState ? 'is-invalid' : '', this.size || ''].filter(Boolean).join(' ');
+    return ['ac-multi-select-container', this.validationState ? 'is-invalid' : ''].filter(Boolean).join(' ');
   }
 
   private getAvailableOptions(): string[] {
@@ -1162,7 +1168,7 @@ export class PlumageAutocompleteMultipleSelectionsComponent {
         <div class={this.containerClasses()}>
           <div class="ac-selected-items">{this.renderSelectedItems()}</div>
           <div class="ac-input-container">
-            <div class={{ 'input-group': true, 'is-invalid': this.validationState || this.error }}>
+            <div class={this.groupClasses()}>
               {this.renderInputField(ids, names)}
               {this.renderAddButton()}
               {this.renderClearButton()}

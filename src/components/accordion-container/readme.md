@@ -12,7 +12,7 @@
 | `block`          | `block`            |             | `boolean`                                | `false`               |
 | `classNames`     | `class-names`      |             | `string`                                 | `''`                  |
 | `contentTxtSize` | `content-txt-size` |             | `string`                                 | `''`                  |
-| `data`           | `data`             |             | `{ header: string; content: string; }[]` | `[]`                  |
+| `data`           | --                 |             | `{ header: string; content: string; }[]` | `[]`                  |
 | `disabled`       | `disabled`         |             | `boolean`                                | `false`               |
 | `flush`          | `flush`            |             | `boolean`                                | `false`               |
 | `icon`           | `icon`             |             | `string`                                 | `'fas fa-angle-down'` |
