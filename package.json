@@ -1,14 +1,14 @@
 {
   "name": "stencil-component-library",
   "version": "0.0.1",
-  "type": "commonjs",
   "description": "Stencil Component Starter",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
-  "types": "dist/types/index.d.ts",
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
   "unpkg": "dist/stencil-component-library/stencil-component-library.esm.js",
+  "type": "module",
+  "types": "dist/types/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/stencil-component-library/stencil-component-library.esm.js",
@@ -24,13 +24,30 @@
       "types": "./loader/index.d.ts"
     }
   },
+  "typesVersions": {
+    "*": {
+      "my-component": [
+        "dist/types/components/my-component.d.ts"
+      ],
+      "loader": [
+        "loader/index.d.ts"
+      ],
+      "*": [
+        "dist/types/*"
+      ]
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/stenciljs/component-starter.git"
   },
   "files": [
     "dist/",
-    "loader/"
+    "loader/",
+    "www/build/",
+    "components.d.ts",
+    "readme.md",
+    "LICENSE"
   ],
   "style": "dist/global.css",
   "scripts": {
@@ -38,19 +55,30 @@
     "copy:mdi": "node scripts/copy-mdi.mjs",
     "postinstall": "npm run copy:mdi",
     "build": "stencil build",
+    "prestart": "rimraf www/assets && rimraf www/build",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec",
     "test:u": "stencil test --spec --updateSnapshot",
     "test.watch": "stencil test --spec --watchAll",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
-    "generate": "stencil generate"
+    "generate": "stencil generate",
+    "prestorybook": "npx stencil build",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",
     "@stencil/core": "^4.27.1",
     "@stencil/postcss": "^2.1.0",
     "@stencil/sass": "^3.2.3",
+    "@storybook/addon-a11y": "8.6.15",
+    "@storybook/addon-docs": "8.6.15",
+    "@storybook/addon-essentials": "8.6.15",
+    "@storybook/addon-interactions": "8.6.15",
+    "@storybook/test": "8.6.15",
+    "@storybook/web-components-vite": "^8.6.15",
     "@testing-library/jest-dom": "^6.6.3",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.5",
@@ -65,8 +93,11 @@
     "postcss-nested": "^7.0.2",
     "puppeteer": "^24.3.0",
     "rimraf": "^6.0.1",
+    "sass": "^1.97.0",
+    "storybook": "^8.6.15",
     "ts-jest": "^29.3.4",
-    "typescript-eslint": "^8.30.1"
+    "typescript-eslint": "^8.30.1",
+    "vite": "^5.4.21"
   },
   "license": "MIT",
   "dependencies": {

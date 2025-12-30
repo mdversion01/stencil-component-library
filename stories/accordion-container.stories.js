@@ -9,6 +9,7 @@ function setAttr(el, name, v) {
 
 export default {
   title: 'Components/Accordion Container',
+  tags: ['autodocs'],
   render: (args) => {
     const el = document.createElement(TAG);
 

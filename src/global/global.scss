@@ -12,7 +12,9 @@ $fa-font-path: '/assets/fonts'; // ✅ must be before imports!
 
 // @include generate-badge-utilities($badge-colors);
 
-@import '../components/badge/badge.scss';
+// @import '../components/badge/badge.scss';
+
+// @import '../components/button/button.scss';
 
 @import '../components/elevated-styles.scss';
 
@@ -21,6 +23,10 @@ $fa-font-path: '/assets/fonts'; // ✅ must be before imports!
 @import '../components/progress-display/progress-display-styles.scss';
 
 @import '../components/slider/slider-component-styles.scss';
+
+:root {
+  --bs-link-color: #1154A7 !important;
+}
 
 // :root {
 //   --amber: #ffc107;

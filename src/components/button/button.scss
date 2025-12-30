@@ -502,7 +502,7 @@ $btn-text-variants: (
 .btn.link {
   background-color: transparent;
   border: none;
-  color: #2680eb;
+  color: var(--bs-link-color) !important;
   text-decoration: underline;
   padding: 0;
 

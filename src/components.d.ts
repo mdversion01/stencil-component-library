@@ -17,81 +17,243 @@ export { ToggleItem } from "./components/toggle-switch/toggle-switch-types";
 export { TooltipPosition, TooltipVariant } from "./components/tooltip/tooltip-component";
 export namespace Components {
     interface AccordionComponent {
+        /**
+          * @default false
+         */
         "accordion": boolean;
+        /**
+          * @default false
+         */
         "block": boolean;
+        /**
+          * @default ''
+         */
         "classNames": string;
+        /**
+          * @default ''
+         */
         "contentTxtSize": string;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "flush": boolean;
+        /**
+          * @default 'fas fa-angle-down'
+         */
         "icon": string;
+        /**
+          * @default false
+         */
         "isOpen": boolean;
+        /**
+          * @default false
+         */
         "link": boolean;
+        /**
+          * @default false
+         */
         "outlined": boolean;
+        /**
+          * @default false
+         */
         "ripple": boolean;
+        /**
+          * @default ''
+         */
         "size": string;
+        /**
+          * @default ''
+         */
         "targetId": string;
+        /**
+          * @default ''
+         */
         "variant": string;
     }
     interface AccordionContainer {
+        /**
+          * @default false
+         */
         "block": boolean;
+        /**
+          * @default ''
+         */
         "classNames": string;
+        /**
+          * @default ''
+         */
         "contentTxtSize": string;
+        /**
+          * @default []
+         */
         "data": Array<{ header: string; content: string }>;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "flush": boolean;
+        /**
+          * @default 'fas fa-angle-down'
+         */
         "icon": string;
+        /**
+          * @default false
+         */
         "outlined": boolean;
+        /**
+          * @default ''
+         */
         "parentId": string;
+        /**
+          * @default false
+         */
         "ripple": boolean;
+        /**
+          * @default false
+         */
         "singleOpen": boolean;
+        /**
+          * @default ''
+         */
         "size": string;
+        /**
+          * @default ''
+         */
         "variant": string;
     }
     interface AppWrapper {
         /**
           * Optional classNames (e.g. bg-primary, p-4)
+          * @default ''
          */
         "classNames": string;
     }
     interface AutocompleteMultipleSelections {
+        /**
+          * @default false
+         */
         "addBtn": boolean;
+        /**
+          * @default ''
+         */
         "addIcon": string;
+        /**
+          * @default true
+         */
         "addNewOnEnter": boolean;
+        /**
+          * @default ''
+         */
         "arialabelledBy": string;
+        /**
+          * @default true
+         */
         "autoSort": boolean;
+        /**
+          * @default ''
+         */
         "badgeInlineStyles": string;
+        /**
+          * @default ''
+         */
         "badgeShape": string;
+        /**
+          * @default ''
+         */
         "badgeVariant": string;
+        /**
+          * @default ''
+         */
         "clearIcon": string;
+        /**
+          * @default false
+         */
         "clearInputOnBlurOutside": boolean;
+        /**
+          * @default false
+         */
         "devMode": boolean;
+        /**
+          * @default false
+         */
         "disabled": boolean;
         /**
           * Can users add/delete options at runtime?
+          * @default false
          */
         "editable": boolean;
+        /**
+          * @default false
+         */
         "error": boolean;
+        /**
+          * @default ''
+         */
         "errorMessage": string;
+        /**
+          * @default ''
+         */
         "formId": string;
+        /**
+          * @default ''
+         */
         "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol": number;
+        /**
+          * @default ''
+         */
         "inputCols": string;
+        /**
+          * @default ''
+         */
         "inputId": string;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default ''
+         */
         "labelAlign": '' | 'right';
+        /**
+          * @default 2
+         */
         "labelCol": number;
         /**
           * Responsive columns (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")
+          * @default ''
          */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         /**
           * Field name for selected items; if it ends with [] one input per item is emitted.
          */
         "name"?: string;
         "navigateOptions": (direction: number) => Promise<void>;
+        /**
+          * @default []
+         */
         "options": string[];
+        /**
+          * @default 'Type to search/filter...'
+         */
         "placeholder": string;
         /**
           * Keep the typed text after a selection? Default false (clear).
@@ -101,311 +263,939 @@ export namespace Components {
           * Also submit whatever the user typed under this name (verbatim).
          */
         "rawInputName"?: string;
+        /**
+          * @default false
+         */
         "removeBtnBorder": boolean;
+        /**
+          * @default false
+         */
         "removeClearBtn": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "type": string;
+        /**
+          * @default false
+         */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMessage": string;
     }
     interface AutocompleteMultiselect {
+        /**
+          * @default false
+         */
         "addBtn": boolean;
+        /**
+          * @default ''
+         */
         "addIcon": string;
+        /**
+          * @default true
+         */
         "addNewOnEnter": boolean;
+        /**
+          * @default ''
+         */
         "arialabelledBy": string;
+        /**
+          * @default true
+         */
         "autoSort": boolean;
+        /**
+          * @default ''
+         */
         "badgeInlineStyles": string;
+        /**
+          * @default ''
+         */
         "badgeShape": string;
+        /**
+          * @default ''
+         */
         "badgeVariant": string;
+        /**
+          * @default ''
+         */
         "clearIcon": string;
+        /**
+          * @default false
+         */
         "clearInputOnBlurOutside": boolean;
+        /**
+          * @default false
+         */
         "devMode": boolean;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "editable": boolean;
+        /**
+          * @default false
+         */
         "error": boolean;
+        /**
+          * @default ''
+         */
         "errorMessage": string;
         "filterOptions": () => Promise<void>;
+        /**
+          * @default ''
+         */
         "formId": string;
+        /**
+          * @default ''
+         */
         "formLayout": '' | 'horizontal' | 'inline';
         /**
           * 🔎 Read current options from the component (for hosts).
          */
         "getOptions": () => Promise<string[]>;
+        /**
+          * @default 10
+         */
         "inputCol": number;
+        /**
+          * @default ''
+         */
         "inputCols": string;
+        /**
+          * @default ''
+         */
         "inputId": string;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default ''
+         */
         "labelAlign": '' | 'right';
+        /**
+          * @default 2
+         */
         "labelCol": number;
         /**
           * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+          * @default ''
          */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         "name"?: string;
         "navigateOptions": (direction: number) => Promise<void>;
+        /**
+          * @default []
+         */
         "options": string[];
+        /**
+          * @default 'Type to search/filter...'
+         */
         "placeholder": string;
         "preserveInputOnSelect"?: boolean;
         "rawInputName"?: string;
+        /**
+          * @default false
+         */
         "removeClearBtn": boolean;
         /**
           * Back-compat: remove first match of a value (callable by hosts)
          */
         "removeItem": (value: string) => Promise<void>;
+        /**
+          * @default false
+         */
         "required": boolean;
         /**
           * 🔧 Replace options from the host (for hosts). Also emits optionsChange('replace').
          */
         "setOptions": (next: string[]) => Promise<void>;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "type": string;
+        /**
+          * @default false
+         */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMessage": string;
     }
     interface AutocompleteSingle {
+        /**
+          * @default ''
+         */
         "arialabelledBy": string;
+        /**
+          * @default true
+         */
         "autoSort": boolean;
+        /**
+          * @default ''
+         */
         "clearIcon": string;
+        /**
+          * @default false
+         */
         "devMode": boolean;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "error": boolean;
+        /**
+          * @default ''
+         */
         "errorMessage": string;
+        /**
+          * @default ''
+         */
         "formId": string;
+        /**
+          * @default ''
+         */
         "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol": number;
+        /**
+          * @default ''
+         */
         "inputCols": string;
+        /**
+          * @default ''
+         */
         "inputId": string;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default ''
+         */
         "labelAlign": '' | 'right';
         /**
           * Back-compat numeric columns
+          * @default 2
          */
         "labelCol": number;
         /**
           * Responsive column class specs
+          * @default ''
          */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        /**
+          * @default []
+         */
         "options": string[];
+        /**
+          * @default 'Type to search/filter...'
+         */
         "placeholder": string;
+        /**
+          * @default false
+         */
         "removeClearBtn": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "type": string;
+        /**
+          * @default false
+         */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMessage": string;
     }
     interface BadgeComponent {
+        /**
+          * @default false
+         */
         "absolute": boolean;
         "ariaDescribedby"?: string;
         "ariaLabelledby"?: string;
+        /**
+          * @default ''
+         */
         "backgroundColor": string;
+        /**
+          * @default ''
+         */
         "bdgPosition": string;
+        /**
+          * @default false
+         */
         "bordered": boolean;
+        /**
+          * @default ''
+         */
         "bottom": string;
+        /**
+          * @default ''
+         */
         "classNames": string;
+        /**
+          * @default ''
+         */
         "color": string;
+        /**
+          * @default false
+         */
         "devMode": boolean;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "dot": boolean;
+        /**
+          * @default ''
+         */
         "elevation": string;
+        /**
+          * @default false
+         */
         "icon": boolean;
+        /**
+          * @default ''
+         */
         "inlineStyles": string;
+        /**
+          * @default false
+         */
         "inset": boolean;
+        /**
+          * @default 'Badge'
+         */
         "label": string;
+        /**
+          * @default ''
+         */
         "left": string;
+        /**
+          * @default '12'
+         */
         "offsetX": string;
+        /**
+          * @default '12'
+         */
         "offsetY": string;
+        /**
+          * @default false
+         */
         "outlined": boolean;
+        /**
+          * @default false
+         */
         "pulse": boolean;
+        /**
+          * @default ''
+         */
         "right": string;
+        /**
+          * @default ''
+         */
         "shape": string;
+        /**
+          * @default ''
+         */
         "size": string;
+        /**
+          * @default ''
+         */
         "styles": string;
+        /**
+          * @default false
+         */
         "token": boolean;
+        /**
+          * @default ''
+         */
         "top": string;
+        /**
+          * @default ''
+         */
         "variant": string;
+        /**
+          * @default ''
+         */
         "zIndex": string;
     }
     interface BasicSliderComponent {
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "hideLeftTextBox": boolean;
+        /**
+          * @default false
+         */
         "hideRightTextBox": boolean;
+        /**
+          * @default false
+         */
         "hideTextBoxes": boolean;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default 100
+         */
         "max": number;
+        /**
+          * @default 0
+         */
         "min": number;
+        /**
+          * @default false
+         */
         "plumage": boolean;
+        /**
+          * @default false
+         */
         "sliderThumbLabel": boolean;
+        /**
+          * @default false
+         */
         "snapToTicks": boolean;
+        /**
+          * @default false
+         */
         "tickLabels": boolean;
         /**
           * Accepts array or JSON string in HTML
+          * @default []
          */
         "tickValues": number[] | string;
+        /**
+          * @default ''
+         */
         "ticks": number | '';
+        /**
+          * @default ''
+         */
         "unit": string;
+        /**
+          * @default 0
+         */
         "value": number;
+        /**
+          * @default ''
+         */
         "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface ButtonComponent {
+        /**
+          * @default false
+         */
         "absolute": boolean;
+        /**
+          * @default false
+         */
         "accordion": boolean;
+        /**
+          * @default false
+         */
         "active": boolean;
+        /**
+          * @default ''
+         */
         "ariaLabel": string;
+        /**
+          * @default false
+         */
         "block": boolean;
+        /**
+          * @default ''
+         */
         "bottom": string;
+        /**
+          * @default false
+         */
         "btnIcon": boolean;
+        /**
+          * @default ''
+         */
         "btnText": string;
+        /**
+          * @default ''
+         */
         "classNames": string;
+        /**
+          * @default false
+         */
         "devMode": boolean;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default ''
+         */
         "elevation": string;
+        /**
+          * @default false
+         */
         "end": boolean;
+        /**
+          * @default false
+         */
         "fixed": boolean;
+        /**
+          * @default false
+         */
         "groupBtn": boolean;
+        /**
+          * @default false
+         */
         "iconBtn": boolean;
+        /**
+          * @default false
+         */
         "isOpen": boolean;
+        /**
+          * @default ''
+         */
         "left": string;
+        /**
+          * @default false
+         */
         "link": boolean;
+        /**
+          * @default false
+         */
         "outlined": boolean;
+        /**
+          * @default false
+         */
         "pressed": boolean | string;
+        /**
+          * @default ''
+         */
         "right": string;
+        /**
+          * @default false
+         */
         "ripple": boolean;
+        /**
+          * @default ''
+         */
         "shape": string;
+        /**
+          * @default ''
+         */
         "size": string;
+        /**
+          * @default 'none'
+         */
         "slotSide": 'left' | 'right' | 'none';
+        /**
+          * @default false
+         */
         "start": boolean;
+        /**
+          * @default false
+         */
         "stripped": boolean;
+        /**
+          * @default ''
+         */
         "styles": string;
+        /**
+          * @default ''
+         */
         "targetId": string;
+        /**
+          * @default false
+         */
         "text": boolean;
+        /**
+          * @default false
+         */
         "textBtn": boolean;
+        /**
+          * @default ''
+         */
         "titleAttr": string;
+        /**
+          * @default ''
+         */
         "top": string;
+        /**
+          * @default ''
+         */
         "url": string;
+        /**
+          * @default ''
+         */
         "variant": string;
+        /**
+          * @default false
+         */
         "vertical": boolean;
+        /**
+          * @default ''
+         */
         "zIndex": string;
     }
     interface ButtonGroup {
+        /**
+          * @default ''
+         */
         "ariaLabel": string;
+        /**
+          * @default ''
+         */
         "classNames": string;
+        /**
+          * @default false
+         */
         "vertical": boolean;
     }
     interface ByPagePaginationComponent {
         "controlId"?: string;
+        /**
+          * @default 1
+         */
         "currentPage": number;
+        /**
+          * @default ''
+         */
         "goToButtons": string;
+        /**
+          * @default ''
+         */
         "paginationLayout": '' | 'center' | 'end';
+        /**
+          * @default false
+         */
         "plumage": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default 1
+         */
         "totalPages": number;
     }
     interface CardComponent {
+        /**
+          * @default false
+         */
         "actions": boolean;
+        /**
+          * @default ''
+         */
         "altText": string;
+        /**
+          * @default 'Card section'
+         */
         "ariaLabel": string;
+        /**
+          * @default '20'
+         */
         "cardMaxWidth": string;
+        /**
+          * @default ''
+         */
         "classNames": string;
+        /**
+          * @default ''
+         */
         "elevation": string;
+        /**
+          * @default false
+         */
         "img": boolean;
+        /**
+          * @default '11.25rem'
+         */
         "imgHeight": string;
+        /**
+          * @default ''
+         */
         "imgSrc": string;
+        /**
+          * @default ''
+         */
         "inlineStyles": string;
+        /**
+          * @default false
+         */
         "noFooter": boolean;
+        /**
+          * @default false
+         */
         "noHeader": boolean;
         "tab"?: string;
     }
     interface CheckboxComponent {
+        /**
+          * @default false
+         */
         "checkbox": boolean;
+        /**
+          * @default false
+         */
         "checkboxGroup": boolean;
+        /**
+          * @default false
+         */
         "checked": boolean;
+        /**
+          * @default false
+         */
         "customCheckbox": boolean;
+        /**
+          * @default false
+         */
         "customCheckboxGroup": boolean;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default []
+         */
         "groupOptions": any;
+        /**
+          * @default ''
+         */
         "groupTitle": string;
+        /**
+          * @default ''
+         */
         "groupTitleSize": string;
+        /**
+          * @default false
+         */
         "inline": boolean;
+        /**
+          * @default ''
+         */
         "inputId": string;
+        /**
+          * @default ''
+         */
         "labelTxt": string;
+        /**
+          * @default ''
+         */
         "name": string;
+        /**
+          * @default false
+         */
         "noPadding": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
+        /**
+          * @default ''
+         */
         "size": string;
+        /**
+          * @default false
+         */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMsg": string;
+        /**
+          * @default ''
+         */
         "value": string;
     }
     interface DateRangePickerComponent {
+        /**
+          * @default ''
+         */
         "appendId": string;
         /**
           * was `append`, renamed to avoid reserved name
+          * @default true
          */
         "appendProp": boolean;
+        /**
+          * @default ''
+         */
         "ariaLabel": string;
         /**
           * Programmatically clear the selection and reset
          */
         "clear": () => Promise<void>;
+        /**
+          * @default 'YYYY-MM-DD'
+         */
         "dateFormat": 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        /**
+          * @default false
+         */
         "disabled": boolean;
         /**
           * '', 'horizontal', or 'inline'
+          * @default ''
          */
         "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default 'fas fa-calendar-alt'
+         */
         "icon": string;
+        /**
+          * @default 10
+         */
         "inputCol": number;
         /**
           * Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for input column when formLayout is "horizontal"
+          * @default ''
          */
         "inputCols": string;
+        /**
+          * @default 'drp'
+         */
         "inputId": string;
+        /**
+          * @default ' - '
+         */
         "joinBy": string;
+        /**
+          * @default 'Date Range Picker'
+         */
         "label": string;
         /**
           * Legacy numeric cols (fallback)
+          * @default 2
          */
         "labelCol": number;
         /**
           * Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for label column when formLayout is "horizontal"
+          * @default ''
          */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
         /**
           * External placeholder prop (immutable). We derive a default into state.
          */
         "placeholder"?: string;
+        /**
+          * @default false
+         */
         "plumage": boolean;
+        /**
+          * @default ''
+         */
         "prependId": string;
         /**
           * was `prepend`, renamed to avoid reserved name
+          * @default false
          */
         "prependProp": boolean;
         /**
           * Render only the picker (no input group); disables OK button
+          * @default false
          */
         "rangePicker": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
+        /**
+          * @default false
+         */
         "showIso": boolean;
+        /**
+          * @default false
+         */
         "showLong": boolean;
         /**
           * Allow host to control the OK/Close button; we'll mask it off when rangePicker = true
+          * @default true
          */
         "showOkButton": boolean;
         /**
           * Use these to control output format of start/end labels (display only)
+          * @default false
          */
         "showYmd": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "validation": boolean;
+        /**
+          * @default 'Required field'
+         */
         "validationMessage": string;
+        /**
+          * @default ''
+         */
         "value": string;
+        /**
+          * @default ''
+         */
         "warningMessage": string;
     }
     /**
@@ -414,643 +1204,1693 @@ export namespace Components {
      * ISO / numeric / long display modes, and synchronized dropdown.
      */
     interface DateRangeTimePickerComponent {
+        /**
+          * @default ''
+         */
         "appendId": string;
+        /**
+          * @default true
+         */
         "appendProp": boolean;
+        /**
+          * @default ''
+         */
         "ariaLabel": string;
         "clear": () => Promise<void>;
+        /**
+          * @default 'YYYY-MM-DD'
+         */
         "dateFormat": 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        /**
+          * @default false
+         */
         "disabled": boolean;
         /**
           * '', 'horizontal', or 'inline'
+          * @default ''
          */
         "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default 'fas fa-calendar-alt'
+         */
         "icon": string;
         /**
           * Grid like date-range-picker-component
+          * @default 10
          */
         "inputCol": number;
+        /**
+          * @default ''
+         */
         "inputCols": string;
+        /**
+          * @default 'date-range-time'
+         */
         "inputId": string;
         /**
           * Time options
+          * @default true
          */
         "isTwentyFourHourFormat": boolean;
+        /**
+          * @default ' - '
+         */
         "joinBy": string;
+        /**
+          * @default 'Date and Time Picker'
+         */
         "label": string;
         /**
           * Grid like date-range-picker-component
+          * @default 2
          */
         "labelCol": number;
+        /**
+          * @default ''
+         */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
         /**
           * External placeholder (immutable). We derive default into state.
          */
         "placeholder"?: string;
+        /**
+          * @default false
+         */
         "plumage": boolean;
+        /**
+          * @default ''
+         */
         "prependId": string;
+        /**
+          * @default false
+         */
         "prependProp": boolean;
         /**
           * Render only the picker; disables OK button
+          * @default false
          */
         "rangeTimePicker": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
+        /**
+          * @default false
+         */
         "showDuration": boolean;
+        /**
+          * @default false
+         */
         "showIso": boolean;
+        /**
+          * @default false
+         */
         "showLong": boolean;
         /**
           * Allow host to control the OK/Close button; masked when rangeTimePicker
+          * @default true
          */
         "showOkButton": boolean;
         /**
           * Output flags
+          * @default false
          */
         "showYmd": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "validation": boolean;
+        /**
+          * @default 'Required field'
+         */
         "validationMessage": string;
+        /**
+          * @default ''
+         */
         "value": string;
+        /**
+          * @default ''
+         */
         "warningMessage": string;
     }
     interface DatepickerComponent {
+        /**
+          * @default ''
+         */
         "appendId": string;
         /**
           * Reserved-name fixes kept
+          * @default true
          */
         "appendProp": boolean;
+        /**
+          * @default false
+         */
         "calendar": boolean;
+        /**
+          * @default new Date().getMonth()
+         */
         "currentMonth": number;
+        /**
+          * @default new Date().getFullYear()
+         */
         "currentYear": number;
+        /**
+          * @default 'YYYY-MM-DD'
+         */
         "dateFormat": 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "displayContextExamples": boolean;
+        /**
+          * @default false
+         */
         "dropdownOpen": boolean;
         /**
           * Layout & sizing
+          * @default ''
          */
         "formLayout": '' | 'horizontal' | 'inline';
         /**
           * Icon & ids
+          * @default 'fas fa-calendar-alt'
          */
         "icon": string;
+        /**
+          * @default 10
+         */
         "inputCol": number;
+        /**
+          * @default ''
+         */
         "inputCols": string;
+        /**
+          * @default 'datepicker'
+         */
         "inputId": string;
+        /**
+          * @default false
+         */
         "isCalendarFocused": boolean;
         /**
           * Label & placeholder
+          * @default 'Date Picker'
          */
         "label": string;
         /**
           * Legacy numeric cols (fallback)
+          * @default 2
          */
         "labelCol": number;
         /**
           * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+          * @default ''
          */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
+        /**
+          * @default ''
+         */
         "labelSize": '' | 'sm' | 'lg';
+        /**
+          * @default 'YYYY-MM-DD'
+         */
         "placeholder": string;
         /**
           * Visual theme
+          * @default false
          */
         "plumage": boolean;
+        /**
+          * @default ''
+         */
         "prependId": string;
         /**
           * Prepend/append
+          * @default false
          */
         "prependProp": boolean;
         /**
           * Validation
+          * @default false
          */
         "required": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMessage": string;
         /**
           * Value (kept for API parity)
+          * @default ''
          */
         "value": string;
+        /**
+          * @default ''
+         */
         "warningMessage": string;
     }
     interface DiscreteSliderComponent {
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "hideRightTextBox": boolean;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default false
+         */
         "plumage": boolean;
+        /**
+          * @default 0
+         */
         "selectedIndex": number;
         /**
           * Accepts array or JSON string in HTML
+          * @default []
          */
         "stringValues": string[] | string;
+        /**
+          * @default false
+         */
         "tickLabels": boolean;
+        /**
+          * @default ''
+         */
         "unit": string;
+        /**
+          * @default ''
+         */
         "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface DividerComponent {
+        /**
+          * @default false
+         */
         "dashed": boolean;
         "orientation"?: 'left' | 'right' | 'center';
         "orientationMargin"?: string;
+        /**
+          * @default false
+         */
         "plain": boolean;
         "styles"?: string;
+        /**
+          * @default 'horizontal'
+         */
         "type": 'horizontal' | 'vertical';
     }
     interface DropdownComponent {
+        /**
+          * @default false
+         */
         "alignMenuRight": boolean;
+        /**
+          * @default false
+         */
         "autoFocusSubmenu": boolean;
+        /**
+          * @default 'Dropdown'
+         */
         "buttonText": string;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default ''
+         */
         "icon": string;
+        /**
+          * @default false
+         */
         "iconDropdown": boolean;
         "iconSize"?: number;
+        /**
+          * @default ''
+         */
         "inputId": string;
+        /**
+          * @default 'default'
+         */
         "listType": string;
+        /**
+          * @default 0
+         */
         "menuOffsetY": number;
+        /**
+          * @default ''
+         */
         "name": string;
+        /**
+          * @default []
+         */
         "options": DropdownItem[];
+        /**
+          * @default false
+         */
         "outlined": boolean;
+        /**
+          * @default false
+         */
         "ripple": boolean;
+        /**
+          * @default ''
+         */
         "shape": string;
+        /**
+          * @default ''
+         */
         "size": string;
+        /**
+          * @default 'default'
+         */
         "subMenuListType": string;
+        /**
+          * @default 0
+         */
         "submenuOffsetX": number;
+        /**
+          * @default ''
+         */
         "tableId": string;
+        /**
+          * @default ''
+         */
         "titleAttr": string;
+        /**
+          * @default ''
+         */
         "value": string;
+        /**
+          * @default 'default'
+         */
         "variant": string;
     }
     interface FormComponent {
         /**
           * Native form attributes
+          * @default ''
          */
         "action": string;
         /**
           * Optional border/box styling
+          * @default ''
          */
         "bcolor": string;
         "bradius"?: number;
+        /**
+          * @default ''
+         */
         "bstyle": string;
         "bwidth"?: number;
         /**
           * Render a fieldset wrapper (with optional legend)
+          * @default false
          */
         "fieldset": boolean;
+        /**
+          * @default ''
+         */
         "formId": string;
         /**
           * Layout + identity used by slotted children
+          * @default ''
          */
         "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default false
+         */
         "legend": boolean;
+        /**
+          * @default 'left'
+         */
         "legendPosition": 'left' | 'center' | 'right' | string;
+        /**
+          * @default 'Add Title Here'
+         */
         "legendTxt": string;
+        /**
+          * @default ''
+         */
         "method": string;
         /**
           * If true, do not render a <form>. Inputs placed outside the form can still read formId via closest('form-component') and set their own form attribute.
+          * @default false
          */
         "outsideOfForm": boolean;
         /**
           * Additional inline styles to append (CSS string)
+          * @default ''
          */
         "styles": string;
     }
     interface IconComponent {
         "color"?: string;
+        /**
+          * @default ''
+         */
         "icon": string;
+        /**
+          * @default true
+         */
         "iconAriaHidden": boolean;
         "iconAriaLabel"?: string;
+        /**
+          * @default ''
+         */
         "iconMargin": string;
         "iconSize"?: number;
+        /**
+          * @default ''
+         */
         "size": string;
+        /**
+          * @default false
+         */
         "svg": boolean;
+        /**
+          * @default false
+         */
         "tokenIcon": boolean;
     }
     interface InputFieldComponent {
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default ''
+         */
         "formId": string;
+        /**
+          * @default ''
+         */
         "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol": number;
+        /**
+          * @default ''
+         */
         "inputCols": string;
+        /**
+          * @default ''
+         */
         "inputId": string;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default ''
+         */
         "labelAlign": '' | 'right';
         /**
           * Legacy numeric cols (fallback)
+          * @default 2
          */
         "labelCol": number;
         /**
           * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+          * @default ''
          */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize": '' | 'xs' | 'sm' | 'lg';
         "placeholder"?: string;
+        /**
+          * @default false
+         */
         "readOnly": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default 'text'
+         */
         "type": string;
+        /**
+          * @default false
+         */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMessage": string;
+        /**
+          * @default ''
+         */
         "value": string;
     }
     interface InputGroupComponent {
         "appendIcon"?: string;
+        /**
+          * @default ''
+         */
         "appendId": string;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default ''
+         */
         "formId": string;
+        /**
+          * @default ''
+         */
         "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default false
+         */
         "hasAppend": boolean;
+        /**
+          * @default false
+         */
         "hasPrepend": boolean;
+        /**
+          * @default ''
+         */
         "icon": string;
+        /**
+          * @default 10
+         */
         "inputCol": number;
+        /**
+          * @default ''
+         */
         "inputCols": string;
+        /**
+          * @default ''
+         */
         "inputId": string;
         /**
           * Kept for API parity; use `size` for visual sizing
+          * @default ''
          */
         "inputSize": string;
+        /**
+          * @default ''
+         */
         "label": string;
         /**
+          * @default ''
+         */
+        "labelAlign": '' | 'right';
+        /**
           * Legacy numeric cols (fallback)
+          * @default 2
          */
         "labelCol": number;
         /**
           * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+          * @default ''
          */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "otherContent": boolean;
+        /**
+          * @default ''
+         */
         "placeholder": string;
         "prependIcon"?: string;
+        /**
+          * @default ''
+         */
         "prependId": string;
+        /**
+          * @default false
+         */
         "required": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "type": string;
         /**
           * External validation flag (rendered with UX overrides)
+          * @default false
          */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMessage": string;
         /**
           * External value (mutable for back-compat)
+          * @default ''
          */
         "value": string;
     }
     interface MinimizePaginationComponent {
         "controlId"?: string;
+        /**
+          * @default 1
+         */
         "currentPage": number;
+        /**
+          * @default ''
+         */
         "goToButtons": string;
+        /**
+          * @default ''
+         */
         "paginationLayout": '' | 'center' | 'end';
+        /**
+          * @default false
+         */
         "plumage": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default 1
+         */
         "totalPages": number;
     }
     interface ModalComponent {
+        /**
+          * @default ''
+         */
         "ariaLabel": string;
+        /**
+          * @default false
+         */
         "block": boolean;
+        /**
+          * @default 'Launch demo modal'
+         */
         "btnText": string;
+        /**
+          * @default 'Close'
+         */
         "cancelCloseBtn": string;
+        /**
+          * @default ''
+         */
         "classNames": string;
         /**
           * Close programmatically
          */
         "close": () => Promise<void>;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "link": boolean;
         "modalFullScreen"?: 'fullscreen' | 'sm-down' | 'md-down' | 'lg-down' | 'xl-down' | 'xxl-down';
         "modalId"?: string;
         "modalSize"?: 'sm' | 'lg' | 'xl';
+        /**
+          * @default 'Modal title'
+         */
         "modalTitle": string;
         /**
           * Open programmatically
          */
         "open": () => Promise<void>;
+        /**
+          * @default false
+         */
         "outlined": boolean;
+        /**
+          * @default false
+         */
         "ripple": boolean;
+        /**
+          * @default false
+         */
         "scrollLongContent": boolean;
+        /**
+          * @default false
+         */
         "scrollableBody": boolean;
+        /**
+          * @default ''
+         */
         "shape": string;
+        /**
+          * @default ''
+         */
         "size": string;
+        /**
+          * @default ''
+         */
         "titleAttr": string;
+        /**
+          * @default ''
+         */
         "variant": string;
+        /**
+          * @default false
+         */
         "verticallyCentered": boolean;
     }
     interface MultiRangeSliderComponent {
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "hideLeftTextBox": boolean;
+        /**
+          * @default false
+         */
         "hideRightTextBox": boolean;
+        /**
+          * @default false
+         */
         "hideTextBoxes": boolean;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default 25
+         */
         "lowerValue": number;
+        /**
+          * @default 100
+         */
         "max": number;
+        /**
+          * @default 0
+         */
         "min": number;
+        /**
+          * @default false
+         */
         "plumage": boolean;
+        /**
+          * @default false
+         */
         "sliderThumbLabel": boolean;
+        /**
+          * @default false
+         */
         "snapToTicks": boolean;
+        /**
+          * @default false
+         */
         "tickLabels": boolean;
         /**
           * Accepts array or JSON string in HTML
+          * @default []
          */
         "tickValues": number[] | string;
+        /**
+          * @default ''
+         */
         "unit": string;
+        /**
+          * @default 75
+         */
         "upperValue": number;
+        /**
+          * @default ''
+         */
         "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface PaginationComponent {
+        /**
+          * @default 1
+         */
         "currentPage": number;
+        /**
+          * @default ''
+         */
         "goToButtons": string;
+        /**
+          * @default false
+         */
         "hideEllipsis": boolean;
+        /**
+          * @default false
+         */
         "hideGotoEndButtons": boolean;
+        /**
+          * @default 3
+         */
         "limit": number;
+        /**
+          * @default 10
+         */
         "pageSize": number;
+        /**
+          * @default [10, 20, 50, 100, 'All']
+         */
         "pageSizeOptions": Array<number | 'All'>;
+        /**
+          * @default ''
+         */
         "paginationLayout": '' | 'start' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right';
+        /**
+          * @default ''
+         */
         "paginationVariantColor": string;
+        /**
+          * @default false
+         */
         "plumage": boolean;
+        /**
+          * @default 'bottom'
+         */
         "position": 'top' | 'bottom' | 'both';
+        /**
+          * @default false
+         */
         "showDisplayRange": boolean;
+        /**
+          * @default false
+         */
         "showSizeChanger": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "tableId": string;
+        /**
+          * @default 1
+         */
         "totalPages": number;
+        /**
+          * @default 0
+         */
         "totalRows": number;
+        /**
+          * @default false
+         */
         "useByPagePagination": boolean;
+        /**
+          * @default false
+         */
         "useMinimizePagination": boolean;
     }
     interface PlumageAutocompleteMultipleSelectionsComponent {
+        /**
+          * @default false
+         */
         "addBtn": boolean;
+        /**
+          * @default ''
+         */
         "addIcon": string;
+        /**
+          * @default true
+         */
         "addNewOnEnter": boolean;
+        /**
+          * @default ''
+         */
         "arialabelledBy": string;
+        /**
+          * @default true
+         */
         "autoSort": boolean;
+        /**
+          * @default ''
+         */
         "badgeInlineStyles": string;
+        /**
+          * @default ''
+         */
         "badgeShape": string;
+        /**
+          * @default ''
+         */
         "badgeVariant": string;
+        /**
+          * @default ''
+         */
         "clearIcon": string;
+        /**
+          * @default false
+         */
         "clearInputOnBlurOutside": boolean;
+        /**
+          * @default false
+         */
         "devMode": boolean;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "editable": boolean;
+        /**
+          * @default false
+         */
         "error": boolean;
+        /**
+          * @default ''
+         */
         "errorMessage": string;
         "filterOptions": () => Promise<void>;
+        /**
+          * @default ''
+         */
         "formId": string;
+        /**
+          * @default ''
+         */
         "formLayout": '' | 'horizontal' | 'inline';
         "getOptions": () => Promise<string[]>;
+        /**
+          * @default 10
+         */
         "inputCol": number;
+        /**
+          * @default ''
+         */
         "inputCols": string;
+        /**
+          * @default ''
+         */
         "inputId": string;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default ''
+         */
         "labelAlign": '' | 'right';
+        /**
+          * @default 2
+         */
         "labelCol": number;
         /**
           * Responsive columns
+          * @default ''
          */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         /**
           * Submit names
          */
         "name"?: string;
         "navigateOptions": (direction: number) => Promise<void>;
+        /**
+          * @default []
+         */
         "options": string[];
+        /**
+          * @default 'Type to search/filter...'
+         */
         "placeholder": string;
         /**
           * Behavior switches
          */
         "preserveInputOnSelect"?: boolean;
         "rawInputName"?: string;
+        /**
+          * @default false
+         */
         "removeBtnBorder": boolean;
+        /**
+          * @default false
+         */
         "removeClearBtn": boolean;
         "removeItem": (value: string) => Promise<void>;
+        /**
+          * @default false
+         */
         "required": boolean;
         "setOptions": (next: string[]) => Promise<void>;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "type": string;
         /**
           * Validation controlled externally; mirrored to state for visuals.
+          * @default false
          */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMessage": string;
     }
     interface PlumageAutocompleteMultiselectComponent {
+        /**
+          * @default false
+         */
         "addBtn": boolean;
+        /**
+          * @default ''
+         */
         "addIcon": string;
+        /**
+          * @default true
+         */
         "addNewOnEnter": boolean;
+        /**
+          * @default ''
+         */
         "arialabelledBy": string;
+        /**
+          * @default true
+         */
         "autoSort": boolean;
+        /**
+          * @default ''
+         */
         "badgeInlineStyles": string;
+        /**
+          * @default ''
+         */
         "badgeShape": string;
+        /**
+          * @default ''
+         */
         "badgeVariant": string;
+        /**
+          * @default ''
+         */
         "clearIcon": string;
+        /**
+          * @default false
+         */
         "clearInputOnBlurOutside": boolean;
+        /**
+          * @default false
+         */
         "devMode": boolean;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "editable": boolean;
+        /**
+          * @default false
+         */
         "error": boolean;
+        /**
+          * @default ''
+         */
         "errorMessage": string;
         "filterOptions": () => Promise<void>;
+        /**
+          * @default ''
+         */
         "formId": string;
+        /**
+          * @default ''
+         */
         "formLayout": '' | 'horizontal' | 'inline';
         "getOptions": () => Promise<string[]>;
+        /**
+          * @default 10
+         */
         "inputCol": number;
+        /**
+          * @default ''
+         */
         "inputCols": string;
+        /**
+          * @default ''
+         */
         "inputId": string;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default ''
+         */
         "labelAlign": '' | 'right';
+        /**
+          * @default 2
+         */
         "labelCol": number;
         /**
           * Responsive column class specs
+          * @default ''
          */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         /**
           * Submit names
          */
         "name"?: string;
         "navigateOptions": (direction: number) => Promise<void>;
+        /**
+          * @default []
+         */
         "options": string[];
+        /**
+          * @default 'Type to search/filter...'
+         */
         "placeholder": string;
         /**
           * Behavior switches
          */
         "preserveInputOnSelect"?: boolean;
         "rawInputName"?: string;
+        /**
+          * @default false
+         */
         "removeClearBtn": boolean;
         "removeItem": (value: string) => Promise<void>;
+        /**
+          * @default false
+         */
         "required": boolean;
         "setOptions": (next: string[]) => Promise<void>;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "type": string;
         /**
           * Validation controlled externally; we mirror to state for visuals (don’t mutate prop in user-land).
+          * @default false
          */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMessage": string;
     }
     interface PlumageAutocompleteSingle {
         /**
           * id(s) of label(s) that label this input (space-separated).
+          * @default ''
          */
         "arialabelledBy": string;
+        /**
+          * @default true
+         */
         "autoSort": boolean;
+        /**
+          * @default ''
+         */
         "clearIcon": string;
+        /**
+          * @default false
+         */
         "devMode": boolean;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "error": boolean;
+        /**
+          * @default ''
+         */
         "errorMessage": string;
+        /**
+          * @default ''
+         */
         "formId": string;
+        /**
+          * @default ''
+         */
         "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol": number;
+        /**
+          * @default ''
+         */
         "inputCols": string;
+        /**
+          * @default ''
+         */
         "inputId": string;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default ''
+         */
         "labelAlign": '' | 'right';
         /**
           * Numeric fallback columns
+          * @default 2
          */
         "labelCol": number;
         /**
           * Responsive column class specs
+          * @default ''
          */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        /**
+          * @default []
+         */
         "options": string[];
         "placeholder"?: string;
+        /**
+          * @default false
+         */
         "removeClearBtn": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default 'text'
+         */
         "type": string;
         /**
           * Validation controlled externally (prop remains source of truth)
+          * @default false
          */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMessage": string;
         /**
           * Value controlled externally (don’t mutate the prop)
+          * @default ''
          */
         "value": string;
     }
     interface PlumageInputFieldComponent {
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default ''
+         */
         "formId": string;
+        /**
+          * @default ''
+         */
         "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol": number;
+        /**
+          * @default ''
+         */
         "inputCols": string;
+        /**
+          * @default ''
+         */
         "inputId": string;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default ''
+         */
         "labelAlign": '' | 'right';
         /**
           * Legacy numeric cols (fallback)
+          * @default 2
          */
         "labelCol": number;
         /**
           * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+          * @default ''
          */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         "placeholder"?: string;
+        /**
+          * @default false
+         */
         "required": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default 'text'
+         */
         "type": string;
+        /**
+          * @default false
+         */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMessage": string;
+        /**
+          * @default ''
+         */
         "value": string;
     }
     interface PlumageInputGroupComponent {
         /**
-          * NEW names replacing append/prepend
+          * Side fields: support BOTH old and new attribute spellings. Current attributes: prepend/append Legacy attributes:  prepend-field/append-field
+          * @default false
          */
         "appendField": boolean;
         "appendIcon"?: string;
+        /**
+          * @default ''
+         */
         "appendId": string;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default ''
+         */
         "formId": string;
+        /**
+          * @default ''
+         */
         "formLayout": '' | 'horizontal' | 'inline';
         /**
           * Side options
+          * @default ''
          */
         "icon": string;
+        /**
+          * @default 10
+         */
         "inputCol": number;
+        /**
+          * @default ''
+         */
         "inputCols": string;
+        /**
+          * @default ''
+         */
         "inputId": string;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default ''
+         */
         "labelAlign": '' | 'right';
         /**
           * Legacy numeric cols (fallback)
+          * @default 2
          */
         "labelCol": number;
         /**
           * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+          * @default ''
          */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
+        "legacyAppendField": boolean;
+        /**
+          * @default false
+         */
+        "legacyPrependField": boolean;
+        /**
+          * @default false
+         */
         "otherContent": boolean;
         "placeholder"?: string;
         /**
           * Search variant
+          * @default false
          */
         "plumageSearch": boolean;
+        /**
+          * @default false
+         */
         "prependField": boolean;
         "prependIcon"?: string;
+        /**
+          * @default ''
+         */
         "prependId": string;
+        /**
+          * @default false
+         */
         "required": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default 'text'
+         */
         "type": string;
         /**
           * Validation controlled externally (don’t mutate)
+          * @default false
          */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMessage": string;
         /**
           * Value controlled externally (don’t mutate)
+          * @default ''
          */
         "value": string;
     }
     interface PlumageSelectFieldComponent {
+        /**
+          * @default ''
+         */
         "classes": string;
+        /**
+          * @default false
+         */
         "custom": boolean;
+        /**
+          * @default 'Select an option'
+         */
         "defaultOptionTxt": string;
+        /**
+          * @default ''
+         */
         "defaultTxt": string;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default null
+         */
         "fieldHeight": number;
+        /**
+          * @default ''
+         */
         "formId": string;
+        /**
+          * @default ''
+         */
         "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol": number;
+        /**
+          * @default ''
+         */
         "inputCols": string;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default ''
+         */
+        "labelAlign": '' | 'right';
+        /**
+          * @default 2
+         */
         "labelCol": number;
+        /**
+          * @default ''
+         */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'default' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "multiple": boolean;
+        /**
+          * @default []
+         */
         "options": Array<{ value: string; name: string }> | string;
+        /**
+          * @default false
+         */
         "required": boolean;
+        /**
+          * @default ''
+         */
         "selectFieldId": string;
+        /**
+          * @default false
+         */
         "selected": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMessage": string;
+        /**
+          * @default ''
+         */
         "value": string | string[];
+        /**
+          * @default false
+         */
         "withTable": boolean;
     }
     interface PlumageTimepickerComponent {
         /**
           * Accessible label for the input
+          * @default 'Time Picker'
          */
         "ariaLabel": string;
         /**
           * ID of the external label element (for aria-labelledby)
+          * @default 'time-label'
          */
         "ariaLabelledby": string;
         /**
           * (Used in Lit markup for underline states)
+          * @default false
          */
         "disabled"?: boolean;
         /**
@@ -1060,18 +2900,22 @@ export namespace Components {
         "forceTimeUpdatePublic": () => Promise<void>;
         /**
           * Hide seconds UI / value
+          * @default false
          */
         "hideSeconds": boolean;
         /**
           * Hide the toggle/launch button for the timepicker popover
+          * @default false
          */
         "hideTimepickerBtn": boolean;
         /**
           * (Renamed from reserved `id`) ID passed to the internal input
+          * @default 'time-input'
          */
         "inputId": string;
         /**
           * Name attribute for the inner input
+          * @default 'time'
          */
         "inputName": string;
         /**
@@ -1080,39 +2924,61 @@ export namespace Components {
         "inputWidth"?: number | string;
         /**
           * Use 24-hour format by default (mutable: toggled by the component)
+          * @default true
          */
         "isTwentyFourHourFormat": boolean;
         /**
           * Whether the current value is considered valid (mutable: set by validation)
+          * @default true
          */
         "isValid": boolean;
+        /**
+          * @default 'Enter Time'
+         */
         "labelText": string;
         "showLabel"?: boolean;
         /**
           * Optional size variant: '', 'sm', 'lg'
+          * @default ''
          */
         "size": string;
         /**
           * Force show only 12-hour controls/options
+          * @default false
          */
         "twelveHourOnly": boolean;
         /**
           * Force show only 24-hour controls/options
+          * @default false
          */
         "twentyFourHourOnly": boolean;
         /**
           * (Used in Lit markup for underline states)
+          * @default false
          */
         "validation"?: boolean;
         /**
           * Validation message to show (mutable: set/cleared by the component)
+          * @default ''
          */
         "validationMessage": string;
     }
     interface PopoverComponent {
+        /**
+          * @default false
+         */
         "arrowOff": boolean;
+        /**
+          * @default `Default popover content. Use the 'content' attribute to change this text.`
+         */
         "content": string;
+        /**
+          * @default ''
+         */
         "customClass": string;
+        /**
+          * @default 'flip'
+         */
         "fallbackPlacement": | 'flip'
     | 'clockwise'
     | 'counterclockwise'
@@ -1147,33 +3013,58 @@ export namespace Components {
         | 'righttop'
         | 'rightbottom'
       >;
+        /**
+          * @default 0
+         */
         "offset": number;
+        /**
+          * @default 'auto'
+         */
         "placement": 'auto' | 'top' | 'bottom' | 'left' | 'right' | 'topright' | 'topleft' | 'bottomright' | 'bottomleft' | 'lefttop' | 'leftbottom' | 'righttop' | 'rightbottom';
+        /**
+          * @default false
+         */
         "plumage": boolean;
         /**
           * Keep external attribute name `title`, but avoid reserved prop name.
+          * @default ''
          */
         "popoverTitle": string;
         /**
           * Lit's `super` -> internal `superTooltip`, attribute remains `super`.
+          * @default false
          */
         "superTooltip": boolean;
         /**
           * String id or direct HTMLElement
          */
         "target"?: string | HTMLElement;
+        /**
+          * @default 'click'
+         */
         "trigger": 'click' | 'hover' | 'focus' | `${'click' | 'hover' | 'focus'} ${'click' | 'hover' | 'focus'}`;
+        /**
+          * @default ''
+         */
         "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+        /**
+          * @default false
+         */
         "visible": boolean;
+        /**
+          * @default 0
+         */
         "yOffset": number;
     }
     interface ProgressDisplayComponent {
         /**
           * Immutable public API
+          * @default false
          */
         "animated": boolean;
         /**
           * Accepts JSON string (HTML attr) or array (JS)
+          * @default []
          */
         "bars": | Array<{
         value: number;
@@ -1187,129 +3078,383 @@ export namespace Components {
         showValue?: boolean;
       }>
     | string;
+        /**
+          * @default false
+         */
         "circular": boolean;
+        /**
+          * @default 20
+         */
         "height": number;
+        /**
+          * @default false
+         */
         "indeterminate": boolean;
+        /**
+          * @default false
+         */
         "lineCap": boolean;
+        /**
+          * @default 100
+         */
         "max": number;
+        /**
+          * @default false
+         */
         "multi": boolean;
+        /**
+          * @default 0
+         */
         "precision": number;
+        /**
+          * @default ''
+         */
         "progressAlign": '' | 'left' | 'right';
         "rotate"?: number;
+        /**
+          * @default false
+         */
         "showProgress": boolean;
+        /**
+          * @default false
+         */
         "showValue": boolean;
+        /**
+          * @default 80
+         */
         "size": number;
+        /**
+          * @default false
+         */
         "striped": boolean;
+        /**
+          * @default 4
+         */
         "strokeWidth": number;
+        /**
+          * @default ''
+         */
         "styles": string;
+        /**
+          * @default 0
+         */
         "value": number;
+        /**
+          * @default ''
+         */
         "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface RadioInputComponent {
+        /**
+          * @default false
+         */
         "customRadio": boolean;
+        /**
+          * @default false
+         */
         "customRadioGroup": boolean;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default []
+         */
         "groupOptions": any;
+        /**
+          * @default ''
+         */
         "groupTitle": string;
+        /**
+          * @default ''
+         */
         "groupTitleSize": string;
+        /**
+          * @default false
+         */
         "inline": boolean;
+        /**
+          * @default ''
+         */
         "inputId": string;
+        /**
+          * @default ''
+         */
         "labelTxt": string;
+        /**
+          * @default ''
+         */
         "name": string;
+        /**
+          * @default false
+         */
         "radio": boolean;
+        /**
+          * @default false
+         */
         "radioGroup": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
+        /**
+          * @default ''
+         */
         "size": string;
+        /**
+          * @default false
+         */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMsg": string;
+        /**
+          * @default ''
+         */
         "value": string;
     }
     interface SelectFieldComponent {
+        /**
+          * @default ''
+         */
         "classes": string;
+        /**
+          * @default false
+         */
         "custom": boolean;
+        /**
+          * @default 'Select an option'
+         */
         "defaultOptionTxt": string;
+        /**
+          * @default ''
+         */
         "defaultTxt": string;
+        /**
+          * @default false
+         */
         "disabled": boolean;
         /**
           * Native <select size>; useful for visually taller lists (single or multiple)
+          * @default null
          */
         "fieldHeight": number;
+        /**
+          * @default ''
+         */
         "formId": string;
+        /**
+          * @default ''
+         */
         "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol": number;
+        /**
+          * @default ''
+         */
         "inputCols": string;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default ''
+         */
         "labelAlign": '' | 'right';
         /**
           * Legacy numeric cols (fallback)
+          * @default 2
          */
         "labelCol": number;
         /**
           * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")
+          * @default ''
          */
         "labelCols": string;
+        /**
+          * @default false
+         */
         "labelHidden": boolean;
-        "labelSize": '' | 'sm' | 'default' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize": '' | 'xs' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "multiple": boolean;
+        /**
+          * @default []
+         */
         "options": Array<{ value: string; name: string }> | string;
+        /**
+          * @default false
+         */
         "required": boolean;
         /**
           * ID attribute for the <select> (Lit: selectFieldId)
+          * @default ''
          */
         "selectFieldId": string;
+        /**
+          * @default false
+         */
         "selected": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMessage": string;
         /**
           * Single: string; Multiple: string[]
+          * @default 'none'
          */
         "value": string | string[];
         /**
           * When used with a table, sync with external sort events
+          * @default false
          */
         "withTable": boolean;
     }
     interface SliderManagerComponent {
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "hideLeftTextBox": boolean;
+        /**
+          * @default false
+         */
         "hideRightTextBox": boolean;
+        /**
+          * @default false
+         */
         "hideTextBoxes": boolean;
+        /**
+          * @default ''
+         */
         "label": string;
+        /**
+          * @default 25
+         */
         "lowerValue": number;
+        /**
+          * @default 100
+         */
         "max": number;
+        /**
+          * @default 0
+         */
         "min": number;
+        /**
+          * @default false
+         */
         "plumage": boolean;
+        /**
+          * @default 0
+         */
         "selectedIndex": number;
+        /**
+          * @default false
+         */
         "sliderThumbLabel": boolean;
+        /**
+          * @default false
+         */
         "snapToTicks": boolean;
+        /**
+          * @default []
+         */
         "stringValues": string[];
+        /**
+          * @default false
+         */
         "tickLabels": boolean;
+        /**
+          * @default []
+         */
         "tickValues": number[];
         /**
           * 'basic' | 'multi' | 'discrete'
+          * @default 'basic'
          */
         "type": 'basic' | 'multi' | 'discrete';
+        /**
+          * @default ''
+         */
         "unit": string;
+        /**
+          * @default 75
+         */
         "upperValue": number;
+        /**
+          * @default 0
+         */
         "value": number;
+        /**
+          * @default ''
+         */
         "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface StandardPaginationComponent {
+        /**
+          * @default 1
+         */
         "currentPage": number;
+        /**
+          * @default ''
+         */
         "goToButtons": string;
+        /**
+          * @default false
+         */
         "hideEllipsis": boolean;
+        /**
+          * @default false
+         */
         "hideGotoEndButtons": boolean;
+        /**
+          * @default 3
+         */
         "limit": number;
+        /**
+          * @default ''
+         */
         "paginationLayout": '' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right';
+        /**
+          * @default ''
+         */
         "paginationVariantColor": string;
+        /**
+          * @default false
+         */
         "plumage": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm' | 'lg';
+        /**
+          * @default 1
+         */
         "totalPages": number;
     }
     interface SvgComponent {
         /**
           * Fill color applied to slotted <svg>. Defaults to 'currentColor'.
+          * @default 'currentColor'
          */
         "fill": string;
         /**
@@ -1326,6 +3471,7 @@ export namespace Components {
         "svgAriaLabel"?: string;
         /**
           * Optional margin wrapper around the slotted <svg>: '', 'left', or 'right'.
+          * @default ''
          */
         "svgMargin": '' | 'left' | 'right';
         /**
@@ -1334,66 +3480,221 @@ export namespace Components {
         "width"?: number;
     }
     interface TableComponent {
+        /**
+          * @default false
+         */
         "border": boolean;
+        /**
+          * @default false
+         */
         "bordered": boolean;
+        /**
+          * @default false
+         */
         "borderless": boolean;
+        /**
+          * @default ''
+         */
         "caption": '' | 'top' | 'bottom';
+        /**
+          * @default false
+         */
         "cloneFooter": boolean;
+        /**
+          * @default 1
+         */
         "currentPage": number;
+        /**
+          * @default false
+         */
         "dark": boolean;
+        /**
+          * @default ''
+         */
         "dropdownId": string;
+        /**
+          * @default []
+         */
         "expandedRows": number[];
+        /**
+          * @default []
+         */
         "fields": Field[];
+        /**
+          * @default ''
+         */
         "filterText": string;
+        /**
+          * @default false
+         */
         "fixed": boolean;
+        /**
+          * @default ''
+         */
         "goToButtons": string;
+        /**
+          * @default false
+         */
         "headerDark": boolean;
+        /**
+          * @default false
+         */
         "headerLight": boolean;
+        /**
+          * @default false
+         */
         "hideEllipsis": boolean;
+        /**
+          * @default false
+         */
         "hideGotoEndButtons": boolean;
+        /**
+          * @default false
+         */
         "hover": boolean;
+        /**
+          * @default []
+         */
         "items": any[];
+        /**
+          * @default false
+         */
         "noBorderCollapsed": boolean;
+        /**
+          * @default []
+         */
         "originalItems": any[];
+        /**
+          * @default [10, 20, 50, 100, 'All']
+         */
         "pageSizeOptions": Array<number | 'All'>;
+        /**
+          * @default ''
+         */
         "paginationLayout": string;
+        /**
+          * @default 5
+         */
         "paginationLimit": number;
+        /**
+          * @default 'bottom'
+         */
         "paginationPosition": 'top' | 'bottom' | 'both';
+        /**
+          * @default ''
+         */
         "paginationSize": '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "paginationVariantColor": string;
+        /**
+          * @default false
+         */
         "plumage": boolean;
         "resetSort": () => Promise<void>;
+        /**
+          * @default false
+         */
         "responsive": boolean;
+        /**
+          * @default 10
+         */
         "rowsPerPage": number;
+        /**
+          * @default ''
+         */
         "selectMode": SelectMode;
+        /**
+          * @default []
+         */
         "selectedFilterFields": string[];
+        /**
+          * @default []
+         */
         "selectedRows": any[];
+        /**
+          * @default 'table-active'
+         */
         "selectedVariant": string;
+        /**
+          * @default false
+         */
         "showDisplayRange": boolean;
+        /**
+          * @default false
+         */
         "showSizeChanger": boolean;
+        /**
+          * @default ''
+         */
         "size": '' | 'sm';
+        /**
+          * @default []
+         */
         "sortCriteria": Array<{ key: string; order: SortOrder | 'none' }>;
+        /**
+          * @default 'none'
+         */
         "sortField": string;
+        /**
+          * @default 'asc'
+         */
         "sortOrder": SortOrder;
+        /**
+          * @default true
+         */
         "sortOrderDisabled": boolean;
+        /**
+          * @default false
+         */
         "sortable": boolean;
+        /**
+          * @default false
+         */
         "stacked": boolean;
+        /**
+          * @default false
+         */
         "sticky": boolean;
+        /**
+          * @default false
+         */
         "striped": boolean;
+        /**
+          * @default ''
+         */
         "tableId": string;
+        /**
+          * @default 'table'
+         */
         "tableVariant": Variant | 'table';
+        /**
+          * @default 0
+         */
         "totalRows": number;
+        /**
+          * @default false
+         */
         "useByPagePagination": boolean;
+        /**
+          * @default false
+         */
         "useMinimizePagination": boolean;
+        /**
+          * @default false
+         */
         "usePagination": boolean;
     }
     interface TimepickerComponent {
         /**
           * Accessible label for the input
+          * @default 'Time Picker'
          */
         "ariaLabel": string;
         /**
           * ID of the external label element (for aria-labelledby)
+          * @default 'time-label'
          */
         "ariaLabelledby": string;
         /**
@@ -1402,18 +3703,22 @@ export namespace Components {
         "forceTimeUpdate": () => Promise<void>;
         /**
           * Hide seconds UI / value
+          * @default false
          */
         "hideSeconds": boolean;
         /**
           * Hide the toggle/launch button for the timepicker popover
+          * @default false
          */
         "hideTimepickerBtn": boolean;
         /**
           * (Renamed from reserved `id`) ID passed to the internal input
+          * @default 'time-input'
          */
         "inputId": string;
         /**
           * Name attribute for the inner input
+          * @default 'time'
          */
         "inputName": string;
         /**
@@ -1422,88 +3727,114 @@ export namespace Components {
         "inputWidth"?: number | string;
         /**
           * Use 24-hour format by default (mutable: toggled by the component)
+          * @default true
          */
         "isTwentyFourHourFormat": boolean;
         /**
           * Whether the current value is considered valid (mutable: set by validation)
+          * @default true
          */
         "isValid": boolean;
+        /**
+          * @default 'Enter Time'
+         */
         "labelText": string;
         "showLabel"?: boolean;
         /**
           * Optional size variant: '', 'sm', 'lg'
+          * @default ''
          */
         "size": string;
         /**
           * Force show only 12-hour controls/options
+          * @default false
          */
         "twelveHourOnly": boolean;
         /**
           * Force show only 24-hour controls/options
+          * @default false
          */
         "twentyFourHourOnly": boolean;
         /**
           * Validation message to show (mutable: set/cleared by the component)
+          * @default ''
          */
         "validationMessage": string;
     }
     interface TimepickerManager {
         /**
           * Accessible label for the input
+          * @default 'Time Picker'
          */
         "ariaLabel": string;
         /**
           * ID of the external label element (for aria-labelledby)
+          * @default 'time-label'
          */
         "ariaLabelledby": string;
         /**
           * Hide seconds UI / value
+          * @default false
          */
         "hideSeconds": boolean;
         /**
           * Hide the toggle/launch button for the timepicker popover
+          * @default false
          */
         "hideTimepickerBtn": boolean;
         /**
           * ID to pass to inner input(s)
+          * @default 'time-input'
          */
         "inputId": string;
         /**
           * Name attribute for the inner input
+          * @default 'time'
          */
         "inputName": string;
         /**
           * Width (px) for the input element
+          * @default null
          */
         "inputWidth": number;
         /**
           * Use 24-hour format by default
+          * @default true
          */
         "isTwentyFourHourFormat": boolean;
         /**
           * Whether the current value is considered valid
+          * @default true
          */
         "isValid": boolean;
+        /**
+          * @default 'Enter Time'
+         */
         "labelText": string;
         "showLabel"?: boolean;
         /**
           * Optional size variant (e.g., 'sm', 'lg')
+          * @default ''
          */
         "size": string;
         /**
           * Force show only 12-hour controls/options
+          * @default false
          */
         "twelveHourOnly": boolean;
         /**
           * Force show only 24-hour controls/options
+          * @default false
          */
         "twentyFourHourOnly": boolean;
         /**
           * Choose which implementation to render: false = <timepicker-component>, true = <plumage-timepicker-component>
+          * @default false
          */
         "usePlTimepicker": boolean;
         /**
           * Validation message to show (if any)
+          * @default ''
          */
         "validationMessage": string;
     }
@@ -1514,6 +3845,7 @@ export namespace Components {
         "additionalHeaderContent"?: any;
         /**
           * If true, new toasts append to the end; otherwise they prepend (newest on top).
+          * @default false
          */
         "appendToast": boolean;
         "bodyClass"?: string;
@@ -1523,6 +3855,7 @@ export namespace Components {
         "customContent"?: any;
         /**
           * Default lifespan in ms for auto-dismiss toasts.
+          * @default 5000
          */
         "duration": number;
         /**
@@ -1531,10 +3864,12 @@ export namespace Components {
         "headerClass"?: string;
         /**
           * If true, use the “plumage icon” layout on compact plumage variant.
+          * @default false
          */
         "iconPlumageStyle": boolean;
         /**
           * When true, use polite/status instead of alert/assertive on aria-live for new toasts.
+          * @default false
          */
         "isStatus": boolean;
         /**
@@ -1543,30 +3878,37 @@ export namespace Components {
         "message"?: string;
         /**
           * Disable fade-in/out transitions globally.
+          * @default false
          */
         "noAnimation": boolean;
         /**
           * If true, hide the × close button by default.
+          * @default false
          */
         "noCloseButton": boolean;
         /**
           * Prevent hover from pausing auto-hide globally.
+          * @default false
          */
         "noHoverPause": boolean;
         /**
           * Make toasts persistent by default (no auto-hide).
+          * @default false
          */
         "persistent": boolean;
         /**
           * If true, use the Plumage toast style.
+          * @default false
          */
         "plumageToast": boolean;
         /**
           * If true with plumageToast, render the “max” layout.
+          * @default false
          */
         "plumageToastMax": boolean;
         /**
           * Where the toaster tray is anchored.
+          * @default 'bottom-right'
          */
         "position": ToastPosition;
         /**
@@ -1579,6 +3921,7 @@ export namespace Components {
         "showToast": (opts?: Partial<Omit<ToastItem, "id" | "state">>) => Promise<number>;
         /**
           * If true, use the “solid” toast style (Bootstrap-like) instead of bordered.
+          * @default false
          */
         "solidToast": boolean;
         /**
@@ -1591,10 +3934,12 @@ export namespace Components {
         "svgIcon"?: string;
         /**
           * Default time label (ZULU).
+          * @default ToastsComponent.getCurrentZuluTime()
          */
         "time": string;
         /**
           * (Optional) id used inside nested elements; does not override the host element id
+          * @default 'toast-component'
          */
         "toastId": string;
         /**
@@ -1603,29 +3948,76 @@ export namespace Components {
         "toastTitle"?: string;
         /**
           * Variant color for new toasts (can be overridden per-toast via showToast opts).
+          * @default ''
          */
         "variant": ToastVariant;
     }
     interface ToggleSwitchComponent {
+        /**
+          * @default false
+         */
         "checked": boolean;
+        /**
+          * @default false
+         */
         "customSwitch": boolean;
+        /**
+          * @default false
+         */
         "disabled": boolean;
+        /**
+          * @default false
+         */
         "inline": boolean;
+        /**
+          * @default ''
+         */
         "inputId": string;
+        /**
+          * @default ''
+         */
         "labelTxt": string;
+        /**
+          * @default { on: 'On', off: 'Off' }
+         */
         "newToggleTxt": { on: string; off: string };
+        /**
+          * @default false
+         */
         "required": boolean;
+        /**
+          * @default ''
+         */
         "size": string;
+        /**
+          * @default false
+         */
         "switches": boolean;
+        /**
+          * @default []
+         */
         "switchesArray": ToggleItem[];
+        /**
+          * @default false
+         */
         "toggleTxt": boolean;
+        /**
+          * @default false
+         */
         "validation": boolean;
+        /**
+          * @default ''
+         */
         "validationMessage": string;
+        /**
+          * @default ''
+         */
         "value": string;
     }
     interface TooltipComponent {
         /**
           * Enable/disable fade animation class
+          * @default true
          */
         "animation": boolean;
         /**
@@ -1634,19 +4026,23 @@ export namespace Components {
         "container"?: string | null;
         /**
           * Additional classes to apply to tooltip; can be a string
+          * @default ''
          */
         "customClass": string;
         "hide": () => Promise<void>;
         /**
           * If true, treat content as HTML and use innerHTML (TRUSTED CONTENT ONLY)
+          * @default false
          */
         "htmlContent": boolean;
         /**
           * Message fallback when no title/data-original-title supplied
+          * @default ''
          */
         "message": string;
         /**
           * Initial/forced placement; use "auto" to choose best fit
+          * @default 'top'
          */
         "position": TooltipPosition;
         "show": () => Promise<void>;
@@ -1656,14 +4052,17 @@ export namespace Components {
         "tooltipTitle"?: string;
         /**
           * Space-separated triggers: "hover", "focus", "click", "manual"
+          * @default 'hover focus'
          */
         "trigger": string;
         /**
           * Contextual color variant
+          * @default ''
          */
         "variant": TooltipVariant;
         /**
           * If true, the tooltip is currently visible (manual control)
+          * @default false
          */
         "visible": boolean;
     }
@@ -2530,76 +4929,232 @@ declare global {
 }
 declare namespace LocalJSX {
     interface AccordionComponent {
+        /**
+          * @default false
+         */
         "accordion"?: boolean;
+        /**
+          * @default false
+         */
         "block"?: boolean;
+        /**
+          * @default ''
+         */
         "classNames"?: string;
+        /**
+          * @default ''
+         */
         "contentTxtSize"?: string;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "flush"?: boolean;
+        /**
+          * @default 'fas fa-angle-down'
+         */
         "icon"?: string;
+        /**
+          * @default false
+         */
         "isOpen"?: boolean;
+        /**
+          * @default false
+         */
         "link"?: boolean;
         "onToggleEvent"?: (event: AccordionComponentCustomEvent<boolean>) => void;
+        /**
+          * @default false
+         */
         "outlined"?: boolean;
+        /**
+          * @default false
+         */
         "ripple"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: string;
+        /**
+          * @default ''
+         */
         "targetId"?: string;
+        /**
+          * @default ''
+         */
         "variant"?: string;
     }
     interface AccordionContainer {
+        /**
+          * @default false
+         */
         "block"?: boolean;
+        /**
+          * @default ''
+         */
         "classNames"?: string;
+        /**
+          * @default ''
+         */
         "contentTxtSize"?: string;
+        /**
+          * @default []
+         */
         "data"?: Array<{ header: string; content: string }>;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "flush"?: boolean;
+        /**
+          * @default 'fas fa-angle-down'
+         */
         "icon"?: string;
+        /**
+          * @default false
+         */
         "outlined"?: boolean;
+        /**
+          * @default ''
+         */
         "parentId"?: string;
+        /**
+          * @default false
+         */
         "ripple"?: boolean;
+        /**
+          * @default false
+         */
         "singleOpen"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: string;
+        /**
+          * @default ''
+         */
         "variant"?: string;
     }
     interface AppWrapper {
         /**
           * Optional classNames (e.g. bg-primary, p-4)
+          * @default ''
          */
         "classNames"?: string;
     }
     interface AutocompleteMultipleSelections {
+        /**
+          * @default false
+         */
         "addBtn"?: boolean;
+        /**
+          * @default ''
+         */
         "addIcon"?: string;
+        /**
+          * @default true
+         */
         "addNewOnEnter"?: boolean;
+        /**
+          * @default ''
+         */
         "arialabelledBy"?: string;
+        /**
+          * @default true
+         */
         "autoSort"?: boolean;
+        /**
+          * @default ''
+         */
         "badgeInlineStyles"?: string;
+        /**
+          * @default ''
+         */
         "badgeShape"?: string;
+        /**
+          * @default ''
+         */
         "badgeVariant"?: string;
+        /**
+          * @default ''
+         */
         "clearIcon"?: string;
+        /**
+          * @default false
+         */
         "clearInputOnBlurOutside"?: boolean;
+        /**
+          * @default false
+         */
         "devMode"?: boolean;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
         /**
           * Can users add/delete options at runtime?
+          * @default false
          */
         "editable"?: boolean;
+        /**
+          * @default false
+         */
         "error"?: boolean;
+        /**
+          * @default ''
+         */
         "errorMessage"?: string;
+        /**
+          * @default ''
+         */
         "formId"?: string;
+        /**
+          * @default ''
+         */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol"?: number;
+        /**
+          * @default ''
+         */
         "inputCols"?: string;
+        /**
+          * @default ''
+         */
         "inputId"?: string;
+        /**
+          * @default ''
+         */
         "label"?: string;
+        /**
+          * @default ''
+         */
         "labelAlign"?: '' | 'right';
+        /**
+          * @default 2
+         */
         "labelCol"?: number;
         /**
           * Responsive columns (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")
+          * @default ''
          */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         /**
           * Field name for selected items; if it ends with [] one input per item is emitted.
          */
@@ -2609,7 +5164,13 @@ declare namespace LocalJSX {
         "onItemSelect"?: (event: AutocompleteMultipleSelectionsCustomEvent<string>) => void;
         "onMultiSelectChange"?: (event: AutocompleteMultipleSelectionsCustomEvent<string[]>) => void;
         "onOptionDelete"?: (event: AutocompleteMultipleSelectionsCustomEvent<string>) => void;
+        /**
+          * @default []
+         */
         "options"?: string[];
+        /**
+          * @default 'Type to search/filter...'
+         */
         "placeholder"?: string;
         /**
           * Keep the typed text after a selection? Default false (clear).
@@ -2619,44 +5180,141 @@ declare namespace LocalJSX {
           * Also submit whatever the user typed under this name (verbatim).
          */
         "rawInputName"?: string;
+        /**
+          * @default false
+         */
         "removeBtnBorder"?: boolean;
+        /**
+          * @default false
+         */
         "removeClearBtn"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "type"?: string;
+        /**
+          * @default false
+         */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMessage"?: string;
     }
     interface AutocompleteMultiselect {
+        /**
+          * @default false
+         */
         "addBtn"?: boolean;
+        /**
+          * @default ''
+         */
         "addIcon"?: string;
+        /**
+          * @default true
+         */
         "addNewOnEnter"?: boolean;
+        /**
+          * @default ''
+         */
         "arialabelledBy"?: string;
+        /**
+          * @default true
+         */
         "autoSort"?: boolean;
+        /**
+          * @default ''
+         */
         "badgeInlineStyles"?: string;
+        /**
+          * @default ''
+         */
         "badgeShape"?: string;
+        /**
+          * @default ''
+         */
         "badgeVariant"?: string;
+        /**
+          * @default ''
+         */
         "clearIcon"?: string;
+        /**
+          * @default false
+         */
         "clearInputOnBlurOutside"?: boolean;
+        /**
+          * @default false
+         */
         "devMode"?: boolean;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "editable"?: boolean;
+        /**
+          * @default false
+         */
         "error"?: boolean;
+        /**
+          * @default ''
+         */
         "errorMessage"?: string;
+        /**
+          * @default ''
+         */
         "formId"?: string;
+        /**
+          * @default ''
+         */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol"?: number;
+        /**
+          * @default ''
+         */
         "inputCols"?: string;
+        /**
+          * @default ''
+         */
         "inputId"?: string;
+        /**
+          * @default ''
+         */
         "label"?: string;
+        /**
+          * @default ''
+         */
         "labelAlign"?: '' | 'right';
+        /**
+          * @default 2
+         */
         "labelCol"?: number;
         /**
           * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+          * @default ''
          */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         "name"?: string;
         "onClear"?: (event: AutocompleteMultiselectCustomEvent<void>) => void;
         "onComponentError"?: (event: AutocompleteMultiselectCustomEvent<{ message: string; stack?: string }>) => void;
@@ -2671,234 +5329,731 @@ declare namespace LocalJSX {
     reason: 'add' | 'delete' | 'replace';
     value?: string; // the added/removed item, if applicable
   }>) => void;
+        /**
+          * @default []
+         */
         "options"?: string[];
+        /**
+          * @default 'Type to search/filter...'
+         */
         "placeholder"?: string;
         "preserveInputOnSelect"?: boolean;
         "rawInputName"?: string;
+        /**
+          * @default false
+         */
         "removeClearBtn"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "type"?: string;
+        /**
+          * @default false
+         */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMessage"?: string;
     }
     interface AutocompleteSingle {
+        /**
+          * @default ''
+         */
         "arialabelledBy"?: string;
+        /**
+          * @default true
+         */
         "autoSort"?: boolean;
+        /**
+          * @default ''
+         */
         "clearIcon"?: string;
+        /**
+          * @default false
+         */
         "devMode"?: boolean;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "error"?: boolean;
+        /**
+          * @default ''
+         */
         "errorMessage"?: string;
+        /**
+          * @default ''
+         */
         "formId"?: string;
+        /**
+          * @default ''
+         */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol"?: number;
+        /**
+          * @default ''
+         */
         "inputCols"?: string;
+        /**
+          * @default ''
+         */
         "inputId"?: string;
+        /**
+          * @default ''
+         */
         "label"?: string;
+        /**
+          * @default ''
+         */
         "labelAlign"?: '' | 'right';
         /**
           * Back-compat numeric columns
+          * @default 2
          */
         "labelCol"?: number;
         /**
           * Responsive column class specs
+          * @default ''
          */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         "onClear"?: (event: AutocompleteSingleCustomEvent<void>) => void;
         "onComponentError"?: (event: AutocompleteSingleCustomEvent<{ message: string; stack?: string }>) => void;
         "onItemSelect"?: (event: AutocompleteSingleCustomEvent<string>) => void;
+        /**
+          * @default []
+         */
         "options"?: string[];
+        /**
+          * @default 'Type to search/filter...'
+         */
         "placeholder"?: string;
+        /**
+          * @default false
+         */
         "removeClearBtn"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "type"?: string;
+        /**
+          * @default false
+         */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMessage"?: string;
     }
     interface BadgeComponent {
+        /**
+          * @default false
+         */
         "absolute"?: boolean;
         "ariaDescribedby"?: string;
         "ariaLabelledby"?: string;
+        /**
+          * @default ''
+         */
         "backgroundColor"?: string;
+        /**
+          * @default ''
+         */
         "bdgPosition"?: string;
+        /**
+          * @default false
+         */
         "bordered"?: boolean;
+        /**
+          * @default ''
+         */
         "bottom"?: string;
+        /**
+          * @default ''
+         */
         "classNames"?: string;
+        /**
+          * @default ''
+         */
         "color"?: string;
+        /**
+          * @default false
+         */
         "devMode"?: boolean;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "dot"?: boolean;
+        /**
+          * @default ''
+         */
         "elevation"?: string;
+        /**
+          * @default false
+         */
         "icon"?: boolean;
+        /**
+          * @default ''
+         */
         "inlineStyles"?: string;
+        /**
+          * @default false
+         */
         "inset"?: boolean;
+        /**
+          * @default 'Badge'
+         */
         "label"?: string;
+        /**
+          * @default ''
+         */
         "left"?: string;
+        /**
+          * @default '12'
+         */
         "offsetX"?: string;
+        /**
+          * @default '12'
+         */
         "offsetY"?: string;
         "onCustomClick"?: (event: BadgeComponentCustomEvent<any>) => void;
+        /**
+          * @default false
+         */
         "outlined"?: boolean;
+        /**
+          * @default false
+         */
         "pulse"?: boolean;
+        /**
+          * @default ''
+         */
         "right"?: string;
+        /**
+          * @default ''
+         */
         "shape"?: string;
+        /**
+          * @default ''
+         */
         "size"?: string;
+        /**
+          * @default ''
+         */
         "styles"?: string;
+        /**
+          * @default false
+         */
         "token"?: boolean;
+        /**
+          * @default ''
+         */
         "top"?: string;
+        /**
+          * @default ''
+         */
         "variant"?: string;
+        /**
+          * @default ''
+         */
         "zIndex"?: string;
     }
     interface BasicSliderComponent {
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "hideLeftTextBox"?: boolean;
+        /**
+          * @default false
+         */
         "hideRightTextBox"?: boolean;
+        /**
+          * @default false
+         */
         "hideTextBoxes"?: boolean;
+        /**
+          * @default ''
+         */
         "label"?: string;
+        /**
+          * @default 100
+         */
         "max"?: number;
+        /**
+          * @default 0
+         */
         "min"?: number;
         "onValueChange"?: (event: BasicSliderComponentCustomEvent<{ value: number }>) => void;
+        /**
+          * @default false
+         */
         "plumage"?: boolean;
+        /**
+          * @default false
+         */
         "sliderThumbLabel"?: boolean;
+        /**
+          * @default false
+         */
         "snapToTicks"?: boolean;
+        /**
+          * @default false
+         */
         "tickLabels"?: boolean;
         /**
           * Accepts array or JSON string in HTML
+          * @default []
          */
         "tickValues"?: number[] | string;
+        /**
+          * @default ''
+         */
         "ticks"?: number | '';
+        /**
+          * @default ''
+         */
         "unit"?: string;
+        /**
+          * @default 0
+         */
         "value"?: number;
+        /**
+          * @default ''
+         */
         "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface ButtonComponent {
+        /**
+          * @default false
+         */
         "absolute"?: boolean;
+        /**
+          * @default false
+         */
         "accordion"?: boolean;
+        /**
+          * @default false
+         */
         "active"?: boolean;
+        /**
+          * @default ''
+         */
         "ariaLabel"?: string;
+        /**
+          * @default false
+         */
         "block"?: boolean;
+        /**
+          * @default ''
+         */
         "bottom"?: string;
+        /**
+          * @default false
+         */
         "btnIcon"?: boolean;
+        /**
+          * @default ''
+         */
         "btnText"?: string;
+        /**
+          * @default ''
+         */
         "classNames"?: string;
+        /**
+          * @default false
+         */
         "devMode"?: boolean;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default ''
+         */
         "elevation"?: string;
+        /**
+          * @default false
+         */
         "end"?: boolean;
+        /**
+          * @default false
+         */
         "fixed"?: boolean;
+        /**
+          * @default false
+         */
         "groupBtn"?: boolean;
+        /**
+          * @default false
+         */
         "iconBtn"?: boolean;
+        /**
+          * @default false
+         */
         "isOpen"?: boolean;
+        /**
+          * @default ''
+         */
         "left"?: string;
+        /**
+          * @default false
+         */
         "link"?: boolean;
         "onCustomClick"?: (event: ButtonComponentCustomEvent<any>) => void;
+        /**
+          * @default false
+         */
         "outlined"?: boolean;
+        /**
+          * @default false
+         */
         "pressed"?: boolean | string;
+        /**
+          * @default ''
+         */
         "right"?: string;
+        /**
+          * @default false
+         */
         "ripple"?: boolean;
+        /**
+          * @default ''
+         */
         "shape"?: string;
+        /**
+          * @default ''
+         */
         "size"?: string;
+        /**
+          * @default 'none'
+         */
         "slotSide"?: 'left' | 'right' | 'none';
+        /**
+          * @default false
+         */
         "start"?: boolean;
+        /**
+          * @default false
+         */
         "stripped"?: boolean;
+        /**
+          * @default ''
+         */
         "styles"?: string;
+        /**
+          * @default ''
+         */
         "targetId"?: string;
+        /**
+          * @default false
+         */
         "text"?: boolean;
+        /**
+          * @default false
+         */
         "textBtn"?: boolean;
+        /**
+          * @default ''
+         */
         "titleAttr"?: string;
+        /**
+          * @default ''
+         */
         "top"?: string;
+        /**
+          * @default ''
+         */
         "url"?: string;
+        /**
+          * @default ''
+         */
         "variant"?: string;
+        /**
+          * @default false
+         */
         "vertical"?: boolean;
+        /**
+          * @default ''
+         */
         "zIndex"?: string;
     }
     interface ButtonGroup {
+        /**
+          * @default ''
+         */
         "ariaLabel"?: string;
+        /**
+          * @default ''
+         */
         "classNames"?: string;
+        /**
+          * @default false
+         */
         "vertical"?: boolean;
     }
     interface ByPagePaginationComponent {
         "controlId"?: string;
+        /**
+          * @default 1
+         */
         "currentPage"?: number;
+        /**
+          * @default ''
+         */
         "goToButtons"?: string;
         "onChange-page"?: (event: ByPagePaginationComponentCustomEvent<{ page: number }>) => void;
+        /**
+          * @default ''
+         */
         "paginationLayout"?: '' | 'center' | 'end';
+        /**
+          * @default false
+         */
         "plumage"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default 1
+         */
         "totalPages"?: number;
     }
     interface CardComponent {
+        /**
+          * @default false
+         */
         "actions"?: boolean;
+        /**
+          * @default ''
+         */
         "altText"?: string;
+        /**
+          * @default 'Card section'
+         */
         "ariaLabel"?: string;
+        /**
+          * @default '20'
+         */
         "cardMaxWidth"?: string;
+        /**
+          * @default ''
+         */
         "classNames"?: string;
+        /**
+          * @default ''
+         */
         "elevation"?: string;
+        /**
+          * @default false
+         */
         "img"?: boolean;
+        /**
+          * @default '11.25rem'
+         */
         "imgHeight"?: string;
+        /**
+          * @default ''
+         */
         "imgSrc"?: string;
+        /**
+          * @default ''
+         */
         "inlineStyles"?: string;
+        /**
+          * @default false
+         */
         "noFooter"?: boolean;
+        /**
+          * @default false
+         */
         "noHeader"?: boolean;
         "onCustomClick"?: (event: CardComponentCustomEvent<any>) => void;
         "tab"?: string;
     }
     interface CheckboxComponent {
+        /**
+          * @default false
+         */
         "checkbox"?: boolean;
+        /**
+          * @default false
+         */
         "checkboxGroup"?: boolean;
+        /**
+          * @default false
+         */
         "checked"?: boolean;
+        /**
+          * @default false
+         */
         "customCheckbox"?: boolean;
+        /**
+          * @default false
+         */
         "customCheckboxGroup"?: boolean;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default []
+         */
         "groupOptions"?: any;
+        /**
+          * @default ''
+         */
         "groupTitle"?: string;
+        /**
+          * @default ''
+         */
         "groupTitleSize"?: string;
+        /**
+          * @default false
+         */
         "inline"?: boolean;
+        /**
+          * @default ''
+         */
         "inputId"?: string;
+        /**
+          * @default ''
+         */
         "labelTxt"?: string;
+        /**
+          * @default ''
+         */
         "name"?: string;
+        /**
+          * @default false
+         */
         "noPadding"?: boolean;
         "onGroupChange"?: (event: CheckboxComponentCustomEvent<string[]>) => void;
         "onToggle"?: (event: CheckboxComponentCustomEvent<{ checked: boolean; value: string; inputId: string }>) => void;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: string;
+        /**
+          * @default false
+         */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMsg"?: string;
+        /**
+          * @default ''
+         */
         "value"?: string;
     }
     interface DateRangePickerComponent {
+        /**
+          * @default ''
+         */
         "appendId"?: string;
         /**
           * was `append`, renamed to avoid reserved name
+          * @default true
          */
         "appendProp"?: boolean;
+        /**
+          * @default ''
+         */
         "ariaLabel"?: string;
+        /**
+          * @default 'YYYY-MM-DD'
+         */
         "dateFormat"?: 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
         /**
           * '', 'horizontal', or 'inline'
+          * @default ''
          */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 'fas fa-calendar-alt'
+         */
         "icon"?: string;
+        /**
+          * @default 10
+         */
         "inputCol"?: number;
         /**
           * Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for input column when formLayout is "horizontal"
+          * @default ''
          */
         "inputCols"?: string;
+        /**
+          * @default 'drp'
+         */
         "inputId"?: string;
+        /**
+          * @default ' - '
+         */
         "joinBy"?: string;
+        /**
+          * @default 'Date Range Picker'
+         */
         "label"?: string;
         /**
           * Legacy numeric cols (fallback)
+          * @default 2
          */
         "labelCol"?: number;
         /**
           * Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for label column when formLayout is "horizontal"
+          * @default ''
          */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
         /**
           * Emits both human-readable (matches input/display) and ISO (YYYY-MM-DD) values
@@ -2913,31 +6068,65 @@ declare namespace LocalJSX {
           * External placeholder prop (immutable). We derive a default into state.
          */
         "placeholder"?: string;
+        /**
+          * @default false
+         */
         "plumage"?: boolean;
+        /**
+          * @default ''
+         */
         "prependId"?: string;
         /**
           * was `prepend`, renamed to avoid reserved name
+          * @default false
          */
         "prependProp"?: boolean;
         /**
           * Render only the picker (no input group); disables OK button
+          * @default false
          */
         "rangePicker"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default false
+         */
         "showIso"?: boolean;
+        /**
+          * @default false
+         */
         "showLong"?: boolean;
         /**
           * Allow host to control the OK/Close button; we'll mask it off when rangePicker = true
+          * @default true
          */
         "showOkButton"?: boolean;
         /**
           * Use these to control output format of start/end labels (display only)
+          * @default false
          */
         "showYmd"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "validation"?: boolean;
+        /**
+          * @default 'Required field'
+         */
         "validationMessage"?: string;
+        /**
+          * @default ''
+         */
         "value"?: string;
+        /**
+          * @default ''
+         */
         "warningMessage"?: string;
     }
     /**
@@ -2946,33 +6135,73 @@ declare namespace LocalJSX {
      * ISO / numeric / long display modes, and synchronized dropdown.
      */
     interface DateRangeTimePickerComponent {
+        /**
+          * @default ''
+         */
         "appendId"?: string;
+        /**
+          * @default true
+         */
         "appendProp"?: boolean;
+        /**
+          * @default ''
+         */
         "ariaLabel"?: string;
+        /**
+          * @default 'YYYY-MM-DD'
+         */
         "dateFormat"?: 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
         /**
           * '', 'horizontal', or 'inline'
+          * @default ''
          */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 'fas fa-calendar-alt'
+         */
         "icon"?: string;
         /**
           * Grid like date-range-picker-component
+          * @default 10
          */
         "inputCol"?: number;
+        /**
+          * @default ''
+         */
         "inputCols"?: string;
+        /**
+          * @default 'date-range-time'
+         */
         "inputId"?: string;
         /**
           * Time options
+          * @default true
          */
         "isTwentyFourHourFormat"?: boolean;
+        /**
+          * @default ' - '
+         */
         "joinBy"?: string;
+        /**
+          * @default 'Date and Time Picker'
+         */
         "label"?: string;
         /**
           * Grid like date-range-picker-component
+          * @default 2
          */
         "labelCol"?: number;
+        /**
+          * @default ''
+         */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
         "onDate-time-updated"?: (event: DateRangeTimePickerComponentCustomEvent<{
     startDate: string;
@@ -2989,369 +6218,987 @@ declare namespace LocalJSX {
           * External placeholder (immutable). We derive default into state.
          */
         "placeholder"?: string;
+        /**
+          * @default false
+         */
         "plumage"?: boolean;
+        /**
+          * @default ''
+         */
         "prependId"?: string;
+        /**
+          * @default false
+         */
         "prependProp"?: boolean;
         /**
           * Render only the picker; disables OK button
+          * @default false
          */
         "rangeTimePicker"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default false
+         */
         "showDuration"?: boolean;
+        /**
+          * @default false
+         */
         "showIso"?: boolean;
+        /**
+          * @default false
+         */
         "showLong"?: boolean;
         /**
           * Allow host to control the OK/Close button; masked when rangeTimePicker
+          * @default true
          */
         "showOkButton"?: boolean;
         /**
           * Output flags
+          * @default false
          */
         "showYmd"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "validation"?: boolean;
+        /**
+          * @default 'Required field'
+         */
         "validationMessage"?: string;
+        /**
+          * @default ''
+         */
         "value"?: string;
+        /**
+          * @default ''
+         */
         "warningMessage"?: string;
     }
     interface DatepickerComponent {
+        /**
+          * @default ''
+         */
         "appendId"?: string;
         /**
           * Reserved-name fixes kept
+          * @default true
          */
         "appendProp"?: boolean;
+        /**
+          * @default false
+         */
         "calendar"?: boolean;
+        /**
+          * @default new Date().getMonth()
+         */
         "currentMonth"?: number;
+        /**
+          * @default new Date().getFullYear()
+         */
         "currentYear"?: number;
+        /**
+          * @default 'YYYY-MM-DD'
+         */
         "dateFormat"?: 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "displayContextExamples"?: boolean;
+        /**
+          * @default false
+         */
         "dropdownOpen"?: boolean;
         /**
           * Layout & sizing
+          * @default ''
          */
         "formLayout"?: '' | 'horizontal' | 'inline';
         /**
           * Icon & ids
+          * @default 'fas fa-calendar-alt'
          */
         "icon"?: string;
+        /**
+          * @default 10
+         */
         "inputCol"?: number;
+        /**
+          * @default ''
+         */
         "inputCols"?: string;
+        /**
+          * @default 'datepicker'
+         */
         "inputId"?: string;
+        /**
+          * @default false
+         */
         "isCalendarFocused"?: boolean;
         /**
           * Label & placeholder
+          * @default 'Date Picker'
          */
         "label"?: string;
         /**
           * Legacy numeric cols (fallback)
+          * @default 2
          */
         "labelCol"?: number;
         /**
           * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+          * @default ''
          */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
+        /**
+          * @default ''
+         */
         "labelSize"?: '' | 'sm' | 'lg';
         "onDate-selected"?: (event: DatepickerComponentCustomEvent<{ formattedDate: string }>) => void;
+        /**
+          * @default 'YYYY-MM-DD'
+         */
         "placeholder"?: string;
         /**
           * Visual theme
+          * @default false
          */
         "plumage"?: boolean;
+        /**
+          * @default ''
+         */
         "prependId"?: string;
         /**
           * Prepend/append
+          * @default false
          */
         "prependProp"?: boolean;
         /**
           * Validation
+          * @default false
          */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMessage"?: string;
         /**
           * Value (kept for API parity)
+          * @default ''
          */
         "value"?: string;
+        /**
+          * @default ''
+         */
         "warningMessage"?: string;
     }
     interface DiscreteSliderComponent {
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "hideRightTextBox"?: boolean;
+        /**
+          * @default ''
+         */
         "label"?: string;
         "onIndexChange"?: (event: DiscreteSliderComponentCustomEvent<{ index: number }>) => void;
         "onValueChange"?: (event: DiscreteSliderComponentCustomEvent<{ value: string }>) => void;
+        /**
+          * @default false
+         */
         "plumage"?: boolean;
+        /**
+          * @default 0
+         */
         "selectedIndex"?: number;
         /**
           * Accepts array or JSON string in HTML
+          * @default []
          */
         "stringValues"?: string[] | string;
+        /**
+          * @default false
+         */
         "tickLabels"?: boolean;
+        /**
+          * @default ''
+         */
         "unit"?: string;
+        /**
+          * @default ''
+         */
         "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface DividerComponent {
+        /**
+          * @default false
+         */
         "dashed"?: boolean;
         "orientation"?: 'left' | 'right' | 'center';
         "orientationMargin"?: string;
+        /**
+          * @default false
+         */
         "plain"?: boolean;
         "styles"?: string;
+        /**
+          * @default 'horizontal'
+         */
         "type"?: 'horizontal' | 'vertical';
     }
     interface DropdownComponent {
+        /**
+          * @default false
+         */
         "alignMenuRight"?: boolean;
+        /**
+          * @default false
+         */
         "autoFocusSubmenu"?: boolean;
+        /**
+          * @default 'Dropdown'
+         */
         "buttonText"?: string;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default ''
+         */
         "icon"?: string;
+        /**
+          * @default false
+         */
         "iconDropdown"?: boolean;
         "iconSize"?: number;
+        /**
+          * @default ''
+         */
         "inputId"?: string;
+        /**
+          * @default 'default'
+         */
         "listType"?: string;
+        /**
+          * @default 0
+         */
         "menuOffsetY"?: number;
+        /**
+          * @default ''
+         */
         "name"?: string;
         "onItemSelected"?: (event: DropdownComponentCustomEvent<any>) => void;
+        /**
+          * @default []
+         */
         "options"?: DropdownItem[];
+        /**
+          * @default false
+         */
         "outlined"?: boolean;
+        /**
+          * @default false
+         */
         "ripple"?: boolean;
+        /**
+          * @default ''
+         */
         "shape"?: string;
+        /**
+          * @default ''
+         */
         "size"?: string;
+        /**
+          * @default 'default'
+         */
         "subMenuListType"?: string;
+        /**
+          * @default 0
+         */
         "submenuOffsetX"?: number;
+        /**
+          * @default ''
+         */
         "tableId"?: string;
+        /**
+          * @default ''
+         */
         "titleAttr"?: string;
+        /**
+          * @default ''
+         */
         "value"?: string;
+        /**
+          * @default 'default'
+         */
         "variant"?: string;
     }
     interface FormComponent {
         /**
           * Native form attributes
+          * @default ''
          */
         "action"?: string;
         /**
           * Optional border/box styling
+          * @default ''
          */
         "bcolor"?: string;
         "bradius"?: number;
+        /**
+          * @default ''
+         */
         "bstyle"?: string;
         "bwidth"?: number;
         /**
           * Render a fieldset wrapper (with optional legend)
+          * @default false
          */
         "fieldset"?: boolean;
+        /**
+          * @default ''
+         */
         "formId"?: string;
         /**
           * Layout + identity used by slotted children
+          * @default ''
          */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default false
+         */
         "legend"?: boolean;
+        /**
+          * @default 'left'
+         */
         "legendPosition"?: 'left' | 'center' | 'right' | string;
+        /**
+          * @default 'Add Title Here'
+         */
         "legendTxt"?: string;
+        /**
+          * @default ''
+         */
         "method"?: string;
         /**
           * If true, do not render a <form>. Inputs placed outside the form can still read formId via closest('form-component') and set their own form attribute.
+          * @default false
          */
         "outsideOfForm"?: boolean;
         /**
           * Additional inline styles to append (CSS string)
+          * @default ''
          */
         "styles"?: string;
     }
     interface IconComponent {
         "color"?: string;
+        /**
+          * @default ''
+         */
         "icon"?: string;
+        /**
+          * @default true
+         */
         "iconAriaHidden"?: boolean;
         "iconAriaLabel"?: string;
+        /**
+          * @default ''
+         */
         "iconMargin"?: string;
         "iconSize"?: number;
+        /**
+          * @default ''
+         */
         "size"?: string;
+        /**
+          * @default false
+         */
         "svg"?: boolean;
+        /**
+          * @default false
+         */
         "tokenIcon"?: boolean;
     }
     interface InputFieldComponent {
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default ''
+         */
         "formId"?: string;
+        /**
+          * @default ''
+         */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol"?: number;
+        /**
+          * @default ''
+         */
         "inputCols"?: string;
+        /**
+          * @default ''
+         */
         "inputId"?: string;
+        /**
+          * @default ''
+         */
         "label"?: string;
+        /**
+          * @default ''
+         */
         "labelAlign"?: '' | 'right';
         /**
           * Legacy numeric cols (fallback)
+          * @default 2
          */
         "labelCol"?: number;
         /**
           * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+          * @default ''
          */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize"?: '' | 'xs' | 'sm' | 'lg';
         "onValueChange"?: (event: InputFieldComponentCustomEvent<string>) => void;
         "placeholder"?: string;
+        /**
+          * @default false
+         */
         "readOnly"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default 'text'
+         */
         "type"?: string;
+        /**
+          * @default false
+         */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMessage"?: string;
+        /**
+          * @default ''
+         */
         "value"?: string;
     }
     interface InputGroupComponent {
         "appendIcon"?: string;
+        /**
+          * @default ''
+         */
         "appendId"?: string;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default ''
+         */
         "formId"?: string;
+        /**
+          * @default ''
+         */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default false
+         */
         "hasAppend"?: boolean;
+        /**
+          * @default false
+         */
         "hasPrepend"?: boolean;
+        /**
+          * @default ''
+         */
         "icon"?: string;
+        /**
+          * @default 10
+         */
         "inputCol"?: number;
+        /**
+          * @default ''
+         */
         "inputCols"?: string;
+        /**
+          * @default ''
+         */
         "inputId"?: string;
         /**
           * Kept for API parity; use `size` for visual sizing
+          * @default ''
          */
         "inputSize"?: string;
+        /**
+          * @default ''
+         */
         "label"?: string;
         /**
+          * @default ''
+         */
+        "labelAlign"?: '' | 'right';
+        /**
           * Legacy numeric cols (fallback)
+          * @default 2
          */
         "labelCol"?: number;
         /**
           * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
+          * @default ''
          */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         "onValueChange"?: (event: InputGroupComponentCustomEvent<{ value: string }>) => void;
+        /**
+          * @default false
+         */
         "otherContent"?: boolean;
+        /**
+          * @default ''
+         */
         "placeholder"?: string;
         "prependIcon"?: string;
+        /**
+          * @default ''
+         */
         "prependId"?: string;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "type"?: string;
         /**
           * External validation flag (rendered with UX overrides)
+          * @default false
          */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMessage"?: string;
         /**
           * External value (mutable for back-compat)
+          * @default ''
          */
         "value"?: string;
     }
     interface MinimizePaginationComponent {
         "controlId"?: string;
+        /**
+          * @default 1
+         */
         "currentPage"?: number;
+        /**
+          * @default ''
+         */
         "goToButtons"?: string;
         "onChange-page"?: (event: MinimizePaginationComponentCustomEvent<{ page: number }>) => void;
+        /**
+          * @default ''
+         */
         "paginationLayout"?: '' | 'center' | 'end';
+        /**
+          * @default false
+         */
         "plumage"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default 1
+         */
         "totalPages"?: number;
     }
     interface ModalComponent {
+        /**
+          * @default ''
+         */
         "ariaLabel"?: string;
+        /**
+          * @default false
+         */
         "block"?: boolean;
+        /**
+          * @default 'Launch demo modal'
+         */
         "btnText"?: string;
+        /**
+          * @default 'Close'
+         */
         "cancelCloseBtn"?: string;
+        /**
+          * @default ''
+         */
         "classNames"?: string;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "link"?: boolean;
         "modalFullScreen"?: 'fullscreen' | 'sm-down' | 'md-down' | 'lg-down' | 'xl-down' | 'xxl-down';
         "modalId"?: string;
         "modalSize"?: 'sm' | 'lg' | 'xl';
+        /**
+          * @default 'Modal title'
+         */
         "modalTitle"?: string;
+        /**
+          * @default false
+         */
         "outlined"?: boolean;
+        /**
+          * @default false
+         */
         "ripple"?: boolean;
+        /**
+          * @default false
+         */
         "scrollLongContent"?: boolean;
+        /**
+          * @default false
+         */
         "scrollableBody"?: boolean;
+        /**
+          * @default ''
+         */
         "shape"?: string;
+        /**
+          * @default ''
+         */
         "size"?: string;
+        /**
+          * @default ''
+         */
         "titleAttr"?: string;
+        /**
+          * @default ''
+         */
         "variant"?: string;
+        /**
+          * @default false
+         */
         "verticallyCentered"?: boolean;
     }
     interface MultiRangeSliderComponent {
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "hideLeftTextBox"?: boolean;
+        /**
+          * @default false
+         */
         "hideRightTextBox"?: boolean;
+        /**
+          * @default false
+         */
         "hideTextBoxes"?: boolean;
+        /**
+          * @default ''
+         */
         "label"?: string;
+        /**
+          * @default 25
+         */
         "lowerValue"?: number;
+        /**
+          * @default 100
+         */
         "max"?: number;
+        /**
+          * @default 0
+         */
         "min"?: number;
         "onRangeChange"?: (event: MultiRangeSliderComponentCustomEvent<{ lowerValue: number; upperValue: number }>) => void;
+        /**
+          * @default false
+         */
         "plumage"?: boolean;
+        /**
+          * @default false
+         */
         "sliderThumbLabel"?: boolean;
+        /**
+          * @default false
+         */
         "snapToTicks"?: boolean;
+        /**
+          * @default false
+         */
         "tickLabels"?: boolean;
         /**
           * Accepts array or JSON string in HTML
+          * @default []
          */
         "tickValues"?: number[] | string;
+        /**
+          * @default ''
+         */
         "unit"?: string;
+        /**
+          * @default 75
+         */
         "upperValue"?: number;
+        /**
+          * @default ''
+         */
         "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface PaginationComponent {
+        /**
+          * @default 1
+         */
         "currentPage"?: number;
+        /**
+          * @default ''
+         */
         "goToButtons"?: string;
+        /**
+          * @default false
+         */
         "hideEllipsis"?: boolean;
+        /**
+          * @default false
+         */
         "hideGotoEndButtons"?: boolean;
+        /**
+          * @default 3
+         */
         "limit"?: number;
         "onPage-changed"?: (event: PaginationComponentCustomEvent<{ page: number; pageSize: number }>) => void;
         "onPage-size-changed"?: (event: PaginationComponentCustomEvent<{ pageSize: number }>) => void;
+        /**
+          * @default 10
+         */
         "pageSize"?: number;
+        /**
+          * @default [10, 20, 50, 100, 'All']
+         */
         "pageSizeOptions"?: Array<number | 'All'>;
+        /**
+          * @default ''
+         */
         "paginationLayout"?: '' | 'start' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right';
+        /**
+          * @default ''
+         */
         "paginationVariantColor"?: string;
+        /**
+          * @default false
+         */
         "plumage"?: boolean;
+        /**
+          * @default 'bottom'
+         */
         "position"?: 'top' | 'bottom' | 'both';
+        /**
+          * @default false
+         */
         "showDisplayRange"?: boolean;
+        /**
+          * @default false
+         */
         "showSizeChanger"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "tableId"?: string;
+        /**
+          * @default 1
+         */
         "totalPages"?: number;
+        /**
+          * @default 0
+         */
         "totalRows"?: number;
+        /**
+          * @default false
+         */
         "useByPagePagination"?: boolean;
+        /**
+          * @default false
+         */
         "useMinimizePagination"?: boolean;
     }
     interface PlumageAutocompleteMultipleSelectionsComponent {
+        /**
+          * @default false
+         */
         "addBtn"?: boolean;
+        /**
+          * @default ''
+         */
         "addIcon"?: string;
+        /**
+          * @default true
+         */
         "addNewOnEnter"?: boolean;
+        /**
+          * @default ''
+         */
         "arialabelledBy"?: string;
+        /**
+          * @default true
+         */
         "autoSort"?: boolean;
+        /**
+          * @default ''
+         */
         "badgeInlineStyles"?: string;
+        /**
+          * @default ''
+         */
         "badgeShape"?: string;
+        /**
+          * @default ''
+         */
         "badgeVariant"?: string;
+        /**
+          * @default ''
+         */
         "clearIcon"?: string;
+        /**
+          * @default false
+         */
         "clearInputOnBlurOutside"?: boolean;
+        /**
+          * @default false
+         */
         "devMode"?: boolean;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "editable"?: boolean;
+        /**
+          * @default false
+         */
         "error"?: boolean;
+        /**
+          * @default ''
+         */
         "errorMessage"?: string;
+        /**
+          * @default ''
+         */
         "formId"?: string;
+        /**
+          * @default ''
+         */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol"?: number;
+        /**
+          * @default ''
+         */
         "inputCols"?: string;
+        /**
+          * @default ''
+         */
         "inputId"?: string;
+        /**
+          * @default ''
+         */
         "label"?: string;
+        /**
+          * @default ''
+         */
         "labelAlign"?: '' | 'right';
+        /**
+          * @default 2
+         */
         "labelCol"?: number;
         /**
           * Responsive columns
+          * @default ''
          */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         /**
           * Submit names
          */
@@ -3366,54 +7213,155 @@ declare namespace LocalJSX {
     reason: 'add' | 'delete' | 'replace';
     value?: string;
   }>) => void;
+        /**
+          * @default []
+         */
         "options"?: string[];
+        /**
+          * @default 'Type to search/filter...'
+         */
         "placeholder"?: string;
         /**
           * Behavior switches
          */
         "preserveInputOnSelect"?: boolean;
         "rawInputName"?: string;
+        /**
+          * @default false
+         */
         "removeBtnBorder"?: boolean;
+        /**
+          * @default false
+         */
         "removeClearBtn"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "type"?: string;
         /**
           * Validation controlled externally; mirrored to state for visuals.
+          * @default false
          */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMessage"?: string;
     }
     interface PlumageAutocompleteMultiselectComponent {
+        /**
+          * @default false
+         */
         "addBtn"?: boolean;
+        /**
+          * @default ''
+         */
         "addIcon"?: string;
+        /**
+          * @default true
+         */
         "addNewOnEnter"?: boolean;
+        /**
+          * @default ''
+         */
         "arialabelledBy"?: string;
+        /**
+          * @default true
+         */
         "autoSort"?: boolean;
+        /**
+          * @default ''
+         */
         "badgeInlineStyles"?: string;
+        /**
+          * @default ''
+         */
         "badgeShape"?: string;
+        /**
+          * @default ''
+         */
         "badgeVariant"?: string;
+        /**
+          * @default ''
+         */
         "clearIcon"?: string;
+        /**
+          * @default false
+         */
         "clearInputOnBlurOutside"?: boolean;
+        /**
+          * @default false
+         */
         "devMode"?: boolean;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "editable"?: boolean;
+        /**
+          * @default false
+         */
         "error"?: boolean;
+        /**
+          * @default ''
+         */
         "errorMessage"?: string;
+        /**
+          * @default ''
+         */
         "formId"?: string;
+        /**
+          * @default ''
+         */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol"?: number;
+        /**
+          * @default ''
+         */
         "inputCols"?: string;
+        /**
+          * @default ''
+         */
         "inputId"?: string;
+        /**
+          * @default ''
+         */
         "label"?: string;
+        /**
+          * @default ''
+         */
         "labelAlign"?: '' | 'right';
+        /**
+          * @default 2
+         */
         "labelCol"?: number;
         /**
           * Responsive column class specs
+          * @default ''
          */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         /**
           * Submit names
          */
@@ -3428,206 +7376,501 @@ declare namespace LocalJSX {
     reason: 'add' | 'delete' | 'replace';
     value?: string;
   }>) => void;
+        /**
+          * @default []
+         */
         "options"?: string[];
+        /**
+          * @default 'Type to search/filter...'
+         */
         "placeholder"?: string;
         /**
           * Behavior switches
          */
         "preserveInputOnSelect"?: boolean;
         "rawInputName"?: string;
+        /**
+          * @default false
+         */
         "removeClearBtn"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "type"?: string;
         /**
           * Validation controlled externally; we mirror to state for visuals (don’t mutate prop in user-land).
+          * @default false
          */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMessage"?: string;
     }
     interface PlumageAutocompleteSingle {
         /**
           * id(s) of label(s) that label this input (space-separated).
+          * @default ''
          */
         "arialabelledBy"?: string;
+        /**
+          * @default true
+         */
         "autoSort"?: boolean;
+        /**
+          * @default ''
+         */
         "clearIcon"?: string;
+        /**
+          * @default false
+         */
         "devMode"?: boolean;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "error"?: boolean;
+        /**
+          * @default ''
+         */
         "errorMessage"?: string;
+        /**
+          * @default ''
+         */
         "formId"?: string;
+        /**
+          * @default ''
+         */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol"?: number;
+        /**
+          * @default ''
+         */
         "inputCols"?: string;
+        /**
+          * @default ''
+         */
         "inputId"?: string;
+        /**
+          * @default ''
+         */
         "label"?: string;
+        /**
+          * @default ''
+         */
         "labelAlign"?: '' | 'right';
         /**
           * Numeric fallback columns
+          * @default 2
          */
         "labelCol"?: number;
         /**
           * Responsive column class specs
+          * @default ''
          */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         "onClear"?: (event: PlumageAutocompleteSingleCustomEvent<void>) => void;
         "onComponentError"?: (event: PlumageAutocompleteSingleCustomEvent<{ message: string; stack?: string }>) => void;
         "onItemSelect"?: (event: PlumageAutocompleteSingleCustomEvent<string>) => void;
         "onValueChange"?: (event: PlumageAutocompleteSingleCustomEvent<string>) => void;
+        /**
+          * @default []
+         */
         "options"?: string[];
         "placeholder"?: string;
+        /**
+          * @default false
+         */
         "removeClearBtn"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default 'text'
+         */
         "type"?: string;
         /**
           * Validation controlled externally (prop remains source of truth)
+          * @default false
          */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMessage"?: string;
         /**
           * Value controlled externally (don’t mutate the prop)
+          * @default ''
          */
         "value"?: string;
     }
     interface PlumageInputFieldComponent {
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default ''
+         */
         "formId"?: string;
+        /**
+          * @default ''
+         */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol"?: number;
+        /**
+          * @default ''
+         */
         "inputCols"?: string;
+        /**
+          * @default ''
+         */
         "inputId"?: string;
+        /**
+          * @default ''
+         */
         "label"?: string;
+        /**
+          * @default ''
+         */
         "labelAlign"?: '' | 'right';
         /**
           * Legacy numeric cols (fallback)
+          * @default 2
          */
         "labelCol"?: number;
         /**
           * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+          * @default ''
          */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
         "onValueChange"?: (event: PlumageInputFieldComponentCustomEvent<string>) => void;
         "placeholder"?: string;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default 'text'
+         */
         "type"?: string;
+        /**
+          * @default false
+         */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMessage"?: string;
+        /**
+          * @default ''
+         */
         "value"?: string;
     }
     interface PlumageInputGroupComponent {
         /**
-          * NEW names replacing append/prepend
+          * Side fields: support BOTH old and new attribute spellings. Current attributes: prepend/append Legacy attributes:  prepend-field/append-field
+          * @default false
          */
         "appendField"?: boolean;
         "appendIcon"?: string;
+        /**
+          * @default ''
+         */
         "appendId"?: string;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default ''
+         */
         "formId"?: string;
+        /**
+          * @default ''
+         */
         "formLayout"?: '' | 'horizontal' | 'inline';
         /**
           * Side options
+          * @default ''
          */
         "icon"?: string;
+        /**
+          * @default 10
+         */
         "inputCol"?: number;
+        /**
+          * @default ''
+         */
         "inputCols"?: string;
+        /**
+          * @default ''
+         */
         "inputId"?: string;
+        /**
+          * @default ''
+         */
         "label"?: string;
+        /**
+          * @default ''
+         */
         "labelAlign"?: '' | 'right';
         /**
           * Legacy numeric cols (fallback)
+          * @default 2
          */
         "labelCol"?: number;
         /**
           * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+          * @default ''
          */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
+        "legacyAppendField"?: boolean;
+        /**
+          * @default false
+         */
+        "legacyPrependField"?: boolean;
         "onValueChange"?: (event: PlumageInputGroupComponentCustomEvent<string>) => void;
+        /**
+          * @default false
+         */
         "otherContent"?: boolean;
         "placeholder"?: string;
         /**
           * Search variant
+          * @default false
          */
         "plumageSearch"?: boolean;
+        /**
+          * @default false
+         */
         "prependField"?: boolean;
         "prependIcon"?: string;
+        /**
+          * @default ''
+         */
         "prependId"?: string;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default 'text'
+         */
         "type"?: string;
         /**
           * Validation controlled externally (don’t mutate)
+          * @default false
          */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMessage"?: string;
         /**
           * Value controlled externally (don’t mutate)
+          * @default ''
          */
         "value"?: string;
     }
     interface PlumageSelectFieldComponent {
+        /**
+          * @default ''
+         */
         "classes"?: string;
+        /**
+          * @default false
+         */
         "custom"?: boolean;
+        /**
+          * @default 'Select an option'
+         */
         "defaultOptionTxt"?: string;
+        /**
+          * @default ''
+         */
         "defaultTxt"?: string;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default null
+         */
         "fieldHeight"?: number;
+        /**
+          * @default ''
+         */
         "formId"?: string;
+        /**
+          * @default ''
+         */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol"?: number;
+        /**
+          * @default ''
+         */
         "inputCols"?: string;
+        /**
+          * @default ''
+         */
         "label"?: string;
+        /**
+          * @default ''
+         */
+        "labelAlign"?: '' | 'right';
+        /**
+          * @default 2
+         */
         "labelCol"?: number;
+        /**
+          * @default ''
+         */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'default' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "multiple"?: boolean;
         "onValueChange"?: (event: PlumageSelectFieldComponentCustomEvent<string | string[]>) => void;
+        /**
+          * @default []
+         */
         "options"?: Array<{ value: string; name: string }> | string;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "selectFieldId"?: string;
+        /**
+          * @default false
+         */
         "selected"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMessage"?: string;
+        /**
+          * @default ''
+         */
         "value"?: string | string[];
+        /**
+          * @default false
+         */
         "withTable"?: boolean;
     }
     interface PlumageTimepickerComponent {
         /**
           * Accessible label for the input
+          * @default 'Time Picker'
          */
         "ariaLabel"?: string;
         /**
           * ID of the external label element (for aria-labelledby)
+          * @default 'time-label'
          */
         "ariaLabelledby"?: string;
         /**
           * (Used in Lit markup for underline states)
+          * @default false
          */
         "disabled"?: boolean;
         /**
           * Hide seconds UI / value
+          * @default false
          */
         "hideSeconds"?: boolean;
         /**
           * Hide the toggle/launch button for the timepicker popover
+          * @default false
          */
         "hideTimepickerBtn"?: boolean;
         /**
           * (Renamed from reserved `id`) ID passed to the internal input
+          * @default 'time-input'
          */
         "inputId"?: string;
         /**
           * Name attribute for the inner input
+          * @default 'time'
          */
         "inputName"?: string;
         /**
@@ -3636,39 +7879,61 @@ declare namespace LocalJSX {
         "inputWidth"?: number | string;
         /**
           * Use 24-hour format by default (mutable: toggled by the component)
+          * @default true
          */
         "isTwentyFourHourFormat"?: boolean;
         /**
           * Whether the current value is considered valid (mutable: set by validation)
+          * @default true
          */
         "isValid"?: boolean;
+        /**
+          * @default 'Enter Time'
+         */
         "labelText"?: string;
         "showLabel"?: boolean;
         /**
           * Optional size variant: '', 'sm', 'lg'
+          * @default ''
          */
         "size"?: string;
         /**
           * Force show only 12-hour controls/options
+          * @default false
          */
         "twelveHourOnly"?: boolean;
         /**
           * Force show only 24-hour controls/options
+          * @default false
          */
         "twentyFourHourOnly"?: boolean;
         /**
           * (Used in Lit markup for underline states)
+          * @default false
          */
         "validation"?: boolean;
         /**
           * Validation message to show (mutable: set/cleared by the component)
+          * @default ''
          */
         "validationMessage"?: string;
     }
     interface PopoverComponent {
+        /**
+          * @default false
+         */
         "arrowOff"?: boolean;
+        /**
+          * @default `Default popover content. Use the 'content' attribute to change this text.`
+         */
         "content"?: string;
+        /**
+          * @default ''
+         */
         "customClass"?: string;
+        /**
+          * @default 'flip'
+         */
         "fallbackPlacement"?: | 'flip'
     | 'clockwise'
     | 'counterclockwise'
@@ -3703,33 +7968,58 @@ declare namespace LocalJSX {
         | 'righttop'
         | 'rightbottom'
       >;
+        /**
+          * @default 0
+         */
         "offset"?: number;
+        /**
+          * @default 'auto'
+         */
         "placement"?: 'auto' | 'top' | 'bottom' | 'left' | 'right' | 'topright' | 'topleft' | 'bottomright' | 'bottomleft' | 'lefttop' | 'leftbottom' | 'righttop' | 'rightbottom';
+        /**
+          * @default false
+         */
         "plumage"?: boolean;
         /**
           * Keep external attribute name `title`, but avoid reserved prop name.
+          * @default ''
          */
         "popoverTitle"?: string;
         /**
           * Lit's `super` -> internal `superTooltip`, attribute remains `super`.
+          * @default false
          */
         "superTooltip"?: boolean;
         /**
           * String id or direct HTMLElement
          */
         "target"?: string | HTMLElement;
+        /**
+          * @default 'click'
+         */
         "trigger"?: 'click' | 'hover' | 'focus' | `${'click' | 'hover' | 'focus'} ${'click' | 'hover' | 'focus'}`;
+        /**
+          * @default ''
+         */
         "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+        /**
+          * @default false
+         */
         "visible"?: boolean;
+        /**
+          * @default 0
+         */
         "yOffset"?: number;
     }
     interface ProgressDisplayComponent {
         /**
           * Immutable public API
+          * @default false
          */
         "animated"?: boolean;
         /**
           * Accepts JSON string (HTML attr) or array (JS)
+          * @default []
          */
         "bars"?: | Array<{
         value: number;
@@ -3743,132 +8033,386 @@ declare namespace LocalJSX {
         showValue?: boolean;
       }>
     | string;
+        /**
+          * @default false
+         */
         "circular"?: boolean;
+        /**
+          * @default 20
+         */
         "height"?: number;
+        /**
+          * @default false
+         */
         "indeterminate"?: boolean;
+        /**
+          * @default false
+         */
         "lineCap"?: boolean;
+        /**
+          * @default 100
+         */
         "max"?: number;
+        /**
+          * @default false
+         */
         "multi"?: boolean;
+        /**
+          * @default 0
+         */
         "precision"?: number;
+        /**
+          * @default ''
+         */
         "progressAlign"?: '' | 'left' | 'right';
         "rotate"?: number;
+        /**
+          * @default false
+         */
         "showProgress"?: boolean;
+        /**
+          * @default false
+         */
         "showValue"?: boolean;
+        /**
+          * @default 80
+         */
         "size"?: number;
+        /**
+          * @default false
+         */
         "striped"?: boolean;
+        /**
+          * @default 4
+         */
         "strokeWidth"?: number;
+        /**
+          * @default ''
+         */
         "styles"?: string;
+        /**
+          * @default 0
+         */
         "value"?: number;
+        /**
+          * @default ''
+         */
         "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface RadioInputComponent {
+        /**
+          * @default false
+         */
         "customRadio"?: boolean;
+        /**
+          * @default false
+         */
         "customRadioGroup"?: boolean;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default []
+         */
         "groupOptions"?: any;
+        /**
+          * @default ''
+         */
         "groupTitle"?: string;
+        /**
+          * @default ''
+         */
         "groupTitleSize"?: string;
+        /**
+          * @default false
+         */
         "inline"?: boolean;
+        /**
+          * @default ''
+         */
         "inputId"?: string;
+        /**
+          * @default ''
+         */
         "labelTxt"?: string;
+        /**
+          * @default ''
+         */
         "name"?: string;
         "onGroupChange"?: (event: RadioInputComponentCustomEvent<string>) => void;
+        /**
+          * @default false
+         */
         "radio"?: boolean;
+        /**
+          * @default false
+         */
         "radioGroup"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: string;
+        /**
+          * @default false
+         */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMsg"?: string;
+        /**
+          * @default ''
+         */
         "value"?: string;
     }
     interface SelectFieldComponent {
+        /**
+          * @default ''
+         */
         "classes"?: string;
+        /**
+          * @default false
+         */
         "custom"?: boolean;
+        /**
+          * @default 'Select an option'
+         */
         "defaultOptionTxt"?: string;
+        /**
+          * @default ''
+         */
         "defaultTxt"?: string;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
         /**
           * Native <select size>; useful for visually taller lists (single or multiple)
+          * @default null
          */
         "fieldHeight"?: number;
+        /**
+          * @default ''
+         */
         "formId"?: string;
+        /**
+          * @default ''
+         */
         "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
         "inputCol"?: number;
+        /**
+          * @default ''
+         */
         "inputCols"?: string;
+        /**
+          * @default ''
+         */
         "label"?: string;
+        /**
+          * @default ''
+         */
         "labelAlign"?: '' | 'right';
         /**
           * Legacy numeric cols (fallback)
+          * @default 2
          */
         "labelCol"?: number;
         /**
           * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")
+          * @default ''
          */
         "labelCols"?: string;
+        /**
+          * @default false
+         */
         "labelHidden"?: boolean;
-        "labelSize"?: '' | 'sm' | 'default' | 'lg';
+        /**
+          * @default 'sm'
+         */
+        "labelSize"?: '' | 'xs' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "multiple"?: boolean;
         "onValueChange"?: (event: SelectFieldComponentCustomEvent<{ value: string | string[] }>) => void;
+        /**
+          * @default []
+         */
         "options"?: Array<{ value: string; name: string }> | string;
+        /**
+          * @default false
+         */
         "required"?: boolean;
         /**
           * ID attribute for the <select> (Lit: selectFieldId)
+          * @default ''
          */
         "selectFieldId"?: string;
+        /**
+          * @default false
+         */
         "selected"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMessage"?: string;
         /**
           * Single: string; Multiple: string[]
+          * @default 'none'
          */
         "value"?: string | string[];
         /**
           * When used with a table, sync with external sort events
+          * @default false
          */
         "withTable"?: boolean;
     }
     interface SliderManagerComponent {
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "hideLeftTextBox"?: boolean;
+        /**
+          * @default false
+         */
         "hideRightTextBox"?: boolean;
+        /**
+          * @default false
+         */
         "hideTextBoxes"?: boolean;
+        /**
+          * @default ''
+         */
         "label"?: string;
+        /**
+          * @default 25
+         */
         "lowerValue"?: number;
+        /**
+          * @default 100
+         */
         "max"?: number;
+        /**
+          * @default 0
+         */
         "min"?: number;
+        /**
+          * @default false
+         */
         "plumage"?: boolean;
+        /**
+          * @default 0
+         */
         "selectedIndex"?: number;
+        /**
+          * @default false
+         */
         "sliderThumbLabel"?: boolean;
+        /**
+          * @default false
+         */
         "snapToTicks"?: boolean;
+        /**
+          * @default []
+         */
         "stringValues"?: string[];
+        /**
+          * @default false
+         */
         "tickLabels"?: boolean;
+        /**
+          * @default []
+         */
         "tickValues"?: number[];
         /**
           * 'basic' | 'multi' | 'discrete'
+          * @default 'basic'
          */
         "type"?: 'basic' | 'multi' | 'discrete';
+        /**
+          * @default ''
+         */
         "unit"?: string;
+        /**
+          * @default 75
+         */
         "upperValue"?: number;
+        /**
+          * @default 0
+         */
         "value"?: number;
+        /**
+          * @default ''
+         */
         "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface StandardPaginationComponent {
+        /**
+          * @default 1
+         */
         "currentPage"?: number;
+        /**
+          * @default ''
+         */
         "goToButtons"?: string;
+        /**
+          * @default false
+         */
         "hideEllipsis"?: boolean;
+        /**
+          * @default false
+         */
         "hideGotoEndButtons"?: boolean;
+        /**
+          * @default 3
+         */
         "limit"?: number;
         "onChange-page"?: (event: StandardPaginationComponentCustomEvent<{ page: number }>) => void;
+        /**
+          * @default ''
+         */
         "paginationLayout"?: '' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right';
+        /**
+          * @default ''
+         */
         "paginationVariantColor"?: string;
+        /**
+          * @default false
+         */
         "plumage"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default 1
+         */
         "totalPages"?: number;
     }
     interface SvgComponent {
         /**
           * Fill color applied to slotted <svg>. Defaults to 'currentColor'.
+          * @default 'currentColor'
          */
         "fill"?: string;
         /**
@@ -3885,6 +8429,7 @@ declare namespace LocalJSX {
         "svgAriaLabel"?: string;
         /**
           * Optional margin wrapper around the slotted <svg>: '', 'left', or 'right'.
+          * @default ''
          */
         "svgMargin"?: '' | 'left' | 'right';
         /**
@@ -3893,85 +8438,244 @@ declare namespace LocalJSX {
         "width"?: number;
     }
     interface TableComponent {
+        /**
+          * @default false
+         */
         "border"?: boolean;
+        /**
+          * @default false
+         */
         "bordered"?: boolean;
+        /**
+          * @default false
+         */
         "borderless"?: boolean;
+        /**
+          * @default ''
+         */
         "caption"?: '' | 'top' | 'bottom';
+        /**
+          * @default false
+         */
         "cloneFooter"?: boolean;
+        /**
+          * @default 1
+         */
         "currentPage"?: number;
+        /**
+          * @default false
+         */
         "dark"?: boolean;
+        /**
+          * @default ''
+         */
         "dropdownId"?: string;
+        /**
+          * @default []
+         */
         "expandedRows"?: number[];
+        /**
+          * @default []
+         */
         "fields"?: Field[];
+        /**
+          * @default ''
+         */
         "filterText"?: string;
+        /**
+          * @default false
+         */
         "fixed"?: boolean;
+        /**
+          * @default ''
+         */
         "goToButtons"?: string;
+        /**
+          * @default false
+         */
         "headerDark"?: boolean;
+        /**
+          * @default false
+         */
         "headerLight"?: boolean;
+        /**
+          * @default false
+         */
         "hideEllipsis"?: boolean;
+        /**
+          * @default false
+         */
         "hideGotoEndButtons"?: boolean;
+        /**
+          * @default false
+         */
         "hover"?: boolean;
+        /**
+          * @default []
+         */
         "items"?: any[];
+        /**
+          * @default false
+         */
         "noBorderCollapsed"?: boolean;
         "onRow-selected"?: (event: TableComponentCustomEvent<any[]>) => void;
         "onSort-changed"?: (event: TableComponentCustomEvent<{ field: string; order: string }>) => void;
         "onSort-field-updated"?: (event: TableComponentCustomEvent<{ value: string }>) => void;
         "onSort-order-updated"?: (event: TableComponentCustomEvent<{ value: string }>) => void;
+        /**
+          * @default []
+         */
         "originalItems"?: any[];
+        /**
+          * @default [10, 20, 50, 100, 'All']
+         */
         "pageSizeOptions"?: Array<number | 'All'>;
+        /**
+          * @default ''
+         */
         "paginationLayout"?: string;
+        /**
+          * @default 5
+         */
         "paginationLimit"?: number;
+        /**
+          * @default 'bottom'
+         */
         "paginationPosition"?: 'top' | 'bottom' | 'both';
+        /**
+          * @default ''
+         */
         "paginationSize"?: '' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
         "paginationVariantColor"?: string;
+        /**
+          * @default false
+         */
         "plumage"?: boolean;
+        /**
+          * @default false
+         */
         "responsive"?: boolean;
+        /**
+          * @default 10
+         */
         "rowsPerPage"?: number;
+        /**
+          * @default ''
+         */
         "selectMode"?: SelectMode;
+        /**
+          * @default []
+         */
         "selectedFilterFields"?: string[];
+        /**
+          * @default []
+         */
         "selectedRows"?: any[];
+        /**
+          * @default 'table-active'
+         */
         "selectedVariant"?: string;
+        /**
+          * @default false
+         */
         "showDisplayRange"?: boolean;
+        /**
+          * @default false
+         */
         "showSizeChanger"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: '' | 'sm';
+        /**
+          * @default []
+         */
         "sortCriteria"?: Array<{ key: string; order: SortOrder | 'none' }>;
+        /**
+          * @default 'none'
+         */
         "sortField"?: string;
+        /**
+          * @default 'asc'
+         */
         "sortOrder"?: SortOrder;
+        /**
+          * @default true
+         */
         "sortOrderDisabled"?: boolean;
+        /**
+          * @default false
+         */
         "sortable"?: boolean;
+        /**
+          * @default false
+         */
         "stacked"?: boolean;
+        /**
+          * @default false
+         */
         "sticky"?: boolean;
+        /**
+          * @default false
+         */
         "striped"?: boolean;
+        /**
+          * @default ''
+         */
         "tableId"?: string;
+        /**
+          * @default 'table'
+         */
         "tableVariant"?: Variant | 'table';
+        /**
+          * @default 0
+         */
         "totalRows"?: number;
+        /**
+          * @default false
+         */
         "useByPagePagination"?: boolean;
+        /**
+          * @default false
+         */
         "useMinimizePagination"?: boolean;
+        /**
+          * @default false
+         */
         "usePagination"?: boolean;
     }
     interface TimepickerComponent {
         /**
           * Accessible label for the input
+          * @default 'Time Picker'
          */
         "ariaLabel"?: string;
         /**
           * ID of the external label element (for aria-labelledby)
+          * @default 'time-label'
          */
         "ariaLabelledby"?: string;
         /**
           * Hide seconds UI / value
+          * @default false
          */
         "hideSeconds"?: boolean;
         /**
           * Hide the toggle/launch button for the timepicker popover
+          * @default false
          */
         "hideTimepickerBtn"?: boolean;
         /**
           * (Renamed from reserved `id`) ID passed to the internal input
+          * @default 'time-input'
          */
         "inputId"?: string;
         /**
           * Name attribute for the inner input
+          * @default 'time'
          */
         "inputName"?: string;
         /**
@@ -3980,88 +8684,114 @@ declare namespace LocalJSX {
         "inputWidth"?: number | string;
         /**
           * Use 24-hour format by default (mutable: toggled by the component)
+          * @default true
          */
         "isTwentyFourHourFormat"?: boolean;
         /**
           * Whether the current value is considered valid (mutable: set by validation)
+          * @default true
          */
         "isValid"?: boolean;
+        /**
+          * @default 'Enter Time'
+         */
         "labelText"?: string;
         "showLabel"?: boolean;
         /**
           * Optional size variant: '', 'sm', 'lg'
+          * @default ''
          */
         "size"?: string;
         /**
           * Force show only 12-hour controls/options
+          * @default false
          */
         "twelveHourOnly"?: boolean;
         /**
           * Force show only 24-hour controls/options
+          * @default false
          */
         "twentyFourHourOnly"?: boolean;
         /**
           * Validation message to show (mutable: set/cleared by the component)
+          * @default ''
          */
         "validationMessage"?: string;
     }
     interface TimepickerManager {
         /**
           * Accessible label for the input
+          * @default 'Time Picker'
          */
         "ariaLabel"?: string;
         /**
           * ID of the external label element (for aria-labelledby)
+          * @default 'time-label'
          */
         "ariaLabelledby"?: string;
         /**
           * Hide seconds UI / value
+          * @default false
          */
         "hideSeconds"?: boolean;
         /**
           * Hide the toggle/launch button for the timepicker popover
+          * @default false
          */
         "hideTimepickerBtn"?: boolean;
         /**
           * ID to pass to inner input(s)
+          * @default 'time-input'
          */
         "inputId"?: string;
         /**
           * Name attribute for the inner input
+          * @default 'time'
          */
         "inputName"?: string;
         /**
           * Width (px) for the input element
+          * @default null
          */
         "inputWidth"?: number;
         /**
           * Use 24-hour format by default
+          * @default true
          */
         "isTwentyFourHourFormat"?: boolean;
         /**
           * Whether the current value is considered valid
+          * @default true
          */
         "isValid"?: boolean;
+        /**
+          * @default 'Enter Time'
+         */
         "labelText"?: string;
         "showLabel"?: boolean;
         /**
           * Optional size variant (e.g., 'sm', 'lg')
+          * @default ''
          */
         "size"?: string;
         /**
           * Force show only 12-hour controls/options
+          * @default false
          */
         "twelveHourOnly"?: boolean;
         /**
           * Force show only 24-hour controls/options
+          * @default false
          */
         "twentyFourHourOnly"?: boolean;
         /**
           * Choose which implementation to render: false = <timepicker-component>, true = <plumage-timepicker-component>
+          * @default false
          */
         "usePlTimepicker"?: boolean;
         /**
           * Validation message to show (if any)
+          * @default ''
          */
         "validationMessage"?: string;
     }
@@ -4072,6 +8802,7 @@ declare namespace LocalJSX {
         "additionalHeaderContent"?: any;
         /**
           * If true, new toasts append to the end; otherwise they prepend (newest on top).
+          * @default false
          */
         "appendToast"?: boolean;
         "bodyClass"?: string;
@@ -4081,6 +8812,7 @@ declare namespace LocalJSX {
         "customContent"?: any;
         /**
           * Default lifespan in ms for auto-dismiss toasts.
+          * @default 5000
          */
         "duration"?: number;
         /**
@@ -4089,10 +8821,12 @@ declare namespace LocalJSX {
         "headerClass"?: string;
         /**
           * If true, use the “plumage icon” layout on compact plumage variant.
+          * @default false
          */
         "iconPlumageStyle"?: boolean;
         /**
           * When true, use polite/status instead of alert/assertive on aria-live for new toasts.
+          * @default false
          */
         "isStatus"?: boolean;
         /**
@@ -4101,34 +8835,42 @@ declare namespace LocalJSX {
         "message"?: string;
         /**
           * Disable fade-in/out transitions globally.
+          * @default false
          */
         "noAnimation"?: boolean;
         /**
           * If true, hide the × close button by default.
+          * @default false
          */
         "noCloseButton"?: boolean;
         /**
           * Prevent hover from pausing auto-hide globally.
+          * @default false
          */
         "noHoverPause"?: boolean;
         /**
           * Make toasts persistent by default (no auto-hide).
+          * @default false
          */
         "persistent"?: boolean;
         /**
           * If true, use the Plumage toast style.
+          * @default false
          */
         "plumageToast"?: boolean;
         /**
           * If true with plumageToast, render the “max” layout.
+          * @default false
          */
         "plumageToastMax"?: boolean;
         /**
           * Where the toaster tray is anchored.
+          * @default 'bottom-right'
          */
         "position"?: ToastPosition;
         /**
           * If true, use the “solid” toast style (Bootstrap-like) instead of bordered.
+          * @default false
          */
         "solidToast"?: boolean;
         /**
@@ -4137,10 +8879,12 @@ declare namespace LocalJSX {
         "svgIcon"?: string;
         /**
           * Default time label (ZULU).
+          * @default ToastsComponent.getCurrentZuluTime()
          */
         "time"?: string;
         /**
           * (Optional) id used inside nested elements; does not override the host element id
+          * @default 'toast-component'
          */
         "toastId"?: string;
         /**
@@ -4149,30 +8893,77 @@ declare namespace LocalJSX {
         "toastTitle"?: string;
         /**
           * Variant color for new toasts (can be overridden per-toast via showToast opts).
+          * @default ''
          */
         "variant"?: ToastVariant;
     }
     interface ToggleSwitchComponent {
+        /**
+          * @default false
+         */
         "checked"?: boolean;
+        /**
+          * @default false
+         */
         "customSwitch"?: boolean;
+        /**
+          * @default false
+         */
         "disabled"?: boolean;
+        /**
+          * @default false
+         */
         "inline"?: boolean;
+        /**
+          * @default ''
+         */
         "inputId"?: string;
+        /**
+          * @default ''
+         */
         "labelTxt"?: string;
+        /**
+          * @default { on: 'On', off: 'Off' }
+         */
         "newToggleTxt"?: { on: string; off: string };
         "onCheckedChanged"?: (event: ToggleSwitchComponentCustomEvent<{ id: string; checked: boolean }>) => void;
+        /**
+          * @default false
+         */
         "required"?: boolean;
+        /**
+          * @default ''
+         */
         "size"?: string;
+        /**
+          * @default false
+         */
         "switches"?: boolean;
+        /**
+          * @default []
+         */
         "switchesArray"?: ToggleItem[];
+        /**
+          * @default false
+         */
         "toggleTxt"?: boolean;
+        /**
+          * @default false
+         */
         "validation"?: boolean;
+        /**
+          * @default ''
+         */
         "validationMessage"?: string;
+        /**
+          * @default ''
+         */
         "value"?: string;
     }
     interface TooltipComponent {
         /**
           * Enable/disable fade animation class
+          * @default true
          */
         "animation"?: boolean;
         /**
@@ -4181,18 +8972,22 @@ declare namespace LocalJSX {
         "container"?: string | null;
         /**
           * Additional classes to apply to tooltip; can be a string
+          * @default ''
          */
         "customClass"?: string;
         /**
           * If true, treat content as HTML and use innerHTML (TRUSTED CONTENT ONLY)
+          * @default false
          */
         "htmlContent"?: boolean;
         /**
           * Message fallback when no title/data-original-title supplied
+          * @default ''
          */
         "message"?: string;
         /**
           * Initial/forced placement; use "auto" to choose best fit
+          * @default 'top'
          */
         "position"?: TooltipPosition;
         /**
@@ -4201,14 +8996,17 @@ declare namespace LocalJSX {
         "tooltipTitle"?: string;
         /**
           * Space-separated triggers: "hover", "focus", "click", "manual"
+          * @default 'hover focus'
          */
         "trigger"?: string;
         /**
           * Contextual color variant
+          * @default ''
          */
         "variant"?: TooltipVariant;
         /**
           * If true, the tooltip is currently visible (manual control)
+          * @default false
          */
         "visible"?: boolean;
     }

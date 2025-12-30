@@ -2,6 +2,7 @@
 
 export default {
   title: 'Components/Pagination/Minimized',
+  tags: ['autodocs'],
   parameters: {
     layout: 'padded',
     docs: { source: { type: 'dynamic' } },

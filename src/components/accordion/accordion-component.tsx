@@ -1,5 +1,11 @@
 import { Component, Prop, State, h, Event, EventEmitter, Watch } from '@stencil/core';
 
+/**
+ * @slot accordion-header - Header content when `accordion` is true.
+ * @slot button-text - Header content when used as a button/link toggle.
+ * @slot content - Collapsible body content.
+ */
+
 @Component({
   tag: 'accordion-component',
   styleUrl: 'accordion.scss',
@@ -147,9 +153,10 @@ export class AccordionComponent {
 
     return (
       <button-component
+        accordion
+        targetId={this.targetId}
+        isOpen={this.internalOpen}
         onCustomClick={() => this.toggleCollapse()}
-        aria-expanded={this.internalOpen ? 'true' : 'false'}
-        aria-controls={this.targetId}
         classNames={`single ${this.getComputedClassAttribute()} ${!this.internalOpen ? 'collapsed' : ''}`}
         data-toggle="collapse"
         data-target={this.targetId}
@@ -182,10 +189,11 @@ export class AccordionComponent {
   private renderToggleButton() {
     return (
       <button-component
+        accordion
+        targetId={this.targetId}
+        isOpen={this.internalOpen}
         onCustomClick={() => this.toggleCollapse()}
         onKeyDown={(e: KeyboardEvent) => this.handleKeyDown(e)}
-        aria-expanded={this.internalOpen ? 'true' : 'false'}
-        aria-controls={this.targetId}
         role="button"
         tabindex="0"
         classNames={`${this.getComputedClassAttribute()} ${!this.internalOpen ? 'collapsed' : ''}`}
@@ -206,8 +214,9 @@ export class AccordionComponent {
     return (
       <button-component
         link
-        aria-expanded={this.internalOpen ? 'true' : 'false'}
-        aria-controls={this.targetId}
+        accordion
+        targetId={this.targetId}
+        isOpen={this.internalOpen}
         data-toggle="collapse"
         data-target={this.targetId}
         onCustomClick={() => this.toggleCollapse()}

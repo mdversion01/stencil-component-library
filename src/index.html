@@ -8,6 +8,10 @@
     <script type="module" src="/build/stencil-component-library.esm.js"></script>
     <script nomodule src="/build/stencil-component-library.js"></script>
 
+    <link rel="stylesheet" href="/build/stencil-component-library.css">
+
+    <link rel="stylesheet" href="/assets/mdi/materialdesignicons.min.css" />
+
     <style>
       .cwrapper {
         margin: 10px;
@@ -75,17 +79,20 @@
     <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
      -->
     <app-wrapper>
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <autocomplete-single
           id="aci1"
           required
           validation
           validation-message="Please fill in"
           add-btn
+          size="sm"
           label-size="sm"
           input-id="ac-single1"
           label="Autocomplete Single"
-        ></autocomplete-single>
+          form-layout="horizontal"
+          label-align="right"
+        ></autocomplete-single> -->
 
         <!-- <autocomplete-single
           id="aci2"
@@ -102,7 +109,7 @@
           validation-message="Please fill in"
         ></autocomplete-single> -->
 
-        <plumage-autocomplete-single
+        <!-- <plumage-autocomplete-single
           id="aci2"
           input-id="ac-single2"
           label="Autocomplete Single"
@@ -111,6 +118,8 @@
           required
           validation
           validation-message="Please fill in"
+          form-layout="horizontal"
+          label-align="right"
         ></plumage-autocomplete-single>
 
         <form-component>
@@ -128,6 +137,9 @@
             slot="formField"
             editable
             add-btn
+            form-layout="horizontal"
+            label-align="right"
+            size="sm"
           ></autocomplete-multiselect>
 
           <plumage-autocomplete-multiselect-component
@@ -136,6 +148,8 @@
             input-id="ac-1"
             editable
             label="Autocomplete Multiselect"
+            label-size="xs"
+            size="lg"
             required
             validation
             validation-message="Please fill in"
@@ -144,6 +158,8 @@
             slot="formField"
             editable
             add-btn
+            form-layout="horizontal"
+            label-align="right"
           ></plumage-autocomplete-multiselect-component>
 
           <autocomplete-multiple-selections
@@ -151,6 +167,7 @@
             editable
             input-id="ac-2"
             label="Autocomplete Multiple Selections"
+            label-size="lg"
             placeholder="Type to search..."
             data-autocomplete="true"
             required
@@ -160,6 +177,8 @@
             placeholder="Type to search..."
             slot="formField"
             size="lg"
+            form-layout="horizontal"
+            label-align="right"
           ></autocomplete-multiple-selections>
 
           <plumage-autocomplete-multiple-selections-component
@@ -171,14 +190,18 @@
             data-autocomplete="true"
             placeholder="Type to search..."
             slot="formField"
+            size="lg"
+            label-size="xs"
             required
             add-btn
             validation
             validation-message="Please fill in"
             placeholder="Type to search..."
+            form-layout="horizontal"
+            label-align="right"
           ></plumage-autocomplete-multiple-selections-component>
         </form-component>
-      </div>
+      </div> -->
 
       <!-- <div class="cwrapper">
         <badge-component id="badge1" elevation="6" shape="square" background-color="primary">Badge Base</badge-component>
@@ -232,10 +255,10 @@
         <button-component title-attr="Button with text and Icon" slot-side="left" btn-text="Home" variant="primary"><i class="fa-solid fa-house"></i></button-component>
 
         <button-component title-attr="Button with text and Icon" slot-side="right" btn-text="Home" variant="primary"><i class="fa-solid fa-house"></i></button-component>
-      -->
-      <!-- <button-component title-attr="Icon" slot-side="left" slot-side="right" btn-text="Home" variant="primary"><i class="fa-solid fa-house"></i><span>Text</span><i class="fa-solid fa-house"></i></button-component> -->
 
-      <!-- <button-component title-attr="Button with Badge" btn-text="With a badge" variant="primary">
+      <button-component title-attr="Icon" slot-side="left" slot-side="right" btn-text="Home" variant="primary"><i class="fa-solid fa-house"></i><span>Text</span><i class="fa-solid fa-house"></i></button-component>
+
+      <button-component title-attr="Button with Badge" btn-text="With a badge" variant="primary">
           <badge-component id="badge12" background-color="light" bdg-position="right" size="sm">1</badge-component>
         </button-component>
 
@@ -443,10 +466,10 @@
       </div> -->
       <!-- </app-wrapper> -->
 
-      <!-- <div class="cwrapper"> -->
-      <!-- <button-component title-attr="Go Ahead" link btn-text="Link Button" url="test.html"></button-component> -->
+      <div class="cwrapper">
+      <button-component title-attr="Go Ahead" link btn-text="Link Button" url="test.html"></button-component>
 
-      <!-- <accordion-component target-id="accordion-section-3" content-txt-size="sm" icon="fa-solid fa-plus, fa-solid fa-minus" accordion aria-label="Accordion Section">
+      <accordion-component target-id="accordion-section-3" content-txt-size="sm" icon="fa-solid fa-plus, fa-solid fa-minus" accordion aria-label="Accordion Section">
           <span slot="accordion-header">Using Other Icons</span>
           <div slot="content">This content can be collapsed</div>
         </accordion-component>
@@ -477,7 +500,7 @@
           <div slot="content">Toggle content 1</div>
         </accordion-component>
         <br />
-      </div> -->
+      </div>
 
       <!-- <div class="cwrapper">
         <icon-component icon="mdi mdi-home" size="sm"></icon-component>
@@ -738,15 +761,44 @@
 
       </div> -->
 
-      <div class="cwrapper">
-        <input-field-component label="First Name" label-size="sm" size="sm" value="" input-id="firstName" read-only></input-field-component>
+      <!-- <div class="cwrapper">
+        <input-field-component label="First Name" label-size="xs" size="sm" value="" input-id="firstName" form-layout="horizontal" label-align="right"></input-field-component>
 
-        <input-field-component label="Last Name" value="" input-id="lastName"></input-field-component>
+        <plumage-input-field-component
+          label="First Name"
+          label-size="lg"
+          size="sm"
+          value=""
+          input-id="firstName"
+          form-layout="horizontal"
+          label-align="right"
+        ></plumage-input-field-component>
 
-        <input-field-component label="Email" required validation validation-message="Please enter a valid email" value="" input-id="email" size="lg"></input-field-component>
+        <input-field-component label="Last Name" value="" input-id="lastName" label-size="base" size="lg" form-layout="horizontal" label-align="right"></input-field-component>
 
-        <input-field-component form-layout="horizontal" label="Email" input-id="email2"></input-field-component>
+        <plumage-input-field-component
+          label="Last Name"
+          value=""
+          input-id="lastName"
+          label-size="base"
+          size="sm"
+          form-layout="horizontal"
+          label-align="right"
+        ></plumage-input-field-component>
 
+        <input-field-component label="Email" value="" input-id="email" size="lg" form-layout="horizontal" label-size="xs" label-align="right"></input-field-component>
+
+        <plumage-input-field-component
+          label="Email"
+          value=""
+          input-id="email"
+          size="lg"
+          label-size="xs"
+          form-layout="horizontal"
+          label-align="right"
+        ></plumage-input-field-component>
+      </div> -->
+      <!--
         <form-component>
           <input-field-component
             required
@@ -782,32 +834,95 @@
             label-size="lg"
           ></input-field-component>
         </form-component>
-      </div>
+      </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <form-component>
           <input-group-component
             slot="formField"
             label="Amount"
-            size="lg"
-            input-id="amount"
-            required
-            validation
-            validation-message="Please enter First name"
+            label-size="lg"
+            size="sm"
+            input-id="amount1"
             other-content
             append
             prepend
             prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
           >
-            <button-component slot="append" size="lg" type="button" variant="secondary">Go</button-component>
-          </input-group-component>
-
-          <input-group-component form-layout="inline" slot="formField" label="Search" input-id="q" validation validation-message="Please enter First name" append other-content>
             <button-component slot="append" type="button" variant="secondary">Go</button-component>
           </input-group-component>
-        </form-component>
 
-        <plumage-input-field-component
+          <plumage-input-group-component
+            slot="formField"
+            input-id="pl-input-group-1"
+            label="Test Label"
+            label-size="xs"
+            other-content
+            append
+            prepend
+            prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
+          >
+            <button-component slot="append" type="button">Go</button-component>
+          </plumage-input-group-component>
+
+          <input-group-component slot="formField" label="Amount" input-id="amount" other-content append form-layout="horizontal" label-align="right">
+            <button-component slot="append" type="button" variant="secondary">Go</button-component>
+          </input-group-component>
+
+          <plumage-input-group-component
+            slot="formField"
+            input-id="pl-input-group-3"
+            label="Test Label"
+            append
+            prepend
+            prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
+          >
+            <button-component slot="append" outlined variant="secondary" size="sm" type="button">Go</button-component>
+          </plumage-input-group-component>
+
+          <input-group-component
+            slot="formField"
+            label="Amount"
+            size="lg"
+            input-id="amount2"
+            append
+            append-icon="fa-solid fa-dollar-sign"
+            prepend
+            prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
+          >
+          </input-group-component>
+
+          <plumage-input-group-component
+            slot="formField"
+            input-id="pl-input-group-2"
+            label="Test Label"
+            size="lg"
+            label-size="xs"
+            append
+            append-icon="fa-solid fa-dollar-sign"
+            prepend
+            prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
+          >
+          </plumage-input-group-component>
+
+          <input-group-component slot="formField" label="Search" input-id="q" append other-content>
+            <button-component slot="append" type="button" variant="secondary">Go</button-component>
+          </input-group-component>
+
+          <plumage-input-group-component slot="formField" label="Search" plumage-search> </plumage-input-group-component>
+        </form-component> -->
+
+        <!-- <plumage-input-field-component
           input-id="input-1"
           size="sm"
           label="Test Label2"
@@ -839,52 +954,8 @@
           required
           validation
           validation-message="Please enter First name"
-        ></plumage-input-field-component>
-
-        <plumage-input-group-component
-          input-id="pl-input-group-1"
-          label="Test Label"
-          size="sm"
-          append-field
-          prepend-field
-          prepend-icon="fa-solid fa-dollar-sign"
-          required
-          validation
-          validation-message="Please enter First name"
-        >
-          <button-component slot="append" size="sm" type="button">Go</button-component>
-        </plumage-input-group-component>
-
-        <plumage-input-group-component
-          input-id="pl-input-group-3"
-          label="Test Label"
-          form-layout="horizontal"
-          append-field
-          prepend-field
-          prepend-icon="fa-solid fa-dollar-sign"
-          required
-          validation
-          validation-message="Please enter First name"
-        >
-          <button-component slot="append" outlined variant="secondary" size="sm" type="button">Go</button-component>
-        </plumage-input-group-component>
-
-        <plumage-input-group-component
-          input-id="pl-input-group-2"
-          label="Test Label"
-          form-layout="inline"
-          append-field
-          append-icon="fa-solid fa-dollar-sign"
-          prepend-field
-          prepend-icon="fa-solid fa-dollar-sign"
-          required
-          validation
-          validation-message="Please enter First name"
-        >
-        </plumage-input-group-component>
-
-        <plumage-input-group-component plumage-search> </plumage-input-group-component>
-      </div>
+        ></plumage-input-field-component> -->
+      <!-- </div> -->
 
       <!-- <div class="cwrapper"> -->
       <!-- =========================================================
@@ -1293,34 +1364,15 @@
                 </div> -->
       <!-- </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <select-field-component
-          field-height="4"
           label="Favorite Fruit"
+          label-size="lg"
+          size="lg"
+          select-field-id="fruit1"
           form-layout="horizontal"
-          size="sm"
-          select-field-id="fruit"
+          label-align="right"
           value=""
-          required
-          validation
-          validation-message="Please make a selection"
-          options='[
-          {"value":"apple","name":"Apple"},
-          {"value":"banana","name":"Banana"},
-          {"value":"cherry","name":"Cherry"}
-        ]'
-        ></select-field-component>
-
-        <select-field-component
-          custom
-          label="Favorite Fruit"
-          form-layout="horizontal"
-          size="sm"
-          select-field-id="fruit"
-          value=""
-          required
-          validation
-          validation-message="Please make a selection"
           options='[
           {"value":"apple","name":"Apple"},
           {"value":"banana","name":"Banana"},
@@ -1330,14 +1382,12 @@
 
         <select-field-component
           label="Favorite Fruit"
-          select-field-id="fruit"
+          label-size="lg"
+          size="sm"
+          select-field-id="fruit2"
+          form-layout="horizontal"
+          label-align="right"
           value=""
-          multiple
-          required
-          validation
-          validation-message="Please make a selection"
-          show-default-in-multiple
-          field-height="3"
           options='[
           {"value":"apple","name":"Apple"},
           {"value":"banana","name":"Banana"},
@@ -1348,7 +1398,9 @@
         <select-field-component
           label="Favorite Fruit"
           size="lg"
-          select-field-id="fruit"
+          form-layout="horizontal"
+          label-align="right"
+          select-field-id="fruit3"
           value=""
           options='[
           {"value":"apple","name":"Apple"},
@@ -1359,26 +1411,11 @@
 
         <plumage-select-field-component
           label="Favorite Fruit"
-          select-field-id="fruit"
+          select-field-id="fruit4"
           form-layout="horizontal"
-          custom
-          size="sm"
-          field-height="3"
-          value=""
-          required
-          validation
-          validation-message="Please make a selection"
-          options='[
-          {"value":"apple","name":"Apple"},
-          {"value":"banana","name":"Banana"},
-          {"value":"cherry","name":"Cherry"}
-        ]'
-        ></plumage-select-field-component>
-
-        <plumage-select-field-component
-          label="Favorite Fruit"
-          select-field-id="fruit"
-          form-layout="inline"
+          label-align="right"
+          label-size="lg"
+          size="lg"
           value=""
           options='[
           {"value":"apple","name":"Apple"},
@@ -1389,11 +1426,10 @@
 
         <plumage-select-field-component
           label="Favorite Fruit"
-          select-field-id="fruit"
+          select-field-id="fruit5"
+          form-layout="horizontal"
+          label-align="right"
           value=""
-          required
-          validation
-          validation-message="Please make a selection"
           options='[
           {"value":"apple","name":"Apple"},
           {"value":"banana","name":"Banana"},
@@ -1402,6 +1438,23 @@
         ></plumage-select-field-component>
 
         <plumage-select-field-component
+          label="Favorite Fruit"
+          select-field-id="fruit6"
+          form-layout="horizontal"
+          label-align="right"
+          value=""
+          size="lg"
+           required
+          validation
+          validation-message="Please make a selection"
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></plumage-select-field-component> -->
+
+        <!-- <plumage-select-field-component
           label="Favorite Fruit"
           multiple
           required
@@ -1416,8 +1469,8 @@
           {"value":"banana","name":"Banana"},
           {"value":"cherry","name":"Cherry"}
         ]'
-        ></plumage-select-field-component>
-      </div>
+        ></plumage-select-field-component> -->
+      <!-- </div> -->
 
       <!-- <div class="cwrapper">
         <slider-manager-component  type="basic" label="Range:" min="0" max="100"></slider-manager-component>
@@ -1950,101 +2003,101 @@
       //   });
       // });
 
-      window.addEventListener('DOMContentLoaded', () => {
-        // const el = document.querySelector('input-group-component');
-        // el.addEventListener('valueChange', e => console.log('valueChange:', e.detail.value));
-        // // Back-compat:
-        // el.addEventListener('change', e => console.log('change:', e.detail.value));
+      // window.addEventListener('DOMContentLoaded', () => {
+      //   // const el = document.querySelector('input-group-component');
+      //   // el.addEventListener('valueChange', e => console.log('valueChange:', e.detail.value));
+      //   // // Back-compat:
+      //   // el.addEventListener('change', e => console.log('change:', e.detail.value));
 
-        const aci1 = document.getElementById('aci1');
-        const aci1Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
-        setTimeout(() => {
-          aci1.options = aci1Options;
-        }, 300); // delay to allow stencil hydration
+      //   const aci1 = document.getElementById('aci1');
+      //   const aci1Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+      //   setTimeout(() => {
+      //     aci1.options = aci1Options;
+      //   }, 300); // delay to allow stencil hydration
 
-        //   /***********************************/
+      //   //   /***********************************/
 
-        const aci2 = document.getElementById('aci2');
-        const aci2Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
-        setTimeout(() => {
-          aci2.options = aci2Options;
-        }, 300); // delay to allow stencil hydration
+      //   const aci2 = document.getElementById('aci2');
+      //   const aci2Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+      //   setTimeout(() => {
+      //     aci2.options = aci2Options;
+      //   }, 300); // delay to allow stencil hydration
 
-        //   /***********************************/
+      //   //   /***********************************/
 
-        const aci3 = document.getElementById('aci3');
-        // keep this mutable so we can mirror updates from the component
-        let aci3Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+      //   const aci3 = document.getElementById('aci3');
+      //   // keep this mutable so we can mirror updates from the component
+      //   let aci3Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
 
-        // 1) Push initial options once the component is ready
-        // Either approach works; use ONE of them:
+      //   // 1) Push initial options once the component is ready
+      //   // Either approach works; use ONE of them:
 
-        // A) Using Stencil's componentOnReady()
-        aci3.componentOnReady?.().then(async () => {
-          await aci3.setOptions(aci3Options);
-        });
+      //   // A) Using Stencil's componentOnReady()
+      //   aci3.componentOnReady?.().then(async () => {
+      //     await aci3.setOptions(aci3Options);
+      //   });
 
-        // B) Or using customElements.whenDefined(...)
-        // customElements.whenDefined('autocomplete-multiselect').then(async () => {
-        //   await aci3.setOptions(aci3Options);
-        // });
+      //   // B) Or using customElements.whenDefined(...)
+      //   // customElements.whenDefined('autocomplete-multiselect').then(async () => {
+      //   //   await aci3.setOptions(aci3Options);
+      //   // });
 
-        // 2) Keep your app state in sync when users ADD/DELETE options (editable=true)
-        aci3.addEventListener('optionsChange', e => {
-          const { options, reason, value } = e.detail || {};
-          if (reason === 'replace') {
-            console.log('[aci3 optionsChange]', reason, options);
-          } else {
-            console.log('[aci3 optionsChange]', reason, value, options);
-          }
-          // (optional) persist somewhere (e.g., localStorage / server)
-          localStorage.setItem('aci3Options', JSON.stringify(aci3Options));
-        });
+      //   // 2) Keep your app state in sync when users ADD/DELETE options (editable=true)
+      //   aci3.addEventListener('optionsChange', e => {
+      //     const { options, reason, value } = e.detail || {};
+      //     if (reason === 'replace') {
+      //       console.log('[aci3 optionsChange]', reason, options);
+      //     } else {
+      //       console.log('[aci3 optionsChange]', reason, value, options);
+      //     }
+      //     // (optional) persist somewhere (e.g., localStorage / server)
+      //     localStorage.setItem('aci3Options', JSON.stringify(aci3Options));
+      //   });
 
-        // 3) (Optional) react to selection changes
-        aci3.addEventListener('multiSelectChange', e => {
-          console.log('[aci3 selectedItems]', e.detail);
-        });
+      //   // 3) (Optional) react to selection changes
+      //   aci3.addEventListener('multiSelectChange', e => {
+      //     console.log('[aci3 selectedItems]', e.detail);
+      //   });
 
-        //   // 4) (Optional) replace options later from your app
-        async function refreshFromServer(nextOptions) {
-          await aci3.setOptions(nextOptions); // will also emit optionsChange with reason: 'replace'
-        }
+      //   //   // 4) (Optional) replace options later from your app
+      //   async function refreshFromServer(nextOptions) {
+      //     await aci3.setOptions(nextOptions); // will also emit optionsChange with reason: 'replace'
+      //   }
 
-        //   // 5) (Optional) read the current options from the component
-        async function logCurrentOptions() {
-          const opts = await aci3.getOptions();
-          console.log('[aci3 getOptions]', opts);
-        }
+      //   //   // 5) (Optional) read the current options from the component
+      //   async function logCurrentOptions() {
+      //     const opts = await aci3.getOptions();
+      //     console.log('[aci3 getOptions]', opts);
+      //   }
 
-        //   /***********************************/
+      //   //   /***********************************/
 
-        let aci4Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango', 'Bet', 'Betty', 'Bobby', 'Bob', 'Bobby Brown', 'Bobby Blue', 'Bobby Green'];
+      //   let aci4Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango', 'Bet', 'Betty', 'Bobby', 'Bob', 'Bobby Brown', 'Bobby Blue', 'Bobby Green'];
 
-        const aci4 = document.getElementById('aci4');
+      //   const aci4 = document.getElementById('aci4');
 
-        (async () => {
-          if (window.customElements?.whenDefined) {
-            await customElements.whenDefined('autocomplete-multiple-selections');
-          }
-          if (typeof aci4.componentOnReady === 'function') {
-            await aci4.componentOnReady();
-          }
+      //   (async () => {
+      //     if (window.customElements?.whenDefined) {
+      //       await customElements.whenDefined('autocomplete-multiple-selections');
+      //     }
+      //     if (typeof aci4.componentOnReady === 'function') {
+      //       await aci4.componentOnReady();
+      //     }
 
-          // seed options by assigning the prop (the component’s @Watch('options') will pick it up)
-          aci4.options = aci4Options.slice();
+      //     // seed options by assigning the prop (the component’s @Watch('options') will pick it up)
+      //     aci4.options = aci4Options.slice();
 
-          // there is NO optionsChange in this component by default.
-          // You can still listen to selection changes:
-          aci4.addEventListener('multiSelectChange', e => {
-            console.log('[aci4 selectedItems]', e.detail);
-          });
+      //     // there is NO optionsChange in this component by default.
+      //     // You can still listen to selection changes:
+      //     aci4.addEventListener('multiSelectChange', e => {
+      //       console.log('[aci4 selectedItems]', e.detail);
+      //     });
 
-          // If you want to mirror user-added options back to app state,
-          // you must add an `@Event({eventName:'optionsChange'})` inside the component
-          // and emit it when options are upserted/deleted. Otherwise, there’s no hook.
-        })();
-      });
+      //     // If you want to mirror user-added options back to app state,
+      //     // you must add an `@Event({eventName:'optionsChange'})` inside the component
+      //     // and emit it when options are upserted/deleted. Otherwise, there’s no hook.
+      //   })();
+      // });
 
       // const dynamicButton = document.getElementById("dynamicPopoverBtn");
       // const popoverDynamic = document.getElementById("dynamicPopover");

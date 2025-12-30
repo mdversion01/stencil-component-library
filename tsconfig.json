@@ -15,16 +15,29 @@
     "noUnusedParameters": true,
     "jsx": "react",
     "jsxFactory": "h",
-    "jsxFragmentFactory": "h.Fragment"
+    "jsxFragmentFactory": "h.Fragment",
+    "skipLibCheck": true,
+    "types": [
+      "node",
+      "vite/client"
+    ]
   },
   "include": [
-    "src"
+    ".storybook",
+    "src",
+    "stencil.config.ts",
+    "types"
   ],
   "exclude": [
     "**/*.spec.ts",
     "**/*.spec.tsx",
+    "**/*.stories.mdx",
+    "**/*.stories.ts",
+    "**/*.test.ts",
     "**/__mocks__",
     "jest.config.ts",
-    "node_modules"
+    "node_modules",
+    "src/test/**",
+    "stories/**"
   ]
 }

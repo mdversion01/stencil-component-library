@@ -2,6 +2,7 @@
 
 export default {
   title: 'Components/Pagination/By Page',
+  tags: ['autodocs'],
   parameters: {
     layout: 'padded',
     docs: { source: { type: 'dynamic' } },

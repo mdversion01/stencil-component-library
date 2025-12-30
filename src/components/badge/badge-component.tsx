@@ -5,7 +5,7 @@ import { logInfo } from '../../utils/log-debug';
 
 @Component({
   tag: 'badge-component',
-  styleUrls: ['badge.scss',],
+  styleUrl: 'badge.scss',
   shadow: false,
 })
 export class Badge {

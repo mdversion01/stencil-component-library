@@ -143,7 +143,6 @@ const Template = (args) => {
   ${attr('preserve-input-on-select', args.preserveInputOnSelect)}
   ${attr('clear-input-on-blur-outside', args.clearInputOnBlurOutside)}
 
-  ${attr('badge-variant', args.badgeVariant)}
   ${attr('badge-shape', args.badgeShape)}
   ${attr('badge-inline-styles', args.badgeInlineStyles)}
 
@@ -210,7 +209,7 @@ Playground.args = {
   inputCols: '',
 
   // Badges
-  badgeVariant: 'primary',
+  // badgeVariant: 'primary',
   badgeShape: 'rounded-pill',
   badgeInlineStyles: '',
 
@@ -250,7 +249,6 @@ export const RequiredValidation = () => `
     validation-message="Pick at least one fruit or type 3+ characters"
     editable
     add-btn
-    badge-variant="danger"
     badge-shape="rounded-pill"
   ></plumage-autocomplete-multiselect-component>
   <script>
@@ -323,7 +321,6 @@ export const Disabled = () => `
   input-id="acm-disabled"
   label="Disabled"
   disabled
-  badge-variant="secondary"
 ></plumage-autocomplete-multiselect-component>
 <script>
   (function(){
@@ -344,7 +341,6 @@ export const EditableWithAddAndDelete = () => `
     add-btn
     add-icon="fas fa-plus"
     preserve-input-on-select
-    badge-variant="success"
     badge-shape="rounded-pill"
     placeholder="Type to add/select…"
     dev-mode
@@ -366,7 +362,6 @@ export const CustomBadges = () => `
     label="With custom badge style"
     editable
     add-btn
-    badge-variant="info"
     badge-shape="rounded-pill"
     badge-inline-styles="border-radius:14px; font-weight:600;"
   ></plumage-autocomplete-multiselect-component>

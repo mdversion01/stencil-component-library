@@ -4,7 +4,7 @@ import { logInfo } from '../../utils/log-debug';
 @Component({
   tag: 'button-component',
   styleUrl: 'button.scss',
-  // styleUrls: ['../../global/global.scss',],
+  // styleUrls: ['../../global/global.scss', 'button.scss'],
 })
 export class Button {
   @Prop() absolute: boolean = false;
