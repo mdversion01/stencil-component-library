@@ -544,3 +544,9 @@ $btn-text-variants: (
   border-radius: 0;
   width: 100%;
 }
+
+:host(:focus-visible),
+:focus-visible {
+  outline: none !important;
+  border: none !important;
+}

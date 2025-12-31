@@ -108,6 +108,7 @@ export namespace Components {
          */
         "outlined": boolean;
         /**
+          * A unique id for THIS accordion container. If not provided, one will be generated.
           * @default ''
          */
         "parentId": string;
@@ -752,6 +753,10 @@ export namespace Components {
           * @default false
          */
         "active": boolean;
+        /**
+          * @default false
+         */
+        "allowFocusableChildren": boolean;
         /**
           * @default ''
          */
@@ -4322,7 +4327,7 @@ declare global {
         new (): HTMLBasicSliderComponentElement;
     };
     interface HTMLButtonComponentElementEventMap {
-        "customClick": any;
+        "customClick": void;
     }
     interface HTMLButtonComponentElement extends Components.ButtonComponent, HTMLStencilElement {
         addEventListener<K extends keyof HTMLButtonComponentElementEventMap>(type: K, listener: (this: HTMLButtonComponentElement, ev: ButtonComponentCustomEvent<HTMLButtonComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5021,6 +5026,7 @@ declare namespace LocalJSX {
          */
         "outlined"?: boolean;
         /**
+          * A unique id for THIS accordion container. If not provided, one will be generated.
           * @default ''
          */
         "parentId"?: string;
@@ -5674,6 +5680,10 @@ declare namespace LocalJSX {
          */
         "active"?: boolean;
         /**
+          * @default false
+         */
+        "allowFocusableChildren"?: boolean;
+        /**
           * @default ''
          */
         "ariaLabel"?: string;
@@ -5737,7 +5747,7 @@ declare namespace LocalJSX {
           * @default false
          */
         "link"?: boolean;
-        "onCustomClick"?: (event: ButtonComponentCustomEvent<any>) => void;
+        "onCustomClick"?: (event: ButtonComponentCustomEvent<void>) => void;
         /**
           * @default false
          */

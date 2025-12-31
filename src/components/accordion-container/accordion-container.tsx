@@ -6,10 +6,12 @@ import { Component, Prop, h, State, Element } from '@stencil/core';
   shadow: false,
 })
 export class AccordionContainer {
-  @Element() hostElement: HTMLElement;
+  @Element() hostElement!: HTMLElement;
 
   @Prop() data: Array<{ header: string; content: string }> = [];
+  /** A unique id for THIS accordion container. If not provided, one will be generated. */
   @Prop({ attribute: 'parent-id' }) parentId: string = '';
+
   @Prop({ reflect: true }) flush: boolean = false;
   @Prop() variant: string = '';
   @Prop() size: string = '';
@@ -25,19 +27,41 @@ export class AccordionContainer {
   @State() openIndexes: Set<number> = new Set();
   @State() normalizedData: Array<{ header: string; content: string }> = [];
 
-  componentWillLoad() {
-    // Check icon explicitly passed empty
-    const iconAttr = this.hostElement?.getAttribute('icon');
-    const iconExplicitlyEmpty = iconAttr !== null && iconAttr.trim() === '';
+  // ------- unique base id per instance -------
+  private static _seq = 0;
+  private _baseId!: string;
 
-    if (iconExplicitlyEmpty) {
-      console.warn('[accordion-container] "icon" prop is empty. Falling back to default icon: "fas fa-angle-down".');
+  private baseId() {
+    return this._baseId;
+  }
+  private headerId(i: number) {
+    return `${this.baseId()}-header-${i}`;
+  }
+  private collapseId(i: number) {
+    return `${this.baseId()}-collapse-${i}`;
+  }
+
+  componentWillLoad() {
+    // establish a unique base id for this instance
+    const provided = (this.parentId || '').trim();
+    if (provided) {
+      // normalize: ensure it’s a valid id token
+      this._baseId = provided.replace(/\s+/g, '-');
+    } else {
+      AccordionContainer._seq += 1;
+      const rand = Math.random().toString(36).slice(2, 7);
+      this._baseId = `acc-${AccordionContainer._seq}-${rand}`;
     }
 
-    // ✅ Silently fallback if invalid data
+    // Warn if empty icon explicitly set
+    const iconAttr = this.hostElement?.getAttribute('icon');
+    const iconExplicitlyEmpty = iconAttr !== null && iconAttr.trim() === '';
+    if (iconExplicitlyEmpty) {
+      console.warn('[accordion-container] "icon" prop is empty. Falling back to default "fas fa-angle-down".');
+    }
+
     this.normalizedData = Array.isArray(this.data) ? this.data : [];
 
-    // Still warn if icon array is too long
     const iconList = this.iconArray;
     if (iconList.length > 2) {
       console.warn('[accordion-container] "icon" prop has more than 2 values. Only the first two will be used.', iconList);
@@ -46,7 +70,8 @@ export class AccordionContainer {
 
   private toggle(index: number) {
     const isOpen = this.openIndexes.has(index);
-    const targetEl = document.getElementById(`collapse${index}`) as HTMLElement;
+    const cid = this.collapseId(index);
+    const targetEl = document.getElementById(cid) as HTMLElement | null;
     if (!targetEl) return;
 
     if (isOpen) {
@@ -65,7 +90,8 @@ export class AccordionContainer {
       if (this.singleOpen) {
         this.normalizedData.forEach((_item, i) => {
           if (this.openIndexes.has(i)) {
-            const otherEl = document.getElementById(`collapse${i}`) as HTMLElement;
+            const otherId = this.collapseId(i);
+            const otherEl = document.getElementById(otherId) as HTMLElement | null;
             if (otherEl) {
               this.openIndexes.delete(i);
               otherEl.style.height = `${otherEl.scrollHeight}px`;
@@ -124,29 +150,26 @@ export class AccordionContainer {
     }
   }
 
-  private handleKeyDown(event: KeyboardEvent, index: number) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      this.toggle(index);
-    }
-  }
-
   render() {
+    const parentId = this.baseId();
+
     return (
-      <div class={`accordion ${this.flush ? 'accordion-flush' : ''}`} id={this.parentId} role="presentation">
+      <div class={`accordion ${this.flush ? 'accordion-flush' : ''}`} id={parentId} role="presentation">
         {this.normalizedData.map((item, index) => {
           const isOpen = this.openIndexes.has(index);
           const displayIcon = this.iconArray.length === 1 ? this.iconArray[0] : isOpen ? this.iconArray[1] : this.iconArray[0];
 
+          const hid = this.headerId(index);
+          const cid = this.collapseId(index);
+          const bsTarget = `#${cid}`;
+
           return (
             <div class="accordion-item">
-              <h2 class="accordion-header" id={`header-${index}`}>
+              <h2 class="accordion-header" id={hid}>
                 <button-component
                   classNames={`${this.classNames} accordion-button ${!isOpen ? 'collapsed' : ''}`}
                   aria-expanded={isOpen ? 'true' : 'false'}
-                  aria-controls={`collapse${index}`}
-                  role="button"
-                  tabindex="0"
+                  aria-controls={cid}
                   variant={this.variant}
                   size={this.size}
                   outlined={this.outlined}
@@ -154,9 +177,8 @@ export class AccordionContainer {
                   disabled={this.disabled}
                   ripple={this.ripple}
                   data-bs-toggle="collapse"
-                  data-bs-target={`#collapse${index}`}
+                  data-bs-target={bsTarget}
                   onCustomClick={() => this.toggle(index)}
-                  onKeyDown={(e: KeyboardEvent) => this.handleKeyDown(e, index)}
                 >
                   {item.header}
                   {displayIcon && (
@@ -166,25 +188,16 @@ export class AccordionContainer {
                   )}
                 </button-component>
               </h2>
+
               <div
-                id={`collapse${index}`}
-                aria-labelledby={`header-${index}`}
+                id={cid}
+                aria-labelledby={hid}
                 role="region"
                 class="accordion-collapse collapse"
-                data-bs-parent={`#${this.parentId}`}
-                style={{
-                  overflow: 'hidden',
-                  transition: 'height 0.35s ease',
-                }}
+                data-bs-parent={`#${parentId}`}
+                style={{ overflow: 'hidden', transition: 'height 0.35s ease' }}
               >
-                <div
-                  class={{
-                    'accordion-body': true,
-                    [this.textSizing()]: true,
-                  }}
-                >
-                  {item.content}
-                </div>
+                <div class={{ 'accordion-body': true, [this.textSizing()]: true }}>{item.content}</div>
               </div>
             </div>
           );

@@ -32,6 +32,15 @@
 | `toggleEvent` |             | `CustomEvent<boolean>` |
 
 
+## Slots
+
+| Slot                 | Description                                       |
+| -------------------- | ------------------------------------------------- |
+| `"accordion-header"` | Header content when `accordion` is true.          |
+| `"button-text"`      | Header content when used as a button/link toggle. |
+| `"content"`          | Collapsible body content.                         |
+
+
 ## Dependencies
 
 ### Depends on

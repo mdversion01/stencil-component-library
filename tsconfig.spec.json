@@ -1,20 +1,20 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "types": [
-      "jest",
-      "node",
-      "vite/client"
-    ],
+    "types": ["jest", "node", "vite/client"],
     "skipLibCheck": true,
     "jsx": "preserve"
   },
   "include": [
     "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
     "src/**/*.test.ts",
+    "src/**/*.test.tsx",
     "src/test/setupTests.ts",
     ".storybook",
-    "types",
+    "types"
+  ],
+  "exclude": [
     "stencil.config.ts"
   ]
 }

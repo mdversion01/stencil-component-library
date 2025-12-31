@@ -338,12 +338,12 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                         </span>
                       </div>
                       <div aria-label="December 30, 2025" class="calendar-grid-item" data-date="2025-12-30" data-day="30" data-month="12" data-year="2025" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                           30
                         </span>
                       </div>
                       <div aria-label="December 31, 2025" class="calendar-grid-item csm-last-day" data-date="2025-12-31" data-day="31" data-month="12" data-year="2025" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
                           31
                         </span>
                       </div>
@@ -1013,12 +1013,12 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                         </span>
                       </div>
                       <div aria-label="December 30, 2025" class="calendar-grid-item" data-date="2025-12-30" data-day="30" data-month="12" data-year="2025" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                           30
                         </span>
                       </div>
                       <div aria-label="December 31, 2025" class="calendar-grid-item csm-last-day" data-date="2025-12-31" data-day="31" data-month="12" data-year="2025" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
                           31
                         </span>
                       </div>

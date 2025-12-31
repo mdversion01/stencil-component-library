@@ -1,4 +1,6 @@
 // stories/accordion.stories.js
+import DocsPage from './accordion.docs.mdx';
+
 const TAG = 'accordion-component';
 
 // helper: presence boolean -> attribute presence; strings -> attribute values
@@ -8,14 +10,27 @@ function setAttr(el, name, v) {
   else el.setAttribute(name, String(v));
 }
 
+/** Make a per-render unique id so multiple previews never collide. */
+function makeUniqueTargetId(base, context) {
+  const b = base && String(base).trim() ? base.trim() : 'acc';
+  // viewMode is usually "docs" or "story"
+  const scope = context?.viewMode || 'story';
+  // context.id is stable per story; add a tiny random so multiple instances on same page won’t collide
+  const rnd = Math.random().toString(36).slice(2, 6);
+  return `${b}-${scope}-${context?.id || 'sb'}-${rnd}`;
+}
+
 /** Build a host with proper slotted children (header/content). */
-function buildAccordion(args) {
+function buildAccordion(args, context) {
   const host = document.createElement(TAG);
+
+  // IMPORTANT: use a unique target-id for this render instance
+  const uniqueTargetId = makeUniqueTargetId(args.targetId, context);
 
   // attributes
   setAttr(host, 'accordion', args.accordion);
   setAttr(host, 'content-txt-size', args.contentTxtSize);
-  setAttr(host, 'target-id', args.targetId);
+  setAttr(host, 'target-id', uniqueTargetId);
   setAttr(host, 'class-names', args.classNames);
   setAttr(host, 'flush', args.flush);
   setAttr(host, 'outlined', args.outlined);
@@ -35,7 +50,6 @@ function buildAccordion(args) {
   // slots (CONTENT)
   const content = document.createElement('div');
   content.slot = 'content';
-  // build content as real nodes (no innerHTML)
   const p1 = document.createElement('p');
   p1.textContent = args.contentLine1;
   const p2 = document.createElement('p');
@@ -47,59 +61,61 @@ function buildAccordion(args) {
   // open after children are in place so height measuring works
   if (args.isOpen) requestAnimationFrame(() => host.setAttribute('is-open', ''));
 
-  // host.style.display = 'block';
-  // host.style.margin = '16px 0';
   return host;
 }
 
 export default {
-  title: 'Components/Accordion',
+  title: 'Components/Accordion Container/Accordion',
   tags: ['autodocs'],
-  render: args => buildAccordion(args),
+  // NOTE: Storybook passes (args, context) — we use context to make a unique id.
+  render: (args, context) => buildAccordion(args, context),
+
   parameters: {
-  docs: {
-    description: {
-      component: [
-        'Use slots to provide your header and body content:',
-        '',
-        '```html',
-        '<accordion-component target-id="accordion-section-3">',
-        '  <span slot="accordion-header">Header Text</span>',
-        '  <div slot="content">Body content</div>',
-        '</accordion-component>',
-        '```',
-        '',
-        '> **Note:** The `headerText`, `contentLine1`, and `contentLine2` controls in Storybook are only used to build slotted nodes for the preview. In your app, provide content via slots as shown above.',
-      ].join('\n'),
+    docs: {
+      page: DocsPage,
+      description: {
+        component: [
+          'An Accordion Component belongs to the Accordion Container but can also be use on it\'s own.\n',
+          'Use the \`accordion-header\` and \`content\` slots to provide header and body content.\n',
+          '```html',
+          '<accordion-component target-id="accordion-section-3">',
+          '  <span slot="accordion-header">Header Text</span>',
+          '  <div slot="content">Body content</div>',
+          '</accordion-component>',
+          '```',
+          '> **Note:** The `headerText`, `contentLine1`, and `contentLine2` controls in Storybook are only used',
+          '> to build slotted nodes for the preview. In your app, provide content via slots as shown above.',
+        ].join('\n'),
+      },
     },
   },
-},
+
   argTypes: {
     // boolean/toggles
-    accordion: { control: 'boolean' },
-    link: { control: 'boolean' },
-    flush: { control: 'boolean' },
-    outlined: { control: 'boolean' },
-    block: { control: 'boolean' },
-    disabled: { control: 'boolean' },
-    ripple: { control: 'boolean' },
-    isOpen: { control: 'boolean' },
+    accordion: { control: 'boolean', description: 'If true, renders as an accordion item within an accordion container. If false, renders as a standalone button toggle.', },
+    link: { control: 'boolean', description: 'If true, renders the accordion header as a link.', },
+    flush: { control: 'boolean', description: 'If true, removes the default outer borders and rounded corners to create a flush appearance when used in an accordion container.', },
+    outlined: { control: 'boolean', description: 'If true, the accordion item will have an outlined style.', },
+    block: { control: 'boolean', description: 'If true, the accordion item will take up the full width of its container.', },
+    disabled: {  control: 'boolean', description: 'If present, sets a disabled state on this accordion item, indicating it cannot be selected by user action.', },
+    ripple: { control: 'boolean', description: 'If true, enables a ripple effect on user interaction.', },
+    isOpen: { control: 'boolean', description: 'If true, the accordion item is expanded (open) by default when rendered.', },
 
     // strings/options
-    contentTxtSize: { control: { type: 'select' }, options: ['', 'xs', 'sm', 'default', 'lg', 'xl', 'xxl'] },
-    targetId: { control: 'text' },
-    classNames: { control: 'text' },
-    variant: { control: 'text' },
-    size: { control: { type: 'select' }, options: ['', 'xs', 'sm', 'lg'] },
-    icon: { control: 'text' },
+    contentTxtSize: { control: { type: 'select' }, description: 'This property allows you to change the overall size of the text (xs, sm, default, lg, xl, or xxl) that is in the content area of the collapse component.', options: ['xs', 'sm', 'default', 'lg', 'xl', 'xxl'] },
+    targetId: { description: 'ID of the collapsible region this control toggles. Must be unique per story.', control: 'text' }, // remains the "base" id; we suffix it during render
+    classNames: { control: 'text', description: 'Additional custom class names to apply to the accordion component container.' },
+    variant: { control: 'text', description: 'Applies pre-defined styling to the accordion header/button. Common variants include "primary", "secondary", "success", "danger", "warning", "info", "light", and "dark".' },
+    size: { control: { type: 'select' }, description: 'This property allows you to change the overall size of the text (xs, sm, lg) that is in the header area of the collapse component.', options: ['', 'xs', 'sm', 'lg'] },
+    icon: { control: 'text', description: 'This property uses the Font Awesome fa-angle-down(caret down) icon by default. It rotates the icon 180 degrees when the collapse component opens and again when it closes. You can pass in an array of two icons to change the icon when the collapse component is open and closed. The first icon in the array is the icon when the collapse component is closed, and the second icon is the icon when the collapse component is open. Ex: icon="fas fa-minus-circle, fas fa-plus-circle"' },
 
-    // “content” controls are only used to build slotted nodes
-    headerText: { control: 'text' },
-    contentLine1: { control: 'text' },
-    contentLine2: { control: 'text' },
+    // slotted text (for preview building only)
+    headerText: { control: 'text', description: 'Text content for the header slot (used only in this Storybook preview).' },
+    contentLine1: { control: 'text', description: 'Text content for the first line of the content slot (used only in this Storybook preview).' },
+    contentLine2: { control: 'text', description: 'Text content for the second line of the content slot (used only in this Storybook preview).' },
   },
+
   args: {
-    // safe defaults
     accordion: false,
     link: false,
     flush: false,
@@ -110,20 +126,18 @@ export default {
     isOpen: false,
 
     contentTxtSize: '',
-    targetId: 'acc-1',
+    targetId: 'acc-1', // base; will be uniquified per render
     classNames: '',
-    variant: 'primary',
+    variant: '',
     size: '',
-    // icon: 'fas fa-angle-down', // default icon is built-in
 
-    // slotted text (not props on the component)
     headerText: 'Toggle section.',
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
   },
 };
 
-// Stories (each with its own target-id)
+// Stories (each with its own base target-id)
 export const Accordion = {
   args: { accordion: true, headerText: 'Accordion header', targetId: 'accordion-1' },
 };
@@ -138,7 +152,7 @@ export const AccordionWithCustomIcon = {
 };
 
 export const ButtonToggle = {
-  args: { headerText: 'Button toggle', targetId: 'accordion-3' },
+  args: { headerText: 'Button toggle', targetId: 'accordion-3', variant: 'primary' },
 };
 
 export const ButtonToggleDisabled = {
@@ -146,13 +160,9 @@ export const ButtonToggleDisabled = {
 };
 
 export const ButtonToggleOpenByDefault = {
-  args: { headerText: 'Button toggle', isOpen: true, targetId: 'accordion-5' },
+  args: { headerText: 'Button toggle', isOpen: true, targetId: 'accordion-5', variant: 'success' },
 };
 
 export const LinkToggle = {
   args: { link: true, variant: 'link', headerText: 'Open via link', targetId: 'accordion-6' },
 };
-
-// component: `
-
-//         `,

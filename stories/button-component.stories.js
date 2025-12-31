@@ -31,7 +31,7 @@ export default {
     setAttr(el, 'variant', args.variant);
     setAttr(el, 'z-index', args.zIndex);
     setAttr(el, 'slot-side', args.slotSide);
-    setAttr(el, 'target-id', args.targetId);
+    // setAttr(el, 'target-id', args.targetId);
 
     // booleans
     args.absolute ? el.setAttribute('absolute', '') : el.removeAttribute('absolute');
@@ -51,7 +51,7 @@ export default {
     args.text ? el.setAttribute('text', '') : el.removeAttribute('text');
     args.textBtn ? el.setAttribute('text-btn', '') : el.removeAttribute('text-btn');
     args.vertical ? el.setAttribute('vertical', '') : el.removeAttribute('vertical');
-    args.accordion ? el.setAttribute('accordion', '') : el.removeAttribute('accordion');
+    // args.accordion ? el.setAttribute('accordion', '') : el.removeAttribute('accordion');
     args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
 
     // pressed can be boolean or "true"/"false"
@@ -133,9 +133,9 @@ export default {
     titleAttr: { control: 'text' },
 
     // Accordion helpers
-    accordion: { control: 'boolean' },
-    isOpen: { control: 'boolean' },
-    targetId: { control: 'text' },
+    // accordion: { control: 'boolean' },
+    // isOpen: { control: 'boolean' },
+    // targetId: { control: 'text' },
 
     // Misc
     styles: { control: 'text' },
@@ -184,9 +184,9 @@ export default {
     ariaLabel: '',
     titleAttr: '',
 
-    accordion: false,
-    isOpen: false,
-    targetId: '',
+    // accordion: false,
+    // isOpen: false,
+    // targetId: '',
 
     styles: '',
     devMode: false,

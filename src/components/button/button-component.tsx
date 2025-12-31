@@ -1,52 +1,70 @@
-import { Component, Prop, Event, EventEmitter, h } from '@stencil/core';
+// src/components/button/button-component.tsx
+import { Component, Prop, Event, EventEmitter, h, Element } from '@stencil/core';
 import { logInfo } from '../../utils/log-debug';
 
 @Component({
   tag: 'button-component',
   styleUrl: 'button.scss',
-  // styleUrls: ['../../global/global.scss', 'button.scss'],
+  shadow: false, // keep light DOM
 })
 export class Button {
-  @Prop() absolute: boolean = false;
-  @Prop() active: boolean = false;
-  @Prop() ariaLabel: string = '';
-  @Prop() block: boolean = false;
-  @Prop() bottom: string = '';
-  @Prop() btnIcon: boolean = false;
-  @Prop() btnText: string = '';
-  @Prop() classNames: string = '';
-  @Prop() disabled: boolean = false;
-  @Prop() end: boolean = false;
-  @Prop() elevation: string = '';
-  @Prop() fixed: boolean = false;
-  @Prop() groupBtn: boolean = false;
-  @Prop() iconBtn: boolean = false;
-  @Prop({ reflect: true }) slotSide: 'left' | 'right' | 'none' = 'none';
-  @Prop() styles: string = '';
-  @Prop() left: string = '';
-  @Prop() link: boolean = false;
-  @Prop() outlined: boolean = false;
-  @Prop() pressed: boolean | string = false;
-  @Prop() right: string = '';
-  @Prop() ripple: boolean = false;
-  @Prop() shape: string = '';
-  @Prop() size: string = '';
-  @Prop() start: boolean = false;
-  @Prop() stripped: boolean = false;
-  @Prop() text: boolean = false;
-  @Prop() textBtn: boolean = false;
-  @Prop() titleAttr: string = '';
-  @Prop() top: string = '';
-  @Prop() url: string = '';
-  @Prop() variant: string = '';
-  @Prop() vertical: boolean = false;
-  @Prop() zIndex: string = '';
-  @Prop({ mutable: true }) isOpen: boolean = false;
-  @Prop() targetId: string = '';
-  @Prop() accordion: boolean = false;
-  @Prop() devMode: boolean = false;
+  @Element() hostEl!: HTMLElement;
 
-  @Event() customClick: EventEmitter;
+  // ---- existing props (unchanged) ----
+  @Prop() absolute = false;
+  @Prop() active = false;
+  @Prop() ariaLabel = '';
+  @Prop() block = false;
+  @Prop() bottom = '';
+  @Prop() btnIcon = false;
+  @Prop() btnText = '';
+  @Prop() classNames = '';
+  @Prop() disabled = false;
+  @Prop() end = false;
+  @Prop() elevation = '';
+  @Prop() fixed = false;
+  @Prop() groupBtn = false;
+  @Prop() iconBtn = false;
+  @Prop({ reflect: true }) slotSide: 'left' | 'right' | 'none' = 'none';
+  @Prop() styles = '';
+  @Prop() left = '';
+  @Prop() link = false;
+  @Prop() outlined = false;
+  @Prop() pressed: boolean | string = false;
+  @Prop() right = '';
+  @Prop() ripple = false;
+  @Prop() shape = '';
+  @Prop() size = '';
+  @Prop() start = false;
+  @Prop() stripped = false;
+  @Prop() text = false;
+  @Prop() textBtn = false;
+  @Prop() titleAttr = '';
+  @Prop() top = '';
+  @Prop() url = '';
+  @Prop() variant = '';
+  @Prop() vertical = false;
+  @Prop() zIndex = '';
+
+  // Accordion helpers (unchanged)
+  @Prop({ mutable: true }) isOpen = false;
+  @Prop() targetId = '';
+  @Prop() accordion = false;
+
+  // New: allow consumers to opt-out of safeties if they really need focusable children
+  @Prop() allowFocusableChildren = false;
+
+  @Prop() devMode = false;
+
+  @Event() customClick!: EventEmitter<void>;
+
+  // ---- lifecycle: neutralize nested focusables after render ----
+  componentDidLoad() {
+    this.neutralizeNestedInteractivesIfNeeded();
+  }
+  componentDidUpdate() {
+    this.neutralizeNestedInteractivesIfNeeded();
+  }
 
   private handleClick() {
     this.customClick.emit();
@@ -56,42 +74,88 @@ export class Button {
   private handleKeyDown = (event: KeyboardEvent) => {
     if ((event.key === 'Enter' || event.key === ' ') && !this.disabled) {
       event.preventDefault();
+      event.stopPropagation(); // <- add this to prevent bubbling to parents
       this.handleClick();
     }
   };
 
-  private getDynamicStyles(): { [key: string]: string } {
-    const styles: { [key: string]: string } = {};
-    if (this.absolute) styles.position = 'absolute';
-    if (this.fixed) styles.position = 'fixed';
-    if (this.left) styles.left = `${this.left}px`;
-    if (this.right) styles.right = `${this.right}px`;
-    if (this.top) styles.top = `${this.top}px`;
-    if (this.bottom) styles.bottom = `${this.bottom}px`;
-    if (this.zIndex) styles['z-index'] = this.zIndex;
+  private getDynamicStyles(): { [k: string]: string } {
+    const s: { [k: string]: string } = {};
+    if (this.absolute) s.position = 'absolute';
+    if (this.fixed) s.position = 'fixed';
+    if (this.left) s.left = `${this.left}px`;
+    if (this.right) s.right = `${this.right}px`;
+    if (this.top) s.top = `${this.top}px`;
+    if (this.bottom) s.bottom = `${this.bottom}px`;
+    if (this.zIndex) s['z-index'] = this.zIndex;
+    logInfo(this.devMode, 'Button', 'getDynamicStyles()', s);
+    return s;
+  }
 
-    logInfo(this.devMode, 'Button', 'getDynamicStyles()', styles);
-    return styles;
+  // Neutralize nested interactive descendants to avoid axe rule failures
+  private neutralizeNestedInteractivesIfNeeded() {
+    if (this.allowFocusableChildren) return;
+
+    // Find the inner interactive root we rendered (<button> or <a>)
+    const inner = this.hostEl.querySelector('button.btn, a.btn');
+    if (!inner) return;
+
+    const focusableSel = 'a[href],area[href],button,details,[tabindex]:not([tabindex="-1"]),input,select,textarea,[contenteditable=""],[contenteditable="true"]';
+
+    // Any focusable descendant *inside* that is not the inner root itself gets neutralized
+    const descendants = Array.from(inner.querySelectorAll<HTMLElement>(focusableSel)).filter(n => n !== inner);
+
+    descendants.forEach(el => {
+      // Don’t stomp name-bearing elements if they contain real text; we’re defensive here
+      if (el.tagName === 'A' || el.tagName === 'BUTTON' || el.hasAttribute('tabindex')) {
+        el.setAttribute('tabindex', '-1');
+        el.setAttribute('role', 'presentation');
+        el.setAttribute('aria-hidden', 'true');
+        el.removeAttribute('href');
+        el.removeAttribute('role'); // keep as presentational only
+        if (this.devMode) {
+          console.warn('[button-component] Nested focusable child was neutralized to avoid nested-interactive a11y issue:', el);
+        }
+      }
+      // SVGs sometimes end up focusable; make them inert/decorative
+      if (el.tagName === 'SVG') {
+        el.setAttribute('focusable', 'false');
+        el.setAttribute('aria-hidden', 'true');
+      }
+    });
   }
 
   private renderButtonContent() {
     const hasLeft = this.slotSide === 'left';
     const hasRight = this.slotSide === 'right';
 
+    // In icon-only modes, the slot content is decorative; hide it from AT to avoid duplicate names
+    const iconOnly = this.btnIcon || this.iconBtn;
+
     const content = this.btnIcon ? (
-      <slot />
+      <span aria-hidden="true">
+        <slot />
+      </span>
     ) : this.iconBtn ? (
-      <span class="btn__content">
+      <span class="btn__content" aria-hidden="true">
         <slot />
       </span>
     ) : (
       [
-        hasLeft && <slot />,
-        <span class={`btn__content ${hasLeft ? 'ms-1' : ''} ${hasRight ? 'me-1' : ''}`}>
+        hasLeft && (
+          <span class="btn__side left">
+            <slot />
+          </span>
+        ),
+        <span class={`btn__content ${hasLeft ? 'ms-1' : ''} ${hasRight ? 'me-1' : ''}`} aria-hidden={iconOnly ? 'true' : null}>
           {this.btnText}
           {!hasLeft && !hasRight && <slot />}
         </span>,
-        hasRight && <slot />,
+        hasRight && (
+          <span class="btn__side right">
+            <slot />
+          </span>
+        ),
       ]
     );
 
@@ -103,6 +167,17 @@ export class Button {
     });
 
     return content;
+  }
+
+  private collectHostA11yAndData(): Record<string, any> {
+    const out: Record<string, any> = {};
+    for (const attr of Array.from(this.hostEl.attributes)) {
+      const n = attr.name.toLowerCase();
+      if (n.startsWith('aria-') || n === 'role' || n === 'tabindex' || n.startsWith('data-')) {
+        out[attr.name] = attr.value === '' ? '' : attr.value;
+      }
+    }
+    return out;
   }
 
   render() {
@@ -134,44 +209,28 @@ export class Button {
       .filter(Boolean)
       .join(' ');
 
-    // Accessibility: ensure an aria-label when there is no visible text
+    // Accessible name (esp. for icon-only)
     const hasVisibleText = !!(this.btnText && this.btnText.trim().length);
-    const computedAriaLabel =
-      (this.ariaLabel && this.ariaLabel.trim()) ||
-      (hasVisibleText ? this.btnText.trim() : '') ||
-      (this.titleAttr && this.titleAttr.trim()) ||
-      'Button';
+    const computedAriaLabel = (this.ariaLabel && this.ariaLabel.trim()) || (hasVisibleText ? this.btnText.trim() : '') || (this.titleAttr && this.titleAttr.trim()) || 'Button';
 
-    if (!hasVisibleText && !this.ariaLabel && (this.btnIcon || this.iconBtn) && this.devMode) {
-      console.warn(
-        '[ButtonComponent] Icon-only button has no `ariaLabel`/text. Setting aria-label="%s".',
-        computedAriaLabel
-      );
-    }
-
-    logInfo(this.devMode, 'Button', 'render()', {
-      classList,
-      link: this.link,
-      disabled: this.disabled,
-      slotSide: this.slotSide,
-      computedAriaLabel,
-    });
-
-    const ariaProps: Record<string, any> = {};
+    // ARIA for accordion toggles
+    const ariaForAccordion: Record<string, any> = {};
     if (this.accordion && this.targetId) {
-      ariaProps['aria-expanded'] = String(this.isOpen);
-      ariaProps['aria-controls'] = this.targetId;
+      ariaForAccordion['aria-expanded'] = String(!!this.isOpen);
+      ariaForAccordion['aria-controls'] = this.targetId;
     }
 
-    const buttonProps = {
-      ...ariaProps,
+    const passthrough = this.collectHostA11yAndData();
+
+    const common = {
+      ...passthrough,
+      ...ariaForAccordion,
       'aria-pressed': this.pressed === 'true' || this.pressed === 'false' ? this.pressed : undefined,
       'aria-label': computedAriaLabel,
       'aria-disabled': this.link && this.disabled ? 'true' : undefined,
-      style: dynamicStyles,
-      class: classList,
-      disabled: !this.link && this.disabled,
-      onClick: (event: MouseEvent) => {
+      'style': dynamicStyles,
+      'class': classList,
+      'onClick': (event: MouseEvent) => {
         if (this.disabled) {
           event.preventDefault();
           return;
@@ -180,21 +239,21 @@ export class Button {
         if (this.link && shouldPrevent) event.preventDefault();
         this.handleClick();
       },
-    };
+      'onKeyDown': this.disabled ? undefined : this.handleKeyDown,
+      'title': this.titleAttr,
+    } as Record<string, any>;
 
     return this.link ? (
       <a
-        {...(buttonProps as any)}
+        {...(common as any)}
         href={this.url && this.url.trim() !== '' ? this.url : undefined}
-        role="button"
-        tabindex={this.disabled ? '-1' : '0'}
-        onKeyDown={this.disabled ? undefined : this.handleKeyDown}
-        title={this.titleAttr}
+        role={common['role'] || 'button'}
+        tabindex={this.disabled ? '-1' : common['tabindex'] ?? '0'}
       >
         {this.renderButtonContent()}
       </a>
     ) : (
-      <button {...(buttonProps as any)} type="button" title={this.titleAttr}>
+      <button {...(common as any)} role={common['role'] || 'button'} type="button" disabled={this.disabled}>
         {this.renderButtonContent()}
       </button>
     );

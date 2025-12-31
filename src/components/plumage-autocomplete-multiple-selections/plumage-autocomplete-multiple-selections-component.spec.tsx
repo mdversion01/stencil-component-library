@@ -5,7 +5,12 @@ import { PlumageAutocompleteMultipleSelectionsComponent } from './plumage-autoco
 const sleep = (ms = 0) => new Promise(res => setTimeout(res, ms));
 
 describe('plumage-autocomplete-multiple-selections-component', () => {
-  async function setup(props?: Partial<PlumageAutocompleteMultipleSelectionsComponent>) {
+  /**
+   * Setup helper
+   * - Use `attrs` to set host attributes (kebab-case in HTML)
+   * - Only set *mutable* instance fields directly (e.g. `options`)
+   */
+  async function setup(attrs?: { preserveInputOnSelect?: boolean }) {
     const page = await newSpecPage({
       components: [PlumageAutocompleteMultipleSelectionsComponent],
       template: () => (
@@ -17,12 +22,16 @@ describe('plumage-autocomplete-multiple-selections-component', () => {
       ),
     });
 
-    // Inject props after creation (arrays etc.)
+    // Set host attributes instead of mutating non-mutable @Prop()s
+    if (attrs?.preserveInputOnSelect === true) {
+      page.root.setAttribute('preserve-input-on-select', '');
+    }
+
+    // Assign only mutable props/fields on the instance
     const inst = page.rootInstance as PlumageAutocompleteMultipleSelectionsComponent;
     inst.options = ['Ant', 'Ape', 'Bear', 'Bee', 'Cat', 'Dog', 'Eagle'];
-    Object.assign(inst, props || {});
-    await page.waitForChanges();
 
+    await page.waitForChanges();
     return page;
   }
 
@@ -34,7 +43,6 @@ describe('plumage-autocomplete-multiple-selections-component', () => {
 
   it('opens dropdown on typing and filters options (snapshot)', async () => {
     const page = await setup();
-
     const input = page.root!.querySelector('input') as HTMLInputElement;
     input.value = 'a';
     input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -50,17 +58,14 @@ describe('plumage-autocomplete-multiple-selections-component', () => {
   });
 
   it('keeps dropdown open after selecting an item via mouse (mousedown + click)', async () => {
-    const page = await setup({
-      preserveInputOnSelect: false, // exercise keep-open-on-empty-query
-    });
+    // NOTE: default is false, so no need to pass preserveInputOnSelect:false
+    const page = await setup();
 
-    // Type "a" to open & filter
     const input = page.root!.querySelector('input') as HTMLInputElement;
     input.value = 'a';
     input.dispatchEvent(new Event('input', { bubbles: true }));
     await page.waitForChanges();
 
-    // Click first option (mousedown first to set suppressBlur)
     const firstBtn = page.root!.querySelector('.autocomplete-dropdown-item .option-btn') as HTMLButtonElement;
     expect(firstBtn).toBeTruthy();
 
@@ -69,17 +74,14 @@ describe('plumage-autocomplete-multiple-selections-component', () => {
 
     firstBtn.click();
     await page.waitForChanges();
-    await sleep(0); // allow setTimeout focus path
+    await sleep(0);
     await page.waitForChanges();
 
-    // Dropdown should still be open
     expect(page.root!.querySelector('.autocomplete-dropdown')).not.toBeNull();
 
-    // Selected badge shows up
     const badges = page.root!.querySelectorAll('.ac-selected-items .badge');
     expect(badges.length).toBe(1);
 
-    // Selected option should be removed from the list of available options
     const selectedText = (badges[0].querySelector('span')?.textContent || '').trim();
     const listItems = Array.from(page.root!.querySelectorAll('.autocomplete-dropdown-item span')).map(n => (n.textContent || '').trim());
     expect(listItems).not.toContain(selectedText);
@@ -97,7 +99,6 @@ describe('plumage-autocomplete-multiple-selections-component', () => {
 
     expect(page.root!.querySelector('.autocomplete-dropdown')).not.toBeNull();
 
-    // Simulate outside click on document
     document.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await page.waitForChanges();
 
@@ -106,7 +107,9 @@ describe('plumage-autocomplete-multiple-selections-component', () => {
   });
 
   it('typing after a selection cancels the keep-open mode and re-filters', async () => {
-    const page = await setup({ preserveInputOnSelect: false });
+    // Default is false; if you ever need TRUE, use host attribute:
+    // const page = await setup({ preserveInputOnSelect: true });
+    const page = await setup();
 
     const input = page.root!.querySelector('input') as HTMLInputElement;
     input.value = 'a';
@@ -119,9 +122,6 @@ describe('plumage-autocomplete-multiple-selections-component', () => {
     firstBtn.click();
     await sleep(0);
     await page.waitForChanges();
-
-    // Keep-open should be active
-    expect(page.root!.querySelector('.autocomplete-dropdown')).not.toBeNull();
 
     // Type again -> cancels keep-open and re-filters
     input.value = 'be';

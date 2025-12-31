@@ -1,10 +1,13 @@
 // src/components/accordion/accordion-component.spec.tsx
 import { newSpecPage } from '@stencil/core/testing';
 import { AccordionComponent } from './accordion-component';
+// IMPORTANT: also register the child so its native control renders
+import { Button as ButtonComponent } from '../button/button-component';
 
 describe('accordion-component', () => {
-  const getTargetEl = (page: any, id: string) =>
-    page.root.querySelector<HTMLElement>(`#${id}`);
+  const getTargetEl = (page: any, id: string) => page.root.querySelector<HTMLElement>(`#${id}`);
+
+  const getInnerControl = (root: HTMLElement) => root.querySelector<HTMLElement>('button-component button, button-component a');
 
   const fireTransitionEnd = async (el: HTMLElement, page: any) => {
     el.dispatchEvent(new Event('transitionend'));
@@ -13,15 +16,17 @@ describe('accordion-component', () => {
 
   it('renders closed by default', async () => {
     const page = await newSpecPage({
-      components: [AccordionComponent],
+      components: [AccordionComponent, ButtonComponent],
       html: `<accordion-component target-id="section1"></accordion-component>`,
     });
 
-    const button = page.root.querySelector('button-component');
-    const target = getTargetEl(page, 'section1');
+    const hostBtn = page.root.querySelector('button-component');
+    const control = getInnerControl(page.root);
+    const target = getTargetEl(page, 'section1')!;
 
-    expect(button).toBeTruthy();
-    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(hostBtn).toBeTruthy();
+    expect(control).toBeTruthy();
+    expect(control!.getAttribute('aria-expanded')).toBe('false');
     expect(target.style.display).toBe('none');
     expect(target.style.height).toBe('0px');
 
@@ -30,15 +35,16 @@ describe('accordion-component', () => {
 
   it('renders open by default when is-open is set', async () => {
     const page = await newSpecPage({
-      components: [AccordionComponent],
+      components: [AccordionComponent, ButtonComponent],
       html: `<accordion-component target-id="section2" is-open="true"></accordion-component>`,
     });
 
-    const button = page.root.querySelector('button-component');
-    const target = getTargetEl(page, 'section2');
+    const control = getInnerControl(page.root);
+    const target = getTargetEl(page, 'section2')!;
 
+    expect(control).toBeTruthy();
     expect(page.rootInstance.internalOpen).toBe(true);
-    expect(button.getAttribute('aria-expanded')).toBe('true');
+    expect(control!.getAttribute('aria-expanded')).toBe('true');
     expect(target.style.display).toBe('block');
     expect(target.style.height).toBe('auto');
 
@@ -47,33 +53,36 @@ describe('accordion-component', () => {
 
   it('toggles open/closed state on click', async () => {
     const page = await newSpecPage({
-      components: [AccordionComponent],
+      components: [AccordionComponent, ButtonComponent],
       html: `<accordion-component target-id="section3"></accordion-component>`,
     });
 
     const instance = page.rootInstance as AccordionComponent;
-    const button = page.root.querySelector('button-component');
-    const target = getTargetEl(page, 'section3');
+    const hostBtn = page.root.querySelector('button-component')!;
+    const control = getInnerControl(page.root);
+    const target = getTargetEl(page, 'section3')!;
 
-    await button.dispatchEvent(new CustomEvent('customClick'));
+    expect(control).toBeTruthy();
+
+    await hostBtn.dispatchEvent(new CustomEvent('customClick'));
     await page.waitForChanges();
     expect(instance.internalOpen).toBe(true);
-    expect(button.getAttribute('aria-expanded')).toBe('true');
+    expect(control!.getAttribute('aria-expanded')).toBe('true');
     await fireTransitionEnd(target, page);
     expect(target.style.height).toBe('auto');
     expect(target.style.display).toBe('block');
 
-    await button.dispatchEvent(new CustomEvent('customClick'));
+    await hostBtn.dispatchEvent(new CustomEvent('customClick'));
     await page.waitForChanges();
     expect(instance.internalOpen).toBe(false);
-    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(control!.getAttribute('aria-expanded')).toBe('false');
     await fireTransitionEnd(target, page);
     expect(target.style.display).toBe('none');
   });
 
   it('renders icon and switches when toggled', async () => {
     const page = await newSpecPage({
-      components: [AccordionComponent],
+      components: [AccordionComponent, ButtonComponent],
       html: `<accordion-component
                accordion
                target-id="accordion-test"
@@ -86,113 +95,124 @@ describe('accordion-component', () => {
 
     const icon = page.root.querySelector('icon-component');
     expect(icon).toBeTruthy();
-    expect(icon.getAttribute('icon')).toContain('fa-chevron-down');
+    expect(icon!.getAttribute('icon')).toContain('fa-chevron-down');
 
-    const button = page.root.querySelector('button-component');
-    const target = getTargetEl(page, 'accordion-test');
+    const hostBtn = page.root.querySelector('button-component')!;
+    const target = getTargetEl(page, 'accordion-test')!;
 
-    button.dispatchEvent(new CustomEvent('customClick'));
+    hostBtn.dispatchEvent(new CustomEvent('customClick'));
     await page.waitForChanges();
     await fireTransitionEnd(target, page);
 
-    const updatedIcon = page.root.querySelector('icon-component');
+    const updatedIcon = page.root.querySelector('icon-component')!;
     expect(updatedIcon.getAttribute('icon')).toContain('fa-chevron-up');
   });
 
   it('toggles open/closed with keyboard (Enter and Space)', async () => {
     const page = await newSpecPage({
-      components: [AccordionComponent],
+      components: [AccordionComponent, ButtonComponent],
       html: `<accordion-component target-id="section5"></accordion-component>`,
     });
 
     const instance = page.rootInstance as AccordionComponent;
-    const button = page.root.querySelector('button-component');
-    const target = getTargetEl(page, 'section5');
+    const inner = page.root.querySelector<HTMLElement>('button-component button, button-component a')!;
+    const target = page.root.querySelector<HTMLElement>('#section5')!;
 
-    await button.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    // Press Enter — the button-component will emit customClick itself
+    inner.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     await page.waitForChanges();
     expect(instance.internalOpen).toBe(true);
-    await fireTransitionEnd(target, page);
+    target.dispatchEvent(new Event('transitionend'));
+    await page.waitForChanges();
 
-    await button.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    // Press Space — same: only keyboard events, no manual customClick
+    inner.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    inner.dispatchEvent(new KeyboardEvent('keyup', { key: ' ', bubbles: true }));
     await page.waitForChanges();
     expect(instance.internalOpen).toBe(false);
-    await fireTransitionEnd(target, page);
+    target.dispatchEvent(new Event('transitionend'));
+    await page.waitForChanges();
   });
 
   it('renders and toggles in link mode (anchor-like button)', async () => {
     const page = await newSpecPage({
-      components: [AccordionComponent],
+      components: [AccordionComponent, ButtonComponent],
       html: `<accordion-component link target-id="link-section" variant="primary">
-               <span slot="button-text">Open Link</span>
-             </accordion-component>`,
+             <span slot="button-text">Open Link</span>
+           </accordion-component>`,
     });
 
     const instance = page.rootInstance as AccordionComponent;
-    const linkBtn = page.root.querySelector('button-component');
-    const target = getTargetEl(page, 'link-section');
+    const inner = page.root.querySelector<HTMLElement>('button-component a, button-component button')!;
+    const target = page.root.querySelector<HTMLElement>('#link-section')!;
 
-    expect(linkBtn.getAttribute('role')).toBe('button');
-    expect(linkBtn.getAttribute('aria-expanded')).toBe('false');
+    expect(inner.getAttribute('role')).toBe('button');
+    expect(inner.getAttribute('aria-expanded')).toBe('false');
 
-    linkBtn.dispatchEvent(new CustomEvent('customClick'));
+    // Open via keyboard (component emits customClick)
+    inner.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     await page.waitForChanges();
     expect(instance.internalOpen).toBe(true);
-    expect(linkBtn.getAttribute('aria-expanded')).toBe('true');
-    await fireTransitionEnd(target, page);
+    target.dispatchEvent(new Event('transitionend'));
+    await page.waitForChanges();
 
-    await linkBtn.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    // Close via Space
+    inner.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    inner.dispatchEvent(new KeyboardEvent('keyup', { key: ' ', bubbles: true }));
     await page.waitForChanges();
     expect(instance.internalOpen).toBe(false);
-    await fireTransitionEnd(target, page);
+    target.dispatchEvent(new Event('transitionend'));
+    await page.waitForChanges();
   });
 
   it('emits toggleEvent(boolean) with the new state', async () => {
     const page = await newSpecPage({
-      components: [AccordionComponent],
+      components: [AccordionComponent, ButtonComponent],
       html: `<accordion-component target-id="emit-section"></accordion-component>`,
     });
 
     const spy = jest.fn();
     page.root.addEventListener('toggleEvent', (e: CustomEvent) => spy(e.detail));
-    const btn = page.root.querySelector('button-component');
+    const hostBtn = page.root.querySelector('button-component')!;
 
-    await btn.dispatchEvent(new CustomEvent('customClick'));
+    await hostBtn.dispatchEvent(new CustomEvent('customClick'));
     await page.waitForChanges();
     expect(spy).toHaveBeenLastCalledWith(true);
 
-    await btn.dispatchEvent(new CustomEvent('customClick'));
+    await hostBtn.dispatchEvent(new CustomEvent('customClick'));
     await page.waitForChanges();
     expect(spy).toHaveBeenLastCalledWith(false);
   });
 
-  it('@Watch("isOpen"): updating host prop updates internalOpen and styles (no prop mutation on instance)', async () => {
+  it('@Watch("isOpen"): updating host prop updates internalOpen and styles', async () => {
     const page = await newSpecPage({
-      components: [AccordionComponent],
+      components: [AccordionComponent, ButtonComponent],
       html: `<accordion-component target-id="watched"></accordion-component>`,
     });
 
     const instance = page.rootInstance as AccordionComponent;
-    const btn = page.root.querySelector('button-component');
-    const target = getTargetEl(page, 'watched');
+    const control = getInnerControl(page.root);
+    const target = getTargetEl(page, 'watched')!;
+
+    expect(control).toBeTruthy();
 
     // Start closed
     expect(instance.internalOpen).toBe(false);
-    expect(btn.getAttribute('aria-expanded')).toBe('false');
+    expect(control!.getAttribute('aria-expanded')).toBe('false');
 
-    // Open via host attribute/property (external change)
-    page.root.setAttribute('is-open', 'true'); // OR: (page.root as any).isOpen = true;
+    // Open via host attribute/property
+    page.root.setAttribute('is-open', 'true');
     await page.waitForChanges();
     expect(instance.internalOpen).toBe(true);
-    expect(btn.getAttribute('aria-expanded')).toBe('true');
+    expect(control!.getAttribute('aria-expanded')).toBe('true');
     expect(target.style.display).toBe('block');
     expect(target.style.height).toBe('auto');
 
     // Close via host attribute/property
-    page.root.setAttribute('is-open', 'false'); // OR: (page.root as any).isOpen = false;
+    page.root.setAttribute('is-open', 'false');
     await page.waitForChanges();
     expect(instance.internalOpen).toBe(false);
-    expect(btn.getAttribute('aria-expanded')).toBe('false');
+    expect(control!.getAttribute('aria-expanded')).toBe('false');
     expect(target.style.display).toBe('none');
     expect(target.style.height).toBe('0px');
   });

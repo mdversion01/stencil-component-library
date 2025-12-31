@@ -2,32 +2,42 @@
 
 exports[`accordion-container applies correct text size class from contentTxtSize prop: text size large 1`] = `
 <accordion-container icon="fas fa-angle-down">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-6-lbt4v" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="true" classnames=" accordion-button " data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 1
-          <span class="rotate-down">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-6-lbt4v-header-0">
+        <button-component aria-controls="acc-6-lbt4v-collapse-0" aria-expanded="true" data-bs-target="#acc-6-lbt4v-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-6-lbt4v-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-6-lbt4v-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 1
+              <span class="rotate-down">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease; display: block; height: 0px;">
+      <div aria-labelledby="acc-6-lbt4v-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-6-lbt4v" id="acc-6-lbt4v-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease; display: block; height: 0px;">
         <div class="accordion-body text-large">
           Content 1
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-1">
-        <button-component aria-controls="collapse1" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse1" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 2
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-6-lbt4v-header-1">
+        <button-component aria-controls="acc-6-lbt4v-collapse-1" aria-expanded="false" data-bs-target="#acc-6-lbt4v-collapse-1" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-6-lbt4v-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-6-lbt4v-collapse-1" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 2
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-1" class="accordion-collapse collapse" data-bs-parent="#" id="collapse1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-6-lbt4v-header-1" class="accordion-collapse collapse" data-bs-parent="#acc-6-lbt4v" id="acc-6-lbt4v-collapse-1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body text-large">
           Content 2
         </div>
@@ -37,34 +47,44 @@ exports[`accordion-container applies correct text size class from contentTxtSize
 </accordion-container>
 `;
 
-exports[`accordion-container handles keyboard Enter and Space keydown to toggle item: after Enter keydown 1`] = `
+exports[`accordion-container handles keyboard activation (simulate click on inner button): after activation close 1`] = `
 <accordion-container icon="fas fa-angle-down">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-4-5h3fo" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="true" classnames=" accordion-button " data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 1
-          <span class="rotate-down">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-4-5h3fo-header-0">
+        <button-component aria-controls="acc-4-5h3fo-collapse-0" aria-expanded="false" data-bs-target="#acc-4-5h3fo-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-4-5h3fo-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-4-5h3fo-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 1
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease; display: block; height: 0px;">
+      <div aria-labelledby="acc-4-5h3fo-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-4-5h3fo" id="acc-4-5h3fo-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease; display: block; height: undefinedpx;">
         <div class="accordion-body">
           Content 1
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-1">
-        <button-component aria-controls="collapse1" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse1" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 2
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-4-5h3fo-header-1">
+        <button-component aria-controls="acc-4-5h3fo-collapse-1" aria-expanded="false" data-bs-target="#acc-4-5h3fo-collapse-1" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-4-5h3fo-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-4-5h3fo-collapse-1" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 2
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-1" class="accordion-collapse collapse" data-bs-parent="#" id="collapse1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-4-5h3fo-header-1" class="accordion-collapse collapse" data-bs-parent="#acc-4-5h3fo" id="acc-4-5h3fo-collapse-1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 2
         </div>
@@ -74,34 +94,44 @@ exports[`accordion-container handles keyboard Enter and Space keydown to toggle 
 </accordion-container>
 `;
 
-exports[`accordion-container handles keyboard Enter and Space keydown to toggle item: after Space keydown 1`] = `
+exports[`accordion-container handles keyboard activation (simulate click on inner button): after activation open 1`] = `
 <accordion-container icon="fas fa-angle-down">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-4-5h3fo" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 1
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-4-5h3fo-header-0">
+        <button-component aria-controls="acc-4-5h3fo-collapse-0" aria-expanded="true" data-bs-target="#acc-4-5h3fo-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-4-5h3fo-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-4-5h3fo-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 1
+              <span class="rotate-down">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease; display: block; height: undefinedpx;">
+      <div aria-labelledby="acc-4-5h3fo-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-4-5h3fo" id="acc-4-5h3fo-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease; display: block; height: 0px;">
         <div class="accordion-body">
           Content 1
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-1">
-        <button-component aria-controls="collapse1" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse1" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 2
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-4-5h3fo-header-1">
+        <button-component aria-controls="acc-4-5h3fo-collapse-1" aria-expanded="false" data-bs-target="#acc-4-5h3fo-collapse-1" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-4-5h3fo-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-4-5h3fo-collapse-1" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 2
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-1" class="accordion-collapse collapse" data-bs-parent="#" id="collapse1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-4-5h3fo-header-1" class="accordion-collapse collapse" data-bs-parent="#acc-4-5h3fo" id="acc-4-5h3fo-collapse-1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 2
         </div>
@@ -113,32 +143,42 @@ exports[`accordion-container handles keyboard Enter and Space keydown to toggle 
 
 exports[`accordion-container icon switching with snapshot: after icon toggle 1`] = `
 <accordion-container icon="icon-closed,icon-open">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-5-jafvo" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="true" classnames=" accordion-button " data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 1
-          <span class="rotate-down">
-            <icon-component icon="icon-open"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-5-jafvo-header-0">
+        <button-component aria-controls="acc-5-jafvo-collapse-0" aria-expanded="true" data-bs-target="#acc-5-jafvo-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-5-jafvo-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-5-jafvo-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 1
+              <span class="rotate-down">
+                <icon-component icon="icon-open"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease; display: block; height: 0px;">
+      <div aria-labelledby="acc-5-jafvo-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-5-jafvo" id="acc-5-jafvo-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease; display: block; height: 0px;">
         <div class="accordion-body">
           Content 1
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-1">
-        <button-component aria-controls="collapse1" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse1" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 2
-          <span class="rotate-up">
-            <icon-component icon="icon-closed"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-5-jafvo-header-1">
+        <button-component aria-controls="acc-5-jafvo-collapse-1" aria-expanded="false" data-bs-target="#acc-5-jafvo-collapse-1" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-5-jafvo-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-5-jafvo-collapse-1" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 2
+              <span class="rotate-up">
+                <icon-component icon="icon-closed"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-1" class="accordion-collapse collapse" data-bs-parent="#" id="collapse1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-5-jafvo-header-1" class="accordion-collapse collapse" data-bs-parent="#acc-5-jafvo" id="acc-5-jafvo-collapse-1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 2
         </div>
@@ -150,32 +190,42 @@ exports[`accordion-container icon switching with snapshot: after icon toggle 1`]
 
 exports[`accordion-container icon switching with snapshot: before icon toggle 1`] = `
 <accordion-container icon="icon-closed,icon-open">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-5-jafvo" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 1
-          <span class="rotate-up">
-            <icon-component icon="icon-closed"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-5-jafvo-header-0">
+        <button-component aria-controls="acc-5-jafvo-collapse-0" aria-expanded="false" data-bs-target="#acc-5-jafvo-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-5-jafvo-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-5-jafvo-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 1
+              <span class="rotate-up">
+                <icon-component icon="icon-closed"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-5-jafvo-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-5-jafvo" id="acc-5-jafvo-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 1
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-1">
-        <button-component aria-controls="collapse1" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse1" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 2
-          <span class="rotate-up">
-            <icon-component icon="icon-closed"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-5-jafvo-header-1">
+        <button-component aria-controls="acc-5-jafvo-collapse-1" aria-expanded="false" data-bs-target="#acc-5-jafvo-collapse-1" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-5-jafvo-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-5-jafvo-collapse-1" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 2
+              <span class="rotate-up">
+                <icon-component icon="icon-closed"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-1" class="accordion-collapse collapse" data-bs-parent="#" id="collapse1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-5-jafvo-header-1" class="accordion-collapse collapse" data-bs-parent="#acc-5-jafvo" id="acc-5-jafvo-collapse-1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 2
         </div>
@@ -187,16 +237,21 @@ exports[`accordion-container icon switching with snapshot: before icon toggle 1`
 
 exports[`accordion-container renders an item with empty header and content strings: empty header and content 1`] = `
 <accordion-container icon="fas fa-angle-down">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-14-veqva" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-14-veqva-header-0">
+        <button-component aria-controls="acc-14-veqva-collapse-0" aria-expanded="false" data-bs-target="#acc-14-veqva-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-14-veqva-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-14-veqva-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-14-veqva-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-14-veqva" id="acc-14-veqva-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body"></div>
       </div>
     </div>
@@ -208,15 +263,20 @@ exports[`accordion-container renders correct ARIA attributes on accordion header
 <accordion-container icon="fas fa-angle-down">
   <div class="accordion" id="my-accordion" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Item 1
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="my-accordion-header-0">
+        <button-component aria-controls="my-accordion-collapse-0" aria-expanded="false" data-bs-target="#my-accordion-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="my-accordion-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#my-accordion-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Item 1
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#my-accordion" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="my-accordion-header-0" class="accordion-collapse collapse" data-bs-parent="#my-accordion" id="my-accordion-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 1
         </div>
@@ -228,23 +288,28 @@ exports[`accordion-container renders correct ARIA attributes on accordion header
 
 exports[`accordion-container renders empty accordion when data is an empty array: empty array data 1`] = `
 <accordion-container icon="fas fa-angle-down">
-  <div class="accordion" role="presentation"></div>
+  <div class="accordion" id="acc-11-9tia0" role="presentation"></div>
 </accordion-container>
 `;
 
 exports[`accordion-container renders fallback icon behavior for invalid or missing icon prop: empty string icon 1`] = `
 <accordion-container icon="">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-15-7sbz8" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          H
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-15-7sbz8-header-0">
+        <button-component aria-controls="acc-15-7sbz8-collapse-0" aria-expanded="false" data-bs-target="#acc-15-7sbz8-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-15-7sbz8-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-7sbz8-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              H
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-15-7sbz8-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-15-7sbz8" id="acc-15-7sbz8-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           C
         </div>
@@ -256,17 +321,22 @@ exports[`accordion-container renders fallback icon behavior for invalid or missi
 
 exports[`accordion-container renders fallback icon behavior for invalid or missing icon prop: malformed icon string 1`] = `
 <accordion-container icon="  , , ,">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-17-vpsd4" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          H
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-17-vpsd4-header-0">
+        <button-component aria-controls="acc-17-vpsd4-collapse-0" aria-expanded="false" data-bs-target="#acc-17-vpsd4-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-17-vpsd4-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-17-vpsd4-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              H
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-17-vpsd4-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-17-vpsd4" id="acc-17-vpsd4-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           C
         </div>
@@ -278,17 +348,22 @@ exports[`accordion-container renders fallback icon behavior for invalid or missi
 
 exports[`accordion-container renders fallback icon behavior for invalid or missing icon prop: null icon 1`] = `
 <accordion-container>
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-16-khs4p" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          H
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-16-khs4p-header-0">
+        <button-component aria-controls="acc-16-khs4p-collapse-0" aria-expanded="false" data-bs-target="#acc-16-khs4p-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-16-khs4p-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-16-khs4p-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              H
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-16-khs4p-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-16-khs4p" id="acc-16-khs4p-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           C
         </div>
@@ -300,200 +375,260 @@ exports[`accordion-container renders fallback icon behavior for invalid or missi
 
 exports[`accordion-container renders gracefully when data is undefined, null, or not an array: non-array data fallback 1`] = `
 <accordion-container icon="fas fa-angle-down">
-  <div class="accordion" role="presentation"></div>
+  <div class="accordion" id="acc-10-tfbvt" role="presentation"></div>
 </accordion-container>
 `;
 
 exports[`accordion-container renders gracefully when data is undefined, null, or not an array: null data fallback 1`] = `
 <accordion-container icon="fas fa-angle-down">
-  <div class="accordion" role="presentation"></div>
+  <div class="accordion" id="acc-9-3luyp" role="presentation"></div>
 </accordion-container>
 `;
 
 exports[`accordion-container renders gracefully when data is undefined, null, or not an array: undefined data fallback 1`] = `
 <accordion-container icon="fas fa-angle-down">
-  <div class="accordion" role="presentation"></div>
+  <div class="accordion" id="acc-8-b0kz2" role="presentation"></div>
 </accordion-container>
 `;
 
 exports[`accordion-container renders many accordion items and matches snapshot: long data array (12 items) 1`] = `
 <accordion-container icon="fas fa-angle-down">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-13-li7sf" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 1
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-13-li7sf-header-0">
+        <button-component aria-controls="acc-13-li7sf-collapse-0" aria-expanded="false" data-bs-target="#acc-13-li7sf-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-13-li7sf-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-13-li7sf-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 1
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-13-li7sf-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-13-li7sf" id="acc-13-li7sf-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 1
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-1">
-        <button-component aria-controls="collapse1" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse1" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 2
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-13-li7sf-header-1">
+        <button-component aria-controls="acc-13-li7sf-collapse-1" aria-expanded="false" data-bs-target="#acc-13-li7sf-collapse-1" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-13-li7sf-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-13-li7sf-collapse-1" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 2
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-1" class="accordion-collapse collapse" data-bs-parent="#" id="collapse1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-13-li7sf-header-1" class="accordion-collapse collapse" data-bs-parent="#acc-13-li7sf" id="acc-13-li7sf-collapse-1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 2
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-2">
-        <button-component aria-controls="collapse2" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse2" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 3
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-13-li7sf-header-2">
+        <button-component aria-controls="acc-13-li7sf-collapse-2" aria-expanded="false" data-bs-target="#acc-13-li7sf-collapse-2" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-13-li7sf-collapse-2" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-13-li7sf-collapse-2" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 3
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-2" class="accordion-collapse collapse" data-bs-parent="#" id="collapse2" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-13-li7sf-header-2" class="accordion-collapse collapse" data-bs-parent="#acc-13-li7sf" id="acc-13-li7sf-collapse-2" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 3
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-3">
-        <button-component aria-controls="collapse3" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse3" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 4
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-13-li7sf-header-3">
+        <button-component aria-controls="acc-13-li7sf-collapse-3" aria-expanded="false" data-bs-target="#acc-13-li7sf-collapse-3" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-13-li7sf-collapse-3" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-13-li7sf-collapse-3" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 4
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-3" class="accordion-collapse collapse" data-bs-parent="#" id="collapse3" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-13-li7sf-header-3" class="accordion-collapse collapse" data-bs-parent="#acc-13-li7sf" id="acc-13-li7sf-collapse-3" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 4
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-4">
-        <button-component aria-controls="collapse4" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse4" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 5
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-13-li7sf-header-4">
+        <button-component aria-controls="acc-13-li7sf-collapse-4" aria-expanded="false" data-bs-target="#acc-13-li7sf-collapse-4" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-13-li7sf-collapse-4" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-13-li7sf-collapse-4" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 5
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-4" class="accordion-collapse collapse" data-bs-parent="#" id="collapse4" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-13-li7sf-header-4" class="accordion-collapse collapse" data-bs-parent="#acc-13-li7sf" id="acc-13-li7sf-collapse-4" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 5
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-5">
-        <button-component aria-controls="collapse5" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse5" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 6
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-13-li7sf-header-5">
+        <button-component aria-controls="acc-13-li7sf-collapse-5" aria-expanded="false" data-bs-target="#acc-13-li7sf-collapse-5" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-13-li7sf-collapse-5" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-13-li7sf-collapse-5" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 6
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-5" class="accordion-collapse collapse" data-bs-parent="#" id="collapse5" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-13-li7sf-header-5" class="accordion-collapse collapse" data-bs-parent="#acc-13-li7sf" id="acc-13-li7sf-collapse-5" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 6
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-6">
-        <button-component aria-controls="collapse6" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse6" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 7
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-13-li7sf-header-6">
+        <button-component aria-controls="acc-13-li7sf-collapse-6" aria-expanded="false" data-bs-target="#acc-13-li7sf-collapse-6" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-13-li7sf-collapse-6" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-13-li7sf-collapse-6" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 7
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-6" class="accordion-collapse collapse" data-bs-parent="#" id="collapse6" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-13-li7sf-header-6" class="accordion-collapse collapse" data-bs-parent="#acc-13-li7sf" id="acc-13-li7sf-collapse-6" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 7
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-7">
-        <button-component aria-controls="collapse7" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse7" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 8
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-13-li7sf-header-7">
+        <button-component aria-controls="acc-13-li7sf-collapse-7" aria-expanded="false" data-bs-target="#acc-13-li7sf-collapse-7" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-13-li7sf-collapse-7" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-13-li7sf-collapse-7" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 8
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-7" class="accordion-collapse collapse" data-bs-parent="#" id="collapse7" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-13-li7sf-header-7" class="accordion-collapse collapse" data-bs-parent="#acc-13-li7sf" id="acc-13-li7sf-collapse-7" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 8
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-8">
-        <button-component aria-controls="collapse8" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse8" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 9
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-13-li7sf-header-8">
+        <button-component aria-controls="acc-13-li7sf-collapse-8" aria-expanded="false" data-bs-target="#acc-13-li7sf-collapse-8" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-13-li7sf-collapse-8" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-13-li7sf-collapse-8" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 9
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-8" class="accordion-collapse collapse" data-bs-parent="#" id="collapse8" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-13-li7sf-header-8" class="accordion-collapse collapse" data-bs-parent="#acc-13-li7sf" id="acc-13-li7sf-collapse-8" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 9
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-9">
-        <button-component aria-controls="collapse9" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse9" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 10
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-13-li7sf-header-9">
+        <button-component aria-controls="acc-13-li7sf-collapse-9" aria-expanded="false" data-bs-target="#acc-13-li7sf-collapse-9" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-13-li7sf-collapse-9" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-13-li7sf-collapse-9" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 10
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-9" class="accordion-collapse collapse" data-bs-parent="#" id="collapse9" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-13-li7sf-header-9" class="accordion-collapse collapse" data-bs-parent="#acc-13-li7sf" id="acc-13-li7sf-collapse-9" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 10
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-10">
-        <button-component aria-controls="collapse10" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse10" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 11
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-13-li7sf-header-10">
+        <button-component aria-controls="acc-13-li7sf-collapse-10" aria-expanded="false" data-bs-target="#acc-13-li7sf-collapse-10" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-13-li7sf-collapse-10" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-13-li7sf-collapse-10" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 11
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-10" class="accordion-collapse collapse" data-bs-parent="#" id="collapse10" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-13-li7sf-header-10" class="accordion-collapse collapse" data-bs-parent="#acc-13-li7sf" id="acc-13-li7sf-collapse-10" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 11
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-11">
-        <button-component aria-controls="collapse11" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse11" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 12
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-13-li7sf-header-11">
+        <button-component aria-controls="acc-13-li7sf-collapse-11" aria-expanded="false" data-bs-target="#acc-13-li7sf-collapse-11" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-13-li7sf-collapse-11" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-13-li7sf-collapse-11" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 12
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-11" class="accordion-collapse collapse" data-bs-parent="#" id="collapse11" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-13-li7sf-header-11" class="accordion-collapse collapse" data-bs-parent="#acc-13-li7sf" id="acc-13-li7sf-collapse-11" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 12
         </div>
@@ -505,17 +640,22 @@ exports[`accordion-container renders many accordion items and matches snapshot: 
 
 exports[`accordion-container renders no icon-component if icon is "," or whitespace only: no icon rendered: icon as comma only 1`] = `
 <accordion-container icon=",">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-19-i0t4w" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          A
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-19-i0t4w-header-0">
+        <button-component aria-controls="acc-19-i0t4w-collapse-0" aria-expanded="false" data-bs-target="#acc-19-i0t4w-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-19-i0t4w-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-19-i0t4w-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              A
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-19-i0t4w-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-19-i0t4w" id="acc-19-i0t4w-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           B
         </div>
@@ -527,17 +667,22 @@ exports[`accordion-container renders no icon-component if icon is "," or whitesp
 
 exports[`accordion-container renders no icon-component if icon is "," or whitespace only: no icon rendered: icon as space only 1`] = `
 <accordion-container icon=" ">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-20-ne9v9" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          A
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-20-ne9v9-header-0">
+        <button-component aria-controls="acc-20-ne9v9-collapse-0" aria-expanded="false" data-bs-target="#acc-20-ne9v9-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-20-ne9v9-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-20-ne9v9-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              A
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-20-ne9v9-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-20-ne9v9" id="acc-20-ne9v9-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           B
         </div>
@@ -549,17 +694,22 @@ exports[`accordion-container renders no icon-component if icon is "," or whitesp
 
 exports[`accordion-container renders only first two icons from icon="a,b,c": icon prop with extra values (a,b,c) 1`] = `
 <accordion-container icon="a,b,c">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-21-l6huk" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          H
-          <span class="rotate-up">
-            <icon-component icon="a"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-21-l6huk-header-0">
+        <button-component aria-controls="acc-21-l6huk-collapse-0" aria-expanded="false" data-bs-target="#acc-21-l6huk-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-21-l6huk-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-21-l6huk-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              H
+              <span class="rotate-up">
+                <icon-component icon="a"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease; display: block; height: undefinedpx;">
+      <div aria-labelledby="acc-21-l6huk-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-21-l6huk" id="acc-21-l6huk-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease; display: block; height: undefinedpx;">
         <div class="accordion-body">
           C
         </div>
@@ -571,32 +721,42 @@ exports[`accordion-container renders only first two icons from icon="a,b,c": ico
 
 exports[`accordion-container renders outlined, block, and disabled props: outlined-block-disabled 1`] = `
 <accordion-container icon="fas fa-angle-down">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-2-jzja1" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" block="" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" disabled="" outlined="" role="button" size="" tabindex="0" variant="">
-          Header 1
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-2-jzja1-header-0">
+        <button-component aria-controls="acc-2-jzja1-collapse-0" aria-expanded="false" data-bs-target="#acc-2-jzja1-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-2-jzja1-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn btn--block btn-outline- collapsed" data-bs-target="#acc-2-jzja1-collapse-0" data-bs-toggle="collapse" disabled="" role="button" type="button">
+            <span class="btn__content">
+              Header 1
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-2-jzja1-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-2-jzja1" id="acc-2-jzja1-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 1
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-1">
-        <button-component aria-controls="collapse1" aria-expanded="false" block="" classnames=" accordion-button collapsed" data-bs-target="#collapse1" data-bs-toggle="collapse" disabled="" outlined="" role="button" size="" tabindex="0" variant="">
-          Header 2
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-2-jzja1-header-1">
+        <button-component aria-controls="acc-2-jzja1-collapse-1" aria-expanded="false" data-bs-target="#acc-2-jzja1-collapse-1" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-2-jzja1-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn btn--block btn-outline- collapsed" data-bs-target="#acc-2-jzja1-collapse-1" data-bs-toggle="collapse" disabled="" role="button" type="button">
+            <span class="btn__content">
+              Header 2
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-1" class="accordion-collapse collapse" data-bs-parent="#" id="collapse1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-2-jzja1-header-1" class="accordion-collapse collapse" data-bs-parent="#acc-2-jzja1" id="acc-2-jzja1-collapse-1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 2
         </div>
@@ -608,17 +768,22 @@ exports[`accordion-container renders outlined, block, and disabled props: outlin
 
 exports[`accordion-container renders single static icon and does not change on toggle: static single icon toggle does not change 1`] = `
 <accordion-container icon="only-icon">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-22-ebfj3" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Static
-          <span class="rotate-up">
-            <icon-component icon="only-icon"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-22-ebfj3-header-0">
+        <button-component aria-controls="acc-22-ebfj3-collapse-0" aria-expanded="false" data-bs-target="#acc-22-ebfj3-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-22-ebfj3-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-22-ebfj3-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Static
+              <span class="rotate-up">
+                <icon-component icon="only-icon"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease; display: block; height: undefinedpx;">
+      <div aria-labelledby="acc-22-ebfj3-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-22-ebfj3" id="acc-22-ebfj3-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease; display: block; height: undefinedpx;">
         <div class="accordion-body">
           Content
         </div>
@@ -630,32 +795,42 @@ exports[`accordion-container renders single static icon and does not change on t
 
 exports[`accordion-container renders static icon with no toggle switch: static icon no switch 1`] = `
 <accordion-container icon="icon-static">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-7-o27ti" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 1
-          <span class="rotate-up">
-            <icon-component icon="icon-static"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-7-o27ti-header-0">
+        <button-component aria-controls="acc-7-o27ti-collapse-0" aria-expanded="false" data-bs-target="#acc-7-o27ti-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-7-o27ti-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-7-o27ti-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 1
+              <span class="rotate-up">
+                <icon-component icon="icon-static"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-7-o27ti-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-7-o27ti" id="acc-7-o27ti-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 1
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-1">
-        <button-component aria-controls="collapse1" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse1" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 2
-          <span class="rotate-up">
-            <icon-component icon="icon-static"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-7-o27ti-header-1">
+        <button-component aria-controls="acc-7-o27ti-collapse-1" aria-expanded="false" data-bs-target="#acc-7-o27ti-collapse-1" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-7-o27ti-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-7-o27ti-collapse-1" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 2
+              <span class="rotate-up">
+                <icon-component icon="icon-static"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-1" class="accordion-collapse collapse" data-bs-parent="#" id="collapse1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-7-o27ti-header-1" class="accordion-collapse collapse" data-bs-parent="#acc-7-o27ti" id="acc-7-o27ti-collapse-1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 2
         </div>
@@ -667,32 +842,42 @@ exports[`accordion-container renders static icon with no toggle switch: static i
 
 exports[`accordion-container renders with given data and matches snapshot 1`] = `
 <accordion-container icon="fas fa-angle-down">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-1-4j16p" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 1
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-1-4j16p-header-0">
+        <button-component aria-controls="acc-1-4j16p-collapse-0" aria-expanded="false" data-bs-target="#acc-1-4j16p-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-1-4j16p-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-1-4j16p-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 1
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-1-4j16p-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-1-4j16p" id="acc-1-4j16p-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 1
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-1">
-        <button-component aria-controls="collapse1" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse1" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 2
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-1-4j16p-header-1">
+        <button-component aria-controls="acc-1-4j16p-collapse-1" aria-expanded="false" data-bs-target="#acc-1-4j16p-collapse-1" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-1-4j16p-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-1-4j16p-collapse-1" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 2
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-1" class="accordion-collapse collapse" data-bs-parent="#" id="collapse1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-1-4j16p-header-1" class="accordion-collapse collapse" data-bs-parent="#acc-1-4j16p" id="acc-1-4j16p-collapse-1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 2
         </div>
@@ -704,32 +889,42 @@ exports[`accordion-container renders with given data and matches snapshot 1`] = 
 
 exports[`accordion-container toggles accordion via click and matches snapshot: click toggle first open 1`] = `
 <accordion-container icon="fas fa-angle-down">
-  <div class="accordion" role="presentation">
+  <div class="accordion" id="acc-3-vjhbv" role="presentation">
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-0">
-        <button-component aria-controls="collapse0" aria-expanded="true" classnames=" accordion-button " data-bs-target="#collapse0" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 1
-          <span class="rotate-down">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-3-vjhbv-header-0">
+        <button-component aria-controls="acc-3-vjhbv-collapse-0" aria-expanded="true" data-bs-target="#acc-3-vjhbv-collapse-0" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-3-vjhbv-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-3-vjhbv-collapse-0" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 1
+              <span class="rotate-down">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-0" class="accordion-collapse collapse" data-bs-parent="#" id="collapse0" role="region" style="overflow: hidden; transition: height 0.35s ease; display: block; height: 0px;">
+      <div aria-labelledby="acc-3-vjhbv-header-0" class="accordion-collapse collapse" data-bs-parent="#acc-3-vjhbv" id="acc-3-vjhbv-collapse-0" role="region" style="overflow: hidden; transition: height 0.35s ease; display: block; height: 0px;">
         <div class="accordion-body">
           Content 1
         </div>
       </div>
     </div>
     <div class="accordion-item">
-      <h2 class="accordion-header" id="header-1">
-        <button-component aria-controls="collapse1" aria-expanded="false" classnames=" accordion-button collapsed" data-bs-target="#collapse1" data-bs-toggle="collapse" role="button" size="" tabindex="0" variant="">
-          Header 2
-          <span class="rotate-up">
-            <icon-component icon="fas fa-angle-down"></icon-component>
-          </span>
+      <h2 class="accordion-header" id="acc-3-vjhbv-header-1">
+        <button-component aria-controls="acc-3-vjhbv-collapse-1" aria-expanded="false" data-bs-target="#acc-3-vjhbv-collapse-1" data-bs-toggle="collapse" slot-side="none">
+          <!---->
+          <button aria-controls="acc-3-vjhbv-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-3-vjhbv-collapse-1" data-bs-toggle="collapse" role="button" type="button">
+            <span class="btn__content">
+              Header 2
+              <span class="rotate-up">
+                <icon-component icon="fas fa-angle-down"></icon-component>
+              </span>
+            </span>
+          </button>
         </button-component>
       </h2>
-      <div aria-labelledby="header-1" class="accordion-collapse collapse" data-bs-parent="#" id="collapse1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
+      <div aria-labelledby="acc-3-vjhbv-header-1" class="accordion-collapse collapse" data-bs-parent="#acc-3-vjhbv" id="acc-3-vjhbv-collapse-1" role="region" style="overflow: hidden; transition: height 0.35s ease;">
         <div class="accordion-body">
           Content 2
         </div>

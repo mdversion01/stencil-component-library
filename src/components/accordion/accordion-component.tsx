@@ -5,7 +5,6 @@ import { Component, Prop, State, h, Event, EventEmitter, Watch } from '@stencil/
  * @slot button-text - Header content when used as a button/link toggle.
  * @slot content - Collapsible body content.
  */
-
 @Component({
   tag: 'accordion-component',
   styleUrl: 'accordion.scss',
@@ -46,15 +45,15 @@ export class AccordionComponent {
   }
 
   private setInitialAccordionState() {
-    const targetEl = document.querySelector(`#${this.targetId}`) as HTMLElement;
-    if (targetEl) {
-      if (this.internalOpen) {
-        targetEl.style.display = 'block';
-        targetEl.style.height = 'auto';
-      } else {
-        targetEl.style.display = 'none';
-        targetEl.style.height = '0px';
-      }
+    const targetEl = document.querySelector<HTMLElement>(`#${this.targetId}`);
+    if (!targetEl) return;
+
+    if (this.internalOpen) {
+      targetEl.style.display = 'block';
+      targetEl.style.height = 'auto';
+    } else {
+      targetEl.style.display = 'none';
+      targetEl.style.height = '0px';
     }
   }
 
@@ -68,25 +67,18 @@ export class AccordionComponent {
 
   private textSizing() {
     switch (this.contentTxtSize) {
-      case 'lg':
-        return 'text-large';
-      case 'default':
-        return 'text-default';
-      case 'sm':
-        return 'text-small';
-      case 'xs':
-        return 'text-xsmall';
-      case 'xl':
-        return 'text-xlarge';
-      case 'xxl':
-        return 'text-xxlarge';
-      default:
-        return '';
+      case 'lg': return 'text-large';
+      case 'default': return 'text-default';
+      case 'sm': return 'text-small';
+      case 'xs': return 'text-xsmall';
+      case 'xl': return 'text-xlarge';
+      case 'xxl': return 'text-xxlarge';
+      default: return '';
     }
   }
 
   private toggleCollapse() {
-    const targetEl = document.querySelector(`#${this.targetId}`) as HTMLElement;
+    const targetEl = document.querySelector<HTMLElement>(`#${this.targetId}`);
     if (!targetEl) return;
 
     const isOpening = !this.internalOpen;
@@ -121,12 +113,15 @@ export class AccordionComponent {
     return this.icon ? this.icon.split(',').map(i => i.trim()) : [];
   }
 
-  private handleKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      this.toggleCollapse();
-    }
-  }
+  // Note: we keep this for when the host itself should be keyboard-toggleable,
+  // but we no longer attach it to <button-component>. The inner button already
+  // handles keyboard and emits customClick.
+  // private handleKeyDown(event: KeyboardEvent) {
+  //   if (event.key === 'Enter' || event.key === ' ') {
+  //     event.preventDefault();
+  //     this.toggleCollapse();
+  //   }
+  // }
 
   private renderExpansionContentArea() {
     return (
@@ -149,7 +144,8 @@ export class AccordionComponent {
   }
 
   private renderAccordionButton() {
-    const displayIcon = this.iconArray.length === 1 ? this.iconArray[0] : this.internalOpen ? this.iconArray[1] : this.iconArray[0];
+    const displayIcon =
+      this.iconArray.length === 1 ? this.iconArray[0] : (this.internalOpen ? this.iconArray[1] : this.iconArray[0]);
 
     return (
       <button-component
@@ -193,7 +189,7 @@ export class AccordionComponent {
         targetId={this.targetId}
         isOpen={this.internalOpen}
         onCustomClick={() => this.toggleCollapse()}
-        onKeyDown={(e: KeyboardEvent) => this.handleKeyDown(e)}
+        /* removed onKeyDown to avoid double-toggle */
         role="button"
         tabindex="0"
         classNames={`${this.getComputedClassAttribute()} ${!this.internalOpen ? 'collapsed' : ''}`}
@@ -220,7 +216,7 @@ export class AccordionComponent {
         data-toggle="collapse"
         data-target={this.targetId}
         onCustomClick={() => this.toggleCollapse()}
-        onKeyDown={(e: KeyboardEvent) => this.handleKeyDown(e)}
+        /* removed onKeyDown to avoid double-toggle */
         url={`#${this.targetId}`}
         role="button"
         tabindex="0"
