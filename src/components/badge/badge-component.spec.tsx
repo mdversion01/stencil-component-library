@@ -18,23 +18,26 @@ describe('badge-component', () => {
     const page = await newSpecPage({
       components: [Badge],
       html: `<badge-component
-        token
-        variant="info"
-        size="lg"
-        label="Token badge"
-        aria-labelledby="badgeLabel"
-        aria-describedby="badgeDesc"
-        inline-styles="background-color: yellow; border-radius: 8px;"
-      ></badge-component>`,
+      token
+      variant="info"
+      size="lg"
+      aria-label="Token badge"
+      aria-labelledby="badgeLabel"
+      aria-describedby="badgeDesc"
+      inline-styles="background-color: yellow; border-radius: 8px;"
+    ></badge-component>`,
     });
 
     const token = page.root.querySelector('.badge__token') as HTMLSpanElement;
     expect(token).toBeTruthy();
     expect(token.className).toContain('bg-info');
     expect(token.className).toContain('lg');
+
+    // ARIA now present
     expect(token.getAttribute('aria-label')).toBe('Token badge');
     expect(token.getAttribute('aria-labelledby')).toBe('badgeLabel');
     expect(token.getAttribute('aria-describedby')).toBe('badgeDesc');
+
     const style = token.getAttribute('style') || '';
     expect(style).toContain('background-color: yellow');
     expect(style).toContain('border-radius: 8px');

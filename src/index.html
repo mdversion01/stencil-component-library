@@ -8,7 +8,7 @@
     <script type="module" src="/build/stencil-component-library.esm.js"></script>
     <script nomodule src="/build/stencil-component-library.js"></script>
 
-    <link rel="stylesheet" href="/build/stencil-component-library.css">
+    <link rel="stylesheet" href="/build/stencil-component-library.css" />
 
     <link rel="stylesheet" href="/assets/mdi/materialdesignicons.min.css" />
 
@@ -36,6 +36,7 @@
 
       .purple {
         background-color: purple !important;
+        color: white !important;
       }
 
       .tooltip.tooltip-top .tooltip-arrow.purple {
@@ -95,7 +96,7 @@
           label-align="right"
         ></autocomplete-single> -->
 
-        <!-- <autocomplete-single
+      <!-- <autocomplete-single
           id="aci2"
           input-id="ac-single2"
           form-layout="horizontal"
@@ -110,7 +111,7 @@
           validation-message="Please fill in"
         ></autocomplete-single> -->
 
-        <!-- <plumage-autocomplete-single
+      <!-- <plumage-autocomplete-single
           id="aci2"
           input-id="ac-single2"
           label="Autocomplete Single"
@@ -204,21 +205,27 @@
         </form-component>
       </div> -->
 
-      <!-- <div class="cwrapper">
-        <badge-component id="badge1" elevation="6" shape="square" background-color="primary">Badge Base</badge-component>
+      <div class="cwrapper">
+        <badge-component badge-id="badge1" elevation="6" shape="square" >Badge Base</badge-component>
 
-        <badge-component id="badge2" background-color="success" size="lg">Badge Large</badge-component>
+        <badge-component badge-id="badge1" elevation="6" shape="square" icon >
+          Badge Base
+          <span slot="icon"><icon-component icon="fas fa-info-circle"></icon-component></span>
+        </badge-component>
 
-        <badge-component id="badge3" variant="purple" outlined shape="pill" size="sm">Badge Small</badge-component>
+        <badge-component badge-id="badge2" variant="success" outlined size="lg">Badge Large</badge-component>
 
-        <badge-component id="badge4" bdg-position="left" elevation="3" outlined variant="purple" token bordered background-color="amber" shape="circle" inset
-          ><button type="button" class="btn btn-outline-secondary btn-sm">Badge Small</button><span slot="token"><i class="fa-solid fa-house"></i></span
+        <badge-component badge-id="badge3" variant="purple" outlined shape="pill" size="sm">Badge Small</badge-component>
+
+        <badge-component id="badge4" bdg-position="left" elevation="3" variant="primary" token bordered shape="circle" inset>
+          <button-component type="button" variant="primary" outlined size="sm">Badge Small</button-component>
+          <span slot="token"><i class="fa-solid fa-house"></i></span
         ></badge-component>
 
-        <badge-component id="badge5" elevation="1" dot pulse variant="amber">
-          <button type="button" class="btn btn-outline-secondary btn-sm">Badge Small</button>
+        <badge-component badge-id="badge5" elevation="1" dot pulse variant="warning" color="black" background-color="green" inline-styles="color: pink; padding: 10px;">
+          <button-component type="button" variant="secondary" outlined size="sm">Badge Small</button-component>
         </badge-component>
-      </div> -->
+      </div>
 
       <div class="cwrapper">
         <button-component title-attr="Go Ahead" variant="default" btn-text="Default Button"></button-component>
@@ -257,10 +264,12 @@
 
         <button-component title-attr="Button with text and Icon" slot-side="right" btn-text="Home" variant="primary"><i class="fa-solid fa-house"></i></button-component>
 
-      <button-component title-attr="Icon" slot-side="left" slot-side="right" btn-text="Home" variant="primary"><i class="fa-solid fa-house"></i><span>Text</span><i class="fa-solid fa-house"></i></button-component>
+        <button-component title-attr="Icon" slot-side="left" slot-side="right" btn-text="Home" variant="primary"
+          ><i class="fa-solid fa-house"></i><span>Text</span><i class="fa-solid fa-house"></i
+        ></button-component>
 
-      <button-component title-attr="Button with Badge" btn-text="With a badge" variant="primary">
-          <badge-component id="badge12" background-color="light" bdg-position="right" size="sm">1</badge-component>
+        <button-component title-attr="Button with Badge" btn-text="With a badge" variant="primary">
+          <badge-component badge-id="badge12" background-color="light" bdg-position="right" size="sm">1</badge-component>
         </button-component>
 
         <button-component title-attr="Go Ahead" variant="active-blue" class-names="active" btn-text="Active State Button"></button-component>
@@ -467,7 +476,7 @@
       </div> -->
       <!-- </app-wrapper> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
       <button-component title-attr="Go Ahead" link btn-text="Link Button" url="test.html"></button-component>
 
       <accordion-component target-id="accordion-section-3" content-txt-size="sm" icon="fa-solid fa-plus, fa-solid fa-minus" accordion aria-label="Accordion Section">
@@ -501,7 +510,7 @@
           <div slot="content">Toggle content 1</div>
         </accordion-component>
         <br />
-      </div>
+      </div> -->
 
       <!-- <div class="cwrapper">
         <icon-component icon="mdi mdi-home" size="sm"></icon-component>
@@ -923,7 +932,7 @@
           <plumage-input-group-component slot="formField" label="Search" plumage-search> </plumage-input-group-component>
         </form-component> -->
 
-        <!-- <plumage-input-field-component
+      <!-- <plumage-input-field-component
           input-id="input-1"
           size="sm"
           label="Test Label2"
@@ -1455,7 +1464,7 @@
         ]'
         ></plumage-select-field-component> -->
 
-        <!-- <plumage-select-field-component
+      <!-- <plumage-select-field-component
           label="Favorite Fruit"
           multiple
           required

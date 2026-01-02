@@ -3,20 +3,20 @@
 @mixin generate-badge-utilities($colors) {
   @each $name, $value in $colors {
     .bg-#{"" + $name} {
-      background-color: #{$value} !important;
-      border-color: #{$value} !important;
-      color: if(#{$name} == light, #000, '') !important;
+      background-color: #{$value};
+      border-color: #{$value};
+      color: if(#{$name} == light, #000, '');
     }
 
     .text-bg-#{"" + $name} {
-      background-color: #{$value} !important;
-      color: if(#{$name} == yellow, #000, #fff) !important;
+      background-color: #{$value};
+      color: if(#{$name} == yellow, #000, #fff)t;
     }
 
     .bg-#{"" + $name}.outlined {
-      background-color: #FFF !important;
-      border-color: #{$value} !important;
-      color: #{$value} !important;
+      background-color: #FFF;
+      border-color: #{$value};
+      color: #{$value};
     }
   }
 }
@@ -28,6 +28,7 @@
 $badge-sizes: (
   xs: (font: 0.625rem, font-important: false, min: 36px),
   sm: (font: 0.75rem,  font-important: false, min: 50px),
+  base: (font: 1rem,    font-important: false, min: null),
   lg: (font: 1.2rem,   font-important: true,  min: 78px)
 );
 
@@ -75,8 +76,9 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
 // Base outlined rule
 .badge--outlined,
 .badge__token.outlined {
-  background-color: #fff !important;
-  border: thin solid !important;
+  background-color: #fff;
+  border: thin solid #000;
+  color: #000;
 }
 
 // 1) Non-outlined: white text for selected variants
@@ -104,7 +106,7 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
 // 3) Token override (matches your final group)
 @each $name, $tuple in $badge-variants {
   .badge__token.outlined.#{$name} {
-    background-color: #fff !important;
+    background-color: #fff;
   }
 }
 
@@ -302,7 +304,7 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
 }
 
 .badge .icon {
-  margin: 0 3px;
+  margin: 4px 3px 0;
 }
 
 .rounded-pill .icon {

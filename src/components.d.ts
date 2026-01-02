@@ -563,11 +563,19 @@ export namespace Components {
          */
         "absolute": boolean;
         "ariaDescribedby"?: string;
+        /**
+          * @default ''
+         */
+        "ariaLabel": string;
         "ariaLabelledby"?: string;
         /**
           * @default ''
          */
         "backgroundColor": string;
+        /**
+          * @default ''
+         */
+        "badgeId": string;
         /**
           * @default ''
          */
@@ -616,10 +624,6 @@ export namespace Components {
           * @default false
          */
         "inset": boolean;
-        /**
-          * @default 'Badge'
-         */
-        "label": string;
         /**
           * @default ''
          */
@@ -5487,11 +5491,19 @@ declare namespace LocalJSX {
          */
         "absolute"?: boolean;
         "ariaDescribedby"?: string;
+        /**
+          * @default ''
+         */
+        "ariaLabel"?: string;
         "ariaLabelledby"?: string;
         /**
           * @default ''
          */
         "backgroundColor"?: string;
+        /**
+          * @default ''
+         */
+        "badgeId"?: string;
         /**
           * @default ''
          */
@@ -5540,10 +5552,6 @@ declare namespace LocalJSX {
           * @default false
          */
         "inset"?: boolean;
-        /**
-          * @default 'Badge'
-         */
-        "label"?: string;
         /**
           * @default ''
          */

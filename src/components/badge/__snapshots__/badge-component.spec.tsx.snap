@@ -5,7 +5,7 @@ exports[`badge-component applies dynamic styles correctly (token path) 1`] = `
   <!---->
   <div aria-disabled="false" class="badge__token-wrapper">
     <span class="badge__wrapper">
-      <span aria-atomic="true" aria-label="Styled" aria-live="polite" class="badge__token bg-primary" role="status" tabindex="0" style="position: absolute; left: 10px; top: 20px; z-index: 5;"></span>
+      <span aria-atomic="true" aria-label="" aria-live="polite" class="badge__token bg-primary" role="status" tabindex="0" style="position: absolute; left: 10px; top: 20px; z-index: 5;"></span>
     </span>
   </div>
 </badge-component>
@@ -14,9 +14,9 @@ exports[`badge-component applies dynamic styles correctly (token path) 1`] = `
 exports[`badge-component dot badge: bordered + elevation classes present and stable 1`] = `
 <badge-component bordered="" dot="" elevation="2" variant="success">
   <!---->
-  <div aria-disabled="false" class="badge__token-wrapper success token-bordered">
+  <div aria-disabled="false" class="badge__token-wrapper">
     <span class="badge__wrapper">
-      <span aria-atomic="true" aria-label="Badge" aria-live="polite" class="badge--dot bg-success elevated-2 token-bordered" role="status" tabindex="0"></span>
+      <span aria-atomic="true" aria-label="" aria-live="polite" class="badge--dot bg-success elevated-2 token-bordered" role="status" tabindex="0"></span>
     </span>
   </div>
 </badge-component>
@@ -25,16 +25,18 @@ exports[`badge-component dot badge: bordered + elevation classes present and sta
 exports[`badge-component renders default badge 1`] = `
 <badge-component label="Default badge">
   <!---->
-  <div aria-disabled="false" aria-hidden="true" class="badge bg-secondary"></div>
+  <div aria-disabled="false" aria-hidden="true" class="badge bg-secondary">
+    <div class="badge__content"></div>
+  </div>
 </badge-component>
 `;
 
 exports[`badge-component renders dot badge with shape and pulse 1`] = `
 <badge-component dot="" pulse="" shape="circle" variant="danger">
   <!---->
-  <div aria-disabled="false" class="badge__token-wrapper circle danger">
+  <div aria-disabled="false" class="badge__token-wrapper">
     <span class="badge__wrapper">
-      <span aria-atomic="true" aria-label="Badge" aria-live="polite" class="badge--dot bg-danger circle pulse" role="status" tabindex="0"></span>
+      <span aria-atomic="true" aria-label="" aria-live="polite" class="badge--dot bg-danger circle pulse" role="status" tabindex="0"></span>
     </span>
   </div>
 </badge-component>
@@ -55,9 +57,9 @@ exports[`badge-component renders positioned badge (right) 1`] = `
 `;
 
 exports[`badge-component renders token badge with ARIA props and inlineStyles 1`] = `
-<badge-component aria-describedby="badgeDesc" aria-labelledby="badgeLabel" inline-styles="background-color: yellow; border-radius: 8px;" label="Token badge" size="lg" token="" variant="info">
+<badge-component aria-describedby="badgeDesc" aria-label="Token badge" aria-labelledby="badgeLabel" inline-styles="background-color: yellow; border-radius: 8px;" size="lg" token="" variant="info">
   <!---->
-  <div aria-disabled="false" class="badge__token-wrapper info lg">
+  <div aria-disabled="false" aria-label="Token badge" class="badge__token-wrapper">
     <span class="badge__wrapper">
       <span aria-atomic="true" aria-describedby="badgeDesc" aria-label="Token badge" aria-labelledby="badgeLabel" aria-live="polite" class="badge__token bg-info lg" role="status" tabindex="0" style="background-color: yellow; border-radius: 8px;"></span>
     </span>
@@ -68,9 +70,9 @@ exports[`badge-component renders token badge with ARIA props and inlineStyles 1`
 exports[`badge-component token badge: outlined + bordered + elevation classes present and stable 1`] = `
 <badge-component bordered="" elevation="3" label="Combo" outlined="" token="" variant="primary">
   <!---->
-  <div aria-disabled="false" class="badge__token-wrapper outlined primary token-bordered">
+  <div aria-disabled="false" class="badge__token-wrapper">
     <span class="badge__wrapper">
-      <span aria-atomic="true" aria-label="Combo" aria-live="polite" class="badge__token bg-primary elevated-3 outlined token-bordered" role="status" tabindex="0"></span>
+      <span aria-atomic="true" aria-label="" aria-live="polite" class="badge__token bg-primary elevated-3 outlined token-bordered" role="status" tabindex="0"></span>
     </span>
   </div>
 </badge-component>

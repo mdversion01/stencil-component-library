@@ -14,9 +14,11 @@ export class Badge {
   @Event({ bubbles: true }) customClick: EventEmitter;
 
   @Prop() absolute: boolean = false;
+  @Prop() ariaLabel: string = '';
   @Prop() ariaLabelledby?: string;
   @Prop() ariaDescribedby?: string;
   @Prop() bdgPosition: string = '';
+  @Prop() badgeId: string = '';
   @Prop() backgroundColor: string = '';
   @Prop() bordered: boolean = false;
   @Prop() bottom: string = '';
@@ -41,10 +43,12 @@ export class Badge {
   @Prop() top: string = '';
   @Prop() variant: string = '';
   @Prop() zIndex: string = '';
-  @Prop() label: string = 'Badge';
 
   @Prop() devMode: boolean = false;
 
+  private attr(v?: string) {
+    return v && v.trim() ? v : undefined;
+  }
 
   private getDynamicStyles(): { [key: string]: string } {
     const styles: { [key: string]: string } = {};
@@ -92,11 +96,6 @@ export class Badge {
 
     const wrapperClass = buildBadgeClass({
       base: 'badge__token-wrapper',
-      variant: this.variant,
-      size: this.size,
-      shape: this.shape,
-      outlined: this.outlined,
-      bordered: this.bordered,
       classNames: this.classNames,
     });
 
@@ -114,13 +113,13 @@ export class Badge {
     });
 
     return (
-      <div class={wrapperClass} aria-disabled={this.disabled ? 'true' : 'false'}>
+      <div class={wrapperClass} aria-label={this.attr(this.ariaLabel)} aria-disabled={this.disabled ? 'true' : 'false'} id={this.attr(this.badgeId)}>
         <slot />
         <span class="badge__wrapper">
           {renderTokenSpan({
             className: tokenClass,
             styles: combinedStyles,
-            ariaLabel: this.label,
+            ariaLabel: this.ariaLabel,
             ariaLabelledby: this.ariaLabelledby,
             ariaDescribedby: this.ariaDescribedby,
           })}
@@ -143,11 +142,6 @@ export class Badge {
 
     const wrapperClass = buildBadgeClass({
       base: 'badge__token-wrapper',
-      variant: this.variant,
-      size: this.size,
-      shape: this.shape,
-      outlined: this.outlined,
-      bordered: this.bordered,
       classNames: this.classNames,
     });
 
@@ -157,13 +151,13 @@ export class Badge {
     };
 
     return (
-      <div class={wrapperClass} aria-disabled={this.disabled ? 'true' : 'false'}>
+      <div class={wrapperClass} aria-label={this.attr(this.ariaLabel)} aria-disabled={this.disabled ? 'true' : 'false'} id={this.attr(this.badgeId)}>
         <slot />
         <span class="badge__wrapper">
           {renderTokenSpan({
             className: tokenClass,
             styles: combinedStyles,
-            ariaLabel: this.label,
+            ariaLabel: this.ariaLabel,
             ariaLabelledby: this.ariaLabelledby,
             ariaDescribedby: this.ariaDescribedby,
           })}
@@ -176,10 +170,12 @@ export class Badge {
     return (
       <div
         class={`${classAttr} ${this.bdgPosition === 'left' ? 'me-1' : 'ms-1'}`}
+        aria-label={this.attr(this.ariaLabel)}
         aria-disabled={this.disabled ? 'true' : 'false'}
         aria-hidden={!this.token && !this.dot ? 'true' : null}
         aria-labelledby={this.ariaLabelledby}
         aria-describedby={this.ariaDescribedby}
+        id={this.attr(this.badgeId)}
       >
         <slot />
       </div>
@@ -190,18 +186,22 @@ export class Badge {
     return (
       <div
         class={classAttr}
+        aria-label={this.attr(this.ariaLabel)}
         aria-disabled={this.disabled ? 'true' : 'false'}
         aria-hidden={!this.token && !this.dot ? 'true' : null}
         aria-labelledby={this.ariaLabelledby}
         aria-describedby={this.ariaDescribedby}
-        style={this.parseInlineStyles(this.inlineStyles)}
+        style={this.parseInlineStyles(this.styles)}
+        id={this.attr(this.badgeId)}
       >
-        <slot />
-        {this.icon && (
-          <span class="icon">
-            <slot name="icon" />
-          </span>
-        )}
+        <div class="badge__content">
+          <slot />
+          {this.icon && (
+            <span class="icon">
+              <slot name="icon" />
+            </span>
+          )}
+        </div>
       </div>
     );
   }
@@ -209,9 +209,8 @@ export class Badge {
   render() {
     const classAttr = buildBadgeClass({
       base: this.token ? 'badge__badge' : 'badge',
-      outlined: this.outlined,
-      variant: this.backgroundColor ? '' : this.variant ? 'bg-' + this.variant : 'bg-secondary',
-      backgroundColor: this.variant ? '' : this.backgroundColor,
+      // outlined: this.outlined,
+      variant: this.outlined ? `badge--outlined ${this.variant}` : this.variant ? 'bg-' + this.variant : 'bg-secondary',
       elevation: this.elevation,
       size: this.size,
       shape: this.shape === 'pill' ? 'rounded-pill' : this.shape === 'square' ? 'square' : '',

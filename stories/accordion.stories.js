@@ -75,71 +75,85 @@ export default {
       page: DocsPage,
       description: {
         component: [
-          'An Accordion Component belongs to the Accordion Container but can also be use on it\'s own.\n',
-          'Use the \`accordion-header\` and \`content\` slots to provide header and body content.\n',
+          "An Accordion Component belongs to the Accordion Container but can also be use on it's own.\n",
+          'Use the `accordion-header` and `content` slots to provide header and body content.\n',
           '```html',
           '<accordion-component target-id="accordion-section-3">',
           '  <span slot="accordion-header">Header Text</span>',
           '  <div slot="content">Body content</div>',
           '</accordion-component>',
           '```',
-          '> **Note:** The `headerText`, `contentLine1`, and `contentLine2` controls in Storybook are only used',
-          '> to build slotted nodes for the preview. In your app, provide content via slots as shown above.',
         ].join('\n'),
       },
     },
   },
 
   argTypes: {
-    // boolean/toggles
-    accordion: { control: 'boolean', description: 'If true, renders as an accordion item within an accordion container. If false, renders as a standalone button toggle.', },
-    link: { control: 'boolean', description: 'If true, renders the accordion header as a link.', },
-    flush: { control: 'boolean', description: 'If true, removes the default outer borders and rounded corners to create a flush appearance when used in an accordion container.', },
-    outlined: { control: 'boolean', description: 'If true, the accordion item will have an outlined style.', },
-    block: { control: 'boolean', description: 'If true, the accordion item will take up the full width of its container.', },
-    disabled: {  control: 'boolean', description: 'If present, sets a disabled state on this accordion item, indicating it cannot be selected by user action.', },
-    ripple: { control: 'boolean', description: 'If true, enables a ripple effect on user interaction.', },
-    isOpen: { control: 'boolean', description: 'If true, the accordion item is expanded (open) by default when rendered.', },
-
-    // strings/options
-    contentTxtSize: { control: { type: 'select' }, description: 'This property allows you to change the overall size of the text (xs, sm, default, lg, xl, or xxl) that is in the content area of the collapse component.', options: ['xs', 'sm', 'default', 'lg', 'xl', 'xxl'] },
-    targetId: { description: 'ID of the collapsible region this control toggles. Must be unique per story.', control: 'text' }, // remains the "base" id; we suffix it during render
+    accordion: { control: 'boolean', description: 'If true, renders as an accordion item within an accordion container. If false, renders as a standalone button toggle.' },
+    block: { control: 'boolean', description: 'If true, the accordion item will take up the full width of its container.' },
     classNames: { control: 'text', description: 'Additional custom class names to apply to the accordion component container.' },
-    variant: { control: 'text', description: 'Applies pre-defined styling to the accordion header/button. Common variants include "primary", "secondary", "success", "danger", "warning", "info", "light", and "dark".' },
-    size: { control: { type: 'select' }, description: 'This property allows you to change the overall size of the text (xs, sm, lg) that is in the header area of the collapse component.', options: ['', 'xs', 'sm', 'lg'] },
-    icon: { control: 'text', description: 'This property uses the Font Awesome fa-angle-down(caret down) icon by default. It rotates the icon 180 degrees when the collapse component opens and again when it closes. You can pass in an array of two icons to change the icon when the collapse component is open and closed. The first icon in the array is the icon when the collapse component is closed, and the second icon is the icon when the collapse component is open. Ex: icon="fas fa-minus-circle, fas fa-plus-circle"' },
+    contentTxtSize: {
+      control: { type: 'select' },
+      description: 'This property allows you to change the overall size of the text (xs, sm, default, lg, xl, or xxl) that is in the content area of the collapse component.',
+      options: ['xs', 'sm', 'default', 'lg', 'xl', 'xxl'],
+    },
+    disabled: { control: 'boolean', description: 'If present, sets a disabled state on this accordion item, indicating it cannot be selected by user action.' },
+    flush: { control: 'boolean', description: 'If true, removes the default outer borders and rounded corners to create a flush appearance when used in an accordion container.' },
+    icon: {
+      control: 'text',
+      description:
+        'This property uses the Font Awesome fa-angle-down(caret down) icon by default. It rotates the icon 180 degrees when the collapse component opens and again when it closes. You can pass in an array of two icons to change the icon when the collapse component is open and closed. The first icon in the array is the icon when the collapse component is closed, and the second icon is the icon when it is open. Ex: icon="fas fa-minus-circle, fas fa-plus-circle"',
+    },
+    isOpen: { control: 'boolean', description: 'If true, the accordion item is expanded (open) by default when rendered.' },
+    link: { control: 'boolean', description: 'If true, renders the accordion header as a link.' },
+    outlined: { control: 'boolean', description: 'If true, the accordion item will have an outlined style.' },
+    ripple: { control: 'boolean', description: 'If true, enables a ripple effect on user interaction.' },
+    size: {
+      control: { type: 'select' },
+      description: 'This property allows you to change the overall size of the text (xs, sm, lg) that is in the header area of the collapse component.',
+      options: ['', 'xs', 'sm', 'lg'],
+    },
+    targetId: { description: 'ID of the collapsible region this control toggles. Must be unique per story.', control: 'text' },
+    variant: {
+      control: 'text',
+      description:
+        'Applies pre-defined styling to the accordion header/button. Common variants include "primary", "secondary", "success", "danger", "warning", "info", "light", and "dark".',
+    },
 
     // slotted text (for preview building only)
-    headerText: { control: 'text', description: 'Text content for the header slot (used only in this Storybook preview).' },
-    contentLine1: { control: 'text', description: 'Text content for the first line of the content slot (used only in this Storybook preview).' },
-    contentLine2: { control: 'text', description: 'Text content for the second line of the content slot (used only in this Storybook preview).' },
+    headerText: { table: { disable: true }, control: 'false', description: 'Text content for the header slot (used only in this Storybook preview).' },
+    contentLine1: { table: { disable: true }, control: 'false', description: 'Text content for the first line of the content slot (used only in this Storybook preview).' },
+    contentLine2: { table: { disable: true }, control: 'false', description: 'Text content for the second line of the content slot (used only in this Storybook preview).' },
+  },
+
+  controls: {
+    exclude: ['headerText', 'contentLine1', 'contentLine2'], // belt & suspenders for Controls panel
   },
 
   args: {
     accordion: false,
-    link: false,
-    flush: false,
-    outlined: false,
     block: false,
-    disabled: false,
-    ripple: false,
-    isOpen: false,
-
-    contentTxtSize: '',
-    targetId: 'acc-1', // base; will be uniquified per render
     classNames: '',
-    variant: '',
+    contentTxtSize: '',
+    disabled: false,
+    flush: false,
+    isOpen: false,
+    link: false,
+    outlined: false,
+    ripple: false,
     size: '',
+    targetId: 'acc-1', // base; will be uniquified per render
+    variant: '',
 
-    headerText: 'Toggle section.',
-    contentLine1: 'This is the collapsible content area.',
-    contentLine2: 'Put any markup here.',
+    // headerText: 'Toggle section.',
+    // contentLine1: 'This is the collapsible content area.',
+    // contentLine2: 'Put any markup here.',
   },
 };
 
 // Stories (each with its own base target-id)
 export const Accordion = {
-  args: { accordion: true, headerText: 'Accordion header', targetId: 'accordion-1' },
+  args: { accordion: true, headerText: 'Accordion header', targetId: 'accordion-1', contentLine1: 'This is the collapsible content area.', contentLine2: 'Put any markup here.' },
 };
 
 export const AccordionWithCustomIcon = {
@@ -148,21 +162,37 @@ export const AccordionWithCustomIcon = {
     headerText: 'Custom icon',
     icon: 'fa-solid fa-plus, fa-solid fa-minus',
     targetId: 'accordion-2',
+    contentLine1: 'This is the collapsible content area.',
+    contentLine2: 'Put any markup here.',
   },
 };
 
 export const ButtonToggle = {
-  args: { headerText: 'Button toggle', targetId: 'accordion-3', variant: 'primary' },
+  args: { headerText: 'Button toggle', targetId: 'accordion-3', variant: 'primary', contentLine1: 'This is the collapsible content area.', contentLine2: 'Put any markup here.' },
 };
 
 export const ButtonToggleDisabled = {
-  args: { disabled: true, headerText: 'Disabled control', targetId: 'accordion-4' },
+  args: { disabled: true, headerText: 'Disabled control', targetId: 'accordion-4', contentLine1: 'This is the collapsible content area.', contentLine2: 'Put any markup here.' },
 };
 
 export const ButtonToggleOpenByDefault = {
-  args: { headerText: 'Button toggle', isOpen: true, targetId: 'accordion-5', variant: 'success' },
+  args: {
+    headerText: 'Button toggle',
+    isOpen: true,
+    targetId: 'accordion-5',
+    variant: 'success',
+    contentLine1: 'This is the collapsible content area.',
+    contentLine2: 'Put any markup here.',
+  },
 };
 
 export const LinkToggle = {
-  args: { link: true, variant: 'link', headerText: 'Open via link', targetId: 'accordion-6' },
+  args: {
+    link: true,
+    variant: 'link',
+    headerText: 'Open via link',
+    targetId: 'accordion-6',
+    contentLine1: 'This is the collapsible content area.',
+    contentLine2: 'Put any markup here.',
+  },
 };
