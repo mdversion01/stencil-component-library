@@ -758,6 +758,7 @@ export namespace Components {
          */
         "active": boolean;
         /**
+          * Allow consumers to opt-out of nested focusable neutralization (e.g., if they need an actual focusable child on purpose).
           * @default false
          */
         "allowFocusableChildren": boolean;
@@ -830,9 +831,10 @@ export namespace Components {
          */
         "outlined": boolean;
         /**
+          * Current pressed state (for toggle buttons). Reflected & mutable so markup stays clean: - attribute omitted when false - attribute present (empty) when true
           * @default false
          */
-        "pressed": boolean | string;
+        "pressed": boolean;
         /**
           * @default ''
          */
@@ -849,10 +851,7 @@ export namespace Components {
           * @default ''
          */
         "size": string;
-        /**
-          * @default 'none'
-         */
-        "slotSide": 'left' | 'right' | 'none';
+        "slotSide"?: 'left' | 'right';
         /**
           * @default false
          */
@@ -881,6 +880,11 @@ export namespace Components {
           * @default ''
          */
         "titleAttr": string;
+        /**
+          * Enable toggle-button behavior. When true, clicking (or keyboard activate) flips the `pressed` state.
+          * @default false
+         */
+        "toggle": boolean;
         /**
           * @default ''
          */
@@ -4332,6 +4336,7 @@ declare global {
     };
     interface HTMLButtonComponentElementEventMap {
         "customClick": void;
+        "pressedChange": boolean;
     }
     interface HTMLButtonComponentElement extends Components.ButtonComponent, HTMLStencilElement {
         addEventListener<K extends keyof HTMLButtonComponentElementEventMap>(type: K, listener: (this: HTMLButtonComponentElement, ev: ButtonComponentCustomEvent<HTMLButtonComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5688,6 +5693,7 @@ declare namespace LocalJSX {
          */
         "active"?: boolean;
         /**
+          * Allow consumers to opt-out of nested focusable neutralization (e.g., if they need an actual focusable child on purpose).
           * @default false
          */
         "allowFocusableChildren"?: boolean;
@@ -5757,13 +5763,18 @@ declare namespace LocalJSX {
         "link"?: boolean;
         "onCustomClick"?: (event: ButtonComponentCustomEvent<void>) => void;
         /**
+          * Fired whenever `pressed` changes (useful for external sync / two-way binding).
+         */
+        "onPressedChange"?: (event: ButtonComponentCustomEvent<boolean>) => void;
+        /**
           * @default false
          */
         "outlined"?: boolean;
         /**
+          * Current pressed state (for toggle buttons). Reflected & mutable so markup stays clean: - attribute omitted when false - attribute present (empty) when true
           * @default false
          */
-        "pressed"?: boolean | string;
+        "pressed"?: boolean;
         /**
           * @default ''
          */
@@ -5780,10 +5791,7 @@ declare namespace LocalJSX {
           * @default ''
          */
         "size"?: string;
-        /**
-          * @default 'none'
-         */
-        "slotSide"?: 'left' | 'right' | 'none';
+        "slotSide"?: 'left' | 'right';
         /**
           * @default false
          */
@@ -5812,6 +5820,11 @@ declare namespace LocalJSX {
           * @default ''
          */
         "titleAttr"?: string;
+        /**
+          * Enable toggle-button behavior. When true, clicking (or keyboard activate) flips the `pressed` state.
+          * @default false
+         */
+        "toggle"?: boolean;
         /**
           * @default ''
          */

@@ -1,5 +1,5 @@
 // src/components/button/button-component.tsx
-import { Component, Prop, Event, EventEmitter, h, Element } from '@stencil/core';
+import { Component, Prop, Event, EventEmitter, h, Element, Watch } from '@stencil/core';
 import { logInfo } from '../../utils/log-debug';
 
 @Component({
@@ -10,7 +10,7 @@ import { logInfo } from '../../utils/log-debug';
 export class Button {
   @Element() hostEl!: HTMLElement;
 
-  // ---- existing props (unchanged) ----
+  // ---- existing props ----
   @Prop() absolute = false;
   @Prop() active = false;
   @Prop() ariaLabel = '';
@@ -25,12 +25,24 @@ export class Button {
   @Prop() fixed = false;
   @Prop() groupBtn = false;
   @Prop() iconBtn = false;
-  @Prop({ reflect: true }) slotSide: 'left' | 'right' | 'none' = 'none';
+  @Prop() slotSide?: 'left' | 'right';
   @Prop() styles = '';
   @Prop() left = '';
   @Prop() link = false;
   @Prop() outlined = false;
-  @Prop() pressed: boolean | string = false;
+
+  /**
+   * Enable toggle-button behavior. When true, clicking (or keyboard activate) flips the `pressed` state.
+   */
+  @Prop() toggle = false;
+
+  /**
+   * Current pressed state (for toggle buttons). Reflected & mutable so markup stays clean:
+   * - attribute omitted when false
+   * - attribute present (empty) when true
+   */
+  @Prop({ reflect: true, mutable: true }) pressed = false;
+
   @Prop() right = '';
   @Prop() ripple = false;
   @Prop() shape = '';
@@ -51,12 +63,23 @@ export class Button {
   @Prop() targetId = '';
   @Prop() accordion = false;
 
-  // New: allow consumers to opt-out of safeties if they really need focusable children
+  /**
+   * Allow consumers to opt-out of nested focusable neutralization (e.g., if they need
+   * an actual focusable child on purpose).
+   */
   @Prop() allowFocusableChildren = false;
 
   @Prop() devMode = false;
 
   @Event() customClick!: EventEmitter<void>;
+
+  /** Fired whenever `pressed` changes (useful for external sync / two-way binding). */
+  @Event({ eventName: 'pressedChange' }) pressedChange!: EventEmitter<boolean>;
+
+  @Watch('pressed')
+  onPressedChanged(v: boolean) {
+    this.pressedChange.emit(!!v);
+  }
 
   // ---- lifecycle: neutralize nested focusables after render ----
   componentDidLoad() {
@@ -67,6 +90,10 @@ export class Button {
   }
 
   private handleClick() {
+    // Toggle behavior
+    if (this.toggle && !this.disabled) {
+      this.pressed = !this.pressed; // @Watch emits pressedChange
+    }
     this.customClick.emit();
     logInfo(this.devMode, 'Button', 'Clicked');
   }
@@ -74,7 +101,7 @@ export class Button {
   private handleKeyDown = (event: KeyboardEvent) => {
     if ((event.key === 'Enter' || event.key === ' ') && !this.disabled) {
       event.preventDefault();
-      event.stopPropagation(); // <- add this to prevent bubbling to parents
+      event.stopPropagation();
       this.handleClick();
     }
   };
@@ -92,29 +119,30 @@ export class Button {
     return s;
   }
 
-  // Neutralize nested interactive descendants to avoid axe rule failures
+  // Neutralize nested interactive descendants to avoid a11y failures for nested buttons/links
   private neutralizeNestedInteractivesIfNeeded() {
     if (this.allowFocusableChildren) return;
 
-    // Find the inner interactive root we rendered (<button> or <a>)
+    // Find the inner interactive root we render (<button> or <a>)
     const inner = this.hostEl.querySelector('button.btn, a.btn');
     if (!inner) return;
 
-    const focusableSel = 'a[href],area[href],button,details,[tabindex]:not([tabindex="-1"]),input,select,textarea,[contenteditable=""],[contenteditable="true"]';
+    const focusableSel =
+      'a[href],area[href],button,details,[tabindex]:not([tabindex="-1"]),input,select,textarea,[contenteditable=""],[contenteditable="true"]';
 
     // Any focusable descendant *inside* that is not the inner root itself gets neutralized
     const descendants = Array.from(inner.querySelectorAll<HTMLElement>(focusableSel)).filter(n => n !== inner);
 
     descendants.forEach(el => {
-      // Don’t stomp name-bearing elements if they contain real text; we’re defensive here
+      // Demote common interactive descendants to decorative
       if (el.tagName === 'A' || el.tagName === 'BUTTON' || el.hasAttribute('tabindex')) {
         el.setAttribute('tabindex', '-1');
-        el.setAttribute('role', 'presentation');
         el.setAttribute('aria-hidden', 'true');
-        el.removeAttribute('href');
-        el.removeAttribute('role'); // keep as presentational only
+        if (el.tagName === 'A') el.removeAttribute('href');
+        // If it had a role, clear it to be purely presentational
+        el.removeAttribute('role');
         if (this.devMode) {
-          console.warn('[button-component] Nested focusable child was neutralized to avoid nested-interactive a11y issue:', el);
+          console.warn('[button-component] Nested focusable child neutralized to avoid nested-interactive a11y issue:', el);
         }
       }
       // SVGs sometimes end up focusable; make them inert/decorative
@@ -205,13 +233,19 @@ export class Button {
       this.textBtn && 'text-btn',
       this.text && 'text',
       this.btnIcon && 'btn-icon',
+      this.toggle && 'btn--toggle', // optional helper class for styling toggles
+      this.toggle && this.pressed && 'pressed', // optional styling hook when pressed
     ]
       .filter(Boolean)
       .join(' ');
 
     // Accessible name (esp. for icon-only)
     const hasVisibleText = !!(this.btnText && this.btnText.trim().length);
-    const computedAriaLabel = (this.ariaLabel && this.ariaLabel.trim()) || (hasVisibleText ? this.btnText.trim() : '') || (this.titleAttr && this.titleAttr.trim()) || 'Button';
+    const computedAriaLabel =
+      (this.ariaLabel && this.ariaLabel.trim()) ||
+      (hasVisibleText ? this.btnText.trim() : '') ||
+      (this.titleAttr && this.titleAttr.trim()) ||
+      'Button';
 
     // ARIA for accordion toggles
     const ariaForAccordion: Record<string, any> = {};
@@ -225,12 +259,13 @@ export class Button {
     const common = {
       ...passthrough,
       ...ariaForAccordion,
-      'aria-pressed': this.pressed === 'true' || this.pressed === 'false' ? this.pressed : undefined,
+      // Only set aria-pressed for toggle buttons
+      'aria-pressed': this.toggle ? String(!!this.pressed) : undefined,
       'aria-label': computedAriaLabel,
       'aria-disabled': this.link && this.disabled ? 'true' : undefined,
-      'style': dynamicStyles,
-      'class': classList,
-      'onClick': (event: MouseEvent) => {
+      style: dynamicStyles,
+      class: classList,
+      onClick: (event: MouseEvent) => {
         if (this.disabled) {
           event.preventDefault();
           return;
@@ -239,8 +274,8 @@ export class Button {
         if (this.link && shouldPrevent) event.preventDefault();
         this.handleClick();
       },
-      'onKeyDown': this.disabled ? undefined : this.handleKeyDown,
-      'title': this.titleAttr,
+      onKeyDown: this.disabled ? undefined : this.handleKeyDown,
+      title: this.titleAttr,
     } as Record<string, any>;
 
     return this.link ? (

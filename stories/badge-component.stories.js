@@ -269,22 +269,73 @@ export const Default = {
   },
 };
 
-export const Outlined = {
-  args: {
-    badgeId: 'badge2',
-    outlined: true,
-    text: 'Outlined Badge',
-    variant: 'info',
-    size: 'base',
+export const VariantBadges = {
+  name: 'Variant colors (badges only)',
+  render: () => {
+    const variants = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
+    const wrap = document.createElement('div');
+
+    variants.forEach((v) => {
+      const holder = document.createElement('span');
+      holder.style.display = 'inline-block';
+      holder.style.margin = '6px';
+
+      const badge = document.createElement('badge-component');
+      setAttr(badge, 'variant', v);
+      // optional: make them base; remove if you want default size
+      setAttr(badge, 'size', 'base');
+      badge.appendChild(document.createTextNode(v.charAt(0).toUpperCase() + v.slice(1)));
+
+      holder.appendChild(badge);
+      wrap.appendChild(holder);
+    });
+
+    return wrap;
   },
   parameters: {
     docs: {
       description: {
-        story: 'This badge uses the `outlined` property to render an outlined style.',
+        story: 'Displays one **badge** for each core variant: primary, secondary, success, danger, warning, info, light, and dark.',
       },
     },
   },
 };
+
+
+export const OutlinedCoreVariants = {
+  name: 'Outlined (all core variants)',
+  render: () => {
+    const variants = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
+    const wrap = document.createElement('div');
+
+    variants.forEach(v => {
+      const badge = document.createElement('badge-component');
+      setAttr(badge, 'outlined', true);
+      setAttr(badge, 'variant', v);
+      setAttr(badge, 'size', 'base'); // keep your default
+      badge.appendChild(document.createTextNode(v.charAt(0).toUpperCase() + v.slice(1)));
+
+      // simple spacing for preview
+      const holder = document.createElement('span');
+      holder.style.display = 'inline-block';
+      holder.style.margin = '6px';
+      holder.appendChild(badge);
+
+      wrap.appendChild(holder);
+    });
+
+    return wrap;
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Outlined badges rendered in each core variant: **primary, secondary, success, danger, warning, info, light, dark**.',
+      },
+    },
+  },
+};
+
 
 // 2) With icon slot using <icon-component>
 export const BadgeWithAnIcon = {

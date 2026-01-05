@@ -8,15 +8,15 @@ exports[`button-component (new spec) accordion props: sets aria-expanded/control
 </button>
 `;
 
-exports[`button-component (new spec) applies ARIA attributes (aria-pressed, aria-label) on native button 1`] = `
-<button aria-label="Submit form" aria-pressed="true" class="btn" role="button" type="button">
+exports[`button-component (new spec) applies aria-pressed only when toggle=true; respects aria-label override 1`] = `
+<button aria-label="Submit form" aria-pressed="true" class="btn btn--toggle pressed" role="button" type="button">
   <span class="btn__content">
     Submit
   </span>
 </button>
 `;
 
-exports[`button-component (new spec) btnIcon (icon-only) renders slot directly, with aria-label fallback + dev warning 1`] = `
+exports[`button-component (new spec) btnIcon (icon-only) uses fallback aria-label "Button" when no text/aria provided 1`] = `
 <button aria-label="Button" class="btn btn-icon" role="button" type="button">
   <span aria-hidden="true">
     <span>

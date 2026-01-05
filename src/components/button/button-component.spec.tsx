@@ -32,15 +32,24 @@ describe('button-component (new spec)', () => {
     expect(a).toMatchSnapshot();
   });
 
-  it('applies ARIA attributes (aria-pressed, aria-label) on native button', async () => {
+  it('applies aria-pressed only when toggle=true; respects aria-label override', async () => {
     const page = await newSpecPage({
       components: [Button],
-      html: `<button-component btn-text="Submit" aria-label="Submit form" pressed="true"></button-component>`,
+      html: `<button-component toggle pressed btn-text="Submit" aria-label="Submit form"></button-component>`,
     });
     const btn = getControl(page.root);
     expect(btn.getAttribute('aria-pressed')).toBe('true');
     expect(btn.getAttribute('aria-label')).toBe('Submit form');
     expect(btn).toMatchSnapshot();
+  });
+
+  it('omits aria-pressed when toggle=false even if pressed is set', async () => {
+    const page = await newSpecPage({
+      components: [Button],
+      html: `<button-component pressed btn-text="No Toggle"></button-component>`,
+    });
+    const btn = getControl(page.root);
+    expect(btn.hasAttribute('aria-pressed')).toBe(false);
   });
 
   it('slotSide="left" adds ms-1 and keeps me-1 off', async () => {
@@ -67,16 +76,13 @@ describe('button-component (new spec)', () => {
     expect(getControl(page.root)).toMatchSnapshot();
   });
 
-  it('btnIcon (icon-only) renders slot directly, with aria-label fallback + dev warning', async () => {
-    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+  it('btnIcon (icon-only) uses fallback aria-label "Button" when no text/aria provided', async () => {
     const page = await newSpecPage({
       components: [Button],
-      html: `<button-component btn-icon dev-mode><span>🔔</span></button-component>`,
+      html: `<button-component btn-icon><span>🔔</span></button-component>`,
     });
     const btn = getControl(page.root);
-    expect(btn.getAttribute('aria-label')).toBe('Button'); // fallback
-    expect(warn).toHaveBeenCalled();
-    warn.mockRestore();
+    expect(btn.getAttribute('aria-label')).toBe('Button'); // fallback when no name is supplied
     expect(btn).toMatchSnapshot();
   });
 
@@ -171,7 +177,7 @@ describe('button-component (new spec)', () => {
     expect(btn.getAttribute('aria-expanded')).toBe('false');
     expect(btn.getAttribute('aria-controls')).toBe('panel-1');
 
-    comp.isOpen = true; // mutable
+    comp.isOpen = true; // mutable prop triggers re-render
     await page.waitForChanges();
 
     expect(btn.getAttribute('aria-expanded')).toBe('true');
@@ -201,13 +207,37 @@ describe('button-component (new spec)', () => {
     const clickSpy = jest.fn();
     page.root.addEventListener('customClick', clickSpy);
 
-    // simulate click with preventDefault spy
     const evt = new MouseEvent('click', { bubbles: true, cancelable: true }) as any;
     evt.preventDefault = prevent;
     a.dispatchEvent(evt);
     await page.waitForChanges();
 
-    expect(prevent).toHaveBeenCalled(); // navigation prevented
-    expect(clickSpy).toHaveBeenCalled(); // still emits
+    expect(prevent).toHaveBeenCalled();
+    expect(clickSpy).toHaveBeenCalled();
+  });
+
+  it('toggle: clicking flips pressed and emits pressedChange', async () => {
+    const page = await newSpecPage({
+      components: [Button],
+      html: `<button-component toggle btn-text="Toggle Me"></button-component>`,
+    });
+    const btnEl = page.root;
+    const btn = getControl(page.root);
+
+    const pressedSpy = jest.fn();
+    btnEl.addEventListener('pressedChange', (e: CustomEvent) => pressedSpy(e.detail));
+
+    // initially false; aria-pressed present only on toggle buttons
+    expect(btn.getAttribute('aria-pressed')).toBe('false');
+
+    btn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await page.waitForChanges();
+    expect(btn.getAttribute('aria-pressed')).toBe('true');
+    expect(pressedSpy).toHaveBeenLastCalledWith(true);
+
+    btn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await page.waitForChanges();
+    expect(btn.getAttribute('aria-pressed')).toBe('false');
+    expect(pressedSpy).toHaveBeenLastCalledWith(false);
   });
 });

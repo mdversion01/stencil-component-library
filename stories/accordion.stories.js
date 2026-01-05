@@ -154,6 +154,14 @@ export default {
 // Stories (each with its own base target-id)
 export const Accordion = {
   args: { accordion: true, headerText: 'Accordion header', targetId: 'accordion-1', contentLine1: 'This is the collapsible content area.', contentLine2: 'Put any markup here.' },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Basic accordion item that can be used on its own or as part of an accordion container. Each item can be opened or closed independently.',
+      },
+    },
+  },
 };
 
 export const AccordionWithCustomIcon = {
@@ -165,14 +173,38 @@ export const AccordionWithCustomIcon = {
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
   },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Accordion item using custom icons for open/closed states.',
+      },
+    },
+  },
 };
 
 export const ButtonToggle = {
   args: { headerText: 'Button toggle', targetId: 'accordion-3', variant: 'primary', contentLine1: 'This is the collapsible content area.', contentLine2: 'Put any markup here.' },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Standalone button toggle that can be used outside of an accordion container.',
+      },
+    },
+  },
 };
 
 export const ButtonToggleDisabled = {
   args: { disabled: true, headerText: 'Disabled control', targetId: 'accordion-4', contentLine1: 'This is the collapsible content area.', contentLine2: 'Put any markup here.' },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Standalone button toggle in a disabled state, indicating it cannot be interacted with.',
+      },
+    },
+  },
 };
 
 export const ButtonToggleOpenByDefault = {
@@ -184,6 +216,14 @@ export const ButtonToggleOpenByDefault = {
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
   },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Standalone button toggle that is expanded (open) by default when rendered.',
+      },
+    },
+  },
 };
 
 export const LinkToggle = {
@@ -194,5 +234,13 @@ export const LinkToggle = {
     targetId: 'accordion-6',
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Standalone toggle rendered as a link.',
+      },
+    },
   },
 };
