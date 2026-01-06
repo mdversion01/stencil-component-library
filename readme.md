@@ -200,7 +200,7 @@ import '../www/build/stencil-component-library.css';
 
 ```
 
-**Writin Stories
+## Writing Stories
 
 - Place CSF files under `` `stories/**/*.stories.(js|ts)` ``.
 
@@ -219,3 +219,90 @@ MyStory.parameters = {
 };
 
 ```
+
+## Sidebar Sorting
+
+This repo sorts stories alphabetically (see `` `preview.js` ``). For custom order/grouping, use a comparator or naming conventions in `` `title` ``.
+
+## Assets & Fonts
+
+We mount Font Awesome webfonts to `` `/assets/fonts` `` via `` `staticDirs` ``. Align URLs in your CSS accordingly:
+```css
+
+src: url('/assets/fonts/fa-solid-900.woff2') format('woff2');
+
+```
+
+## Troubleshooting
+
+**“Failed to fetch dynamically imported module: …/p-xxxx.entry.js”**
+
+**Cause**: Stencil lazy chunks are missing or the import path is wrong.
+**Fix**:
+
+- Run `` `npm run build` `` before launching Storybook.
+
+- Import the namespace ESM in `` `preview.js` ``:
+
+```js
+import '/dist/stencil-component-library/stencil-component-library.esm.js';
+```
+
+- Serve Storybook from the project root so /dist/... resolves.
+
+- Don’t call setAssetPath when using the namespace ESM import.
+
+**“Constructor for "xyz-component#undefined" was not found”**
+
+**Cause**: Custom element wasn’t registered (usually the ESM failed to load due to the issue above).
+**Fix**: Resolve the ESM import/chunk paths and ensure the build is present.
+
+## Font Awesome 404s
+
+**Fix**: Confirm `` `staticDirs` `` is configured (see `` `main.js` ``) and your CSS points to `` `/assets/fonts/....` ``
+
+### Docs mode shows the same errors
+
+**Cause**: Docs embeds your stories, so missing builds/paths break Docs too.
+**Fix**: Ensure npm run build and the preview.js imports are correct.
+
+## Recommended Scripts
+
+```json
+
+{
+  "scripts": {
+    "build": "stencil build",
+    "start": "stencil build --dev --watch --serve",
+    "test": "stencil test --spec --e2e",
+    "prestorybook": "npm run build",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  }
+}
+
+```
+
+## Conventions Used in Stories
+
+- Unique IDs per render to avoid collisions in Docs/Canvas when multiple instances mount.
+
+- Hide demo-only args:
+
+```js
+argTypes: {
+  demoOnly: { table: { disable: true }, control: false }
+}
+```
+
+
+- Component vs. story descriptions:
+  Use `` `parameters.docs.description.component` `` for overall component docs and `` `parameters.docs.description.story` `` for each example.
+
+Happy building! If something looks off:
+
+1. Run npm run build before Storybook.
+
+2. Verify preview.js ESM/CSS import paths.
+
+3. Check the Network tab for 404s to /dist or /assets/fonts.
