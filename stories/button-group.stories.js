@@ -33,6 +33,7 @@ const container = html => {
 export const Horizontal = {
   render: () =>
     container(`
+      <!-- Above is just a wrapper for padding in the Storybook preview -->
       <button-group>
         <button-component title-attr="Go Ahead" start size="sm" variant="active-blue" active group-btn btn-text="Default Button"></button-component>
         <button-component title-attr="Go Ahead" variant="active-blue" size="sm" group-btn btn-text="Default Button"></button-component>
@@ -52,6 +53,7 @@ export const Horizontal = {
 export const Vertical = {
   render: () =>
     container(`
+      <!-- Above is just a wrapper for padding in the Storybook preview -->
       <button-group vertical>
         <button-component title-attr="Go Ahead" start size="sm" variant="primary" vertical group-btn btn-text="Default Button"></button-component>
         <button-component title-attr="Go Ahead" variant="danger" size="sm" vertical group-btn btn-text="Default Button"></button-component>

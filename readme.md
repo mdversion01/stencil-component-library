@@ -109,3 +109,113 @@ export default App;
 ```
 
 Check out this [Live Demo](https://stackblitz.com/edit/vitejs-vite-b6zuds?file=src%2FApp.tsx).
+
+# Storybook 
+
+Storybook is a development workbench for UI components. It lets you view components in isolation, tweak inputs via controls, and read docs that live with your stories.
+
+This repo uses Storybook for Web Components + Vite.
+
+## Quick Start
+
+Install deps, build the Stencil library (so Storybook can import the ESM and CSS), then run Storybook:
+
+```bash
+
+npm install
+npm run build
+npm run storybook
+# or: npx storybook dev -p 6006
+
+```
+
+Build a static Storybook site:
+
+```bash
+
+npm run build-storybook
+# or: npx storybook build
+
+```
+
+Tip: Ensure Stencil builds before Storybook starts:
+
+```json
+
+{
+  "scripts": {
+    "prestorybook": "npm run build",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  }
+}
+
+```
+
+## Configuration
+
+.storybook/main.js
+```js
+
+export default {
+  framework: { name: '@storybook/web-components-vite', options: {} },
+  stories: ['../stories/**/*.stories.@(js|ts|tsx)'],
+  addons: [
+    '@storybook/addon-essentials',
+    '@storybook/addon-a11y',
+    '@storybook/addon-interactions',
+  ],
+  staticDirs: [
+    // Mount Font Awesome webfonts to /assets/fonts
+    { from: '../node_modules/@fortawesome/fontawesome-free/webfonts', to: '/assets/fonts' },
+  ],
+  docs: { autodocs: 'tag' },
+};
+
+```
+
+.storybook/preview.js
+```js
+
+export default {
+  parameters: {
+    controls: { expanded: true },
+    options: {
+      storySort: {
+        method: 'alphabetical',
+        locales: 'en-US',
+      },
+    },
+    a11y: {
+      element: '#root',
+    },
+  },
+};
+
+// ✅ Register all custom elements via the ESM namespace bundle
+import '/dist/stencil-component-library/stencil-component-library.esm.js';
+
+// Load the compiled library CSS (may reference /assets or /webfonts)
+import '../www/build/stencil-component-library.css';
+
+```
+
+**Writin Stories
+
+- Place CSF files under `` `stories/**/*.stories.(js|ts)` ``.
+
+- In Web Components, create elements in `` `render/templates` `` and map `` `args` `` to `` `attributes/props` ``.
+
+- Define argTypes for controls and docs.
+
+- Add per-story descriptions:
+
+```js
+
+MyStory.parameters = {
+  docs: {
+    description: { story: 'What this example demonstrates.' },
+  },
+};
+
+```

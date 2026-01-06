@@ -3,44 +3,54 @@ export default {
   title: 'Components/Divider',
   tags: ['autodocs'],
   argTypes: {
-    type: {
-      control: { type: 'inline-radio' },
-      options: ['horizontal', 'vertical'],
-      description: 'Divider direction',
-    },
     dashed: { control: 'boolean' },
-    plain: { control: 'boolean', description: 'Removes default typography weight from text divider' },
     orientation: {
-      control: { type: 'inline-radio' },
-      options: [undefined, 'left', 'center', 'right'],
-      description: 'When set, renders a text divider (uses slot content)',
+      control: { type: 'select' },
+      options: ['left', 'center', 'right'],
+      description: 'Sets the position of the text within the divider',
     },
     orientationMargin: {
-      control: { type: 'inline-radio' },
-      options: [undefined, 'left', 'right'],
+      control: { type: 'select' },
+      options: ['left', 'right'],
       description: 'Removes default side margin on the text divider',
     },
+    plain: { control: 'boolean', description: 'Removes default typography weight from text divider' },
     styles: {
       control: 'text',
       description: 'Inline styles for inner text (e.g. "color:#666; font-weight:600")',
     },
+    type: {
+      control: { type: 'select' },
+      options: ['horizontal', 'vertical'],
+      description: 'Divider direction',
+    },
+
     slotText: {
-      control: 'text',
-      description: 'Content placed inside the divider (used when `orientation` is set)',
+      table: { disable: true },
+      control: 'false',
+      description: 'Text content for the slot (used only in this Storybook preview).',
     },
   },
+
+  controls: {
+    exclude: ['slotText',], // belt & suspenders for Controls panel
+  },
+
   args: {
-    type: 'horizontal',
     dashed: false,
-    plain: false,
     orientation: undefined,
     orientationMargin: undefined,
+    plain: false,
     styles: '',
-    slotText: 'Section',
+    type: 'horizontal',
+
+    slotText: '',
   },
 };
 
-const buildDivider = (args) => {
+const LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.';
+
+const buildDivider = args => {
   const el = document.createElement('divider-component');
 
   // core props
@@ -58,7 +68,6 @@ const buildDivider = (args) => {
   if (args.styles && String(args.styles).trim().length) {
     el.styles = args.styles;
   } else {
-    // remove to let component ignore
     el.removeAttribute('styles');
   }
 
@@ -68,9 +77,24 @@ const buildDivider = (args) => {
   return el;
 };
 
-const Template = (args) => buildDivider(args);
+const makeParagraph = (text = LOREM) => {
+  const p = document.createElement('p');
+  p.textContent = text;
+  return p;
+};
 
-// ===== Stories =====
+// Template: wraps every non-vertical divider with <p> before and after
+const Template = args => {
+  const wrap = document.createElement('div');
+
+  // force horizontal for template-based stories (these are the ones that need <p> wrappers)
+  const divider = buildDivider({ ...args, type: 'horizontal' });
+
+  wrap.append(makeParagraph(), divider, makeParagraph());
+  return wrap;
+};
+
+// ===== Stories (non-vertical use Template and therefore get <p> before/after) =====
 
 export const Horizontal = Template.bind({});
 
@@ -104,7 +128,8 @@ TextRightStyled.args = {
   styles: 'color:#6c757d; font-size:0.875rem; letter-spacing:0.02em;',
 };
 
-export const Vertical = (args) => {
+// Vertical example: no paragraphs; custom layout
+export const Vertical = args => {
   // Showcase vertical divider inside a flex row
   const wrap = document.createElement('div');
   wrap.style.display = 'flex';
@@ -128,22 +153,34 @@ Vertical.args = {
   styles: '',
 };
 
-export const KitchenSink = (args) => {
+// Mixed demo: keep as-is (includes vertical and horizontal examples)
+export const KitchenSink = args => {
   const container = document.createElement('div');
   container.style.display = 'grid';
   container.style.gap = '16px';
 
-  const a = buildDivider({ ...args, type: 'horizontal', dashed: true, orientation: undefined });
-  const b = buildDivider({ ...args, orientation: 'center', slotText: 'Overview' });
-  const c = buildDivider({
-    ...args,
-    orientation: 'left',
-    orientationMargin: 'left',
-    plain: true,
-    slotText: 'Details',
-    styles: 'color:#555; font-weight:600;',
-  });
+  // Add paragraphs around the standalone horizontal examples inside KitchenSink
+  const aWrap = document.createElement('div');
+  aWrap.append(makeParagraph(), buildDivider({ ...args, type: 'horizontal', dashed: true, orientation: undefined }), makeParagraph());
 
+  const bWrap = document.createElement('div');
+  bWrap.append(makeParagraph(), buildDivider({ ...args, orientation: 'center', slotText: 'Overview' }), makeParagraph());
+
+  const cWrap = document.createElement('div');
+  cWrap.append(
+    makeParagraph(),
+    buildDivider({
+      ...args,
+      orientation: 'left',
+      orientationMargin: 'left',
+      plain: true,
+      slotText: 'Details',
+      styles: 'color:#555; font-weight:600;',
+    }),
+    makeParagraph(),
+  );
+
+  // Row with vertical dividers (no paragraphs)
   const row = document.createElement('div');
   row.style.display = 'flex';
   row.style.alignItems = 'center';
@@ -154,10 +191,10 @@ export const KitchenSink = (args) => {
     buildDivider({ ...args, type: 'vertical' }),
     document.createTextNode('Beta'),
     buildDivider({ ...args, type: 'vertical', dashed: true }),
-    document.createTextNode('Gamma')
+    document.createTextNode('Gamma'),
   );
 
-  container.append(a, b, c, row);
+  container.append(aWrap, bWrap, cWrap, row);
   return container;
 };
 KitchenSink.args = {};
