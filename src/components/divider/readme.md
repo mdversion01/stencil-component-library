@@ -7,14 +7,14 @@
 
 ## Properties
 
-| Property            | Attribute            | Description | Type                            | Default        |
-| ------------------- | -------------------- | ----------- | ------------------------------- | -------------- |
-| `dashed`            | `dashed`             |             | `boolean`                       | `false`        |
-| `orientation`       | `orientation`        |             | `"center" \| "left" \| "right"` | `undefined`    |
-| `orientationMargin` | `orientation-margin` |             | `string`                        | `undefined`    |
-| `plain`             | `plain`              |             | `boolean`                       | `false`        |
-| `styles`            | `styles`             |             | `string`                        | `undefined`    |
-| `type`              | `type`               |             | `"horizontal" \| "vertical"`    | `'horizontal'` |
+| Property                  | Attribute                   | Description | Type                            | Default        |
+| ------------------------- | --------------------------- | ----------- | ------------------------------- | -------------- |
+| `dashed`                  | `dashed`                    |             | `boolean`                       | `false`        |
+| `direction`               | `direction`                 |             | `"horizontal" \| "vertical"`    | `'horizontal'` |
+| `orientation`             | `orientation`               |             | `"center" \| "left" \| "right"` | `undefined`    |
+| `plain`                   | `plain`                     |             | `boolean`                       | `false`        |
+| `removeOrientationMargin` | `remove-orientation-margin` |             | `string`                        | `undefined`    |
+| `styles`                  | `styles`                    |             | `string`                        | `undefined`    |
 
 
 ----------------------------------------------

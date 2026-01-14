@@ -85,7 +85,7 @@ export class CheckboxComponent {
   private handleSingleChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.singleChecked = target.checked;
-   // this.checked = target.checked; // keep prop+state in sync for re-renders
+    // this.checked = target.checked; // keep prop+state in sync for re-renders
 
     // 🔊 Emit an event parents can listen to (your dropdown uses onToggle)
     this.toggle.emit({ checked: this.singleChecked, value: this.value, inputId: this.inputId });
@@ -104,38 +104,40 @@ export class CheckboxComponent {
       const showValidation = this.validation && this.required && this.checkedValues.length === 0;
 
       return (
-        <div class={`checkbox-group ${showValidation ? 'was-validated' : ''}`}>
-          <div class={`group-title ${this.groupTitleSize}`}>
-            {this.groupTitle}
-            {this.required ? <span class="required">*</span> : ''}
-          </div>
-          <div class={`form-group ${this.inline ? 'form-inline' : ''} no-pad`}>
-            {this.parsedOptions.map(option => (
-              <div class={wrapperClass}>
-                <input
-                  class={`${inputClass} ${this.size}`}
-                  type="checkbox"
-                  name={this.name}
-                  id={option.inputId}
-                  value={option.value}
-                  checked={this.checkedValues.includes(option.value)}
-                  disabled={option.disabled}
-                  required={this.required}
-                  aria-checked={this.checkedValues.includes(option.value) ? 'true' : 'false'}
-                  aria-disabled={option.disabled ? 'true' : 'false'}
-                  onChange={e => this.handleGroupChange(e, option.value)}
-                />
-                <label class={`${labelClass} ${this.size}`} htmlFor={option.inputId}>
-                  {option.labelTxt}
-                </label>
-              </div>
-            ))}
-          </div>
-          {showValidation && this.validationMsg ? (
-            <div class="invalid-feedback form-text" style={{ display: showValidation ? 'block' : '' }}>
-              {this.validationMsg}
+        <div class="check-box">
+          <div class={`checkbox-group ${showValidation ? 'was-validated' : ''}`}>
+            <div class={`group-title ${this.groupTitleSize}`}>
+              {this.groupTitle}
+              {this.required ? <span class="required">*</span> : ''}
             </div>
-          ) : null}
+            <div class={`form-group ${this.inline ? 'form-inline' : ''} no-pad`}>
+              {this.parsedOptions.map(option => (
+                <div class={wrapperClass}>
+                  <input
+                    class={`${inputClass} ${this.size}`}
+                    type="checkbox"
+                    name={this.name}
+                    id={option.inputId}
+                    value={option.value}
+                    checked={this.checkedValues.includes(option.value)}
+                    disabled={option.disabled}
+                    required={this.required}
+                    aria-checked={this.checkedValues.includes(option.value) ? 'true' : 'false'}
+                    aria-disabled={option.disabled ? 'true' : 'false'}
+                    onChange={e => this.handleGroupChange(e, option.value)}
+                  />
+                  <label class={`${labelClass} ${this.size}`} htmlFor={option.inputId}>
+                    {option.labelTxt}
+                  </label>
+                </div>
+              ))}
+            </div>
+            {showValidation && this.validationMsg ? (
+              <div class="invalid-feedback form-text" style={{ display: showValidation ? 'block' : '' }}>
+                {this.validationMsg}
+              </div>
+            ) : null}
+          </div>
         </div>
       );
     }

@@ -382,10 +382,10 @@
         </card-component>
       </div> -->
 
-      <!-- <div class="cwrapper">
+      <div class="cwrapper">
         <checkbox-component size="lg" input-id="checkbox0" name="checkbox0" label-txt="Regular Checkbox"></checkbox-component>
 
-        <checkbox-component size="lg" custom-checkbox input-id="checkbox1" name="checkbox1" label-txt="Checkbox 1"></checkbox-component>
+        <checkbox-component custom-checkbox input-id="checkbox1" name="checkbox1" label-txt="Checkbox 1"></checkbox-component>
 
         <checkbox-component disabled size="sm" validation validation-msg="Must select" input-id="checkboxA" required name="checkboxA" label-txt="Checkbox A"></checkbox-component>
 
@@ -420,7 +420,7 @@
             { "value": "cherry", "labelTxt": "Cherry", "inputId": "chk-cherry1", "checked": false, "disabled": true }
           ]'
         ></checkbox-component>
-      </div> -->
+      </div>
 
       <!-- <div class="cwrapper">
         <radio-input-component
@@ -527,7 +527,7 @@
         ></badge-component>
       </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper">
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
         <divider-component></divider-component>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
@@ -552,7 +552,7 @@
 
         <section class="display-box-demo">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
-          <divider-component orientation="left" orientation-margin="left">Text Left</divider-component>
+          <divider-component orientation="left" remove-orientation-margin="left">Text Left</divider-component>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
         </section>
 
@@ -564,7 +564,7 @@
 
         <section>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
-          <divider-component orientation="right" orientation-margin="right">Text Right</divider-component>
+          <divider-component orientation="right" remove-orientation-margin="right">Text Right</divider-component>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
         </section>
 
@@ -580,28 +580,27 @@
             <divider-component type="vertical"></divider-component>
           </div>
         </section>
-      </div>
+      </div> -->
 
-      <!-- <div class="cwrapper">
+      <div class="cwrapper">
         <section>
-          <dropdown-component id="dditems" variant="default" list-type="checkboxes"></dropdown-component>
+          <dropdown-component id="dditems" variant="primary" list-type="checkboxes"></dropdown-component>
 
           <dropdown-component
             id="ddMenu"
-            icon-size="16"
             variant="primary"
             icon-dropdown
-            icon="fa-solid fa-ellipsis-vertical"
+            icon="fa-solid fa-gear"
             list-type="customCheckboxes"
           ></dropdown-component>
 
-          <dropdown-component id="ddMenu3" icon-dropdown icon="fa-solid fa-gear"></dropdown-component>
+          <dropdown-component id="ddMenu3" variant="primary" auto-focus-submenu></dropdown-component>
         </section>
         <br />
         <br />
 
-        <section style="margin-left: 100px">
-          <dropdown-component id="dditemsSubMenu"button-text="DD w/ Submenu aligned left" variant="default" outlined></dropdown-component>
+        <section style="margin-left: 200px">
+          <dropdown-component id="dditemsSubMenu" align-menu-right button-text="DD w/ Submenu aligned left" variant="primary" outlined></dropdown-component>
         </section>
         <br />
         <br />
@@ -648,7 +647,7 @@
             if (dditemsSubMenu) {
               dditemsSubMenu.options = [
                 { name: 'Item 1', path: '#' },
-                // { isDivider: true },
+                { isDivider: true },
 
                 {
                   name: 'Settings',
@@ -677,7 +676,7 @@
             }
           });
         </script>
-      </div> -->
+      </div>
 
       <!-- <div class="cwrapper">
         <toggle-switch-component

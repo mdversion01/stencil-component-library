@@ -6,13 +6,13 @@
 $icon-sizes: (
   base: 32px,
   sm: 24px,
-  lg: 40px
+  lg: 40px,
 );
 
 $icon-menu-sizes: (
   default: 36px,
   sm: 28px,
-  lg: 44px
+  lg: 44px,
 );
 
 @mixin center-flex {
@@ -40,9 +40,15 @@ $icon-menu-sizes: (
 
 /* ====== Trigger button ====== */
 .dropdown-button {
-  &.lg { padding: 0 12px !important; }
-  &.sm { padding: 0 6px !important; }
-  &.default { padding: 0 8px !important; }
+  &.lg {
+    padding: 0 12px !important;
+  }
+  &.sm {
+    padding: 0 6px !important;
+  }
+  &.default {
+    padding: 0 8px !important;
+  }
 
   &.icon-menu {
     background-color: transparent;
@@ -54,8 +60,12 @@ $icon-menu-sizes: (
       padding: 0 !important;
       @include square(map-get($icon-sizes, base));
 
-      &-sm { @include square(map-get($icon-sizes, sm)); }
-      &-lg { @include square(map-get($icon-sizes, lg)); }
+      &-sm {
+        @include square(map-get($icon-sizes, sm));
+      }
+      &-lg {
+        @include square(map-get($icon-sizes, lg));
+      }
     }
 
     // shapes
@@ -114,7 +124,9 @@ $icon-menu-sizes: (
   }
 }
 
-.custom-fill-color { fill: currentColor; }
+.custom-fill-color {
+  fill: currentColor;
+}
 
 /* ====== Menu ====== */
 .dropdown-menu {
@@ -137,7 +149,9 @@ $icon-menu-sizes: (
   border-radius: 0.25rem;
 
   &,
-  .dropdown-submenu & { visibility: hidden; }
+  .dropdown-submenu & {
+    visibility: hidden;
+  }
 
   &.show,
   .dropdown-submenu &.show {
@@ -146,8 +160,12 @@ $icon-menu-sizes: (
     visibility: visible;
   }
 
-  &.square { border-radius: 0; }
-  &.pill { border-radius: 12px; }
+  &.square {
+    border-radius: 0;
+  }
+  &.pill {
+    border-radius: 12px;
+  }
 }
 
 .dropdown-divider {
@@ -179,12 +197,16 @@ a {
   background-color: transparent;
   border: 0;
 
-  &.checkboxes { padding: 0 0.5rem !important; }
+  &.checkboxes {
+    padding: 0 0.5rem !important;
+  }
 
   .form-group {
     margin-bottom: 0 !important;
 
-    &.check-box .form-check { padding-left: 24px !important; }
+    &.check-box .form-check {
+      padding-left: 24px !important;
+    }
   }
 
   .custom-checkbox {
@@ -199,12 +221,19 @@ a {
       @include center-flex;
       align-items: center;
       margin-bottom: 0;
+      position: relative;
 
-      &:before,
-      &:after {
-        position: absolute;
+      &:before {
+        position: relative;
         top: 0;
         left: 0;
+        display: block;
+      }
+
+      &:after {
+        position: absolute;
+        top: 2px;
+        left: 1px;
         display: block;
       }
     }
@@ -214,15 +243,29 @@ a {
     &.sm {
       padding-top: 0.1rem;
 
-      &::before { top: 0; left: 5px; }
-      &::after { top: 2px; left: 3px; }
+      &::before {
+        top: 0;
+        left: 0;
+        margin-top: 0;
+      }
+      &::after {
+        top: 4px;
+        left: -1px;
+      }
     }
 
     &.lg {
       padding-top: 0.1rem;
 
-      &::before,
-      &::after { top: 6px; left: 0; }
+      &::before {
+        top: 0;
+        left: 0;
+      }
+
+      &::after {
+        top: 4px;
+        left: 1px;
+      }
     }
   }
 
@@ -242,20 +285,32 @@ a {
   &.sm {
     font-size: 0.75rem;
 
-    .form-check-label.sm { padding-top: 4px; }
-    .form-group { margin-bottom: 0 !important; }
-    .form-group.check-box { padding-top: 0 !important; }
+    .form-check-label.sm {
+      padding-top: 4px;
+    }
+    .form-group {
+      margin-bottom: 0 !important;
+    }
+    .form-group.check-box {
+      padding-top: 0 !important;
+    }
 
     .custom-switch {
       .custom-control-label {
-        &::before { top: 0.25rem; }
-        &::after { top: 0.38rem; }
+        &::before {
+          top: 0.25rem;
+        }
+        &::after {
+          top: 0.38rem;
+        }
       }
     }
 
     .form-check-label.sm,
     .custom-control-label,
-    .group-title.sm { margin-top: 0; }
+    .group-title.sm {
+      margin-top: 0;
+    }
   }
 
   &.lg {
@@ -268,28 +323,34 @@ a {
       }
     }
 
-    .custom-control-lg.custom-switch { padding-left: 2.25rem; }
+    .custom-control-lg.custom-switch {
+      padding-left: 2.25rem;
+    }
 
     .form-check-label.lg,
     .custom-control-label.lg,
-    .group-title.lg { margin-top: 2px; }
+    .group-title.lg {
+      margin-top: 2px;
+    }
   }
 
-  &.toggle { padding: 0.5rem 0.5rem 0; }
+  &.toggle {
+    padding: 0.5rem 0.5rem 0;
+  }
 
   &:focus,
   &:hover {
     color: #16181b;
     text-decoration: none;
-    background-color: #f8f9fa;
+    background-color: #e2e2e2 !important;
     outline: 0;
   }
 
   &.active,
   &:active {
-    color: #fff;
+    color: #fff !important;
     text-decoration: none;
-    background-color: #2680eb;
+    background-color: #2680eb !important;
   }
 }
 
@@ -305,10 +366,14 @@ a {
   }
 }
 
-.tgsw .dropdown-item { padding: 0 0.5rem !important; }
+.tgsw .dropdown-item {
+  padding: 0 0.5rem !important;
+}
 
 .sub-inputs .dropdown-item {
-  .custom-switch .custom-control-label:after { top: 2px; }
+  .custom-switch .custom-control-label:after {
+    top: 2px;
+  }
 }
 
 /* Toggle switch spacing */
@@ -316,11 +381,17 @@ a {
   padding: 2px !important;
   margin-bottom: 0;
 
-  .custom-control-label { margin-top: 0; }
+  .custom-control-label {
+    margin-top: 0;
+  }
 }
 
-.dropdown-item.sm .form-group.toggle-switch { padding: 2px 0 !important; }
-.chbx .dropdown-item.sm .form-check { padding-top: 0; }
+.dropdown-item.sm .form-group.toggle-switch {
+  padding: 2px 0 !important;
+}
+.chbx .dropdown-item.sm .form-check {
+  padding-top: 0;
+}
 
 /* ====== Submenus ====== */
 .dropdown-submenu {
@@ -350,7 +421,9 @@ a {
     margin: 2px 4px -2px 0;
   }
 
-  .dropdown-item { text-align: right; }
+  .dropdown-item {
+    text-align: right;
+  }
 }
 
 /* ====== Focus visuals ====== */

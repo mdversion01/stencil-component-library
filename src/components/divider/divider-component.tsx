@@ -10,8 +10,8 @@ export class DividerComponent {
   @Prop() dashed: boolean = false;
   @Prop() plain: boolean = false;
   @Prop() orientation?: 'left' | 'right' | 'center';
-  @Prop() orientationMargin?: string;
-  @Prop() type: 'horizontal' | 'vertical' = 'horizontal';
+  @Prop() removeOrientationMargin?: string;
+  @Prop() direction: 'horizontal' | 'vertical' = 'horizontal';
   @Prop() styles?: string;
 
   private getTextStyle(): { [key: string]: string } | undefined {
@@ -35,8 +35,8 @@ export class DividerComponent {
       this.orientation === 'right' && 'divider-with-text-right',
       this.orientation === 'center' && 'divider-with-text-center',
       this.orientation && 'divider-with-text',
-      this.orientationMargin === 'left' && 'divider-no-default-orientation-margin-left',
-      this.orientationMargin === 'right' && 'divider-no-default-orientation-margin-right',
+      this.removeOrientationMargin === 'left' && 'divider-no-default-orientation-margin-left',
+      this.removeOrientationMargin === 'right' && 'divider-no-default-orientation-margin-right',
     ]
       .filter(Boolean)
       .join(' ');
@@ -78,7 +78,7 @@ export class DividerComponent {
       return this.renderWithText();
     }
 
-    if (this.type === 'vertical') {
+    if (this.direction === 'vertical') {
       return this.renderVertical();
     }
 

@@ -1530,17 +1530,17 @@ export namespace Components {
           * @default false
          */
         "dashed": boolean;
+        /**
+          * @default 'horizontal'
+         */
+        "direction": 'horizontal' | 'vertical';
         "orientation"?: 'left' | 'right' | 'center';
-        "orientationMargin"?: string;
         /**
           * @default false
          */
         "plain": boolean;
+        "removeOrientationMargin"?: string;
         "styles"?: string;
-        /**
-          * @default 'horizontal'
-         */
-        "type": 'horizontal' | 'vertical';
     }
     interface DropdownComponent {
         /**
@@ -6492,17 +6492,17 @@ declare namespace LocalJSX {
           * @default false
          */
         "dashed"?: boolean;
+        /**
+          * @default 'horizontal'
+         */
+        "direction"?: 'horizontal' | 'vertical';
         "orientation"?: 'left' | 'right' | 'center';
-        "orientationMargin"?: string;
         /**
           * @default false
          */
         "plain"?: boolean;
+        "removeOrientationMargin"?: string;
         "styles"?: string;
-        /**
-          * @default 'horizontal'
-         */
-        "type"?: 'horizontal' | 'vertical';
     }
     interface DropdownComponent {
         /**

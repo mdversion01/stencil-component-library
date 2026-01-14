@@ -49,21 +49,31 @@ export class DropdownComponent {
   public menuEl!: HTMLElement;
   private popperInstance: Instance | null = null;
   private cleanupAutoUpdate: (() => void) | null = null;
-  private submenuTimeout: ReturnType<typeof setTimeout> | null = null; // why: hover-intent delay
+  private submenuTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  // ---- Focus helper: avoid page scroll on focus handoffs ----
+  private safeFocus = (el?: HTMLElement | null) => {
+    if (!el) return;
+    try {
+      (el as any).focus({ preventScroll: true });
+    } catch {
+      el.focus();
+    }
+  };
+
   private isSubmenuToggle(el: any): boolean {
     return !!el && el.classList?.contains('dropdown-submenu-toggle');
   }
 
   private focusFirstIn(container: Element | null) {
     const first = this.getFocusableItems(container || undefined)[0];
-    first?.focus();
+    this.safeFocus(first);
   }
 
   private toKey = (o: any) => (o?.key ?? o?.value ?? o?.name ?? '') as string;
 
   setOptions(opts: DropdownItem[]) {
     this.options = [...opts];
-    // announce so hosts/listeners (and your table wiring) see fresh items
     const detail = { items: this.options };
     this.host?.dispatchEvent(new CustomEvent('items-changed', { detail, bubbles: true, composed: true }));
   }
@@ -72,7 +82,8 @@ export class DropdownComponent {
     if (typeof window === 'undefined') return;
 
     try {
-      this.dropdownButtonEl = this.host.querySelector<HTMLButtonElement>(`#${this.componentId}-toggle-button button`) || this.dropdownButtonEl;
+      this.dropdownButtonEl =
+        this.host.querySelector<HTMLButtonElement>(`#${this.componentId}-toggle-button button`) || this.dropdownButtonEl;
       this.menuEl = this.host.querySelector<HTMLElement>(`#${this.componentId}-menu-root`) || this.menuEl;
       this.host.addEventListener('focusout', this.handleFocusOut);
     } catch (err) {
@@ -97,14 +108,9 @@ export class DropdownComponent {
     if (!this.host.contains(event.target as Node)) this.closeDropdown();
   };
 
-  // private getItemId = (it: any): string => (it?.value ?? it?.name ?? it?.inputId ?? it?.key ?? '') as string;
-
   private handleCheckboxToggle = (item: DropdownItem, index: number) => {
     const opts = Array.isArray(this.options) ? [...this.options] : [];
-
-    // ✅ reuse the helper so `toKey` is actually read
     const i = typeof index === 'number' ? index : opts.findIndex(o => this.toKey(o) === this.toKey(item));
-
     if (i < 0) return;
 
     const updated = { ...opts[i], checked: !opts[i].checked };
@@ -123,7 +129,6 @@ export class DropdownComponent {
       }),
     );
 
-    // ✅ Use toKey for canonical payload sent to the table
     const tableId = this.tableId || this.host.getAttribute('table-id') || '';
     const payload = this.options.map(o => ({
       key: this.toKey(o),
@@ -147,7 +152,7 @@ export class DropdownComponent {
       this.createPopperInstance();
       document.addEventListener('mousedown', this.handleOutsideClick);
       setTimeout(() => {
-        this.menuEl?.focus();
+        this.safeFocus(this.menuEl);
         this.focusedIndex = -1;
       }, 0);
     } else {
@@ -156,10 +161,9 @@ export class DropdownComponent {
   };
 
   closeDropdown() {
-    // If focus is anywhere inside the dropdown menus, return it to the trigger first
     const active = document.activeElement as HTMLElement | null;
     if (active && (this.menuEl?.contains(active) || this.host.contains(active))) {
-      this.dropdownButtonEl?.focus();
+      this.safeFocus(this.dropdownButtonEl);
     }
 
     this.showDropdown = false;
@@ -197,7 +201,9 @@ export class DropdownComponent {
   }
 
   getFocusableItems(container: Element = this.menuEl): HTMLElement[] {
-    return Array.from(container.querySelectorAll('.dropdown-item:not(.disabled)')).filter((el): el is HTMLElement => (el as HTMLElement).offsetParent !== null);
+    return Array.from(container.querySelectorAll('.dropdown-item:not(.disabled)')).filter(
+      (el): el is HTMLElement => (el as HTMLElement).offsetParent !== null,
+    );
   }
 
   closeAllSubmenus() {
@@ -206,12 +212,10 @@ export class DropdownComponent {
     openSubs.forEach(sub => {
       const toggle = sub.previousElementSibling as HTMLElement | null;
 
-      // If focus is inside this submenu, move it to the toggle BEFORE hiding
       if (sub.contains(document.activeElement)) {
-        toggle?.focus();
+        this.safeFocus(toggle);
       }
 
-      // Now it's safe to hide + inert + aria
       sub.classList.remove('show');
       sub.classList.add('hidden');
       sub.setAttribute('inert', '');
@@ -225,11 +229,10 @@ export class DropdownComponent {
   }
 
   closeSubmenu(submenu: HTMLElement) {
-    // 1) Close any open descendants first (focus out before hiding each)
     submenu.querySelectorAll<HTMLElement>('.dropdown-menu.sub.show').forEach(child => {
       const childToggle = child.previousElementSibling as HTMLElement | null;
       if (child.contains(document.activeElement)) {
-        childToggle?.focus();
+        this.safeFocus(childToggle);
       }
       child.classList.remove('show');
       child.classList.add('hidden');
@@ -239,13 +242,11 @@ export class DropdownComponent {
       this.activeSubmenus.delete(child.id);
     });
 
-    // 2) If focus is inside this submenu, move it to this submenu's toggle first
     const toggle = submenu.previousElementSibling as HTMLElement | null;
     if (submenu.contains(document.activeElement)) {
-      toggle?.focus();
+      this.safeFocus(toggle);
     }
 
-    // 3) Now hide + inert + aria
     submenu.classList.remove('show');
     submenu.classList.add('hidden');
     submenu.setAttribute('inert', '');
@@ -259,7 +260,6 @@ export class DropdownComponent {
     const levelMenu = triggerEl.closest('.dropdown-menu') as HTMLElement | null;
     if (!levelMenu) return;
 
-    // No :scope — works in Stencil’s mock DOM too
     Array.from(levelMenu.querySelectorAll<HTMLElement>('.dropdown-submenu > .dropdown-menu.sub.show'))
       .filter(sub => sub.parentElement?.parentElement === levelMenu)
       .forEach(sub => {
@@ -271,7 +271,6 @@ export class DropdownComponent {
     const submenuEl = this.host.querySelector<HTMLElement>(`#${id}`);
     if (!submenuEl) return;
 
-    // only close siblings at the same level
     this.closeSiblingSubmenus(triggerEl, id);
 
     submenuEl.classList.add('show');
@@ -290,10 +289,9 @@ export class DropdownComponent {
     });
 
     this.activeSubmenus.add(id);
-    if (this.autoFocusSubmenu) submenuEl.focus();
+    if (this.autoFocusSubmenu) this.safeFocus(submenuEl);
   }
 
-  /** Hover-intent: open submenu when mouse enters the wrapper */
   handleSubmenuMouseEnter = (e: MouseEvent) => {
     if (this.submenuTimeout) clearTimeout(this.submenuTimeout);
     const wrapper = e.currentTarget as HTMLElement;
@@ -302,7 +300,6 @@ export class DropdownComponent {
     if (toggle && submenu) this.showSubmenu(submenu.id, toggle);
   };
 
-  /** Hover-intent: close submenu a bit after leaving (prevents flicker) */
   handleSubmenuMouseLeave = (submenuId: string) => {
     if (this.submenuTimeout) clearTimeout(this.submenuTimeout);
     this.submenuTimeout = setTimeout(() => {
@@ -321,13 +318,11 @@ export class DropdownComponent {
     const currentIndex = items.findIndex(i => i === focused);
     let nextIndex = -1;
 
-    // Directional keys depend on submenu side
     const openKey = this.alignMenuRight ? 'ArrowLeft' : 'ArrowRight';
     const closeKey = this.alignMenuRight ? 'ArrowRight' : 'ArrowLeft';
 
     switch (event.key) {
       case ' ':
-        // Space on trigger toggles root menu, or opens submenu when on a toggle
         if (focused === this.dropdownButtonEl) {
           event.preventDefault();
           this.toggleDropdown();
@@ -342,7 +337,6 @@ export class DropdownComponent {
         break;
 
       case 'Enter':
-        // Enter should "activate": open submenu if on a toggle, otherwise click
         if (this.isSubmenuToggle(focused)) {
           event.preventDefault();
           const submenu = focused!.nextElementSibling as HTMLElement | null;
@@ -378,10 +372,7 @@ export class DropdownComponent {
 
       case 'ArrowRight':
       case 'ArrowLeft': {
-        // normalize as open/close intent
         const key = event.key;
-
-        // OPEN intent on submenu toggle
         if (key === openKey && this.isSubmenuToggle(focused)) {
           const submenu = focused!.nextElementSibling as HTMLElement | null;
           if (submenu) {
@@ -392,13 +383,12 @@ export class DropdownComponent {
           break;
         }
 
-        // CLOSE intent when inside a submenu
         const inSub = focused?.closest('.dropdown-menu.sub') as HTMLElement | null;
         if (key === closeKey && inSub) {
           event.preventDefault();
           const toggle = inSub.previousElementSibling as HTMLElement | null;
           this.closeSubmenu(inSub);
-          toggle?.focus();
+          this.safeFocus(toggle);
         }
         break;
       }
@@ -409,7 +399,7 @@ export class DropdownComponent {
           event.preventDefault();
           const toggle = inSub.previousElementSibling as HTMLElement | null;
           this.closeSubmenu(inSub);
-          toggle?.focus();
+          this.safeFocus(toggle);
         } else {
           event.preventDefault();
           this.closeDropdown();
@@ -419,7 +409,7 @@ export class DropdownComponent {
     }
 
     if (nextIndex !== -1) {
-      items[nextIndex]?.focus();
+      this.safeFocus(items[nextIndex]);
       this.focusedIndex = nextIndex;
     }
   }
@@ -445,17 +435,22 @@ export class DropdownComponent {
         const submenuClass = ['dropdown-menu', 'sub', 'hidden', hasInputs ? 'sub-inputs' : '', this.alignMenuRight ? 'dropdown-menu-right' : ''].join(' ');
 
         return (
-          <div class="dropdown-submenu" role="presentation" onMouseEnter={this.handleSubmenuMouseEnter} onMouseLeave={() => this.handleSubmenuMouseLeave(submenuId)}>
+          <div
+            class="dropdown-submenu"
+            role="presentation"
+            onMouseEnter={this.handleSubmenuMouseEnter}
+            onMouseLeave={() => this.handleSubmenuMouseLeave(submenuId)}
+          >
             <a
-              href="#"
+              href="javascript:void(0)"
               id={`dropdown-item-${currentId}`}
               class={`dropdown-item dropdown-submenu-toggle ${this.size}`}
               aria-haspopup="true"
               aria-expanded="false"
               aria-controls={submenuId}
               tabIndex={0}
-              onClick={e => e.preventDefault()}
-              onMouseEnter={e => this.showSubmenu(submenuId, e.currentTarget as HTMLElement)}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+              onMouseEnter={(e) => this.showSubmenu(submenuId, (e.currentTarget as HTMLElement))}
             >
               {this.alignMenuRight && <icon-component icon="fa-solid fa-caret-left" />}
               {item.name}
@@ -545,15 +540,12 @@ export class DropdownComponent {
     const opts = Array.isArray(this.options) ? this.options.map(o => ({ ...o, checked: false })) : [];
     this.options = opts;
 
-    // Re-render + local announcements
     this.host?.dispatchEvent(new CustomEvent('items-changed', { detail: { items: opts }, bubbles: true, composed: true }));
     this.host?.dispatchEvent(new CustomEvent('selection-changed', { detail: { items: [] }, bubbles: true, composed: true }));
 
-    // Document-level event the table listens for
     const tableId = this.tableId || this.host.getAttribute('table-id') || '';
     document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId, items: [] }, bubbles: false }));
 
-    // Let layout settle if callers await us
     await Promise.resolve();
   }
 

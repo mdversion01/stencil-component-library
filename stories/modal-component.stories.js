@@ -1,11 +1,95 @@
 // src/stories/modal-component.stories.js
 
+// ---------- Docs-only portal decorator for fixed overlays ----------
+const portalizeModalInDocs = (root) => {
+  // No-op outside the Docs page
+  const inDocs = !!document.querySelector('.sbdocs, .docs-story');
+  if (!inDocs) return { destroy: () => {} };
+
+  // Track anything we re-parent so we can clean it up later
+  const portedNodes = new Set();
+
+  // Move a node to <body> and tag it for cleanup
+  const portToBody = (el, zIndex) => {
+    if (!el || el.__ported_to_body__) return;
+    el.__ported_to_body__ = true;
+    el.style.position = 'fixed';
+    if (zIndex != null) el.style.zIndex = String(zIndex);
+    document.body.appendChild(el);
+    portedNodes.add(el);
+  };
+
+  // Try to find the live modal/backdrop inside the story’s markup
+  const syncNow = () => {
+    // Story content root (this decorator wraps the story in wrapEl)
+    const hostScope = root;
+    // Your component renders with *light DOM* (shadow: false), so direct query is fine
+    const modalEls = hostScope.querySelectorAll('.modal');
+    const backdropEls = hostScope.querySelectorAll('.modal-backdrop');
+
+    modalEls.forEach((m) => portToBody(m, 1060));      // ensure modal above backdrop
+    backdropEls.forEach((b) => portToBody(b, 1050));   // backdrop just below modal
+  };
+
+  // Observe changes while users open/close the modal
+  const mo = new MutationObserver(() => syncNow());
+  mo.observe(root, { childList: true, subtree: true, attributes: true });
+
+  // Initial pass in case story renders open by default
+  // (or the trigger opens immediately)
+  queueMicrotask(syncNow);
+
+  return {
+    destroy: () => {
+      mo.disconnect();
+      // Remove or restore all ported nodes on unmount
+      portedNodes.forEach((el) => {
+        try {
+          el.remove(); // most robust for Storybook; your component will re-create on next open
+        } catch (_) {}
+      });
+      portedNodes.clear();
+    },
+  };
+};
+
+// Global (for this file) decorator that wraps each story result
+const docsPortalDecorator = (Story) => {
+  // Story may return a string (web-components style) or a Node.
+  const wrapEl = document.createElement('div');
+
+  const out = Story();
+  if (typeof out === 'string') {
+    wrapEl.innerHTML = out;
+  } else if (out instanceof Node) {
+    wrapEl.appendChild(out);
+  }
+
+  // Portal modal/backdrop to body when they appear
+  const control = portalizeModalInDocs(wrapEl);
+
+  // Clean up if Storybook removes our wrapper from the DOM
+  const removalObserver = new MutationObserver(() => {
+    if (!document.body.contains(wrapEl)) {
+      removalObserver.disconnect();
+      control.destroy();
+    }
+  });
+  removalObserver.observe(document.body, { childList: true, subtree: true });
+
+  return wrapEl;
+};
+
 export default {
   title: 'Components/Modal',
   tags: ['autodocs'],
+  // Apply ONLY to this story file; safe for both Canvas and Docs
+  decorators: [docsPortalDecorator],
   parameters: {
     layout: 'padded',
-    docs: { source: { type: 'dynamic' } },
+    docs: {
+      source: { type: 'dynamic' },
+    },
   },
   argTypes: {
     // Trigger button props
@@ -46,7 +130,7 @@ const attr = (name, val) =>
   val === undefined || val === null || val === '' ? '' : ` ${name}="${String(val)}"`;
 
 /** Interactive base */
-const Template = args => `
+const Template = (args) => `
 <modal-component
   ${attr('btn-text', args.btnText)}
   ${attr('variant', args.variant)}
@@ -159,7 +243,7 @@ export const VerticallyCentered = () => `
 
 export const ScrollableBody = () => `
 <modal-component variant="info" btn-text="Scrollable body" scrollable-body modal-size="lg">
-  ${Array.from({ length: 14 }, (_, i) => `<p>Scrollable content line ${i + 1}</p>`).join('')}
+  ${Array.from({ length: 20 }, (_, i) => `<p>Scrollable content line ${i + 1}</p>`).join('')}
 </modal-component>
 `;
 

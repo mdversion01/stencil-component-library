@@ -2,29 +2,44 @@
 export default {
   title: 'Components/Divider',
   tags: ['autodocs'],
+
+  parameters: {
+    docs: {
+      description: {
+        component: [
+          'Divider component for separating content with optional text or styling.',
+          '',
+        ].join('\n'),
+      },
+      // Ensure Docs shows rendered markup (attributes) in the Code tab
+      source: { type: 'dynamic', language: 'html' },
+    },
+  },
+
   argTypes: {
     dashed: { control: 'boolean' },
+    direction: {
+      control: { type: 'select' },
+      options: ['horizontal', 'vertical'],
+      description: 'Divider direction',
+    },
     orientation: {
       control: { type: 'select' },
       options: ['left', 'center', 'right'],
       description: 'Sets the position of the text within the divider',
     },
-    orientationMargin: {
+    plain: { control: 'boolean', description: 'Removes default typography weight from text divider' },
+    removeOrientationMargin: {
       control: { type: 'select' },
       options: ['left', 'right'],
       description: 'Removes default side margin on the text divider',
     },
-    plain: { control: 'boolean', description: 'Removes default typography weight from text divider' },
     styles: {
       control: 'text',
       description: 'Inline styles for inner text (e.g. "color:#666; font-weight:600")',
     },
-    type: {
-      control: { type: 'select' },
-      options: ['horizontal', 'vertical'],
-      description: 'Divider direction',
-    },
 
+    // used only to build the preview slot content
     slotText: {
       table: { disable: true },
       control: 'false',
@@ -33,43 +48,64 @@ export default {
   },
 
   controls: {
-    exclude: ['slotText',], // belt & suspenders for Controls panel
+    exclude: ['slotText'], // keep Controls panel tidy
   },
 
   args: {
     dashed: false,
+    direction: 'horizontal', // default (should not appear in markup)
     orientation: undefined,
-    orientationMargin: undefined,
     plain: false,
+    removeOrientationMargin: undefined,
     styles: '',
-    type: 'horizontal',
-
     slotText: '',
   },
 };
 
-const LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.';
+// -------- Helpers --------
+
+const LOREM =
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.';
+
+const setAttr = (el, name, value) => {
+  if (value === true) el.setAttribute(name, '');
+  else if (value === false || value == null || value === '') el.removeAttribute(name);
+  else el.setAttribute(name, String(value));
+};
 
 const buildDivider = args => {
   const el = document.createElement('divider-component');
 
-  // core props
-  el.type = args.type;
+  // --- set PROPS (runtime behavior) ---
+  // Only set direction prop if vertical; let component default handle horizontal
+  if (args.direction === 'vertical') el.direction = 'vertical';
+  else delete el.direction;
+
   el.dashed = !!args.dashed;
   el.plain = !!args.plain;
 
-  // optional props
   if (args.orientation === undefined) delete el.orientation;
   else el.orientation = args.orientation;
 
-  if (args.orientationMargin === undefined) delete el.orientationMargin;
-  else el.orientationMargin = args.orientationMargin;
+  if (args.removeOrientationMargin === undefined) delete el.removeOrientationMargin;
+  else el.removeOrientationMargin = args.removeOrientationMargin;
 
   if (args.styles && String(args.styles).trim().length) {
     el.styles = args.styles;
   } else {
     el.removeAttribute('styles');
   }
+
+  // --- set ATTRIBUTES (so Docs prints them in the code block) ---
+  // Only render direction attribute when vertical (horizontal is default)
+  if (args.direction === 'vertical') setAttr(el, 'direction', 'vertical');
+  else el.removeAttribute('direction');
+
+  setAttr(el, 'dashed', !!args.dashed);
+  setAttr(el, 'plain', !!args.plain);
+  setAttr(el, 'orientation', args.orientation);
+  setAttr(el, 'remove-orientation-margin', args.removeOrientationMargin);
+  setAttr(el, 'styles', args.styles);
 
   // slot content (only appears if orientation is set)
   el.textContent = args.slotText || '';
@@ -83,13 +119,10 @@ const makeParagraph = (text = LOREM) => {
   return p;
 };
 
-// Template: wraps every non-vertical divider with <p> before and after
+// Template: wraps horizontal (default) dividers with <p> before and after
 const Template = args => {
   const wrap = document.createElement('div');
-
-  // force horizontal for template-based stories (these are the ones that need <p> wrappers)
-  const divider = buildDivider({ ...args, type: 'horizontal' });
-
+  const divider = buildDivider({ ...args, direction: 'horizontal' }); // ensure we demo horizontal without printing attribute
   wrap.append(makeParagraph(), divider, makeParagraph());
   return wrap;
 };
@@ -97,35 +130,107 @@ const Template = args => {
 // ===== Stories (non-vertical use Template and therefore get <p> before/after) =====
 
 export const Horizontal = Template.bind({});
+Horizontal.parameters = {
+  docs: {
+    description: {
+      story: 'A basic horizontal divider between two paragraphs.',
+    },
+  },
+};
 
 export const HorizontalDashed = Template.bind({});
 HorizontalDashed.args = {
   dashed: true,
 };
-
-export const HorizontalPlain = Template.bind({});
-HorizontalPlain.args = {
-  plain: true,
+HorizontalDashed.parameters = {
+  docs: {
+    description: {
+      story: 'A dashed horizontal divider between two paragraphs.',
+    },
+  },
 };
 
-export const TextCenter = Template.bind({});
-TextCenter.args = {
+export const PlainText = Template.bind({});
+PlainText.args = {
+  plain: true,
+  orientation: 'center',
+  slotText: 'Plain Text',
+};
+PlainText.parameters = {
+  docs: {
+    description: {
+      story: 'If using a text divider, setting `plain` removes default typography weight.',
+    },
+  },
+};
+
+export const TextCentered = Template.bind({});
+TextCentered.args = {
   orientation: 'center',
   slotText: 'Center Title',
 };
+TextCentered.parameters = {
+  docs: {
+    description: {
+      story: 'A horizontal divider with centered text.',
+    },
+  },
+};
 
-export const TextLeftWithMargin = Template.bind({});
-TextLeftWithMargin.args = {
+export const TextLeftStyled = Template.bind({});
+TextLeftStyled.args = {
   orientation: 'left',
-  orientationMargin: 'left',
-  slotText: 'Left Title',
+  slotText: 'Left Aligned Text',
+  styles: 'color:#096ac1; font-size:0.875rem; letter-spacing:0.02em;',
+};
+TextLeftStyled.parameters = {
+  docs: {
+    description: {
+      story: 'A horizontal divider with left-aligned text and custom styles.',
+    },
+  },
 };
 
 export const TextRightStyled = Template.bind({});
 TextRightStyled.args = {
   orientation: 'right',
-  slotText: 'More',
-  styles: 'color:#6c757d; font-size:0.875rem; letter-spacing:0.02em;',
+  slotText: 'Right Aligned Text',
+  styles: 'color:#0d9312; font-size:0.875rem; letter-spacing:0.02em;',
+};
+TextRightStyled.parameters = {
+  docs: {
+    description: {
+      story: 'A horizontal divider with right-aligned text and custom styles.',
+    },
+  },
+};
+
+export const TextLeftWithNoLeftMargin = Template.bind({});
+TextLeftWithNoLeftMargin.args = {
+  orientation: 'left',
+  removeOrientationMargin: 'left',
+  slotText: 'Left Aligned Text',
+};
+TextLeftWithNoLeftMargin.parameters = {
+  docs: {
+    description: {
+      story: 'A horizontal divider with left-aligned text and default left margin.',
+    },
+  },
+};
+
+export const TextRightWithNoRightMargin = Template.bind({});
+TextRightWithNoRightMargin.args = {
+  orientation: 'right',
+  removeOrientationMargin: 'right',
+  slotText: 'Right Aligned Text',
+};
+TextRightWithNoRightMargin.parameters = {
+  docs: {
+    description: {
+      story: 'A horizontal divider with right-aligned text and default right margin.',
+    },
+  },
 };
 
 // Vertical example: no paragraphs; custom layout
@@ -142,7 +247,7 @@ export const Vertical = args => {
   const right = document.createElement('div');
   right.textContent = 'Right';
 
-  const divider = buildDivider({ ...args, type: 'vertical', orientation: undefined, slotText: '' });
+  const divider = buildDivider({ ...args, direction: 'vertical', orientation: undefined, slotText: '' });
 
   wrap.append(left, divider, right);
   return wrap;
@@ -152,19 +257,34 @@ Vertical.args = {
   plain: false,
   styles: '',
 };
+Vertical.parameters = {
+  docs: {
+    description: {
+      story: 'A vertical divider between two items in a flex row.',
+    },
+  },
+};
 
-// Mixed demo: keep as-is (includes vertical and horizontal examples)
+// Mixed demo: includes vertical and horizontal examples
 export const KitchenSink = args => {
   const container = document.createElement('div');
   container.style.display = 'grid';
   container.style.gap = '16px';
 
-  // Add paragraphs around the standalone horizontal examples inside KitchenSink
+  // Standalone horizontal examples (with paragraphs before/after)
   const aWrap = document.createElement('div');
-  aWrap.append(makeParagraph(), buildDivider({ ...args, type: 'horizontal', dashed: true, orientation: undefined }), makeParagraph());
+  aWrap.append(
+    makeParagraph(),
+    buildDivider({ ...args, dashed: true, orientation: undefined, direction: 'horizontal' }),
+    makeParagraph(),
+  );
 
   const bWrap = document.createElement('div');
-  bWrap.append(makeParagraph(), buildDivider({ ...args, orientation: 'center', slotText: 'Overview' }), makeParagraph());
+  bWrap.append(
+    makeParagraph(),
+    buildDivider({ ...args, orientation: 'center', slotText: 'Overview', direction: 'horizontal' }),
+    makeParagraph(),
+  );
 
   const cWrap = document.createElement('div');
   cWrap.append(
@@ -172,10 +292,11 @@ export const KitchenSink = args => {
     buildDivider({
       ...args,
       orientation: 'left',
-      orientationMargin: 'left',
+      removeOrientationMargin: 'left',
       plain: true,
       slotText: 'Details',
       styles: 'color:#555; font-weight:600;',
+      direction: 'horizontal',
     }),
     makeParagraph(),
   );
@@ -188,9 +309,9 @@ export const KitchenSink = args => {
   row.style.height = '40px';
   row.append(
     document.createTextNode('Alpha'),
-    buildDivider({ ...args, type: 'vertical' }),
+    buildDivider({ ...args, direction: 'vertical' }),
     document.createTextNode('Beta'),
-    buildDivider({ ...args, type: 'vertical', dashed: true }),
+    buildDivider({ ...args, direction: 'vertical', dashed: true }),
     document.createTextNode('Gamma'),
   );
 
@@ -198,3 +319,10 @@ export const KitchenSink = args => {
   return container;
 };
 KitchenSink.args = {};
+KitchenSink.parameters = {
+  docs: {
+    description: {
+      story: 'A collection of various divider examples in one view.',
+    },
+  },
+};

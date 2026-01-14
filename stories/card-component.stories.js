@@ -4,39 +4,52 @@ import { action } from '@storybook/addon-actions';
 export default {
   title: 'Components/Card',
   tags: ['autodocs'],
-  argTypes: {
-    altText: { control: 'text', name: 'alt-text', description: 'Alt text for the card image.' },
-    ariaLabel: { control: 'text', name: 'aria-label', description: 'ARIA label for the card section.' },
-    actions: { control: 'boolean', description: 'If true, displays the actions slot.' },
-    cardMaxWidth: { control: 'text', name: 'card-max-width', description: 'Maximum width of the card in rem units.' },
-    classNames: { control: 'text', name: 'class-names', description: 'Additional CSS class names to apply to the card component.' },
-    elevation: { control: 'text', description: 'Applies a shadow elevation to the card component (0-24) with CSS.' },
-    img: { control: 'boolean', description: 'If true, displays an image in the card.' },
-    imgHeight: { control: 'text', name: 'img-height', description: 'Height of the card image.' },
-    imgSrc: { control: 'text', name: 'img-src', description: 'Source URL of the card image.' },
-    inlineStyles: { control: 'text', name: 'inline-styles', description: 'Inline styles to apply to the card component.' },
-    noFooter: { control: 'boolean', name: 'no-footer', description: 'If true, hides the footer slot.' },
-    noHeader: { control: 'boolean', name: 'no-header', description: 'If true, hides the header slot.' },
-    tab: { control: 'text', description: 'Optional tab index for the card component.' },
 
-    // Slot content (for convenience in SB)
-    slotHeader: { control: 'text', table: { category: 'slots' }, description: 'Content for the header slot.' },
-    slotTitle: { control: 'text', table: { category: 'slots' }, description: 'Content for the title slot.' },
-    slotText: { control: 'text', table: { category: 'slots' }, description: 'Content for the text slot.' },
-    slotFooter: { control: 'text', table: { category: 'slots' }, description: 'Content for the footer slot.' },
+  parameters: {
+    docs: {
+      description: {
+        component: ['Card component for displaying content in a card layout.', ''].join('\n'),
+      },
+      // Show the rendered HTML of the element in the Code block
+      source: { type: 'dynamic', language: 'html' },
+    },
+  },
+
+  argTypes: {
+    altText:       { control: 'text', name: 'alt-text',       description: 'Alt text for the card image.' },
+    ariaLabel:     { control: 'text', name: 'aria-label',     description: 'ARIA label for the card section.' },
+    actions:       { control: 'boolean',                      description: 'If true, displays the actions slot.' },
+    cardMaxWidth:  { control: 'text', name: 'card-max-width', description: 'Maximum width of the card in rem units.' },
+    classNames:    { control: 'text', name: 'class-names',    description: 'Additional CSS class names to apply to the card component.' },
+    elevation:     { control: 'text',                         description: 'Applies a shadow elevation to the card component (0-24) with CSS.' },
+    img:           { control: 'boolean',                      description: 'If true, displays an image in the card.' },
+    imgHeight:     { control: 'text', name: 'img-height',     description: 'Height of the card image.' },
+    imgSrc:        { control: 'text', name: 'img-src',        description: 'Source URL of the card image.' },
+    inlineStyles:  { control: 'text', name: 'inline-styles',  description: 'Inline styles to apply to the card component.' },
+    noFooter:      { control: 'boolean', name: 'no-footer',   description: 'If true, hides the footer slot.' },
+    noHeader:      { control: 'boolean', name: 'no-header',   description: 'If true, hides the header slot.' },
+    tab:           { control: 'text',                         description: 'Optional tab index for the card component.' },
+
+    // Slot content (only used in Storybook demos)
+    slotHeader:  { control: 'text', table: { category: 'slots' }, description: 'Content for the header slot.' },
+    slotTitle:   { control: 'text', table: { category: 'slots' }, description: 'Content for the title slot.' },
+    slotText:    { control: 'text', table: { category: 'slots' }, description: 'Content for the text slot.' },
+    slotFooter:  { control: 'text', table: { category: 'slots' }, description: 'Content for the footer slot.' },
     slotActions: { control: 'text', table: { category: 'slots' }, description: 'Content for the actions slot.' },
   },
+
+  // Minimal defaults: undefined for optional strings so *nothing* appears unless a story opts-in
   args: {
     actions: false,
-    altText: 'Card image',
-    ariaLabel: 'Card section',
-    cardMaxWidth: '20',
-    classNames: '',
-    elevation: '',
+    altText: undefined,
+    ariaLabel: undefined,
+    cardMaxWidth: undefined,
+    classNames: undefined,
+    elevation: undefined,
     img: false,
-    imgHeight: '11.25rem',
-    imgSrc: 'https://picsum.photos/640/360',
-    inlineStyles: '',
+    imgHeight: undefined,
+    imgSrc: undefined,
+    inlineStyles: undefined,
     noFooter: false,
     noHeader: false,
     tab: undefined,
@@ -48,39 +61,71 @@ export default {
     slotText: 'This is some quick example text to build on the card title and make up the bulk of the card content.',
     slotTitle: 'Card title',
   },
-  parameters: {
-    docs: {
-      description: {
-        component: ['Card component for displaying content in a card layout.', ''].join('\n'),
-      },
-    },
-  },
 };
 
-const Template = args => {
+// Helper: only set an attribute when the value is meaningful; otherwise remove it
+const setAttr = (el, name, value) => {
+  const isEmpty =
+    value === false ||
+    value === null ||
+    value === undefined ||
+    (typeof value === 'string' && value.trim() === '');
+
+  if (isEmpty) el.removeAttribute(name);
+  else if (value === true) el.setAttribute(name, '');
+  else el.setAttribute(name, String(value));
+};
+
+const Template = (args) => {
   const el = document.createElement('card-component');
 
-  // Map Stencil props (camelCase) from args
-  el.actions = args.actions;
-  el.img = args.img;
-  el.noFooter = args.noFooter;
-  el.noHeader = args.noHeader;
+  // ----- PROPERTIES (runtime behavior) -----
+  el.actions = !!args.actions;
+  el.img = !!args.img;
+  el.noFooter = !!args.noFooter;
+  el.noHeader = !!args.noHeader;
 
-  el.ariaLabel = args.ariaLabel;
-  el.altText = args.altText;
-  el.classNames = args.classNames;
-  el.elevation = args.elevation;
-  el.inlineStyles = args.inlineStyles;
-  el.imgSrc = args.imgSrc;
-  el.imgHeight = args.imgHeight;
-  el.cardMaxWidth = args.cardMaxWidth;
-  if (args.tab !== undefined && args.tab !== null && args.tab !== '') {
-    el.tab = String(args.tab);
+  // Only set non-empty/meaningful props
+  if (args.ariaLabel) el.ariaLabel = args.ariaLabel;
+  if (args.classNames) el.classNames = args.classNames;
+  if (args.elevation) el.elevation = args.elevation;
+  if (args.inlineStyles) el.inlineStyles = args.inlineStyles;
+  if (args.cardMaxWidth) el.cardMaxWidth = args.cardMaxWidth;
+  if (args.tab !== undefined && args.tab !== null && String(args.tab).trim() !== '') el.tab = String(args.tab);
+
+  // Image props only when img is enabled
+  if (args.img) {
+    if (args.altText) el.altText = args.altText;
+    if (args.imgSrc) el.imgSrc = args.imgSrc;
+    if (args.imgHeight) el.imgHeight = args.imgHeight;
   }
 
-  // Slots
+  // ----- ATTRIBUTES (so Docs code shows only what a story actually *uses*) -----
+  setAttr(el, 'actions', !!args.actions);
+  setAttr(el, 'img', !!args.img);
+  setAttr(el, 'no-footer', !!args.noFooter);
+  setAttr(el, 'no-header', !!args.noHeader);
+
+  setAttr(el, 'aria-label', args.ariaLabel);
+  setAttr(el, 'class-names', args.classNames);
+  setAttr(el, 'elevation', args.elevation);
+  setAttr(el, 'inline-styles', args.inlineStyles);
+  setAttr(el, 'card-max-width', args.cardMaxWidth);
+  setAttr(el, 'tab', args.tab);
+
+  // Image-related only if img is true
+  if (args.img) {
+    setAttr(el, 'alt-text', args.altText);
+    setAttr(el, 'img-src', args.imgSrc);
+    setAttr(el, 'img-height', args.imgHeight);
+  } else {
+    el.removeAttribute('alt-text');
+    el.removeAttribute('img-src');
+    el.removeAttribute('img-height');
+  }
+
+  // ----- Slots -----
   el.innerHTML = `
-    ${args.img ? '' : ''}
     ${args.noHeader ? '' : `<div slot="header">${args.slotHeader}</div>`}
     <span slot="title">${args.slotTitle}</span>
     <span slot="text">${args.slotText}</span>
@@ -88,13 +133,14 @@ const Template = args => {
     ${args.noFooter ? '' : `<div slot="footer"><p>${args.slotFooter}</p></div>`}
   `;
 
-  // Wire the Stencil custom event to SB actions
+  // Event for SB Actions panel
   el.addEventListener('customClick', action('customClick'));
 
   return el;
 };
 
-// Stories
+// ----- Stories -----
+
 export const Basic = Template.bind({});
 Basic.args = {};
 Basic.parameters = {
@@ -109,6 +155,8 @@ export const WithImage = Template.bind({});
 WithImage.args = {
   img: true,
   imgSrc: 'https://picsum.photos/800/450',
+  imgHeight: '11.25rem',
+  altText: 'Card image',
   slotHeader: 'Card header',
   slotTitle: 'Card with image',
 };
@@ -166,7 +214,6 @@ NoHeader.parameters = {
   },
 };
 
-
 export const NoHeaderNoFooter = Template.bind({});
 NoHeaderNoFooter.args = {
   noHeader: true,
@@ -196,5 +243,3 @@ Elevated.parameters = {
   },
 };
 
-export const Playground = Template.bind({});
-Playground.args = {};
