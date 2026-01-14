@@ -13,8 +13,7 @@ export class IconComponent {
   @Prop() size: string = '';
   @Prop() tokenIcon: boolean = false;
   @Prop() iconSize?: number;
-  @Prop() svg: boolean = false;
-  @Prop() color?: string;
+ @Prop() color?: string;
 
   @Prop() iconAriaLabel?: string;          // ✅ renamed
   @Prop() iconAriaHidden: boolean = true;  // ✅ renamed

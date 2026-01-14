@@ -12,7 +12,10 @@ describe('button-component (new spec)', () => {
       html: `<button-component btn-text="Click me"></button-component>`,
     });
     const btn = getControl(page.root);
-    expect(page.root.getAttribute('slot-side')).toBe('none');
+
+    // Default behavior: no slot-side attribute unless explicitly provided
+    expect(page.root.hasAttribute('slot-side')).toBe(false);
+
     expect(btn).toBeTruthy();
     expect(btn.tagName).toBe('BUTTON');
     expect(btn.getAttribute('aria-label')).toBe('Click me');

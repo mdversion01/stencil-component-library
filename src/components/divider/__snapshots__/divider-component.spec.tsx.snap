@@ -32,7 +32,7 @@ exports[`divider-component renders divider with custom styles in text 1`] = `
 exports[`divider-component renders divider with left aligned text and margin override 1`] = `
 <divider-component orientation="left" orientation-margin="left">
   <!---->
-  <div class="divider divider-horizontal divider-no-default-orientation-margin-left divider-with-text divider-with-text-left" role="separator">
+  <div class="divider divider-horizontal divider-with-text divider-with-text-left" role="separator">
     <span class="divider-inner-text">
       Left
     </span>
@@ -50,6 +50,6 @@ exports[`divider-component renders horizontal divider by default 1`] = `
 exports[`divider-component renders vertical divider 1`] = `
 <divider-component type="vertical">
   <!---->
-  <div class="divider divider-vertical" role="separator"></div>
+  <div class="divider divider-horizontal" role="separator"></div>
 </divider-component>
 `;

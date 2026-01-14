@@ -2,25 +2,27 @@
 
 exports[`checkbox-component removes validation message when at least one group option is checked 1`] = `
 <checkbox-component checkbox-group="" group-options="[{&quot;value&quot;:&quot;val1&quot;,&quot;labelTxt&quot;:&quot;Val 1&quot;,&quot;inputId&quot;:&quot;val1&quot;,&quot;disabled&quot;:false,&quot;checked&quot;:false},{&quot;value&quot;:&quot;val2&quot;,&quot;labelTxt&quot;:&quot;Val 2&quot;,&quot;inputId&quot;:&quot;val2&quot;,&quot;disabled&quot;:false,&quot;checked&quot;:false}]" group-title="Validation Clear" name="group4" required="" validation="" validation-msg="Select one">
-  <div class="checkbox-group">
-    <div class="group-title">
-      Validation Clear
-      <span class="required">
-        *
-      </span>
-    </div>
-    <div class="form-group no-pad">
-      <div class="form-check">
-        <input aria-checked="false" aria-disabled="false" class="form-check-input" id="val1" name="group4" required="" type="checkbox" value="val1">
-        <label class="form-check-label" htmlfor="val1">
-          Val 1
-        </label>
+  <div class="check-box">
+    <div class="checkbox-group">
+      <div class="group-title">
+        Validation Clear
+        <span class="required">
+          *
+        </span>
       </div>
-      <div class="form-check">
-        <input aria-checked="true" aria-disabled="false" checked="" class="form-check-input" id="val2" name="group4" required="" type="checkbox" value="val2">
-        <label class="form-check-label" htmlfor="val2">
-          Val 2
-        </label>
+      <div class="form-group no-pad">
+        <div class="form-check">
+          <input aria-checked="false" aria-disabled="false" class="form-check-input" id="val1" name="group4" required="" type="checkbox" value="val1">
+          <label class="form-check-label" htmlfor="val1">
+            Val 1
+          </label>
+        </div>
+        <div class="form-check">
+          <input aria-checked="true" aria-disabled="false" checked="" class="form-check-input" id="val2" name="group4" required="" type="checkbox" value="val2">
+          <label class="form-check-label" htmlfor="val2">
+            Val 2
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -29,25 +31,27 @@ exports[`checkbox-component removes validation message when at least one group o
 
 exports[`checkbox-component renders checkbox group with options 1`] = `
 <checkbox-component checkbox-group="" group-options="[{&quot;value&quot;:&quot;opt1&quot;,&quot;labelTxt&quot;:&quot;Option 1&quot;,&quot;inputId&quot;:&quot;opt1&quot;,&quot;disabled&quot;:false,&quot;checked&quot;:true},{&quot;value&quot;:&quot;opt2&quot;,&quot;labelTxt&quot;:&quot;Option 2&quot;,&quot;inputId&quot;:&quot;opt2&quot;,&quot;disabled&quot;:false,&quot;checked&quot;:false}]" group-title="Choose Options" name="group1" required="" validation="" validation-msg="Please select at least one">
-  <div class="checkbox-group">
-    <div class="group-title">
-      Choose Options
-      <span class="required">
-        *
-      </span>
-    </div>
-    <div class="form-group no-pad">
-      <div class="form-check">
-        <input aria-checked="true" aria-disabled="false" checked="" class="form-check-input" id="opt1" name="group1" required="" type="checkbox" value="opt1">
-        <label class="form-check-label" htmlfor="opt1">
-          Option 1
-        </label>
+  <div class="check-box">
+    <div class="checkbox-group">
+      <div class="group-title">
+        Choose Options
+        <span class="required">
+          *
+        </span>
       </div>
-      <div class="form-check">
-        <input aria-checked="false" aria-disabled="false" class="form-check-input" id="opt2" name="group1" required="" type="checkbox" value="opt2">
-        <label class="form-check-label" htmlfor="opt2">
-          Option 2
-        </label>
+      <div class="form-group no-pad">
+        <div class="form-check">
+          <input aria-checked="true" aria-disabled="false" checked="" class="form-check-input" id="opt1" name="group1" required="" type="checkbox" value="opt1">
+          <label class="form-check-label" htmlfor="opt1">
+            Option 1
+          </label>
+        </div>
+        <div class="form-check">
+          <input aria-checked="false" aria-disabled="false" class="form-check-input" id="opt2" name="group1" required="" type="checkbox" value="opt2">
+          <label class="form-check-label" htmlfor="opt2">
+            Option 2
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -56,22 +60,24 @@ exports[`checkbox-component renders checkbox group with options 1`] = `
 
 exports[`checkbox-component renders custom checkbox group with options 1`] = `
 <checkbox-component custom-checkbox-group="" group-options="[{&quot;value&quot;:&quot;optA&quot;,&quot;labelTxt&quot;:&quot;Custom A&quot;,&quot;inputId&quot;:&quot;optA&quot;,&quot;disabled&quot;:false,&quot;checked&quot;:false},{&quot;value&quot;:&quot;optB&quot;,&quot;labelTxt&quot;:&quot;Custom B&quot;,&quot;inputId&quot;:&quot;optB&quot;,&quot;disabled&quot;:true,&quot;checked&quot;:false}]" group-title="Custom Group" name="group2">
-  <div class="checkbox-group">
-    <div class="group-title">
-      Custom Group
-    </div>
-    <div class="form-group no-pad">
-      <div class="custom-checkbox custom-control">
-        <input aria-checked="false" aria-disabled="false" class="custom-control-input" id="optA" name="group2" type="checkbox" value="optA">
-        <label class="custom-control-label" htmlfor="optA">
-          Custom A
-        </label>
+  <div class="check-box">
+    <div class="checkbox-group">
+      <div class="group-title">
+        Custom Group
       </div>
-      <div class="custom-checkbox custom-control">
-        <input aria-checked="false" aria-disabled="true" class="custom-control-input" disabled="" id="optB" name="group2" type="checkbox" value="optB">
-        <label class="custom-control-label" htmlfor="optB">
-          Custom B
-        </label>
+      <div class="form-group no-pad">
+        <div class="custom-checkbox custom-control">
+          <input aria-checked="false" aria-disabled="false" class="custom-control-input" id="optA" name="group2" type="checkbox" value="optA">
+          <label class="custom-control-label" htmlfor="optA">
+            Custom A
+          </label>
+        </div>
+        <div class="custom-checkbox custom-control">
+          <input aria-checked="false" aria-disabled="true" class="custom-control-input" disabled="" id="optB" name="group2" type="checkbox" value="optB">
+          <label class="custom-control-label" htmlfor="optB">
+            Custom B
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -106,29 +112,31 @@ exports[`checkbox-component renders single standard checkbox 1`] = `
 
 exports[`checkbox-component shows validation message when no group option is selected and required 1`] = `
 <checkbox-component checkbox-group="" group-options="[{&quot;value&quot;:&quot;val1&quot;,&quot;labelTxt&quot;:&quot;Val 1&quot;,&quot;inputId&quot;:&quot;val1&quot;,&quot;disabled&quot;:false,&quot;checked&quot;:false},{&quot;value&quot;:&quot;val2&quot;,&quot;labelTxt&quot;:&quot;Val 2&quot;,&quot;inputId&quot;:&quot;val2&quot;,&quot;disabled&quot;:false,&quot;checked&quot;:false}]" group-title="Validation Test" name="group3" required="" validation="" validation-msg="Please select an option">
-  <div class="checkbox-group was-validated">
-    <div class="group-title">
-      Validation Test
-      <span class="required">
-        *
-      </span>
-    </div>
-    <div class="form-group no-pad">
-      <div class="form-check">
-        <input aria-checked="false" aria-disabled="false" class="form-check-input" id="val1" name="group3" required="" type="checkbox" value="val1">
-        <label class="form-check-label" htmlfor="val1">
-          Val 1
-        </label>
+  <div class="check-box">
+    <div class="checkbox-group was-validated">
+      <div class="group-title">
+        Validation Test
+        <span class="required">
+          *
+        </span>
       </div>
-      <div class="form-check">
-        <input aria-checked="false" aria-disabled="false" class="form-check-input" id="val2" name="group3" required="" type="checkbox" value="val2">
-        <label class="form-check-label" htmlfor="val2">
-          Val 2
-        </label>
+      <div class="form-group no-pad">
+        <div class="form-check">
+          <input aria-checked="false" aria-disabled="false" class="form-check-input" id="val1" name="group3" required="" type="checkbox" value="val1">
+          <label class="form-check-label" htmlfor="val1">
+            Val 1
+          </label>
+        </div>
+        <div class="form-check">
+          <input aria-checked="false" aria-disabled="false" class="form-check-input" id="val2" name="group3" required="" type="checkbox" value="val2">
+          <label class="form-check-label" htmlfor="val2">
+            Val 2
+          </label>
+        </div>
       </div>
-    </div>
-    <div class="form-text invalid-feedback" style="display: block;">
-      Please select an option
+      <div class="form-text invalid-feedback" style="display: block;">
+        Please select an option
+      </div>
     </div>
   </div>
 </checkbox-component>

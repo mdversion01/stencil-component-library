@@ -4,7 +4,7 @@ exports[`accordion-component renders closed by default 1`] = `
 <accordion-component target-id="section1">
   <!---->
   <div class="accordion-wrapper">
-    <button-component data-target="section1" data-toggle="collapse" role="button" slot-side="none" tabindex="0">
+    <button-component data-target="section1" data-toggle="collapse" role="button" tabindex="0">
       <!---->
       <button aria-controls="section1" aria-expanded="false" aria-label="Button" class="btn collapsed" data-target="section1" data-toggle="collapse" role="button" tabindex="0" type="button">
         <span class="btn__content">
@@ -22,7 +22,7 @@ exports[`accordion-component renders open by default when is-open is set 1`] = `
 <accordion-component is-open="true" target-id="section2">
   <!---->
   <div class="accordion-wrapper">
-    <button-component data-target="section2" data-toggle="collapse" role="button" slot-side="none" tabindex="0">
+    <button-component data-target="section2" data-toggle="collapse" role="button" tabindex="0">
       <!---->
       <button aria-controls="section2" aria-expanded="true" aria-label="Button" class="btn" data-target="section2" data-toggle="collapse" role="button" tabindex="0" type="button">
         <span class="btn__content">

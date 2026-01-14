@@ -16,7 +16,6 @@
 | `iconMargin`     | `icon-margin`      |             | `string`  | `''`        |
 | `iconSize`       | `icon-size`        |             | `number`  | `undefined` |
 | `size`           | `size`             |             | `string`  | `''`        |
-| `svg`            | `svg`              |             | `boolean` | `false`     |
 | `tokenIcon`      | `token-icon`       |             | `boolean` | `false`     |
 
 

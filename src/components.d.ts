@@ -1710,10 +1710,6 @@ export namespace Components {
         /**
           * @default false
          */
-        "svg": boolean;
-        /**
-          * @default false
-         */
         "tokenIcon": boolean;
     }
     interface InputFieldComponent {
@@ -6670,10 +6666,6 @@ declare namespace LocalJSX {
           * @default ''
          */
         "size"?: string;
-        /**
-          * @default false
-         */
-        "svg"?: boolean;
         /**
           * @default false
          */

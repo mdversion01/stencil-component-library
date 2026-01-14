@@ -440,7 +440,7 @@ function kitchenSinkItems() {
     name: { control: 'text', description: 'Name attribute for the hidden input element' },
     outlined: { control: 'boolean', description: 'Use outlined button style' },
     ripple: { control: 'boolean', description: 'Enable ripple effect on the dropdown button' },
-    shape: { control: { type: 'select' }, options: ['', 'rounded', 'pill', 'circle'], description: 'Shape of the dropdown button' },
+    shape: { control: { type: 'select' }, options: ['', 'square', 'pill', 'circle'], description: 'Shape of the dropdown button' },
     size: { control: { type: 'select' }, options: ['default', 'sm', 'lg'], description: 'Size of the dropdown button' },
     subMenuListType: {
       control: { type: 'select' },
