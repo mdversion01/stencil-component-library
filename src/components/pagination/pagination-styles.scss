@@ -106,13 +106,29 @@ button {
 }
 
 .by-page .pages {
-  padding: 0 0.25rem;
+  padding: 0 0.5rem;
 }
 
 .by-page .pages .page-input {
   display: inline-block;
   margin-top: 3px;
-  width: 2.5rem;
+  min-width: 2.5rem;
+  max-width: 4rem;
+  text-align: center;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+
+  &.page-input-sm {
+    font-size: 0.75rem;
+    min-width: 2rem;
+    max-width: 3rem;
+  }
+
+  &.page-input-lg {
+    font-size: 1rem;
+    min-width: 3rem;
+    max-width: 4rem;
+  }
 }
 
 .by-page .page-item:nth-child(2) .page-link {

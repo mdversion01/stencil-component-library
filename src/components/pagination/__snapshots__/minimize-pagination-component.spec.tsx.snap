@@ -1,28 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`minimize-pagination-component snapshot 1`] = `
-<minimize-pagination-component>
-  <ul aria-disabled="false" aria-label="Pagination" class="b-pagination justify-content-end pagination pagination-sm" role="menubar">
-    <li class="page-item" role="presentation">
-      <button aria-controls="" aria-label="Go to first page" class="page-link" role="menuitem" tabindex="0" type="button">
-        First
-      </button>
-    </li>
-    <li class="page-item" role="presentation">
-      <button aria-controls="" aria-label="Go to previous page" class="page-link" role="menuitem" tabindex="0" type="button">
-        Prev
-      </button>
-    </li>
-    <li class="page-item" role="presentation">
-      <button aria-controls="" aria-label="Go to next page" class="page-link" role="menuitem" tabindex="0" type="button">
-        Next
-      </button>
-    </li>
-    <li class="page-item" role="presentation">
-      <button aria-controls="" aria-label="Go to last page" class="page-link" role="menuitem" tabindex="0" type="button">
-        Last
-      </button>
-    </li>
-  </ul>
+<minimize-pagination-component current-page="3" page-size="10">
+  <div class="pagination-layout">
+    <ul aria-disabled="false" aria-label="Pagination" class="b-pagination justify-content-end pagination pagination-sm" role="menubar">
+      <li class="page-item" role="presentation">
+        <button aria-controls="" aria-label="Go to first page" class="page-link" role="menuitem" tabindex="0" type="button">
+          First
+        </button>
+      </li>
+      <li class="page-item" role="presentation">
+        <button aria-controls="" aria-label="Go to previous page" class="page-link" role="menuitem" tabindex="0" type="button">
+          Prev
+        </button>
+      </li>
+      <li class="page-item" role="presentation">
+        <button aria-controls="" aria-label="Go to next page" class="page-link" role="menuitem" tabindex="0" type="button">
+          Next
+        </button>
+      </li>
+      <li class="page-item" role="presentation">
+        <button aria-controls="" aria-label="Go to last page" class="page-link" role="menuitem" tabindex="0" type="button">
+          Last
+        </button>
+      </li>
+    </ul>
+  </div>
 </minimize-pagination-component>
 `;

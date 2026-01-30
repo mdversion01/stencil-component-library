@@ -46,7 +46,7 @@ export class Button {
   @Prop() right = '';
   @Prop() ripple = false;
   @Prop() shape = '';
-  @Prop() size = '';
+  @Prop() size: '' | 'xs' | 'plumage-size' | 'sm' | 'lg' = '';
   @Prop() start = false;
   @Prop() stripped = false;
   @Prop() text = false;

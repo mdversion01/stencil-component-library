@@ -33,6 +33,7 @@ export default {
       control: { type: 'select' },
       options: ['left', 'right'],
       description: 'Removes default side margin on the text divider',
+      name: 'remove-orientation-margin',
     },
     styles: {
       control: 'text',
@@ -44,6 +45,7 @@ export default {
       table: { disable: true },
       control: 'false',
       description: 'Text content for the slot (used only in this Storybook preview).',
+      name: 'slot text',
     },
   },
 

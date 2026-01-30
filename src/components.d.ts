@@ -64,7 +64,7 @@ export namespace Components {
         /**
           * @default ''
          */
-        "size": string;
+        "size": '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
         /**
           * @default ''
          */
@@ -123,7 +123,7 @@ export namespace Components {
         /**
           * @default ''
          */
-        "size": string;
+        "size": '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
         /**
           * @default ''
          */
@@ -850,7 +850,7 @@ export namespace Components {
         /**
           * @default ''
          */
-        "size": string;
+        "size": '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
         "slotSide"?: 'left' | 'right';
         /**
           * @default false
@@ -927,13 +927,29 @@ export namespace Components {
          */
         "currentPage": number;
         /**
+          * @default false
+         */
+        "displayTotalNumberOfPages": boolean;
+        /**
           * @default ''
          */
         "goToButtons": string;
         /**
+          * @default false
+         */
+        "itemsPerPage": boolean;
+        /**
+          * @default [10, 20, 50, 100, 'All']
+         */
+        "itemsPerPageOptions": Array<number | 'All'>;
+        /**
+          * @default 10
+         */
+        "pageSize": number;
+        /**
           * @default ''
          */
-        "paginationLayout": '' | 'center' | 'end';
+        "paginationLayout": '' | 'start' | 'center' | 'end';
         /**
           * @default false
          */
@@ -943,9 +959,9 @@ export namespace Components {
          */
         "size": '' | 'sm' | 'lg';
         /**
-          * @default 1
+          * @default 0
          */
-        "totalPages": number;
+        "totalRows": number;
     }
     interface CardComponent {
         /**
@@ -1603,7 +1619,7 @@ export namespace Components {
         /**
           * @default ''
          */
-        "size": string;
+        "size": '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
         /**
           * @default 'default'
          */
@@ -1913,13 +1929,29 @@ export namespace Components {
          */
         "currentPage": number;
         /**
+          * @default false
+         */
+        "displayTotalNumberOfPages": boolean;
+        /**
           * @default ''
          */
         "goToButtons": string;
         /**
+          * @default false
+         */
+        "itemsPerPage": boolean;
+        /**
+          * @default [10, 20, 50, 100, 'All']
+         */
+        "itemsPerPageOptions": Array<number | 'All'>;
+        /**
+          * @default 10
+         */
+        "pageSize": number;
+        /**
           * @default ''
          */
-        "paginationLayout": '' | 'center' | 'end';
+        "paginationLayout": '' | 'start' | 'center' | 'end';
         /**
           * @default false
          */
@@ -1929,9 +1961,9 @@ export namespace Components {
          */
         "size": '' | 'sm' | 'lg';
         /**
-          * @default 1
+          * @default 0
          */
-        "totalPages": number;
+        "totalRows": number;
     }
     interface ModalComponent {
         /**
@@ -2087,7 +2119,11 @@ export namespace Components {
          */
         "currentPage": number;
         /**
-          * @default ''
+          * @default false
+         */
+        "displayTotalNumberOfPages": boolean;
+        /**
+          * @default 'icon'
          */
         "goToButtons": string;
         /**
@@ -2097,19 +2133,23 @@ export namespace Components {
         /**
           * @default false
          */
-        "hideGotoEndButtons": boolean;
+        "hideGoToButtons": boolean;
         /**
-          * @default 3
+          * @default false
+         */
+        "itemsPerPage": boolean;
+        /**
+          * @default [10, 20, 50, 100, 'All']
+         */
+        "itemsPerPageOptions": Array<number | 'All'>;
+        /**
+          * @default 5
          */
         "limit": number;
         /**
           * @default 10
          */
         "pageSize": number;
-        /**
-          * @default [10, 20, 50, 100, 'All']
-         */
-        "pageSizeOptions": Array<number | 'All'>;
         /**
           * @default ''
          */
@@ -2127,14 +2167,6 @@ export namespace Components {
          */
         "position": 'top' | 'bottom' | 'both';
         /**
-          * @default false
-         */
-        "showDisplayRange": boolean;
-        /**
-          * @default false
-         */
-        "showSizeChanger": boolean;
-        /**
           * @default ''
          */
         "size": '' | 'sm' | 'lg';
@@ -2142,10 +2174,6 @@ export namespace Components {
           * @default ''
          */
         "tableId": string;
-        /**
-          * @default 1
-         */
-        "totalPages": number;
         /**
           * @default 0
          */
@@ -2996,14 +3024,14 @@ export namespace Components {
     | 'bottom'
     | 'left'
     | 'right'
-    | 'topright'
-    | 'topleft'
-    | 'bottomright'
-    | 'bottomleft'
-    | 'lefttop'
-    | 'leftbottom'
-    | 'righttop'
-    | 'rightbottom'
+    | 'top-end'
+    | 'top-start'
+    | 'bottom-end'
+    | 'bottom-start'
+    | 'left-start'
+    | 'left-end'
+    | 'right-start'
+    | 'right-end'
     | Array<
         | 'flip'
         | 'clockwise'
@@ -3013,34 +3041,45 @@ export namespace Components {
         | 'bottom'
         | 'left'
         | 'right'
-        | 'topright'
-        | 'topleft'
-        | 'bottomright'
-        | 'bottomleft'
-        | 'lefttop'
-        | 'leftbottom'
-        | 'righttop'
-        | 'rightbottom'
+        | 'top-end'
+        | 'top-start'
+        | 'bottom-end'
+        | 'bottom-start'
+        | 'left-start'
+        | 'left-end'
+        | 'right-start'
+        | 'right-end'
       >;
         /**
+          * Extra distance away from trigger (main axis).
           * @default 0
          */
         "offset": number;
         /**
           * @default 'auto'
          */
-        "placement": 'auto' | 'top' | 'bottom' | 'left' | 'right' | 'topright' | 'topleft' | 'bottomright' | 'bottomleft' | 'lefttop' | 'leftbottom' | 'righttop' | 'rightbottom';
+        "placement": | 'auto'
+    | 'top'
+    | 'bottom'
+    | 'left'
+    | 'right'
+    | 'top-end'
+    | 'top-start'
+    | 'bottom-end'
+    | 'bottom-start'
+    | 'left-start'
+    | 'left-end'
+    | 'right-start'
+    | 'right-end';
         /**
           * @default false
          */
         "plumage": boolean;
         /**
-          * Keep external attribute name `title`, but avoid reserved prop name.
           * @default ''
          */
         "popoverTitle": string;
         /**
-          * Lit's `super` -> internal `superTooltip`, attribute remains `super`.
           * @default false
          */
         "superTooltip": boolean;
@@ -3061,6 +3100,7 @@ export namespace Components {
          */
         "visible": boolean;
         /**
+          * Cross-axis nudge. Note: Popper uses "skidding" (cross-axis). This is not strictly "Y" for top/bottom.
           * @default 0
          */
         "yOffset": number;
@@ -3099,6 +3139,11 @@ export namespace Components {
           * @default false
          */
         "indeterminate": boolean;
+        /**
+          * NEW: optional label text (single bar primarily)
+          * @default ''
+         */
+        "label": string;
         /**
           * @default false
          */
@@ -3144,6 +3189,11 @@ export namespace Components {
           * @default ''
          */
         "styles": string;
+        /**
+          * When true (and no user-provided slots), the component will emit label as an internal <span slot="bar-0">...</span> nested inside .progress-label. This is only for markup compatibility with multi-bar examples.
+          * @default false
+         */
+        "useNamedBar0": boolean;
         /**
           * @default 0
          */
@@ -3424,7 +3474,11 @@ export namespace Components {
          */
         "currentPage": number;
         /**
-          * @default ''
+          * @default false
+         */
+        "displayTotalNumberOfPages": boolean;
+        /**
+          * @default 'icon'
          */
         "goToButtons": string;
         /**
@@ -3434,15 +3488,27 @@ export namespace Components {
         /**
           * @default false
          */
-        "hideGotoEndButtons": boolean;
+        "hideGoToButtons": boolean;
         /**
-          * @default 3
+          * @default false
+         */
+        "itemsPerPage": boolean;
+        /**
+          * @default [10, 20, 50, 100, 'All']
+         */
+        "itemsPerPageOptions": Array<number | 'All'>;
+        /**
+          * @default 5
          */
         "limit": number;
         /**
+          * @default 10
+         */
+        "pageSize": number;
+        /**
           * @default ''
          */
-        "paginationLayout": '' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right';
+        "paginationLayout": '' | 'start' | 'fill' | 'center' | 'end' | 'fill-left' | 'fill-right';
         /**
           * @default ''
          */
@@ -3456,9 +3522,9 @@ export namespace Components {
          */
         "size": '' | 'sm' | 'lg';
         /**
-          * @default 1
+          * @default 0
          */
-        "totalPages": number;
+        "totalRows": number;
     }
     interface SvgComponent {
         /**
@@ -4987,7 +5053,7 @@ declare namespace LocalJSX {
         /**
           * @default ''
          */
-        "size"?: string;
+        "size"?: '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
         /**
           * @default ''
          */
@@ -5046,7 +5112,7 @@ declare namespace LocalJSX {
         /**
           * @default ''
          */
-        "size"?: string;
+        "size"?: '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
         /**
           * @default ''
          */
@@ -5786,7 +5852,7 @@ declare namespace LocalJSX {
         /**
           * @default ''
          */
-        "size"?: string;
+        "size"?: '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
         "slotSide"?: 'left' | 'right';
         /**
           * @default false
@@ -5863,14 +5929,30 @@ declare namespace LocalJSX {
          */
         "currentPage"?: number;
         /**
-          * @default ''
+          * @default false
          */
-        "goToButtons"?: string;
-        "onChange-page"?: (event: ByPagePaginationComponentCustomEvent<{ page: number }>) => void;
+        "displayTotalNumberOfPages"?: boolean;
         /**
           * @default ''
          */
-        "paginationLayout"?: '' | 'center' | 'end';
+        "goToButtons"?: string;
+        /**
+          * @default false
+         */
+        "itemsPerPage"?: boolean;
+        /**
+          * @default [10, 20, 50, 100, 'All']
+         */
+        "itemsPerPageOptions"?: Array<number | 'All'>;
+        "onChange-page"?: (event: ByPagePaginationComponentCustomEvent<{ page: number }>) => void;
+        /**
+          * @default 10
+         */
+        "pageSize"?: number;
+        /**
+          * @default ''
+         */
+        "paginationLayout"?: '' | 'start' | 'center' | 'end';
         /**
           * @default false
          */
@@ -5880,9 +5962,9 @@ declare namespace LocalJSX {
          */
         "size"?: '' | 'sm' | 'lg';
         /**
-          * @default 1
+          * @default 0
          */
-        "totalPages"?: number;
+        "totalRows"?: number;
     }
     interface CardComponent {
         /**
@@ -6562,7 +6644,7 @@ declare namespace LocalJSX {
         /**
           * @default ''
          */
-        "size"?: string;
+        "size"?: '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
         /**
           * @default 'default'
          */
@@ -6874,14 +6956,30 @@ declare namespace LocalJSX {
          */
         "currentPage"?: number;
         /**
-          * @default ''
+          * @default false
          */
-        "goToButtons"?: string;
-        "onChange-page"?: (event: MinimizePaginationComponentCustomEvent<{ page: number }>) => void;
+        "displayTotalNumberOfPages"?: boolean;
         /**
           * @default ''
          */
-        "paginationLayout"?: '' | 'center' | 'end';
+        "goToButtons"?: string;
+        /**
+          * @default false
+         */
+        "itemsPerPage"?: boolean;
+        /**
+          * @default [10, 20, 50, 100, 'All']
+         */
+        "itemsPerPageOptions"?: Array<number | 'All'>;
+        "onChange-page"?: (event: MinimizePaginationComponentCustomEvent<{ page: number }>) => void;
+        /**
+          * @default 10
+         */
+        "pageSize"?: number;
+        /**
+          * @default ''
+         */
+        "paginationLayout"?: '' | 'start' | 'center' | 'end';
         /**
           * @default false
          */
@@ -6891,9 +6989,9 @@ declare namespace LocalJSX {
          */
         "size"?: '' | 'sm' | 'lg';
         /**
-          * @default 1
+          * @default 0
          */
-        "totalPages"?: number;
+        "totalRows"?: number;
     }
     interface ModalComponent {
         /**
@@ -7042,7 +7140,11 @@ declare namespace LocalJSX {
          */
         "currentPage"?: number;
         /**
-          * @default ''
+          * @default false
+         */
+        "displayTotalNumberOfPages"?: boolean;
+        /**
+          * @default 'icon'
          */
         "goToButtons"?: string;
         /**
@@ -7052,9 +7154,17 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
-        "hideGotoEndButtons"?: boolean;
+        "hideGoToButtons"?: boolean;
         /**
-          * @default 3
+          * @default false
+         */
+        "itemsPerPage"?: boolean;
+        /**
+          * @default [10, 20, 50, 100, 'All']
+         */
+        "itemsPerPageOptions"?: Array<number | 'All'>;
+        /**
+          * @default 5
          */
         "limit"?: number;
         "onPage-changed"?: (event: PaginationComponentCustomEvent<{ page: number; pageSize: number }>) => void;
@@ -7063,10 +7173,6 @@ declare namespace LocalJSX {
           * @default 10
          */
         "pageSize"?: number;
-        /**
-          * @default [10, 20, 50, 100, 'All']
-         */
-        "pageSizeOptions"?: Array<number | 'All'>;
         /**
           * @default ''
          */
@@ -7084,14 +7190,6 @@ declare namespace LocalJSX {
          */
         "position"?: 'top' | 'bottom' | 'both';
         /**
-          * @default false
-         */
-        "showDisplayRange"?: boolean;
-        /**
-          * @default false
-         */
-        "showSizeChanger"?: boolean;
-        /**
           * @default ''
          */
         "size"?: '' | 'sm' | 'lg';
@@ -7099,10 +7197,6 @@ declare namespace LocalJSX {
           * @default ''
          */
         "tableId"?: string;
-        /**
-          * @default 1
-         */
-        "totalPages"?: number;
         /**
           * @default 0
          */
@@ -7965,14 +8059,14 @@ declare namespace LocalJSX {
     | 'bottom'
     | 'left'
     | 'right'
-    | 'topright'
-    | 'topleft'
-    | 'bottomright'
-    | 'bottomleft'
-    | 'lefttop'
-    | 'leftbottom'
-    | 'righttop'
-    | 'rightbottom'
+    | 'top-end'
+    | 'top-start'
+    | 'bottom-end'
+    | 'bottom-start'
+    | 'left-start'
+    | 'left-end'
+    | 'right-start'
+    | 'right-end'
     | Array<
         | 'flip'
         | 'clockwise'
@@ -7982,34 +8076,45 @@ declare namespace LocalJSX {
         | 'bottom'
         | 'left'
         | 'right'
-        | 'topright'
-        | 'topleft'
-        | 'bottomright'
-        | 'bottomleft'
-        | 'lefttop'
-        | 'leftbottom'
-        | 'righttop'
-        | 'rightbottom'
+        | 'top-end'
+        | 'top-start'
+        | 'bottom-end'
+        | 'bottom-start'
+        | 'left-start'
+        | 'left-end'
+        | 'right-start'
+        | 'right-end'
       >;
         /**
+          * Extra distance away from trigger (main axis).
           * @default 0
          */
         "offset"?: number;
         /**
           * @default 'auto'
          */
-        "placement"?: 'auto' | 'top' | 'bottom' | 'left' | 'right' | 'topright' | 'topleft' | 'bottomright' | 'bottomleft' | 'lefttop' | 'leftbottom' | 'righttop' | 'rightbottom';
+        "placement"?: | 'auto'
+    | 'top'
+    | 'bottom'
+    | 'left'
+    | 'right'
+    | 'top-end'
+    | 'top-start'
+    | 'bottom-end'
+    | 'bottom-start'
+    | 'left-start'
+    | 'left-end'
+    | 'right-start'
+    | 'right-end';
         /**
           * @default false
          */
         "plumage"?: boolean;
         /**
-          * Keep external attribute name `title`, but avoid reserved prop name.
           * @default ''
          */
         "popoverTitle"?: string;
         /**
-          * Lit's `super` -> internal `superTooltip`, attribute remains `super`.
           * @default false
          */
         "superTooltip"?: boolean;
@@ -8030,6 +8135,7 @@ declare namespace LocalJSX {
          */
         "visible"?: boolean;
         /**
+          * Cross-axis nudge. Note: Popper uses "skidding" (cross-axis). This is not strictly "Y" for top/bottom.
           * @default 0
          */
         "yOffset"?: number;
@@ -8068,6 +8174,11 @@ declare namespace LocalJSX {
           * @default false
          */
         "indeterminate"?: boolean;
+        /**
+          * NEW: optional label text (single bar primarily)
+          * @default ''
+         */
+        "label"?: string;
         /**
           * @default false
          */
@@ -8113,6 +8224,11 @@ declare namespace LocalJSX {
           * @default ''
          */
         "styles"?: string;
+        /**
+          * When true (and no user-provided slots), the component will emit label as an internal <span slot="bar-0">...</span> nested inside .progress-label. This is only for markup compatibility with multi-bar examples.
+          * @default false
+         */
+        "useNamedBar0"?: boolean;
         /**
           * @default 0
          */
@@ -8395,7 +8511,11 @@ declare namespace LocalJSX {
          */
         "currentPage"?: number;
         /**
-          * @default ''
+          * @default false
+         */
+        "displayTotalNumberOfPages"?: boolean;
+        /**
+          * @default 'icon'
          */
         "goToButtons"?: string;
         /**
@@ -8405,16 +8525,28 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
-        "hideGotoEndButtons"?: boolean;
+        "hideGoToButtons"?: boolean;
         /**
-          * @default 3
+          * @default false
+         */
+        "itemsPerPage"?: boolean;
+        /**
+          * @default [10, 20, 50, 100, 'All']
+         */
+        "itemsPerPageOptions"?: Array<number | 'All'>;
+        /**
+          * @default 5
          */
         "limit"?: number;
         "onChange-page"?: (event: StandardPaginationComponentCustomEvent<{ page: number }>) => void;
         /**
+          * @default 10
+         */
+        "pageSize"?: number;
+        /**
           * @default ''
          */
-        "paginationLayout"?: '' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right';
+        "paginationLayout"?: '' | 'start' | 'fill' | 'center' | 'end' | 'fill-left' | 'fill-right';
         /**
           * @default ''
          */
@@ -8428,9 +8560,9 @@ declare namespace LocalJSX {
          */
         "size"?: '' | 'sm' | 'lg';
         /**
-          * @default 1
+          * @default 0
          */
-        "totalPages"?: number;
+        "totalRows"?: number;
     }
     interface SvgComponent {
         /**

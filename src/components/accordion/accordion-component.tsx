@@ -19,7 +19,7 @@ export class AccordionComponent {
   @Prop() outlined = false;
   @Prop() block = false;
   @Prop() variant = '';
-  @Prop() size = '';
+  @Prop() size: '' | 'xs' | 'plumage-size' | 'sm' | 'lg' = '';
   @Prop() disabled = false;
   @Prop() ripple = false;
   @Prop() link = false;

@@ -14,7 +14,7 @@ export class AccordionContainer {
 
   @Prop({ reflect: true }) flush: boolean = false;
   @Prop() variant: string = '';
-  @Prop() size: string = '';
+  @Prop() size: '' | 'xs' | 'plumage-size' | 'sm' | 'lg' = '';
   @Prop() outlined: boolean = false;
   @Prop() block: boolean = false;
   @Prop() disabled: boolean = false;

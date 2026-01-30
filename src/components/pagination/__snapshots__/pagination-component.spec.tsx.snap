@@ -1,47 +1,49 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`pagination-component renders BY-PAGE when useByPagePagination 1`] = `
-<pagination-component current-page="5" page-size="10" total-pages="42">
+<pagination-component current-page="5" page-size="10">
   <div class="d-flex pagination-layout plumage">
     <div class="center pagination-cell">
-      <by-page-pagination-component limit="3" paginationvariantcolor="">
-        <ul aria-disabled="false" aria-label="Pagination" class="b-pagination by-page justify-content-center pagination pagination-lg plumage" role="menubar">
-          <li class="page-item" role="presentation">
-            <button aria-controls="" aria-label="Go to first page" class="page-link" role="menuitem" tabindex="0" type="button">
-              First
-            </button>
-          </li>
-          <li class="page-item" role="presentation">
-            <button aria-controls="" aria-label="Go to previous page" class="page-link" role="menuitem" tabindex="0" type="button">
-              Prev
-            </button>
-          </li>
-          <li aria-hidden="true" class="page-item" role="presentation">
-            <div class="pages">
-              Page
-              <div aria-labelledby="pageNumberField" class="page-input-wrapper pl-input-container" role="presentation">
-                <label class="sr-only" htmlfor="pageNumberField">
-                  Page number
-                </label>
-                <input aria-label="Page number" aria-labelledby="paginationInputLabel paginationDescription" class="page-input pl-form-control pl-input-lg" id="paginationInput" inputmode="numeric" pattern="[0-9]*" type="text" value="5">
-                <div class="b-underline" role="presentation">
-                  <div aria-hidden="true" class="b-focus" role="presentation"></div>
+      <by-page-pagination-component current-page="5" limit="5" page-size="10" paginationvariantcolor="">
+        <div class="pagination-layout plumage">
+          <ul aria-disabled="false" aria-label="Pagination" class="b-pagination by-page justify-content-center pagination pagination-lg plumage" role="menubar">
+            <li class="page-item" role="presentation">
+              <button aria-controls="" aria-label="Go to first page" class="page-link" role="menuitem" tabindex="0" type="button">
+                First
+              </button>
+            </li>
+            <li class="page-item" role="presentation">
+              <button aria-controls="" aria-label="Go to previous page" class="page-link" role="menuitem" tabindex="0" type="button">
+                Prev
+              </button>
+            </li>
+            <li aria-hidden="true" class="page-item" role="presentation">
+              <div class="pages">
+                Page
+                <div aria-labelledby="pageNumberField" class="input-container page-input-wrapper" role="presentation">
+                  <label class="sr-only" htmlfor="pageNumberField">
+                    Page number
+                  </label>
+                  <input aria-label="Page number" aria-labelledby="paginationInputLabel paginationDescription" class="form-control page-input page-input-lg" id="paginationInput" inputmode="numeric" pattern="[0-9]*" type="text" value="5">
+                  <div class="b-underline" role="presentation">
+                    <div aria-hidden="true" class="b-focus" role="presentation"></div>
+                  </div>
                 </div>
+                of 42
               </div>
-              of 42
-            </div>
-          </li>
-          <li class="page-item" role="presentation">
-            <button aria-controls="" aria-label="Go to next page" class="page-link" role="menuitem" tabindex="0" type="button">
-              Next
-            </button>
-          </li>
-          <li class="page-item" role="presentation">
-            <button aria-controls="" aria-label="Go to last page" class="page-link" role="menuitem" tabindex="0" type="button">
-              Last
-            </button>
-          </li>
-        </ul>
+            </li>
+            <li class="page-item" role="presentation">
+              <button aria-controls="" aria-label="Go to next page" class="page-link" role="menuitem" tabindex="0" type="button">
+                Next
+              </button>
+            </li>
+            <li class="page-item" role="presentation">
+              <button aria-controls="" aria-label="Go to last page" class="page-link" role="menuitem" tabindex="0" type="button">
+                Last
+              </button>
+            </li>
+          </ul>
+        </div>
       </by-page-pagination-component>
     </div>
   </div>
@@ -49,32 +51,34 @@ exports[`pagination-component renders BY-PAGE when useByPagePagination 1`] = `
 `;
 
 exports[`pagination-component renders MINIMIZE when useMinimizePagination 1`] = `
-<pagination-component current-page="2" page-size="10" total-pages="5">
+<pagination-component current-page="2" page-size="10">
   <div class="d-flex pagination-layout">
     <div class="end pagination-cell">
-      <minimize-pagination-component limit="3" paginationvariantcolor="">
-        <ul aria-disabled="false" aria-label="Pagination" class="b-pagination justify-content-end pagination pagination-sm" role="menubar">
-          <li class="page-item" role="presentation">
-            <button aria-controls="" aria-label="Go to first page" class="page-link" role="menuitem" tabindex="0" type="button">
-              «
-            </button>
-          </li>
-          <li class="page-item" role="presentation">
-            <button aria-controls="" aria-label="Go to previous page" class="page-link" role="menuitem" tabindex="0" type="button">
-              ‹
-            </button>
-          </li>
-          <li class="page-item" role="presentation">
-            <button aria-controls="" aria-label="Go to next page" class="page-link" role="menuitem" tabindex="0" type="button">
-              ›
-            </button>
-          </li>
-          <li class="page-item" role="presentation">
-            <button aria-controls="" aria-label="Go to last page" class="page-link" role="menuitem" tabindex="0" type="button">
-              »
-            </button>
-          </li>
-        </ul>
+      <minimize-pagination-component current-page="2" limit="5" page-size="10" paginationvariantcolor="">
+        <div class="pagination-layout">
+          <ul aria-disabled="false" aria-label="Pagination" class="b-pagination justify-content-end pagination pagination-sm" role="menubar">
+            <li class="page-item" role="presentation">
+              <button aria-controls="" aria-label="Go to first page" class="page-link" role="menuitem" tabindex="0" type="button">
+                <i class="fa-angles-left fa-solid"></i>
+              </button>
+            </li>
+            <li class="page-item" role="presentation">
+              <button aria-controls="" aria-label="Go to previous page" class="page-link" role="menuitem" tabindex="0" type="button">
+                <i class="fa-angle-left fa-solid"></i>
+              </button>
+            </li>
+            <li class="page-item" role="presentation">
+              <button aria-controls="" aria-label="Go to next page" class="page-link" role="menuitem" tabindex="0" type="button">
+                <i class="fa-angle-right fa-solid"></i>
+              </button>
+            </li>
+            <li class="page-item" role="presentation">
+              <button aria-controls="" aria-label="Go to last page" class="page-link" role="menuitem" tabindex="0" type="button">
+                <i class="fa-angles-right fa-solid"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
       </minimize-pagination-component>
     </div>
   </div>
@@ -82,57 +86,71 @@ exports[`pagination-component renders MINIMIZE when useMinimizePagination 1`] = 
 `;
 
 exports[`pagination-component renders STANDARD by default 1`] = `
-<pagination-component current-page="1" page-size="10" total-pages="10">
+<pagination-component current-page="1" page-size="10">
   <div class="d-flex pagination-layout">
     <div class="center pagination-cell">
-      <standard-pagination-component>
-        <ul aria-disabled="false" aria-label="Pagination" class="b-pagination flex-fill50 justify-content-center pagination" role="menubar">
-          <li aria-hidden="true" class="disabled page-item" role="presentation">
-            <button aria-controls="pagination" aria-label="Go to first page" class="page-link" disabled="" role="menuitem" tabindex="-1" type="button">
-              First
-            </button>
-          </li>
-          <li aria-hidden="true" class="disabled page-item" role="presentation">
-            <button aria-controls="pagination" aria-label="Go to previous page" class="page-link" disabled="" role="menuitem" tabindex="-1" type="button">
-              Prev
-            </button>
-          </li>
-          <li class="active page-item" role="presentation">
-            <button aria-checked="true" aria-controls="pagination" aria-label="Go to page 1" class="page-link" disabled="" role="menuitemradio" tabindex="-1" type="button">
-              1
-            </button>
-          </li>
-          <li class="page-item" role="presentation">
-            <button aria-checked="false" aria-controls="pagination" aria-label="Go to page 2" class="page-link" role="menuitemradio" tabindex="0" type="button">
-              2
-            </button>
-          </li>
-          <li class="page-item" role="presentation">
-            <button aria-checked="false" aria-controls="pagination" aria-label="Go to page 3" class="page-link" role="menuitemradio" tabindex="0" type="button">
-              3
-            </button>
-          </li>
-          <li class="bv-d-xs-down-none disabled page-item" role="separator">
-            <span class="page-link">
-              ...
-            </span>
-          </li>
-          <li class="page-item" role="presentation">
-            <button aria-checked="false" aria-controls="pagination" aria-label="Go to page 10" class="page-link" role="menuitemradio" tabindex="0" type="button">
-              10
-            </button>
-          </li>
-          <li aria-hidden="false" class="page-item" role="presentation">
-            <button aria-controls="pagination" aria-label="Go to next page" class="page-link" role="menuitem" tabindex="0" type="button">
-              Next
-            </button>
-          </li>
-          <li aria-hidden="false" class="page-item" role="presentation">
-            <button aria-controls="pagination" aria-label="Go to last page" class="page-link" role="menuitem" tabindex="0" type="button">
-              Last
-            </button>
-          </li>
-        </ul>
+      <standard-pagination-component current-page="1" page-size="10">
+        <div class="d-flex pagination-layout">
+          <div class="center pagination-cell">
+            <ul aria-disabled="false" aria-label="Pagination" class="b-pagination flex-fill50 justify-content-center pagination" role="menubar">
+              <li aria-hidden="" class="disabled page-item" role="presentation">
+                <button aria-controls="pagination" aria-label="Go to first page" class="page-link" disabled="" role="menuitem" tabindex="-1" type="button">
+                  First
+                </button>
+              </li>
+              <li aria-hidden="" class="disabled page-item" role="presentation">
+                <button aria-controls="pagination" aria-label="Go to previous page" class="page-link" disabled="" role="menuitem" tabindex="-1" type="button">
+                  Prev
+                </button>
+              </li>
+              <li class="active page-item" role="presentation">
+                <button aria-checked="true" aria-controls="pagination" aria-label="Go to page 1" class="page-link" disabled="" role="menuitemradio" tabindex="-1" type="button">
+                  1
+                </button>
+              </li>
+              <li class="page-item" role="presentation">
+                <button aria-checked="false" aria-controls="pagination" aria-label="Go to page 2" class="page-link" role="menuitemradio" tabindex="0" type="button">
+                  2
+                </button>
+              </li>
+              <li class="page-item" role="presentation">
+                <button aria-checked="false" aria-controls="pagination" aria-label="Go to page 3" class="page-link" role="menuitemradio" tabindex="0" type="button">
+                  3
+                </button>
+              </li>
+              <li class="page-item" role="presentation">
+                <button aria-checked="false" aria-controls="pagination" aria-label="Go to page 4" class="page-link" role="menuitemradio" tabindex="0" type="button">
+                  4
+                </button>
+              </li>
+              <li class="page-item" role="presentation">
+                <button aria-checked="false" aria-controls="pagination" aria-label="Go to page 5" class="page-link" role="menuitemradio" tabindex="0" type="button">
+                  5
+                </button>
+              </li>
+              <li class="bv-d-xs-down-none disabled page-item" role="separator">
+                <span class="page-link">
+                  ...
+                </span>
+              </li>
+              <li class="page-item" role="presentation">
+                <button aria-checked="false" aria-controls="pagination" aria-label="Go to page 10" class="page-link" role="menuitemradio" tabindex="0" type="button">
+                  10
+                </button>
+              </li>
+              <li class="page-item" role="presentation">
+                <button aria-controls="pagination" aria-label="Go to next page" class="page-link" role="menuitem" tabindex="0" type="button">
+                  Next
+                </button>
+              </li>
+              <li class="page-item" role="presentation">
+                <button aria-controls="pagination" aria-label="Go to last page" class="page-link" role="menuitem" tabindex="0" type="button">
+                  Last
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
       </standard-pagination-component>
     </div>
   </div>
@@ -140,37 +158,71 @@ exports[`pagination-component renders STANDARD by default 1`] = `
 `;
 
 exports[`pagination-component size changer + display range snapshot 1`] = `
-<pagination-component current-page="1" page-size="10" total-pages="1">
+<pagination-component current-page="1" page-size="10">
   <div class="pagination-split-layout plumage">
     <div class="pagination-cell start">
-      <standard-pagination-component>
-        <ul aria-disabled="false" aria-label="Pagination" class="b-pagination pagination plumage" role="menubar">
-          <li aria-hidden="true" class="disabled page-item" role="presentation">
-            <button aria-controls="pagination" aria-label="Go to first page" class="page-link" disabled="" role="menuitem" tabindex="-1" type="button">
-              «
-            </button>
-          </li>
-          <li aria-hidden="true" class="disabled page-item" role="presentation">
-            <button aria-controls="pagination" aria-label="Go to previous page" class="page-link" disabled="" role="menuitem" tabindex="-1" type="button">
-              ‹
-            </button>
-          </li>
-          <li class="active page-item" role="presentation">
-            <button aria-checked="true" aria-controls="pagination" aria-label="Go to page 1" class="page-link" disabled="" role="menuitemradio" tabindex="-1" type="button">
-              1
-            </button>
-          </li>
-          <li aria-hidden="true" class="disabled page-item" role="presentation">
-            <button aria-controls="pagination" aria-label="Go to next page" class="page-link" disabled="" role="menuitem" tabindex="-1" type="button">
-              ›
-            </button>
-          </li>
-          <li aria-hidden="true" class="disabled page-item" role="presentation">
-            <button aria-controls="pagination" aria-label="Go to last page" class="page-link" disabled="" role="menuitem" tabindex="-1" type="button">
-              »
-            </button>
-          </li>
-        </ul>
+      <standard-pagination-component current-page="1" page-size="10">
+        <div class="d-flex pagination-layout plumage">
+          <div class="pagination-cell start">
+            <ul aria-disabled="false" aria-label="Pagination" class="b-pagination pagination plumage" role="menubar">
+              <li aria-hidden="" class="disabled page-item" role="presentation">
+                <button aria-controls="pagination" aria-label="Go to first page" class="page-link" disabled="" role="menuitem" tabindex="-1" type="button">
+                  <i class="fa-angles-left fa-solid"></i>
+                </button>
+              </li>
+              <li aria-hidden="" class="disabled page-item" role="presentation">
+                <button aria-controls="pagination" aria-label="Go to previous page" class="page-link" disabled="" role="menuitem" tabindex="-1" type="button">
+                  <i class="fa-angle-left fa-solid"></i>
+                </button>
+              </li>
+              <li class="active page-item" role="presentation">
+                <button aria-checked="true" aria-controls="pagination" aria-label="Go to page 1" class="page-link" disabled="" role="menuitemradio" tabindex="-1" type="button">
+                  1
+                </button>
+              </li>
+              <li class="page-item" role="presentation">
+                <button aria-checked="false" aria-controls="pagination" aria-label="Go to page 2" class="page-link" role="menuitemradio" tabindex="0" type="button">
+                  2
+                </button>
+              </li>
+              <li class="page-item" role="presentation">
+                <button aria-checked="false" aria-controls="pagination" aria-label="Go to page 3" class="page-link" role="menuitemradio" tabindex="0" type="button">
+                  3
+                </button>
+              </li>
+              <li class="page-item" role="presentation">
+                <button aria-checked="false" aria-controls="pagination" aria-label="Go to page 4" class="page-link" role="menuitemradio" tabindex="0" type="button">
+                  4
+                </button>
+              </li>
+              <li class="page-item" role="presentation">
+                <button aria-checked="false" aria-controls="pagination" aria-label="Go to page 5" class="page-link" role="menuitemradio" tabindex="0" type="button">
+                  5
+                </button>
+              </li>
+              <li class="bv-d-xs-down-none disabled page-item" role="separator">
+                <span class="page-link">
+                  ...
+                </span>
+              </li>
+              <li class="page-item" role="presentation">
+                <button aria-checked="false" aria-controls="pagination" aria-label="Go to page 124" class="page-link" role="menuitemradio" tabindex="0" type="button">
+                  124
+                </button>
+              </li>
+              <li class="page-item" role="presentation">
+                <button aria-controls="pagination" aria-label="Go to next page" class="page-link" role="menuitem" tabindex="0" type="button">
+                  <i class="fa-angle-right fa-solid"></i>
+                </button>
+              </li>
+              <li class="page-item" role="presentation">
+                <button aria-controls="pagination" aria-label="Go to last page" class="page-link" role="menuitem" tabindex="0" type="button">
+                  <i class="fa-angles-right fa-solid"></i>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
       </standard-pagination-component>
     </div>
     <div class="pagination-cell row-display">
@@ -181,7 +233,7 @@ exports[`pagination-component size changer + display range snapshot 1`] = `
         <label htmlfor="pageSize">
           Items per page:
         </label>
-        <div aria-labelledby="selectField" class="pl-input-container" role="presentation">
+        <div aria-labelledby="selectField" class="input-container" role="presentation">
           <select aria-invalid="false" aria-label="selectField" aria-labelledby="selectField" aria-multiselectable="false" class="form-control form-select" id="pageSize" role="listbox">
             <option selected="" value="10">
               10

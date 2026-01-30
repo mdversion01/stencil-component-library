@@ -138,11 +138,7 @@ export default {
       name: 'single-open',
       description: 'Allows only one item open at a time.',
     },
-    size: {
-      control: { type: 'select' },
-      options: ['', 'sm', 'md', 'lg'],
-      description: 'Controls header text sizing inside the accordion items.',
-    },
+    size: { control: { type: 'select' }, options: ['', 'xs',  'sm', 'lg', 'plumage-size'], description: 'Sets the size of the button, e.g., extra small (xs), small (sm), large (lg), or plumage-size. If not set, default size is used.' },
     variant: {
       control: 'text',
       description: 'Visual variant for headers/buttons (e.g., primary, secondary, etc.).',

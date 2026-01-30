@@ -1,10 +1,10 @@
 // src/components/popover/popover-component.tsx
 import { Component, Prop, Element, Listen } from '@stencil/core';
+import type { Instance as PopperInstance, Placement as PopperPlacement, Modifier, VirtualElement } from '@popperjs/core';
+import { createPopper } from '@popperjs/core';
 
-// Local aliases for internal use only (not used in @Prop types)
-type PlacementU = 'auto' | 'top' | 'bottom' | 'left' | 'right' | 'topright' | 'topleft' | 'bottomright' | 'bottomleft' | 'lefttop' | 'leftbottom' | 'righttop' | 'rightbottom';
-
-// type FallbackU = 'flip' | 'clockwise' | 'counterclockwise';
+// Local alias for internal use only (not used in @Prop types)
+type PlacementU = 'auto' | 'top' | 'bottom' | 'left' | 'right' | 'top-end' | 'top-start' | 'bottom-end' | 'bottom-start' | 'left-start' | 'left-end' | 'right-start' | 'right-end';
 
 @Component({
   tag: 'popover-component',
@@ -13,26 +13,33 @@ type PlacementU = 'auto' | 'top' | 'bottom' | 'left' | 'right' | 'topright' | 't
 export class PopoverComponent {
   @Element() el!: HTMLElement;
 
-  // Public API — use inline unions directly in @Prop types (no aliases)
   @Prop() arrowOff: boolean = false;
   @Prop() customClass: string = '';
-  /** Keep external attribute name `title`, but avoid reserved prop name. */
   @Prop({ attribute: 'title' }) popoverTitle: string = '';
   @Prop() content: string = `Default popover content. Use the 'content' attribute to change this text.`;
 
-  // Inline union here (no alias usage)
-  @Prop() placement: 'auto' | 'top' | 'bottom' | 'left' | 'right' | 'topright' | 'topleft' | 'bottomright' | 'bottomleft' | 'lefttop' | 'leftbottom' | 'righttop' | 'rightbottom' =
-    'auto';
+  @Prop() placement:
+    | 'auto'
+    | 'top'
+    | 'bottom'
+    | 'left'
+    | 'right'
+    | 'top-end'
+    | 'top-start'
+    | 'bottom-end'
+    | 'bottom-start'
+    | 'left-start'
+    | 'left-end'
+    | 'right-start'
+    | 'right-end' = 'auto';
 
   @Prop() plumage: boolean = false;
   @Prop() variant: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark' = '';
   @Prop({ mutable: true, reflect: true }) visible: boolean = false;
-  /** Lit's `super` -> internal `superTooltip`, attribute remains `super`. */
   @Prop({ attribute: 'super' }) superTooltip: boolean = false;
 
   @Prop() trigger: 'click' | 'hover' | 'focus' | `${'click' | 'hover' | 'focus'} ${'click' | 'hover' | 'focus'}` = 'click';
 
-  // Inline unions (and inline array) here as well
   @Prop() fallbackPlacement:
     | 'flip'
     | 'clockwise'
@@ -42,14 +49,14 @@ export class PopoverComponent {
     | 'bottom'
     | 'left'
     | 'right'
-    | 'topright'
-    | 'topleft'
-    | 'bottomright'
-    | 'bottomleft'
-    | 'lefttop'
-    | 'leftbottom'
-    | 'righttop'
-    | 'rightbottom'
+    | 'top-end'
+    | 'top-start'
+    | 'bottom-end'
+    | 'bottom-start'
+    | 'left-start'
+    | 'left-end'
+    | 'right-start'
+    | 'right-end'
     | Array<
         | 'flip'
         | 'clockwise'
@@ -59,18 +66,25 @@ export class PopoverComponent {
         | 'bottom'
         | 'left'
         | 'right'
-        | 'topright'
-        | 'topleft'
-        | 'bottomright'
-        | 'bottomleft'
-        | 'lefttop'
-        | 'leftbottom'
-        | 'righttop'
-        | 'rightbottom'
+        | 'top-end'
+        | 'top-start'
+        | 'bottom-end'
+        | 'bottom-start'
+        | 'left-start'
+        | 'left-end'
+        | 'right-start'
+        | 'right-end'
       > = 'flip';
 
+  /** Extra distance away from trigger (main axis). */
   @Prop() offset: number = 0;
+
+  /**
+   * Cross-axis nudge.
+   * Note: Popper uses "skidding" (cross-axis). This is not strictly "Y" for top/bottom.
+   */
   @Prop() yOffset: number = 0;
+
   /** String id or direct HTMLElement */
   @Prop() target?: string | HTMLElement;
 
@@ -79,13 +93,18 @@ export class PopoverComponent {
   private triggerEl: HTMLElement | null = null;
   private originatingTrigger: HTMLElement | null = null;
 
-  // Handlers (arrows so add/remove match)
+  private popper: PopperInstance | null = null;
+
+  // -----------------------------
+  // Events / triggers
+  // -----------------------------
   private onTriggerClick = (ev: Event) => {
     ev.preventDefault();
     this.originatingTrigger = ev.currentTarget as HTMLElement;
     this.togglePopover();
     if (this.visible && this.popoverEl) this.popoverEl.focus({ preventScroll: true });
   };
+
   private onTriggerKeydown = (ev: KeyboardEvent) => {
     if (ev.key === 'Enter') {
       ev.preventDefault();
@@ -94,32 +113,40 @@ export class PopoverComponent {
       if (this.visible && this.popoverEl) this.popoverEl.focus({ preventScroll: true });
     }
   };
+
   private onMouseEnter = () => this.showPopover();
   private onMouseLeave = () => this.hidePopover();
   private onFocus = () => this.showPopover();
   private onBlur = () => {
     document.addEventListener('click', this.onOutsideClick, true);
   };
+
   private onFocusOut = (ev: FocusEvent) => {
     const rel = ev.relatedTarget as Node | null;
     if (this.triggerEl && (!rel || !this.triggerEl.contains(rel))) this.hidePopover();
   };
+
   private onOutsideClick = (ev: Event) => {
     if (!this.visible || !this.popoverEl || !this.triggerEl) return;
     const t = ev.target as Node;
     if (!this.popoverEl.contains(t) && !this.triggerEl.contains(t)) this.hidePopover();
   };
+
   private onKeyDown = (ev: KeyboardEvent) => {
     if (!this.visible || !this.popoverEl) return;
+
     if (ev.key === 'Escape') {
       this.hidePopover();
       return;
     }
+
     if (ev.key === 'Tab') {
       const f = Array.from(this.popoverEl.querySelectorAll<HTMLElement>('a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])'));
       if (f.length === 0) return;
-      const first = f[0],
-        last = f[f.length - 1];
+
+      const first = f[0];
+      const last = f[f.length - 1];
+
       if (ev.shiftKey) {
         if (document.activeElement === first) {
           ev.preventDefault();
@@ -135,9 +162,10 @@ export class PopoverComponent {
     }
   };
 
+  // Popper's eventListeners modifier already updates on scroll/resize.
   @Listen('resize', { target: 'window' })
   onWindowResize() {
-    this.adjustPopoverPosition();
+    this.popper?.update();
   }
 
   componentDidLoad() {
@@ -148,11 +176,11 @@ export class PopoverComponent {
 
   disconnectedCallback() {
     this.removeTriggers();
+    this.destroyPopper();
     this.removePopover();
     document.removeEventListener('click', this.onOutsideClick, true);
   }
 
-  // Trigger resolution
   private setTriggerElement() {
     if (this.target) {
       if (typeof this.target === 'string') this.triggerEl = document.getElementById(this.target);
@@ -172,6 +200,7 @@ export class PopoverComponent {
   private applyTriggers() {
     if (!this.triggerEl) return;
     const set = this.trigger.split(' ');
+
     if (set.includes('click')) {
       this.triggerEl.addEventListener('click', this.onTriggerClick);
       this.triggerEl.addEventListener('keydown', this.onTriggerKeydown);
@@ -200,21 +229,22 @@ export class PopoverComponent {
     this.triggerEl.removeEventListener('focusout', this.onFocusOut);
   }
 
-  // Show / hide
   private togglePopover() {
     this.visible = !this.visible;
-    this.visible ? this.showPopover() : this.hidePopover();
+    if (this.visible) this.showPopover();
+    else this.hidePopover();
   }
 
   private showPopover() {
     this.visible = true;
     this.createPopoverElement();
-    requestAnimationFrame(() => {
-      this.adjustPopoverPosition();
-      if (this.trigger === 'click' && this.popoverEl) {
-        this.popoverEl.focus({ preventScroll: true });
-      }
+    this.createOrUpdatePopper();
+
+    window.requestAnimationFrame(() => {
+      this.popper?.update();
+      if (this.trigger === 'click' && this.popoverEl) this.popoverEl.focus({ preventScroll: true });
     });
+
     if (this.popoverEl) {
       if (this.trigger.includes('hover') || this.trigger.includes('focus')) {
         this.popoverEl.querySelectorAll('[tabindex]').forEach(el => el.removeAttribute('tabindex'));
@@ -222,17 +252,58 @@ export class PopoverComponent {
         this.popoverEl.addEventListener('keydown', this.onKeyDown);
       }
     }
+
     document.addEventListener('click', this.onOutsideClick, true);
   }
 
   private hidePopover() {
     this.visible = false;
+    this.destroyPopper();
     this.removePopover();
     document.removeEventListener('click', this.onOutsideClick, true);
     this.originatingTrigger?.focus({ preventScroll: true });
   }
 
+  // -----------------------------
+  // Content (Option A: template slot support)
+  // -----------------------------
+  /**
+   * Option A: Support rich HTML content via:
+   *   <template slot="content">...</template>
+   * This avoids the slotted element rendering in the document.
+   *
+   * We also allow a non-template marker with slot="content" for compatibility,
+   * but stories/docs should prefer <template>.
+   */
+  private getSlottedContentSource(): HTMLTemplateElement | HTMLElement | null {
+    const node = this.el.querySelector('[slot="content"]') as HTMLElement | null;
+    if (!node) return null;
+    return node as any;
+  }
+
+  private applyBodyContent(bodyEl: HTMLElement) {
+    const src = this.getSlottedContentSource();
+
+    if (src) {
+      // Prefer template (does not render visually)
+      if (src.tagName === 'TEMPLATE') {
+        bodyEl.innerHTML = (src as HTMLTemplateElement).innerHTML;
+        return;
+      }
+
+      // Fallback: if someone uses <div slot="content">...</div>
+      // (this will render in the DOM since shadow:false and render() is null)
+      bodyEl.innerHTML = (src as HTMLElement).innerHTML;
+      return;
+    }
+
+    // Default string prop
+    bodyEl.innerHTML = this.content ?? '';
+  }
+
+  // -----------------------------
   // DOM
+  // -----------------------------
   private getColor(variant: string) {
     switch (variant) {
       case 'primary':
@@ -247,31 +318,48 @@ export class PopoverComponent {
         return '';
     }
   }
-  private getPopoverContent() {
-    return this.popoverTitle;
-  }
 
   private createPopoverElement() {
     if (this.popoverEl) return;
+
     const el = document.createElement('div');
     el.id = this.popoverId;
-    el.classList.add('popover', `popover-${this.placement}`, 'fade', 'show');
+
+    // Bootstrap-like base classing. Popper will set data-popper-placement.
+    el.classList.add('popover', 'fade', 'show');
     if (this.plumage) el.classList.add('plumage');
     if (this.superTooltip) el.classList.add('super-tooltip');
+
+    const v = this.getColor(this.variant);
+    if (v) el.classList.add(v);
+    if (this.customClass) el.classList.add(...this.customClass.split(' ').filter(Boolean));
+
     el.setAttribute('role', 'tooltip');
-    el.setAttribute('data-popover-placement', this.placement);
+
+    // Let Popper handle inline positioning.
+    el.style.position = 'absolute';
+    el.style.top = '0';
+    el.style.left = '0';
+
     if (!(this.trigger.includes('hover') || this.trigger.includes('focus'))) el.setAttribute('tabindex', '-1');
 
-    const arrowHtml = this.arrowOff ? '' : '<div class="popover-arrow"></div>';
-    const headerHtml = this.popoverTitle ? `<h3 class="popover-header">${this.getPopoverContent()}</h3>` : '';
+    const arrowHtml = this.arrowOff ? '' : '<div class="popover-arrow" data-popper-arrow></div>';
+    const headerHtml = this.popoverTitle ? `<h3 class="popover-header">${this.popoverTitle}</h3>` : '';
     const bodyTab = !(this.trigger.includes('hover') || this.trigger.includes('focus')) ? 'tabindex="0"' : '';
+
+    // Create skeleton first, then apply content so we can pull from slot/template.
     el.innerHTML = `
       ${arrowHtml}
       ${headerHtml}
-      <div class="popover-body" ${bodyTab}>${this.content}</div>
+      <div class="popover-body" ${bodyTab}></div>
     `;
+
     document.body.appendChild(el);
     this.popoverEl = el;
+
+    // Apply content (Option A)
+    const bodyEl = this.popoverEl.querySelector('.popover-body') as HTMLElement | null;
+    if (bodyEl) this.applyBodyContent(bodyEl);
   }
 
   private removePopover() {
@@ -281,207 +369,173 @@ export class PopoverComponent {
     this.popoverEl = null;
   }
 
-  // Positioning
-  // Positioning
-  private adjustPopoverPosition() {
-    if (!this.triggerEl || !this.popoverEl || !this.visible) return;
-
-    const triggerRect = this.triggerEl.getBoundingClientRect();
-    const popRect = this.popoverEl.getBoundingClientRect();
-    const arrow = this.popoverEl.querySelector('.popover-arrow') as HTMLElement | null;
-    const baseOffset = 10 + this.offset;
-    let top = 0,
-      left = 0;
-
-    const setClassForPlacement = (placement: PlacementU) => {
-      const map: Record<PlacementU | 'auto', string> = {
-        top: 'popover-top',
-        bottom: 'popover-bottom',
-        left: 'popover-left',
-        right: 'popover-right',
-        topright: 'popover-topright',
-        topleft: 'popover-topleft',
-        bottomright: 'popover-bottomright',
-        bottomleft: 'popover-bottomleft',
-        lefttop: 'popover-lefttop',
-        leftbottom: 'popover-leftbottom',
-        righttop: 'popover-righttop',
-        rightbottom: 'popover-rightbottom',
-        auto: 'popover-bottom',
-      };
-      const v = this.getColor(this.variant);
-      this.popoverEl!.className =
-        `popover fade show ${map[placement]}${this.plumage ? ' plumage' : ''}${this.superTooltip ? ' super-tooltip' : ''}` +
-        `${v ? ` ${v}` : ''}${this.customClass ? ` ${this.customClass}` : ''}`;
-      this.popoverEl!.setAttribute('data-popover-placement', placement);
-    };
-
-    const compute = (p: PlacementU) => {
-      setClassForPlacement(p);
-      switch (p) {
-        case 'top':
-          top = triggerRect.top - popRect.height - baseOffset;
-          left = triggerRect.left + (triggerRect.width - popRect.width) / 2;
-          if (!this.arrowOff && arrow) arrow.className = 'popover-arrow top';
-          break;
-        case 'bottom':
-          top = triggerRect.bottom + baseOffset;
-          left = triggerRect.left + (triggerRect.width - popRect.width) / 2;
-          if (!this.arrowOff && arrow) arrow.className = 'popover-arrow bottom';
-          break;
-        case 'left':
-          top = triggerRect.top + (triggerRect.height - popRect.height) / 2;
-          left = triggerRect.left - popRect.width - baseOffset;
-          if (!this.arrowOff && arrow) arrow.className = 'popover-arrow left';
-          break;
-        case 'right':
-          top = triggerRect.top + (triggerRect.height - popRect.height) / 2;
-          left = triggerRect.right + baseOffset;
-          if (!this.arrowOff && arrow) arrow.className = 'popover-arrow right';
-          break;
-        case 'topright':
-          top = triggerRect.top - popRect.height - baseOffset;
-          left = triggerRect.left - popRect.width + triggerRect.width;
-          if (!this.arrowOff && arrow) arrow.className = 'popover-arrow topright';
-          break;
-        case 'topleft':
-          top = triggerRect.top - popRect.height - baseOffset;
-          left = triggerRect.left;
-          if (!this.arrowOff && arrow) arrow.className = 'popover-arrow topleft';
-          break;
-        case 'bottomright':
-          top = triggerRect.bottom + baseOffset;
-          left = triggerRect.left - popRect.width + triggerRect.width;
-          if (!this.arrowOff && arrow) arrow.className = 'popover-arrow bottomright';
-          break;
-        case 'bottomleft':
-          top = triggerRect.bottom + baseOffset;
-          left = triggerRect.left;
-          if (!this.arrowOff && arrow) arrow.className = 'popover-arrow bottomleft';
-          break;
-        case 'lefttop':
-          top = triggerRect.bottom - popRect.height + this.yOffset;
-          left = triggerRect.left - popRect.width - baseOffset;
-          if (!this.arrowOff && arrow) arrow.className = 'popover-arrow lefttop';
-          break;
-        case 'leftbottom':
-          top = triggerRect.top + this.yOffset;
-          left = triggerRect.left - popRect.width - baseOffset;
-          if (!this.arrowOff && arrow) arrow.className = 'popover-arrow leftbottom';
-          break;
-        case 'righttop':
-          top = triggerRect.bottom - popRect.height + this.yOffset;
-          left = triggerRect.right + baseOffset;
-          if (!this.arrowOff && arrow) arrow.className = 'popover-arrow righttop';
-          break;
-        case 'rightbottom':
-          top = triggerRect.top + this.yOffset;
-          left = triggerRect.right + baseOffset;
-          if (!this.arrowOff && arrow) arrow.className = 'popover-arrow rightbottom';
-          break;
-        case 'auto':
-        default:
-          // handled below; leave values as-is
-          break;
-      }
-    };
-
-    const inViewport = (t: number, l: number) => {
-      const vw = window.innerWidth,
-        vh = window.innerHeight;
-      return t >= 0 && l >= 0 && t + popRect.height <= vh && l + popRect.width <= vw;
-    };
-
-    const tryAuto = () => {
-      const vw = window.innerWidth,
-        vh = window.innerHeight;
-      const spaces = {
-        top: triggerRect.top,
-        bottom: vh - triggerRect.bottom,
-        left: triggerRect.left,
-        right: vw - triggerRect.right,
-      };
-      // Sort sides by available space (desc)
-      const sides = (Object.keys(spaces) as Array<'top' | 'bottom' | 'left' | 'right'>).sort((a, b) => spaces[b] - spaces[a]);
-
-      // Expand each side with its corner variants (most forgiving first)
-      const expand = (side: 'top' | 'bottom' | 'left' | 'right'): PlacementU[] => {
-        switch (side) {
-          case 'top':
-            return ['top', 'topleft', 'topright'];
-          case 'bottom':
-            return ['bottom', 'bottomleft', 'bottomright'];
-          case 'left':
-            return ['left', 'lefttop', 'leftbottom'];
-          case 'right':
-            return ['right', 'righttop', 'rightbottom'];
-        }
-      };
-
-      const candidates: PlacementU[] = [];
-      for (const s of sides) candidates.push(...expand(s));
-
-      // Try candidates until one fully fits
-      for (const c of candidates) {
-        compute(c);
-        if (inViewport(top, left)) return true;
-      }
-      // Fallback to the side with maximum space
-      compute(expand(sides[0])[0]);
-      return false;
-    };
-
-    if (this.placement === 'auto') {
-      tryAuto();
-    } else {
-      // base placement as requested
-      compute(this.placement as PlacementU);
-
-      // fallback logic if clipped
-      if (!inViewport(top, left)) {
-        const list = Array.isArray(this.fallbackPlacement) ? this.fallbackPlacement : [this.fallbackPlacement];
-        const seq: PlacementU[] = ['top', 'topright', 'righttop', 'right', 'rightbottom', 'bottomright', 'bottom', 'bottomleft', 'leftbottom', 'left', 'lefttop', 'topleft'];
-        for (const fb of list) {
-          if (fb === 'flip') {
-           const opposite: Record<Exclude<PlacementU, 'auto'>, Exclude<PlacementU, 'auto'>> = {
-              top: 'bottom',
-              bottom: 'top',
-              left: 'right',
-              right: 'left',
-              topleft: 'bottomleft',
-              topright: 'bottomright',
-              bottomleft: 'topleft',
-              bottomright: 'topright',
-              lefttop: 'righttop',
-              leftbottom: 'rightbottom',
-              righttop: 'lefttop',
-              rightbottom: 'leftbottom',
-             } as any;
-            // we're in the non-`auto` branch, so this cast is safe
-            const p = this.placement as Exclude<PlacementU, 'auto'>;
-            compute(opposite[p] || 'bottom');
-            if (inViewport(top, left)) break;
-          } else if (fb === 'clockwise' || fb === 'counterclockwise') {
-            const start = Math.max(0, seq.indexOf(this.placement as PlacementU));
-            const dir = fb === 'clockwise' ? 1 : -1;
-            for (let i = 1; i < seq.length; i++) {
-              const next = seq[(start + i * dir + seq.length) % seq.length]!;
-              compute(next);
-              if (inViewport(top, left)) break;
-            }
-          } else {
-            compute(fb as PlacementU);
-            if (inViewport(top, left)) break;
-          }
-        }
-      }
+  // -----------------------------
+  // Popper positioning (Bootstrap-like)
+  // -----------------------------
+  private toPopperPlacement(p: PlacementU): PopperPlacement {
+    switch (p) {
+      case 'auto':
+        return 'auto';
+      case 'top':
+        return 'top';
+      case 'bottom':
+        return 'bottom';
+      case 'left':
+        return 'left';
+      case 'right':
+        return 'right';
+      case 'top-start':
+        return 'top-start';
+      case 'top-end':
+        return 'top-end';
+      case 'bottom-start':
+        return 'bottom-start';
+      case 'bottom-end':
+        return 'bottom-end';
+      case 'left-start':
+        return 'left-start';
+      case 'left-end':
+        return 'left-end';
+      case 'right-start':
+        return 'right-start';
+      case 'right-end':
+        return 'right-end';
+      default:
+        return 'auto';
     }
-
-    this.popoverEl.style.top = `${top + window.scrollY}px`;
-    this.popoverEl.style.left = `${left + window.scrollX}px`;
   }
 
-  // light DOM only
+  private buildFallbackPlacements(base: PopperPlacement): PopperPlacement[] | undefined {
+    const raw = this.fallbackPlacement;
+    const list = Array.isArray(raw) ? raw : [raw];
+
+    const asPlacements = list.filter(v => v !== 'flip' && v !== 'clockwise' && v !== 'counterclockwise').map(v => this.toPopperPlacement(v as PlacementU));
+
+    if (asPlacements.length) return asPlacements;
+
+    const order: PopperPlacement[] = ['top', 'right', 'bottom', 'left', 'top-start', 'top-end', 'right-start', 'right-end', 'bottom-start', 'bottom-end', 'left-start', 'left-end'];
+
+    const wantsClock = list.includes('clockwise');
+    const wantsCounter = list.includes('counterclockwise');
+
+    if (wantsClock || wantsCounter) {
+      const idx = Math.max(0, order.indexOf(base));
+      const seq = order.slice(idx + 1).concat(order.slice(0, idx));
+      return wantsCounter ? seq.reverse() : seq;
+    }
+
+    // Default Popper flip behavior when 'flip'
+    return undefined;
+  }
+
+  /**
+   * Popper reference resolution:
+   * - If trigger is a native <button>, use it (no behavior change).
+   * - If trigger is a custom element (e.g. <button-component>), try to use its
+   *   internal real button/role=button element (often inside shadow DOM),
+   *   so Popper positions relative to the actual visual button box.
+   */
+  private getPopperReference(): HTMLElement | VirtualElement {
+    const host = this.triggerEl;
+    if (!host) return { getBoundingClientRect: () => new DOMRect(0, 0, 0, 0) };
+
+    // Native button: do not change anything
+    if (host instanceof HTMLButtonElement || host.tagName.toLowerCase() === 'button') {
+      return host;
+    }
+
+    // Only try special handling for custom elements (tag contains "-")
+    const isCustomElement = host.tagName.includes('-');
+    if (!isCustomElement) return host;
+
+    // 1) Prefer an internal button inside open shadow root (Stencil components are typically open)
+    const shadow = (host as any).shadowRoot as ShadowRoot | null;
+    const shadowRef = shadow?.querySelector<HTMLElement>('button, [part~="button"], [part~="trigger"], [role="button"], .btn') ?? null;
+    if (shadowRef) return shadowRef;
+
+    // 2) Fallback: something in light DOM (if their component renders a real button there)
+    const lightRef = host.querySelector<HTMLElement>('button, [part~="button"], [role="button"], .btn') ?? null;
+    if (lightRef) return lightRef;
+
+    // 3) Last resort: use host (current behavior)
+    return host;
+  }
+
+  private createOrUpdatePopper() {
+    if (!this.triggerEl || !this.popoverEl) return;
+
+    const placement = this.toPopperPlacement(this.placement as PlacementU);
+
+    // Offset modifier:
+    // - distance (main axis): 10 + offset
+    // - skidding (cross-axis): yOffset
+    const distance = 10 + (Number(this.offset) || 0);
+    const skidding = Number(this.yOffset) || 0;
+
+    const fallbackPlacements = this.buildFallbackPlacements(placement);
+    const arrowEl = this.arrowOff ? null : (this.popoverEl.querySelector('[data-popper-arrow]') as HTMLElement | null);
+
+    const modifiers: Array<Partial<Modifier<string, any>>> = [
+      { name: 'eventListeners', enabled: true },
+      { name: 'offset', options: { offset: [skidding, distance] } },
+      { name: 'flip', options: { fallbackPlacements } },
+      { name: 'preventOverflow', options: { padding: 8 } },
+      {
+        name: 'applyPlacementAttr',
+        enabled: true,
+        phase: 'write',
+        fn: ({ state }) => {
+          state.elements.popper.setAttribute('data-popper-placement', state.placement);
+        },
+      },
+    ];
+
+    if (arrowEl) {
+      modifiers.push({ name: 'arrow', options: { element: arrowEl, padding: 6 } });
+    }
+
+    // ✅ Use the resolved reference for Popper positioning
+    const reference = this.getPopperReference();
+
+    if (this.popper) {
+      this.popper.setOptions({
+        placement,
+        modifiers: modifiers as any,
+        strategy: 'absolute',
+      });
+
+      // If the reference element changes (e.g., upgraded component), recreate Popper
+      // because Popper's reference element is fixed at creation.
+      try {
+        const currentRef = this.popper.state.elements.reference;
+        if (currentRef !== reference) {
+          this.destroyPopper();
+          this.popper = createPopper(reference as any, this.popoverEl, {
+            placement,
+            strategy: 'absolute',
+            modifiers: modifiers as any,
+          });
+        }
+      } catch {
+        // ignore
+      }
+
+      return;
+    }
+
+    this.popper = createPopper(reference as any, this.popoverEl, {
+      placement,
+      strategy: 'absolute',
+      modifiers: modifiers as any,
+    });
+  }
+
+  private destroyPopper() {
+    if (!this.popper) return;
+    this.popper.destroy();
+    this.popper = null;
+  }
+
   render() {
     return null;
   }

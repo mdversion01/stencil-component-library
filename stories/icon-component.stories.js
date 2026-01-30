@@ -116,7 +116,7 @@ export default {
     },
   },
   argTypes: {
-    color: { control: 'color', description: 'Adds inline color style' },
+    color: { control: 'color', description: 'Adds inline color style', name: 'color' },
     icon: {
       control: 'text',
       description:
@@ -125,19 +125,21 @@ export default {
     iconAriaHidden: {
       control: 'boolean',
       description: 'Whether the icon is hidden from assistive tech (aria-hidden)',
+      name: 'icon-aria-hidden',
     },
-    iconAriaLabel: { control: 'text', description: 'Accessible label (sets aria-label)' },
+    iconAriaLabel: { control: 'text', description: 'Accessible label (sets aria-label)', name: 'icon-aria-label' },
     iconMargin: {
       control: { type: 'select' },
       options: ['', 'left', 'right'],
       description: 'Applies spacing utility (ms-1 or me-1)',
+      name: 'icon-margin',
     },
-    iconSize: { control: 'number', description: 'Inline font-size in px' },
+    iconSize: { control: 'number', description: 'Inline font-size in px', name: 'icon-size' },
     size: {
       control: 'text',
       description: 'Extra size class (e.g., "fa-lg", "fa-2x", or a custom utility)',
     },
-    tokenIcon: { control: 'boolean', description: 'Adds "token-icon" class' },
+    tokenIcon: { control: 'boolean', description: 'Adds "token-icon" class', name: 'token-icon' },
   },
   args: {
     color: '',

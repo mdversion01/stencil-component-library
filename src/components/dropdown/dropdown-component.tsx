@@ -18,7 +18,7 @@ export class DropdownComponent {
   @Prop() iconDropdown = false;
   @Prop() alignMenuRight = false;
   @Prop() shape = '';
-  @Prop() size = '';
+  @Prop() size: '' | 'xs' | 'plumage-size' | 'sm' | 'lg' = '';
   @Prop() outlined = false;
   @Prop() ripple = false;
   @Prop() variant = 'default';

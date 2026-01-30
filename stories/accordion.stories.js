@@ -110,8 +110,8 @@ export default {
     ripple: { control: 'boolean', description: 'If true, enables a ripple effect on user interaction.' },
     size: {
       control: { type: 'select' },
-      description: 'This property allows you to change the overall size of the text (xs, sm, lg) that is in the header area of the collapse component.',
-      options: ['', 'xs', 'sm', 'lg'],
+      options: ['', 'xs', 'sm', 'lg', 'plumage-size'],
+      description: 'Sets the size of the button, e.g., extra small (xs), small (sm), large (lg), or plumage-size. If not set, default size is used.',
     },
     targetId: { description: 'ID of the collapsible region this control toggles. Must be unique per story.', control: 'text' },
     variant: {
@@ -157,8 +157,7 @@ export const Accordion = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Basic accordion item that can be used on its own or as part of an accordion container. Each item can be opened or closed independently.',
+        story: 'Basic accordion item that can be used on its own or as part of an accordion container. Each item can be opened or closed independently.',
       },
     },
   },
@@ -176,8 +175,7 @@ export const AccordionWithCustomIcon = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Accordion item using custom icons for open/closed states.',
+        story: 'Accordion item using custom icons for open/closed states.',
       },
     },
   },
@@ -188,8 +186,7 @@ export const ButtonToggle = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Standalone button toggle that can be used outside of an accordion container.',
+        story: 'Standalone button toggle that can be used outside of an accordion container.',
       },
     },
   },
@@ -200,8 +197,7 @@ export const ButtonToggleDisabled = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Standalone button toggle in a disabled state, indicating it cannot be interacted with.',
+        story: 'Standalone button toggle in a disabled state, indicating it cannot be interacted with.',
       },
     },
   },
@@ -219,8 +215,7 @@ export const ButtonToggleOpenByDefault = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Standalone button toggle that is expanded (open) by default when rendered.',
+        story: 'Standalone button toggle that is expanded (open) by default when rendered.',
       },
     },
   },
@@ -238,8 +233,7 @@ export const LinkToggle = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Standalone toggle rendered as a link.',
+        story: 'Standalone toggle rendered as a link.',
       },
     },
   },

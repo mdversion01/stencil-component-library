@@ -31,11 +31,11 @@ export default {
     tab:           { control: 'text',                         description: 'Optional tab index for the card component.' },
 
     // Slot content (only used in Storybook demos)
-    slotHeader:  { control: 'text', table: { category: 'slots' }, description: 'Content for the header slot.' },
-    slotTitle:   { control: 'text', table: { category: 'slots' }, description: 'Content for the title slot.' },
-    slotText:    { control: 'text', table: { category: 'slots' }, description: 'Content for the text slot.' },
-    slotFooter:  { control: 'text', table: { category: 'slots' }, description: 'Content for the footer slot.' },
-    slotActions: { control: 'text', table: { category: 'slots' }, description: 'Content for the actions slot.' },
+    slotHeader:  { control: 'text', table: { category: 'slots' }, description: 'Content for the header slot.', name: 'slot-header' },
+    slotTitle:   { control: 'text', table: { category: 'slots' }, description: 'Content for the title slot.', name: 'slot-title' },
+    slotText:    { control: 'text', table: { category: 'slots' }, description: 'Content for the text slot.', name: 'slot-text' },
+    slotFooter:  { control: 'text', table: { category: 'slots' }, description: 'Content for the footer slot.', name: 'slot-footer' },
+    slotActions: { control: 'text', table: { category: 'slots' }, description: 'Content for the actions slot.', name: 'slot-actions' },
   },
 
   // Minimal defaults: undefined for optional strings so *nothing* appears unless a story opts-in

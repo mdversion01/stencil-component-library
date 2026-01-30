@@ -16,14 +16,16 @@ export default {
       description:
         'Space-separated utility classes applied to the outer wrapper. Examples: `p-4 bg-light`, `container mx-auto`, `d-flex gap-3`.',
       table: { category: 'Props' },
+      name: 'class-names',
     },
     // demo-only knobs
-    contentTitle: { control: 'text', table: { category: 'Demo' } },
-    contentBody: { control: 'text', table: { category: 'Demo' } },
+    contentTitle: { control: 'text', table: { category: 'Demo' }, name: 'content-title' },
+    contentBody: { control: 'text', table: { category: 'Demo' }, name: 'content-body' },
     paddedCard: {
       control: 'boolean',
       description: 'Adds inner demo card padding/border.',
       table: { category: 'Demo' },
+      name: 'padded-card',
     },
   },
 };
@@ -32,7 +34,7 @@ const attr = (name, v) =>
   v === undefined || v === null || v === '' ? '' : ` ${name}="${String(v)}"`;
 
 const Template = (args) => `
-<app-wrapper${attr('classNames', args.classNames)}>
+<app-wrapper${attr('class-names', args.classNames)}>
   <div class="demo-card ${args.paddedCard ? 'p-3 border rounded' : ''}">
     <h3 class="mb-2">${args.contentTitle}</h3>
     <p class="mb-3">${args.contentBody}</p>

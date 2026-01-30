@@ -91,7 +91,7 @@ describe('popover-component', () => {
 
     const pop = getPopover();
     expect(pop).toBeTruthy();
-    expect(normalize(pop!.outerHTML)).toMatchInlineSnapshot(`"<div id="popover_TEST" class="popover popover-auto fade show plumage super-tooltip" role="tooltip" data-popover-placement="auto" tabindex="-1"><div class="popover-arrow"></div> <h3 class="popover-header">Header</h3> <div class="popover-body" tabindex="0">Body text</div></div>"`);
+    expect(normalize(pop!.outerHTML)).toMatchInlineSnapshot(`"<div id="popover_TEST" class="popover fade show plumage super-tooltip primary" role="tooltip" tabindex="-1"><div class="popover-arrow" data-popper-arrow></div> <h3 class="popover-header">Header</h3> <div class="popover-body" tabindex="0">Body text</div></div>"`);
   });
 
   test('outside click hides popover', async () => {

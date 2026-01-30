@@ -404,7 +404,9 @@ $btn-text-variants: (
   color: #419cf9;
 }
 
-.btn.size {
+// Plumage sized button size
+
+.btn-plumage-size {
   align-items: center;
   border-radius: 0.25rem;
   display: inline-flex;
@@ -415,6 +417,7 @@ $btn-text-variants: (
   margin: 0.125rem;
   padding: 0 0.5rem;
 }
+
 
 .btn.default,
 .btn:not(.btn.circle).btn.default {

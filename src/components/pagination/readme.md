@@ -7,18 +7,22 @@
 
 ## Properties
 
-| Property                 | Attribute                  | Description | Type                                                               | Default |
-| ------------------------ | -------------------------- | ----------- | ------------------------------------------------------------------ | ------- |
-| `currentPage`            | `current-page`             |             | `number`                                                           | `1`     |
-| `goToButtons`            | `go-to-buttons`            |             | `string`                                                           | `''`    |
-| `hideEllipsis`           | `hide-ellipsis`            |             | `boolean`                                                          | `false` |
-| `hideGotoEndButtons`     | `hide-goto-end-buttons`    |             | `boolean`                                                          | `false` |
-| `limit`                  | `limit`                    |             | `number`                                                           | `3`     |
-| `paginationLayout`       | `pagination-layout`        |             | `"" \| "center" \| "end" \| "fill" \| "fill-left" \| "fill-right"` | `''`    |
-| `paginationVariantColor` | `pagination-variant-color` |             | `string`                                                           | `''`    |
-| `plumage`                | `plumage`                  |             | `boolean`                                                          | `false` |
-| `size`                   | `size`                     |             | `"" \| "lg" \| "sm"`                                               | `''`    |
-| `totalPages`             | `total-pages`              |             | `number`                                                           | `1`     |
+| Property                    | Attribute                       | Description | Type                                                                          | Default                    |
+| --------------------------- | ------------------------------- | ----------- | ----------------------------------------------------------------------------- | -------------------------- |
+| `currentPage`               | `current-page`                  |             | `number`                                                                      | `1`                        |
+| `displayTotalNumberOfPages` | `display-total-number-of-pages` |             | `boolean`                                                                     | `false`                    |
+| `goToButtons`               | `go-to-buttons`                 |             | `string`                                                                      | `'icon'`                   |
+| `hideEllipsis`              | `hide-ellipsis`                 |             | `boolean`                                                                     | `false`                    |
+| `hideGotoEndButtons`        | `hide-goto-end-buttons`         |             | `boolean`                                                                     | `false`                    |
+| `itemsPerPage`              | `items-per-page`                |             | `boolean`                                                                     | `false`                    |
+| `itemsPerPageOptions`       | --                              |             | `(number \| "All")[]`                                                         | `[10, 20, 50, 100, 'All']` |
+| `limit`                     | `limit`                         |             | `number`                                                                      | `5`                        |
+| `pageSize`                  | `page-size`                     |             | `number`                                                                      | `10`                       |
+| `paginationLayout`          | `pagination-layout`             |             | `"" \| "center" \| "end" \| "fill" \| "fill-left" \| "fill-right" \| "start"` | `''`                       |
+| `paginationVariantColor`    | `pagination-variant-color`      |             | `string`                                                                      | `''`                       |
+| `plumage`                   | `plumage`                       |             | `boolean`                                                                     | `false`                    |
+| `size`                      | `size`                          |             | `"" \| "lg" \| "sm"`                                                          | `''`                       |
+| `totalRows`                 | `total-rows`                    |             | `number`                                                                      | `0`                        |
 
 
 ## Events

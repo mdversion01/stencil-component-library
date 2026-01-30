@@ -202,6 +202,10 @@
   margin: 0;
 }
 
+.accordion-item {
+  padding-right: 1px !important;
+}
+
 // .accordion .accordion-item:first-child {
 //   border-top-right-radius: var(--bs-accordion-border-radius) !important;
 //   border-top-left-radius: var(--bs-accordion-border-radius) !important;
