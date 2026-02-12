@@ -6,10 +6,8 @@ import { Component, Prop, h, Host } from '@stencil/core';
   shadow: false,
 })
 export class SliderManagerComponent {
-  /** 'basic' | 'multi' | 'discrete' */
   @Prop({ reflect: true }) type: 'basic' | 'multi' | 'discrete' = 'basic';
 
-  // Shared-ish props (expose only what you need; keep it lean)
   @Prop() label = '';
   @Prop() variant: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark' = '';
   @Prop() plumage = false;
@@ -18,27 +16,56 @@ export class SliderManagerComponent {
   @Prop() hideLeftTextBox = false;
   @Prop() hideRightTextBox = false;
 
-  // Basic + multi
   @Prop() min = 0;
   @Prop() max = 100;
   @Prop() unit = '';
   @Prop() sliderThumbLabel = false;
   @Prop() snapToTicks = false;
   @Prop() tickLabels = false;
-  @Prop() tickValues: number[] = [];
 
-  // Basic
+  // ✅ allow JSON string OR array
+  @Prop() tickValues: number[] | string = [];
+
   @Prop() value = 0;
 
-  // Multi
   @Prop() lowerValue = 25;
   @Prop() upperValue = 75;
 
-  // Discrete
   @Prop() selectedIndex = 0;
-  @Prop() stringValues: string[] = [];
+
+  // ✅ allow JSON string OR array
+  @Prop() stringValues: string[] | string = [];
+
+  private normalizeNumberArray(input: number[] | string): number[] {
+    if (Array.isArray(input)) return input.map(n => Number(n)).filter(n => Number.isFinite(n));
+    if (typeof input === 'string' && input.trim()) {
+      try {
+        const parsed = JSON.parse(input);
+        return Array.isArray(parsed) ? parsed.map(n => Number(n)).filter(n => Number.isFinite(n)) : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  }
+
+  private normalizeStringArray(input: string[] | string): string[] {
+    if (Array.isArray(input)) return input.map(v => String(v));
+    if (typeof input === 'string' && input.trim()) {
+      try {
+        const parsed = JSON.parse(input);
+        return Array.isArray(parsed) ? parsed.map(v => String(v)) : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  }
 
   render() {
+    const tickValues = this.normalizeNumberArray(this.tickValues);
+    const stringValues = this.normalizeStringArray(this.stringValues);
+
     return (
       <Host>
         {this.type === 'basic' && (
@@ -52,7 +79,7 @@ export class SliderManagerComponent {
             sliderThumbLabel={this.sliderThumbLabel}
             snapToTicks={this.snapToTicks}
             tickLabels={this.tickLabels}
-            tickValues={this.tickValues}
+            tickValues={tickValues}
             variant={this.variant}
             hideTextBoxes={this.hideTextBoxes}
             hideLeftTextBox={this.hideLeftTextBox}
@@ -73,7 +100,7 @@ export class SliderManagerComponent {
             sliderThumbLabel={this.sliderThumbLabel}
             snapToTicks={this.snapToTicks}
             tickLabels={this.tickLabels}
-            tickValues={this.tickValues}
+            tickValues={tickValues}
             variant={this.variant}
             hideTextBoxes={this.hideTextBoxes}
             hideLeftTextBox={this.hideLeftTextBox}
@@ -86,9 +113,10 @@ export class SliderManagerComponent {
           <discrete-slider-component
             label={this.label}
             selectedIndex={this.selectedIndex}
-            stringValues={this.stringValues}
+            stringValues={stringValues}   // ✅ now guaranteed array
             plumage={this.plumage}
             tickLabels={this.tickLabels}
+            unit={this.unit}              // ✅ forward if you want it
             variant={this.variant}
             disabled={this.disabled}
             hideRightTextBox={this.hideRightTextBox}

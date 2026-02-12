@@ -248,7 +248,9 @@ label {
     margin: 0;
     pointer-events: auto;
     transform: translate(0, 0);
-    transition: transform 0.11s cubic-bezier(0.2, 0, 0.38, 0.9), background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+    transition:
+      transform 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
+      background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
     z-index: 2;
   }
 
@@ -269,7 +271,7 @@ label {
   .slider-thumb {
     width: 12px;
     height: 12px;
-    left: -6px;
+    left: -5px;
     top: 50%;
     transform: translateY(-50%);
     -webkit-user-select: none;
@@ -338,7 +340,9 @@ label {
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
-    transition: transform 0.11s cubic-bezier(0.2, 0, 0.38, 0.9), background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+    transition:
+      transform 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
+      background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
     width: 0.875rem;
     z-index: 2;
   }
@@ -351,7 +355,10 @@ label {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    transition: box-shadow 0.11s cubic-bezier(0.2, 0, 0.38, 0.9), width 0.13s ease-out, height 0.13s ease-out;
+    transition:
+      box-shadow 0.11s cubic-bezier(0.2, 0, 0.38, 0.9),
+      width 0.13s ease-out,
+      height 0.13s ease-out;
     width: 0.875rem;
   }
 
@@ -367,13 +374,17 @@ label {
   .slider-handle.is-focused,
   .slider-handle:focus {
     background-color: #383838;
-    box-shadow: 0 0 0 2px currentColor, inset 0 0 0 2px #fff;
+    box-shadow:
+      0 0 0 2px currentColor,
+      inset 0 0 0 2px #fff;
   }
 
   .slider-handle.is-dragged,
   .slider-handle:active {
     background-color: #383838;
-    box-shadow: 0 0 0 2px currentColor, inset 0 0 0 2px #fff;
+    box-shadow:
+      0 0 0 2px currentColor,
+      inset 0 0 0 2px #fff;
   }
 
   .slider-handle.is-dragged,
@@ -412,11 +423,13 @@ label {
   .slider-value-right {
     margin-left: 16px;
     min-width: 40px;
+    min-height: 24px;
   }
 
   .slider-value-left {
     margin-right: 16px;
     min-width: 40px;
+    min-height: 24px;
   }
 
   .slider-value-left.hidden,
@@ -434,7 +447,7 @@ label {
     height: fit-content;
     padding: 0.125rem 0.4375rem;
     text-align: center;
-    width: fit-content;
+    min-width: 50px;
   }
 
   .slider-thumb-label-container {

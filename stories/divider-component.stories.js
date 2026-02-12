@@ -6,10 +6,7 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: [
-          'Divider component for separating content with optional text or styling.',
-          '',
-        ].join('\n'),
+        component: ['Divider component for separating content with optional text or styling.', ''].join('\n'),
       },
       // Ensure Docs shows rendered markup (attributes) in the Code tab
       source: { type: 'dynamic', language: 'html' },
@@ -17,32 +14,53 @@ export default {
   },
 
   argTypes: {
-    dashed: { control: 'boolean' },
+    /* -----------------------------
+   Appearance
+  ------------------------------ */
+    dashed: {
+      control: 'boolean',
+      description: 'Use a dashed line style',
+      table: { category: 'Appearance', defaultValue: { summary: false } },
+    },
+    plain: {
+      control: 'boolean',
+      description: 'Removes default typography weight from text divider',
+      table: { category: 'Appearance', defaultValue: { summary: false } },
+    },
+    styles: {
+      control: 'text',
+      description: 'Inline styles for inner text (e.g. "color:#666; font-weight:600")',
+      table: { category: 'Appearance' },
+    },
+
+    /* -----------------------------
+   Layout
+  ------------------------------ */
     direction: {
       control: { type: 'select' },
       options: ['horizontal', 'vertical'],
       description: 'Divider direction',
+      table: { category: 'Layout' },
     },
     orientation: {
       control: { type: 'select' },
       options: ['left', 'center', 'right'],
       description: 'Sets the position of the text within the divider',
+      table: { category: 'Layout' },
     },
-    plain: { control: 'boolean', description: 'Removes default typography weight from text divider' },
     removeOrientationMargin: {
       control: { type: 'select' },
       options: ['left', 'right'],
       description: 'Removes default side margin on the text divider',
       name: 'remove-orientation-margin',
-    },
-    styles: {
-      control: 'text',
-      description: 'Inline styles for inner text (e.g. "color:#666; font-weight:600")',
+      table: { category: 'Layout' },
     },
 
-    // used only to build the preview slot content
+    /* -----------------------------
+   Storybook Only / Internal
+  ------------------------------ */
     slotText: {
-      table: { disable: true },
+      table: { category: 'Storybook Only', disable: true },
       control: 'false',
       description: 'Text content for the slot (used only in this Storybook preview).',
       name: 'slot text',
@@ -66,8 +84,7 @@ export default {
 
 // -------- Helpers --------
 
-const LOREM =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.';
+const LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.';
 
 const setAttr = (el, name, value) => {
   if (value === true) el.setAttribute(name, '');
@@ -275,18 +292,10 @@ export const KitchenSink = args => {
 
   // Standalone horizontal examples (with paragraphs before/after)
   const aWrap = document.createElement('div');
-  aWrap.append(
-    makeParagraph(),
-    buildDivider({ ...args, dashed: true, orientation: undefined, direction: 'horizontal' }),
-    makeParagraph(),
-  );
+  aWrap.append(makeParagraph(), buildDivider({ ...args, dashed: true, orientation: undefined, direction: 'horizontal' }), makeParagraph());
 
   const bWrap = document.createElement('div');
-  bWrap.append(
-    makeParagraph(),
-    buildDivider({ ...args, orientation: 'center', slotText: 'Overview', direction: 'horizontal' }),
-    makeParagraph(),
-  );
+  bWrap.append(makeParagraph(), buildDivider({ ...args, orientation: 'center', slotText: 'Overview', direction: 'horizontal' }), makeParagraph());
 
   const cWrap = document.createElement('div');
   cWrap.append(

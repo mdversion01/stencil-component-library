@@ -43,6 +43,7 @@ export const config: Config = {
               { src: '../node_modules/@fortawesome/fontawesome-free/webfonts', dest: 'assets/fonts' },
               { src: 'assets/mdi/materialdesignicons.min.css', dest: 'assets/mdi/materialdesignicons.min.css' },
               { src: 'assets/mdi/fonts', dest: 'assets/mdi/fonts' },
+              { src: 'components', dest: 'components' }, // copies src/components/** to www/components/**
             ],
           } as any,
         ]),

@@ -1,0 +1,132 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .reset-sort-icon {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ctitle%3Esort-variant-remove%3C/title%3E%3Cpath d='M3 13H15V11H3M3 6V8H21V6M3 18H9V16H3V18M22.54 16.88L20.41 19L22.54 21.12L21.12 22.54L19 20.41L16.88 22.54L15.47 21.12L17.59 19L15.47 16.88L16.88 15.47L19 17.59L21.12 15.46L22.54 16.88' /%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-size: 24px 24px;
+        width: 28px;
+        height: 28px;
+        background-color: transparent;
+        padding: 0;
+        margin: 0;
+        transform: scaleY(-1);
+      }
+    </style>
+  </head>
+  <body>
+    <app-wrapper>
+      <div class="cwrapper">
+        <section>
+          <dropdown-component id="dditems" variant="primary" list-type="checkboxes"></dropdown-component>
+
+          <dropdown-component id="ddMenu" variant="primary" icon-dropdown icon="fa-solid fa-gear" list-type="customCheckboxes"></dropdown-component>
+
+          <dropdown-component id="ddMenu3" variant="primary" auto-focus-submenu></dropdown-component>
+        </section>
+        <br />
+        <br />
+
+        <section style="margin-left: 200px">
+          <dropdown-component id="dditemsSubMenu" align-menu-right button-text="DD w/ Submenu aligned left" variant="primary" outlined></dropdown-component>
+        </section>
+        <br />
+        <br />
+        <dropdown-component id="dditems" variant="primary" list-type="toggleSwitches"></dropdown-component>
+
+        <br />
+      </div>
+    </app-wrapper>
+
+    <script type="module">
+       document.addEventListener('DOMContentLoaded', () => {
+            // Dynamically selectable options
+            const dditems = document.getElementById('dditems');
+            if (dditems) {
+              dditems.options = [
+                { name: 'Action', path: '#' },
+                { name: 'Another Action', path: '#' },
+                { name: 'Something else here', path: '#' },
+                // Add more items as needed
+              ];
+            }
+
+            // Dynamically selectable options
+            const ddMenu = document.getElementById('ddMenu');
+            if (ddMenu) {
+              ddMenu.options = [
+                { name: 'Action', path: '#', inputId: 'dd1', value: 'action' },
+                { name: 'Another Action', path: '#', inputId: 'dd2', value: 'another action' },
+                { name: 'Something else here', path: '#', inputId: 'dd3', value: 'something else' },
+                // Add more items as needed
+              ];
+            }
+
+            const ddMenu3 = document.getElementById('ddMenu3');
+            if (ddMenu3) {
+              ddMenu3.options = [
+                { name: 'Action', path: '#' },
+                { name: 'Another Action', path: '#' },
+                { name: 'Something else here', path: '#' },
+                // Add more items as needed
+              ];
+            }
+
+            // Dynamically selectable options
+            const dditemsSubMenu = document.getElementById('dditemsSubMenu');
+            if (dditemsSubMenu) {
+              dditemsSubMenu.options = [
+                { name: 'Item 1', path: '#' },
+                { isDivider: true },
+
+                {
+                  name: 'Settings',
+                  submenu: [
+                    { name: 'Dark Mode', checked: true, customListType: 'toggleSwitches' },
+                    {
+                      name: 'Test 1',
+                      submenu: [
+                        { name: 'Sub Test 1', path: '#' },
+                        { name: 'Sub Test 2', path: '#' },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  name: 'Tools',
+                  submenu: [
+                    { name: 'Compress Images', checked: true, customListType: 'checkboxes' },
+                    { name: 'Test 2', checked: false, customListType: 'customCheckboxes' },
+                  ],
+                },
+
+                { name: 'Item 6', path: '#' },
+                // ... other items
+              ];
+            }
+          });
+
+    </script>
+  </body>
+</html>

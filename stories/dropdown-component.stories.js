@@ -3,17 +3,38 @@
 export default {
   title: 'Components/Dropdown',
   tags: ['autodocs'],
+  args: {
+    alignMenuRight: false,
+    autoFocusSubmenu: false,
+    buttonText: 'Dropdown',
+    disabled: false,
+    icon: 'fa-solid fa-ellipsis-vertical',
+    iconDropdown: false,
+    iconSize: 16,
+    id: '', // ✅ if you want it defaulted too
+    inputId: '', // ✅ add this
+    name: '', // ✅ (if you want these too)
+    value: '', // ✅
+    listType: 'default',
+    menuOffsetY: 0,
+    outlined: false,
+    ripple: false,
+    shape: '',
+    size: '',
+    subMenuListType: 'default',
+    submenuOffsetX: 0,
+    tableId: 'demo-table',
+    titleAttr: '',
+    variant: 'default',
+    withSubmenu: true,
+  },
   parameters: {
     actions: {
       handles: ['itemSelected', 'items-changed', 'selection-changed'],
     },
     docs: {
       description: {
-        component: [
-          'Dropdown component for selecting from a list of options.',
-          'Supports various list types and submenu configurations.',
-          '',
-        ].join('\n'),
+        component: ['Dropdown component for selecting from a list of options.', 'Supports various list types and submenu configurations.', ''].join('\n'),
       },
       // Programmatically control what the Docs "Code" tab shows
       source: {
@@ -110,7 +131,7 @@ export default {
             },
           ];
 
-          const attrsToString = (attrs) =>
+          const attrsToString = attrs =>
             Object.entries(attrs)
               .filter(([, v]) => v !== undefined && v !== null && v !== false && v !== '')
               .map(([k, v]) => (v === true ? k : `${k}="${String(v)}"`))
@@ -152,7 +173,7 @@ export default {
           };
 
           // Build attribute bag but keep only the ones actually used (all non-defaults)
-          const onlyNonDefault = (all) => {
+          const onlyNonDefault = all => {
             const out = {};
             for (const [k, v] of Object.entries(all)) {
               if (v === undefined || v === null) continue;
@@ -423,59 +444,171 @@ function kitchenSinkItems() {
     },
   },
   argTypes: {
-    alignMenuRight: { control: 'boolean', description: 'Align the dropdown menu to the right edge of the button', name: 'align-menu-right' },
-    autoFocusSubmenu: { control: 'boolean', description: 'Automatically focus the first submenu item when a submenu is opened', name: 'auto-focus-submenu' },
-    buttonText: { control: 'text', description: 'Text label for the dropdown trigger button', name: 'button-text' },
-    disabled: { control: 'boolean', description: 'Disable the dropdown' },
-    icon: { control: 'text', description: 'Icon class for the dropdown trigger button (e.g., FontAwesome classes)' },
-    iconDropdown: { control: 'boolean', description: 'Use an icon-only trigger', name: 'icon-dropdown' },
-    iconSize: { control: 'number', description: 'Size of the icon in pixels', name: 'icon-size' },
-    inputId: { control: 'text', description: 'ID attribute for the hidden input element', name: 'input-id' },
+    /* -----------------------------
+   Behavior
+  ------------------------------ */
+    alignMenuRight: {
+      control: 'boolean',
+      description: 'Align the dropdown menu to the right edge of the button',
+      name: 'align-menu-right',
+      table: { category: 'Behavior', defaultValue: { summary: false } },
+    },
+    autoFocusSubmenu: {
+      control: 'boolean',
+      description: 'Automatically focus the first submenu item when a submenu is opened',
+      name: 'auto-focus-submenu',
+      table: { category: 'Behavior', defaultValue: { summary: false } },
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disable the dropdown',
+      table: { category: 'Behavior', defaultValue: { summary: false } },
+    },
+    menuOffsetY: {
+      control: 'number',
+      description: 'Vertical offset for the dropdown menu in pixels',
+      name: 'menu-offset-y',
+      table: { category: 'Behavior' },
+    },
+    submenuOffsetX: {
+      control: 'number',
+      description: 'Horizontal offset for submenus in pixels',
+      name: 'submenu-offset-x',
+      table: { category: 'Behavior' },
+    },
+
+    /* -----------------------------
+   Trigger Button
+  ------------------------------ */
+    buttonText: {
+      control: 'text',
+      description: 'Text label for the dropdown trigger button',
+      name: 'button-text',
+      table: { category: 'Trigger Button' },
+    },
+    outlined: {
+      control: 'boolean',
+      description: 'Use outlined button style',
+      table: { category: 'Trigger Button', defaultValue: { summary: false } },
+    },
+    ripple: {
+      control: 'boolean',
+      description: 'Enable ripple effect on the dropdown button',
+      table: { category: 'Trigger Button', defaultValue: { summary: false } },
+    },
+    shape: {
+      control: { type: 'select' },
+      options: ['', 'square', 'pill', 'circle'],
+      description: 'Shape of the dropdown button',
+      table: { category: 'Trigger Button' },
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['default', 'xs', 'sm', 'lg', 'plumage-size'],
+      description: 'Sets the size of the button, e.g., extra small (xs), small (sm), large (lg), or plumage-size. If not set, default size is used.',
+      table: { category: 'Trigger Button' },
+    },
+    titleAttr: {
+      control: 'text',
+      description: 'Title attribute for the dropdown button (used for accessibility and tooltips)',
+      name: 'title-attr',
+      table: { category: 'Trigger Button' },
+    },
+
+    /* -----------------------------
+   Icon
+  ------------------------------ */
+    iconDropdown: {
+      control: 'boolean',
+      description: 'Use an icon-only trigger',
+      name: 'icon-dropdown',
+      table: { category: 'Icon', defaultValue: { summary: false } },
+    },
+    icon: {
+      control: 'text',
+      description: 'Icon class for the dropdown trigger button (e.g., FontAwesome classes)',
+      table: { category: 'Icon' },
+    },
+    iconSize: {
+      control: 'number',
+      description: 'Size of the icon in pixels',
+      name: 'icon-size',
+      table: { category: 'Icon' },
+    },
+
+    /* -----------------------------
+   Items & Lists
+  ------------------------------ */
     listType: {
       control: { type: 'select' },
       options: ['default', 'checkboxes', 'customCheckboxes', 'toggleSwitches'],
       description: 'Type of list to display in the dropdown',
       name: 'list-type',
+      table: { category: 'Items & Lists' },
     },
-    menuOffsetY: { control: 'number', description: 'Vertical offset for the dropdown menu in pixels', name: 'menu-offset-y' },
-    name: { control: 'text', description: 'Name attribute for the hidden input element' },
-    outlined: { control: 'boolean', description: 'Use outlined button style' },
-    ripple: { control: 'boolean', description: 'Enable ripple effect on the dropdown button' },
-    shape: { control: { type: 'select' }, options: ['', 'square', 'pill', 'circle'], description: 'Shape of the dropdown button' },
-    size: { control: { type: 'select' }, options: ['default', 'xs',  'sm', 'lg', 'plumage-size'], description: 'Sets the size of the button, e.g., extra small (xs), small (sm), large (lg), or plumage-size. If not set, default size is used.' },
     subMenuListType: {
       control: { type: 'select' },
       options: ['default', 'checkboxes', 'customCheckboxes', 'toggleSwitches'],
       description: 'Type of list to use in submenus',
       name: 'sub-menu-list-type',
+      table: { category: 'Items & Lists' },
     },
-    submenuOffsetX: { control: 'number', description: 'Horizontal offset for submenus in pixels', name: 'submenu-offset-x' },
-    tableId: { control: 'text', description: 'ID of the table to associate with for table-specific actions. Use with table-component.', name: 'table-id' },
-    titleAttr: { control: 'text', description: 'Title attribute for the dropdown button (used for accessibility and tooltips)', name: 'title-attr' },
-    value: { control: 'text', description: 'Value attribute for the hidden input element' },
-    variant: { control: { type: 'select' }, options: ['default', 'primary', 'secondary', 'danger'], description: 'Variant style of the dropdown button' },
-    withSubmenu: { control: 'boolean', table: { disable: true }, description: 'Internal helper to include submenu items in the dropdown', name: 'with-submenu' },
-  },
-  args: {
-    alignMenuRight: false,
-    autoFocusSubmenu: false,
-    buttonText: 'Dropdown',
-    disabled: false,
-    icon: 'fa-solid fa-ellipsis-vertical',
-    iconDropdown: false,
-    iconSize: 16,
-    listType: 'default',
-    menuOffsetY: 0,
-    outlined: false,
-    ripple: false,
-    shape: '',
-    size: '',
-    subMenuListType: 'default',
-    submenuOffsetX: 0,
-    tableId: 'demo-table',
-    titleAttr: '',
-    variant: 'default',
-    withSubmenu: true,
+
+    /* -----------------------------
+   Forms
+  ------------------------------ */
+    inputId: {
+      control: 'text',
+      description: 'ID attribute for the hidden input element',
+      name: 'input-id',
+      table: { category: 'Forms' },
+    },
+    name: {
+      control: 'text',
+      description: 'Name attribute for the hidden input element',
+      table: { category: 'Forms' },
+    },
+    value: {
+      control: 'text',
+      description: 'Value attribute for the hidden input element',
+      table: { category: 'Forms' },
+    },
+
+    /* -----------------------------
+   Integration
+  ------------------------------ */
+    id: {
+      control: 'text',
+      description: 'ID attribute for the dropdown component to uniquely identify it and use with other elements or scripts, such as labels or JavaScript',
+      name: 'id',
+      table: { category: 'Integration' },
+    },
+    tableId: {
+      control: 'text',
+      description: 'ID of the table to associate with for table-specific actions. Use with table-component.',
+      name: 'table-id',
+      table: { category: 'Integration' },
+    },
+
+    /* -----------------------------
+   Appearance
+  ------------------------------ */
+    variant: {
+      control: { type: 'select' },
+      options: ['default', 'primary', 'secondary', 'danger'],
+      description: 'Variant style of the dropdown button',
+      table: { category: 'Appearance' },
+    },
+
+    /* -----------------------------
+   Storybook Only / Internal
+  ------------------------------ */
+    withSubmenu: {
+      control: 'boolean',
+      table: { category: 'Storybook Only', disable: true },
+      description: 'Internal helper to include submenu items in the dropdown',
+      name: 'with-submenu',
+    },
   },
 };
 
@@ -672,17 +805,9 @@ export const WithSubmenu = args => {
   wrap.style.gap = '24px';
   wrap.style.alignItems = 'center';
 
-  const left = buildDropdown(
-    { ...args, id: 'dropdown-submenu-left', withSubmenu: true, alignMenuRight: false, variant: 'secondary' },
-    items,
-    'dd-sub-left'
-  );
+  const left = buildDropdown({ ...args, id: 'dropdown-submenu-left', withSubmenu: true, alignMenuRight: false, variant: 'secondary' }, items, 'dd-sub-left');
 
-  const right = buildDropdown(
-    { ...args, id: 'dropdown-submenu-right', withSubmenu: true, alignMenuRight: true, variant: 'secondary' },
-    items,
-    'dd-sub-right'
-  );
+  const right = buildDropdown({ ...args, id: 'dropdown-submenu-right', withSubmenu: true, alignMenuRight: true, variant: 'secondary' }, items, 'dd-sub-right');
 
   const label = text => {
     const el = document.createElement('div');
@@ -711,8 +836,7 @@ WithSubmenu.parameters = {
   docs: { story: { height: '260px' }, description: { story: 'Dropdown with submenu items. Two examples shown: default (left) and right-aligned (right).' } },
 };
 
-export const IconOnly = args =>
-  buildDropdown({ ...args, id: 'dropdown-icon', iconDropdown: true, buttonText: '', titleAttr: 'More actions' }, baseItems(), 'dd-icon');
+export const IconOnly = args => buildDropdown({ ...args, id: 'dropdown-icon', iconDropdown: true, buttonText: '', titleAttr: 'More actions' }, baseItems(), 'dd-icon');
 IconOnly.args = {
   icon: 'fa-solid fa-ellipsis-vertical',
   iconSize: 18,
@@ -733,17 +857,9 @@ export const CheckboxVariants = args => {
   wrap.style.gap = '24px';
   wrap.style.alignItems = 'center';
 
-  const left = buildDropdown(
-    { ...args, id: 'dropdown-checkboxes', variant: 'secondary', listType: 'checkboxes', withSubmenu: false },
-    items,
-    'dd-chk'
-  );
+  const left = buildDropdown({ ...args, id: 'dropdown-checkboxes', variant: 'secondary', listType: 'checkboxes', withSubmenu: false }, items, 'dd-chk');
 
-  const right = buildDropdown(
-    { ...args, id: 'dropdown-custom-checkboxes', variant: 'secondary', listType: 'customCheckboxes', withSubmenu: false },
-    items,
-    'dd-cchk'
-  );
+  const right = buildDropdown({ ...args, id: 'dropdown-custom-checkboxes', variant: 'secondary', listType: 'customCheckboxes', withSubmenu: false }, items, 'dd-cchk');
 
   const label = text => {
     const el = document.createElement('div');
@@ -774,8 +890,7 @@ ToggleSwitches.args = {};
 ToggleSwitches.parameters = {
   docs: {
     story: { height: '220px' },
-    description: { story: 'Dropdown with toggle switch items.',
-    },
+    description: { story: 'Dropdown with toggle switch items.' },
   },
 };
 

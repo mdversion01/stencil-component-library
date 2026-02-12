@@ -1,0 +1,76 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .reset-sort-icon {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ctitle%3Esort-variant-remove%3C/title%3E%3Cpath d='M3 13H15V11H3M3 6V8H21V6M3 18H9V16H3V18M22.54 16.88L20.41 19L22.54 21.12L21.12 22.54L19 20.41L16.88 22.54L15.47 21.12L17.59 19L15.47 16.88L16.88 15.47L19 17.59L21.12 15.46L22.54 16.88' /%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-size: 24px 24px;
+        width: 28px;
+        height: 28px;
+        background-color: transparent;
+        padding: 0;
+        margin: 0;
+        transform: scaleY(-1);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <section class="display-box-demo">
+          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 500px">
+            <timepicker-manager use-pl-timepicker size="lg" input-id="one" show-label label-text="Required Time" required is-valid validation validation-message="testing validation"></timepicker-manager>
+          </div>
+        </section>
+
+        <section class="display-box-demo">
+          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
+            <timepicker-manager size="sm"></timepicker-manager>
+          </div>
+
+          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
+            <timepicker-manager size="lg" show-label></timepicker-manager>
+          </div>
+
+          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
+            <timepicker-manager show-label label-text="Required Time" required is-valid validation validation-message="testing validation"></timepicker-manager>
+          </div>
+
+          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
+            <timepicker-component show-label label-text="Required Time" required is-valid validation validation-message="testing validation"></timepicker-component>
+          </div>
+
+          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
+            <plumage-timepicker-component show-label label-text="Required Time" required is-valid validation validation-message="testing validation" input-id="validation-timepicker"></plumage-timepicker-component>
+          </div>
+
+        </section>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

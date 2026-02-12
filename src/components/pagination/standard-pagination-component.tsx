@@ -1,3 +1,4 @@
+// src/components/pagination/standard-pagination-component.tsx
 import { Component, Prop, State, Watch, Event, EventEmitter, h, Fragment, Element } from '@stencil/core';
 
 @Component({
@@ -15,8 +16,8 @@ export class StandardPagination {
 
   // Options / layout
   @Prop() itemsPerPageOptions: Array<number | 'All'> = [10, 20, 50, 100, 'All'];
-  @Prop() itemsPerPage: boolean = false;                // standalone only
-  @Prop() displayTotalNumberOfPages: boolean = false;   // standalone only
+  @Prop() itemsPerPage: boolean = false; // standalone only
+  @Prop() displayTotalNumberOfPages: boolean = false; // standalone only
   @Prop() hideGoToButtons: boolean = false;
   @Prop() goToButtons: string = 'icon';
   @Prop() size: '' | 'sm' | 'lg' = '';
@@ -97,7 +98,10 @@ export class StandardPagination {
 
   private onItemsPerPageChange = (e: Event) => {
     const val = (e.target as HTMLSelectElement)?.value;
+
+    // If totalRows===0, "All" is disabled, but guard anyway.
     const newSize = val === 'All' ? this.totalRows : parseInt(val || '10', 10);
+
     this.pageSize = Number.isFinite(newSize) && newSize > 0 ? newSize : 10;
     this.setPageAndEmit(1);
     this.clampToBounds();
@@ -106,7 +110,7 @@ export class StandardPagination {
   private renderEllipsis() {
     if (this.hideEllipsis || this.maxPages <= 1) return null;
     const flexLi = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-fill d-flex' : '';
-    const flexA  = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-fill d-flex' : '';
+    const flexA = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-fill d-flex' : '';
     return (
       <li role="separator" class={`page-item disabled bv-d-xs-down-none${flexLi}`}>
         <span class={`page-link${flexA}`}>...</span>
@@ -116,7 +120,7 @@ export class StandardPagination {
 
   private renderPageButton(page: number) {
     const liFlex = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-fill d-flex' : '';
-    const aFlex  = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-grow-1' : '';
+    const aFlex = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-grow-1' : '';
     const active = this.page === page;
     return (
       <li role="presentation" class={`page-item${active ? ' active' : ''}${liFlex}`}>
@@ -163,15 +167,23 @@ export class StandardPagination {
   private renderSizeChanger() {
     const sizeCls = this.size === 'sm' ? 'select-sm' : this.size === 'lg' ? 'select-lg' : '';
     const wrap = 'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
+
+    const disableAll = this.totalRows === 0;
+
     return (
       <div class={wrap}>
         <label>Items per page: </label>
         <select class={`form-select form-control ${sizeCls}`} aria-label="selectField" onChange={this.onItemsPerPageChange}>
           {this.itemsPerPageOptions.map(opt => {
+            const isAll = opt === 'All';
             const isNum = typeof opt === 'number';
-            const disable = isNum && this.totalRows > 0 && opt > this.totalRows;
+
+            const disabled = isAll ? disableAll : isNum && this.totalRows > 0 && opt > this.totalRows;
+
+            const selected = isAll ? this.totalRows > 0 && this.pageSize === this.totalRows : this.pageSize === (opt as any);
+
             return (
-              <option value={String(opt)} selected={this.pageSize === (opt as any)} disabled={disable}>
+              <option value={String(opt)} selected={selected} disabled={disabled}>
                 {String(opt)}
               </option>
             );
@@ -186,36 +198,53 @@ export class StandardPagination {
   );
 
   private renderBar() {
-    const sizeCls =
-      this.size === 'sm' ? ' pagination-sm' : this.size === 'lg' ? ' pagination-lg' : '';
+    const sizeCls = this.size === 'sm' ? ' pagination-sm' : this.size === 'lg' ? ' pagination-lg' : '';
     const layoutCls =
       this.paginationLayout === 'center'
         ? ' justify-content-center flex-fill50'
         : this.paginationLayout === 'end'
-        ? ' justify-content-end'
-        : this.paginationLayout === 'fill'
-        ? ' text-center'
-        : '';
+          ? ' justify-content-end'
+          : this.paginationLayout === 'fill'
+            ? ' text-center'
+            : '';
     const colorCls = this.paginationVariantColor ? ` ${this.paginationVariantColor}` : '';
     const plumageCls = this.plumage ? ' plumage' : '';
 
     const atStart = this.page <= 1;
-    const atEnd   = this.page >= this.maxPages;
+    const atEnd = this.page >= this.maxPages;
 
     const liFlex = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-fill d-flex' : '';
-    const aFlex  = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-grow-1' : '';
+    const aFlex = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-grow-1' : '';
 
     return (
       <ul role="menubar" aria-disabled="false" aria-label="Pagination" class={`pagination b-pagination${sizeCls}${layoutCls}${colorCls}${plumageCls}`}>
         {!this.hideGoToButtons ? (
           <Fragment>
             <li role="presentation" aria-hidden={atStart as any} class={`page-item${atStart ? ' disabled' : ''}${liFlex}`}>
-              <button role="menuitem" type="button" tabIndex={atStart ? -1 : 0} aria-label="Go to first page" aria-controls="pagination" class={`page-link${aFlex}`} onClick={this.firstPage} disabled={atStart}>
+              <button
+                role="menuitem"
+                type="button"
+                tabIndex={atStart ? -1 : 0}
+                aria-label="Go to first page"
+                aria-controls="pagination"
+                class={`page-link${aFlex}`}
+                onClick={this.firstPage}
+                disabled={atStart}
+              >
                 {this.goToButtons === 'text' ? 'First' : <i class="fa-solid fa-angles-left"></i>}
               </button>
             </li>
             <li role="presentation" aria-hidden={atStart as any} class={`page-item${atStart ? ' disabled' : ''}${liFlex}`}>
-              <button role="menuitem" type="button" tabIndex={atStart ? -1 : 0} aria-label="Go to previous page" aria-controls="pagination" class={`page-link${aFlex}`} onClick={this.prevPage} disabled={atStart}>
+              <button
+                role="menuitem"
+                type="button"
+                tabIndex={atStart ? -1 : 0}
+                aria-label="Go to previous page"
+                aria-controls="pagination"
+                class={`page-link${aFlex}`}
+                onClick={this.prevPage}
+                disabled={atStart}
+              >
                 {this.goToButtons === 'text' ? 'Prev' : <i class="fa-solid fa-angle-left"></i>}
               </button>
             </li>
@@ -227,12 +256,30 @@ export class StandardPagination {
         {!this.hideGoToButtons ? (
           <Fragment>
             <li role="presentation" class={`page-item${atEnd ? ' disabled' : ''}${liFlex}`}>
-              <button role="menuitem" type="button" tabIndex={atEnd ? -1 : 0} aria-label="Go to next page" aria-controls="pagination" class={`page-link${aFlex}`} onClick={this.nextPage} disabled={atEnd}>
+              <button
+                role="menuitem"
+                type="button"
+                tabIndex={atEnd ? -1 : 0}
+                aria-label="Go to next page"
+                aria-controls="pagination"
+                class={`page-link${aFlex}`}
+                onClick={this.nextPage}
+                disabled={atEnd}
+              >
                 {this.goToButtons === 'text' ? 'Next' : <i class="fa-solid fa-angle-right"></i>}
               </button>
             </li>
             <li role="presentation" class={`page-item${atEnd ? ' disabled' : ''}${liFlex}`}>
-              <button role="menuitem" type="button" tabIndex={atEnd ? -1 : 0} aria-label="Go to last page" aria-controls="pagination" class={`page-link${aFlex}`} onClick={this.lastPage} disabled={atEnd}>
+              <button
+                role="menuitem"
+                type="button"
+                tabIndex={atEnd ? -1 : 0}
+                aria-label="Go to last page"
+                aria-controls="pagination"
+                class={`page-link${aFlex}`}
+                onClick={this.lastPage}
+                disabled={atEnd}
+              >
                 {this.goToButtons === 'text' ? 'Last' : <i class="fa-solid fa-angles-right"></i>}
               </button>
             </li>
@@ -333,10 +380,10 @@ export class StandardPagination {
       this.paginationLayout === 'start'
         ? 'pagination-cell start'
         : this.paginationLayout === 'center'
-        ? 'pagination-cell center'
-        : this.paginationLayout === 'end'
-        ? 'pagination-cell end'
-        : '';
+          ? 'pagination-cell center'
+          : this.paginationLayout === 'end'
+            ? 'pagination-cell end'
+            : '';
 
     return (
       <div class={rootCls}>

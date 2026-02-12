@@ -112,87 +112,221 @@ export default {
   },
 
   argTypes: {
-    // Layout/position (dynamic style related)
-    absolute: { control: 'boolean', description: 'To be used with the token or dot badges, if true, adds position: absolute inline style to the badge.' },
-    ariaDescribedby: { control: 'text', description: 'Sets the aria-describedby attribute on the badge component.', name: 'aria-describedby' },
-    ariaLabel: { control: 'text', description: 'Sets the aria-label attribute on the badge component.', name: 'aria-label' },
-    ariaLabelledby: { control: 'text', description: 'Sets the aria-labelledby attribute on the badge component.', name: 'aria-labelledby' },
-    backgroundColor: {
-      control: 'text',
-      description: 'To be used with the token or dot badges, sets or adds an inline style for background color that uses any valid CSS color value (e.g., hex, rgb, color name).',
-      name: 'background-color',
-    },
-    badgeId: { control: 'text', description: 'Sets the ID attribute on the badge component.', name: 'badge-id' },
-    bdgPosition: {
-      control: { type: 'select' },
-      options: ['', 'left', 'right'],
-      name: 'bdg-position',
-      description:
-        "When placing a badge on the left of any content of a <button-component>, this adds the class 'mr-1' to the badge, which provide 4px's of space between the badge and the content. Placing the badge to the right, and assigning 'right' to the property will do the reverse, adding the class of 'ml-1'. Ex: bdgPosition=\"left\" or bdgPosition=\"right\"",
-    },
-    bordered: { control: 'boolean', description: 'If true, adds a border to the badge component.' },
-    bottom: { control: 'text', description: 'To be used with the token or dot badges, adds an inline style that sets the bottom CSS property.' },
-    classNames: { control: 'text', description: 'Additional custom class names to apply to the badge component.', name: 'class-names' },
-    color: {
-      control: 'text',
-      description: 'To be used with the token or dot badges, sets or adds an inline style for text color that uses any valid CSS color value (e.g., hex, rgb, color name).',
-    },
-    devMode: { control: 'boolean', description: 'If true, enables dev mode with extra logging to the console.', name: 'dev-mode' },
-    dot: { control: 'boolean', description: 'If true, renders the badge as a small dot, often used to indicate notifications or status without text content.' },
-    disabled: { control: 'boolean', description: 'If true, sets a disabled state on the badge component.' },
-    elevation: { control: 'text', description: 'Applies a shadow elevation to the badge component (0-24).' },
-    icon: { control: 'boolean', description: 'If true, when using an icon within a badge, this property will add the some spacing to the left and right of the icon.' },
-    inlineStyles: {
-      control: 'text',
-      description: 'Additional inline styles can be added to the dot or token badges. Ex: inline-styles="color: pink; padding: 10px;"',
-      name: 'inline-styles',
-    },
-    inset: {
-      control: 'boolean',
-      description:
-        "To be used with the token or dot badges, if true, adds the set default style of 'inset: auto auto calc(100% - 12px) calc(100% - 12px);', that positions the badge token to the upper right of the element it is used with.",
-    },
-    left: { control: 'text', description: 'To be used with the token or dot badges, adds an inline style that sets the left CSS property.' },
-    offsetX: {
-      control: 'text',
-      name: 'offset-x',
-      description:
-        "To be used with the token or dot badges, used with the 'inset' property if the user wants to overwrite the default bottom position value of the 'inset'. Ex: offsetX=\"50\"",
-    },
-    offsetY: {
-      control: 'text',
-      name: 'offset-y',
-      description:
-        "To be used with the token or dot badges, used with the 'inset' property if the user wants to overwrite the default left position value of the 'inset'. Ex: offsetY=\"50\"",
-    },
-    outlined: { control: 'boolean', description: 'If true, renders the badge with an outlined style.' },
-    pulse: { control: 'boolean', description: 'If true, adds a pulsing animation to the dot badge, typically used to draw attention to notification badges.' },
-    right: { control: 'text', description: 'To be used with the token or dot badges, adds an inline style that sets the right CSS property.' },
-    size: { control: { type: 'select' }, options: ['base', 'xs', 'sm', 'lg'], description: 'Size, base, xs, sm, or lg, of the badge component.' },
-    shape: {
-      control: { type: 'select' },
-      options: ['', 'pill', 'square'],
-      description: 'Shape, pill, square, or circle, of the badge component. The default shape is the standard rectangle with rounded corners.',
-    },
-    styles: { control: 'text', description: 'Additional inline styles can be added to the badge. Ex: styles="color: green; padding: 10px;"', name: 'styles' },
-    token: { control: 'boolean', description: 'If true, renders the badge as a token, typically used to indicate a status or category associated with the parent element.' },
-    top: { control: 'text', description: 'To be used with the token or dot badges, adds an inline style that sets the top CSS property.' },
-    variant: {
-      control: 'text',
-      description: 'Visual variant/color for the badge (e.g., primary, secondary, success, danger, warning, info, light, dark, or any custom variant your app supports).',
-    },
-    zIndex: {
-      control: 'text',
-      description: 'To be used with the token or dot badges, adds an inline style that sets the z-index CSS property. Ex: z-index="100"',
-      name: 'z-index',
-    },
+      // -------- Content / Identity --------
+  label: {
+    control: 'text',
+    name: 'label',
+    description: 'Label text for the badge.',
+    table: { category: 'Content' },
+  },
+  badgeId: {
+    control: 'text',
+    name: 'badge-id',
+    description: 'Sets the ID attribute on the badge component.',
+    table: { category: 'Content' },
+  },
+  variant: {
+    control: 'text',
+    description:
+      'Visual variant/color for the badge (e.g., primary, secondary, success, danger, warning, info, light, dark, or any custom variant your app supports).',
+    table: { category: 'Appearance' },
+  },
+  size: {
+    control: { type: 'select' },
+    options: ['base', 'xs', 'sm', 'lg'],
+    description: 'Size, base, xs, sm, or lg, of the badge component.',
+    table: { category: 'Appearance' },
+  },
+  shape: {
+    control: { type: 'select' },
+    options: ['', 'pill', 'square'],
+    description:
+      'Shape, pill, square, or circle, of the badge component. The default shape is the standard rectangle with rounded corners.',
+    table: { category: 'Appearance' },
+  },
 
-    // Slot/content helpers
-    id: { table: { disable: true }, control: 'false', description: 'ID attribute for the badge component.' },
-    text: {
-      table: { disable: true }, // hides from ArgsTable
-      control: false, // hides from Controls
-    },
+  // -------- Accessibility --------
+  ariaLabel: {
+    control: 'text',
+    name: 'aria-label',
+    description: 'Sets the aria-label attribute on the badge component.',
+    table: { category: 'Accessibility' },
+  },
+  ariaLabelledby: {
+    control: 'text',
+    name: 'aria-labelledby',
+    description: 'Sets the aria-labelledby attribute on the badge component.',
+    table: { category: 'Accessibility' },
+  },
+  ariaDescribedby: {
+    control: 'text',
+    name: 'aria-describedby',
+    description: 'Sets the aria-describedby attribute on the badge component.',
+    table: { category: 'Accessibility' },
+  },
+
+  // -------- State --------
+  disabled: {
+    control: 'boolean',
+    description: 'If true, sets a disabled state on the badge component.',
+    table: { category: 'State', defaultValue: { summary: false } },
+  },
+  devMode: {
+    control: 'boolean',
+    name: 'dev-mode',
+    description: 'If true, enables dev mode with extra logging to the console.',
+    table: { category: 'State', defaultValue: { summary: false } },
+  },
+
+  // -------- Display Modes --------
+  outlined: {
+    control: 'boolean',
+    description: 'If true, renders the badge with an outlined style.',
+    table: { category: 'Modes', defaultValue: { summary: false } },
+  },
+  bordered: {
+    control: 'boolean',
+    description: 'If true, adds a border to the badge component.',
+    table: { category: 'Modes', defaultValue: { summary: false } },
+  },
+  token: {
+    control: 'boolean',
+    description:
+      'If true, renders the badge as a token, typically used to indicate a status or category associated with the parent element.',
+    table: { category: 'Modes', defaultValue: { summary: false } },
+  },
+  dot: {
+    control: 'boolean',
+    description:
+      'If true, renders the badge as a small dot, often used to indicate notifications or status without text content.',
+    table: { category: 'Modes', defaultValue: { summary: false } },
+  },
+  pulse: {
+    control: 'boolean',
+    description:
+      'If true, adds a pulsing animation to the dot badge, typically used to draw attention to notification badges.',
+    table: { category: 'Modes', defaultValue: { summary: false } },
+  },
+  icon: {
+    control: 'boolean',
+    description:
+      'If true, when using an icon within a badge, this property will add the some spacing to the left and right of the icon.',
+    table: { category: 'Modes', defaultValue: { summary: false } },
+  },
+
+  // -------- Placement / Alignment --------
+  bdgPosition: {
+    control: { type: 'select' },
+    options: ['', 'left', 'right'],
+    name: 'bdg-position',
+    description:
+      "When placing a badge on the left of any content of a <button-component>, this adds the class 'mr-1' to the badge... Placing to the right adds 'ml-1'.",
+    table: { category: 'Placement' },
+  },
+  inset: {
+    control: 'boolean',
+    description:
+      "To be used with the token or dot badges, if true, adds the set default style of 'inset: auto auto calc(100% - 12px) calc(100% - 12px);', positioning the badge token to the upper right of the element it is used with.",
+    table: { category: 'Placement', defaultValue: { summary: false } },
+  },
+  absolute: {
+    control: 'boolean',
+    description:
+      'To be used with the token or dot badges, if true, adds position: absolute inline style to the badge.',
+    table: { category: 'Placement', defaultValue: { summary: false } },
+  },
+
+  // -------- Styling / Classes --------
+  classNames: {
+    control: 'text',
+    name: 'class-names',
+    description: 'Additional custom class names to apply to the badge component.',
+    table: { category: 'Styling' },
+  },
+  elevation: {
+    control: 'text',
+    description: 'Applies a shadow elevation to the badge component (0-24).',
+    table: { category: 'Styling' },
+  },
+  styles: {
+    control: 'text',
+    name: 'styles',
+    description: 'Additional inline styles can be added to the badge. Ex: styles="color: green; padding: 10px;"',
+    table: { category: 'Styling' },
+  },
+  inlineStyles: {
+    control: 'text',
+    name: 'inline-styles',
+    description: 'Additional inline styles can be added to the dot or token badges. Ex: inline-styles="color: pink; padding: 10px;"',
+    table: { category: 'Styling' },
+  },
+  backgroundColor: {
+    control: 'text',
+    name: 'background-color',
+    description:
+      'To be used with the token or dot badges, sets or adds an inline style for background color that uses any valid CSS color value.',
+    table: { category: 'Styling' },
+  },
+  color: {
+    control: 'text',
+    description:
+      'To be used with the token or dot badges, sets or adds an inline style for text color that uses any valid CSS color value.',
+    table: { category: 'Styling' },
+  },
+
+  // -------- Position Offsets --------
+  top: {
+    control: 'text',
+    description: 'To be used with the token or dot badges, adds an inline style that sets the top CSS property.',
+    table: { category: 'Offsets' },
+  },
+  right: {
+    control: 'text',
+    description: 'To be used with the token or dot badges, adds an inline style that sets the right CSS property.',
+    table: { category: 'Offsets' },
+  },
+  bottom: {
+    control: 'text',
+    description: 'To be used with the token or dot badges, adds an inline style that sets the bottom CSS property.',
+    table: { category: 'Offsets' },
+  },
+  left: {
+    control: 'text',
+    description: 'To be used with the token or dot badges, adds an inline style that sets the left CSS property.',
+    table: { category: 'Offsets' },
+  },
+  offsetX: {
+    control: 'text',
+    name: 'offset-x',
+    description:
+      "To be used with the token or dot badges, used with the 'inset' property to overwrite the default bottom position value. Ex: offsetX=\"50\"",
+    table: { category: 'Offsets' },
+  },
+  offsetY: {
+    control: 'text',
+    name: 'offset-y',
+    description:
+      "To be used with the token or dot badges, used with the 'inset' property to overwrite the default left position value. Ex: offsetY=\"50\"",
+    table: { category: 'Offsets' },
+  },
+  zIndex: {
+    control: 'text',
+    name: 'z-index',
+    description:
+      'To be used with the token or dot badges, adds an inline style that sets the z-index CSS property. Ex: z-index="100"',
+    table: { category: 'Offsets' },
+  },
+
+  // -------- Hidden SB-only helpers (keep as-is) --------
+  id: {
+    table: { disable: true },
+    control: 'false',
+    description: 'ID attribute for the badge component.',
+  },
+  text: {
+    table: { disable: true },
+    control: false,
+  },
 
     // hides from Controls// useButtonComponentChild: { control: 'boolean' },
     // buttonText: { control: 'text' },

@@ -12,7 +12,11 @@ export default {
   },
 
   argTypes: {
-    vertical: { control: 'boolean', description: 'If true, stacks buttons vertically instead of horizontally.' },
+    vertical: {
+      control: 'boolean',
+      description: 'If true, stacks buttons vertically instead of horizontally.',
+      table: { category: 'Layout', defaultValue: { summary: false } },
+    },
   },
 
   args: {

@@ -174,12 +174,16 @@ export default {
       control: { type: 'number', min: 1 },
       description: 'The current page number (1-based).',
       name: 'current-page',
+      table: { category: 'Pagination' },
     },
+
     displayTotalNumberOfPages: {
       control: 'boolean',
       description: 'Show the display range ("1-10 of 123"). Attribute: `display-total-number-of-pages`.',
       name: 'display-total-number-of-pages',
+      table: { category: 'Display', defaultValue: { summary: false } },
     },
+
     goToButtons: {
       control: { type: 'select' },
       options: ['', 'icon', 'text'],
@@ -190,77 +194,116 @@ export default {
       },
       description: 'Go-to buttons are the First/Previous/Next/Last buttons that are displayed by setting `go-to-buttons` to "icon" or "text". Omit to use component default.',
       name: 'go-to-buttons',
+      table: { category: 'Pagination' },
     },
+
     hideEllipsis: {
       control: 'boolean',
       description: 'Hide the ellipsis (...) when limiting numeric page buttons.',
       name: 'hide-ellipsis',
+      table: { category: 'Pagination', defaultValue: { summary: false } },
     },
+
     hideGoToButtons: {
       control: 'boolean',
       description: 'Hide the go-to first/last buttons.',
       name: 'hide-go-to-buttons',
+      table: { category: 'Pagination', defaultValue: { summary: false } },
     },
+
     itemsPerPage: {
       control: 'boolean',
       description: 'Show the items-per-page dropdown.',
       name: 'items-per-page',
+      table: { category: 'Items Per Page', defaultValue: { summary: false } },
     },
+
     itemsPerPageOptions: {
       control: 'object',
       description: 'Array of numbers or "All", e.g. [10,20,50,100,"All"] (applied via property assignment).',
       name: 'items-per-page-options',
+      table: { category: 'Items Per Page' },
     },
+
     limit: {
       control: { type: 'number', min: 1 },
       description: 'Maximum number of numeric page buttons to display.',
+      name: 'limit',
+      table: { category: 'Pagination' },
     },
+
     pageSize: {
       control: { type: 'number', min: 1 },
       description: 'Number of rows per page.',
       name: 'page-size',
+      table: { category: 'Pagination' },
     },
+
     paginationLayout: {
       control: { type: 'select' },
       options: ['', 'start', 'center', 'end', 'fill', 'fill-left', 'fill-right'],
       description: 'Pagination layout/alignment by setting the `pagination-layout` attribute to "start", "center", "end", "fill", "fill-left", or "fill-right".',
       name: 'pagination-layout',
+      table: { category: 'Layout' },
     },
+
     paginationVariantColor: {
       control: 'text',
       description: 'Color variant for pagination buttons.',
       name: 'pagination-variant-color',
+      table: { category: 'Styling' },
     },
+
     plumage: {
       control: 'boolean',
       description: 'Use Plumage styling.',
+      name: 'plumage',
+      table: { category: 'Styling', defaultValue: { summary: false } },
     },
+
     position: {
       control: { type: 'select' },
       options: ['top', 'bottom', 'both'],
       description:
         "Position placement of the pagination component when used with the table component's `table-id`. It creates an id associated with the table for select id construction.",
+      name: 'position',
+      table: { category: 'Table Integration' },
     },
-    size: { control: { type: 'select' }, options: ['', 'sm', 'lg'], description: 'Size of the pagination component. You can set the `size` attribute to "sm" for small or "lg" for large. Omit to use default size.' },
+
+    size: {
+      control: { type: 'select' },
+      options: ['', 'sm', 'lg'],
+      description: 'Size of the pagination component. You can set the `size` attribute to "sm" for small or "lg" for large. Omit to use default size.',
+      name: 'size',
+      table: { category: 'Layout' },
+    },
+
     tableId: {
       control: 'text',
       description: 'Associated table id (used for select id construction).',
       name: 'table-id',
+      table: { category: 'Table Integration' },
     },
+
     totalRows: {
       control: { type: 'number', min: 0 },
       description: 'Total number of rows.',
       name: 'total-rows',
+      table: { category: 'Pagination' },
     },
+
     useByPagePagination: {
       control: 'boolean',
       description: 'Use "by page" variation (mutually exclusive, cannot be used with minimize).',
       name: 'use-by-page-pagination',
+      table: { category: 'Variants', defaultValue: { summary: false } },
     },
+
     useMinimizePagination: {
       control: 'boolean',
       description: 'Use "minimize" variation (mutually exclusive, cannot be used with by page).',
       name: 'use-minimize-pagination',
+      table: { category: 'Variants', defaultValue: { summary: false } },
     },
   },
 };
@@ -324,12 +367,13 @@ Standard.parameters = {
 };
 
 export const ItemsPerPage = () => {
-  const id = 'pg-sizechanger';
+  const idEnd = 'pg-sizechanger-end';
+  const idStart = 'pg-sizechanger-start';
   return normalizeHtml(`
 <div style="margin-bottom: 20px">
   <div style="font-size: 12px">Pagination on the end.</div>
   <pagination-component
-    id="${id}"
+    id="${idEnd}"
     current-page="1"
     total-rows="420"
     page-size="20"
@@ -341,7 +385,7 @@ export const ItemsPerPage = () => {
 <div style="margin-bottom: 20px">
   <div style="font-size: 12px">Pagination at the start.</div>
   <pagination-component
-    id="${id}"
+    id="${idStart}"
     current-page="1"
     total-rows="420"
     page-size="20"
@@ -351,7 +395,8 @@ export const ItemsPerPage = () => {
 </div>
 
 <script>
-  document.getElementById('${id}').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
+  document.getElementById('${idEnd}').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
+  document.getElementById('${idStart}').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
 </script>
 `);
 };
@@ -561,7 +606,12 @@ export const ColorVariants = () =>
 </div>
 `);
 ColorVariants.parameters = {
-  docs: { source: { code: ColorVariants(), language: 'html' } },
+  docs: {
+    source: { code: ColorVariants(), language: 'html' },
+    description: {
+      story: 'Pagination component demonstrating color variants via the `pagination-variant-color` attribute. The example shows "primary", "success", and "danger" variants.',
+    },
+  },
 };
 
 export const Playground = Template.bind({});
@@ -589,5 +639,5 @@ Playground.args = {
   position: 'bottom',
 };
 Playground.parameters = {
-  docs: { source: { code: Template(Playground.args), language: 'html' } },
+  docs: { source: { code: Template(Playground.args), language: 'html' }, description: { story: 'Playground for testing pagination component with various controls.' } },
 };

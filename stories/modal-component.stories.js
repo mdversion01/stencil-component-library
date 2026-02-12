@@ -96,36 +96,166 @@ export default {
     },
   },
   argTypes: {
-    // Trigger button props
-    ariaLabel: { control: 'text', description: 'ARIA label for the modal trigger button' },
-    block: { control: 'boolean', description: 'Whether the trigger button is block-level' },
-    btnText: { control: 'text', description: 'Text content of the modal trigger button' },
-    classNames: { control: 'text', description: 'Additional CSS classes for the trigger button' },
-    disabled: { control: 'boolean', description: 'Whether the trigger button is disabled' },
-    link: { control: 'boolean', description: 'Whether the trigger button is styled as a link' },
-    outlined: { control: 'boolean', description: 'Whether the trigger button has an outlined style' },
-    ripple: { control: 'boolean', description: 'Whether the trigger button has a ripple effect' },
-    shape: { control: { type: 'select' }, options: ['', 'square', 'pill', 'circle'], description: 'Shape of the modal trigger button' },
-    size: { control: { type: 'select' }, options: ['default', 'sm', 'lg'], description: 'Size of the modal trigger button' },
-    titleAttr: { control: 'text', description: 'Title attribute for the modal trigger button' },
-    variant: { control: { type: 'select' }, options: ['default', 'primary', 'secondary', 'danger'], description: 'Variant style of the modal trigger button' },
+    /* -----------------------------
+   Trigger button props
+  ------------------------------ */
+    ariaLabel: {
+      control: 'text',
+      name: 'aria-label',
+      table: { category: 'Accessibility' },
+      description: 'ARIA label for the modal trigger button.',
+    },
 
-    // Modal props
-    cancelCloseBtn: { control: 'text', description: 'Text for the modal cancel/close button' },
+    titleAttr: {
+      control: 'text',
+      name: 'title-attr',
+      table: { category: 'Trigger Button' },
+      description: 'Title attribute for the modal trigger button.',
+    },
+
+    btnText: {
+      control: 'text',
+      name: 'btn-text',
+      table: { category: 'Trigger Button' },
+      description: 'Text content of the modal trigger button.',
+    },
+
+    variant: {
+      control: { type: 'select' },
+      options: ['default', 'primary', 'secondary', 'danger'],
+      name: 'variant',
+      table: { category: 'Trigger Button' },
+      description: 'Variant style of the modal trigger button.',
+    },
+
+    size: {
+      control: { type: 'select' },
+      options: ['default', 'sm', 'lg'],
+      name: 'size',
+      table: { category: 'Trigger Button' },
+      description: 'Size of the modal trigger button.',
+    },
+
+    shape: {
+      control: { type: 'select' },
+      options: ['', 'square', 'pill', 'circle'],
+      name: 'shape',
+      table: { category: 'Trigger Button' },
+      description: 'Shape of the modal trigger button.',
+    },
+
+    outlined: {
+      control: 'boolean',
+      name: 'outlined',
+      table: { defaultValue: { summary: false }, category: 'Trigger Button' },
+      description: 'Whether the trigger button has an outlined style.',
+    },
+
+    block: {
+      control: 'boolean',
+      name: 'block',
+      table: { defaultValue: { summary: false }, category: 'Trigger Button' },
+      description: 'Whether the trigger button is block-level.',
+    },
+
+    link: {
+      control: 'boolean',
+      name: 'link',
+      table: { defaultValue: { summary: false }, category: 'Trigger Button' },
+      description: 'Whether the trigger button is styled as a link.',
+    },
+
+    ripple: {
+      control: 'boolean',
+      name: 'ripple',
+      table: { defaultValue: { summary: false }, category: 'Trigger Button' },
+      description: 'Whether the trigger button has a ripple effect.',
+    },
+
+    classNames: {
+      control: 'text',
+      name: 'class-names',
+      table: { category: 'Trigger Button' },
+      description: 'Additional CSS classes for the trigger button.',
+    },
+
+    disabled: {
+      control: 'boolean',
+      name: 'disabled',
+      table: { defaultValue: { summary: false }, category: 'State' },
+      description: 'Whether the trigger button is disabled.',
+    },
+
+    /* -----------------------------
+   Modal props
+  ------------------------------ */
+    modalTitle: {
+      control: 'text',
+      name: 'modal-title',
+      table: { category: 'Modal' },
+      description: 'Title text of the modal.',
+    },
+
+    modalSize: {
+      control: { type: 'select' },
+      options: [undefined, 'sm', 'lg', 'xl'],
+      name: 'modal-size',
+      table: { category: 'Modal' },
+      description: 'Size of the modal.',
+    },
+
     modalFullScreen: {
       control: { type: 'select' },
       options: [undefined, 'fullscreen', 'sm-down', 'md-down', 'lg-down', 'xl-down', 'xxl-down'],
-      description: 'Fullscreen behavior of the modal',
+      name: 'modal-full-screen',
+      table: { category: 'Modal' },
+      description: 'Fullscreen behavior of the modal.',
     },
-    modalSize: { control: { type: 'select' }, options: [undefined, 'sm', 'lg', 'xl'], description: 'Size of the modal' },
-    modalTitle: { control: 'text', description: 'Title text of the modal' },
-    scrollableBody: { control: 'boolean', description: 'Whether the modal body is scrollable' },
-    scrollLongContent: { control: 'boolean', description: 'Whether the modal has long content that requires scrolling' },
-    verticallyCentered: { control: 'boolean', description: 'Whether the modal is vertically centered' },
 
-    // Slots (HTML strings)
-    bodyHtml: { control: 'text', description: 'HTML content for the modal body' },
-    footerHtml: { control: 'text', description: 'HTML content for the modal footer' },
+    scrollableBody: {
+      control: 'boolean',
+      name: 'scrollable-body',
+      table: { defaultValue: { summary: false }, category: 'Modal' },
+      description: 'Whether the modal body is scrollable.',
+    },
+
+    scrollLongContent: {
+      control: 'boolean',
+      name: 'scroll-long-content',
+      table: { defaultValue: { summary: false }, category: 'Modal' },
+      description: 'Whether the modal has long content that requires window scrolling.',
+    },
+
+    verticallyCentered: {
+      control: 'boolean',
+      name: 'vertically-centered',
+      table: { defaultValue: { summary: false }, category: 'Modal' },
+      description: 'Whether the modal is vertically centered.',
+    },
+
+    cancelCloseBtn: {
+      control: 'text',
+      name: 'cancel-close-btn',
+      table: { category: 'Modal' },
+      description: 'Text for the modal cancel/close button.',
+    },
+
+    /* -----------------------------
+   Slots (HTML strings)
+  ------------------------------ */
+    bodyHtml: {
+      control: 'text',
+      name: 'body-html',
+      table: { category: 'Slots' },
+      description: 'HTML content for the modal body.',
+    },
+
+    footerHtml: {
+      control: 'text',
+      name: 'footer-html',
+      table: { category: 'Slots' },
+      description: 'HTML content for the modal footer.',
+    },
   },
 };
 
@@ -204,7 +334,7 @@ Basic.args = {
   ariaLabel: '',
 
   // Modal props
-  modalTitle: '',          // keep title empty like your original Basic
+  modalTitle: '', // keep title empty like your original Basic
   modalSize: undefined,
   modalFullScreen: undefined,
   scrollableBody: false,
@@ -214,7 +344,7 @@ Basic.args = {
 
   // Slots (HTML strings)
   bodyHtml: '<p>Basic modal content.</p>',
-  footerHtml: '',          // use the default <button-component> from the Template
+  footerHtml: '', // use the default <button-component> from the Template
 };
 
 Basic.parameters = {
@@ -224,7 +354,6 @@ Basic.parameters = {
     },
   },
 };
-
 
 export const Sizes = () => `
 <div style="display:grid; gap:16px;">

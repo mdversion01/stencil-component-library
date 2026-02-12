@@ -77,7 +77,7 @@ export default {
           "  { header: 'Accordion 4', content: 'Content 4' },",
           '];',
           "document.getElementById('accordion-1').data = collapseData;",
-        '</script>',
+          '</script>',
           '```',
           '',
           '**Tip:** Make sure your component prefixes each item’s `id`/`data-bs-target` ',
@@ -88,60 +88,87 @@ export default {
   },
 
   argTypes: {
+    // -------- Layout --------
     block: {
       control: 'boolean',
       description: 'Full width container.',
+      table: { category: 'Layout', defaultValue: { summary: false } },
     },
     classNames: {
       control: 'text',
       name: 'class-names',
       description: 'Additional classes applied to the container.',
+      table: { category: 'Layout' },
+    },
+
+    // -------- Data / Content --------
+    data: {
+      control: 'object',
+      description: 'Array of items: `{ header: string, content: string }` used to render each accordion section.',
+      table: { category: 'Data' },
     },
     contentTxtSize: {
       control: { type: 'select' },
       options: ['', 'xs', 'sm', 'default', 'lg', 'xl', 'xxl'],
       name: 'content-txt-size',
       description: 'Changes the content/body text sizing inside items.',
+      table: { category: 'Data' },
     },
-    data: {
-      control: 'object',
-      description: 'Array of items: `{ header: string, content: string }` used to render each accordion section.',
-    },
-    disabled: {
+
+    // -------- Behavior --------
+    singleOpen: {
       control: 'boolean',
-      description: 'Disables interaction.',
+      name: 'single-open',
+      description: 'Allows only one item open at a time.',
+      table: { category: 'Behavior', defaultValue: { summary: false } },
     },
-    flush: {
-      control: 'boolean',
-      description: 'Removes outer borders and rounded corners for a flush appearance.',
-    },
-    icon: {
+
+    // -------- Appearance --------
+    variant: {
       control: 'text',
-      description: 'Default `fas fa-angle-down`. You can pass two icons separated by a comma for closed/open: ' + '`"fa-solid fa-plus, fa-solid fa-minus"`.',
+      description: 'Visual variant for headers/buttons (e.g., primary, secondary, etc.).',
+      table: { category: 'Appearance' },
     },
     outlined: {
       control: 'boolean',
       description: 'Outlined style for accordion items.',
+      table: { category: 'Appearance', defaultValue: { summary: false } },
     },
+    flush: {
+      control: 'boolean',
+      description: 'Removes outer borders and rounded corners for a flush appearance.',
+      table: { category: 'Appearance', defaultValue: { summary: false } },
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['', 'xs', 'sm', 'lg', 'plumage-size'],
+      description: 'Sets the size of the button, e.g., extra small (xs), small (sm), large (lg), or plumage-size. If not set, default size is used.',
+      table: { category: 'Appearance' },
+    },
+    icon: {
+      control: 'text',
+      description: 'Default `fas fa-angle-down`. You can pass two icons separated by a comma for closed/open: `"fa-solid fa-plus, fa-solid fa-minus"`.',
+      table: { category: 'Appearance' },
+    },
+
+    // -------- State / Interaction --------
+    disabled: {
+      control: 'boolean',
+      description: 'Disables interaction.',
+      table: { category: 'State', defaultValue: { summary: false } },
+    },
+    ripple: {
+      control: 'boolean',
+      description: 'Enables ripple effect on interaction.',
+      table: { category: 'Interaction', defaultValue: { summary: false } },
+    },
+
+    // -------- Internal / Story-only (hidden) --------
     parentId: {
       control: false,
       name: 'parent-id',
       description: 'Computed uniquely per render to avoid collisions (not set manually by the story).',
       table: { disable: true },
-    },
-    ripple: {
-      control: 'boolean',
-      description: 'Enables ripple effect on interaction.',
-    },
-    singleOpen: {
-      control: 'boolean',
-      name: 'single-open',
-      description: 'Allows only one item open at a time.',
-    },
-    size: { control: { type: 'select' }, options: ['', 'xs',  'sm', 'lg', 'plumage-size'], description: 'Sets the size of the button, e.g., extra small (xs), small (sm), large (lg), or plumage-size. If not set, default size is used.' },
-    variant: {
-      control: 'text',
-      description: 'Visual variant for headers/buttons (e.g., primary, secondary, etc.).',
     },
   },
 
@@ -176,8 +203,7 @@ export const Basic = {
   parameters: {
     docs: {
       description: {
-        story:
-          'A default accordion container rendering multiple items. Each item can be opened or closed independently.',
+        story: 'A default accordion container rendering multiple items. Each item can be opened or closed independently.',
       },
     },
   },
@@ -190,13 +216,11 @@ export const SingleOpen = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Accordion container that enforces a single expanded item at a time (opening one item closes the previously open item).',
+        story: 'Accordion container that enforces a single expanded item at a time (opening one item closes the previously open item).',
       },
     },
   },
 };
-
 
 export const Flush = {
   name: 'Flush',
@@ -205,8 +229,7 @@ export const Flush = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Accordion container that removes outer borders and rounded corners for a flush appearance.',
+        story: 'Accordion container that removes outer borders and rounded corners for a flush appearance.',
       },
     },
   },
@@ -219,8 +242,7 @@ export const Disabled = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Accordion container that disables interaction for all items.',
+        story: 'Accordion container that disables interaction for all items.',
       },
     },
   },
@@ -233,8 +255,7 @@ export const CustomIcons = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Accordion container using custom icons for open/closed states.',
+        story: 'Accordion container using custom icons for open/closed states.',
       },
     },
   },

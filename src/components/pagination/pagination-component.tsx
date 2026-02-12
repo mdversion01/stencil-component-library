@@ -1,3 +1,4 @@
+// src/components/pagination/pagination-component.tsx
 import { Component, Prop, State, Event, EventEmitter, h, Element, Watch, Listen } from '@stencil/core';
 
 @Component({
@@ -23,9 +24,11 @@ export class PaginationComponent {
   @Prop() goToButtons: string = 'icon';
   @Prop() hideEllipsis: boolean = false;
   @Prop() hideGoToButtons: boolean = false;
+
   @Prop() itemsPerPageOptions: Array<number | 'All'> = [10, 20, 50, 100, 'All'];
-  @Prop() itemsPerPage: boolean = false;                 // parent renders size-changer
-  @Prop() displayTotalNumberOfPages: boolean = false;    // parent renders range ("1-10 of 123")
+  @Prop() itemsPerPage: boolean = false; // parent renders size-changer
+  @Prop() displayTotalNumberOfPages: boolean = false; // parent renders range ("1-10 of 123")
+
   @Prop() size: '' | 'sm' | 'lg' = '';
   @Prop() paginationLayout: '' | 'start' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right' = '';
   @Prop() paginationVariantColor: string = '';
@@ -33,8 +36,13 @@ export class PaginationComponent {
   @Prop() tableId: string = '';
   @Prop() position: 'top' | 'bottom' | 'both' = 'bottom';
 
-  // Variant switch
+  // ✅ New: Single variant selector (preferred)
+  @Prop() variant: 'standard' | 'minimize' | 'by-page' = 'standard';
+
+  // Legacy booleans (kept for backwards compatibility)
+  /** @deprecated use variant="minimize" */
   @Prop() useMinimizePagination: boolean = false;
+  /** @deprecated use variant="by-page" */
   @Prop() useByPagePagination: boolean = false;
 
   @State() private isSelectFocused = false;
@@ -49,6 +57,21 @@ export class PaginationComponent {
     return Math.max(1, Math.ceil(rows / size));
   }
 
+  // ✅ Determine which variant to render
+  private get effectiveVariant(): 'standard' | 'minimize' | 'by-page' {
+    if (this.variant && this.variant !== 'standard') return this.variant;
+
+    // legacy fallback if variant left default
+    const legacyCount = Number(!!this.useMinimizePagination) + Number(!!this.useByPagePagination);
+    if (legacyCount > 1) {
+      console.warn('[pagination] Both legacy variants set; using minimize by precedence.');
+      return 'minimize';
+    }
+    if (this.useMinimizePagination) return 'minimize';
+    if (this.useByPagePagination) return 'by-page';
+    return 'standard';
+  }
+
   @Watch('totalRows')
   @Watch('pageSize')
   protected clampAndSync() {
@@ -57,12 +80,17 @@ export class PaginationComponent {
     if (this.currentPage < 1) this.currentPage = 1;
   }
 
+  @Watch('variant')
   @Watch('useMinimizePagination')
   @Watch('useByPagePagination')
   validateVariant() {
-    const variantCount = Number(!!this.useMinimizePagination) + Number(!!this.useByPagePagination);
-    if (variantCount > 1) {
-      console.warn('[pagination] Both variants set; using minimize by precedence.');
+    // Soft warnings to help catch mixed usage
+    if (this.variant !== 'standard' && (this.useMinimizePagination || this.useByPagePagination)) {
+      console.warn('[pagination] Both `variant` and legacy variant booleans are set; `variant` wins.');
+    }
+    const legacyCount = Number(!!this.useMinimizePagination) + Number(!!this.useByPagePagination);
+    if (legacyCount > 1) {
+      console.warn('[pagination] Both legacy variants set; minimize wins.');
     }
   }
 
@@ -103,6 +131,7 @@ export class PaginationComponent {
       bFocusDiv.style.left = '0';
     }
   };
+
   private handleBlur = () => {
     this.isSelectFocused = false;
     setTimeout(() => {
@@ -170,7 +199,8 @@ export class PaginationComponent {
         >
           {this.itemsPerPageOptions.map(opt => {
             const isNum = typeof opt === 'number';
-            const disable = isNum && this.totalRows > 0 && opt > this.totalRows;
+            const isAll = opt === 'All';
+            const disable = (isNum && this.totalRows > 0 && opt > this.totalRows) || (isAll && this.totalRows === 0);
             return (
               <option value={String(opt)} selected={this.pageSize === (opt as any)} disabled={disable}>
                 {String(opt)}
@@ -205,7 +235,8 @@ export class PaginationComponent {
           >
             {this.itemsPerPageOptions.map(opt => {
               const isNum = typeof opt === 'number';
-              const disable = isNum && this.totalRows > 0 && opt > this.totalRows;
+              const isAll = opt === 'All';
+              const disable = (isNum && this.totalRows > 0 && opt > this.totalRows) || (isAll && this.totalRows === 0);
               return (
                 <option value={String(opt)} selected={this.pageSize === (opt as any)} disabled={disable}>
                   {String(opt)}
@@ -222,11 +253,12 @@ export class PaginationComponent {
   }
 
   private renderPaginatorBody() {
-    const Tag = this.useMinimizePagination
-      ? ('minimize-pagination-component' as any)
-      : this.useByPagePagination
-      ? ('by-page-pagination-component' as any)
-      : ('standard-pagination-component' as any);
+    const Tag =
+      this.effectiveVariant === 'minimize'
+        ? ('minimize-pagination-component' as any)
+        : this.effectiveVariant === 'by-page'
+        ? ('by-page-pagination-component' as any)
+        : ('standard-pagination-component' as any);
 
     // NOTE: We *do not* pass itemsPerPage / displayTotalNumberOfPages to children.
     // Parent renders those. Children keep them for standalone usage only.

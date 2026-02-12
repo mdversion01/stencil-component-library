@@ -204,7 +204,7 @@ exports[`basic-slider-component parses tickValues from JSON attribute and shows 
     <div aria-disabled="false" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="50" class="slider" dir="ltr" role="slider">
       <div class="slider-container">
         <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-left" role="textbox">
-          50
+          50%
         </div>
         <div class="slider-min-value">
           0%
@@ -252,7 +252,7 @@ exports[`basic-slider-component parses tickValues from JSON attribute and shows 
           100%
         </div>
         <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
-          50
+          50%
         </div>
       </div>
     </div>
@@ -269,7 +269,7 @@ exports[`basic-slider-component renders label and sliderThumbLabel modes: label-
       </label>
       <div class="slider-container">
         <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-left" role="textbox">
-          7
+          7%
         </div>
         <div class="slider-min-value">
           0%
@@ -285,7 +285,7 @@ exports[`basic-slider-component renders label and sliderThumbLabel modes: label-
           100%
         </div>
         <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
-          7
+          7%
         </div>
       </div>
     </div>
@@ -299,7 +299,7 @@ exports[`basic-slider-component renders label and sliderThumbLabel modes: thumb-
     <div aria-disabled="false" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="7" class="slider" dir="ltr" role="slider">
       <div class="slider-container">
         <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-left" role="textbox">
-          7
+          7%
         </div>
         <div class="slider-min-value">
           0%
@@ -322,7 +322,7 @@ exports[`basic-slider-component renders label and sliderThumbLabel modes: thumb-
           100%
         </div>
         <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
-          7
+          7%
         </div>
       </div>
     </div>

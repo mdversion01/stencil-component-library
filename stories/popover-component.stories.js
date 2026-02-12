@@ -13,52 +13,104 @@ export default {
     },
   },
   argTypes: {
-    arrowOff: { control: 'boolean', name: 'arrow-off', description: 'Disable popover arrow.' },
-    content: { control: 'text', description: 'Popover content.' },
-    customClass: { control: 'text', name: 'custom-class', description: 'Additional CSS class for custom styling.' },
-
-    fallbackPlacement: {
+    /* -----------------------------
+     Content
+  ------------------------------ */
+    popoverTitle: {
       control: 'text',
-      name: 'fallback-placement',
-      description: 'e.g. "flip" or "clockwise" or a CSV list like "top, right, bottom".',
+      name: 'title',
+      description: 'Popover title.',
+      table: { category: 'Content' },
     },
-
-    offset: { control: { type: 'number', min: 0, step: 1 }, description: 'Distance in pixels between popover and target.' },
-
-    placement: {
-      control: { type: 'select' },
-      options: ['auto', 'top', 'bottom', 'left', 'right', 'top-start', 'top-end', 'bottom-start', 'bottom-end', 'left-start', 'left-end', 'right-start', 'right-end'],
-      description: 'Preferred popover placement.',
-    },
-
-    plumage: { control: 'boolean', description: 'Use plumage (alternative) styling.' },
-
-    // attribute is `title` (prop is popoverTitle internally)
-    popoverTitle: { control: 'text', name: 'title', description: 'Popover title.' },
-
-    // attribute is `super`
-    superTooltip: { control: 'boolean', name: 'super', description: 'Enable super tooltip mode.' },
-
-    target: {
+    content: {
       control: 'text',
-      description: 'If set, popover is triggered by external element with this id.',
+      description: 'Popover content.',
+      table: { category: 'Content' },
     },
 
+    /* -----------------------------
+     Trigger & Targeting
+  ------------------------------ */
     trigger: {
       control: { type: 'select' },
       options: ['click', 'hover', 'focus', 'click hover', 'click focus', 'hover focus'],
       description: 'Event(s) that trigger the popover.',
+      table: { category: 'Trigger & Targeting' },
+    },
+    target: {
+      control: 'text',
+      description: 'If set, popover is triggered by external element with this id.',
+      table: { category: 'Trigger & Targeting' },
+    },
+    visible: {
+      control: 'boolean',
+      description: 'Force popover to be visible.',
+      table: { category: 'Trigger & Targeting', defaultValue: { summary: false } },
+    },
+    superTooltip: {
+      control: 'boolean',
+      name: 'super',
+      description: 'Enable super tooltip mode.',
+      table: { category: 'Trigger & Targeting', defaultValue: { summary: false } },
     },
 
+    /* -----------------------------
+     Positioning
+  ------------------------------ */
+    placement: {
+      control: { type: 'select' },
+      options: ['auto', 'top', 'bottom', 'left', 'right', 'top-start', 'top-end', 'bottom-start', 'bottom-end', 'left-start', 'left-end', 'right-start', 'right-end'],
+      description: 'Preferred popover placement.',
+      table: { category: 'Positioning' },
+    },
+    fallbackPlacement: {
+      control: 'text',
+      name: 'fallback-placement',
+      description: 'e.g. "flip" or "clockwise" or a CSV list like "top, right, bottom".',
+      table: { category: 'Positioning' },
+    },
+    offset: {
+      control: { type: 'number', min: 0, step: 1 },
+      description: 'Distance in pixels between popover and target.',
+      table: { category: 'Positioning' },
+    },
+    yOffset: {
+      control: { type: 'number', step: 1 },
+      name: 'y-offset',
+      description: 'Cross-axis nudge in pixels.',
+      table: { category: 'Positioning' },
+    },
+
+    /* -----------------------------
+     Styling
+  ------------------------------ */
     variant: {
       control: { type: 'select' },
       options: ['', 'primary', 'secondary', 'success', 'danger', 'info', 'warning', 'dark'],
       description: 'Color variant for the popover.',
+      table: { category: 'Styling' },
+    },
+    plumage: {
+      control: 'boolean',
+      description: 'Use plumage (alternative) styling.',
+      table: { category: 'Styling', defaultValue: { summary: false } },
+    },
+    customClass: {
+      control: 'text',
+      name: 'custom-class',
+      description: 'Additional CSS class for custom styling.',
+      table: { category: 'Styling' },
     },
 
-    visible: { control: 'boolean', description: 'Force popover to be visible.' },
-
-    yOffset: { control: { type: 'number', step: 1 }, name: 'y-offset', description: 'Cross-axis nudge in pixels.' },
+    /* -----------------------------
+     Chrome
+  ------------------------------ */
+    arrowOff: {
+      control: 'boolean',
+      name: 'arrow-off',
+      description: 'Disable popover arrow.',
+      table: { category: 'Chrome', defaultValue: { summary: false } },
+    },
   },
 };
 

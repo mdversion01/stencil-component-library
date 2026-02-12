@@ -1,6 +1,6 @@
 // stories/icon-component.stories.js
 
-import { FALSE } from "sass";
+import { FALSE } from 'sass';
 
 export default {
   title: 'Components/Icon',
@@ -26,14 +26,14 @@ export default {
           };
 
           // camelCase -> kebab-case
-          const toAttr = (k) => k.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
+          const toAttr = k => k.replace(/[A-Z]/g, m => '-' + m.toLowerCase());
 
           // Serialize props -> HTML attributes
           // RULE: if a prop is false or "", do NOT print it.
           // - Booleans: print presence-only when true; omit when false
           // - Strings: omit when empty
           // - Numbers: print when not undefined
-          const attrsToString = (props) =>
+          const attrsToString = props =>
             Object.entries(props)
               .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
               .map(([k, v]) => {
@@ -70,9 +70,7 @@ export default {
                 { comment: 'inline 28px', props: { icon: 'fa-solid fa-user', iconSize: 28 } },
                 { comment: 'inline 40px', props: { icon: 'fa-solid fa-user', iconSize: 40 } },
               ];
-              const html = items
-                .map(({ comment, props }) => `<!-- ${comment} -->\n${iconTag(props)}`)
-                .join('\n');
+              const html = items.map(({ comment, props }) => `<!-- ${comment} -->\n${iconTag(props)}`).join('\n');
               return wrap(html, 'display:flex; gap:16px; align-items:center;');
             }
 
@@ -110,37 +108,79 @@ export default {
         },
       },
       description: {
-        component:
-          'The <icon-component> renders Font Awesome / Material Design icons by class name. It supports size, color, accessibility, and margin props.',
+        component: 'The <icon-component> renders Font Awesome / Material Design icons by class name. It supports size, color, accessibility, and margin props.',
       },
     },
   },
   argTypes: {
-    color: { control: 'color', description: 'Adds inline color style', name: 'color' },
+    /* -----------------------------
+   Content
+  ------------------------------ */
     icon: {
       control: 'text',
-      description:
-        'Add icon class string (e.g., "fa-solid fa-user"). Uses either Font Awesome or Material Design Icons',
+      description: 'Add icon class string (e.g., "fa-solid fa-user"). Uses either Font Awesome or Material Design Icons',
+      table: { category: 'Content' },
     },
-    iconAriaHidden: {
+
+    /* -----------------------------
+   Styling
+  ------------------------------ */
+    color: {
+      control: 'color',
+      description: 'Adds inline color style',
+      name: 'color',
+      table: { category: 'Styling' },
+    },
+
+    size: {
+      control: 'text',
+      description: 'Extra size class (e.g., "fa-lg", "fa-2x", or a custom utility)',
+      table: { category: 'Styling' },
+    },
+
+    iconSize: {
+      control: 'number',
+      description: 'Inline font-size in px',
+      name: 'icon-size',
+      table: { category: 'Styling' },
+    },
+
+    tokenIcon: {
       control: 'boolean',
-      description: 'Whether the icon is hidden from assistive tech (aria-hidden)',
-      name: 'icon-aria-hidden',
+      description: 'Adds "token-icon" class',
+      name: 'token-icon',
+      table: { category: 'Styling', defaultValue: { summary: false } },
     },
-    iconAriaLabel: { control: 'text', description: 'Accessible label (sets aria-label)', name: 'icon-aria-label' },
+
+    /* -----------------------------
+   Layout
+  ------------------------------ */
     iconMargin: {
       control: { type: 'select' },
       options: ['', 'left', 'right'],
       description: 'Applies spacing utility (ms-1 or me-1)',
       name: 'icon-margin',
+      table: { category: 'Layout' },
     },
-    iconSize: { control: 'number', description: 'Inline font-size in px', name: 'icon-size' },
-    size: {
+
+    /* -----------------------------
+   Accessibility
+  ------------------------------ */
+    iconAriaHidden: {
+      control: 'boolean',
+      description: 'Whether the icon is hidden from assistive tech (aria-hidden)',
+      name: 'icon-aria-hidden',
+      table: { category: 'Accessibility', defaultValue: { summary: false } },
+    },
+
+    iconAriaLabel: {
       control: 'text',
-      description: 'Extra size class (e.g., "fa-lg", "fa-2x", or a custom utility)',
+      description: 'Accessible label (sets aria-label)',
+      name: 'icon-aria-label',
+      table: { category: 'Accessibility' },
     },
-    tokenIcon: { control: 'boolean', description: 'Adds "token-icon" class', name: 'token-icon' },
   },
+
   args: {
     color: '',
     icon: 'fa-solid fa-star',
@@ -182,7 +222,7 @@ const makeIcon = (args = {}) => {
   return el;
 };
 
-const Template = (args) => makeIcon(args);
+const Template = args => makeIcon(args);
 
 /** ------------ Stories ------------ */
 
@@ -193,8 +233,7 @@ Basic.args = {
 Basic.parameters = {
   docs: {
     description: {
-      story:
-        'Basic icon. Docs code omits any props that are false or empty strings.',
+      story: 'Basic icon. Docs code omits any props that are false or empty strings.',
     },
   },
 };
@@ -226,8 +265,7 @@ export const Sizes = () => {
 Sizes.parameters = {
   docs: {
     description: {
-      story:
-        'Examples using FA size classes (`size`) and inline pixel sizing (`iconSize`).',
+      story: 'Examples using FA size classes (`size`) and inline pixel sizing (`iconSize`).',
     },
   },
 };
@@ -273,12 +311,10 @@ TokenIcon.parameters = {
   docs: {
     source: {
       // presence-only for token-icon; omit anything false/empty
-      code:
-        '<icon-component icon="fa-solid fa-shield" color="#0ea5e9" icon-size="10" token-icon></icon-component>',
+      code: '<icon-component icon="fa-solid fa-shield" color="#0ea5e9" icon-size="10" token-icon></icon-component>',
     },
     description: {
-      story:
-        'Token-style icon (adds "token-icon" class) with custom color and size.',
+      story: 'Token-style icon (adds "token-icon" class) with custom color and size.',
     },
   },
 };
@@ -303,8 +339,7 @@ export const Margins = () => {
 Margins.parameters = {
   docs: {
     description: {
-      story:
-        'Apply left/right spacing via `iconMargin`.',
+      story: 'Apply left/right spacing via `iconMargin`.',
     },
   },
 };
@@ -320,12 +355,10 @@ AccessibleLabel.parameters = {
   docs: {
     source: {
       // Per rule, do NOT print false props — so aria-hidden="false" is omitted.
-      code:
-        '<icon-component icon="fa-solid fa-bell" icon-aria-label="Notifications" icon-size="24"></icon-component>',
+      code: '<icon-component icon="fa-solid fa-bell" icon-aria-label="Notifications" icon-size="24"></icon-component>',
     },
     description: {
-      story:
-        'Accessible icon with label. (Docs omit false props per rule.)',
+      story: 'Accessible icon with label. (Docs omit false props per rule.)',
     },
   },
 };
@@ -344,8 +377,7 @@ Playground.args = {
 Playground.parameters = {
   docs: {
     description: {
-      story:
-        'Adjust controls to experiment. Docs code hides any false/empty props.',
+      story: 'Adjust controls to experiment. Docs code hides any false/empty props.',
     },
   },
 };
@@ -372,7 +404,7 @@ export const IconGallery = () => {
   grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(80px, 1fr))';
   grid.style.gap = '12px';
 
-  icons.forEach((ic) => {
+  icons.forEach(ic => {
     const cell = document.createElement('div');
     cell.style.display = 'flex';
     cell.style.flexDirection = 'column';

@@ -13,7 +13,7 @@
 | `displayTotalNumberOfPages` | `display-total-number-of-pages` |             | `boolean`                                                                     | `false`                    |
 | `goToButtons`               | `go-to-buttons`                 |             | `string`                                                                      | `'icon'`                   |
 | `hideEllipsis`              | `hide-ellipsis`                 |             | `boolean`                                                                     | `false`                    |
-| `hideGotoEndButtons`        | `hide-goto-end-buttons`         |             | `boolean`                                                                     | `false`                    |
+| `hideGoToButtons`           | `hide-go-to-buttons`            |             | `boolean`                                                                     | `false`                    |
 | `itemsPerPage`              | `items-per-page`                |             | `boolean`                                                                     | `false`                    |
 | `itemsPerPageOptions`       | --                              |             | `(number \| "All")[]`                                                         | `[10, 20, 50, 100, 'All']` |
 | `limit`                     | `limit`                         |             | `number`                                                                      | `5`                        |

@@ -29,8 +29,17 @@ export class TimepickerManagerComponent {
   /** Optional size variant (e.g., 'sm', 'lg') */
   @Prop() size: string = '';
 
-  /** Validation message to show (if any) */
+  /**
+   * Validation message to show (if any).
+   * NOTE: children now clear this internally on clear/typing/spinner interaction.
+   */
   @Prop() validationMessage: string = '';
+
+  /**
+   * External invalid/validation styling flag (drives `invalid` / `is-invalid` styling in children).
+   * NOTE: children now clear this internally on clear/typing/spinner interaction.
+   */
+  @Prop() validation?: boolean = false;
 
   /** Force show only 24-hour controls/options */
   @Prop() twentyFourHourOnly: boolean = false;
@@ -51,7 +60,17 @@ export class TimepickerManagerComponent {
   @Prop() usePlTimepicker: boolean = false;
 
   /** Width (px) for the input element */
-  @Prop() inputWidth: number = null;
+  @Prop() inputWidth: number | string = null;
+
+  /** Required indicator (Plumage label asterisk, etc.) */
+  @Prop() required: boolean = false;
+
+  /**
+   * Disable the timepicker.
+   * - For <timepicker-component>: passed as `disableTimepicker`
+   * - For <plumage-timepicker-component>: passed as `disabled`
+   */
+  @Prop() disableTimepicker: boolean = false;
 
   private commonProps() {
     // Use camelCase keys so Stencil sets component properties (not just attributes)
@@ -60,23 +79,35 @@ export class TimepickerManagerComponent {
       ariaLabelledby: this.ariaLabelledby,
       showLabel: this.showLabel,
       labelText: this.labelText,
-      inputId: this.inputId, // maps to child @Prop() inputId
+      inputId: this.inputId,
       inputName: this.inputName,
       isTwentyFourHourFormat: this.isTwentyFourHourFormat,
       size: this.size,
+
+      // validation
       validationMessage: this.validationMessage,
+      validation: this.validation,
+
       twentyFourHourOnly: this.twentyFourHourOnly,
       twelveHourOnly: this.twelveHourOnly,
       hideTimepickerBtn: this.hideTimepickerBtn,
       isValid: this.isValid,
       hideSeconds: this.hideSeconds,
       inputWidth: this.inputWidth,
+
+      required: this.required,
     };
   }
 
   render() {
     const props = this.commonProps();
 
-    return this.usePlTimepicker ? <plumage-timepicker-component {...(props as any)} /> : <timepicker-component {...(props as any)} />;
+    if (this.usePlTimepicker) {
+      // Plumage component uses `disabled` (not `disableTimepicker`)
+      return <plumage-timepicker-component {...({ ...(props as any), disabled: this.disableTimepicker } as any)} />;
+    }
+
+    // Standard component uses `disableTimepicker`
+    return <timepicker-component {...({ ...(props as any), disableTimepicker: this.disableTimepicker } as any)} />;
   }
 }

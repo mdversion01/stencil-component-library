@@ -1,8 +1,6 @@
 // src/components/sliders/basic-slider-component.tsx
 import { Component, Prop, Event, EventEmitter, h, State, Watch, Element } from '@stencil/core';
 
-// type Variant = '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
-
 @Component({
   tag: 'basic-slider-component',
   shadow: false,
@@ -47,10 +45,6 @@ export class BasicSliderComponent {
   componentWillLoad() {
     this._ticks = this.normalizeTicks(this.tickValues);
     this.value = this.clamp(this.value, this.min, this.max);
-  }
-
-  componentDidLoad() {
-    // nothing special; all DOM refs from render
   }
 
   disconnectedCallback() {
@@ -110,6 +104,20 @@ export class BasicSliderComponent {
     return Math.round(this.ratio() * 100);
   }
 
+  /**
+   * Format numeric values with unit.
+   * If unit is "$", prefix it (e.g. $42). Otherwise suffix (e.g. 42°F).
+   */
+  private formatWithUnit(n: number): string {
+    const unit = String(this.unit ?? '').trim();
+    const rounded = Math.round(n);
+
+    if (!unit) return String(rounded);
+    if (unit === '$') return `${unit}${rounded}`;
+
+    return `${rounded}${unit}`;
+  }
+
   // Keyboard
   private handleKeyDown = (event: KeyboardEvent) => {
     if (this.disabled) return;
@@ -155,7 +163,6 @@ export class BasicSliderComponent {
       }
       return 0;
     }
-    // move to the nearest tick in the given direction
     const sorted = [...this._ticks].sort((a, b) => a - b);
     const greater = sorted.find(t => t > currentValue);
     const lesser = [...sorted].reverse().find(t => t < currentValue);
@@ -187,11 +194,10 @@ export class BasicSliderComponent {
     if (!this.dragging || !this.containerEl) return;
     const rect = this.containerEl.getBoundingClientRect();
     const x = this.clamp(e.clientX - rect.left, 0, rect.width);
-    let pct = x / Math.max(1, rect.width);
+    const pct = x / Math.max(1, rect.width);
     let newValue = this.min + pct * (this.max - this.min);
 
     if (this.snapToTicks && this._ticks.length > 0) {
-      // snap to nearest tick by distance
       let nearest = this._ticks[0];
       let best = Infinity;
       for (const t of this._ticks) {
@@ -229,11 +235,21 @@ export class BasicSliderComponent {
     const hideLeft = this.hideTextBoxes || this.hideLeftTextBox;
     const hideRight = this.hideTextBoxes || this.hideRightTextBox;
 
+    // ✅ Keep the positioning class even when disabled
+    const thumbContainerClass = [
+      'slider-thumb-container',
+      color,
+      this.disabled ? 'slider-thumb-container-disabled' : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+
     return (
       <div class="slider-wrapper">
         <div
           dir="ltr"
           class="slider"
+          {...(this.disabled && { disabled: true })}
           aria-label={this.label || undefined}
           role="slider"
           aria-valuemin={String(this.min)}
@@ -244,30 +260,27 @@ export class BasicSliderComponent {
         >
           {this.sliderThumbLabel || !this.label ? null : (
             <label id="slider-input-label" class="form-control-label">
-              {this.label} {Math.round(this.value)}
-              {this.unit}
+              {this.label} {this.formatWithUnit(this.value)}
             </label>
           )}
 
           <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
             {!hideLeft && (
               <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-left">
-                {Math.round(this.value)}
+                {this.formatWithUnit(this.value)}
               </div>
             )}
 
-            <div class="slider-min-value">
-              {this.min}
-              {this.unit}
-            </div>
+            <div class="slider-min-value">{this.formatWithUnit(this.min)}</div>
 
             <div class="slider-controls" onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp}>
               <div class="slider-background-track" style={{ width: '100%' }} />
               <div class={`slider-moving-track ${color}`} style={{ width: `${pct}%` }} />
+
               <div
-                class={`${this.disabled ? '' : 'slider-thumb-container'} ${color}`}
+                class={thumbContainerClass}
                 style={{ left: `${pct}%`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
-                onMouseDown={this.onDragStart}
+                onMouseDown={this.disabled ? undefined : this.onDragStart}
                 role="presentation"
                 tabIndex={this.disabled ? -1 : 0}
               >
@@ -280,13 +293,14 @@ export class BasicSliderComponent {
                 {this.sliderThumbLabel ? (
                   <div
                     class={`slider-thumb-label ${color}`}
-                    style={{ position: 'absolute', left: `${pct}%`, transform: 'translateX(-50%) translateY(30%) translateY(-100%) rotate(45deg)' }}
+                    style={{
+                      position: 'absolute',
+                      left: `${pct}%`,
+                      transform: 'translateX(-50%) translateY(30%) translateY(-100%) rotate(45deg)',
+                    }}
                   >
                     <div>
-                      <span>
-                        {Math.round(this.value)}
-                        {this.unit}
-                      </span>
+                      <span>{this.formatWithUnit(this.value)}</span>
                     </div>
                   </div>
                 ) : null}
@@ -301,8 +315,7 @@ export class BasicSliderComponent {
                         <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} />
                         {this.tickLabels ? (
                           <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
-                            {tick}
-                            {typeof tick === 'number' ? this.unit : ''}
+                            {this.formatWithUnit(tick)}
                           </div>
                         ) : null}
                       </div>
@@ -312,14 +325,11 @@ export class BasicSliderComponent {
               ) : null}
             </div>
 
-            <div class="slider-max-value">
-              {this.max}
-              {this.unit}
-            </div>
+            <div class="slider-max-value">{this.formatWithUnit(this.max)}</div>
 
             {!hideRight && (
               <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-right">
-                {Math.round(this.value)}
+                {this.formatWithUnit(this.value)}
               </div>
             )}
           </div>

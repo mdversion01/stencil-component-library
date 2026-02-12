@@ -24,13 +24,12 @@ export class TableComponent {
   @Element() host!: HTMLElement;
 
   // ----- Styling props -----
-  @Prop() border: boolean = false;
-  @Prop() bordered: boolean = false;
-  @Prop() borderless: boolean = false;
-  @Prop() dark: boolean = false;
-  @Prop() headerDark: boolean = false;
-  @Prop() headerLight: boolean = false;
-  @Prop() hover: boolean = false;
+  @Prop() addBorder: boolean = false;
+  @Prop() removeBorder: boolean = false;
+  @Prop() darkTableTheme: boolean = false;
+  @Prop() darkHeader: boolean = false;
+  @Prop() lightHeader: boolean = false;
+  @Prop() rowHover: boolean = false;
   @Prop() plumage: boolean = false;
   @Prop() noBorderCollapsed: boolean = false;
   @Prop() selectedVariant: string = 'table-active';
@@ -43,7 +42,7 @@ export class TableComponent {
   @Prop() cloneFooter: boolean = false;
   @Prop({ mutable: true }) expandedRows: number[] = [];
   @Prop() fields: Field[] = [];
-  @Prop() fixed: boolean = false;
+  @Prop() fixedTableHeader: boolean = false;
   @Prop() responsive: boolean = false;
   @Prop() stacked: boolean = false;
   @Prop() sticky: boolean = false;
@@ -82,9 +81,28 @@ export class TableComponent {
   @Prop() showDisplayRange: boolean = false;
   @Prop() showSizeChanger: boolean = false;
   @Prop({ mutable: true }) totalRows: number = 0;
-  @Prop() useByPagePagination: boolean = false;
-  @Prop() useMinimizePagination: boolean = false;
+
+  /**
+   * ✅ New API (recommended)
+   * Enables pagination UI + slicing.
+   */
+  @Prop() paginationEnabled: boolean = false;
+
+  /**
+   * ✅ New API (recommended)
+   * Which paginator UI to use.
+   */
+  @Prop() paginationVariant: 'standard' | 'minimize' | 'by-page' = 'standard';
+
+  /**
+   * Legacy props (kept for backwards compatibility)
+   * @deprecated use paginationEnabled + paginationVariant instead
+   */
   @Prop() usePagination: boolean = false;
+  /** @deprecated */
+  @Prop() useByPagePagination: boolean = false;
+  /** @deprecated */
+  @Prop() useMinimizePagination: boolean = false;
 
   // ----- Events -----
   @Event({ eventName: 'sort-field-updated' }) sortFieldUpdated!: EventEmitter<{ value: string }>;
@@ -95,6 +113,23 @@ export class TableComponent {
 
   // ----- Internal -----
   @State() _nop: boolean = false; // just to force rerender if ever needed (shouldn't)
+
+  // ======= NEW: effective pagination resolution =======
+
+  private get effectivePaginationEnabled(): boolean {
+    // new prop wins, but keep legacy behavior
+    return !!this.paginationEnabled || !!this.usePagination;
+  }
+
+  private get effectivePaginationVariant(): 'standard' | 'minimize' | 'by-page' {
+    // new prop wins (unless left at default "standard", in which case legacy may pick a variant)
+    if (this.paginationVariant && this.paginationVariant !== 'standard') return this.paginationVariant;
+
+    // legacy fallback
+    if (this.useMinimizePagination) return 'minimize';
+    if (this.useByPagePagination) return 'by-page';
+    return 'standard';
+  }
 
   // ======= LIFECYCLE =======
 
@@ -121,20 +156,18 @@ export class TableComponent {
   }
 
   // Child event listeners (from sibling components) — these bubble, so host can listen.
-
   @Listen('sort-field-changed')
   handleFieldChanged(ev: CustomEvent<{ value: string }>) {
     this.sortField = ev.detail?.value ?? 'none';
     this.sortOrderDisabled = this.sortField === 'none';
 
     if (this.sortField !== 'none') {
-      // ✅ Don’t clobber the user’s last order; only default if invalid
       if (this.sortOrder !== 'asc' && this.sortOrder !== 'desc') {
         this.sortOrder = 'asc';
       }
       this.applySort();
     } else {
-      this.resetColumnSort(); // also re-disables order via events/wiring
+      this.resetColumnSort();
     }
   }
 
@@ -152,13 +185,25 @@ export class TableComponent {
 
   @Listen('page-size-changed')
   handlePageSizeChanged(ev: CustomEvent<{ pageSize: number | 'All' }>) {
-    const newSize = ev.detail.pageSize === 'All' ? this.originalItems.length : ev.detail.pageSize;
-    this.rowsPerPage = typeof newSize === 'number' ? newSize : this.rowsPerPage;
+    const raw = ev?.detail?.pageSize;
+
+    if (raw === 'All') {
+      // ✅ Use filtered view size, not original dataset size
+      const rows = Math.max(0, Number(this.totalRows ?? this.filteredItems?.length ?? 0));
+      this.rowsPerPage = rows > 0 ? rows : this.rowsPerPage;
+    } else {
+      const n = Number(raw);
+      if (Number.isFinite(n) && n > 0) {
+        this.rowsPerPage = n;
+      }
+    }
+
     this.currentPage = 1;
   }
 
+  // ✅ Accept { page, pageSize } payload emitted by pagination-component
   @Listen('page-changed')
-  onPageChanged(ev: CustomEvent<{ page: number }>) {
+  onPageChanged(ev: CustomEvent<{ page: number; pageSize?: number }>) {
     this.currentPage = Math.max(1, Number(ev.detail?.page ?? 1));
   }
 
@@ -229,8 +274,8 @@ export class TableComponent {
     return map[variant || ''] || '';
   }
 
-  private headertheme(): string {
-    return this.headerDark ? 'thead-dark' : this.headerLight ? 'thead-light' : '';
+  private headerTheme(): string {
+    return this.darkHeader ? 'thead-dark' : this.lightHeader ? 'thead-light' : '';
   }
 
   private formatHeader(key: string): string {
@@ -244,14 +289,12 @@ export class TableComponent {
     if (this.fields && this.fields.length > 0) {
       return this.fields.map((f: Field) => {
         if (typeof f === 'string') {
-          // Inherit component-level "sortable" for string fields (no per-field config)
           return { key: f, label: this.formatHeader(f), sortable: this.sortable, variant: '' as Variant | '' };
         }
         const key = f.key || (f as any).key || '';
         return {
           key,
           label: f.label || this.formatHeader(key),
-          // If a field object doesn't specify sortable, inherit from component-level "sortable"
           sortable: typeof f.sortable === 'boolean' ? f.sortable : this.sortable,
           variant: (f.variant || '') as Variant | '',
         };
@@ -260,12 +303,9 @@ export class TableComponent {
 
     if (this.items && this.items.length > 0) {
       const ignore = new Set(['_cellVariants', '_rowVariant', '_showDetails', '_additionalInfo']);
-      return (
-        Object.keys(this.items[0])
-          .filter(k => !ignore.has(k))
-          // Inherit component-level "sortable" for inferred columns
-          .map(k => ({ key: k, label: this.formatHeader(k), sortable: this.sortable, variant: '' as Variant | '' }))
-      );
+      return Object.keys(this.items[0])
+        .filter(k => !ignore.has(k))
+        .map(k => ({ key: k, label: this.formatHeader(k), sortable: this.sortable, variant: '' as Variant | '' }));
     }
 
     return [];
@@ -279,18 +319,15 @@ export class TableComponent {
   // ======= SORT / FILTER =======
 
   private applySort() {
-    // If external controls set a single field/order, reflect that as criteria[0]
     if (!this.sortField || this.sortField === 'none') {
       this.resetColumnSort();
       return;
     }
 
-    // Ensure criteria reflects external single sort (does not wipe user multi-sort done via headers unless needed)
     const first = this.sortCriteria[0];
     if (!first || first.key !== this.sortField) {
       this.sortCriteria = [{ key: this.sortField, order: this.sortOrder }];
     } else {
-      // keep existing array but sync the first order to external control
       this.sortCriteria = [{ key: this.sortField, order: this.sortOrder }, ...this.sortCriteria.slice(1)];
     }
 
@@ -298,13 +335,11 @@ export class TableComponent {
 
     this.items = this.sortByCriteria(this.originalItems, this.sortCriteria);
 
-    // re-map expanded rows
     this.expandedRows = expandedRowRefs.map(row => this.items.indexOf(row)).filter(i => i >= 0);
 
     this.clearSelection();
     this.updateTotalRows();
 
-    // keep events as you already had
     this.sortFieldUpdated.emit({ value: this.sortField });
     this.sortOrderUpdated.emit({ value: this.sortOrder });
     this.sortChanged.emit({ field: this.sortField, order: this.sortOrder });
@@ -313,7 +348,7 @@ export class TableComponent {
   private applyFilter() {
     const ft = (this.filterText ?? '').trim().toLowerCase();
 
-    // 1) No text → show everything (Filter By does nothing until there IS text)
+    // 1) No text → show everything
     if (ft === '') {
       this.items = [...this.originalItems];
       this.clearSelection();
@@ -322,15 +357,13 @@ export class TableComponent {
       return;
     }
 
-    // 2) There IS text → determine which columns to search
-    //    - If user checked fields in "Filter By", search ONLY those
-    //    - Otherwise, search ALL columns (except private/variant helpers)
+    // 2) Determine which columns to search
     const ignore = new Set(['_cellVariants', '_rowVariant', '_showDetails', '_additionalInfo']);
     const allKeys = this.originalItems.length > 0 ? Object.keys(this.originalItems[0]).filter(k => !ignore.has(k)) : [];
 
     const keysToSearch = Array.isArray(this.selectedFilterFields) && this.selectedFilterFields.length > 0 ? this.selectedFilterFields : allKeys;
 
-    // 3) Filter rows: a row is kept if ANY of the allowed columns contains the text
+    // 3) Filter rows
     const filtered = this.originalItems.filter(row =>
       keysToSearch.some(k => {
         const v = row?.[k];
@@ -360,24 +393,10 @@ export class TableComponent {
     this.totalRows = this.filteredItems.length;
   }
 
-  // get sortedItems(): any[] {
-  //   if (!this.sortField || this.sortField === 'none') return this.originalItems;
-  //   return [...this.originalItems].sort((a, b) => {
-  //     const aValue = a[this.sortField];
-  //     const bValue = b[this.sortField];
-  //     const order = this.sortOrder === 'asc' ? 1 : -1;
-  //     if (aValue < bValue) return -order;
-  //     if (aValue > bValue) return order;
-  //     return 0;
-  //   });
-  // }
-
   get sortedItems(): any[] {
-    // Use multi-column criteria when present; else fall back to original (unsorted)
     if (this.sortCriteria && this.sortCriteria.length > 0) {
       return this.sortByCriteria(this.originalItems, this.sortCriteria);
     }
-    // Backward-compat: if only single field/order is set (older flows), honor it
     if (this.sortField && this.sortField !== 'none') {
       return this.sortByCriteria(this.originalItems, [{ key: this.sortField, order: this.sortOrder }]);
     }
@@ -387,6 +406,7 @@ export class TableComponent {
   get filteredItems(): any[] {
     const ft = (this.filterText ?? '').trim().toLowerCase();
     if (!ft) return this.sortedItems;
+
     if (this.selectedFilterFields.length > 0) {
       return this.sortedItems.filter(item =>
         this.selectedFilterFields.some(field => {
@@ -395,11 +415,12 @@ export class TableComponent {
         }),
       );
     }
+
     return this.sortedItems.filter(item => JSON.stringify(item).toLowerCase().includes(ft));
   }
 
   get paginatedItems(): any[] {
-    if (!this.usePagination) return this.filteredItems;
+    if (!this.effectivePaginationEnabled) return this.filteredItems;
     const start = (this.currentPage - 1) * this.rowsPerPage;
     const end = start + this.rowsPerPage;
     return this.filteredItems.slice(start, end);
@@ -436,7 +457,6 @@ export class TableComponent {
   private normalizeForSort(v: any): { type: number; val: any } {
     if (v === null || v === undefined) return { type: 2, val: null }; // put nullish last
     if (typeof v === 'number') return { type: 0, val: v };
-    // Dates: if it's a Date or ISO-like string, you can enhance here; keeping simple for now
     const s = String(v);
     return { type: 1, val: s.toLowerCase() };
   }
@@ -456,7 +476,6 @@ export class TableComponent {
       // Same type: compare raw normalized values
       if (av.val < bv.val) return c.order === 'asc' ? -1 : 1;
       if (av.val > bv.val) return c.order === 'asc' ? 1 : -1;
-      // equal -> continue to next criterion
     }
     return 0;
   }
@@ -621,31 +640,35 @@ export class TableComponent {
     );
   }
 
+  // ✅ Updated: pagination-component now uses `variant`
   private renderPagination(position: 'top' | 'bottom') {
-    const totalPages = Math.max(Math.ceil(this.filteredItems.length / Math.max(1, this.rowsPerPage)), 1);
+    const Paginator = 'pagination-component' as any;
 
     return (
-      <pagination-component
-        pagination-layout={this.paginationLayout}
+      <Paginator
+        // identity / wiring
         id={this.tableId}
-        table-id={this.tableId}
+        tableId={this.tableId}
         position={position}
-        size={this.paginationSize || (this.size as any)}
-        go-to-buttons={this.goToButtons}
-        use-minimize-pagination={this.useMinimizePagination}
-        use-by-page-pagination={this.useByPagePagination}
-        current-page={this.currentPage}
-        total-pages={totalPages}
-        limit={this.paginationLimit}
-        hide-goto-end-buttons={this.hideGotoEndButtons}
-        hide-ellipsis={this.hideEllipsis}
-        page-size={this.rowsPerPage}
-        page-size-options={this.pageSizeOptions as any}
-        pagination-variant-color={this.paginationVariantColor}
-        show-display-range={this.showDisplayRange}
-        show-size-changer={this.showSizeChanger}
         plumage={this.plumage}
-        total-rows={this.totalRows}
+        size={this.paginationSize || (this.size as any)}
+        // data
+        currentPage={this.currentPage}
+        pageSize={this.rowsPerPage}
+        totalRows={this.totalRows}
+        // options / UI
+        limit={this.paginationLimit}
+        goToButtons={this.goToButtons}
+        hideEllipsis={this.hideEllipsis}
+        hideGoToButtons={this.hideGotoEndButtons}
+        paginationLayout={(this.paginationLayout as any) || ''}
+        paginationVariantColor={this.paginationVariantColor}
+        // size changer + range display
+        itemsPerPage={this.showSizeChanger}
+        itemsPerPageOptions={this.pageSizeOptions as any}
+        displayTotalNumberOfPages={this.showDisplayRange}
+        // ✅ single variant
+        variant={this.effectivePaginationVariant}
       />
     );
   }
@@ -655,25 +678,24 @@ export class TableComponent {
     const hasDetailsRows = (this.items || []).some(r => r?._showDetails);
 
     const selectableClasses = {
-      'b-table-select-single': this.selectMode === 'single',
-      'b-table-select-multi': this.selectMode === 'multi',
-      'b-table-select-range': this.selectMode === 'range',
-      'b-table-selecting': this.selectedRows.length > 0,
+      'table-select-single': this.selectMode === 'single',
+      'table-select-multi': this.selectMode === 'multi',
+      'table-select-range': this.selectMode === 'range',
+      'table-selecting': this.selectedRows.length > 0,
     };
 
     const baseClasses = {
       'table': true,
-      'b-table': true,
-      'table-hover': this.hover,
+      'table-hover': this.rowHover,
       'table-striped': this.striped,
-      'table-bordered': this.bordered,
-      'table-borderless': this.borderless,
+      'table-bordered': this.addBorder,
+      'table-borderless': this.removeBorder,
       'table-sm': this.size === 'sm',
-      'table-dark': this.dark,
-      'b-table-fixed': this.fixed,
-      'b-table-no-border-collapse': this.noBorderCollapsed,
-      'b-table-caption-top': this.caption === 'top',
-      'b-table-stacked': this.stacked,
+      'table-dark': this.darkTableTheme,
+      'table-fixed': this.fixedTableHeader,
+      'table-no-border-collapse': this.noBorderCollapsed,
+      'table-caption-top': this.caption === 'top',
+      'table-stacked': this.stacked,
     };
 
     const className = this.cx({ ...baseClasses, ...selectableClasses, [tableVariantColor]: !!tableVariantColor });
@@ -694,7 +716,7 @@ export class TableComponent {
           </caption>
         ) : null}
 
-        <thead role="rowgroup" class={this.headertheme()}>
+        <thead role="rowgroup" class={this.headerTheme()}>
           {this.renderTableHeader()}
         </thead>
 
@@ -703,14 +725,15 @@ export class TableComponent {
             const rowVariantClass = row._rowVariant ? this.tableVariantColor(row._rowVariant) : '';
             const isSelected = this.selectedRows.includes(row);
             const isExpanded = this.expandedRows.includes(pageIndex);
+
             const isStriped = this.striped && logicalRowIndex % 2 === 1;
-            const stripeClass = this.dark ? 'striped-row-dark' : 'striped-row';
+            const stripeClass = this.darkTableTheme ? 'striped-row-dark' : 'striped-row';
             const mainRowClass = isStriped ? '' : stripeClass;
 
             const mainRow = (
               <tr
                 role="row"
-                class={`${mainRowClass} ${rowVariantClass} ${isSelected ? `b-table-row-selected ${this.selectedVariant}` : ''}`}
+                class={`${mainRowClass} ${rowVariantClass} ${isSelected ? `table-row-selected ${this.selectedVariant}` : ''}`}
                 tabIndex={0}
                 aria-selected={isSelected ? 'true' : 'false'}
               >
@@ -769,7 +792,7 @@ export class TableComponent {
         ) : null}
 
         {this.cloneFooter ? (
-          <tfoot role="rowgroup" class={this.headertheme()}>
+          <tfoot role="rowgroup" class={this.headerTheme()}>
             {this.renderTableHeader()}
           </tfoot>
         ) : null}
@@ -778,13 +801,13 @@ export class TableComponent {
   }
 
   render() {
-    const topPaginate = this.usePagination && (this.paginationPosition === 'top' || this.paginationPosition === 'both');
-    const bottomPaginate = this.usePagination && (this.paginationPosition === 'bottom' || this.paginationPosition === 'both');
+    const topPaginate = this.effectivePaginationEnabled && (this.paginationPosition === 'top' || this.paginationPosition === 'both');
+    const bottomPaginate = this.effectivePaginationEnabled && (this.paginationPosition === 'bottom' || this.paginationPosition === 'both');
 
     const tableBody = this.responsive ? (
       <div class="table-responsive">{this.renderTable()}</div>
     ) : this.sticky ? (
-      <div class="b-table-sticky-header">{this.renderTable()}</div>
+      <div class="table-sticky-header">{this.renderTable()}</div>
     ) : (
       this.renderTable()
     );

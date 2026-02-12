@@ -108,13 +108,71 @@ export default {
     },
   },
   argTypes: {
-    controlId: { control: 'text', name: 'control-id', description: 'Sets aria-controls target; defaults to host id.', name: 'control-id' },
-    currentPage: { control: { type: 'number', min: 1 }, description: 'Current page (1-based).', name: 'current-page' },
+    /* -----------------------------
+   Accessibility
+  ------------------------------ */
+    controlId: {
+      control: 'text',
+      name: 'control-id',
+      description: 'Sets aria-controls target; defaults to host id.',
+      table: { category: 'Accessibility' },
+    },
+
+    /* -----------------------------
+   Data / Paging
+  ------------------------------ */
+    currentPage: {
+      control: { type: 'number', min: 1 },
+      name: 'current-page',
+      description: 'Current page (1-based).',
+      table: { category: 'Data / Paging' },
+    },
+
+    pageSize: {
+      control: { type: 'number', min: 1 },
+      name: 'page-size',
+      description: 'Rows per page.',
+      table: { category: 'Data / Paging' },
+    },
+
+    totalRows: {
+      control: { type: 'number', min: 0 },
+      name: 'total-rows',
+      description: 'Total rows; max pages derived from total-rows / page-size.',
+      table: { category: 'Data / Paging' },
+    },
+
+    limit: {
+      control: { type: 'number', min: 1 },
+      name: 'limit',
+      description: 'Limit the number of numeric page buttons displayed.',
+      table: { category: 'Data / Paging' },
+    },
+
+    /* -----------------------------
+   Display
+  ------------------------------ */
     displayTotalNumberOfPages: {
       control: 'boolean',
       name: 'display-total-number-of-pages',
-      description: 'Standalone only: render range text (e.g., "1-10 of 123)").',
+      description: 'Show the display range text (e.g., "1-10 of 123").',
+      table: { category: 'Display', defaultValue: { summary: false } },
     },
+
+    hideEllipsis: {
+      control: 'boolean',
+      name: 'hide-ellipsis',
+      description: 'Hide the ellipsis (...) when limiting numeric page buttons.',
+      table: { category: 'Display', defaultValue: { summary: false } },
+    },
+
+    hideGoToButtons: {
+      control: 'boolean',
+      name: 'hide-go-to-buttons',
+      description: 'Hide the go-to first/last buttons.',
+      table: { category: 'Display', defaultValue: { summary: false } },
+    },
+
     goToButtons: {
       control: { type: 'select' },
       options: ['', 'icon', 'text'],
@@ -123,31 +181,54 @@ export default {
         'icon': 'Icon',
         'text': 'Text',
       },
-      description: 'Go-to buttons. Omit to use component default.',
       name: 'go-to-buttons',
+      description: 'Go-to buttons. Omit to use component default.',
+      table: { category: 'Display' },
     },
+
+    /* -----------------------------
+   Items Per Page
+  ------------------------------ */
     itemsPerPage: {
       control: 'boolean',
       name: 'items-per-page',
-      description: 'Standalone only: render size changer inside this component.',
+      description: 'Render the items-per-page size changer inside this component.',
+      table: { category: 'Items Per Page', defaultValue: { summary: false } },
     },
+
     itemsPerPageOptions: {
       control: 'object',
-      description: 'Standalone only: options array (applied via property assignment).',
       name: 'items-per-page-options',
+      description: 'Options array (applied via property assignment). Example: [10,20,50,100,"All"].',
+      table: { category: 'Items Per Page' },
     },
-    pageSize: {
-      control: { type: 'number', min: 1 },
-      name: 'page-size',
-      description: 'Rows per page.',
+
+    /* -----------------------------
+   Layout & Sizing
+  ------------------------------ */
+    paginationLayout: {
+      control: { type: 'select' },
+      options: ['', 'start', 'center', 'end'],
+      name: 'pagination-layout',
+      description: 'Pagination alignment: start, center, or end. Defaults to "start".',
+      table: { category: 'Layout & Sizing' },
     },
-    paginationLayout: { control: { type: 'select' }, options: ['', 'start', 'center', 'end'], name: 'pagination-layout', description: 'Pagination layout/alignment by setting the `pagination-layout` attribute to "start", "center", or "end". Defaults to "start".'  },
-    plumage: { control: 'boolean' },
-    size: { control: { type: 'select' }, options: ['', 'sm', 'lg'], description: 'Size of the pagination component. You can set the `size` attribute to "sm" for small or "lg" for large. Omit to use default size.' },
-    totalRows: {
-      control: { type: 'number', min: 0 },
-      name: 'total-rows',
-      description: 'Total rows; max pages derived from total-rows / page-size.',
+
+    size: {
+      control: { type: 'select' },
+      options: ['', 'sm', 'lg'],
+      name: 'size',
+      description: 'Size of the pagination component. Omit for default.',
+      table: { category: 'Layout & Sizing' },
+    },
+
+    /* -----------------------------
+   Styling
+  ------------------------------ */
+    plumage: {
+      control: 'boolean',
+      description: 'Enable Plumage styling.',
+      table: { category: 'Styling', defaultValue: { summary: false } },
     },
   },
 };
@@ -299,12 +380,13 @@ WithControlId.parameters = {
 };
 
 export const ItemsPerPage = () => {
-  const id = 'pg-sizechanger';
+  const idEnd = 'minipg-sizechanger-end';
+  const idStart = 'minipg-sizechanger-start';
   return normalizeHtml(`
 <div style="margin-bottom: 20px">
   <div style="font-size: 12px">Pagination on the end.</div>
   <minimize-pagination-component
-    id="${id}"
+    id="${idEnd}"
     current-page="1"
     total-rows="420"
     page-size="20"
@@ -316,7 +398,7 @@ export const ItemsPerPage = () => {
 <div style="margin-bottom: 20px">
   <div style="font-size: 12px">Pagination at the start.</div>
   <minimize-pagination-component
-    id="${id}"
+    id="${idStart}"
     current-page="1"
     total-rows="420"
     page-size="20"
@@ -326,7 +408,8 @@ export const ItemsPerPage = () => {
 </div>
 
 <script>
-  document.getElementById('${id}').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
+  document.getElementById('${idEnd}').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
+  document.getElementById('${idStart}').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
 </script>
 `);
 };

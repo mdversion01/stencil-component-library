@@ -249,7 +249,7 @@ exports[`multi-range-slider-component parses tickValues JSON and renders tick la
     <div aria-disabled="false" aria-orientation="horizontal" class="slider" dir="ltr" role="slider">
       <div class="slider-container">
         <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-left" role="textbox">
-          20
+          20%
         </div>
         <div class="slider-min-value">
           0%
@@ -301,7 +301,7 @@ exports[`multi-range-slider-component parses tickValues JSON and renders tick la
           100%
         </div>
         <div aria-labelledby="slider-input-label" aria-readonly="true" class="slider-value-right" role="textbox">
-          80
+          80%
         </div>
       </div>
     </div>

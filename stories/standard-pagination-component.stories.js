@@ -121,50 +121,114 @@ export default {
     },
   },
   argTypes: {
-    currentPage: { control: { type: 'number', min: 1 }, name: 'current-page', description: 'Current page (1-based).' },
-    displayTotalNumberOfPages: {
-      control: 'boolean',
-      name: 'display-total-number-of-pages',
-      description: 'Standalone only: render range text (e.g., "1-10 of 123").',
-    },
-    goToButtons: {
-      control: { type: 'select' },
-      options: ['', 'icon', 'text'],
-      description: 'Go-to buttons are the First/Previous/Next/Last buttons that are displayed by setting `go-to-buttons` to "icon" or "text". Omit to use component default.',
-      name: 'go-to-buttons',
-    },
-    hideEllipsis: { control: 'boolean', name: 'hide-ellipsis', description: 'Hide the ellipsis (...) when limiting numeric page buttons.' },
-    hideGoToButtons: { control: 'boolean', name: 'hide-go-to-buttons', description: 'Hide the go-to first/last buttons.' },
-    itemsPerPage: {
-      control: 'boolean',
-      name: 'items-per-page',
-      description: 'Standalone only: render size changer inside this component.',
-    },
-    itemsPerPageOptions: {
-      control: 'object',
-      description: 'Standalone only: options array (applied via property assignment).',
-      name: 'items-per-page-options',
-    },
-    limit: { control: { type: 'number', min: 1 }, description: 'Limit the number of numeric page buttons displayed.', name: 'limit' },
-    pageSize: { control: { type: 'number', min: 1 }, name: 'page-size', description: 'Total number of rows per page.' },
-    paginationLayout: {
-      control: { type: 'select' },
-      options: ['', 'start', 'center', 'end', 'fill', 'fill-left', 'fill-right'],
-      name: 'pagination-layout',
-      description: 'Pagination layout/alignment by setting the `pagination-layout` attribute to "start", "center", "end", "fill", "fill-left", or "fill-right".',
-    },
-    paginationVariantColor: { control: 'text', name: 'pagination-variant-color', description: 'Color variant for pagination buttons.' },
-    plumage: { control: 'boolean', description: 'If true, applies plumage styling to the pagination component.' },
-    size: {
-      control: { type: 'select' },
-      options: ['', 'sm', 'lg'],
-      description: 'Size of the pagination component. You can set the `size` attribute to "sm" for small or "lg" for large. Omit to use default size.',
-      name: 'size',
+    /* -----------------------------
+     Paging State
+  ------------------------------ */
+    currentPage: {
+      control: { type: 'number', min: 1 },
+      name: 'current-page',
+      description: 'Current page (1-based).',
+      table: { category: 'Paging State' },
     },
     totalRows: {
       control: { type: 'number', min: 0 },
       name: 'total-rows',
       description: 'Total rows; max pages derived from total-rows / page-size.',
+      table: { category: 'Paging State' },
+    },
+    pageSize: {
+      control: { type: 'number', min: 1 },
+      name: 'page-size',
+      description: 'Total number of rows per page.',
+      table: { category: 'Paging State' },
+    },
+
+    /* -----------------------------
+     Display & Layout
+  ------------------------------ */
+    paginationLayout: {
+      control: { type: 'select' },
+      options: ['', 'start', 'center', 'end', 'fill', 'fill-left', 'fill-right'],
+      name: 'pagination-layout',
+      description: 'Pagination layout/alignment by setting the `pagination-layout` attribute to "start", "center", "end", "fill", "fill-left", or "fill-right".',
+      table: { category: 'Display & Layout' },
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['', 'sm', 'lg'],
+      description: 'Size of the pagination component. You can set the `size` attribute to "sm" for small or "lg" for large. Omit to use default size.',
+      name: 'size',
+      table: { category: 'Display & Layout' },
+    },
+    paginationVariantColor: {
+      control: 'text',
+      name: 'pagination-variant-color',
+      description: 'Color variant for pagination buttons.',
+      table: { category: 'Display & Layout' },
+    },
+
+    /* -----------------------------
+     Go-To Buttons
+  ------------------------------ */
+    goToButtons: {
+      control: { type: 'select' },
+      options: ['', 'icon', 'text'],
+      description: 'Go-to buttons are the First/Previous/Next/Last buttons that are displayed by setting `go-to-buttons` to "icon" or "text". Omit to use component default.',
+      name: 'go-to-buttons',
+      table: { category: 'Go-To Buttons' },
+    },
+    hideGoToButtons: {
+      control: 'boolean',
+      name: 'hide-go-to-buttons',
+      description: 'Hide the go-to first/last buttons.',
+      table: { category: 'Go-To Buttons', defaultValue: { summary: false } },
+    },
+
+    /* -----------------------------
+     Page Buttons & Ellipsis
+  ------------------------------ */
+    limit: {
+      control: { type: 'number', min: 1 },
+      description: 'Limit the number of numeric page buttons displayed.',
+      name: 'limit',
+      table: { category: 'Page Buttons & Ellipsis' },
+    },
+    hideEllipsis: {
+      control: 'boolean',
+      name: 'hide-ellipsis',
+      description: 'Hide the ellipsis (...) when limiting numeric page buttons.',
+      table: { category: 'Page Buttons & Ellipsis', defaultValue: { summary: false } },
+    },
+
+    /* -----------------------------
+     Standalone Features (Range / Sizer)
+  ------------------------------ */
+    displayTotalNumberOfPages: {
+      control: 'boolean',
+      name: 'display-total-number-of-pages',
+      description: 'Standalone only: render range text (e.g., "1-10 of 123").',
+      table: { category: 'Standalone Features', defaultValue: { summary: false } },
+    },
+    itemsPerPage: {
+      control: 'boolean',
+      name: 'items-per-page',
+      description: 'Standalone only: render size changer inside this component.',
+      table: { category: 'Standalone Features', defaultValue: { summary: false } },
+    },
+    itemsPerPageOptions: {
+      control: 'object',
+      description: 'Standalone only: options array (applied via property assignment).',
+      name: 'items-per-page-options',
+      table: { category: 'Standalone Features' },
+    },
+
+    /* -----------------------------
+     Styling Mode
+  ------------------------------ */
+    plumage: {
+      control: 'boolean',
+      description: 'If true, applies plumage styling to the pagination component.',
+      table: { category: 'Styling Mode', defaultValue: { summary: false } },
     },
   },
 };
@@ -223,12 +287,13 @@ Standard.parameters = {
 /* ============================== Focused Examples (unchanged except corrected attr) ============================== */
 
 export const ItemsPerPage = () => {
-  const id = 'pg-sizechanger';
+  const idEnd = 'stdpg-sizechanger-end';
+  const idStart = 'stdpg-sizechanger-start';
   return normalizeHtml(`
 <div style="margin-bottom: 20px">
   <div style="font-size: 12px">Pagination on the end.</div>
   <pagination-component
-    id="${id}"
+    id="${idEnd}"
     current-page="1"
     total-rows="420"
     page-size="20"
@@ -240,7 +305,7 @@ export const ItemsPerPage = () => {
 <div style="margin-bottom: 20px">
   <div style="font-size: 12px">Pagination at the start.</div>
   <pagination-component
-    id="${id}"
+    id="${idStart}"
     current-page="1"
     total-rows="420"
     page-size="20"
@@ -250,7 +315,8 @@ export const ItemsPerPage = () => {
 </div>
 
 <script>
-  document.getElementById('${id}').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
+  document.getElementById('${idEnd}').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
+  document.getElementById('${idStart}').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
 </script>
 `);
 };

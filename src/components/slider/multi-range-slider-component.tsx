@@ -104,6 +104,20 @@ export class MultiRangeSliderComponent {
     }
   }
 
+  /**
+   * Format numeric values with unit.
+   * If unit is "$", prefix it (e.g. $125). Otherwise suffix (e.g. 125°F).
+   */
+  private formatWithUnit(n: number): string {
+    const unit = String(this.unit ?? '').trim();
+    const rounded = Math.round(n);
+
+    if (!unit) return String(rounded);
+    if (unit === '$') return `${unit}${rounded}`;
+
+    return `${rounded}${unit}`;
+  }
+
   // Keyboard
   private calculateIncrement(): number {
     if (this.snapToTicks && this._ticks.length > 1) {
@@ -114,7 +128,10 @@ export class MultiRangeSliderComponent {
 
   private snapValueToTick(value: number): number {
     if (!this.snapToTicks || this._ticks.length === 0) return value;
-    return this._ticks.reduce((prev, curr) => (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev), this._ticks[0] ?? this.min);
+    return this._ticks.reduce(
+      (prev, curr) => (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev),
+      this._ticks[0] ?? this.min
+    );
   }
 
   private onKeyDown = (event: KeyboardEvent) => {
@@ -233,6 +250,25 @@ export class MultiRangeSliderComponent {
     const hideLeft = this.hideTextBoxes || this.hideLeftTextBox;
     const hideRight = this.hideTextBoxes || this.hideRightTextBox;
 
+    // ✅ Keep positioning class even when disabled
+    const lowerThumbContainerClass = [
+      'slider-thumb-container',
+      'lower-thumb',
+      color,
+      this.disabled ? 'slider-thumb-container-disabled' : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+
+    const upperThumbContainerClass = [
+      'slider-thumb-container',
+      'upper-thumb',
+      color,
+      this.disabled ? 'slider-thumb-container-disabled' : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+
     return (
       <div class="slider-wrapper">
         <div
@@ -243,6 +279,7 @@ export class MultiRangeSliderComponent {
           aria-orientation="horizontal"
           aria-disabled={this.disabled ? 'true' : 'false'}
           onKeyDown={this.onKeyDown}
+          {...(this.disabled && { disabled: true })}
         >
           {this.sliderThumbLabel || !this.label ? null : (
             <label id="slider-input-label" class="form-control-label">
@@ -254,21 +291,18 @@ export class MultiRangeSliderComponent {
           <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
             {!hideLeft && (
               <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-left">
-                {Math.round(this.lowerValue)}
+                {this.formatWithUnit(this.lowerValue)}
               </div>
             )}
 
-            <div class="slider-min-value">
-              {this.min}
-              {this.unit}
-            </div>
+            <div class="slider-min-value">{this.formatWithUnit(this.min)}</div>
 
             <div class="slider-controls">
               {/* Lower thumb */}
               <div
-                class={`${this.disabled ? '' : 'slider-thumb-container'} lower-thumb ${color}`}
+                class={lowerThumbContainerClass}
                 style={{ left: `calc(${lowerPct}% - 5px)`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
-                onMouseDown={e => this.onThumbMouseDown(e, 'lower')}
+                onMouseDown={this.disabled ? undefined : e => this.onThumbMouseDown(e, 'lower')}
               >
                 {this.plumage ? (
                   <div
@@ -293,16 +327,18 @@ export class MultiRangeSliderComponent {
                     tabIndex={this.disabled ? -1 : 0}
                   />
                 )}
+
                 {this.sliderThumbLabel ? (
                   <div
                     class={`slider-thumb-label ${color}`}
-                    style={{ position: 'absolute', left: `${lowerPct}%`, transform: 'translateX(-30%) translateY(30%) translateY(-100%) rotate(45deg)' }}
+                    style={{
+                      position: 'absolute',
+                      left: `${lowerPct}%`,
+                      transform: 'translateX(-30%) translateY(30%) translateY(-100%) rotate(45deg)',
+                    }}
                   >
                     <div>
-                      <span>
-                        {Math.round(this.lowerValue)}
-                        {this.unit}
-                      </span>
+                      <span>{this.formatWithUnit(this.lowerValue)}</span>
                     </div>
                   </div>
                 ) : null}
@@ -315,9 +351,9 @@ export class MultiRangeSliderComponent {
 
               {/* Upper thumb */}
               <div
-                class={`${this.disabled ? '' : 'slider-thumb-container'} upper-thumb ${color}`}
+                class={upperThumbContainerClass}
                 style={{ left: `calc(${upperPct}% - 8px)`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
-                onMouseDown={e => this.onThumbMouseDown(e, 'upper')}
+                onMouseDown={this.disabled ? undefined : e => this.onThumbMouseDown(e, 'upper')}
               >
                 {this.plumage ? (
                   <div
@@ -342,16 +378,18 @@ export class MultiRangeSliderComponent {
                     tabIndex={this.disabled ? -1 : 0}
                   />
                 )}
+
                 {this.sliderThumbLabel ? (
                   <div
                     class={`slider-thumb-label ${color}`}
-                    style={{ position: 'absolute', left: `calc(${upperPct}% + 3px)`, transform: 'translateX(-30%) translateY(30%) translateY(-100%) rotate(45deg)' }}
+                    style={{
+                      position: 'absolute',
+                      left: `calc(${upperPct}% + 3px)`,
+                      transform: 'translateX(-30%) translateY(30%) translateY(-100%) rotate(45deg)',
+                    }}
                   >
                     <div>
-                      <span>
-                        {Math.round(this.upperValue)}
-                        {this.unit}
-                      </span>
+                      <span>{this.formatWithUnit(this.upperValue)}</span>
                     </div>
                   </div>
                 ) : null}
@@ -360,15 +398,14 @@ export class MultiRangeSliderComponent {
               {/* Optional ticks */}
               {this._ticks.length > 0 ? (
                 <div class="slider-ticks">
-                  {this._ticks.map((tick, index) => {
+                  {this._ticks.map(tick => {
                     const pos = ((tick - this.min) / Math.max(1e-9, this.max - this.min)) * 100;
                     return (
                       <div>
                         <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} />
                         {this.tickLabels ? (
                           <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
-                            {this._ticks[index] ?? tick}
-                            {this.unit}
+                            {this.formatWithUnit(tick)}
                           </div>
                         ) : null}
                       </div>
@@ -378,14 +415,11 @@ export class MultiRangeSliderComponent {
               ) : null}
             </div>
 
-            <div class="slider-max-value">
-              {this.max}
-              {this.unit}
-            </div>
+            <div class="slider-max-value">{this.formatWithUnit(this.max)}</div>
 
             {!hideRight && (
               <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-right">
-                {Math.round(this.upperValue)}
+                {this.formatWithUnit(this.upperValue)}
               </div>
             )}
           </div>

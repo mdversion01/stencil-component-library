@@ -17,7 +17,7 @@ export class TimePickerComponent {
 
   @Prop() showLabel?: boolean;
 
-  @Prop() labelText: string = 'Enter Time' ;
+  @Prop() labelText: string = 'Enter Time';
 
   /** (Renamed from reserved `id`) ID passed to the internal input */
   @Prop() inputId: string = 'time-input';
@@ -30,6 +30,9 @@ export class TimePickerComponent {
 
   /** Optional size variant: '', 'sm', 'lg' */
   @Prop() size: string = '';
+
+  /** External invalid styling hook (kept for compatibility) */
+  @Prop() validation?: boolean = false;
 
   /** Validation message to show (mutable: set/cleared by the component) */
   @Prop({ mutable: true }) validationMessage: string = '';
@@ -52,8 +55,16 @@ export class TimePickerComponent {
   /** Width (px) for the input element */
   @Prop() inputWidth?: number | string;
 
+  @Prop() required: boolean = false;
+
+  /** ✅ Disable the entire timepicker (input + buttons + dropdown) */
+  @Prop() disableTimepicker: boolean = false;
+
   // Internal state trigger (used only to re-render when needed)
   @State() _tick: number = 0;
+
+  // Tracks whether the user actually changed the time (typing / clear / spinner)
+  private _didUserChangeTime: boolean = false;
 
   // ---------- lifecycle ----------
   connectedCallback() {
@@ -77,10 +88,50 @@ export class TimePickerComponent {
     this._tick++;
   }
 
+  private get _isDisabled(): boolean {
+    return !!this.disableTimepicker;
+  }
+
+  /**
+   * Remove "invalid"/"is-invalid" styling + clear validation-message.
+   * IMPORTANT: Only call this when the user ACTUALLY changes the time
+   * (typing / clear / spinner). Never call this from blur/outside-click behavior.
+   */
+  private _clearExternalInvalidUI() {
+    // clear message
+    if (this.validationMessage) this.validationMessage = '';
+
+    // clear internal prop used by templates
+    if (this.validation) this.validation = false;
+
+    // remove any common invalid classes (in case they were added by consumers/styles)
+    const input = this.qs<HTMLInputElement>('.time-input');
+    input?.classList.remove('invalid', 'is-invalid');
+
+    const clearBtn = this.qs<HTMLButtonElement>('.clear-button');
+    clearBtn?.classList.remove('invalid', 'is-invalid');
+
+    const iconBtn = this.qs<HTMLButtonElement>('.time-icon-btn');
+    iconBtn?.classList.remove('invalid', 'is-invalid');
+
+    // underline or wrappers (if present in this variant)
+    const underline = this.qs<HTMLElement>('.b-underline');
+    underline?.classList.remove('invalid', 'is-invalid');
+
+    const focusBar = this.qs<HTMLElement>('.b-focus');
+    focusBar?.classList.remove('invalid', 'is-invalid');
+
+    const label = this.qs<HTMLElement>('label');
+    label?.classList.remove('invalid', 'is-invalid');
+
+    this.forceUpdate();
+  }
+
   // ---------- public API ----------
   /** Force-validate and sync input -> dropdown */
   @Method()
   async forceTimeUpdate(): Promise<void> {
+    if (this._isDisabled) return;
     this._updateTimeFromInput();
   }
 
@@ -102,6 +153,8 @@ export class TimePickerComponent {
   }
 
   private _setDropdownVisibility(show: boolean) {
+    if (this._isDisabled) return;
+
     const dd = this.qs<HTMLDivElement>('.time-dropdown');
     if (!dd) return;
 
@@ -115,7 +168,7 @@ export class TimePickerComponent {
     } else {
       const toFocus =
         this._returnFocusEl ||
-        this.qs<HTMLInputElement>('.time-input') || // 👈 prefer input
+        this.qs<HTMLInputElement>('.time-input') ||
         this.qs<HTMLButtonElement>('.time-icon-btn') ||
         (this.host as unknown as HTMLElement);
       toFocus?.focus();
@@ -125,6 +178,8 @@ export class TimePickerComponent {
   }
 
   private _toggleDropdown = () => {
+    if (this._isDisabled) return;
+
     this._formatTime();
     const dd = this.qs<HTMLDivElement>('.time-dropdown');
     if (!dd) return;
@@ -133,6 +188,8 @@ export class TimePickerComponent {
   };
 
   private _hideDropdown = (ev?: Event) => {
+    if (this._isDisabled) return;
+
     ev?.preventDefault();
     ev?.stopPropagation();
     this._setDropdownVisibility(false);
@@ -142,12 +199,11 @@ export class TimePickerComponent {
   private _toggleFormat = () => {
     if (this.twentyFourHourOnly || this.twelveHourOnly) return;
 
-    this._updateTimeFromInput();
+    // IMPORTANT:
+    // Toggling format must NOT clear validationMessage or invalid styling.
     this.isTwentyFourHourFormat = !this.isTwentyFourHourFormat;
     this._convertTimeFormat();
     this._toggleAMPMSpinner();
-    this._hideValidationMessage();
-    this._hideWarningMessage();
     this._updateInput();
   };
 
@@ -244,6 +300,12 @@ export class TimePickerComponent {
   private _decrement = (ev: Event) => this._incrementDecrement(ev, false);
 
   private _incrementDecrement(ev: Event, increment: boolean) {
+    if (this._isDisabled) return;
+
+    // spinner change counts as user change
+    this._didUserChangeTime = true;
+    this._clearExternalInvalidUI();
+
     const arrow = (ev.currentTarget as HTMLElement) || (ev.target as HTMLElement);
     if (!arrow) return;
 
@@ -377,6 +439,8 @@ export class TimePickerComponent {
   }
 
   private _updateTimeFromInput() {
+    if (this._isDisabled) return;
+
     const input = this.qs<HTMLInputElement>('.time-input');
     if (!input) return;
 
@@ -390,17 +454,22 @@ export class TimePickerComponent {
     if (!this._isValidInput(value)) {
       this.isValid = false;
       this._toggleButtons();
-      // no forceUpdate here to avoid stomping user typing
       return;
     }
 
     input.value = value;
     this.isValid = true;
     this._toggleButtons();
-    this._hideValidationMessage();
     this._hideWarningMessage();
 
-    // sync the dropdown and AM/PM display right away
+    // IMPORTANT:
+    // Only clear invalid UI/message if user actually changed the time.
+    // Clicking outside (blur) should NOT clear invalid state by itself.
+    if (this.isValid && this._didUserChangeTime) {
+      this._clearExternalInvalidUI();
+      this._didUserChangeTime = false;
+    }
+
     this._updateDropdown();
 
     const ampmMatch = value.match(/(AM|PM)$/);
@@ -413,48 +482,34 @@ export class TimePickerComponent {
   }
 
   private _validateTimeInput = () => {
+    if (this._isDisabled) return;
+
+    // typing counts as user change
+    this._didUserChangeTime = true;
+
+    // typing a new time should immediately clear invalid/message
+    this._clearExternalInvalidUI();
+
     const input = this.qs<HTMLInputElement>('.time-input');
     const raw = (input?.value || '').trim();
 
     this.isValid = this._isValidInput(raw);
     this._toggleButtons();
 
-    // When valid while typing, mirror the dropdown (hours/min/sec + AM/PM)
     if (this.isValid) {
       this._updateDropdown();
     }
-    // Avoid forceUpdate() here—keeps the input truly user-controlled while typing
   };
 
   private _handleEnterKey = (event: KeyboardEvent) => {
+    if (this._isDisabled) return;
     if (event.key === 'Enter' && this.isValid) {
       this._updateTimeFromInput();
     }
   };
 
-  // private _handleKeydown = (event: KeyboardEvent) => {
-  //   const input = event.target as HTMLInputElement;
-  //   const start = input.selectionStart ?? 0;
-  //   const end = input.selectionEnd ?? 0;
-
-  //   if (event.key === 'Backspace' && start > 0) {
-  //     event.preventDefault();
-  //     const value = input.value;
-  //     const before = value.substring(0, start - 1);
-  //     const after = value.substring(end);
-  //     input.value = before + after;
-  //     const pos = start - 1;
-  //     requestAnimationFrame(() => input.setSelectionRange(pos, pos));
-  //     this.isValid = true;
-  //     this._toggleButtons();
-  //   } else if (event.key === 'Delete') {
-  //     event.preventDefault();
-  //     // (Keeping this behavior consistent with your previous logic.
-  //     // Typing still works; only the Delete key is suppressed.)
-  //   }
-  // };
-
   private _handleEnterKeyOnly = (e: KeyboardEvent) => {
+    if (this._isDisabled) return;
     if (e.key === 'Enter' && this.isValid) {
       this._updateTimeFromInput();
     }
@@ -465,13 +520,20 @@ export class TimePickerComponent {
   };
 
   private _clearTime = () => {
+    if (this._isDisabled) return;
+
+    // clear counts as user change
+    this._didUserChangeTime = true;
+
     const input = this.qs<HTMLInputElement>('.time-input');
     if (!input) return;
 
     input.value = this.isTwentyFourHourFormat ? (this.hideSeconds ? '00:00' : '00:00:00') : this.hideSeconds ? '12:00 AM' : '12:00:00 AM';
 
+    // clear invalid/message immediately
+    this._clearExternalInvalidUI();
+
     this._updateDropdown();
-    this._hideValidationMessage();
     this._hideWarningMessage();
     this.isValid = true;
     this._toggleButtons();
@@ -490,10 +552,10 @@ export class TimePickerComponent {
     this.forceUpdate();
   }
 
-  private _hideValidationMessage() {
-    this.validationMessage = '';
-    this.forceUpdate();
-  }
+  // private _hideValidationMessage() {
+  //   this.validationMessage = '';
+  //   this.forceUpdate();
+  // }
 
   private _isValidInput(input: string): boolean {
     const timePattern = this.isTwentyFourHourFormat
@@ -532,8 +594,7 @@ export class TimePickerComponent {
       return false;
     }
 
-    this._hideValidationMessage();
-    this._hideWarningMessage();
+    // NOTE: do not auto-hide validation here (it’s controlled by user change handlers)
     return true;
   }
 
@@ -556,36 +617,48 @@ export class TimePickerComponent {
     input.value = this.isTwentyFourHourFormat ? (this.hideSeconds ? '00:00' : '00:00:00') : this.hideSeconds ? '12:00 AM' : '12:00:00 AM';
 
     this._updateDropdown();
+    this._toggleButtons();
   }
 
   private _toggleButtons() {
     const toggleButton = this.qs<HTMLButtonElement>('.toggle-format-btn');
     const timeIconBtn = this.qs<HTMLButtonElement>('.time-icon-btn');
 
+    // ✅ when disableTimepicker, force-disabled regardless of validity
+    const shouldDisable = this._isDisabled || !this.isValid;
+
     if (toggleButton) {
-      if (this.isValid) toggleButton.removeAttribute('disabled');
+      if (!shouldDisable) toggleButton.removeAttribute('disabled');
       else toggleButton.setAttribute('disabled', 'disabled');
     }
 
     if (timeIconBtn) {
-      if (this.isValid) timeIconBtn.removeAttribute('disabled');
+      if (!shouldDisable) timeIconBtn.removeAttribute('disabled');
       else timeIconBtn.setAttribute('disabled', 'disabled');
     }
   }
 
   // ---------- render ----------
   render() {
+    const disabledAll = this._isDisabled;
+
     const groupSize = this.size === 'sm' ? ' input-group-sm' : this.size === 'lg' ? ' input-group-lg' : '';
     const ddSize = this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : '';
     const maxLength = this.isTwentyFourHourFormat ? (this.hideSeconds ? 5 : 8) : this.hideSeconds ? 8 : 11;
 
     const inputInlineStyle = this.inputWidth !== undefined && this.inputWidth !== null && this.inputWidth !== '' ? { width: `${this.inputWidth}px` } : {};
 
+    const disableInteractive = disabledAll || !this.isValid;
+
+    // If globally disabled, ensure dropdown is closed/hidden (no interaction)
+    const dropdownClass = `time-dropdown${ddSize} hidden`;
+
     return (
       <div class="time-picker-container">
         <div class={`time-picker ${!this.twentyFourHourOnly && !this.twelveHourOnly ? 'mr-1' : ''}`}>
-          <label htmlFor={this.inputId} id={this.ariaLabelledby} class={this.showLabel ? undefined : 'sr-only'}>
+          <label htmlFor={this.inputId} id={this.ariaLabelledby} class={`${this.showLabel ? '' : 'sr-only'}${this.validation ? ' invalid' : ''}`}>
             {this.labelText}
+            {this.required ? <span class="required">*</span> : null}
           </label>
 
           <div class="timepicker-group">
@@ -594,11 +667,9 @@ export class TimePickerComponent {
                 type="text"
                 id={this.inputId}
                 name={this.inputName}
-                class="form-control time-input"
+                class={`time-input form-control${this.validation ? ' is-invalid' : ''}`}
                 style={inputInlineStyle as any}
                 placeholder="Enter Time"
-                /** 👇 Uncontrolled input so typing isn’t stomped by re-renders */
-                // defaultValue={this._getFormattedTime()}
                 role="textbox"
                 aria-label={this.ariaLabel}
                 aria-labelledby={this.ariaLabelledby}
@@ -606,131 +677,128 @@ export class TimePickerComponent {
                 aria-invalid={(!this.isValid).toString()}
                 aria-describedby="validation-message"
                 maxLength={maxLength}
-                // onFocus={this._hideDropdown}
+                disabled={disabledAll}
                 onBlur={() => {
-                  if (this.isValid) this._updateTimeFromInput();
+                  // BLUR should not clear invalid/message.
+                  // It may commit the time if valid; clearing only happens if user changed the value.
+                  if (!disabledAll && this.isValid) this._updateTimeFromInput();
                 }}
                 onInput={this._validateTimeInput}
                 onPaste={this._preventInvalidPaste}
                 onKeyPress={this._handleEnterKey}
-                // onKeyDown={this._handleKeydown}
                 onKeyDown={this._handleEnterKeyOnly}
               />
 
-              {/* <div class="input-group-append"> */}
-                <button class="clear-button" aria-label="Clear Time" role="button" onClick={this._clearTime}>
-                  <i class="fas fa-times-circle" />
-                </button>
-
-                {this.hideTimepickerBtn ? null : (
-                  <button
-                    class="time-icon input-group-text time-icon-btn"
-                    aria-label="Open Timepicker"
-                    role="button"
-                    tabIndex={0}
-                    onClick={this._toggleDropdown}
-                    disabled={!this.isValid}
-                  >
-                    <i class="fa fa-clock" />
-                  </button>
-                )}
-              {/* </div> */}
-            </div>
-
-
-          {/* NOTE: No aria-hidden here; initial hidden state via .hidden */}
-          <div class={`time-dropdown${ddSize} hidden`} role="listbox" aria-labelledby="time-label" tabIndex={0}>
-            <div class="time-spinner-wrapper">
-              {/* Hours */}
-              <div class="time-spinner">
-                <button class="arrow up" data-type="hour" aria-label="Increment Hour" role="button" onClick={this._increment}>
-                  <i class="fas fa-chevron-up" />
-                </button>
-                <span class="hour-display" role="option" aria-selected="false" aria-activedescendant="active-hour" tabIndex={0} id="active-hour">
-                  00
-                </span>
-                <button class="arrow down" data-type="hour" aria-label="Decrement Hour" role="button" onClick={this._decrement}>
-                  <i class="fas fa-chevron-down" />
-                </button>
-              </div>
-
-              {/* Colon */}
-              <div class="time-spinner-colon">
-                <div class="dot">
-                  <i class="fa fa-circle" />
-                </div>
-                <div class="dot">
-                  <i class="fa fa-circle" />
-                </div>
-              </div>
-
-              {/* Minutes */}
-              <div class="time-spinner">
-                <button class="arrow up" data-type="minute" aria-label="Increment Minute" role="button" onClick={this._increment}>
-                  <i class="fas fa-chevron-up" />
-                </button>
-                <span class="minute-display" role="option" aria-selected="false" aria-activedescendant="active-minute" tabIndex={0} id="active-minute">
-                  00
-                </span>
-                <button class="arrow down" data-type="minute" aria-label="Decrement Minute" role="button" onClick={this._decrement}>
-                  <i class="fas fa-chevron-down" />
-                </button>
-              </div>
-
-              {/* Seconds (optional) */}
-              {this.hideSeconds ? null : (
-                <Fragment>
-                  <div class="time-spinner-colon">
-                    <div class="dot">
-                      <i class="fa fa-circle" />
-                    </div>
-                    <div class="dot">
-                      <i class="fa fa-circle" />
-                    </div>
-                  </div>
-                  <div class="time-spinner">
-                    <button class="arrow up" data-type="second" aria-label="Increment Second" role="button" onClick={this._increment}>
-                      <i class="fas fa-chevron-up" />
-                    </button>
-                    <span class="second-display" role="option" aria-selected="false" aria-activedescendant="active-second" tabIndex={0} id="active-second">
-                      00
-                    </span>
-                    <button class="arrow down" data-type="second" aria-label="Decrement Second" role="button" onClick={this._decrement}>
-                      <i class="fas fa-chevron-down" />
-                    </button>
-                  </div>
-                </Fragment>
-              )}
-
-              {/* AM/PM */}
-              <div class="time-spinner am-pm-spinner hidden">
-                <button class="arrow up" data-type="ampm" aria-label="Increment AM/PM" role="button" onClick={this._increment}>
-                  <i class="fas fa-chevron-up" />
-                </button>
-                <span class="ampm-display" role="option" aria-selected="false" tabIndex={0} id="active-ampm" aria-activedescendant="active-ampm">
-                  AM
-                </span>
-                <button class="arrow down" data-type="ampm" aria-label="Decrement AM/PM" role="button" onClick={this._decrement}>
-                  <i class="fas fa-chevron-down" />
-                </button>
-              </div>
-            </div>
-
-            <div class="time-spinner-close">
-              <button class="btn btn-outline-primary btntext close-button btn-sm" type="button" aria-label="Close" onClick={this._hideDropdown}>
-                Close
+              <button
+                class={`clear-button${this.validation ? ' invalid' : ''}`}
+                aria-label="Clear Time"
+                role="button"
+                onClick={this._clearTime}
+                disabled={disabledAll}
+              >
+                <i class="fas fa-times-circle" />
               </button>
-            </div>
-          </div>
 
-            {/* Format toggle (hidden if forced) */}
+              {this.hideTimepickerBtn ? null : (
+                <button
+                  class={`time-icon input-group-text time-icon-btn${this.validation ? ' invalid' : ''}`}
+                  aria-label="Open Timepicker"
+                  role="button"
+                  tabIndex={0}
+                  onClick={this._toggleDropdown}
+                  disabled={disableInteractive}
+                >
+                  <i class="fa fa-clock" />
+                </button>
+              )}
+            </div>
+
+            <div class={dropdownClass} role="listbox" aria-labelledby="time-label" tabIndex={0} style={disabledAll ? { pointerEvents: 'none' } : undefined}>
+              <div class="time-spinner-wrapper">
+                <div class="time-spinner">
+                  <button class="arrow up" data-type="hour" aria-label="Increment Hour" role="button" onClick={this._increment} disabled={disabledAll}>
+                    <i class="fas fa-chevron-up" />
+                  </button>
+                  <span class="hour-display" role="option" aria-selected="false" aria-activedescendant="active-hour" tabIndex={0} id="active-hour">
+                    00
+                  </span>
+                  <button class="arrow down" data-type="hour" aria-label="Decrement Hour" role="button" onClick={this._decrement} disabled={disabledAll}>
+                    <i class="fas fa-chevron-down" />
+                  </button>
+                </div>
+
+                <div class="time-spinner-colon">
+                  <div class="dot">
+                    <i class="fa fa-circle" />
+                  </div>
+                  <div class="dot">
+                    <i class="fa fa-circle" />
+                  </div>
+                </div>
+
+                <div class="time-spinner">
+                  <button class="arrow up" data-type="minute" aria-label="Increment Minute" role="button" onClick={this._increment} disabled={disabledAll}>
+                    <i class="fas fa-chevron-up" />
+                  </button>
+                  <span class="minute-display" role="option" aria-selected="false" aria-activedescendant="active-minute" tabIndex={0} id="active-minute">
+                    00
+                  </span>
+                  <button class="arrow down" data-type="minute" aria-label="Decrement Minute" role="button" onClick={this._decrement} disabled={disabledAll}>
+                    <i class="fas fa-chevron-down" />
+                  </button>
+                </div>
+
+                {this.hideSeconds ? null : (
+                  <Fragment>
+                    <div class="time-spinner-colon">
+                      <div class="dot">
+                        <i class="fa fa-circle" />
+                      </div>
+                      <div class="dot">
+                        <i class="fa fa-circle" />
+                      </div>
+                    </div>
+                    <div class="time-spinner">
+                      <button class="arrow up" data-type="second" aria-label="Increment Second" role="button" onClick={this._increment} disabled={disabledAll}>
+                        <i class="fas fa-chevron-up" />
+                      </button>
+                      <span class="second-display" role="option" aria-selected="false" aria-activedescendant="active-second" tabIndex={0} id="active-second">
+                        00
+                      </span>
+                      <button class="arrow down" data-type="second" aria-label="Decrement Second" role="button" onClick={this._decrement} disabled={disabledAll}>
+                        <i class="fas fa-chevron-down" />
+                      </button>
+                    </div>
+                  </Fragment>
+                )}
+
+                <div class="time-spinner am-pm-spinner hidden">
+                  <button class="arrow up" data-type="ampm" aria-label="Increment AM/PM" role="button" onClick={this._increment} disabled={disabledAll}>
+                    <i class="fas fa-chevron-up" />
+                  </button>
+                  <span class="ampm-display" role="option" aria-selected="false" tabIndex={0} id="active-ampm" aria-activedescendant="active-ampm">
+                    AM
+                  </span>
+                  <button class="arrow down" data-type="ampm" aria-label="Decrement AM/PM" role="button" onClick={this._decrement} disabled={disabledAll}>
+                    <i class="fas fa-chevron-down" />
+                  </button>
+                </div>
+              </div>
+
+              <div class="time-spinner-close">
+                <button class="btn btn-outline-primary btntext close-button btn-sm" type="button" aria-label="Close" onClick={this._hideDropdown} disabled={disabledAll}>
+                  Close
+                </button>
+              </div>
+            </div>
+
             {!this.twentyFourHourOnly && !this.twelveHourOnly ? (
               <button
                 class={`toggle-format-btn btn btn--outlined${this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : ''}`}
                 aria-label={this.isTwentyFourHourFormat ? 'Switch to 12 Hour Format' : 'Switch to 24 Hour Format'}
                 role="button"
                 onClick={this._toggleFormat}
-                disabled={!this.isValid}
+                disabled={disableInteractive}
               >
                 {this.isTwentyFourHourFormat ? (
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="format-btn">

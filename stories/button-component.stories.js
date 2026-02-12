@@ -92,77 +92,189 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: ['Button component allows for various styles and behaviors.', 'Content is provided via the \'btnText\' prop (text only) or the **default slot** (text or markup).'].join('\n'),
+        component: [
+          'Button component allows for various styles and behaviors.',
+          "Content is provided via the 'btnText' prop (text only) or the **default slot** (text or markup).",
+        ].join('\n'),
       },
     },
   },
 
   argTypes: {
-    absolute: { control: 'boolean', description: 'If true, adds an inline style with position: absolute.' },
-    active: { control: 'boolean', description: 'If true, adds active styles to the button.' },
-    ariaLabel: { control: 'text', description: 'Adds an aria-label attribute for accessibility.', name: 'aria-label' },
-    block: { control: 'boolean', description: 'If true, makes the button a block-level element (full width).' },
-    bottom: { control: 'text', description: 'CSS bottom value (e.g., "10px", "1rem") added to the inline style. Requires `absolute` prop to be true.' },
-    btnIcon: { control: 'boolean', description: 'If true, styles the button as an icon-only button.', name: 'btn-icon' },
-    btnText: { control: 'text', description: 'Text content of the button.', name: 'btn-text' },
-    classNames: { control: 'text', description: 'Additional custom class names to add to the button component.', name: 'class-names' },
-    devMode: { control: 'boolean', description: 'If true, enables dev mode with additional logging.', name: 'dev-mode' },
-    disabled: { control: 'boolean', description: 'If true, disables the button.' },
-    elevation: { control: 'text', description: 'Elevation level 0-24, for shadow effects.' },
-    end: { control: 'boolean', description: 'If true, aligns content to the end.' },
-    fixed: { control: 'boolean', description: 'If true, adds an inline style with position: fixed.' },
-    groupBtn: { control: 'boolean', description: 'If true, styles the button as part of a group.', name: 'group-btn' },
-    iconBtn: { control: 'boolean', description: 'If true, styles the button as an icon button (similar to btnIcon).', name: 'icon-btn' },
-    // iconHtml: { control: 'text' },
-    left: { control: 'text', description: 'CSS left value (e.g., "10px", "1rem") added to the inline style. Requires `absolute` prop to be true.' },
-    link: { control: 'boolean', description: 'If true, styles the button to look like a link.' },
-    outlined: { control: 'boolean', description: 'If true, styles the button with an outline.' },
-    pressed: {
-      control: 'boolean',
-      description: 'Only applies when `toggle` is true. Controls the on/off state (aria-pressed).',
-    },
-    right: { control: 'text', description: 'CSS right value (e.g., "10px", "1rem") added to the inline style. Requires `absolute` prop to be true.' },
-    ripple: { control: 'boolean', description: 'If true, enables ripple effect on click.' },
-    shape: {
-      control: { type: 'select' },
-      options: ['', 'circle', 'pill', 'square'],
-      description: 'Sets the shape of the button: circle, pill, and square. If not set, default shape is used.',
-    },
-    // sideIconHtml: { control: 'text' },
-    size: { control: { type: 'select' }, options: ['', 'xs',  'sm', 'lg', 'plumage-size'], description: 'Sets the size of the button, e.g., extra small (xs), small (sm), large (lg), or plumage-size. If not set, default size is used.' },
+    /* -------------------- State -------------------- */
+    active: { control: 'boolean', description: 'If true, adds active styles to the button.', table: { category: 'State', defaultValue: { summary: false } } },
+    disabled: { control: 'boolean', description: 'If true, disables the button.', table: { category: 'State', defaultValue: { summary: false } } },
+
+    /* -------------------- Content -------------------- */
+    btnText: { control: 'text', description: 'Text content of the button.', name: 'btn-text', table: { category: 'Content' } },
     slotSide: {
       control: 'text',
       name: 'slot-side',
       description:
         "If using a side icon, entering 'left' or 'right' specifies whether it appears on the left or right side of the button text. Cannot use both left and right simultaneously.",
+      table: { category: 'Content' },
+    },
+
+    /* -------------------- Appearance -------------------- */
+    variant: {
+      control: 'text',
+      description: 'Visual variant/color for the badge (e.g., primary, secondary, success, danger, warning, info, light, dark, or any custom variant your app supports).',
+      table: { category: 'Appearance' },
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['', 'xs', 'sm', 'lg', 'plumage-size'],
+      description: 'Sets the size of the button, e.g., extra small (xs), small (sm), large (lg), or plumage-size. If not set, default size is used.',
+      table: { category: 'Appearance' },
+    },
+    shape: {
+      control: { type: 'select' },
+      options: ['', 'circle', 'pill', 'square'],
+      description: 'Sets the shape of the button: circle, pill, and square. If not set, default shape is used.',
+      table: { category: 'Appearance' },
+    },
+    outlined: { control: 'boolean', description: 'If true, styles the button with an outline.', table: { category: 'Appearance', defaultValue: { summary: false } } },
+    link: { control: 'boolean', description: 'If true, styles the button to look like a link.', table: { category: 'Appearance', defaultValue: { summary: false } } },
+    text: {
+      control: 'boolean',
+      description: 'If true, styles the button as a text button (no background or border).',
+      table: { category: 'Appearance', defaultValue: { summary: false } },
+    },
+    textBtn: {
+      control: 'boolean',
+      description: 'If true, styles the button as text but with the same hover effects as a button.',
+      name: 'text-btn',
+      table: { category: 'Appearance', defaultValue: { summary: false } },
+    },
+    stripped: {
+      control: 'boolean',
+      description: 'If true, removes background and border styles for a stripped-down appearance.',
+      table: { category: 'Appearance', defaultValue: { summary: false } },
+    },
+    elevation: { control: 'text', description: 'Elevation level 0-24, for shadow effects.', table: { category: 'Appearance' } },
+    classNames: {
+      control: 'text',
+      description: 'Additional custom class names to add to the button component.',
+      name: 'class-names',
+      table: { category: 'Appearance' },
+    },
+    styles: { control: 'text', description: 'Additional inline styles to apply to the button component.', table: { category: 'Appearance' } },
+
+    /* -------------------- Layout & Position -------------------- */
+    block: {
+      control: 'boolean',
+      description: 'If true, makes the button a block-level element (full width).',
+      table: { category: 'Layout & Position', defaultValue: { summary: false } },
     },
     start: {
       control: 'boolean',
       description:
         "Used with the button-group component. If true, this property will add the 'btn-group-start' or 'btn-group-vertical-start' (when the property 'vertical' is used) class to the button.",
+      table: { category: 'Layout & Position', defaultValue: { summary: false } },
     },
-    stripped: { control: 'boolean', description: 'If true, removes background and border styles for a stripped-down appearance.' },
-    styles: { control: 'text', description: 'Additional inline styles to apply to the button component.' },
-    text: { control: 'boolean', description: 'If true, styles the button as a text button (no background or border).' },
-    textBtn: { control: 'boolean', description: 'If true, styles the button as text but with the same hover effects as a button.', name: 'text-btn' },
-    titleAttr: { control: 'text', description: 'Adds a title attribute to the button for tooltip text on hover.', name: 'title-attr' },
+    end: { control: 'boolean', description: 'If true, aligns content to the end.', table: { category: 'Layout & Position', defaultValue: { summary: false } } },
+    groupBtn: {
+      control: 'boolean',
+      description: 'If true, styles the button as part of a group.',
+      name: 'group-btn',
+      table: { category: 'Layout & Position', defaultValue: { summary: false } },
+    },
+    vertical: {
+      control: 'boolean',
+      description: 'If true, and used within a button-group, stacks the buttons vertically instead of horizontally.',
+      table: { category: 'Layout & Position', defaultValue: { summary: false } },
+    },
+
+    absolute: {
+      control: 'boolean',
+      description: 'If true, adds an inline style with position: absolute.',
+      table: { category: 'Layout & Position', defaultValue: { summary: false } },
+    },
+    fixed: { control: 'boolean', description: 'If true, adds an inline style with position: fixed.', table: { category: 'Layout & Position', defaultValue: { summary: false } } },
+    top: {
+      control: 'text',
+      description: 'CSS top value (e.g., "10px", "1rem") added to the inline style. Requires `absolute` prop to be true.',
+      table: { category: 'Layout & Position' },
+    },
+    right: {
+      control: 'text',
+      description: 'CSS right value (e.g., "10px", "1rem") added to the inline style. Requires `absolute` prop to be true.',
+      table: { category: 'Layout & Position' },
+    },
+    bottom: {
+      control: 'text',
+      description: 'CSS bottom value (e.g., "10px", "1rem") added to the inline style. Requires `absolute` prop to be true.',
+      table: { category: 'Layout & Position' },
+    },
+    left: {
+      control: 'text',
+      description: 'CSS left value (e.g., "10px", "1rem") added to the inline style. Requires `absolute` prop to be true.',
+      table: { category: 'Layout & Position' },
+    },
+    zIndex: {
+      control: 'text',
+      description: 'CSS z-index value added to the inline style. Requires `absolute` or `fixed` prop to be true.',
+      name: 'z-index',
+      table: { category: 'Layout & Position' },
+    },
+
+    /* -------------------- Icon-only / Icon button -------------------- */
+    btnIcon: {
+      control: 'boolean',
+      description: 'If true, styles the button as an icon-only button.',
+      name: 'btn-icon',
+      table: { category: 'Icon Button', defaultValue: { summary: false } },
+    },
+    iconBtn: {
+      control: 'boolean',
+      description: 'If true, styles the button as an icon button (similar to btnIcon).',
+      name: 'icon-btn',
+      table: { category: 'Icon Button', defaultValue: { summary: false } },
+    },
+
+    /* -------------------- Behavior -------------------- */
+    ripple: { control: 'boolean', description: 'If true, enables ripple effect on click.', table: { category: 'Behavior', defaultValue: { summary: false } } },
     toggle: {
       control: 'boolean',
       description: 'If true, renders as a toggle button (adds aria-pressed and lets `pressed` control its state).',
+      table: { category: 'Behavior', defaultValue: { summary: false } },
     },
-    top: { control: 'text', description: 'CSS top value (e.g., "10px", "1rem") added to the inline style. Requires `absolute` prop to be true.' },
-    url: { control: 'text', description: 'If provided, renders the button as an anchor element and a url or path can be applied to the href that is rendered.' },
-    variant: {
-      control: 'text',
-      description: 'Visual variant/color for the badge (e.g., primary, secondary, success, danger, warning, info, light, dark, or any custom variant your app supports).',
+    pressed: {
+      control: 'boolean',
+      description: 'Only applies when `toggle` is true. Controls the on/off state (aria-pressed).',
+      table: { category: 'Behavior', defaultValue: { summary: false } },
     },
-    vertical: { control: 'boolean', description: 'If true, and used within a button-group, stacks the buttons vertically instead of horizontally.' },
-    zIndex: { control: 'text', description: 'CSS z-index value added to the inline style. Requires `absolute` or `fixed` prop to be true.', name: 'z-index' },
 
-    // Accordion helpers
-    // accordion: { control: 'boolean' },
-    // isOpen: { control: 'boolean' },
-    // targetId: { control: 'text' },
+    /* -------------------- Accessibility -------------------- */
+    ariaLabel: {
+      control: 'text',
+      description: 'Adds an aria-label attribute for accessibility.',
+      name: 'aria-label',
+      table: { category: 'Accessibility' },
+    },
+    titleAttr: {
+      control: 'text',
+      description: 'Adds a title attribute to the button for tooltip text on hover.',
+      name: 'title-attr',
+      table: { category: 'Accessibility' },
+    },
+
+    /* -------------------- Link / Navigation -------------------- */
+    url: {
+      control: 'text',
+      description: 'If provided, renders the button as an anchor element and a url or path can be applied to the href that is rendered.',
+      table: { category: 'Link / Navigation' },
+    },
+
+    /* -------------------- Dev -------------------- */
+    devMode: {
+      control: 'boolean',
+      description: 'If true, enables dev mode with additional logging.',
+      name: 'dev-mode',
+      table: { category: 'Dev', defaultValue: { summary: false } },
+    },
+
+    // NOTE: iconHtml + sideIconHtml are story-only helpers (excluded from Controls)
   },
 
   controls: {
@@ -208,10 +320,6 @@ export default {
     variant: '',
     vertical: false,
     zIndex: '',
-
-    // accordion: false,
-    // isOpen: false,
-    // targetId: '',
   },
 };
 
@@ -270,18 +378,15 @@ export const BackgroundColors = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Filled buttons for all core variants. Each button sets `variant` to one of: ' +
-          '`primary`, `secondary`, `success`, `danger`, `warning`, `info`, `light`, `dark`.',
+        story: 'Filled buttons for all core variants. Each button sets `variant` to one of: ' + '`primary`, `secondary`, `success`, `danger`, `warning`, `info`, `light`, `dark`.',
       },
     },
   },
 };
 
-
 export const OutlineColors = {
   name: 'Outlined Colors (all core variant colors)',
-  render: (args) => {
+  render: args => {
     const wrap = document.createElement('div');
     wrap.style.display = 'flex';
     wrap.style.flexWrap = 'wrap';
@@ -310,7 +415,6 @@ export const OutlineColors = {
     },
   },
 };
-
 
 export const Sizes = {
   name: 'Sizes (sm, default, lg)',
@@ -426,7 +530,7 @@ export const ActiveState = {
 };
 
 export const Block = {
-  args: { block: true, btnText: 'Block Button', variant: 'primary', },
+  args: { block: true, btnText: 'Block Button', variant: 'primary' },
   parameters: {
     docs: {
       description: {

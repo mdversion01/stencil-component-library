@@ -1,13 +1,9 @@
+// src/components/pagination/by-page-pagination-component.tsx
 import { Component, Prop, State, Watch, Event, EventEmitter, h, Element, Fragment } from '@stencil/core';
 
 @Component({
   tag: 'by-page-pagination-component',
-  styleUrls: [
-    './pagination-styles.scss',
-    '../input-field/input-field-styles.scss',
-    '../plumage-input-field/plumage-input-field-styles.scss',
-    '../form-styles.scss',
-  ],
+  styleUrls: ['./pagination-styles.scss', '../input-field/input-field-styles.scss', '../plumage-input-field/plumage-input-field-styles.scss', '../form-styles.scss'],
   shadow: false,
 })
 export class ByPagePagination {
@@ -20,8 +16,8 @@ export class ByPagePagination {
 
   // Options / layout (standalone capability)
   @Prop() itemsPerPageOptions: Array<number | 'All'> = [10, 20, 50, 100, 'All'];
-  @Prop() itemsPerPage: boolean = false;                // standalone only
-  @Prop() displayTotalNumberOfPages: boolean = false;   // standalone only
+  @Prop() itemsPerPage: boolean = false; // standalone only
+  @Prop() displayTotalNumberOfPages: boolean = false; // standalone only
 
   @Prop() goToButtons: string = '';
   @Prop() size: '' | 'sm' | 'lg' = '';
@@ -78,9 +74,11 @@ export class ByPagePagination {
   };
 
   private firstPage = () => this.setPageAndEmit(1);
-  private prevPage  = () => this.setPageAndEmit(Math.max(1, this.page - 1));
-  private nextPage  = () => { if (this.page < this.maxPages) this.setPageAndEmit(this.page + 1); };
-  private lastPage  = () => this.setPageAndEmit(this.maxPages);
+  private prevPage = () => this.setPageAndEmit(Math.max(1, this.page - 1));
+  private nextPage = () => {
+    if (this.page < this.maxPages) this.setPageAndEmit(this.page + 1);
+  };
+  private lastPage = () => this.setPageAndEmit(this.maxPages);
 
   /** Same range logic as parent (using internal page) */
   private get displayRange(): string {
@@ -109,7 +107,10 @@ export class ByPagePagination {
 
   private onItemsPerPageChange = (e: Event) => {
     const val = (e.target as HTMLSelectElement)?.value;
+
+    // If totalRows===0, "All" is disabled, but guard anyway.
     const newSize = val === 'All' ? this.totalRows : parseInt(val || '10', 10);
+
     this.pageSize = Number.isFinite(newSize) && newSize > 0 ? newSize : 10;
     this.setPageAndEmit(1);
     this.clampToBounds();
@@ -119,15 +120,23 @@ export class ByPagePagination {
   private renderSizeChanger() {
     const sizeCls = this.size === 'sm' ? 'select-sm' : this.size === 'lg' ? 'select-lg' : '';
     const wrap = 'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
+
+    const disableAll = this.totalRows === 0;
+
     return (
       <div class={wrap}>
         <label>Items per page: </label>
         <select class={`form-select form-control ${sizeCls}`} aria-label="selectField" onChange={this.onItemsPerPageChange}>
           {this.itemsPerPageOptions.map(opt => {
+            const isAll = opt === 'All';
             const isNum = typeof opt === 'number';
-            const disable = isNum && this.totalRows > 0 && opt > this.totalRows;
+
+            const disabled = isAll ? disableAll : isNum && this.totalRows > 0 && opt > this.totalRows;
+
+            const selected = isAll ? this.totalRows > 0 && this.pageSize === this.totalRows : this.pageSize === (opt as any);
+
             return (
-              <option value={String(opt)} selected={this.pageSize === (opt as any)} disabled={disable}>
+              <option value={String(opt)} selected={selected} disabled={disabled}>
                 {String(opt)}
               </option>
             );
@@ -144,7 +153,7 @@ export class ByPagePagination {
     const controls = this.controlId ?? this.el.id;
 
     const atStart = this.page <= 1;
-    const atEnd   = this.page >= this.maxPages;
+    const atEnd = this.page >= this.maxPages;
 
     const basicInputSize = this.size === 'sm' ? ' page-input-sm' : this.size === 'lg' ? ' page-input-lg' : '';
     const plInputSize = basicInputSize;
@@ -152,13 +161,31 @@ export class ByPagePagination {
     return (
       <ul role="menubar" aria-disabled="false" aria-label="Pagination" class={`pagination by-page b-pagination${sizeCls}${layoutCls}${plumageCls}`}>
         <li role="presentation" aria-hidden={atStart} class={`page-item${atStart ? ' disabled' : ''}`}>
-          <button role="menuitem" type="button" tabIndex={atStart ? -1 : 0} aria-label="Go to first page" aria-controls={controls} class="page-link" onClick={this.firstPage} disabled={atStart}>
+          <button
+            role="menuitem"
+            type="button"
+            tabIndex={atStart ? -1 : 0}
+            aria-label="Go to first page"
+            aria-controls={controls}
+            class="page-link"
+            onClick={this.firstPage}
+            disabled={atStart}
+          >
             {this.goToButtons === 'text' ? 'First' : <i class="fa-solid fa-angles-left"></i>}
           </button>
         </li>
 
         <li role="presentation" aria-hidden={atStart} class={`page-item${atStart ? ' disabled' : ''}`}>
-          <button role="menuitem" type="button" tabIndex={atStart ? -1 : 0} aria-label="Go to previous page" aria-controls={controls} class="page-link" onClick={this.prevPage} disabled={atStart}>
+          <button
+            role="menuitem"
+            type="button"
+            tabIndex={atStart ? -1 : 0}
+            aria-label="Go to previous page"
+            aria-controls={controls}
+            class="page-link"
+            onClick={this.prevPage}
+            disabled={atStart}
+          >
             {this.goToButtons === 'text' ? 'Prev' : <i class="fa-solid fa-angle-left"></i>}
           </button>
         </li>
@@ -168,7 +195,9 @@ export class ByPagePagination {
             Page{' '}
             {this.plumage ? (
               <div class="input-container page-input-wrapper" role="presentation" aria-labelledby="pageNumberField">
-                <label class="sr-only" htmlFor="pageNumberField">Page number</label>
+                <label class="sr-only" htmlFor="pageNumberField">
+                  Page number
+                </label>
                 <input
                   type="text"
                   class={`form-control page-input${plInputSize}`}
@@ -186,7 +215,9 @@ export class ByPagePagination {
               </div>
             ) : (
               <Fragment>
-                <label class="sr-only" htmlFor="pageNumberField">Page number</label>
+                <label class="sr-only" htmlFor="pageNumberField">
+                  Page number
+                </label>
                 <input
                   type="text"
                   inputMode="numeric"
@@ -205,13 +236,31 @@ export class ByPagePagination {
         </li>
 
         <li role="presentation" class={`page-item${atEnd ? ' disabled' : ''}`}>
-          <button role="menuitem" type="button" tabIndex={atEnd ? -1 : 0} aria-label="Go to next page" aria-controls={controls} class="page-link" onClick={this.nextPage} disabled={atEnd}>
+          <button
+            role="menuitem"
+            type="button"
+            tabIndex={atEnd ? -1 : 0}
+            aria-label="Go to next page"
+            aria-controls={controls}
+            class="page-link"
+            onClick={this.nextPage}
+            disabled={atEnd}
+          >
             {this.goToButtons === 'text' ? 'Next' : <i class="fa-solid fa-angle-right"></i>}
           </button>
         </li>
 
         <li role="presentation" class={`page-item${atEnd ? ' disabled' : ''}`}>
-          <button role="menuitem" type="button" tabIndex={atEnd ? -1 : 0} aria-label="Go to last page" aria-controls={controls} class="page-link" onClick={this.lastPage} disabled={atEnd}>
+          <button
+            role="menuitem"
+            type="button"
+            tabIndex={atEnd ? -1 : 0}
+            aria-label="Go to last page"
+            aria-controls={controls}
+            class="page-link"
+            onClick={this.lastPage}
+            disabled={atEnd}
+          >
             {this.goToButtons === 'text' ? 'Last' : <i class="fa-solid fa-angles-right"></i>}
           </button>
         </li>

@@ -16,26 +16,129 @@ export default {
   },
 
   argTypes: {
-    altText:       { control: 'text', name: 'alt-text',       description: 'Alt text for the card image.' },
-    ariaLabel:     { control: 'text', name: 'aria-label',     description: 'ARIA label for the card section.' },
-    actions:       { control: 'boolean',                      description: 'If true, displays the actions slot.' },
-    cardMaxWidth:  { control: 'text', name: 'card-max-width', description: 'Maximum width of the card in rem units.' },
-    classNames:    { control: 'text', name: 'class-names',    description: 'Additional CSS class names to apply to the card component.' },
-    elevation:     { control: 'text',                         description: 'Applies a shadow elevation to the card component (0-24) with CSS.' },
-    img:           { control: 'boolean',                      description: 'If true, displays an image in the card.' },
-    imgHeight:     { control: 'text', name: 'img-height',     description: 'Height of the card image.' },
-    imgSrc:        { control: 'text', name: 'img-src',        description: 'Source URL of the card image.' },
-    inlineStyles:  { control: 'text', name: 'inline-styles',  description: 'Inline styles to apply to the card component.' },
-    noFooter:      { control: 'boolean', name: 'no-footer',   description: 'If true, hides the footer slot.' },
-    noHeader:      { control: 'boolean', name: 'no-header',   description: 'If true, hides the header slot.' },
-    tab:           { control: 'text',                         description: 'Optional tab index for the card component.' },
+    /* -----------------------------
+   Accessibility
+  ------------------------------ */
+    ariaLabel: {
+      control: 'text',
+      name: 'aria-label',
+      description: 'ARIA label for the card section.',
+      table: { category: 'Accessibility' },
+    },
 
-    // Slot content (only used in Storybook demos)
-    slotHeader:  { control: 'text', table: { category: 'slots' }, description: 'Content for the header slot.', name: 'slot-header' },
-    slotTitle:   { control: 'text', table: { category: 'slots' }, description: 'Content for the title slot.', name: 'slot-title' },
-    slotText:    { control: 'text', table: { category: 'slots' }, description: 'Content for the text slot.', name: 'slot-text' },
-    slotFooter:  { control: 'text', table: { category: 'slots' }, description: 'Content for the footer slot.', name: 'slot-footer' },
-    slotActions: { control: 'text', table: { category: 'slots' }, description: 'Content for the actions slot.', name: 'slot-actions' },
+    /* -----------------------------
+   State
+  ------------------------------ */
+    actions: {
+      control: 'boolean',
+      description: 'If true, displays the actions slot.',
+      table: { category: 'State', defaultValue: { summary: false } },
+    },
+    img: {
+      control: 'boolean',
+      description: 'If true, displays an image in the card.',
+      table: { category: 'State', defaultValue: { summary: false } },
+    },
+    noFooter: {
+      control: 'boolean',
+      name: 'no-footer',
+      description: 'If true, hides the footer slot.',
+      table: { category: 'State', defaultValue: { summary: false } },
+    },
+    noHeader: {
+      control: 'boolean',
+      name: 'no-header',
+      description: 'If true, hides the header slot.',
+      table: { category: 'State', defaultValue: { summary: false } },
+    },
+
+    /* -----------------------------
+   Layout & Styling
+  ------------------------------ */
+    cardMaxWidth: {
+      control: 'text',
+      name: 'card-max-width',
+      description: 'Maximum width of the card in rem units.',
+      table: { category: 'Layout & Styling' },
+    },
+    classNames: {
+      control: 'text',
+      name: 'class-names',
+      description: 'Additional CSS class names to apply to the card component.',
+      table: { category: 'Layout & Styling' },
+    },
+    elevation: {
+      control: 'text',
+      description: 'Applies a shadow elevation to the card component (0-24) with CSS.',
+      table: { category: 'Layout & Styling' },
+    },
+    inlineStyles: {
+      control: 'text',
+      name: 'inline-styles',
+      description: 'Inline styles to apply to the card component.',
+      table: { category: 'Layout & Styling' },
+    },
+    tab: {
+      control: 'text',
+      description: 'Optional tab index for the card component.',
+      table: { category: 'Layout & Styling' },
+    },
+
+    /* -----------------------------
+   Image
+  ------------------------------ */
+    imgSrc: {
+      control: 'text',
+      name: 'img-src',
+      description: 'Source URL of the card image.',
+      table: { category: 'Image' },
+    },
+    imgHeight: {
+      control: 'text',
+      name: 'img-height',
+      description: 'Height of the card image.',
+      table: { category: 'Image' },
+    },
+    altText: {
+      control: 'text',
+      name: 'alt-text',
+      description: 'Alt text for the card image.',
+      table: { category: 'Image' },
+    },
+
+    /* -----------------------------
+   Slots
+  ------------------------------ */
+    slotHeader: {
+      control: 'text',
+      description: 'Content for the header slot.',
+      name: 'slot-header',
+      table: { category: 'Slots' },
+    },
+    slotTitle: {
+      control: 'text',
+      description: 'Content for the title slot.',
+      name: 'slot-title',
+      table: { category: 'Slots' },
+    },
+    slotText: {
+      control: 'text',
+      description: 'Content for the text slot.',
+      name: 'slot-text',
+      table: { category: 'Slots' },
+    },
+    slotFooter: {
+      control: 'text',
+      description: 'Content for the footer slot.',
+      name: 'slot-footer',
+      table: { category: 'Slots' },
+    },
+    slotActions: {
+      control: 'text',
+      description: 'Content for the actions slot.',
+      name: 'slot-actions',
+      table: { category: 'Slots' },
+    },
   },
 
   // Minimal defaults: undefined for optional strings so *nothing* appears unless a story opts-in
@@ -65,18 +168,14 @@ export default {
 
 // Helper: only set an attribute when the value is meaningful; otherwise remove it
 const setAttr = (el, name, value) => {
-  const isEmpty =
-    value === false ||
-    value === null ||
-    value === undefined ||
-    (typeof value === 'string' && value.trim() === '');
+  const isEmpty = value === false || value === null || value === undefined || (typeof value === 'string' && value.trim() === '');
 
   if (isEmpty) el.removeAttribute(name);
   else if (value === true) el.setAttribute(name, '');
   else el.setAttribute(name, String(value));
 };
 
-const Template = (args) => {
+const Template = args => {
   const el = document.createElement('card-component');
 
   // ----- PROPERTIES (runtime behavior) -----
@@ -242,4 +341,3 @@ Elevated.parameters = {
     },
   },
 };
-

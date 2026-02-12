@@ -2,7 +2,7 @@
 
 exports[`slider-manager-component reacts to type changes at runtime: runtime-switch/snapshot 1`] = `
 <slider-manager-component type="discrete">
-  <discrete-slider-component>
+  <discrete-slider-component unit="">
     <div class="discrete stub"><pre class="props">{"kind":"discrete","label":"Dynamic","selectedIndex":0,"stringValues":[],"plumage":false,"tickLabels":false,"variant":"","disabled":false,"hideRightTextBox":false}</pre>
     </div>
   </discrete-slider-component>
@@ -20,7 +20,7 @@ exports[`slider-manager-component renders BASIC by default and forwards props: b
 
 exports[`slider-manager-component renders DISCRETE and forwards props: discrete/snapshot 1`] = `
 <slider-manager-component type="discrete">
-  <discrete-slider-component>
+  <discrete-slider-component unit="">
     <div class="discrete stub"><pre class="props">{"kind":"discrete","label":"Quality","selectedIndex":2,"stringValues":["Low","Med","High","Ultra"],"plumage":true,"tickLabels":true,"variant":"success","disabled":true,"hideRightTextBox":true}</pre>
     </div>
   </discrete-slider-component>

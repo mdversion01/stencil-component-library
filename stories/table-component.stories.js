@@ -1,65 +1,344 @@
+// src/stories/table-component.stories.js
+
 export default {
   title: 'Components/Table',
   tags: ['autodocs'],
-  parameters: { layout: 'padded' },
-  argTypes: {
+  args: {
     // Styling
-    border: { control: 'boolean' },
-    bordered: { control: 'boolean' },
-    borderless: { control: 'boolean' },
-    dark: { control: 'boolean' },
-    headerDark: { control: 'boolean', name: 'header-dark' },
-    headerLight: { control: 'boolean', name: 'header-light' },
-    hover: { control: 'boolean' },
-    plumage: { control: 'boolean' },
-    noBorderCollapsed: { control: 'boolean', name: 'no-border-collapsed' },
-    selectedVariant: { control: 'text', name: 'selected-variant' },
-    size: { control: { type: 'radio' }, options: ['', 'sm'] },
-    striped: { control: 'boolean' },
-    tableVariant: {
-      control: { type: 'select' },
-      options: ['table', '', 'primary', 'secondary', 'success', 'danger', 'info', 'warning', 'dark', 'light'],
-      name: 'table-variant',
-    },
+    addBorder: false,
+    removeBorder: false,
+    darkTableTheme: false,
+    darkHeader: false,
+    lightHeader: false,
+    rowHover: false,
+    noBorderCollapsed: false,
+    plumage: false,
+    striped: false,
+
+    selectedVariant: 'table-active',
+    size: '',
+    tableVariant: 'table',
 
     // Layout
-    caption: { control: { type: 'radio' }, options: ['', 'top', 'bottom'] },
-    cloneFooter: { control: 'boolean', name: 'clone-footer' },
-    fields: { table: { disable: true } }, // set via script
-    fixed: { control: 'boolean' },
-    responsive: { control: 'boolean' },
-    stacked: { control: 'boolean' },
-    sticky: { control: 'boolean' },
+    caption: '',
+    cloneFooter: false,
+    fixedTableHeader: false,
+    responsive: false,
+    stacked: false,
+    sticky: false,
 
     // Data / sorting / filtering
-    items: { table: { disable: true } }, // set via script
-    sortable: { control: 'boolean' },
-    sortField: { control: 'text', name: 'sort-field' },
-    sortOrder: { control: { type: 'radio' }, options: ['asc', 'desc'], name: 'sort-order' },
-    filterText: { control: 'text', name: 'filter-text' },
+    filterText: '',
+    sortField: 'none',
+    sortOrder: 'asc',
+    sortable: false,
 
     // Selection
-    selectMode: { control: { type: 'select' }, options: ['', 'single', 'multi', 'range'], name: 'select-mode' },
+    selectMode: '',
 
     // Pagination
-    usePagination: { control: 'boolean', name: 'use-pagination' },
-    paginationPosition: { control: { type: 'radio' }, options: ['top', 'bottom', 'both'], name: 'pagination-position' },
-    paginationLayout: { control: 'text', name: 'pagination-layout' },
-    paginationSize: { control: { type: 'radio' }, options: ['', 'sm', 'lg'], name: 'pagination-size' },
-    paginationLimit: { control: { type: 'number', min: 1, step: 1 }, name: 'pagination-limit' },
-    rowsPerPage: { control: { type: 'number', min: 1, step: 1 }, name: 'rows-per-page' },
-    showDisplayRange: { control: 'boolean', name: 'show-display-range' },
-    showSizeChanger: { control: 'boolean', name: 'show-size-changer' },
-    hideGotoEndButtons: { control: 'boolean', name: 'hide-goto-end-buttons' },
-    hideEllipsis: { control: 'boolean', name: 'hide-ellipsis' },
-    goToButtons: { control: { type: 'radio' }, options: ['', 'text'], name: 'go-to-buttons' },
-    paginationVariantColor: { control: 'text', name: 'pagination-variant-color' },
+    goToButtons: '',
+    hideEllipsis: false,
+    hideGotoEndButtons: false,
+    paginationLayout: '',
+    paginationLimit: 5,
+    paginationPosition: 'bottom',
+    paginationSize: '',
+    paginationVariantColor: '',
+    rowsPerPage: 10,
+    showDisplayRange: false,
+    showSizeChanger: false,
+
+    // ✅ New API
+    paginationEnabled: false,
+    paginationVariant: 'standard',
+
+    // Legacy
+    usePagination: false,
+  },
+
+  parameters: {
+    layout: 'padded',
+    docs: {
+      source: {
+        type: 'dynamic',
+        language: 'html',
+        // Show rendered output as HTML (string OR HTMLElement)
+        transform: (_code, ctx) => normalizeHtml(toHtml(ctx.originalStoryFn(ctx.args))),
+      },
+      description: {
+        component: 'A flexible and customizable table component with support for sorting, filtering, selection, pagination, and various styling options.',
+      },
+    },
+  },
+
+  argTypes: {
+    /* -----------------------------
+     Styling
+  ------------------------------ */
+    addBorder: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'Styling' },
+      description: 'Adds borders to all table cells when true.',
+      name: 'add-border',
+    },
+    removeBorder: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'Styling' },
+      description: 'Removes all borders from the table when true.',
+      name: 'remove-border',
+    },
+    darkTableTheme: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'Styling' },
+      description: 'Applies a dark theme to the table when true.',
+      name: 'dark-table-theme',
+    },
+    darkHeader: {
+      control: 'boolean',
+      name: 'dark-header',
+      table: { defaultValue: { summary: false }, category: 'Styling' },
+      description: 'Applies a dark theme to the table header when true.',
+    },
+    lightHeader: {
+      control: 'boolean',
+      name: 'light-header',
+      table: { defaultValue: { summary: false }, category: 'Styling' },
+      description: 'Applies a light theme to the table header when true.',
+    },
+    rowHover: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'Styling' },
+      description: 'Enables hover effect on table rows when true.',
+      name: 'row-hover',
+    },
+    noBorderCollapsed: {
+      control: 'boolean',
+      name: 'no-border-collapsed',
+      table: { defaultValue: { summary: false }, category: 'Styling' },
+      description: 'Removes borders when the table is collapsed.',
+    },
+    plumage: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'Styling' },
+      description: 'Enables plumage style when true.',
+    },
+    striped: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'Styling' },
+      description: 'Enables striped rows when true.',
+    },
+    selectedVariant: {
+      control: 'text',
+      name: 'selected-variant',
+      description: 'Variant color for selected rows.',
+      table: { category: 'Styling' },
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['', 'sm'],
+      description: 'Size of the table.',
+      table: { category: 'Styling' },
+    },
+    tableVariant: {
+      control: { type: 'select' },
+      options: ['', 'primary', 'secondary', 'success', 'danger', 'info', 'warning', 'dark', 'light'],
+      name: 'table-variant',
+      description: 'Visual variant of the table.',
+      table: { category: 'Styling' },
+    },
+
+    /* -----------------------------
+     Layout
+  ------------------------------ */
+    caption: {
+      control: { type: 'select' },
+      options: ['', 'top', 'bottom'],
+      description: 'Position of the table caption.',
+      table: { category: 'Layout' },
+    },
+    cloneFooter: {
+      control: 'boolean',
+      name: 'clone-footer',
+      table: { defaultValue: { summary: false }, category: 'Layout' },
+      description: 'Clones the footer row when true.',
+    },
+    fixedTableHeader: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'Layout' },
+      description: 'Enables fixed header and/or columns when true.',
+      name: 'fixed-table-header',
+    },
+    responsive: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'Layout' },
+      description: 'Enables responsive behavior when true.',
+    },
+    stacked: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'Layout' },
+      description: 'Stacks the table vertically on smaller screens when true.',
+    },
+    sticky: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'Layout' },
+      description: 'Makes the table header sticky when true.',
+    },
+
+    /* -----------------------------
+     Data (Story-controlled)
+  ------------------------------ */
+    fields: {
+      table: { disable: true, category: 'Data (Story-controlled)' },
+      description: 'Fields configuration for the table (set via story code).',
+    },
+    items: {
+      table: { disable: true, category: 'Data (Story-controlled)' },
+      description: 'Items data for the table (set via story code).',
+    },
+
+    /* -----------------------------
+     Sorting & Filtering
+  ------------------------------ */
+    sortable: {
+      control: 'boolean',
+      description: 'Enables sorting when true.',
+      table: { category: 'Sorting & Filtering' },
+    },
+    sortField: {
+      control: 'text',
+      name: 'sort-field',
+      description: 'Field name to sort by.',
+      table: { category: 'Sorting & Filtering' },
+    },
+    sortOrder: {
+      control: { type: 'select' },
+      options: ['asc', 'desc'],
+      name: 'sort-order',
+      description: 'Sort order: ascending or descending.',
+      table: { category: 'Sorting & Filtering' },
+    },
+    filterText: {
+      control: 'text',
+      name: 'filter-text',
+      description: 'Text to filter the table rows.',
+      table: { category: 'Sorting & Filtering' },
+    },
+
+    /* -----------------------------
+     Selection
+  ------------------------------ */
+    selectMode: {
+      control: { type: 'select' },
+      options: ['', 'single', 'multi', 'range'],
+      name: 'select-mode',
+      description: 'For selection mode of rows with checkboxes. single = only one row can be selected at a time, multi = multiple rows can be selected independently, range = allows shift-click to select a range of rows.',
+      table: { category: 'Selection' },
+    },
+
+    /* -----------------------------
+     Pagination (Recommended)
+  ------------------------------ */
+    paginationEnabled: {
+      control: 'boolean',
+      name: 'pagination-enabled',
+      table: { defaultValue: { summary: false }, category: 'Pagination (Recommended)' },
+      description: 'Enables pagination UI + slicing (recommended new API).',
+    },
+    paginationVariant: {
+      control: { type: 'select' },
+      options: ['standard', 'minimize', 'by-page'],
+      name: 'pagination-variant',
+      table: { defaultValue: { summary: 'standard' }, category: 'Pagination (Recommended)' },
+      description: 'Which pagination UI variant to use (recommended new API).',
+    },
+
+    /* -----------------------------
+     Pagination (Controls)
+  ------------------------------ */
+    paginationPosition: {
+      control: { type: 'select' },
+      options: ['top', 'bottom', 'both'],
+      name: 'pagination-position',
+      description: 'Position of the pagination controls.',
+      table: { category: 'Pagination (Controls)' },
+    },
+    paginationLayout: {
+      control: 'text',
+      name: 'pagination-layout',
+      description: 'Layout template for pagination controls.',
+      table: { category: 'Pagination (Controls)' },
+    },
+    paginationSize: {
+      control: { type: 'select' },
+      options: ['', 'sm', 'lg'],
+      name: 'pagination-size',
+      description: 'Size of the pagination controls.',
+      table: { category: 'Pagination (Controls)' },
+    },
+    paginationLimit: {
+      control: { type: 'number', min: 1, step: 1 },
+      name: 'pagination-limit',
+      description: 'Number of page buttons to show in pagination.',
+      table: { category: 'Pagination (Controls)' },
+    },
+    rowsPerPage: {
+      control: { type: 'number', min: 1, step: 1 },
+      name: 'rows-per-page',
+      description: 'Number of rows per page.',
+      table: { category: 'Pagination (Controls)' },
+    },
+    showDisplayRange: {
+      control: 'boolean',
+      name: 'show-display-range',
+      table: { defaultValue: { summary: false }, category: 'Pagination (Controls)' },
+      description: 'Shows the display range when true.',
+    },
+    showSizeChanger: {
+      control: 'boolean',
+      name: 'show-size-changer',
+      table: { defaultValue: { summary: false }, category: 'Pagination (Controls)' },
+      description: 'Shows the size changer when true.',
+    },
+    hideGotoEndButtons: {
+      control: 'boolean',
+      name: 'hide-goto-end-buttons',
+      table: { defaultValue: { summary: false }, category: 'Pagination (Controls)' },
+      description: 'Hides Go To First/Last buttons in pagination when true.',
+    },
+    hideEllipsis: {
+      control: 'boolean',
+      name: 'hide-ellipsis',
+      table: { defaultValue: { summary: false }, category: 'Pagination (Controls)' },
+      description: 'Hides ellipsis in pagination when true.',
+    },
+    goToButtons: {
+      control: { type: 'select' },
+      options: ['', 'text'],
+      name: 'go-to-buttons',
+      description: 'Type of Go To buttons in pagination.',
+      table: { category: 'Pagination (Controls)' },
+    },
+    paginationVariantColor: {
+      control: 'text',
+      name: 'pagination-variant-color',
+      description: 'Variant color of the pagination controls.',
+      table: { category: 'Pagination (Controls)' },
+    },
+
+    /* -----------------------------
+     Pagination (Legacy)
+  ------------------------------ */
+    usePagination: {
+      control: 'boolean',
+      name: 'use-pagination',
+      table: { defaultValue: { summary: false }, category: 'Pagination (Legacy)' },
+      description: 'Legacy: enables pagination when true (kept for backward compatibility).',
+    },
   },
 };
 
-/* ---------------------------------------------
-   Shared demo data + tiny helpers (inline-safe)
----------------------------------------------- */
+/* --------------------------------------------- Demo data ---------------------------------------------- */
 
 const basicItems = [
   { name: 'John', age: 30, city: 'New York' },
@@ -88,9 +367,41 @@ const colorVariationsItems = [
 ];
 
 const detailRowItems = [
-  { name: 'John', age: 30, city: 'New York', _showDetails: true, _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>' },
-  { name: 'Anna', age: 25, city: 'London', _showDetails: true, _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>' },
-  { name: 'Mike', age: 32, city: 'Chicago', _showDetails: true, _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>' },
+  {
+    name: 'John',
+    age: 30,
+    city: 'New York',
+    _showDetails: true,
+    _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>',
+  },
+  {
+    name: 'Anna',
+    age: 25,
+    city: 'London',
+    _showDetails: true,
+    _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>',
+  },
+  {
+    name: 'Mike',
+    age: 32,
+    city: 'Chicago',
+    _showDetails: true,
+    _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>',
+  },
+  {
+    name: 'Terry',
+    age: 21,
+    city: 'Augusta',
+    _showDetails: true,
+    _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>',
+  },
+  {
+    name: 'Clark',
+    age: 56,
+    city: 'Tucson',
+    _showDetails: true,
+    _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>',
+  },
 ];
 
 const fullDataItems = [
@@ -117,142 +428,732 @@ const tableFields = [
   { key: 'age', label: 'Age', sortable: true },
 ];
 
-const deriveFieldsFromFirstItem = (items) => {
+/* --------------------------------------------- Helpers ---------------------------------------------- */
+
+function toHtml(out) {
+  if (typeof out === 'string') return out;
+  if (out && typeof out === 'object' && 'outerHTML' in out) {
+    // If we return a wrapper div, prefer its innerHTML so preview isn't wrapped.
+    if (out instanceof HTMLElement && out.tagName.toLowerCase() === 'div') return out.innerHTML;
+    return out.outerHTML;
+  }
+  return String(out ?? '');
+}
+
+// Collapses multiple blank lines + trims leading/trailing blanks
+function normalizeHtml(html) {
+  const lines = String(html ?? '')
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map(l => l.replace(/[ \t]+$/g, ''));
+  const out = [];
+  let prevBlank = false;
+
+  for (const line of lines) {
+    const blank = line.trim() === '';
+    if (blank) {
+      if (prevBlank) continue;
+      out.push('');
+      prevBlank = true;
+      continue;
+    }
+    out.push(line);
+    prevBlank = false;
+  }
+
+  while (out.length && out[0] === '') out.shift();
+  while (out.length && out[out.length - 1] === '') out.pop();
+  return out.join('\n');
+}
+
+function normalizeJs(js) {
+  return String(js ?? '')
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map(l => l.replace(/[ \t]+$/g, ''))
+    .join('\n')
+    .trim();
+}
+
+/**
+ * ✅ Docs-only helper: emit a single HTML preview including minimal JS wiring.
+ * Use ONLY for stories whose behavior depends on external wiring.
+ */
+function buildDocsHtmlJsSource({ html, js }) {
+  const cleanHtml = normalizeHtml(html);
+  const cleanJs = normalizeJs(js);
+
+  if (!cleanJs) return cleanHtml;
+
+  return normalizeHtml(`
+<!-- Markup -->
+${cleanHtml}
+
+<!-- Minimal wiring (illustrative) -->
+<script>
+${cleanJs}
+</script>
+`);
+}
+
+const deriveFieldsFromFirstItem = items => {
   if (!Array.isArray(items) || !items.length) return [];
   const ignore = new Set(['_cellVariants', '_rowVariant', '_showDetails', '_additionalInfo']);
   return Object.keys(items[0])
     .filter(k => !ignore.has(k))
-    .map(k => ({ key: k, label: k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), sortable: true }));
+    .map(k => ({
+      key: k,
+      label: k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+      sortable: true,
+    }));
 };
 
-const pushItemsScript = (id, items, fields) => `
-<script type="module">
-  (async () => {
+const isNone = v => {
+  const t = (v ?? '').toString().trim().toLowerCase();
+  return t === '' || t === 'none';
+};
+
+async function whenReady(tagName, el) {
+  await customElements.whenDefined(tagName);
+  await el?.componentOnReady?.();
+}
+
+function ensureGlobalHelpers() {
+  if (window.__tableStoryHelpersInstalled) return;
+  window.__tableStoryHelpersInstalled = true;
+
+  window.resetTableSort = async (tableId, dropdownId) => {
     await customElements.whenDefined('table-component');
-    const el = document.getElementById('${id}');
-    if (!el) return;
-    await el.componentOnReady?.();
-    const data = ${JSON.stringify(items)};
-    el.items = [...data];
-    el.originalItems = [...data];
-    el.fields = ${fields ? JSON.stringify(fields) : '(() => { const f = (' + JSON.stringify(items) + '); return (' + deriveFieldsFromFirstItem.toString() + ')(f); })()'};
-  })();
-</script>
-`;
+    const table = document.getElementById(tableId);
+    await table?.componentOnReady?.();
+    await table?.resetSort?.();
 
-/* ---------------------------------------------
-   Base template for a single table instance
----------------------------------------------- */
-const TableTemplate = (args, id, attrs = '', after = '') => `
-<table-component
-  id="${id}"
-  ${args.border ? 'border' : ''}
-  ${args.bordered ? 'bordered' : ''}
-  ${args.borderless ? 'borderless' : ''}
-  ${args.dark ? 'dark' : ''}
-  ${args.headerDark ? 'header-dark' : ''}
-  ${args.headerLight ? 'header-light' : ''}
-  ${args.hover ? 'hover' : ''}
-  ${args.plumage ? 'plumage' : ''}
-  ${args.noBorderCollapsed ? 'no-border-collapsed' : ''}
-  ${args.size ? `size="${args.size}"` : ''}
-  ${args.striped ? 'striped' : ''}
-  ${args.tableVariant ? `table-variant="${args.tableVariant}"` : ''}
-  ${args.caption ? `caption="${args.caption}"` : ''}
-  ${args.cloneFooter ? 'cloneFooter' : ''}
-  ${args.fixed ? 'fixed' : ''}
-  ${args.responsive ? 'responsive' : ''}
-  ${args.sticky ? 'sticky' : ''}
-  ${args.sortable ? 'sortable' : ''}
-  ${args.selectMode ? `select-mode="${args.selectMode}"` : ''}
-  ${args.usePagination ? 'use-pagination' : ''}
-  ${args.paginationPosition ? `pagination-position="${args.paginationPosition}"` : ''}
-  ${args.paginationLayout ? `pagination-layout="${args.paginationLayout}"` : ''}
-  ${args.paginationSize ? `pagination-size="${args.paginationSize}"` : ''}
-  ${args.paginationLimit ? `pagination-limit="${args.paginationLimit}"` : ''}
-  ${args.rowsPerPage ? `rows-per-page="${args.rowsPerPage}"` : ''}
-  ${args.showDisplayRange ? 'show-display-range' : ''}
-  ${args.showSizeChanger ? 'show-size-changer' : ''}
-  ${args.hideGotoEndButtons ? 'hide-goto-end-buttons' : ''}
-  ${args.hideEllipsis ? 'hide-ellipsis' : ''}
-  ${args.goToButtons ? `go-to-buttons="${args.goToButtons}"` : ''}
-  ${args.paginationVariantColor ? `pagination-variant-color="${args.paginationVariantColor}"` : ''}
-  ${attrs}
->
-  ${args.caption === 'top' || args.caption === 'bottom' ? '<span slot="caption">This is an Example Caption</span>' : ''}
+    if (dropdownId) {
+      const drop = document.getElementById(dropdownId);
+      if (typeof drop?.clearSelections === 'function') await drop.clearSelections();
+
+      document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId, items: [] } }));
+      table?.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: '' } }));
+
+      const input = document.querySelector(`[data-filter-input-for="${tableId}"]`);
+      if (input) {
+        input.value = '';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new CustomEvent('valueChange', { detail: { value: '' }, bubbles: true }));
+      }
+    }
+  };
+
+  window.clearFilter = async dropdownId => {
+    const drop = document.getElementById(dropdownId);
+    const tableId = drop?.getAttribute?.('table-id') || drop?.tableId;
+    if (!tableId) return;
+
+    const input = document.querySelector(`[data-filter-input-for="${tableId}"]`);
+    if (input) {
+      input.value = '';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new CustomEvent('valueChange', { detail: { value: '' }, bubbles: true }));
+    }
+
+    if (typeof drop?.clearSelections === 'function') await drop.clearSelections();
+    document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId, items: [] } }));
+
+    const table = document.getElementById(tableId);
+    table?.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: '' } }));
+  };
+}
+
+/**
+ * ✅ Only wire controls once the returned wrapper is actually connected to the DOM.
+ * Storybook calls the story function for Docs "Source" too, where it may never connect.
+ */
+function runWhenConnected(rootEl, fn, timeoutMs = 1500) {
+  const start = performance.now();
+  const tick = () => {
+    if (!rootEl || rootEl.isConnected) {
+      try {
+        fn();
+      } catch {
+        // swallow wiring errors so Docs transforms never hard-fail
+      }
+      return;
+    }
+    if (performance.now() - start > timeoutMs) return;
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+function buildTableAttrs(args, id, extraAttrs = '') {
+  const attrs = [
+    id ? `id="${id}"` : null,
+    args.addBorder ? 'add-border' : null,
+    args.removeBorder ? 'remove-border' : null,
+    args.darkTableTheme ? 'dark-table-theme' : null,
+    args.darkHeader ? 'dark-header' : null,
+    args.lightHeader ? 'light-header' : null,
+    args.rowHover ? 'row-hover' : null,
+    args.noBorderCollapsed ? 'no-border-collapsed' : null,
+    args.plumage ? 'plumage' : null,
+    args.size ? `size="${args.size}"` : null,
+    args.striped ? 'striped' : null,
+    args.tableVariant ? `table-variant="${args.tableVariant}"` : null,
+    args.caption ? `caption="${args.caption}"` : null,
+    args.cloneFooter ? 'clone-footer' : null,
+    args.fixedTableHeader ? 'fixed-table-header' : null,
+    args.responsive ? 'responsive' : null,
+    args.stacked ? 'stacked' : null,
+    args.sticky ? 'sticky' : null,
+    args.sortable ? 'sortable' : null,
+    args.selectMode ? `select-mode="${args.selectMode}"` : null,
+
+    // ✅ NEW API first
+    args.paginationEnabled ? 'pagination-enabled' : null,
+    args.paginationVariant ? `pagination-variant="${args.paginationVariant}"` : null,
+
+    // legacy
+    args.usePagination ? 'use-pagination' : null,
+
+    args.paginationPosition ? `pagination-position="${args.paginationPosition}"` : null,
+    args.paginationLayout ? `pagination-layout="${args.paginationLayout}"` : null,
+    args.paginationSize ? `pagination-size="${args.paginationSize}"` : null,
+    args.paginationLimit ? `pagination-limit="${args.paginationLimit}"` : null,
+    args.rowsPerPage ? `rows-per-page="${args.rowsPerPage}"` : null,
+    args.showDisplayRange ? 'show-display-range' : null,
+    args.showSizeChanger ? 'show-size-changer' : null,
+    args.hideGotoEndButtons ? 'hide-goto-end-buttons' : null,
+    args.hideEllipsis ? 'hide-ellipsis' : null,
+    args.goToButtons ? `go-to-buttons="${args.goToButtons}"` : null,
+    args.paginationVariantColor ? `pagination-variant-color="${args.paginationVariantColor}"` : null,
+    extraAttrs ? extraAttrs.trim() : null,
+  ]
+    .filter(Boolean)
+    .join('\n ');
+
+  return attrs;
+}
+
+/**
+ * ✅ Renders DOM + sets items/fields via properties (no <script> tags).
+ * Works in Canvas + Docs.
+ */
+function renderTableStory(args, { id, items, fields, extraAttrs = '' } = {}) {
+  const wrapper = document.createElement('div');
+  wrapper.style.margin = '24px 0';
+
+  const attrs = buildTableAttrs(args, id, extraAttrs);
+  const captionSlot = args.caption === 'top' || args.caption === 'bottom' ? `<span slot="caption">This is an Example Caption</span>` : '';
+
+  wrapper.innerHTML = normalizeHtml(`
+<table-component ${attrs}>
+  ${captionSlot}
 </table-component>
-${after}
+`);
+
+  const table = wrapper.querySelector('table-component');
+  if (table) {
+    const data = Array.isArray(items) ? items : [];
+    table.items = [...data];
+    table.originalItems = [...data];
+    table.fields = Array.isArray(fields) && fields.length ? fields : deriveFieldsFromFirstItem(data);
+  }
+
+  return wrapper;
+}
+
+/** Like renderTableStory, but allows injecting complex markup around the table. */
+function renderSectionStory(args, { html, tableId, items, fields } = {}) {
+  const wrapper = document.createElement('div');
+  wrapper.style.margin = '24px 0';
+  wrapper.innerHTML = normalizeHtml(html);
+
+  const table = wrapper.querySelector(`#${CSS.escape(tableId)}`);
+  if (table) {
+    const data = Array.isArray(items) ? items : [];
+    table.items = [...data];
+    table.originalItems = [...data];
+    table.fields = Array.isArray(fields) && fields.length ? fields : deriveFieldsFromFirstItem(data);
+  }
+
+  return wrapper;
+}
+
+/* --------------------------------------------- Wiring helpers (UPDATED) ---------------------------------------------- */
+
+async function wireSortControls({ root, tableId, sortFieldId, sortOrderId }) {
+  ensureGlobalHelpers();
+  const q = sel => (root?.querySelector ? root.querySelector(sel) : null) || document.querySelector(sel);
+
+  const table = q(`#${CSS.escape(tableId)}`);
+  const selField = q(`#${CSS.escape(sortFieldId)}`);
+  const selOrder = q(`#${CSS.escape(sortOrderId)}`);
+  if (!table || !selField || !selOrder) return;
+
+  await Promise.all([whenReady('table-component', table), whenReady('select-field-component', selField), whenReady('select-field-component', selOrder)]);
+
+  const fields = Array.isArray(table.fields) && table.fields.length ? table.fields : deriveFieldsFromFirstItem(table.items || []);
+  const options = fields.map(f => ({ value: f.key, name: f.label || f.key }));
+
+  selField.defaultOptionTxt = '';
+  selField.options = options;
+  selOrder.options = [
+    { value: 'asc', name: 'Ascending' },
+    { value: 'desc', name: 'Descending' },
+  ];
+
+  selField.value = isNone(table.sortField) ? '' : table.sortField;
+  selOrder.value = table.sortOrder ?? 'asc';
+  selOrder.disabled = isNone(selField.value);
+
+  const onFieldChange = ev => {
+    const raw = ev?.detail?.value ?? ev?.target?.value ?? '';
+    selOrder.disabled = isNone(raw);
+    table.dispatchEvent(new CustomEvent('sort-field-changed', { detail: { value: isNone(raw) ? 'none' : raw } }));
+  };
+
+  selField.addEventListener('valueChange', onFieldChange);
+  selField.addEventListener('change', onFieldChange);
+
+  selOrder.addEventListener('change', ev => {
+    const value = ev?.detail?.value ?? ev?.target?.value ?? 'asc';
+    table.dispatchEvent(new CustomEvent('sort-order-changed', { detail: { value } }));
+  });
+
+  table.addEventListener('sort-field-updated', ev => {
+    const value = ev?.detail?.value ?? 'none';
+    selField.value = isNone(value) ? '' : value;
+    selOrder.disabled = isNone(value);
+  });
+
+  table.addEventListener('sort-order-updated', ev => {
+    const value = ev?.detail?.value ?? 'asc';
+    selOrder.value = value;
+    if (!isNone(selField.value)) selOrder.disabled = false;
+  });
+}
+
+async function wireFilterControls({ root, tableId, inputId, dropdownId }) {
+  ensureGlobalHelpers();
+  const q = sel => (root?.querySelector ? root.querySelector(sel) : null) || document.querySelector(sel);
+
+  const table = q(`#${CSS.escape(tableId)}`);
+  const input = q(`#${CSS.escape(inputId)}`);
+  const dropdown = q(`#${CSS.escape(dropdownId)}`);
+  if (!table || !input || !dropdown) return;
+
+  await Promise.all([whenReady('table-component', table), whenReady('input-group-component', input), whenReady('dropdown-component', dropdown)]);
+
+  input?.setAttribute?.('data-filter-input-for', tableId);
+
+  const fields = Array.isArray(table.fields) && table.fields.length ? table.fields : deriveFieldsFromFirstItem(table.items || []);
+  const options = fields.map((f, i) => ({
+    key: f.key,
+    name: f.label || f.key,
+    value: f.key,
+    label: f.label || f.key,
+    checked: false,
+    index: i,
+  }));
+
+  if (typeof dropdown?.setOptions === 'function') dropdown.setOptions(options);
+  else dropdown.options = options;
+
+  const forward = val => table.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: String(val ?? '') } }));
+  input?.addEventListener('input', e => forward(e?.detail?.value ?? e?.target?.value ?? ''));
+  input?.addEventListener('change', e => forward(e?.detail?.value ?? e?.target?.value ?? ''));
+  input?.addEventListener('valueChange', e => forward(e?.detail?.value ?? ''));
+
+  dropdown?.addEventListener('selection-changed', ev => {
+    const checked = Array.isArray(ev?.detail?.items) ? ev.detail.items : [];
+    const payload = checked.map(o => ({ key: (o.key || o.value || o.name) ?? '', checked: true }));
+    document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId, items: payload } }));
+  });
+}
+
+/* -------------------------------------------------------------------
+✅ Hoisted wired story templates (Docs + story stay in sync)
+-------------------------------------------------------------------- */
+
+const SORT_RESET_STORY = {
+  tableId: 'table16',
+  sortFieldId: 'sortField-1',
+  sortOrderId: 'sortOrder-1',
+  html({ tableId, sortFieldId, sortOrderId }) {
+    return `
+<section class="display-box-demo">
+  <button class="reset-sort-icon" onclick="resetTableSort('${tableId}')"></button>
+
+  <div style="display:flex; width:100%; flex:1 1 auto">
+    <div style="flex:1 1 auto">
+      <select-field-component id="${sortFieldId}" label="Sort Field" with-table size="sm"></select-field-component>
+    </div>
+    <div style="flex:1 1 auto">
+      <select-field-component id="${sortOrderId}" label="Sort Order" with-table value="asc" disabled size="sm"></select-field-component>
+    </div>
+  </div>
+
+  <table-component id="${tableId}" table-id="${tableId}" striped sortable responsive size="sm"></table-component>
+</section>
 `;
+  },
+  docsJs({ tableId }) {
+    return `
+(async () => {
+  await customElements.whenDefined('table-component');
+  const table = document.getElementById('${tableId}');
+  table.items = [
+    { first_name: 'Thor', last_name: 'MacDonald', age: 40 },
+    { first_name: 'Anna', last_name: 'Smith', age: 25 },
+    { first_name: 'Zachary', last_name: 'Peterson', age: 36 },
+  ];
+  table.originalItems = [...table.items];
+  table.fields = [
+    { key: 'last_name', label: 'Last Name', sortable: true },
+    { key: 'first_name', label: 'First Name', sortable: true },
+    { key: 'age', label: 'Age', sortable: true },
+  ];
 
-/* ---------------------------------------------
-   Stories
----------------------------------------------- */
+  // Outside Storybook, wire your selects to dispatch these events:
+  // table.dispatchEvent(new CustomEvent('sort-field-changed', { detail: { value: 'age' } }));
+  // table.dispatchEvent(new CustomEvent('sort-order-changed', { detail: { value: 'asc' } }));
+})();
+`;
+  },
+};
 
-export const Basic = (args) =>
-  TableTemplate(args, 'table-basic', '', pushItemsScript('table-basic', basicItems));
+const FILTER_RESET_STORY = {
+  tableId: 'table17',
+  inputId: 'filterInput-table17',
+  dropdownId: 'filterByItems-table17',
+  html({ tableId, inputId, dropdownId }) {
+    return `
+<section class="display-box-demo">
+  <button class="reset-sort-icon" onclick="resetTableSort('${tableId}', '${dropdownId}')"></button>
+
+  <div style="display:flex; width:100%; flex:1 1 auto">
+    <div style="flex:1 1 auto">
+      <input-group-component
+        id="${inputId}"
+        label="Filter"
+        placeholder="Type to Filter..."
+        name="input-1"
+        value=""
+        append
+        append-id="append-1"
+        other-content
+        size="sm"
+      >
+        <button-component btn-text="Clear" variant="secondary" slot="append" size="sm" onclick="clearFilter('${dropdownId}')"></button-component>
+      </input-group-component>
+    </div>
+
+    <div style="flex:1 1 auto; margin-top:1.870rem">
+      <dropdown-component
+        button-text="Filter By"
+        variant="secondary"
+        id="${dropdownId}"
+        table-id="${tableId}"
+        size="sm"
+        input-id="filterby"
+        list-type="checkboxes"
+      ></dropdown-component>
+    </div>
+  </div>
+
+  <table-component id="${tableId}" table-id="${tableId}" striped responsive size="sm"></table-component>
+</section>
+`;
+  },
+  docsJs({ tableId }) {
+    return `
+(async () => {
+  await customElements.whenDefined('table-component');
+  const table = document.getElementById('${tableId}');
+  table.items = [
+    { first_name: 'Thor', last_name: 'MacDonald', age: 40 },
+    { first_name: 'Pete', last_name: 'MacDonald', age: 20 },
+    { first_name: 'Anna', last_name: 'Smith', age: 25 },
+  ];
+  table.originalItems = [...table.items];
+  table.fields = [
+    { key: 'last_name', label: 'Last Name', sortable: true },
+    { key: 'first_name', label: 'First Name', sortable: true },
+    { key: 'age', label: 'Age', sortable: true },
+  ];
+
+  // Outside Storybook, drive filtering by dispatching:
+  // table.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: 'mac' } }));
+  // And optionally the selected filter fields via:
+  // document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId: '${tableId}', items: [...] } }));
+})();
+`;
+  },
+};
+
+const PLAYGROUND_STORY = {
+  tableId: 'table99',
+  sortFieldId: 'sortField-2',
+  sortOrderId: 'sortOrder-2',
+  inputId: 'filterInput-table99',
+  dropdownId: 'filterByItems-table99',
+  html({ tableId, sortFieldId, sortOrderId, inputId, dropdownId }) {
+    return `
+<section class="display-box-demo">
+  <button class="reset-sort-icon" onclick="resetTableSort('${tableId}', '${dropdownId}')"></button>
+
+  <div style="display:flex; width:100%; flex:1 1 auto">
+    <div style="flex:1 1 auto">
+      <select-field-component id="${sortFieldId}" label="Sort Field" with-table size="sm"></select-field-component>
+    </div>
+    <div style="flex:1 1 auto">
+      <select-field-component id="${sortOrderId}" label="Sort Order" with-table value="asc" disabled size="sm"></select-field-component>
+    </div>
+  </div>
+
+  <div style="display:flex; width:100%; flex:1 1 auto">
+    <div style="flex:1 1 auto">
+      <input-group-component
+        id="${inputId}"
+        label="Filter"
+        placeholder="Type to Filter..."
+        name="input-1"
+        value=""
+        append
+        append-id="append-1"
+        other-content
+        size="sm"
+      >
+        <button-component
+          btn-text="Clear"
+          variant="primary"
+          slot="append"
+          secondary
+          styles="border-radius: 0 3px 3px 0; padding: 0 8px;"
+          size="sm"
+          onclick="clearFilter('${dropdownId}')"
+        ></button-component>
+      </input-group-component>
+    </div>
+
+    <div style="flex:1 1 auto; margin-top:1.870rem">
+      <dropdown-component
+        button-text="Filter By"
+        variant="secondary"
+        id="${dropdownId}"
+        table-id="${tableId}"
+        size="sm"
+        input-id="filterby"
+        list-type="checkboxes"
+      ></dropdown-component>
+    </div>
+  </div>
+
+  <table-component
+    id="${tableId}"
+    table-id="${tableId}"
+    striped
+    row-hover
+    sortable
+    responsive
+    select-mode="multi"
+    pagination-enabled
+    pagination-variant="standard"
+    pagination-position="both"
+    pagination-limit="3"
+    pagination-layout="start"
+    show-size-changer
+    size="sm"
+    go-to-buttons="text"
+    rows-per-page="10"
+  ></table-component>
+</section>
+`;
+  },
+  docsJs({ tableId }) {
+    return `
+(async () => {
+  await customElements.whenDefined('table-component');
+  const table = document.getElementById('${tableId}');
+  table.items = [
+    { first_name: 'Thor', last_name: 'MacDonald', age: 40 },
+    { first_name: 'Anna', last_name: 'Smith', age: 25 },
+    { first_name: 'Zachary', last_name: 'Peterson', age: 36 },
+    { first_name: 'Ralph', last_name: 'MacDonald', age: 21 },
+  ];
+  table.originalItems = [...table.items];
+  table.fields = [
+    { key: 'last_name', label: 'Last Name', sortable: true },
+    { key: 'first_name', label: 'First Name', sortable: true },
+    { key: 'age', label: 'Age', sortable: true },
+  ];
+
+  // Outside Storybook, drive behavior with events like:
+  // table.dispatchEvent(new CustomEvent('sort-field-changed', { detail: { value: 'age' } }));
+  // table.dispatchEvent(new CustomEvent('sort-order-changed', { detail: { value: 'asc' } }));
+  // table.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: 'mac' } }));
+})();
+`;
+  },
+};
+
+/* --------------------------------------------- Stories ---------------------------------------------- */
+
+export const Basic = args =>
+  renderTableStory(args, {
+    id: 'table-basic',
+    items: basicItems,
+  });
+
 Basic.args = {
-  bordered: false,
+  addBorder: false,
   responsive: false,
   striped: false,
-  hover: false,
+  rowHover: false,
   size: '',
   caption: '',
   tableVariant: 'table',
 };
 
-export const StickyNoBorderCollapsed = (args) =>
-  TableTemplate(args, 'table-sticky', '', pushItemsScript('table-sticky', basicItemsLong));
+Basic.parameters = {
+  docs: { description: { story: 'A basic table with minimal configuration.' } },
+};
+
+export const StickyNoBorderCollapsed = args =>
+  renderTableStory(args, {
+    id: 'table-sticky',
+    items: basicItemsLong,
+  });
+
 StickyNoBorderCollapsed.args = {
   sticky: true,
   noBorderCollapsed: true,
 };
 
-export const ResponsiveBordered = (args) =>
-  TableTemplate(args, 'table-resp-bordered', '', pushItemsScript('table-resp-bordered', basicItems));
+StickyNoBorderCollapsed.parameters = {
+  docs: { description: { story: 'A table with a sticky header and no borders when collapsed.' } },
+};
+
+export const ResponsiveBordered = args =>
+  renderTableStory(args, {
+    id: 'table-resp-bordered',
+    items: basicItems,
+  });
+
 ResponsiveBordered.args = {
   responsive: true,
-  bordered: true,
+  addBorder: true,
 };
 
-export const ResponsiveBorderless = (args) =>
-  TableTemplate(args, 'table-resp-borderless', '', pushItemsScript('table-resp-borderless', basicItems));
+ResponsiveBordered.parameters = {
+  docs: { description: { story: 'A responsive table with borders.' } },
+};
+
+export const ResponsiveBorderless = args =>
+  renderTableStory(args, {
+    id: 'table-resp-borderless',
+    items: basicItems,
+  });
+
 ResponsiveBorderless.args = {
   responsive: true,
-  borderless: true,
+  removeBorder: true,
 };
 
-export const StripedHoverBordered = (args) =>
-  TableTemplate(args, 'table-striped-hover', '', pushItemsScript('table-striped-hover', basicItems));
+ResponsiveBorderless.parameters = {
+  docs: { description: { story: 'A responsive table without borders.' } },
+};
+
+export const StripedHoverBordered = args =>
+  renderTableStory(args, {
+    id: 'table-striped-hover',
+    items: basicItems,
+  });
+
 StripedHoverBordered.args = {
   responsive: true,
   striped: true,
-  hover: true,
-  bordered: true,
+  rowHover: true,
+  addBorder: true,
 };
 
-export const CaptionTopCloneFooterFixed = (args) =>
-  TableTemplate(args, 'table-caption-top', '', pushItemsScript('table-caption-top', basicItems));
+StripedHoverBordered.parameters = {
+  docs: { description: { story: 'A responsive table with striped rows, hover effect, and borders.' } },
+};
+
+export const CaptionTopCloneFooterFixed = args =>
+  renderTableStory(args, {
+    id: 'table-caption-top',
+    items: basicItems,
+  });
+
 CaptionTopCloneFooterFixed.args = {
   caption: 'top',
   cloneFooter: true,
-  fixed: true,
+  fixedTableHeader: true,
 };
 
-export const StackedCaptionBottom = (args) =>
-  TableTemplate(args, 'table-stacked', '', pushItemsScript('table-stacked', basicItems));
+CaptionTopCloneFooterFixed.parameters = {
+  docs: { description: { story: 'A table with the caption at the top, a cloned footer, and fixed header.' } },
+};
+
+export const StackedCaptionBottom = args =>
+  renderTableStory(args, {
+    id: 'table-stacked',
+    items: basicItems,
+  });
+
 StackedCaptionBottom.args = {
   stacked: true,
   caption: 'bottom',
 };
 
-export const WithDetailsAndVariants = (args) =>
-  TableTemplate(args, 'table-details', '', pushItemsScript('table-details', colorVariationsItems));
-WithDetailsAndVariants.args = {
+StackedCaptionBottom.parameters = {
+  docs: { description: { story: 'A stacked table with the caption at the bottom.' } },
+};
+
+/**
+ * ✅ Renamed from "WithDetailsAndVariants"
+ * This story only demonstrates row + cell variant colors (no detail rows).
+ */
+export const UsingVariantColorsInRowsAndCells = args =>
+  renderTableStory(args, {
+    id: 'table-variant-colors',
+    items: colorVariationsItems,
+  });
+
+UsingVariantColorsInRowsAndCells.args = {
   responsive: true,
 };
 
-export const SelectableMultiSmall = (args) =>
-  TableTemplate(args, 'table-select-multi', 'table-id="table-select-multi"', pushItemsScript('table-select-multi', basicItems));
+UsingVariantColorsInRowsAndCells.parameters = {
+  docs: { description: { story: 'A table showcasing variant colors in rows and individual cells.' } },
+};
+
+/**
+ * ✅ Detail rows only (explicit _showDetails + _additionalInfo data).
+ */
+export const DetailRowsOnly = args =>
+  renderTableStory(args, {
+    id: 'table-detail-rows',
+    items: detailRowItems,
+  });
+
+DetailRowsOnly.args = {
+  responsive: true,
+};
+
+DetailRowsOnly.parameters = {
+  docs: { description: { story: 'A table showcasing detail rows using _showDetails and _additionalInfo.' } },
+};
+
+export const SelectableMultiSmall = args =>
+  renderTableStory(args, {
+    id: 'table-select-multi',
+    items: basicItems,
+    extraAttrs: 'table-id="table-select-multi"',
+  });
+
 SelectableMultiSmall.args = {
   responsive: true,
   striped: true,
@@ -260,22 +1161,17 @@ SelectableMultiSmall.args = {
   selectMode: 'multi',
 };
 
-export const SortableSimple = (args) => {
-  const after = `
-<script type="module">
-  window.resetTableSort = async (tableId) => {
-    await customElements.whenDefined('table-component');
-    const el = document.getElementById(tableId);
-    await el?.componentOnReady?.();
-    await el?.resetSort?.();
-  };
-</script>
-<section class="display-box-demo">
-  <button class="reset-sort-icon" onclick="resetTableSort('table-sortable')"></button>
-</section>
-`;
-  return TableTemplate(args, 'table-sortable', '', pushItemsScript('table-sortable', fullDataItems, tableFields) + after);
+SelectableMultiSmall.parameters = {
+  docs: { description: { story: 'A small, responsive table with striped rows and multi-row selection enabled.' } },
 };
+
+export const SortableSimple = args =>
+  renderTableStory(args, {
+    id: 'table-sortable',
+    items: fullDataItems,
+    fields: tableFields,
+  });
+
 SortableSimple.args = {
   striped: true,
   sortable: true,
@@ -283,178 +1179,29 @@ SortableSimple.args = {
   size: 'sm',
 };
 
-export const ExternalSortControls = (args) => {
-  const controls = `
-<div style="display:flex;gap:12px;margin-bottom:8px">
-  <select-field-component id="sortField-ext" label="Sort Field" with-table size="sm"></select-field-component>
-  <select-field-component id="sortOrder-ext" label="Sort Order" with-table value="asc" disabled size="sm"></select-field-component>
-</div>
-`;
-  const wiring = `
-<script type="module">
-(async () => {
-  const tableId = 'table-ext-sort';
-  const fieldSelId = 'sortField-ext';
-  const orderSelId = 'sortOrder-ext';
-
-  const derive = ${deriveFieldsFromFirstItem.toString()};
-  await Promise.all([
-    customElements.whenDefined('table-component'),
-    customElements.whenDefined('select-field-component')
-  ]);
-
-  const table = document.getElementById(tableId);
-  const selField = document.getElementById(fieldSelId);
-  const selOrder = document.getElementById(orderSelId);
-
-  await table?.componentOnReady?.();
-  await selField?.componentOnReady?.();
-  await selOrder?.componentOnReady?.();
-
-  const fields = derive(table.items || []);
-  selField.defaultOptionTxt = '';
-  selField.options = fields.map(f => ({ value: f.key, name: f.label || f.key }));
-  selOrder.options = [{ value: 'asc', name: 'Ascending' }, { value: 'desc', name: 'Descending' }];
-
-  const isNone = (v) => (v ?? '').toString().trim().toLowerCase() === '' || (v ?? '').toString().trim().toLowerCase() === 'none';
-  selField.value = isNone(table.sortField) ? '' : table.sortField;
-  selOrder.value = table.sortOrder ?? 'asc';
-  selOrder.disabled = isNone(selField.value);
-
-  const onFieldChange = (ev) => {
-    const raw = ev?.detail?.value ?? ev?.target?.value ?? '';
-    selOrder.disabled = isNone(raw);
-    table.dispatchEvent(new CustomEvent('sort-field-changed', { detail: { value: isNone(raw) ? 'none' : raw } }));
-  };
-  selField.addEventListener('valueChange', onFieldChange);
-  selField.addEventListener('change', onFieldChange);
-
-  selOrder.addEventListener('change', (ev) => {
-    const value = ev?.detail?.value ?? ev?.target?.value ?? 'asc';
-    table.dispatchEvent(new CustomEvent('sort-order-changed', { detail: { value } }));
-  });
-
-  table.addEventListener('sort-field-updated', (ev) => {
-    const value = ev.detail?.value ?? 'none';
-    selField.value = isNone(value) ? '' : value;
-    selOrder.disabled = isNone(value);
-  });
-  table.addEventListener('sort-order-updated', (ev) => {
-    const value = ev.detail?.value ?? 'asc';
-    selOrder.value = value;
-    if (!isNone(selField.value)) selOrder.disabled = false;
-  });
-})();
-</script>
-`;
-  return controls + TableTemplate(args, 'table-ext-sort', 'table-id="table-ext-sort"', pushItemsScript('table-ext-sort', fullDataItems, tableFields) + wiring);
-};
-ExternalSortControls.args = {
-  striped: true,
-  sortable: true,
-  responsive: true,
-  size: 'sm',
+SortableSimple.parameters = {
+  docs: { description: { story: 'A small, responsive, sortable table with striped rows.' } },
 };
 
-export const FilteringWithDropdown = (args) => {
-  const ui = `
-<div style="display:flex;gap:12px;margin-bottom:8px;align-items:flex-end">
-  <input-group-component
-    id="filterInput-demo"
-    label="Filter"
-    placeholder="Type to Filter..."
-    name="filter"
-    value=""
-    append
-    append-id="append-1"
-    other-content
-    size="sm"
-  >
-    <button-component btn-text="Clear" variant="secondary" slot="append" size="sm" onclick="window.clearFilter?.('filterBy-demo')"></button-component>
-  </input-group-component>
-
-  <dropdown-component
-    button-text="Filter By"
-    variant="secondary"
-    id="filterBy-demo"
-    table-id="table-filter-drop"
-    size="sm"
-    input-id="filterby"
-    list-type="checkboxes"
-  ></dropdown-component>
-</div>
-`;
-  const wiring = `
-<script type="module">
-(async () => {
-  const tableId = 'table-filter-drop';
-  const inputId = 'filterInput-demo';
-  const dropdownId = 'filterBy-demo';
-  const derive = ${deriveFieldsFromFirstItem.toString()};
-
-  await Promise.all([
-    customElements.whenDefined('table-component'),
-    customElements.whenDefined('dropdown-component'),
-    customElements.whenDefined('input-group-component')
-  ]);
-
-  const table = document.getElementById(tableId);
-  const input = document.getElementById(inputId);
-  const dropdown = document.getElementById(dropdownId);
-  await table?.componentOnReady?.();
-
-  // prime dropdown options from fields
-  const fields = (Array.isArray(table.fields) && table.fields.length ? table.fields : derive(table.items || [])) || [];
-  const options = fields.map((f, i) => ({ key: f.key, name: f.label, value: f.key, label: f.label, checked: false, index: i }));
-  if (typeof dropdown?.setOptions === 'function') dropdown.setOptions(options); else if (dropdown) dropdown.options = options;
-
-  // typing -> filter event
-  const forward = (val) => table.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: String(val ?? '') } }));
-  input?.addEventListener('input', (e) => forward(e?.detail?.value ?? e?.target?.value ?? ''));
-  input?.addEventListener('change', (e) => forward(e?.detail?.value ?? e?.target?.value ?? ''));
-
-  // dropdown -> document event table listens for
-  dropdown?.addEventListener('selection-changed', (ev) => {
-    const checked = Array.isArray(ev?.detail?.items) ? ev.detail.items : [];
-    const payload = checked.map(o => ({ key: (o.key || o.value || o.name) ?? '', checked: true }));
-    document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId, items: payload } }));
+export const WithPagination = args =>
+  renderTableStory(args, {
+    id: 'table-paged',
+    items: fullDataItems,
+    fields: tableFields,
+    extraAttrs: 'table-id="table-paged"',
   });
 
-  // clear helper (also exported on window for Clear button)
-  window.clearFilter = async (dropId) => {
-    const d = document.getElementById(dropId);
-    const inputEl = document.getElementById('filterInput-demo');
-    if (inputEl) {
-      inputEl.value = '';
-      inputEl.dispatchEvent(new Event('input', { bubbles: true }));
-      inputEl.dispatchEvent(new CustomEvent('valueChange', { detail: { value: '' }, bubbles: true }));
-    }
-    if (typeof d?.clearSelections === 'function') await d.clearSelections();
-    document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId, items: [] } }));
-    table.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: '' } }));
-  };
-})();
-</script>
-`;
-  return ui + TableTemplate(args, 'table-filter-drop', 'table-id="table-filter-drop"', pushItemsScript('table-filter-drop', fullDataItems, tableFields) + wiring);
-};
-FilteringWithDropdown.args = {
-  striped: true,
-  responsive: true,
-  size: 'sm',
-};
-
-export const WithPagination = (args) =>
-  TableTemplate(
-    args,
-    'table-paged',
-    'table-id="table-paged"',
-    pushItemsScript('table-paged', fullDataItems, tableFields)
-  );
 WithPagination.args = {
   striped: true,
   responsive: true,
-  usePagination: true,
+
+  // ✅ new API
+  paginationEnabled: true,
+  paginationVariant: 'standard',
+
+  // legacy (off in stories)
+  usePagination: false,
+
   paginationPosition: 'both',
   paginationLayout: 'start',
   showDisplayRange: true,
@@ -463,4 +1210,160 @@ WithPagination.args = {
   paginationLimit: 3,
   goToButtons: 'text',
   rowsPerPage: 10,
+};
+
+WithPagination.parameters = {
+  docs: {
+    description: {
+      story: 'A small, responsive table with pagination enabled, displaying controls at both the top and bottom.',
+    },
+  },
+};
+
+/* --------------------------------------------- Sort Field + Sort Order + Reset button ---------------------------------------------- */
+
+export const SortFieldAndOrderWithReset = args => {
+  const { tableId, sortFieldId, sortOrderId } = SORT_RESET_STORY;
+
+  const wrapper = renderSectionStory(args, {
+    tableId,
+    items: fullDataItems,
+    fields: tableFields,
+    html: SORT_RESET_STORY.html({ tableId, sortFieldId, sortOrderId }),
+  });
+
+  runWhenConnected(wrapper, () => wireSortControls({ root: wrapper, tableId, sortFieldId, sortOrderId }));
+  return wrapper;
+};
+
+SortFieldAndOrderWithReset.args = {
+  striped: true,
+  sortable: true,
+  responsive: true,
+  size: 'sm',
+};
+
+SortFieldAndOrderWithReset.parameters = {
+  docs: {
+    description: {
+      story: normalizeHtml(`
+This example uses **external controls** (two <select-field-component>s) to drive sorting.
+
+**Important:** the controls are wired to the table via Storybook helper code (not table markup alone).
+`),
+    },
+    source: {
+      language: 'html',
+      transform: () =>
+        buildDocsHtmlJsSource({
+          html: SORT_RESET_STORY.html(SORT_RESET_STORY),
+          js: SORT_RESET_STORY.docsJs(SORT_RESET_STORY),
+        }),
+    },
+  },
+};
+
+/* --------------------------------------------- Filter input + Filter By dropdown + Reset button ---------------------------------------------- */
+
+export const FilterFieldAndDropdownWithReset = args => {
+  const { tableId, inputId, dropdownId } = FILTER_RESET_STORY;
+
+  const wrapper = renderSectionStory(args, {
+    tableId,
+    items: fullDataItems,
+    fields: tableFields,
+    html: FILTER_RESET_STORY.html({ tableId, inputId, dropdownId }),
+  });
+
+  runWhenConnected(wrapper, () => wireFilterControls({ root: wrapper, tableId, inputId, dropdownId }));
+  return wrapper;
+};
+
+FilterFieldAndDropdownWithReset.args = {
+  striped: true,
+  responsive: true,
+  size: 'sm',
+};
+
+FilterFieldAndDropdownWithReset.parameters = {
+  docs: {
+    description: {
+      story: normalizeHtml(`
+This example uses **external filter UI** (input + dropdown) to drive table filtering.
+
+**Important:** the dropdown and input are wired via Storybook helper code (not table markup alone).
+`),
+    },
+    source: {
+      language: 'html',
+      transform: () =>
+        buildDocsHtmlJsSource({
+          html: FILTER_RESET_STORY.html(FILTER_RESET_STORY),
+          js: FILTER_RESET_STORY.docsJs(FILTER_RESET_STORY),
+        }),
+    },
+  },
+};
+
+/* --------------------------------------------- Playground: Sort + Filter + Pagination + Selection ---------------------------------------------- */
+
+export const Playground = args => {
+  const { tableId, sortFieldId, sortOrderId, inputId, dropdownId } = PLAYGROUND_STORY;
+
+  const wrapper = renderSectionStory(args, {
+    tableId,
+    items: fullDataItems,
+    fields: tableFields,
+    html: PLAYGROUND_STORY.html({ tableId, sortFieldId, sortOrderId, inputId, dropdownId }),
+  });
+
+  runWhenConnected(wrapper, () => {
+    wireSortControls({ root: wrapper, tableId, sortFieldId, sortOrderId });
+    wireFilterControls({ root: wrapper, tableId, inputId, dropdownId });
+  });
+
+  return wrapper;
+};
+
+Playground.args = {
+  striped: true,
+  rowHover: true,
+  sortable: true,
+  responsive: true,
+  selectMode: 'multi',
+
+  // ✅ new API
+  paginationEnabled: true,
+  paginationVariant: 'standard',
+
+  // legacy (off in stories)
+  usePagination: false,
+
+  paginationPosition: 'both',
+  paginationLayout: 'start',
+  paginationLimit: 3,
+  showSizeChanger: true,
+  size: 'sm',
+  goToButtons: 'text',
+  rowsPerPage: 10,
+};
+
+Playground.parameters = {
+  docs: {
+    description: {
+      story: normalizeHtml(`
+This combines **Sort + Filter + Selection + Pagination**.
+
+**Important:** external controls are wired via Storybook helper code; outside Storybook you’d drive the same behavior by dispatching the table’s events.
+`),
+    },
+    source: {
+      language: 'html',
+      transform: () =>
+        buildDocsHtmlJsSource({
+          html: PLAYGROUND_STORY.html(PLAYGROUND_STORY),
+          js: PLAYGROUND_STORY.docsJs(PLAYGROUND_STORY),
+        }),
+    },
+  },
 };

@@ -2179,13 +2179,19 @@ export namespace Components {
          */
         "totalRows": number;
         /**
+          * @deprecated use variant="by-page"
           * @default false
          */
         "useByPagePagination": boolean;
         /**
+          * @deprecated use variant="minimize"
           * @default false
          */
         "useMinimizePagination": boolean;
+        /**
+          * @default 'standard'
+         */
+        "variant": 'standard' | 'minimize' | 'by-page';
     }
     interface PlumageAutocompleteMultipleSelectionsComponent {
         /**
@@ -2934,7 +2940,6 @@ export namespace Components {
           * Force-validate and sync input -> dropdown
          */
         "forceTimeUpdate": () => Promise<void>;
-        "forceTimeUpdatePublic": () => Promise<void>;
         /**
           * Hide seconds UI / value
           * @default false
@@ -2973,6 +2978,10 @@ export namespace Components {
           * @default 'Enter Time'
          */
         "labelText": string;
+        /**
+          * @default false
+         */
+        "required": boolean;
         "showLabel"?: boolean;
         /**
           * Optional size variant: '', 'sm', 'lg'
@@ -3437,7 +3446,7 @@ export namespace Components {
         /**
           * @default []
          */
-        "stringValues": string[];
+        "stringValues": string[] | string;
         /**
           * @default false
          */
@@ -3445,9 +3454,8 @@ export namespace Components {
         /**
           * @default []
          */
-        "tickValues": number[];
+        "tickValues": number[] | string;
         /**
-          * 'basic' | 'multi' | 'discrete'
           * @default 'basic'
          */
         "type": 'basic' | 'multi' | 'discrete';
@@ -3528,45 +3536,49 @@ export namespace Components {
     }
     interface SvgComponent {
         /**
-          * Fill color applied to slotted <svg>. Defaults to 'currentColor'.
+          * Fill color applied to the rendered <svg>. Defaults to 'currentColor'.
           * @default 'currentColor'
          */
         "fill": string;
         /**
-          * Height applied to slotted <svg> (px). Omit/0 to leave as-is.
+          * Height in px. Default 24.
+          * @default 24
          */
-        "height"?: number;
+        "height": number;
         /**
-          * Forwarded to the slotted <svg> as aria-hidden. Use "true" or "false". Using a different prop name avoids clashing with HTMLElement.ariaHidden.
+          * Raw SVG markup (e.g. `<path d="..." />`). Injected into the <svg> via innerHTML.
+          * @default ''
+         */
+        "path": string;
+        /**
+          * Forwarded as aria-hidden on the <svg>. Use: svg-aria-hidden="true" | "false" If omitted, aria-hidden is not set.
          */
         "svgAriaHidden"?: 'true' | 'false';
         /**
-          * Forwarded to the slotted <svg> as aria-label (avoids clashing with HTMLElement.ariaLabel).
+          * Forwarded as aria-label on the <svg>. If omitted/empty, not set.
          */
         "svgAriaLabel"?: string;
         /**
-          * Optional margin wrapper around the slotted <svg>: '', 'left', or 'right'.
+          * Optional margin applied inline to the <svg>. - 'left'  => margin-left: 10px; - 'right' => margin-right: 10px; - 'both'  => both left and right 10px
           * @default ''
          */
-        "svgMargin": '' | 'left' | 'right';
+        "svgMargin": '' | 'left' | 'right' | 'both';
         /**
-          * Width applied to slotted <svg> (px). Omit/0 to leave as-is.
+          * SVG viewBox. MUST match the coordinate system of `path`.
+          * @default '0 0 640 640'
          */
-        "width"?: number;
+        "viewBox": string;
+        /**
+          * Width in px. Default 24.
+          * @default 24
+         */
+        "width": number;
     }
     interface TableComponent {
         /**
           * @default false
          */
-        "border": boolean;
-        /**
-          * @default false
-         */
-        "bordered": boolean;
-        /**
-          * @default false
-         */
-        "borderless": boolean;
+        "addBorder": boolean;
         /**
           * @default ''
          */
@@ -3582,7 +3594,11 @@ export namespace Components {
         /**
           * @default false
          */
-        "dark": boolean;
+        "darkHeader": boolean;
+        /**
+          * @default false
+         */
+        "darkTableTheme": boolean;
         /**
           * @default ''
          */
@@ -3602,19 +3618,11 @@ export namespace Components {
         /**
           * @default false
          */
-        "fixed": boolean;
+        "fixedTableHeader": boolean;
         /**
           * @default ''
          */
         "goToButtons": string;
-        /**
-          * @default false
-         */
-        "headerDark": boolean;
-        /**
-          * @default false
-         */
-        "headerLight": boolean;
         /**
           * @default false
          */
@@ -3624,13 +3632,13 @@ export namespace Components {
          */
         "hideGotoEndButtons": boolean;
         /**
-          * @default false
-         */
-        "hover": boolean;
-        /**
           * @default []
          */
         "items": any[];
+        /**
+          * @default false
+         */
+        "lightHeader": boolean;
         /**
           * @default false
          */
@@ -3643,6 +3651,11 @@ export namespace Components {
           * @default [10, 20, 50, 100, 'All']
          */
         "pageSizeOptions": Array<number | 'All'>;
+        /**
+          * ✅ New API (recommended) Enables pagination UI + slicing.
+          * @default false
+         */
+        "paginationEnabled": boolean;
         /**
           * @default ''
          */
@@ -3660,6 +3673,11 @@ export namespace Components {
          */
         "paginationSize": '' | 'sm' | 'lg';
         /**
+          * ✅ New API (recommended) Which paginator UI to use.
+          * @default 'standard'
+         */
+        "paginationVariant": 'standard' | 'minimize' | 'by-page';
+        /**
           * @default ''
          */
         "paginationVariantColor": string;
@@ -3667,11 +3685,19 @@ export namespace Components {
           * @default false
          */
         "plumage": boolean;
+        /**
+          * @default false
+         */
+        "removeBorder": boolean;
         "resetSort": () => Promise<void>;
         /**
           * @default false
          */
         "responsive": boolean;
+        /**
+          * @default false
+         */
+        "rowHover": boolean;
         /**
           * @default 10
          */
@@ -3749,14 +3775,18 @@ export namespace Components {
          */
         "totalRows": number;
         /**
+          * @deprecated 
           * @default false
          */
         "useByPagePagination": boolean;
         /**
+          * @deprecated 
           * @default false
          */
         "useMinimizePagination": boolean;
         /**
+          * Legacy props (kept for backwards compatibility)
+          * @deprecated use paginationEnabled + paginationVariant instead
           * @default false
          */
         "usePagination": boolean;
@@ -3772,6 +3802,11 @@ export namespace Components {
           * @default 'time-label'
          */
         "ariaLabelledby": string;
+        /**
+          * ✅ Disable the entire timepicker (input + buttons + dropdown)
+          * @default false
+         */
+        "disableTimepicker": boolean;
         /**
           * Force-validate and sync input -> dropdown
          */
@@ -3814,6 +3849,10 @@ export namespace Components {
           * @default 'Enter Time'
          */
         "labelText": string;
+        /**
+          * @default false
+         */
+        "required": boolean;
         "showLabel"?: boolean;
         /**
           * Optional size variant: '', 'sm', 'lg'
@@ -3831,6 +3870,11 @@ export namespace Components {
          */
         "twentyFourHourOnly": boolean;
         /**
+          * External invalid styling hook (kept for compatibility)
+          * @default false
+         */
+        "validation"?: boolean;
+        /**
           * Validation message to show (mutable: set/cleared by the component)
           * @default ''
          */
@@ -3847,6 +3891,11 @@ export namespace Components {
           * @default 'time-label'
          */
         "ariaLabelledby": string;
+        /**
+          * Disable the timepicker. - For <timepicker-component>: passed as `disableTimepicker` - For <plumage-timepicker-component>: passed as `disabled`
+          * @default false
+         */
+        "disableTimepicker": boolean;
         /**
           * Hide seconds UI / value
           * @default false
@@ -3871,7 +3920,7 @@ export namespace Components {
           * Width (px) for the input element
           * @default null
          */
-        "inputWidth": number;
+        "inputWidth": number | string;
         /**
           * Use 24-hour format by default
           * @default true
@@ -3886,6 +3935,11 @@ export namespace Components {
           * @default 'Enter Time'
          */
         "labelText": string;
+        /**
+          * Required indicator (Plumage label asterisk, etc.)
+          * @default false
+         */
+        "required": boolean;
         "showLabel"?: boolean;
         /**
           * Optional size variant (e.g., 'sm', 'lg')
@@ -3908,7 +3962,12 @@ export namespace Components {
          */
         "usePlTimepicker": boolean;
         /**
-          * Validation message to show (if any)
+          * External invalid/validation styling flag (drives `invalid` / `is-invalid` styling in children). NOTE: children now clear this internally on clear/typing/spinner interaction.
+          * @default false
+         */
+        "validation"?: boolean;
+        /**
+          * Validation message to show (if any). NOTE: children now clear this internally on clear/typing/spinner interaction.
           * @default ''
          */
         "validationMessage": string;
@@ -7202,13 +7261,19 @@ declare namespace LocalJSX {
          */
         "totalRows"?: number;
         /**
+          * @deprecated use variant="by-page"
           * @default false
          */
         "useByPagePagination"?: boolean;
         /**
+          * @deprecated use variant="minimize"
           * @default false
          */
         "useMinimizePagination"?: boolean;
+        /**
+          * @default 'standard'
+         */
+        "variant"?: 'standard' | 'minimize' | 'by-page';
     }
     interface PlumageAutocompleteMultipleSelectionsComponent {
         /**
@@ -8008,6 +8073,10 @@ declare namespace LocalJSX {
           * @default 'Enter Time'
          */
         "labelText"?: string;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
         "showLabel"?: boolean;
         /**
           * Optional size variant: '', 'sm', 'lg'
@@ -8474,7 +8543,7 @@ declare namespace LocalJSX {
         /**
           * @default []
          */
-        "stringValues"?: string[];
+        "stringValues"?: string[] | string;
         /**
           * @default false
          */
@@ -8482,9 +8551,8 @@ declare namespace LocalJSX {
         /**
           * @default []
          */
-        "tickValues"?: number[];
+        "tickValues"?: number[] | string;
         /**
-          * 'basic' | 'multi' | 'discrete'
           * @default 'basic'
          */
         "type"?: 'basic' | 'multi' | 'discrete';
@@ -8566,29 +8634,41 @@ declare namespace LocalJSX {
     }
     interface SvgComponent {
         /**
-          * Fill color applied to slotted <svg>. Defaults to 'currentColor'.
+          * Fill color applied to the rendered <svg>. Defaults to 'currentColor'.
           * @default 'currentColor'
          */
         "fill"?: string;
         /**
-          * Height applied to slotted <svg> (px). Omit/0 to leave as-is.
+          * Height in px. Default 24.
+          * @default 24
          */
         "height"?: number;
         /**
-          * Forwarded to the slotted <svg> as aria-hidden. Use "true" or "false". Using a different prop name avoids clashing with HTMLElement.ariaHidden.
+          * Raw SVG markup (e.g. `<path d="..." />`). Injected into the <svg> via innerHTML.
+          * @default ''
+         */
+        "path"?: string;
+        /**
+          * Forwarded as aria-hidden on the <svg>. Use: svg-aria-hidden="true" | "false" If omitted, aria-hidden is not set.
          */
         "svgAriaHidden"?: 'true' | 'false';
         /**
-          * Forwarded to the slotted <svg> as aria-label (avoids clashing with HTMLElement.ariaLabel).
+          * Forwarded as aria-label on the <svg>. If omitted/empty, not set.
          */
         "svgAriaLabel"?: string;
         /**
-          * Optional margin wrapper around the slotted <svg>: '', 'left', or 'right'.
+          * Optional margin applied inline to the <svg>. - 'left'  => margin-left: 10px; - 'right' => margin-right: 10px; - 'both'  => both left and right 10px
           * @default ''
          */
-        "svgMargin"?: '' | 'left' | 'right';
+        "svgMargin"?: '' | 'left' | 'right' | 'both';
         /**
-          * Width applied to slotted <svg> (px). Omit/0 to leave as-is.
+          * SVG viewBox. MUST match the coordinate system of `path`.
+          * @default '0 0 640 640'
+         */
+        "viewBox"?: string;
+        /**
+          * Width in px. Default 24.
+          * @default 24
          */
         "width"?: number;
     }
@@ -8596,15 +8676,7 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
-        "border"?: boolean;
-        /**
-          * @default false
-         */
-        "bordered"?: boolean;
-        /**
-          * @default false
-         */
-        "borderless"?: boolean;
+        "addBorder"?: boolean;
         /**
           * @default ''
          */
@@ -8620,7 +8692,11 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
-        "dark"?: boolean;
+        "darkHeader"?: boolean;
+        /**
+          * @default false
+         */
+        "darkTableTheme"?: boolean;
         /**
           * @default ''
          */
@@ -8640,19 +8716,11 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
-        "fixed"?: boolean;
+        "fixedTableHeader"?: boolean;
         /**
           * @default ''
          */
         "goToButtons"?: string;
-        /**
-          * @default false
-         */
-        "headerDark"?: boolean;
-        /**
-          * @default false
-         */
-        "headerLight"?: boolean;
         /**
           * @default false
          */
@@ -8662,13 +8730,13 @@ declare namespace LocalJSX {
          */
         "hideGotoEndButtons"?: boolean;
         /**
-          * @default false
-         */
-        "hover"?: boolean;
-        /**
           * @default []
          */
         "items"?: any[];
+        /**
+          * @default false
+         */
+        "lightHeader"?: boolean;
         /**
           * @default false
          */
@@ -8686,6 +8754,11 @@ declare namespace LocalJSX {
          */
         "pageSizeOptions"?: Array<number | 'All'>;
         /**
+          * ✅ New API (recommended) Enables pagination UI + slicing.
+          * @default false
+         */
+        "paginationEnabled"?: boolean;
+        /**
           * @default ''
          */
         "paginationLayout"?: string;
@@ -8702,6 +8775,11 @@ declare namespace LocalJSX {
          */
         "paginationSize"?: '' | 'sm' | 'lg';
         /**
+          * ✅ New API (recommended) Which paginator UI to use.
+          * @default 'standard'
+         */
+        "paginationVariant"?: 'standard' | 'minimize' | 'by-page';
+        /**
           * @default ''
          */
         "paginationVariantColor"?: string;
@@ -8712,7 +8790,15 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "removeBorder"?: boolean;
+        /**
+          * @default false
+         */
         "responsive"?: boolean;
+        /**
+          * @default false
+         */
+        "rowHover"?: boolean;
         /**
           * @default 10
          */
@@ -8790,14 +8876,18 @@ declare namespace LocalJSX {
          */
         "totalRows"?: number;
         /**
+          * @deprecated 
           * @default false
          */
         "useByPagePagination"?: boolean;
         /**
+          * @deprecated 
           * @default false
          */
         "useMinimizePagination"?: boolean;
         /**
+          * Legacy props (kept for backwards compatibility)
+          * @deprecated use paginationEnabled + paginationVariant instead
           * @default false
          */
         "usePagination"?: boolean;
@@ -8813,6 +8903,11 @@ declare namespace LocalJSX {
           * @default 'time-label'
          */
         "ariaLabelledby"?: string;
+        /**
+          * ✅ Disable the entire timepicker (input + buttons + dropdown)
+          * @default false
+         */
+        "disableTimepicker"?: boolean;
         /**
           * Hide seconds UI / value
           * @default false
@@ -8851,6 +8946,10 @@ declare namespace LocalJSX {
           * @default 'Enter Time'
          */
         "labelText"?: string;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
         "showLabel"?: boolean;
         /**
           * Optional size variant: '', 'sm', 'lg'
@@ -8868,6 +8967,11 @@ declare namespace LocalJSX {
          */
         "twentyFourHourOnly"?: boolean;
         /**
+          * External invalid styling hook (kept for compatibility)
+          * @default false
+         */
+        "validation"?: boolean;
+        /**
           * Validation message to show (mutable: set/cleared by the component)
           * @default ''
          */
@@ -8884,6 +8988,11 @@ declare namespace LocalJSX {
           * @default 'time-label'
          */
         "ariaLabelledby"?: string;
+        /**
+          * Disable the timepicker. - For <timepicker-component>: passed as `disableTimepicker` - For <plumage-timepicker-component>: passed as `disabled`
+          * @default false
+         */
+        "disableTimepicker"?: boolean;
         /**
           * Hide seconds UI / value
           * @default false
@@ -8908,7 +9017,7 @@ declare namespace LocalJSX {
           * Width (px) for the input element
           * @default null
          */
-        "inputWidth"?: number;
+        "inputWidth"?: number | string;
         /**
           * Use 24-hour format by default
           * @default true
@@ -8923,6 +9032,11 @@ declare namespace LocalJSX {
           * @default 'Enter Time'
          */
         "labelText"?: string;
+        /**
+          * Required indicator (Plumage label asterisk, etc.)
+          * @default false
+         */
+        "required"?: boolean;
         "showLabel"?: boolean;
         /**
           * Optional size variant (e.g., 'sm', 'lg')
@@ -8945,7 +9059,12 @@ declare namespace LocalJSX {
          */
         "usePlTimepicker"?: boolean;
         /**
-          * Validation message to show (if any)
+          * External invalid/validation styling flag (drives `invalid` / `is-invalid` styling in children). NOTE: children now clear this internally on clear/typing/spinner interaction.
+          * @default false
+         */
+        "validation"?: boolean;
+        /**
+          * Validation message to show (if any). NOTE: children now clear this internally on clear/typing/spinner interaction.
           * @default ''
          */
         "validationMessage"?: string;

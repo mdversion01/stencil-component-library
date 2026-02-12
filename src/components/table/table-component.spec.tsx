@@ -23,7 +23,7 @@ describe('table-component', () => {
 <table-component table-id="t1">
   <!---->
   <div>
-    <table aria-colcount="2" aria-multiselectable="true" class="b-table table" id="t1" role="table">
+    <table aria-colcount="2" aria-multiselectable="true" class="table" id="t1" role="table">
       <thead role="rowgroup">
         <tr role="row">
           <th aria-colindex="1" aria-sort="none" data-field="first_name" role="columnheader" scope="col" tabindex="0" style="cursor: pointer;">

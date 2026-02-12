@@ -80,6 +80,11 @@
     <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
      -->
     <app-wrapper>
+      <p><a href="./components/dropdown/index.html">Dropdown Component</a></p>
+      <p><a href="./components/table/index.html">Table Component</a></p>
+      <p><a href="./components/timepicker/index.html">Timepicker Component</a></p>
+      <p><a href="./components/toasts/index.html">Toast Component</a></p>
+
       <!-- <div class="cwrapper">
         <autocomplete-single
           id="aci1"
@@ -217,7 +222,7 @@
 
         <badge-component badge-id="badge3" variant="purple" outlined shape="pill" size="sm">Badge Small</badge-component>
 
-        <badge-component id="badge4" bdg-position="left" elevation="3" variant="primary" token bordered shape="circle" inset>
+        <badge-component id="badge4" bdg-position="left" elevation="3" variant="primary" token addBorder shape="circle" inset>
           <button-component type="button" variant="primary" outlined size="sm">Badge Small</button-component>
           <span slot="token"><i class="fa-solid fa-house"></i></span
         ></badge-component>
@@ -521,7 +526,7 @@
 
         <icon-component icon="fa-solid fa-house" icon-size="72"></icon-component>
 
-        <badge-component id="badge4" bdg-position="left" elevation="3" outlined variant="purple" token bordered background-color="amber" shape="circle" inset
+        <badge-component id="badge4" bdg-position="left" elevation="3" outlined variant="purple" token addBorder background-color="amber" shape="circle" inset
           ><button type="button" class="btn btn-outline-secondary btn-sm">Badge Small</button
           ><span slot="token"> <icon-component icon="fa-solid fa-house" icon-size="10" token-icon></icon-component></span
         ></badge-component>
@@ -1263,9 +1268,9 @@
         </div>
       </div> -->
 
-      <div class="cwrapper">
+      <!-- <div class="cwrapper"> -->
         <!-- ==========================  Linear (basic) ========================== -->
-         <progress-display-component value="45" max="100" label="Processing…"variant="primary" show-progress id="progressBarCompA" progress-align="right">
+         <!-- <progress-display-component value="45" max="100" label="Processing…"variant="primary" show-progress id="progressBarCompA" progress-align="right">
          </progress-display-component>
 
         <progress-display-component value="45" max="100" variant="primary" show-progress id="progressBarComp" progress-align="right"></progress-display-component>
@@ -1289,28 +1294,28 @@
               clearInterval(interval1);
             });
           });
-        </script>
+        </script> -->
 
         <!-- With percentage and 1-decimal precision -->
-        <progress-display-component value="67" max="120" show-progress precision="1" variant="success"></progress-display-component>
+        <!-- <progress-display-component value="67" max="120" show-progress precision="1" variant="success"></progress-display-component> -->
 
         <!-- Slot text aligned right -->
-        <progress-display-component value="30" progress-align="right" variant="info"> Loading files… </progress-display-component>
+        <!-- <progress-display-component value="30" progress-align="right" variant="info"> Loading files… </progress-display-component> -->
 
         <!-- Slot text aligned left -->
-        <progress-display-component value="85" progress-align="left" variant="secondary"> Uploading… </progress-display-component>
+        <!-- <progress-display-component value="85" progress-align="left" variant="secondary"> Uploading… </progress-display-component> -->
 
         <!-- Striped + animated -->
-        <progress-display-component value="55" striped animated height="18" variant="warning"></progress-display-component>
+        <!-- <progress-display-component value="55" striped animated height="18" variant="warning"></progress-display-component> -->
 
         <!-- Show computed value (value/2 like original) -->
-        <progress-display-component value="40" show-value precision="0" variant="dark"> Task </progress-display-component>
+        <!-- <progress-display-component value="40" show-value precision="0" variant="dark"> Task </progress-display-component> -->
 
-        <hr />
+        <!-- <hr /> -->
 
         <!-- ==========================  Multi-bar (attribute)    ========================= -->
         <!-- Pass bars as JSON when using plain HTML -->
-        <progress-display-component
+        <!-- <progress-display-component
           multi
           height="20"
           bars='[
@@ -1320,10 +1325,10 @@
           ]'
         >
        <span slot="bar-2">Danger chunk</span>
-      </progress-display-component>
+      </progress-display-component> -->
 
         <!-- Multi-bar with named slots for labels -->
-        <progress-display-component
+        <!-- <progress-display-component
           multi
           height="22"
           bars='[
@@ -1333,11 +1338,11 @@
         >
           <span slot="bar-0">Info chunk</span>
           <span slot="bar-1">Warn chunk</span>
-        </progress-display-component>
+        </progress-display-component> -->
 
         <!-- OR set bars via JS (cleaner than JSON for complex data) -->
-        <div id="multi-js"></div>
-        <script type="module">
+        <!-- <div id="multi-js"></div>-->
+        <!-- <script type="module">
           const host = document.getElementById('multi-js');
           host.innerHTML = `<progress-display-component multi height="24"></progress-display-component>`;
           const el = host.querySelector('progress-display-component');
@@ -1347,11 +1352,11 @@
           ];
         </script>
 
-        <hr />
+        <hr />  -->
 
         <!-- ==========================  Circular  ========================== -->
         <!-- Basic circular (size in px; width = stroke width) -->
-        <progress-display-component
+        <!-- <progress-display-component
           id="progressComp"
           circular
           value="65"
@@ -1362,23 +1367,23 @@
           animate="true"
           show-progress
           precision="0"
-        ></progress-display-component>
+        ></progress-display-component> -->
 
         <!-- Circular with rotate and square line-cap -->
-        <progress-display-component circular value="40" size="80" width="8" rotate="90" line-cap variant="success" show-progress></progress-display-component>
+        <!-- <progress-display-component circular value="40" size="80" width="8" rotate="90" line-cap variant="success" show-progress></progress-display-component> -->
 
         <!-- Circular with showValue (value/2 behavior) -->
-        <progress-display-component circular value="50" size="84" width="6" variant="warning" show-value></progress-display-component>
+        <!-- <progress-display-component circular value="50" size="84" width="6" variant="warning" show-value></progress-display-component> -->
 
         <!-- Indeterminate spinner-like circular -->
-        <progress-display-component circular indeterminate size="72" width="5" variant="info"></progress-display-component>
+        <!-- <progress-display-component circular indeterminate size="72" width="5" variant="info"></progress-display-component> -->
 
         <!-- Text color classes are applied based on variant (e.g., warning uses darker text) -->
 
-        <hr />
+        <!-- <hr /> -->
 
         <!-- ==========================  Mixed layout example      ========================== -->
-        <div style="display: flex; gap: 20px; align-items: center">
+        <!-- <div style="display: flex; gap: 20px; align-items: center">
           <progress-display-component circular value="75" size="64" width="6" variant="secondary" show-progress></progress-display-component>
           <div style="flex: 1">
             <progress-display-component value="75" show-progress precision="0" variant="secondary"></progress-display-component>
@@ -1408,7 +1413,7 @@
 
           <progress-display-component value="40" circular variant="danger" size="100" line-cap> </progress-display-component>
         </div>
-      </div>
+      </div> -->
 
       <!-- <div class="cwrapper">
         <select-field-component
@@ -1551,40 +1556,54 @@
           tick-values="[0,2,4,6,8,10]"
           slider-thumb-label
         ></slider-manager-component>
+
       </div> -->
 
       <!-- <div class="cwrapper">
-        <svg-component>
-          <svg xmlns="http://www.w3.org/2000/svg" height="16" width="18" viewBox="0 0 576 512">
-            <path
-              d="M320 33.9c-10.5-1.2-21.2-1.9-32-1.9-99.8 0-187.8 50.8-239.4 128H320V33.9zM96 192H30.3C11.1 230.6 0 274 0 320h96V192zM352 39.4V160h175.4C487.2 99.9 424.8 55.9 352 39.4zM480 320h96c0-46-11.1-89.4-30.3-128H480v128zm-64 64v96h128c17.7 0 32-14.3 32-32v-96H411.5c2.6 10.3 4.5 20.9 4.5 32zm32-192H128v128h49.8c22.2-38.1 63-64 110.2-64s88 25.9 110.2 64H448V192zM0 448c0 17.7 14.3 32 32 32h128v-96c0-11.1 1.9-21.7 4.5-32H0v96zm288-160c-53 0-96 43-96 96v96h192v-96c0-53-43-96-96-96z"
-            />
-          </svg>
-        </svg-component>
+        <svg-component
+          class="icon"
+          width="24"
+          height="24"
+          fill="#000000"
+          path='<path d="M341.8 72.6C329.5 61.2 310.5 61.2 298.3 72.6L74.3 280.6C64.7 289.6 61.5 303.5 66.3 315.7C71.1 327.9 82.8 336 96 336L112 336L112 512C112 547.3 140.7 576 176 576L464 576C499.3 576 528 547.3 528 512L528 336L544 336C557.2 336 569 327.9 573.8 315.7C578.6 303.5 575.4 289.5 565.8 280.6L341.8 72.6zM304 384L336 384C362.5 384 384 405.5 384 432L384 528L256 528L256 432C256 405.5 277.5 384 304 384z" />'
+        ></svg-component>
+
+        <svg-component
+          class="icon"
+          width="48"
+          height="48"
+          fill="blue"
+        ></svg-component>
 
         <hr />
 
-        <svg-component fill="blue" height="48" width="48">
-          <svg xmlns="http://www.w3.org/2000/svg" height="16" width="18" viewBox="0 0 576 512">
-            <path
-              d="M320 33.9c-10.5-1.2-21.2-1.9-32-1.9-99.8 0-187.8 50.8-239.4 128H320V33.9zM96 192H30.3C11.1 230.6 0 274 0 320h96V192zM352 39.4V160h175.4C487.2 99.9 424.8 55.9 352 39.4zM480 320h96c0-46-11.1-89.4-30.3-128H480v128zm-64 64v96h128c17.7 0 32-14.3 32-32v-96H411.5c2.6 10.3 4.5 20.9 4.5 32zm32-192H128v128h49.8c22.2-38.1 63-64 110.2-64s88 25.9 110.2 64H448V192zM0 448c0 17.7 14.3 32 32 32h128v-96c0-11.1 1.9-21.7 4.5-32H0v96zm288-160c-53 0-96 43-96 96v96h192v-96c0-53-43-96-96-96z"
-            />
-          </svg>
-        </svg-component>
+        <svg-component
+          class="icon"
+          width="48"
+          height="48"
+          view-box="0 0 640 640"
+          fill="blue"
+           svg-margin="left"
+           svg-aria-hidden="true"
+        ></svg-component>
+
+
 
         <hr />
 
-        <svg-component fill="blue">
-          <svg xmlns="http://www.w3.org/2000/svg" height="16" width="18" viewBox="0 0 576 512">
-            <path
-              d="M320 33.9c-10.5-1.2-21.2-1.9-32-1.9-99.8 0-187.8 50.8-239.4 128H320V33.9zM96 192H30.3C11.1 230.6 0 274 0 320h96V192zM352 39.4V160h175.4C487.2 99.9 424.8 55.9 352 39.4zM480 320h96c0-46-11.1-89.4-30.3-128H480v128zm-64 64v96h128c17.7 0 32-14.3 32-32v-96H411.5c2.6 10.3 4.5 20.9 4.5 32zm32-192H128v128h49.8c22.2-38.1 63-64 110.2-64s88 25.9 110.2 64H448V192zM0 448c0 17.7 14.3 32 32 32h128v-96c0-11.1 1.9-21.7 4.5-32H0v96zm288-160c-53 0-96 43-96 96v96h192v-96c0-53-43-96-96-96z"
-            />
-          </svg>
-        </svg-component>
+        <svg-component
+          class="icon"
+          width="48"
+          height="48"
+          view-box="0 0 640 640"
+          fill="blue"
+           svg-margin="both"
+           svg-aria-hidden="true"
+        ></svg-component>
       </div> -->
 
-      <!-- <div class="cwrapper"> -->
-      <!-- <section class="display-box-demo">
+      <div class="cwrapper">
+      <section class="display-box-demo">
           <table-component id="table1"></table-component>
         </section>
 
@@ -1593,11 +1612,11 @@
         </section>
 
        <section class="display-box-demo">
-          <table-component id="table3" responsive bordered></table-component>
+          <table-component id="table3" responsive addBorder></table-component>
         </section>
 
         <section class="display-box-demo">
-          <table-component id="table4" responsive borderless></table-component>
+          <table-component id="table4" responsive remove-border></table-component>
         </section>
 
         <section class="display-box-demo">
@@ -1609,11 +1628,11 @@
         </section>
 
         <section class="display-box-demo">
-          <table-component id="table7" striped hover bordered></table-component>
+          <table-component id="table7" striped row-hover addBorder></table-component>
         </section>
 
        <section class="display-box-demo">
-          <table-component id="table8" caption="top" cloneFooter fixed>
+          <table-component id="table8" caption="top" cloneFooter fixed-table-header>
             <span slot="caption">This is an Example Caption</span>
           </table-component>
         </section>
@@ -1626,15 +1645,15 @@
 
         <section class="display-box-demo">
           <table-component id="table14" tableId="table14" striped responsive select-mode="multi" size="sm"> </table-component>
-        </section> -->
+        </section>
 
-      <!-- <section class="display-box-demo">
+      <section class="display-box-demo">
           <button class="reset-sort-icon" onclick="resetTableSort('table15')"></button>
 
           <table-component id="table15" table-id="table15" striped sortable responsive size="sm"> </table-component>
-        </section> -->
+        </section>
 
-      <!-- <section class="display-box-demo">
+      <section class="display-box-demo">
           <button class="reset-sort-icon" onclick="resetTableSort('table16')"></button>
           <div style="display: flex; width: 100%; flex: 1 1 auto">
             <div style="flex: 1 1 auto">
@@ -1645,9 +1664,9 @@
             </div>
           </div>
           <table-component id="table16" table-id="table16" striped sortable responsive size="sm"> </table-component>
-        </section> -->
+        </section>
 
-      <!-- <section class="display-box-demo">
+      <section class="display-box-demo">
           <button class="reset-sort-icon" onclick="resetTableSort('table17', 'filterByItems-table17')"></button>
           <div style="display: flex; width: 100%; flex: 1 1 auto">
             <div style="flex: 1 1 auto">
@@ -1680,9 +1699,9 @@
             </div>
           </div>
           <table-component id="table17" table-id="table17" striped responsive size="sm"> </table-component>
-        </section> -->
+        </section>
 
-      <!-- <section class="display-box-demo">
+      <section class="display-box-demo">
           <table-component
             id="table18"
             table-id="table18"
@@ -1698,9 +1717,9 @@
             size="sm"
           >
           </table-component>
-        </section> -->
+        </section>
 
-      <!-- <section class="display-box-demo">
+      <section class="display-box-demo">
           <button class="reset-sort-icon" onclick="resetTableSort('table99', 'filterByItems-table99')"></button>
           <div style="display: flex; width: 100%; flex: 1 1 auto">
             <div style="flex: 1 1 auto">
@@ -1742,7 +1761,7 @@
             id="table99"
             table-id="table99"
             striped
-            hover
+            row-hover
             sortable
             responsive
             select-mode="multi"
@@ -1757,8 +1776,8 @@
             go-to-buttons="text"
           >
           </table-component>
-        </section> -->
-      <!-- </div> -->
+        </section>
+      </div>
 
       <!-- <div class="cwrapper">
         <section class="display-box-demo">
@@ -2152,591 +2171,591 @@
       // popoverDynamic.target = dynamicButton;
     </script>
 
-    <!-- <script type="module">
+    <script type="module">
       // Define reusable data sets
       // ---------- Data ----------
-      // const basicItems = [
-      //   { name: 'John', age: 30, city: 'New York' },
-      //   { name: 'Anna', age: 25, city: 'London' },
-      //   { name: 'Mike', age: 32, city: 'Chicago' },
-      //   { name: 'Terry', age: 21, city: 'Augusta' },
-      //   { name: 'Clark', age: 56, city: 'Tucson' },
-      // ];
+      const basicItems = [
+        { name: 'John', age: 30, city: 'New York' },
+        { name: 'Anna', age: 25, city: 'London' },
+        { name: 'Mike', age: 32, city: 'Chicago' },
+        { name: 'Terry', age: 21, city: 'Augusta' },
+        { name: 'Clark', age: 56, city: 'Tucson' },
+      ];
 
-      // const basicItemsLong = [
-      //   { name: 'John', age: 30, city: 'New York' },
-      //   { name: 'Anna', age: 25, city: 'London' },
-      //   { name: 'Mike', age: 32, city: 'Chicago' },
-      //   { name: 'Terry', age: 21, city: 'Augusta' },
-      //   { name: 'Clark', age: 56, city: 'Tucson' },
-      //   { name: 'Seth', age: 31, city: 'Pittsburgh' },
-      //   { name: 'Sean', age: 18, city: 'Tampa' },
-      //   { name: 'Sally', age: 47, city: 'Suffolk' },
-      //   { name: 'Pete', age: 60, city: 'Detroit' },
-      //   { name: 'Tom', age: 51, city: 'Green Bay' },
-      //   { name: 'Veronica', age: 23, city: 'Red Bank' },
-      // ];
+      const basicItemsLong = [
+        { name: 'John', age: 30, city: 'New York' },
+        { name: 'Anna', age: 25, city: 'London' },
+        { name: 'Mike', age: 32, city: 'Chicago' },
+        { name: 'Terry', age: 21, city: 'Augusta' },
+        { name: 'Clark', age: 56, city: 'Tucson' },
+        { name: 'Seth', age: 31, city: 'Pittsburgh' },
+        { name: 'Sean', age: 18, city: 'Tampa' },
+        { name: 'Sally', age: 47, city: 'Suffolk' },
+        { name: 'Pete', age: 60, city: 'Detroit' },
+        { name: 'Tom', age: 51, city: 'Green Bay' },
+        { name: 'Veronica', age: 23, city: 'Red Bank' },
+      ];
 
-      // const colorVariationsItems = [
-      //   { name: 'John', age: 30, city: 'New York' },
-      //   { name: 'Anna', age: 25, city: 'London', _cellVariants: { age: 'info', city: 'warning' } },
-      //   { name: 'Mike', age: 32, city: 'Chicago', _cellVariants: { age: 'success', city: 'danger' } },
-      //   { name: 'Terry', age: 21, city: 'Augusta', _rowVariant: 'primary' },
-      //   { name: 'Clark', age: 56, city: 'Tucson', _rowVariant: 'secondary' },
-      // ];
+      const colorVariationsItems = [
+        { name: 'John', age: 30, city: 'New York' },
+        { name: 'Anna', age: 25, city: 'London', _cellVariants: { age: 'info', city: 'warning' } },
+        { name: 'Mike', age: 32, city: 'Chicago', _cellVariants: { age: 'success', city: 'danger' } },
+        { name: 'Terry', age: 21, city: 'Augusta', _rowVariant: 'primary' },
+        { name: 'Clark', age: 56, city: 'Tucson', _rowVariant: 'secondary' },
+      ];
 
-      // const detailRowItems = [
-      //   { name: 'John', age: 30, city: 'New York', _showDetails: true, _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>' },
-      //   { name: 'Anna', age: 25, city: 'London', _showDetails: true, _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>' },
-      //   { name: 'Mike', age: 32, city: 'Chicago', _showDetails: true, _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>' },
-      //   { name: 'Terry', age: 21, city: 'Augusta', _showDetails: true, _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>' },
-      //   { name: 'Clark', age: 56, city: 'Tucson', _showDetails: true, _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>' },
-      // ];
+      const detailRowItems = [
+        { name: 'John', age: 30, city: 'New York', _showDetails: true, _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>' },
+        { name: 'Anna', age: 25, city: 'London', _showDetails: true, _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>' },
+        { name: 'Mike', age: 32, city: 'Chicago', _showDetails: true, _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>' },
+        { name: 'Terry', age: 21, city: 'Augusta', _showDetails: true, _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>' },
+        { name: 'Clark', age: 56, city: 'Tucson', _showDetails: true, _additionalInfo: '<p>Hello ${this.name}, Age: ${this.age}</p><p>${this.name} is a software engineer.</p>' },
+      ];
 
-      // const shortDataItems = [
-      //   { age: 37, first_name: 'George', last_name: 'Jefferson' },
-      //   { age: 30, first_name: 'Patrick', last_name: 'Adams' },
-      //   { age: 19, first_name: 'Keith', last_name: 'Ericksen' },
-      //   { age: 28, first_name: 'Kelly', last_name: 'Parker' },
-      //   { age: 87, first_name: 'Robert', last_name: 'Mitchell' },
-      // ];
-      // // // Define fields to be reused
-      // const tableFields = [
-      //   { key: 'last_name', label: 'Last Name', sortable: true },
-      //   { key: 'first_name', label: 'First Name', sortable: true },
-      //   { key: 'age', label: 'Person Age', sortable: true },
-      // ];
+      const shortDataItems = [
+        { age: 37, first_name: 'George', last_name: 'Jefferson' },
+        { age: 30, first_name: 'Patrick', last_name: 'Adams' },
+        { age: 19, first_name: 'Keith', last_name: 'Ericksen' },
+        { age: 28, first_name: 'Kelly', last_name: 'Parker' },
+        { age: 87, first_name: 'Robert', last_name: 'Mitchell' },
+      ];
+      // // Define fields to be reused
+      const tableFields = [
+        { key: 'last_name', label: 'Last Name', sortable: true },
+        { key: 'first_name', label: 'First Name', sortable: true },
+        { key: 'age', label: 'Person Age', sortable: true },
+      ];
 
-      // const fullDataItems = [
-      //   {
-      //     age: 40,
-      //     first_name: 'Thor',
-      //     last_name: 'MacDonald',
-      //     _showDetails: true,
-      //     _additionalInfo: '<p>Hello ${this.first_name}, Age: ${this.age}</p><p>${this.first_name} is a software engineer.</p>',
-      //   },
-      //   {
-      //     age: 20,
-      //     first_name: 'Pete',
-      //     last_name: 'MacDonald',
-      //     _showDetails: true,
-      //     _additionalInfo: '<p>Hello ${this.first_name}, Age: ${this.age}</p><p>${this.first_name} is a software engineer.</p>',
-      //   },
-      //   {
-      //     age: 25,
-      //     first_name: 'Anna',
-      //     last_name: 'Smith',
-      //     _showDetails: true,
-      //     _additionalInfo: '<p>Hello ${this.first_name}, Age: ${this.age}</p><p>${this.first_name} is a software engineer.</p>',
-      //   },
-      //   {
-      //     age: 36,
-      //     first_name: 'Zachary',
-      //     last_name: 'Peterson',
-      //   },
-      //   {
-      //     age: 21,
-      //     first_name: 'Ralph',
-      //     last_name: 'MacDonald',
-      //   },
-      //   {
-      //     age: 34,
-      //     first_name: 'Norma',
-      //     last_name: 'MacDonald',
-      //   },
-      //   {
-      //     age: 25,
-      //     first_name: 'Emily',
-      //     last_name: 'Larson',
-      //   },
-      //   {
-      //     age: 49,
-      //     first_name: 'Clark',
-      //     last_name: 'Griswald',
-      //   },
-      //   {
-      //     age: 37,
-      //     first_name: 'George',
-      //     last_name: 'Jefferson',
-      //   },
-      //   {
-      //     age: 30,
-      //     first_name: 'Patrick',
-      //     last_name: 'Adams',
-      //   },
-      //   {
-      //     age: 19,
-      //     first_name: 'Keith',
-      //     last_name: 'Ericksen',
-      //   },
-      //   {
-      //     age: 28,
-      //     first_name: 'Kelly',
-      //     last_name: 'Parker',
-      //   },
-      //   {
-      //     age: 87,
-      //     first_name: 'Robert',
-      //     last_name: 'Mitchell',
-      //   },
-      //   {
-      //     age: 30,
-      //     first_name: 'Derrick',
-      //     last_name: 'Clark',
-      //   },
-      //   {
-      //     age: 54,
-      //     first_name: 'Rosa',
-      //     last_name: 'Gonzalez',
-      //   },
-      //   {
-      //     age: 23,
-      //     first_name: 'Cindy',
-      //     last_name: 'Johnson',
-      //   },
-      //   {
-      //     age: 18,
-      //     first_name: 'Nolan',
-      //     last_name: 'Smith',
-      //   },
-      //   {
-      //     age: 48,
-      //     first_name: 'Tonya',
-      //     last_name: 'Smith',
-      //   },
-      //   {
-      //     age: 34,
-      //     first_name: 'Kelly',
-      //     last_name: 'Smith',
-      //   },
-      //   {
-      //     age: 71,
-      //     first_name: 'Robert',
-      //     last_name: 'Smith',
-      //   },
-      //   {
-      //     age: 14,
-      //     first_name: 'Jessica',
-      //     last_name: 'Smith',
-      //   },
-      //   {
-      //     age: 23,
-      //     first_name: 'Pat',
-      //     last_name: 'Smith',
-      //   },
-      // ];
+      const fullDataItems = [
+        {
+          age: 40,
+          first_name: 'Thor',
+          last_name: 'MacDonald',
+          _showDetails: true,
+          _additionalInfo: '<p>Hello ${this.first_name}, Age: ${this.age}</p><p>${this.first_name} is a software engineer.</p>',
+        },
+        {
+          age: 20,
+          first_name: 'Pete',
+          last_name: 'MacDonald',
+          _showDetails: true,
+          _additionalInfo: '<p>Hello ${this.first_name}, Age: ${this.age}</p><p>${this.first_name} is a software engineer.</p>',
+        },
+        {
+          age: 25,
+          first_name: 'Anna',
+          last_name: 'Smith',
+          _showDetails: true,
+          _additionalInfo: '<p>Hello ${this.first_name}, Age: ${this.age}</p><p>${this.first_name} is a software engineer.</p>',
+        },
+        {
+          age: 36,
+          first_name: 'Zachary',
+          last_name: 'Peterson',
+        },
+        {
+          age: 21,
+          first_name: 'Ralph',
+          last_name: 'MacDonald',
+        },
+        {
+          age: 34,
+          first_name: 'Norma',
+          last_name: 'MacDonald',
+        },
+        {
+          age: 25,
+          first_name: 'Emily',
+          last_name: 'Larson',
+        },
+        {
+          age: 49,
+          first_name: 'Clark',
+          last_name: 'Griswald',
+        },
+        {
+          age: 37,
+          first_name: 'George',
+          last_name: 'Jefferson',
+        },
+        {
+          age: 30,
+          first_name: 'Patrick',
+          last_name: 'Adams',
+        },
+        {
+          age: 19,
+          first_name: 'Keith',
+          last_name: 'Ericksen',
+        },
+        {
+          age: 28,
+          first_name: 'Kelly',
+          last_name: 'Parker',
+        },
+        {
+          age: 87,
+          first_name: 'Robert',
+          last_name: 'Mitchell',
+        },
+        {
+          age: 30,
+          first_name: 'Derrick',
+          last_name: 'Clark',
+        },
+        {
+          age: 54,
+          first_name: 'Rosa',
+          last_name: 'Gonzalez',
+        },
+        {
+          age: 23,
+          first_name: 'Cindy',
+          last_name: 'Johnson',
+        },
+        {
+          age: 18,
+          first_name: 'Nolan',
+          last_name: 'Smith',
+        },
+        {
+          age: 48,
+          first_name: 'Tonya',
+          last_name: 'Smith',
+        },
+        {
+          age: 34,
+          first_name: 'Kelly',
+          last_name: 'Smith',
+        },
+        {
+          age: 71,
+          first_name: 'Robert',
+          last_name: 'Smith',
+        },
+        {
+          age: 14,
+          first_name: 'Jessica',
+          last_name: 'Smith',
+        },
+        {
+          age: 23,
+          first_name: 'Pat',
+          last_name: 'Smith',
+        },
+      ];
 
-      // document.addEventListener('DOMContentLoaded', async () => {
-      //   // Load ALL the tables again (safe no-ops if a given id doesn't exist)
-      //   const tableDataMap = {
-      //     table1: basicItems, // Basic table (table1)
-      //     table2: basicItemsLong, // Sticky, no-border-collapsed (table2)
-      //     table3: basicItems, // Responsive, bordered (table3)
-      //     table4: basicItems, // Responsive, borderless (table4)
-      //     table5: colorVariationsItems, // Color variations (table5)
-      //     table6: detailRowItems, // Detail rows (table6)
-      //     table7: basicItems, // Striped, hover, bordered (table7)
-      //     table8: basicItems, // Caption top, clone footer, fixed (table8)
-      //     table9: basicItems, // Stacked, caption bottom (table9)
-      //     table14: basicItems, // Selectable rows (table14)
-      //     table15: fullDataItems, // Sortable (table15)
-      //     table16: fullDataItems, // Sortable with external sort controls (table16)
-      //     table18: fullDataItems, // Assuming you have data for table18
-      //     table99: fullDataItems, // Complex table with sorting, filtering, pagination (table99)
-      //   };
+      document.addEventListener('DOMContentLoaded', async () => {
+       // Load ALL the tables again (safe no-ops if a given id doesn't exist)
+         const tableDataMap = {
+           table1: basicItems, // Basic table (table1)
+          table2: basicItemsLong, // Sticky, no-border-collapsed (table2)
+           table3: basicItems, // Responsive, addBorder (table3)
+          table4: basicItems, // Responsive, remove-border (table4)
+           table5: colorVariationsItems, // Color variations (table5)
+           table6: detailRowItems, // Detail rows (table6)
+           table7: basicItems, // Striped, row-hover, addBorder (table7)
+           table8: basicItems, // Caption top, clone footer, fixed-table-header (table8)
+           table9: basicItems, // Stacked, caption bottom (table9)
+           table14: basicItems, // Selectable rows (table14)
+          table15: fullDataItems, // Sortable (table15)
+           table16: fullDataItems, // Sortable with external sort controls (table16)
+           table18: fullDataItems, // Assuming you have data for table18
+           table99: fullDataItems, // Complex table with sorting, filtering, pagination (table99)
+      };
 
-      //   // ---------- Helpers ---------- Use by all tables
-      //   function deriveFieldsFromFirstItem(items) {
-      //     if (!Array.isArray(items) || !items.length) return [];
-      //     const ignore = new Set(['_cellVariants', '_rowVariant', '_showDetails', '_additionalInfo']);
-      //     return Object.keys(items[0])
-      //       .filter(k => !ignore.has(k))
-      //       .map(k => ({ key: k, label: k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), sortable: true }));
-      //   }
+        // ---------- Helpers ---------- Use by all tables
+        function deriveFieldsFromFirstItem(items) {
+          if (!Array.isArray(items) || !items.length) return [];
+          const ignore = new Set(['_cellVariants', '_rowVariant', '_showDetails', '_additionalInfo']);
+          return Object.keys(items[0])
+            .filter(k => !ignore.has(k))
+            .map(k => ({ key: k, label: k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), sortable: true }));
+        }
 
-      //   async function setTableItems(id, items, { deriveFields = true } = {}) {
-      //     await customElements.whenDefined('table-component');
-      //     const el = document.getElementById(id);
-      //     if (!el) return;
-      //     await el.componentOnReady?.();
+        async function setTableItems(id, items, { deriveFields = true } = {}) {
+          await customElements.whenDefined('table-component');
+          const el = document.getElementById(id);
+          if (!el) return;
+          await el.componentOnReady?.();
 
-      //     el.items = Array.isArray(items) ? [...items] : [];
-      //     el.originalItems = Array.isArray(items) ? [...items] : [];
-      //     if (deriveFields) {
-      //       const fields = deriveFieldsFromFirstItem(items);
-      //       if (fields.length) el.fields = fields;
-      //     }
-      //   }
+          el.items = Array.isArray(items) ? [...items] : [];
+          el.originalItems = Array.isArray(items) ? [...items] : [];
+          if (deriveFields) {
+            const fields = deriveFieldsFromFirstItem(items);
+            if (fields.length) el.fields = fields;
+          }
+        }
 
-      //   // Set data for each table that exists in the DOM
-      //   await Promise.all(Object.entries(tableDataMap).map(([id, items]) => setTableItems(id, items, { deriveFields: true })));
+        // Set data for each table that exists in the DOM
+        await Promise.all(Object.entries(tableDataMap).map(([id, items]) => setTableItems(id, items, { deriveFields: true })));
 
-      //   // Reset sort helper used by your Reset Sort buttons
-      //   // Global helper used by: onclick="resetTableSort('table15')"
-      //   window.resetTableSort = async function resetTableSort(tableId, dropdownId) {
-      //     // 1) Reset the table (sort, filters, selection, etc.)
-      //     await customElements.whenDefined('table-component');
-      //     const table = document.getElementById(tableId);
-      //     if (table) {
-      //       await table.componentOnReady?.();
-      //       if (typeof table.resetSort === 'function') {
-      //         await table.resetSort();
-      //       } else {
-      //         // Fallback: clear common sort state if custom builds lack resetSort
-      //         table.sortCriteria = [];
-      //         table.sortField = 'none';
-      //         table.sortOrder = 'asc';
-      //         table.items = Array.isArray(table.originalItems) ? [...table.originalItems] : [];
-      //         table.dispatchEvent(new CustomEvent('sort-field-changed', { detail: { value: 'none' } }));
-      //         table.dispatchEvent(new CustomEvent('sort-order-changed', { detail: { value: 'asc' } }));
-      //       }
-      //     }
+        // Reset sort helper used by your Reset Sort buttons
+        // Global helper used by: onclick="resetTableSort('table15')"
+        window.resetTableSort = async function resetTableSort(tableId, dropdownId) {
+          // 1) Reset the table (sort, filters, selection, etc.)
+          await customElements.whenDefined('table-component');
+          const table = document.getElementById(tableId);
+          if (table) {
+            await table.componentOnReady?.();
+            if (typeof table.resetSort === 'function') {
+              await table.resetSort();
+            } else {
+              // Fallback: clear common sort state if custom builds lack resetSort
+              table.sortCriteria = [];
+              table.sortField = 'none';
+              table.sortOrder = 'asc';
+              table.items = Array.isArray(table.originalItems) ? [...table.originalItems] : [];
+              table.dispatchEvent(new CustomEvent('sort-field-changed', { detail: { value: 'none' } }));
+              table.dispatchEvent(new CustomEvent('sort-order-changed', { detail: { value: 'asc' } }));
+            }
+          }
 
-      //     // 2) Clear the filter input if present (id pattern: filterInput-<tableId>)
-      //     const filterInput = document.getElementById(`filterInput-${tableId}`);
-      //     if (filterInput) {
-      //       // If your input-group-component exposes a clear method, use it
-      //       if (typeof filterInput.handleClear === 'function') {
-      //         filterInput.handleClear();
-      //       } else {
-      //         // Otherwise, clear its value and emit typical events so listeners update the table
-      //         if ('value' in filterInput) filterInput.value = '';
-      //         filterInput.dispatchEvent(new Event('input', { bubbles: true }));
-      //         filterInput.dispatchEvent(new Event('change', { bubbles: true }));
-      //         // Some setups listen for custom valueChange
-      //         filterInput.dispatchEvent(new CustomEvent('valueChange', { detail: { value: '' }, bubbles: true }));
-      //       }
-      //     }
+          // 2) Clear the filter input if present (id pattern: filterInput-<tableId>)
+          const filterInput = document.getElementById(`filterInput-${tableId}`);
+          if (filterInput) {
+            // If your input-group-component exposes a clear method, use it
+            if (typeof filterInput.handleClear === 'function') {
+              filterInput.handleClear();
+            } else {
+              // Otherwise, clear its value and emit typical events so listeners update the table
+              if ('value' in filterInput) filterInput.value = '';
+              filterInput.dispatchEvent(new Event('input', { bubbles: true }));
+              filterInput.dispatchEvent(new Event('change', { bubbles: true }));
+              // Some setups listen for custom valueChange
+              filterInput.dispatchEvent(new CustomEvent('valueChange', { detail: { value: '' }, bubbles: true }));
+            }
+          }
 
-      //     // 3) If you also pass a Filter-By dropdown id, clear its selections (optional)
-      //     if (dropdownId) {
-      //       const dropdown = document.getElementById(dropdownId);
-      //       if (dropdown && typeof dropdown.clearSelections === 'function') {
-      //         await dropdown.clearSelections();
-      //       }
-      //     }
-      //   };
+          // 3) If you also pass a Filter-By dropdown id, clear its selections (optional)
+          if (dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            if (dropdown && typeof dropdown.clearSelections === 'function') {
+              await dropdown.clearSelections();
+            }
+          }
+        };
 
-      //   // --- External sort controls (generic, JS-only) ---
-      //   function isNone(v) {
-      //     const s = (v ?? '').toString().trim().toLowerCase();
-      //     return s === '' || s === 'none';
-      //   }
+        // --- External sort controls (generic, JS-only) ---
+        function isNone(v) {
+          const s = (v ?? '').toString().trim().toLowerCase();
+          return s === '' || s === 'none';
+        }
 
-      //   async function wireExternalSortControls(tableId, fieldSelectId, orderSelectId) {
-      //     await customElements.whenDefined('table-component');
-      //     await customElements.whenDefined('select-field-component');
+        async function wireExternalSortControls(tableId, fieldSelectId, orderSelectId) {
+          await customElements.whenDefined('table-component');
+          await customElements.whenDefined('select-field-component');
 
-      //     const table = document.getElementById(tableId);
-      //     const selField = document.getElementById(fieldSelectId);
-      //     const selOrder = document.getElementById(orderSelectId);
-      //     if (!table || !selField || !selOrder) return;
+          const table = document.getElementById(tableId);
+          const selField = document.getElementById(fieldSelectId);
+          const selOrder = document.getElementById(orderSelectId);
+          if (!table || !selField || !selOrder) return;
 
-      //     await table.componentOnReady?.();
-      //     await selField.componentOnReady?.();
-      //     await selOrder.componentOnReady?.();
+          await table.componentOnReady?.();
+          await selField.componentOnReady?.();
+          await selOrder.componentOnReady?.();
 
-      //     // deriveFieldsFromFirstItem is already defined earlier in this same DOMContentLoaded scope
-      //     selField.defaultOptionTxt = '';
-      //     const fields = (Array.isArray(table.fields) && table.fields.length ? table.fields : deriveFieldsFromFirstItem(table.items)) || [];
-      //     selField.options = fields.map(f => ({ value: f.key, name: f.label || f.key }));
+          // deriveFieldsFromFirstItem is already defined earlier in this same DOMContentLoaded scope
+          selField.defaultOptionTxt = '';
+          const fields = (Array.isArray(table.fields) && table.fields.length ? table.fields : deriveFieldsFromFirstItem(table.items)) || [];
+          selField.options = fields.map(f => ({ value: f.key, name: f.label || f.key }));
 
-      //     selOrder.options = [
-      //       { value: 'asc', name: 'Ascending' },
-      //       { value: 'desc', name: 'Descending' },
-      //     ];
+          selOrder.options = [
+            { value: 'asc', name: 'Ascending' },
+            { value: 'desc', name: 'Descending' },
+          ];
 
-      //     selField.value = !isNone(table.sortField) ? table.sortField : '';
-      //     selOrder.value = table.sortOrder ?? 'asc';
-      //     selOrder.disabled = isNone(selField.value);
+          selField.value = !isNone(table.sortField) ? table.sortField : '';
+          selOrder.value = table.sortOrder ?? 'asc';
+          selOrder.disabled = isNone(selField.value);
 
-      //     // Selects -> Table
-      //     const onFieldChange = ev => {
-      //       const raw = ev?.detail?.value ?? ev?.target?.value ?? '';
-      //       selOrder.disabled = isNone(raw);
-      //       const valueForTable = isNone(raw) ? 'none' : raw;
-      //       table.dispatchEvent(new CustomEvent('sort-field-changed', { detail: { value: valueForTable } }));
-      //     };
-      //     selField.addEventListener('valueChange', onFieldChange);
-      //     selField.addEventListener('change', onFieldChange);
+          // Selects -> Table
+          const onFieldChange = ev => {
+            const raw = ev?.detail?.value ?? ev?.target?.value ?? '';
+            selOrder.disabled = isNone(raw);
+            const valueForTable = isNone(raw) ? 'none' : raw;
+            table.dispatchEvent(new CustomEvent('sort-field-changed', { detail: { value: valueForTable } }));
+          };
+          selField.addEventListener('valueChange', onFieldChange);
+          selField.addEventListener('change', onFieldChange);
 
-      //     selOrder.addEventListener('change', ev => {
-      //       const value = ev?.detail?.value ?? ev?.target?.value ?? 'asc';
-      //       table.dispatchEvent(new CustomEvent('sort-order-changed', { detail: { value } }));
-      //     });
+          selOrder.addEventListener('change', ev => {
+            const value = ev?.detail?.value ?? ev?.target?.value ?? 'asc';
+            table.dispatchEvent(new CustomEvent('sort-order-changed', { detail: { value } }));
+          });
 
-      //     // Table -> Selects
-      //     table.addEventListener('sort-field-updated', ev => {
-      //       const value = ev.detail?.value ?? 'none';
-      //       selField.value = isNone(value) ? '' : value;
-      //       selOrder.disabled = isNone(value);
-      //     });
-      //     table.addEventListener('sort-order-updated', ev => {
-      //       const value = ev.detail?.value ?? 'asc';
-      //       selOrder.value = value;
-      //       if (!isNone(selField.value)) selOrder.disabled = false;
-      //     });
-      //     table.addEventListener('sort-changed', ev => {
-      //       const { field, order } = ev.detail || {};
-      //       selField.value = isNone(field) ? '' : field;
-      //       selOrder.value = order ?? 'asc';
-      //       selOrder.disabled = isNone(field);
-      //     });
-      //   }
+          // Table -> Selects
+          table.addEventListener('sort-field-updated', ev => {
+            const value = ev.detail?.value ?? 'none';
+            selField.value = isNone(value) ? '' : value;
+            selOrder.disabled = isNone(value);
+          });
+          table.addEventListener('sort-order-updated', ev => {
+            const value = ev.detail?.value ?? 'asc';
+            selOrder.value = value;
+            if (!isNone(selField.value)) selOrder.disabled = false;
+          });
+          table.addEventListener('sort-changed', ev => {
+            const { field, order } = ev.detail || {};
+            selField.value = isNone(field) ? '' : field;
+            selOrder.value = order ?? 'asc';
+            selOrder.disabled = isNone(field);
+          });
+        }
 
-      //   // Wire your existing controls for table16
-      //   wireExternalSortControls('table16', 'sortField-1', 'sortOrder-1');
-      //   wireExternalSortControls('table99', 'sortField-2', 'sortOrder-2');
+        // Wire your existing controls for table16
+        wireExternalSortControls('table16', 'sortField-1', 'sortOrder-1');
+        wireExternalSortControls('table99', 'sortField-2', 'sortOrder-2');
 
-      //   // For Filtering
-      //   function pushOptionsToDropdown(dropdownEl, options) {
-      //     if (!dropdownEl) return;
-      //     if (typeof dropdownEl.setOptions === 'function') dropdownEl.setOptions(options);
-      //     else dropdownEl.options = options;
+        // For Filtering
+        function pushOptionsToDropdown(dropdownEl, options) {
+          if (!dropdownEl) return;
+          if (typeof dropdownEl.setOptions === 'function') dropdownEl.setOptions(options);
+          else dropdownEl.options = options;
 
-      //     // Nudge render + announce
-      //     dropdownEl.requestUpdate?.();
-      //     dropdownEl.forceUpdate?.();
-      //     dropdownEl.update?.();
-      //     dropdownEl.dispatchEvent(new CustomEvent('items-changed', { detail: { items: options }, bubbles: true, composed: true }));
-      //   }
+          // Nudge render + announce
+          dropdownEl.requestUpdate?.();
+          dropdownEl.forceUpdate?.();
+          dropdownEl.update?.();
+          dropdownEl.dispatchEvent(new CustomEvent('items-changed', { detail: { items: options }, bubbles: true, composed: true }));
+        }
 
-      //   function emitFilterFieldsChanged(tableId, options) {
-      //     const selected = (Array.isArray(options) ? options : [])
-      //       .filter(o => !!o?.checked)
-      //       .map(o => o.key ?? o.value ?? o.name)
-      //       .filter(Boolean);
+        function emitFilterFieldsChanged(tableId, options) {
+          const selected = (Array.isArray(options) ? options : [])
+            .filter(o => !!o?.checked)
+            .map(o => o.key ?? o.value ?? o.name)
+            .filter(Boolean);
 
-      //     // table-component listens for this on document and matches by tableId
-      //     document.dispatchEvent(
-      //       new CustomEvent('filter-fields-changed', {
-      //         detail: { tableId, items: selected.map(key => ({ key, checked: true })) },
-      //         bubbles: false,
-      //       }),
-      //     );
-      //   }
+          // table-component listens for this on document and matches by tableId
+          document.dispatchEvent(
+            new CustomEvent('filter-fields-changed', {
+              detail: { tableId, items: selected.map(key => ({ key, checked: true })) },
+              bubbles: false,
+            }),
+          );
+        }
 
-      //   /* ---------- main wiring (Filter + Filter By) ---------- */
-      //   async function wireTableFiltering(tableId, inputId, dropdownId) {
-      //     await Promise.all([customElements.whenDefined('table-component'), customElements.whenDefined('dropdown-component')]);
+        /* ---------- main wiring (Filter + Filter By) ---------- */
+        async function wireTableFiltering(tableId, inputId, dropdownId) {
+          await Promise.all([customElements.whenDefined('table-component'), customElements.whenDefined('dropdown-component')]);
 
-      //     const tableEl = document.getElementById(tableId);
-      //     const inputEl = document.getElementById(inputId);
-      //     const dropdownEl = document.getElementById(dropdownId);
-      //     if (!tableEl) return;
+          const tableEl = document.getElementById(tableId);
+          const inputEl = document.getElementById(inputId);
+          const dropdownEl = document.getElementById(dropdownId);
+          if (!tableEl) return;
 
-      //     await tableEl.componentOnReady?.();
-      //     tableEl.tableId = tableId;
+          await tableEl.componentOnReady?.();
+          tableEl.tableId = tableId;
 
-      //     // ——— helper to (re)disable dropdown ———
-      //     const setDropdownDisabled = async disabled => {
-      //       if (!dropdownEl) return;
-      //       // close if open
-      //       if (disabled) dropdownEl.closeDropdown?.();
-      //       dropdownEl.disabled = !!disabled;
-      //       dropdownEl.setAttribute?.('aria-disabled', String(!!disabled));
-      //     };
+          // ——— helper to (re)disable dropdown ———
+          const setDropdownDisabled = async disabled => {
+            if (!dropdownEl) return;
+            // close if open
+            if (disabled) dropdownEl.closeDropdown?.();
+            dropdownEl.disabled = !!disabled;
+            dropdownEl.setAttribute?.('aria-disabled', String(!!disabled));
+          };
 
-      //     // 1) FILTER INPUT → table
-      //     // FILTER INPUT → table
-      //     if (inputEl) {
-      //       const forward = async ev => {
-      //         const raw = ev?.detail?.value ?? ev?.target?.value ?? '';
-      //         const value = (raw ?? '').toString();
-      //         tableEl.dispatchEvent(new CustomEvent('filter-changed', { detail: { value } }));
+          // 1) FILTER INPUT → table
+          // FILTER INPUT → table
+          if (inputEl) {
+            const forward = async ev => {
+              const raw = ev?.detail?.value ?? ev?.target?.value ?? '';
+              const value = (raw ?? '').toString();
+              tableEl.dispatchEvent(new CustomEvent('filter-changed', { detail: { value } }));
 
-      //         const hasText = value.trim().length > 0;
-      //         await setDropdownDisabled(!hasText);
+              const hasText = value.trim().length > 0;
+              await setDropdownDisabled(!hasText);
 
-      //         // If empty, clear any filter-by selections and tell the table “no columns”
-      //         if (!hasText && dropdownEl) {
-      //           if (typeof dropdownEl.clearSelections === 'function') {
-      //             await dropdownEl.clearSelections();
-      //           } else {
-      //             const opts = Array.isArray(dropdownEl.options) ? dropdownEl.options.map(o => ({ ...o, checked: false })) : [];
-      //             if (typeof dropdownEl.setOptions === 'function') dropdownEl.setOptions(opts);
-      //             else dropdownEl.options = opts;
-      //             dropdownEl.dispatchEvent(new CustomEvent('items-changed', { detail: { items: opts }, bubbles: true, composed: true }));
-      //             dropdownEl.dispatchEvent(new CustomEvent('selection-changed', { detail: { items: [] }, bubbles: true, composed: true }));
-      //             document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId, items: [] }, bubbles: false }));
-      //           }
-      //         }
-      //       };
+              // If empty, clear any filter-by selections and tell the table “no columns”
+              if (!hasText && dropdownEl) {
+                if (typeof dropdownEl.clearSelections === 'function') {
+                  await dropdownEl.clearSelections();
+                } else {
+                  const opts = Array.isArray(dropdownEl.options) ? dropdownEl.options.map(o => ({ ...o, checked: false })) : [];
+                  if (typeof dropdownEl.setOptions === 'function') dropdownEl.setOptions(opts);
+                  else dropdownEl.options = opts;
+                  dropdownEl.dispatchEvent(new CustomEvent('items-changed', { detail: { items: opts }, bubbles: true, composed: true }));
+                  dropdownEl.dispatchEvent(new CustomEvent('selection-changed', { detail: { items: [] }, bubbles: true, composed: true }));
+                  document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId, items: [] }, bubbles: false }));
+                }
+              }
+            };
 
-      //       inputEl.addEventListener('input', forward);
-      //       inputEl.addEventListener('change', forward);
-      //       inputEl.addEventListener('valueChange', forward);
+            inputEl.addEventListener('input', forward);
+            inputEl.addEventListener('change', forward);
+            inputEl.addEventListener('valueChange', forward);
 
-      //       // bind the real inner <input> too
-      //       const bindShadowInput = () => {
-      //         const inner = inputEl.shadowRoot?.querySelector('input');
-      //         if (inner && !inner._tableFilterBound) {
-      //           inner.addEventListener('input', () => {
-      //             const value = inner.value ?? '';
-      //             tableEl.dispatchEvent(new CustomEvent('filter-changed', { detail: { value } }));
-      //             const hasText = (value ?? '').trim().length > 0;
-      //             setDropdownDisabled(!hasText);
-      //             if (!hasText && dropdownEl) {
-      //               dropdownEl.clearSelections?.();
-      //               document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId, items: [] }, bubbles: false }));
-      //             }
-      //           });
-      //           inner._tableFilterBound = true;
-      //         }
-      //       };
-      //       if (inputEl.shadowRoot) bindShadowInput();
-      //       else inputEl.addEventListener('ready', bindShadowInput);
-      //     }
+            // bind the real inner <input> too
+            const bindShadowInput = () => {
+              const inner = inputEl.shadowRoot?.querySelector('input');
+              if (inner && !inner._tableFilterBound) {
+                inner.addEventListener('input', () => {
+                  const value = inner.value ?? '';
+                  tableEl.dispatchEvent(new CustomEvent('filter-changed', { detail: { value } }));
+                  const hasText = (value ?? '').trim().length > 0;
+                  setDropdownDisabled(!hasText);
+                  if (!hasText && dropdownEl) {
+                    dropdownEl.clearSelections?.();
+                    document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId, items: [] }, bubbles: false }));
+                  }
+                });
+                inner._tableFilterBound = true;
+              }
+            };
+            if (inputEl.shadowRoot) bindShadowInput();
+            else inputEl.addEventListener('ready', bindShadowInput);
+          }
 
-      //     // 2) FILTER BY DROPDOWN → document (table listens on document)
-      //     // --- Filter By (dropdown) -> document event the table listens for ---
-      //     if (dropdownEl) {
-      //       await dropdownEl.componentOnReady?.();
+          // 2) FILTER BY DROPDOWN → document (table listens on document)
+          // --- Filter By (dropdown) -> document event the table listens for ---
+          if (dropdownEl) {
+            await dropdownEl.componentOnReady?.();
 
-      //       const buildAndPushOptions = () => {
-      //         const fields =
-      //           (Array.isArray(tableEl.fields) && tableEl.fields.length
-      //             ? tableEl.fields.map(f => (typeof f === 'string' ? { key: f, label: f } : { key: f.key, label: f.label || f.key }))
-      //             : deriveFieldsFromFirstItem(tableEl.items || [])) || [];
+            const buildAndPushOptions = () => {
+              const fields =
+                (Array.isArray(tableEl.fields) && tableEl.fields.length
+                  ? tableEl.fields.map(f => (typeof f === 'string' ? { key: f, label: f } : { key: f.key, label: f.label || f.key }))
+                  : deriveFieldsFromFirstItem(tableEl.items || [])) || [];
 
-      //         const options = fields.map((f, i) => ({
-      //           key: f.key,
-      //           name: f.label,
-      //           value: f.key,
-      //           label: f.label,
-      //           checked: false,
-      //           index: i,
-      //         }));
+              const options = fields.map((f, i) => ({
+                key: f.key,
+                name: f.label,
+                value: f.key,
+                label: f.label,
+                checked: false,
+                index: i,
+              }));
 
-      //         // prime dropdown with the options (generic; dropdown remains reusable)
-      //         if (typeof dropdownEl.setOptions === 'function') dropdownEl.setOptions(options);
-      //         else dropdownEl.options = options;
+              // prime dropdown with the options (generic; dropdown remains reusable)
+              if (typeof dropdownEl.setOptions === 'function') dropdownEl.setOptions(options);
+              else dropdownEl.options = options;
 
-      //         dropdownEl.requestUpdate?.();
-      //         dropdownEl.dispatchEvent(new CustomEvent('items-changed', { detail: { items: options }, bubbles: true, composed: true }));
+              dropdownEl.requestUpdate?.();
+              dropdownEl.dispatchEvent(new CustomEvent('items-changed', { detail: { items: options }, bubbles: true, composed: true }));
 
-      //         // initial “no columns selected” -> tell the table
-      //         document.dispatchEvent(
-      //           new CustomEvent('filter-fields-changed', {
-      //             detail: { tableId, items: [] },
-      //             bubbles: false,
-      //           }),
-      //         );
-      //       };
+              // initial “no columns selected” -> tell the table
+              document.dispatchEvent(
+                new CustomEvent('filter-fields-changed', {
+                  detail: { tableId, items: [] },
+                  bubbles: false,
+                }),
+              );
+            };
 
-      //       // build once items/fields are available
-      //       if ((tableEl.items && tableEl.items.length) || (Array.isArray(tableEl.fields) && tableEl.fields.length)) {
-      //         buildAndPushOptions();
-      //       } else {
-      //         setTimeout(buildAndPushOptions, 0);
-      //       }
+            // build once items/fields are available
+            if ((tableEl.items && tableEl.items.length) || (Array.isArray(tableEl.fields) && tableEl.fields.length)) {
+              buildAndPushOptions();
+            } else {
+              setTimeout(buildAndPushOptions, 0);
+            }
 
-      //       // ✅ key bridge: dropdown's checked set -> document event the table listens for
-      //       dropdownEl.addEventListener('selection-changed', ev => {
-      //         const checked = Array.isArray(ev && ev.detail && ev.detail.items) ? ev.detail.items : [];
-      //         const payload = checked.map(o => ({
-      //           key: (o && (o.key || o.value || o.name)) || '',
-      //           checked: true,
-      //         }));
+            // ✅ key bridge: dropdown's checked set -> document event the table listens for
+            dropdownEl.addEventListener('selection-changed', ev => {
+              const checked = Array.isArray(ev && ev.detail && ev.detail.items) ? ev.detail.items : [];
+              const payload = checked.map(o => ({
+                key: (o && (o.key || o.value || o.name)) || '',
+                checked: true,
+              }));
 
-      //         document.dispatchEvent(
-      //           new CustomEvent('filter-fields-changed', {
-      //             detail: { tableId, items: payload },
-      //             bubbles: false,
-      //           }),
-      //         );
-      //       });
+              document.dispatchEvent(
+                new CustomEvent('filter-fields-changed', {
+                  detail: { tableId, items: payload },
+                  bubbles: false,
+                }),
+              );
+            });
 
-      //       // Optional fallbacks if your setup only fires these:
-      //       const relayFromOptionsBag = () => {
-      //         const opts = Array.isArray(dropdownEl.options) ? dropdownEl.options : [];
-      //         const payload = opts.map(o => ({
-      //           key: (o && (o.key || o.value || o.name)) || '',
-      //           checked: !!o.checked,
-      //         }));
-      //         document.dispatchEvent(
-      //           new CustomEvent('filter-fields-changed', {
-      //             detail: { tableId, items: payload },
-      //             bubbles: false,
-      //           }),
-      //         );
-      //       };
-      //       dropdownEl.addEventListener('items-changed', relayFromOptionsBag);
-      //       dropdownEl.addEventListener('itemSelected', relayFromOptionsBag);
-      //     }
+            // Optional fallbacks if your setup only fires these:
+            const relayFromOptionsBag = () => {
+              const opts = Array.isArray(dropdownEl.options) ? dropdownEl.options : [];
+              const payload = opts.map(o => ({
+                key: (o && (o.key || o.value || o.name)) || '',
+                checked: !!o.checked,
+              }));
+              document.dispatchEvent(
+                new CustomEvent('filter-fields-changed', {
+                  detail: { tableId, items: payload },
+                  bubbles: false,
+                }),
+              );
+            };
+            dropdownEl.addEventListener('items-changed', relayFromOptionsBag);
+            dropdownEl.addEventListener('itemSelected', relayFromOptionsBag);
+          }
 
-      //     // Kick once + set initial disabled state based on current input value
-      //     tableEl.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: '' } }));
-      //     // disable initially (no text at start)
-      //     await (async () => {
-      //       const current = inputEl?.value ?? '';
-      //       const hasText = (current ?? '').toString().trim().length > 0;
-      //       await setDropdownDisabled(!hasText);
-      //     })();
-      //   }
+          // Kick once + set initial disabled state based on current input value
+          tableEl.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: '' } }));
+          // disable initially (no text at start)
+          await (async () => {
+            const current = inputEl?.value ?? '';
+            const hasText = (current ?? '').toString().trim().length > 0;
+            await setDropdownDisabled(!hasText);
+          })();
+        }
 
-      //   /* ---------- Clear button helper (clears input + checkboxes + table) ---------- */
-      //   window.clearFilter = async function clearFilter(dropdownId) {
-      //     const dropdownEl = document.getElementById(dropdownId);
-      //     if (!dropdownEl) return;
+        /* ---------- Clear button helper (clears input + checkboxes + table) ---------- */
+        window.clearFilter = async function clearFilter(dropdownId) {
+          const dropdownEl = document.getElementById(dropdownId);
+          if (!dropdownEl) return;
 
-      //     // Prefer Stencil prop → attribute → id parsing
-      //     const tableId = dropdownEl.tableId || dropdownEl.getAttribute?.('table-id') || (dropdownId.includes('-') ? dropdownId.split('-').slice(1).join('-') : '');
+          // Prefer Stencil prop → attribute → id parsing
+          const tableId = dropdownEl.tableId || dropdownEl.getAttribute?.('table-id') || (dropdownId.includes('-') ? dropdownId.split('-').slice(1).join('-') : '');
 
-      //     // 1) Clear the Filter input and notify
-      //     const inputEl = document.getElementById(`filterInput-${tableId}`);
-      //     if (inputEl) {
-      //       if (typeof inputEl.handleClear === 'function') {
-      //         inputEl.handleClear();
-      //       } else {
-      //         if ('value' in inputEl) inputEl.value = '';
-      //         inputEl.dispatchEvent(new Event('input', { bubbles: true }));
-      //         inputEl.dispatchEvent(new Event('change', { bubbles: true }));
-      //         inputEl.dispatchEvent(new CustomEvent('valueChange', { detail: { value: '' }, bubbles: true }));
-      //       }
-      //     }
+          // 1) Clear the Filter input and notify
+          const inputEl = document.getElementById(`filterInput-${tableId}`);
+          if (inputEl) {
+            if (typeof inputEl.handleClear === 'function') {
+              inputEl.handleClear();
+            } else {
+              if ('value' in inputEl) inputEl.value = '';
+              inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+              inputEl.dispatchEvent(new Event('change', { bubbles: true }));
+              inputEl.dispatchEvent(new CustomEvent('valueChange', { detail: { value: '' }, bubbles: true }));
+            }
+          }
 
-      //     // 2) Clear dropdown selections (prefer its API; fallback if missing)
-      //     let clearedViaApi = false;
-      //     if (typeof dropdownEl.clearSelections === 'function') {
-      //       await dropdownEl.clearSelections();
-      //       clearedViaApi = true;
-      //     } else {
-      //       const opts = Array.isArray(dropdownEl.options) ? dropdownEl.options : [];
-      //       const next = opts.map(o => ({ ...o, checked: false }));
-      //       if (typeof dropdownEl.setOptions === 'function') dropdownEl.setOptions(next);
-      //       else dropdownEl.options = next;
+          // 2) Clear dropdown selections (prefer its API; fallback if missing)
+          let clearedViaApi = false;
+          if (typeof dropdownEl.clearSelections === 'function') {
+            await dropdownEl.clearSelections();
+            clearedViaApi = true;
+          } else {
+            const opts = Array.isArray(dropdownEl.options) ? dropdownEl.options : [];
+            const next = opts.map(o => ({ ...o, checked: false }));
+            if (typeof dropdownEl.setOptions === 'function') dropdownEl.setOptions(next);
+            else dropdownEl.options = next;
 
-      //       // Nudge render + announce local events the rest of your wiring already listens for
-      //       dropdownEl.requestUpdate?.();
-      //       dropdownEl.dispatchEvent(new CustomEvent('items-changed', { detail: { items: next }, bubbles: true, composed: true }));
-      //       dropdownEl.dispatchEvent(new CustomEvent('selection-changed', { detail: { items: [] }, bubbles: true, composed: true }));
-      //     }
+            // Nudge render + announce local events the rest of your wiring already listens for
+            dropdownEl.requestUpdate?.();
+            dropdownEl.dispatchEvent(new CustomEvent('items-changed', { detail: { items: next }, bubbles: true, composed: true }));
+            dropdownEl.dispatchEvent(new CustomEvent('selection-changed', { detail: { items: [] }, bubbles: true, composed: true }));
+          }
 
-      //     // 3) Tell the table “no fields selected” and reset filter text
-      //     document.dispatchEvent(
-      //       new CustomEvent('filter-fields-changed', {
-      //         detail: { tableId, items: [] },
-      //         bubbles: false,
-      //       }),
-      //     );
-      //     const tableEl = document.getElementById(tableId);
-      //     tableEl?.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: '' } }));
+          // 3) Tell the table “no fields selected” and reset filter text
+          document.dispatchEvent(
+            new CustomEvent('filter-fields-changed', {
+              detail: { tableId, items: [] },
+              bubbles: false,
+            }),
+          );
+          const tableEl = document.getElementById(tableId);
+          tableEl?.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: '' } }));
 
-      //     // 4) Disable and close the Filter By dropdown until user types again
-      //     dropdownEl.closeDropdown?.();
-      //     dropdownEl.disabled = true; // Stencil @Prop from outside is fine
-      //     dropdownEl.setAttribute?.('aria-disabled', 'true'); // accessibility hint
-      //   };
+          // 4) Disable and close the Filter By dropdown until user types again
+          dropdownEl.closeDropdown?.();
+          dropdownEl.disabled = true; // Stencil @Prop from outside is fine
+          dropdownEl.setAttribute?.('aria-disabled', 'true'); // accessibility hint
+        };
 
-      //   // 1) ensure the table actually has data + fields
-      //   await setTableItems('table17', fullDataItems, { deriveFields: true });
-      //   await setTableItems('table99', fullDataItems, { deriveFields: true });
+        // 1) ensure the table actually has data + fields
+        await setTableItems('table17', fullDataItems, { deriveFields: true });
+        await setTableItems('table99', fullDataItems, { deriveFields: true });
 
-      //   // 2) wire input + dropdown to table
-      //   wireTableFiltering('table17', 'filterInput-table17', 'filterByItems-table17');
-      //   wireTableFiltering('table99', 'filterInput-table99', 'filterByItems-table99');
-      // });
+        // 2) wire input + dropdown to table
+        wireTableFiltering('table17', 'filterInput-table17', 'filterByItems-table17');
+        wireTableFiltering('table99', 'filterInput-table99', 'filterByItems-table99');
+      });
 
       // ---------- Toast notifications demo wiring ---------- //
       // window.addEventListener('DOMContentLoaded', () => {
@@ -2996,6 +3015,6 @@
       // ---------- End Toast notifications demo wiring ---------- //
 
       // ------------- Tooltip demo wiring ------------- //
-    </script> -->
+    </script>
   </body>
 </html>

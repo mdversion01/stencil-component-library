@@ -68,11 +68,11 @@
       // .input-group-append {
       //   height: inherit;
 
-        button {
-          min-height: 28px;
-          font-size: 0.875rem;
-          padding: 0.1rem 0.3rem 0 0.3rem;
-        }
+      button {
+        min-height: 28px;
+        font-size: 0.875rem;
+        padding: 0.1rem 0.3rem 0 0.3rem;
+      }
       // }
     }
 
@@ -85,9 +85,9 @@
       // .input-group-append {
       //   height: inherit;
 
-        button {
-          font-size: 1.125rem;
-        }
+      button {
+        font-size: 1.125rem;
+      }
       // }
     }
   }
@@ -142,11 +142,15 @@
   &:focus {
     color: #525252 !important;
   }
+
+  &.invalid {
+    border-color: #b30009 !important;
+  }
 }
 
 .time-picker .input-group-sm .time-icon-btn {
   font-size: 0.875rem !important;
-  padding: 0.2rem 0.3rem !important;
+  padding: 0.3rem 0.3rem 0.2rem 0.3rem !important;
   height: 28px !important;
 }
 
@@ -169,7 +173,11 @@
   font-weight: 400;
   line-height: 1.5;
   user-select: none;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
 
   &:hover,
   &:focus {
@@ -179,6 +187,15 @@
   &:focus-visible {
     outline: none;
   }
+
+  &.invalid {
+    border-color: #b30009 !important;
+  }
+}
+
+.clear-button[disabled],
+.clear-button.disabled {
+  background-color: var(--bs-secondary-bg);
 }
 
 .time-picker .input-group button:last-child {
@@ -359,6 +376,17 @@ button.arrow {
   margin-top: 0.25rem;
 }
 
+.is-invalid,
+.invalid,
+.required {
+  color: #b30009 !important;
+}
+
+.time-picker .form-control.is-invalid {
+  background-image: none;
+  padding-right: 0.25rem !important;
+}
+
 /* ================================
    Misc
 ================================== */
@@ -373,6 +401,10 @@ input[type='number'] {
   padding: 0.1rem 0.3rem 0 0.3rem !important;
 }
 
+.plumage .time-picker .input-group button:last-child {
+  border: none;
+  border-radius: 0 !important;
+}
 
 /* =========================================
    Plumage Timepicker — Clean SCSS
@@ -426,8 +458,12 @@ $tp-dropdown-z: 10000;
       height: 100%;
     }
 
-    .input-group-prepend { margin-right: -1px; }
-    .input-group-append { margin-left: -1px; }
+    .input-group-prepend {
+      margin-right: -1px;
+    }
+    .input-group-append {
+      margin-left: -1px;
+    }
 
     /* Text-like add-ons */
     .input-group-text {
@@ -493,7 +529,6 @@ $tp-dropdown-z: 10000;
         padding: 0.25rem 1rem;
         font-size: 1.125rem;
         line-height: 1.5;
-
       }
 
       > .form-control {
@@ -541,9 +576,9 @@ $tp-dropdown-z: 10000;
       background-position: right calc(-1.5em + 1.5rem) center;
     }
 
-    .input-group-prepend.is-invalid > .input-group-text,
-    .input-group-append.is-invalid > .input-group-text {
-      color: #b30009;
+    .is-invalid,
+    .required {
+      color: #b30009 !important;
     }
 
     /* =========================
@@ -594,7 +629,7 @@ $tp-dropdown-z: 10000;
     ========================== */
     .time-icon-btn {
       background-color: transparent;
-      color: #959595 !important;
+      color: #959595;
       border: none !important;
       border-radius: 50% !important;
       display: flex;
@@ -668,8 +703,12 @@ $tp-dropdown-z: 10000;
       left: 0;
       z-index: $tp-dropdown-z;
 
-      &.sm { top: 30px; }
-      &.lg { top: 41px; }
+      &.sm {
+        top: 30px;
+      }
+      &.lg {
+        top: 41px;
+      }
     }
 
     /* =========================

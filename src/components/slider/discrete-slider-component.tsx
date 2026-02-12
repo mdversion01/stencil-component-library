@@ -94,6 +94,22 @@ export class DiscreteSliderComponent {
     }
   }
 
+  /**
+   * Format tick/value display with unit.
+   * If unit is "$", prefix it (e.g. $M). Otherwise suffix (e.g. M°F).
+   *
+   * Note: Discrete values are strings; we don't round here.
+   */
+  private formatWithUnit(v: string): string {
+    const unit = String(this.unit ?? '').trim();
+    const s = String(v ?? '');
+
+    if (!unit) return s;
+    if (unit === '$') return `${unit}${s}`;
+
+    return `${s}${unit}`;
+  }
+
   // Keyboard
   private onKeyDown = (event: KeyboardEvent) => {
     if (this.disabled || this._values.length === 0) return;
@@ -161,11 +177,25 @@ export class DiscreteSliderComponent {
   render() {
     const color = this.getColor(this.variant);
     const pct = this.pct();
-    const val = this._values[this.selectedIndex] ?? '';
+    const rawVal = this._values[this.selectedIndex] ?? '';
+    const val = this.formatWithUnit(rawVal);
+
+    // ✅ Keep positioning class even when disabled (so left:% still works)
+    const thumbContainerClass = ['slider-thumb-container', color, this.disabled ? 'slider-thumb-container-disabled' : '']
+      .filter(Boolean)
+      .join(' ');
 
     return (
       <div class="slider-wrapper">
-        <div dir="ltr" class="slider" role="slider" aria-label={this.label || undefined} aria-orientation="horizontal" aria-disabled={this.disabled ? 'true' : 'false'}>
+        <div
+          dir="ltr"
+          class="slider"
+          role="slider"
+          aria-label={this.label || undefined}
+          aria-orientation="horizontal"
+          aria-disabled={this.disabled ? 'true' : 'false'}
+          {...(this.disabled && { disabled: true })}
+        >
           {this.label ? (
             <label id="slider-input-label" class="form-control-label">
               {this.label} {val}
@@ -176,10 +206,11 @@ export class DiscreteSliderComponent {
             <div class="slider-controls" onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}>
               <div class="slider-background-track" style={{ width: '100%' }} />
               <div class={`slider-moving-track ${color}`} style={{ width: `${pct}%` }} />
+
               <div
-                class={`${this.disabled ? '' : 'slider-thumb-container'} ${color}`}
+                class={thumbContainerClass}
                 style={{ left: `${pct}%`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
-                onMouseDown={this.onDragStart}
+                onMouseDown={this.disabled ? undefined : this.onDragStart}
                 role="presentation"
                 tabIndex={this.disabled ? -1 : 0}
               >
@@ -195,10 +226,14 @@ export class DiscreteSliderComponent {
                   const pos = (index / Math.max(1, this._values.length - 1)) * 100;
                   return (
                     <div>
-                      <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} onClick={() => this.setIndex(index)} />
+                      <div
+                        class="slider-tick"
+                        style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }}
+                        onClick={this.disabled ? undefined : () => this.setIndex(index)}
+                      />
                       {this.tickLabels ? (
                         <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
-                          {tick}
+                          {this.formatWithUnit(tick)}
                         </div>
                       ) : null}
                     </div>

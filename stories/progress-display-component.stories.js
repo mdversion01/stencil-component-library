@@ -7,61 +7,168 @@ export default {
     layout: 'padded',
     docs: {
       description: {
-        component:
-          'A versatile progress display component supporting linear and circular styles, with options for single or multiple bars, animations, and custom labels.',
+        component: 'A versatile progress display component supporting linear and circular styles, with options for single or multiple bars, animations, and custom labels.',
       },
     },
   },
   argTypes: {
-    animated: { control: 'boolean', description: 'Enables animation for striped bars.' },
-    bars: { control: 'object', description: 'Array of bar objects for multi progress bars.' },
-    circular: { control: 'boolean', description: 'Renders a circular progress indicator.' },
-    height: { control: { type: 'number', min: 4, step: 1 }, description: 'Height of the progress bar in pixels (linear only).' },
-    indeterminate: { control: 'boolean', description: 'If true, shows an indeterminate loading state (circular only).' },
-    lineCap: { control: 'boolean', name: 'line-cap', description: 'If true, uses rounded line caps for circular progress.' },
+    /* -----------------------------
+     Mode & Structure
+  ------------------------------ */
+    circular: {
+      control: 'boolean',
+      description: 'Renders a circular progress indicator.',
+      table: { category: 'Mode & Structure', defaultValue: { summary: false } },
+    },
+    multi: {
+      control: 'boolean',
+      description: 'Renders multiple stacked progress bars (linear only).',
+      table: { category: 'Mode & Structure', defaultValue: { summary: false } },
+    },
+    bars: {
+      control: 'object',
+      description: 'Array of bar objects for multi progress bars.',
+      table: { category: 'Mode & Structure' },
+    },
 
-    // Optional label demo controls (LinearTemplate stories)
-    label: { control: 'text', description: 'Optional label text. This can be used on it\'s own or with the `use-named-bar-0` option. Leave empty for no label.' },
+    /* -----------------------------
+     Value & Formatting (Common)
+  ------------------------------ */
+    value: {
+      control: { type: 'number', min: 0, max: 100, step: 1 },
+      description: 'Current value of the progress.',
+      table: { category: 'Value & Formatting' },
+    },
+    max: {
+      control: { type: 'number', min: 1, step: 1 },
+      description: 'Maximum value of the progress.',
+      table: { category: 'Value & Formatting' },
+    },
+    precision: {
+      control: { type: 'number', min: 0, max: 4, step: 1 },
+      description: 'Number of decimal places to show in progress text.',
+      table: { category: 'Value & Formatting' },
+    },
+
+    /* -----------------------------
+     Labels & Slot Demo (Linear stories)
+  ------------------------------ */
+    label: {
+      control: 'text',
+      description: "Optional label text. This can be used on it's own or with the `use-named-bar-0` option. Leave empty for no label.",
+      table: { category: 'Labels & Slot Demo' },
+    },
     useNamedBar0: {
       control: 'boolean',
       name: 'use-named-bar-0',
-      description:
-        'When used with `label`, wraps the label as an internal `<span slot="bar-0">...` (single-bar compatibility with multi-bar markup).',
+      description: 'When used with `label`, wraps the label as an internal `<span slot="bar-0">...` (single-bar compatibility with multi-bar markup).',
+      table: { category: 'Labels & Slot Demo', defaultValue: { summary: false } },
     },
-
-    // Storybook-only helper:
-    // This is ONLY to let Storybook Controls demonstrate "default slot content".
-    // In real usage, consumers just type content between the component tags.
     slotText: {
       control: 'text',
       name: 'slot-text',
       description:
-        'Storybook-only: injects default slot content (text/markup) between the component tags. In real usage, just place content between <progress-display-component>...</progress-display-component>.',
+        'Storybook-only: injects default slot content (text/markup) between the component tags. In real usage, just place content between `<progress-display-component>...</progress-display-component>`.',
+      table: { category: 'Labels & Slot Demo' },
     },
-
-    max: { control: { type: 'number', min: 1, step: 1 }, description: 'Maximum value of the progress.' },
-    multi: { control: 'boolean', description: 'Renders multiple stacked progress bars (linear only).' },
-    precision: { control: { type: 'number', min: 0, max: 4, step: 1 }, description: 'Number of decimal places to show in progress text.' },
     progressAlign: {
       control: { type: 'select' },
       options: ['', 'left', 'right'],
       name: 'progress-align',
-      description:
-        'Alignment of label vs progress text within the bar when both are present (e.g., with `label` or slot content).',
+      description: 'Alignment of label vs progress text within the bar when both are present (e.g., with `label` or slot content).',
+      table: { category: 'Labels & Slot Demo' },
     },
-    rotate: { control: { type: 'number', step: 1 }, description: 'Rotation angle in degrees for circular progress.' },
-    showProgress: { control: 'boolean', name: 'show-progress', description: 'If true, shows the progress text.' },
-    showValue: { control: 'boolean', name: 'show-value', description: 'If true, shows the numeric value.' },
-    size: { control: { type: 'number', min: 32, step: 1 }, description: 'Diameter of the circular progress indicator in pixels (circular only).' },
-    striped: { control: 'boolean', description: 'Enables striped styling for the progress bar (linear only).' },
-    strokeWidth: { control: { type: 'number', min: 1, step: 1 }, name: 'width', description: 'Width of the circular progress stroke in pixels (circular only).' },
-    styles: { control: 'text', description: 'Custom CSS styles to apply to the progress bar (linear only).' },
-    value: { control: { type: 'number', min: 0, max: 100, step: 1 }, description: 'Current value of the progress.' },
+
+    /* -----------------------------
+     Display Toggles (Common)
+  ------------------------------ */
+    showProgress: {
+      control: 'boolean',
+      name: 'show-progress',
+      description: 'If true, shows the progress text.',
+      table: { category: 'Display Toggles', defaultValue: { summary: false } },
+    },
+    showValue: {
+      control: 'boolean',
+      name: 'show-value',
+      description: 'If true, shows the numeric value.',
+      table: { category: 'Display Toggles', defaultValue: { summary: false } },
+    },
+
+    /* -----------------------------
+     Styling (Common / Linear)
+  ------------------------------ */
     variant: {
       control: { type: 'select' },
       options: ['', 'primary', 'secondary', 'success', 'danger', 'info', 'warning', 'dark'],
       description: 'Visual variant for the progress bar.',
+      table: { category: 'Styling' },
     },
+
+    /* -----------------------------
+     Linear Options
+  ------------------------------ */
+    height: {
+      control: { type: 'number', min: 4, step: 1 },
+      description: 'Height of the progress bar in pixels (linear only).',
+      table: { category: 'Linear Options' },
+    },
+    striped: {
+      control: 'boolean',
+      description: 'Enables striped styling for the progress bar (linear only).',
+      table: { category: 'Linear Options', defaultValue: { summary: false } },
+    },
+    animated: {
+      control: 'boolean',
+      description: 'Enables animation for striped bars.',
+      table: { category: 'Linear Options', defaultValue: { summary: false } },
+    },
+    styles: {
+      control: 'text',
+      description: 'Custom CSS styles to apply to the progress bar (linear only).',
+      table: { category: 'Linear Options' },
+    },
+
+    /* -----------------------------
+     Circular Options
+  ------------------------------ */
+    size: {
+      control: { type: 'number', min: 32, step: 1 },
+      description: 'Diameter of the circular progress indicator in pixels (circular only).',
+      table: { category: 'Circular Options' },
+    },
+    rotate: {
+      control: { type: 'number', step: 1 },
+      description: 'Rotation angle in degrees for circular progress.',
+      table: { category: 'Circular Options' },
+    },
+    strokeWidth: {
+      control: { type: 'number', min: 1, step: 1 },
+      name: 'width',
+      description: 'Width of the circular progress stroke in pixels (circular only).',
+      table: { category: 'Circular Options' },
+    },
+    indeterminate: {
+      control: 'boolean',
+      description: 'If true, shows an indeterminate loading state (circular only).',
+      table: { category: 'Circular Options', defaultValue: { summary: false } },
+    },
+    lineCap: {
+      control: 'boolean',
+      name: 'line-cap',
+      description: 'If true, uses rounded line caps for circular progress.',
+      table: { category: 'Circular Options', defaultValue: { summary: false } },
+    },
+
+    /** Storybook only  **/
+    children: {
+      control: false,
+      table: { disable: true },
+      description: 'Storybook-only slot markup helper. Not a component prop.',
+    },
+  },
+  controls: {
+    exclude: ['children'], // and any other SB-only fields you don’t want in Controls
   },
 };
 
@@ -146,9 +253,7 @@ const CircularTemplate = args => {
 };
 
 const MultiTemplate = args => {
-  const attrs = ['multi', attrLine('height', args.height), attrLine('bars', serializeBars(args.bars))]
-    .filter(Boolean)
-    .join('\n  ');
+  const attrs = ['multi', attrLine('height', args.height), attrLine('bars', serializeBars(args.bars))].filter(Boolean).join('\n  ');
 
   const children = (args.children || '').trim();
   if (children) {
@@ -173,26 +278,38 @@ export const LinearBasic = {
   name: 'Linear Basic',
   render: LinearTemplate,
   args: {
-    animated: false,
-    height: 16,
+    // mode toggles
+    circular: false,
+    multi: false,
 
-    // default empty: no label rendered unless user sets it
+    // linear
+    animated: false,
+    striped: false,
+    height: 16,
+    styles: '',
+    progressAlign: '',
     label: '',
     useNamedBar0: false,
-
-    // Storybook-only: default slot content demo.
-    // Set to '' if you want the default to show no content.
     slotText: 'Loading',
 
+    // common
+    value: 45,
     max: 100,
     precision: 0,
-    progressAlign: '',
     showProgress: true,
     showValue: false,
-    striped: false,
-    styles: '',
-    value: 45,
     variant: 'primary',
+
+    // circular-only
+    size: 96,
+    rotate: 0,
+    strokeWidth: 6,
+    indeterminate: false,
+    lineCap: false,
+
+    // multi-only
+    bars: [],
+    children: '',
   },
   parameters: {
     docs: {
@@ -220,8 +337,7 @@ LinearSingleNamedSlotBar0.parameters = {
   docs: {
     source: { code: LinearSingleNamedSlotBar0(), language: 'html' },
     description: {
-      story:
-        'Uses `label` plus `use-named-bar-0` to wrap the label as an internal `<span slot="bar-0">…</span>` for single-bar compatibility with multi-bar markup.',
+      story: 'Uses `label` plus `use-named-bar-0` to wrap the label as an internal `<span slot="bar-0">…</span>` for single-bar compatibility with multi-bar markup.',
     },
   },
 };
@@ -448,5 +564,3 @@ CircularIndeterminate.parameters = {
     description: { story: 'A circular progress bar in indeterminate state.' },
   },
 };
-
-

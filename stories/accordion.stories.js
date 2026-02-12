@@ -89,41 +89,106 @@ export default {
   },
 
   argTypes: {
-    accordion: { control: 'boolean', description: 'If true, renders as an accordion item within an accordion container. If false, renders as a standalone button toggle.' },
-    block: { control: 'boolean', description: 'If true, the accordion item will take up the full width of its container.' },
-    classNames: { control: 'text', description: 'Additional custom class names to apply to the accordion component container.' },
-    contentTxtSize: {
-      control: { type: 'select' },
-      description: 'This property allows you to change the overall size of the text (xs, sm, default, lg, xl, or xxl) that is in the content area of the collapse component.',
-      options: ['xs', 'sm', 'default', 'lg', 'xl', 'xxl'],
+    // -------- Behavior / Mode --------
+    accordion: {
+      control: 'boolean',
+      description: 'If true, renders as an accordion item within an accordion container. If false, renders as a standalone button toggle.',
+      table: { category: 'Behavior', defaultValue: { summary: false } },
     },
-    disabled: { control: 'boolean', description: 'If present, sets a disabled state on this accordion item, indicating it cannot be selected by user action.' },
-    flush: { control: 'boolean', description: 'If true, removes the default outer borders and rounded corners to create a flush appearance when used in an accordion container.' },
-    icon: {
-      control: 'text',
-      description:
-        'This property uses the Font Awesome fa-angle-down(caret down) icon by default. It rotates the icon 180 degrees when the collapse component opens and again when it closes. You can pass in an array of two icons to change the icon when the collapse component is open and closed. The first icon in the array is the icon when the collapse component is closed, and the second icon is the icon when it is open. Ex: icon="fas fa-minus-circle, fas fa-plus-circle"',
+    isOpen: {
+      control: 'boolean',
+      description: 'If true, the accordion item is expanded (open) by default when rendered.',
+      table: { category: 'Behavior', defaultValue: { summary: false } },
     },
-    isOpen: { control: 'boolean', description: 'If true, the accordion item is expanded (open) by default when rendered.' },
-    link: { control: 'boolean', description: 'If true, renders the accordion header as a link.' },
-    outlined: { control: 'boolean', description: 'If true, the accordion item will have an outlined style.' },
-    ripple: { control: 'boolean', description: 'If true, enables a ripple effect on user interaction.' },
-    size: {
-      control: { type: 'select' },
-      options: ['', 'xs', 'sm', 'lg', 'plumage-size'],
-      description: 'Sets the size of the button, e.g., extra small (xs), small (sm), large (lg), or plumage-size. If not set, default size is used.',
-    },
-    targetId: { description: 'ID of the collapsible region this control toggles. Must be unique per story.', control: 'text' },
+
+    // -------- Appearance --------
     variant: {
       control: 'text',
       description:
         'Applies pre-defined styling to the accordion header/button. Common variants include "primary", "secondary", "success", "danger", "warning", "info", "light", and "dark".',
+      table: { category: 'Appearance' },
+    },
+    outlined: {
+      control: 'boolean',
+      description: 'If true, when using a button-component to trigger the accordion item will have an outlined style.',
+      table: { category: 'Appearance', defaultValue: { summary: false } },
+    },
+    flush: {
+      control: 'boolean',
+      description: 'If true, removes the default outer borders and rounded corners to create a flush appearance when used in an accordion container.',
+      table: { category: 'Appearance', defaultValue: { summary: false } },
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['', 'xs', 'sm', 'lg', 'plumage-size'],
+      description: 'Sets the size of the button, e.g., extra small (xs), small (sm), large (lg), or plumage-size. If not set, default size is used.',
+      table: { category: 'Appearance' },
+    },
+    contentTxtSize: {
+      control: { type: 'select' },
+      options: ['xs', 'sm', 'default', 'lg', 'xl', 'xxl'],
+      description: 'Change the overall size of the text in the content area (xs, sm, default, lg, xl, or xxl).',
+      table: { category: 'Appearance' },
+    },
+    icon: {
+      control: 'text',
+      description:
+        'Default is Font Awesome fa-angle-down. Rotates on open/close. You can pass two icons as a comma-separated pair: first = closed, second = open. Ex: icon="fas fa-minus-circle, fas fa-plus-circle".',
+      table: { category: 'Appearance' },
     },
 
-    // slotted text (for preview building only)
-    headerText: { table: { disable: true }, control: 'false', description: 'Text content for the header slot (used only in this Storybook preview).' },
-    contentLine1: { table: { disable: true }, control: 'false', description: 'Text content for the first line of the content slot (used only in this Storybook preview).' },
-    contentLine2: { table: { disable: true }, control: 'false', description: 'Text content for the second line of the content slot (used only in this Storybook preview).' },
+    // -------- Layout --------
+    block: {
+      control: 'boolean',
+      description: 'If true, the accordion item will take up the full width of its container.',
+      table: { category: 'Layout', defaultValue: { summary: false } },
+    },
+    classNames: {
+      control: 'text',
+      description: 'Additional custom class names to apply to the accordion component container.',
+      table: { category: 'Layout' },
+    },
+
+    // -------- State / Interaction --------
+    disabled: {
+      control: 'boolean',
+      description: 'If present, sets a disabled state on this accordion item, indicating it cannot be selected by user action.',
+      table: { category: 'State', defaultValue: { summary: false } },
+    },
+    ripple: {
+      control: 'boolean',
+      description: 'If true, enables a ripple effect on user interaction.',
+      table: { category: 'Interaction', defaultValue: { summary: false } },
+    },
+    link: {
+      control: 'boolean',
+      description: 'If true, renders the accordion header as a link.',
+      table: { category: 'Interaction', defaultValue: { summary: false } },
+    },
+
+    // -------- Identity / Targeting --------
+    targetId: {
+      control: 'text',
+      description: 'ID of the collapsible region this control toggles. Must be unique per story.',
+      table: { category: 'Targeting' },
+    },
+
+    // -------- Storybook-only slot builders (hidden) --------
+    headerText: {
+      table: { disable: true },
+      control: 'false',
+      description: 'Text content for the header slot (used only in this Storybook preview).',
+    },
+    contentLine1: {
+      table: { disable: true },
+      control: 'false',
+      description: 'Text content for the first line of the content slot (used only in this Storybook preview).',
+    },
+    contentLine2: {
+      table: { disable: true },
+      control: 'false',
+      description: 'Text content for the second line of the content slot (used only in this Storybook preview).',
+    },
   },
 
   controls: {

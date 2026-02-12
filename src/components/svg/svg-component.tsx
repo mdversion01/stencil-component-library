@@ -1,175 +1,120 @@
 // src/components/svg/svg-component.tsx
-import { Component, h, Prop, Element, Watch } from '@stencil/core';
+import { Component, Prop, Watch, Element, h } from '@stencil/core';
 
 @Component({
   tag: 'svg-component',
-  shadow: true,
+  shadow: false,
 })
 export class SvgComponent {
   @Element() host!: HTMLElement;
 
-  /** Fill color applied to slotted <svg>. Defaults to 'currentColor'. */
+  /** Fill color applied to the rendered <svg>. Defaults to 'currentColor'. */
   @Prop() fill: string = 'currentColor';
 
-  /** Width applied to slotted <svg> (px). Omit/0 to leave as-is. */
-  @Prop() width?: number;
+  /** Width in px. Default 24. */
+  @Prop() width: number = 24;
 
-  /** Height applied to slotted <svg> (px). Omit/0 to leave as-is. */
-  @Prop() height?: number;
+  /** Height in px. Default 24. */
+  @Prop() height: number = 24;
+
+  /** SVG viewBox. MUST match the coordinate system of `path`. */
+  @Prop() viewBox: string = '0 0 640 640';
 
   /**
-   * Forwarded to the slotted <svg> as aria-hidden.
-   * Use "true" or "false". Using a different prop name avoids clashing with HTMLElement.ariaHidden.
+   * Raw SVG markup (e.g. `<path d="..." />`).
+   * Injected into the <svg> via innerHTML.
+   */
+  @Prop() path: string = '';
+
+  /**
+   * Optional margin applied inline to the <svg>.
+   * - 'left'  => margin-left: 10px;
+   * - 'right' => margin-right: 10px;
+   * - 'both'  => both left and right 10px
+   */
+  @Prop() svgMargin: '' | 'left' | 'right' | 'both' = '';
+
+  /**
+   * Forwarded as aria-hidden on the <svg>.
+   * Use: svg-aria-hidden="true" | "false"
+   * If omitted, aria-hidden is not set.
    */
   @Prop() svgAriaHidden?: 'true' | 'false';
 
-  /** Forwarded to the slotted <svg> as aria-label (avoids clashing with HTMLElement.ariaLabel). */
+  /** Forwarded as aria-label on the <svg>. If omitted/empty, not set. */
   @Prop() svgAriaLabel?: string;
 
-  /** Optional margin wrapper around the slotted <svg>: '', 'left', or 'right'. */
-  @Prop() svgMargin: '' | 'left' | 'right' = '';
+  private svgEl?: SVGSVGElement;
 
-  // ---- watchers -------------------------------------------------------------
+  // ---------------- watchers ----------------
 
   @Watch('fill')
-  onFill() {
-    this.updateFill();
-  }
-
   @Watch('width')
   @Watch('height')
-  onDim() {
-    this.updateDimensions();
-  }
-
+  @Watch('viewBox')
+  @Watch('svgMargin')
   @Watch('svgAriaHidden')
   @Watch('svgAriaLabel')
-  onAria() {
-    this.updateAria();
+  syncAttrs() {
+    this.applyAll();
   }
 
-  @Watch('svgMargin')
-  onMargin() {
-    this.wrapSvgWithSpan();
+  @Watch('path')
+  onPathChange() {
+    this.applyPath();
   }
 
-  // ---- DOM helpers ----------------------------------------------------------
+  // ---------------- apply helpers ----------------
 
-  private getSlot(): HTMLSlotElement | null {
-    return this.host.shadowRoot?.querySelector('slot') as HTMLSlotElement | null;
+  private applyPath() {
+    if (!this.svgEl) return;
+    this.svgEl.innerHTML = this.path || '<path d="M341.8 72.6C329.5 61.2 310.5 61.2 298.3 72.6L74.3 280.6C64.7 289.6 61.5 303.5 66.3 315.7C71.1 327.9 82.8 336 96 336L112 336L112 512C112 547.3 140.7 576 176 576L464 576C499.3 576 528 547.3 528 512L528 336L544 336C557.2 336 569 327.9 573.8 315.7C578.6 303.5 575.4 289.5 565.8 280.6L341.8 72.6zM304 384L336 384C362.5 384 384 405.5 384 432L384 528L256 528L256 432C256 405.5 277.5 384 304 384z" />';
   }
 
-  // private getAssignedSvgs(): SVGElement[] {
-  //   const slot = this.getSlot();
-  //   if (!slot) return [];
-  //   const nodes = slot.assignedNodes({ flatten: true }) as Node[];
-  //   return nodes.filter((n): n is SVGElement => (n as Element)?.tagName?.toLowerCase() === 'svg');
-  // }
+  private applyAll() {
+    if (!this.svgEl) return;
 
-  private getFirstSlottedSvg(): SVGElement | null {
-    const slot = this.getSlot();
-    if (!slot) return null;
+    // fill + size + viewBox
+    this.svgEl.setAttribute('fill', this.fill || 'currentColor');
+    this.svgEl.setAttribute('width', String(this.width ?? 16));
+    this.svgEl.setAttribute('height', String(this.height ?? 16));
+    this.svgEl.setAttribute('viewBox', this.viewBox || '0 0 16 16');
 
-    const nodes = slot.assignedNodes({ flatten: true }) as Node[];
+    // margin
+    this.svgEl.style.marginLeft = '';
+    this.svgEl.style.marginRight = '';
 
-    // 1) direct svg node
-    const direct = nodes.find((n): n is SVGElement => (n as Element)?.tagName?.toLowerCase() === 'svg');
-    if (direct) return direct;
-
-    // 2) svg inside assigned element (e.g., our span wrapper)
-    for (const n of nodes) {
-      if ((n as Element)?.nodeType === 1) {
-        const found = (n as Element).querySelector('svg');
-        if (found) return found as SVGElement;
-      }
+    if (this.svgMargin === 'left' || this.svgMargin === 'both') {
+      this.svgEl.style.marginLeft = '10px';
     }
-    return null;
-  }
+    if (this.svgMargin === 'right' || this.svgMargin === 'both') {
+      this.svgEl.style.marginRight = '10px';
+    }
 
-  private updateFill() {
-    const svg = this.getFirstSlottedSvg();
-    if (!svg) return;
-    svg.setAttribute('fill', this.fill ?? 'currentColor');
-  }
-
-  private updateDimensions() {
-    const svg = this.getFirstSlottedSvg();
-    if (!svg) return;
-    if (this.width && this.width > 0) svg.setAttribute('width', String(this.width));
-    if (this.height && this.height > 0) svg.setAttribute('height', String(this.height));
-  }
-
-  private updateAria() {
-    const svg = this.getFirstSlottedSvg();
-    if (!svg) return;
-
+    // aria-hidden
     if (this.svgAriaHidden === 'true' || this.svgAriaHidden === 'false') {
-      svg.setAttribute('aria-hidden', this.svgAriaHidden);
+      this.svgEl.setAttribute('aria-hidden', this.svgAriaHidden);
     } else {
-      svg.removeAttribute('aria-hidden');
+      this.svgEl.removeAttribute('aria-hidden');
     }
 
+    // aria-label (+ role for accessibility)
     const label = (this.svgAriaLabel ?? '').trim();
-    if (label) svg.setAttribute('aria-label', label);
-    else svg.removeAttribute('aria-label');
+    if (label) {
+      this.svgEl.setAttribute('aria-label', label);
+      this.svgEl.setAttribute('role', 'img');
+    } else {
+      this.svgEl.removeAttribute('aria-label');
+      this.svgEl.removeAttribute('role');
+    }
   }
-
-  /** Idempotently wraps the first slotted <svg> in a margin span if requested. */
-  private wrapSvgWithSpan() {
-    const slot = this.getSlot();
-    if (!slot) return;
-
-    const applyWrap = () => {
-      const svg = this.getFirstSlottedSvg();
-      if (!svg) return;
-
-      const parent = svg.parentElement;
-
-      // No margin requested: unwrap if wrapped
-      if (!this.svgMargin) {
-        if (parent && (parent.classList.contains('mr-1') || parent.classList.contains('ml-1'))) {
-          const gp = parent.parentNode;
-          if (gp) {
-            gp.insertBefore(svg, parent);
-            parent.remove();
-          }
-        }
-        return;
-      }
-
-      const wantClass = this.svgMargin === 'left' ? 'mr-1' : 'ml-1';
-
-      // Already wrapped: flip class in place
-      if (parent && (parent.classList.contains('mr-1') || parent.classList.contains('ml-1'))) {
-        parent.classList.remove('mr-1', 'ml-1');
-        parent.classList.add(wantClass);
-        return;
-      }
-
-      // Not wrapped: wrap now
-      const span = document.createElement('span');
-      span.classList.add(wantClass);
-      const p = svg.parentNode!;
-      p.insertBefore(span, svg);
-      span.appendChild(svg);
-    };
-
-    applyWrap();
-    slot.removeEventListener('slotchange', applyWrap);
-    slot.addEventListener('slotchange', applyWrap);
-  }
-
-  // ---- lifecycle ------------------------------------------------------------
 
   componentDidLoad() {
-    this.updateFill();
-    this.updateDimensions();
-    this.updateAria();
-    this.wrapSvgWithSpan();
+    this.applyPath();
+    this.applyAll();
   }
 
   render() {
-    // no internal styles needed; margin classes assumed globally (e.g. Tailwind ml-1/mr-1)
-    return <slot />;
+    return <svg ref={el => (this.svgEl = el as SVGSVGElement)} xmlns="http://www.w3.org/2000/svg"></svg>;
   }
 }
