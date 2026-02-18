@@ -3973,115 +3973,76 @@ export namespace Components {
         "validationMessage": string;
     }
     interface ToastsComponent {
-        /**
-          * Optional header content (string/JSX) appearing next to the title (e.g., timestamp).
-         */
         "additionalHeaderContent"?: any;
         /**
-          * If true, new toasts append to the end; otherwise they prepend (newest on top).
           * @default false
          */
         "appendToast": boolean;
         "bodyClass"?: string;
-        /**
-          * Optional custom content for the body (string/JSX). Prefer using slots in apps.
-         */
         "customContent"?: any;
         /**
-          * Default lifespan in ms for auto-dismiss toasts.
           * @default 5000
          */
         "duration": number;
-        /**
-          * Default header/body helper classes.
-         */
         "headerClass"?: string;
         /**
-          * If true, use the “plumage icon” layout on compact plumage variant.
           * @default false
          */
         "iconPlumageStyle": boolean;
         /**
-          * When true, use polite/status instead of alert/assertive on aria-live for new toasts.
           * @default false
          */
         "isStatus": boolean;
-        /**
-          * Optional default message for simple string-only toasts.
-         */
         "message"?: string;
         /**
-          * Disable fade-in/out transitions globally.
           * @default false
          */
         "noAnimation": boolean;
         /**
-          * If true, hide the × close button by default.
           * @default false
          */
         "noCloseButton": boolean;
         /**
-          * Prevent hover from pausing auto-hide globally.
           * @default false
          */
         "noHoverPause": boolean;
         /**
-          * Make toasts persistent by default (no auto-hide).
           * @default false
          */
         "persistent": boolean;
         /**
-          * If true, use the Plumage toast style.
           * @default false
          */
         "plumageToast": boolean;
         /**
-          * If true with plumageToast, render the “max” layout.
           * @default false
          */
         "plumageToastMax": boolean;
         /**
-          * Where the toaster tray is anchored.
           * @default 'bottom-right'
          */
         "position": ToastPosition;
-        /**
-          * Remove toast immediately.
-         */
         "removeToast": (id: number) => Promise<void>;
-        /**
-          * Show a toast. Returns the id of the created toast.
-         */
         "showToast": (opts?: Partial<Omit<ToastItem, "id" | "state">>) => Promise<number>;
         /**
-          * If true, use the “solid” toast style (Bootstrap-like) instead of bordered.
           * @default false
          */
         "solidToast": boolean;
-        /**
-          * Start fade-out, then remove.
-         */
         "startRemoveToast": (id: number) => Promise<void>;
         /**
           * Default icon symbol id (from the inline sprite) for new toasts.
          */
         "svgIcon"?: string;
         /**
-          * Default time label (ZULU).
           * @default ToastsComponent.getCurrentZuluTime()
          */
         "time": string;
         /**
-          * (Optional) id used inside nested elements; does not override the host element id
           * @default 'toast-component'
          */
         "toastId": string;
-        /**
-          * Optional default title for new toasts. (Renamed from reserved `title`.)
-         */
         "toastTitle"?: string;
         /**
-          * Variant color for new toasts (can be overridden per-toast via showToast opts).
           * @default ''
          */
         "variant": ToastVariant;
@@ -9070,80 +9031,56 @@ declare namespace LocalJSX {
         "validationMessage"?: string;
     }
     interface ToastsComponent {
-        /**
-          * Optional header content (string/JSX) appearing next to the title (e.g., timestamp).
-         */
         "additionalHeaderContent"?: any;
         /**
-          * If true, new toasts append to the end; otherwise they prepend (newest on top).
           * @default false
          */
         "appendToast"?: boolean;
         "bodyClass"?: string;
-        /**
-          * Optional custom content for the body (string/JSX). Prefer using slots in apps.
-         */
         "customContent"?: any;
         /**
-          * Default lifespan in ms for auto-dismiss toasts.
           * @default 5000
          */
         "duration"?: number;
-        /**
-          * Default header/body helper classes.
-         */
         "headerClass"?: string;
         /**
-          * If true, use the “plumage icon” layout on compact plumage variant.
           * @default false
          */
         "iconPlumageStyle"?: boolean;
         /**
-          * When true, use polite/status instead of alert/assertive on aria-live for new toasts.
           * @default false
          */
         "isStatus"?: boolean;
-        /**
-          * Optional default message for simple string-only toasts.
-         */
         "message"?: string;
         /**
-          * Disable fade-in/out transitions globally.
           * @default false
          */
         "noAnimation"?: boolean;
         /**
-          * If true, hide the × close button by default.
           * @default false
          */
         "noCloseButton"?: boolean;
         /**
-          * Prevent hover from pausing auto-hide globally.
           * @default false
          */
         "noHoverPause"?: boolean;
         /**
-          * Make toasts persistent by default (no auto-hide).
           * @default false
          */
         "persistent"?: boolean;
         /**
-          * If true, use the Plumage toast style.
           * @default false
          */
         "plumageToast"?: boolean;
         /**
-          * If true with plumageToast, render the “max” layout.
           * @default false
          */
         "plumageToastMax"?: boolean;
         /**
-          * Where the toaster tray is anchored.
           * @default 'bottom-right'
          */
         "position"?: ToastPosition;
         /**
-          * If true, use the “solid” toast style (Bootstrap-like) instead of bordered.
           * @default false
          */
         "solidToast"?: boolean;
@@ -9152,21 +9089,15 @@ declare namespace LocalJSX {
          */
         "svgIcon"?: string;
         /**
-          * Default time label (ZULU).
           * @default ToastsComponent.getCurrentZuluTime()
          */
         "time"?: string;
         /**
-          * (Optional) id used inside nested elements; does not override the host element id
           * @default 'toast-component'
          */
         "toastId"?: string;
-        /**
-          * Optional default title for new toasts. (Renamed from reserved `title`.)
-         */
         "toastTitle"?: string;
         /**
-          * Variant color for new toasts (can be overridden per-toast via showToast opts).
           * @default ''
          */
         "variant"?: ToastVariant;

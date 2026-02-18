@@ -1,0 +1,13 @@
+import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import * as ToastStories from './toasts-component.stories';
+
+<Meta of={ToastStories} />
+
+<Title />
+<Description />
+
+<Primary />
+<Controls />
+
+{/* ✅ This is what stops the “Primary appears again as first story” problem */}
+<Stories includePrimary={false} />

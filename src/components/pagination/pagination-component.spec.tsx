@@ -11,13 +11,7 @@ describe('pagination-component', () => {
     const page = await newSpecPage({
       components: [PaginationComponent, StandardPagination, MinimizePagination, ByPagePagination],
       template: () => (
-        <pagination-component
-          currentPage={1}
-          totalRows={100}
-          pageSize={10}
-          paginationLayout="center"
-          goToButtons="text"
-        />
+        <pagination-component currentPage={1} totalRows={100} pageSize={10} paginationLayout="center" goToButtons="text" />
       ),
     });
 
@@ -29,14 +23,7 @@ describe('pagination-component', () => {
     const page = await newSpecPage({
       components: [PaginationComponent, StandardPagination, MinimizePagination, ByPagePagination],
       template: () => (
-        <pagination-component
-          useMinimizePagination
-          currentPage={2}
-          totalRows={50}
-          pageSize={10}
-          paginationLayout="end"
-          size="sm"
-        />
+        <pagination-component useMinimizePagination currentPage={2} totalRows={50} pageSize={10} paginationLayout="end" size="sm" />
       ),
     });
 
@@ -83,21 +70,13 @@ describe('pagination-component', () => {
     });
 
     expect(page.root).toMatchSnapshot();
-
-    // In the spec DOM, don't rely on exact whitespace/layout — just assert the range string exists.
     expect(page.root!.textContent || '').toMatch(/1-10 of 1234/);
   });
 
   it('emits page-changed when child emits change-page', async () => {
     const page = await newSpecPage({
       components: [PaginationComponent, StandardPagination, MinimizePagination, ByPagePagination],
-      template: () => (
-        <pagination-component
-          currentPage={1}
-          totalRows={30}
-          pageSize={10}
-        />
-      ),
+      template: () => <pagination-component currentPage={1} totalRows={30} pageSize={10} />,
     });
 
     const spy = jest.fn();
@@ -120,11 +99,19 @@ describe('pagination-component', () => {
       template: () => <pagination-component useMinimizePagination />, // start with one flag
     });
 
-    // now toggle second flag to trigger @Watch
+    // toggle second flag to trigger @Watch (validateVariant)
     page.root!.setAttribute('use-by-page-pagination', '');
     await page.waitForChanges();
 
-    expect(warn).toHaveBeenCalledWith('[pagination] Both variants set; using minimize by precedence.');
+    // ✅ validateVariant warning
+    expect(warn).toHaveBeenCalledWith('[pagination] Both legacy variants set; minimize wins.');
+
+    // ✅ effectiveVariant getter warning (happens during render)
+    expect(warn).toHaveBeenCalledWith('[pagination] Both legacy variants set; using minimize by precedence.');
+
+    // Optional: lock it down so it doesn't regress silently
+    expect(warn).toHaveBeenCalledTimes(2);
+
     warn.mockRestore();
   });
 });

@@ -1,3 +1,5 @@
+// stories/tooltip-component.stories.js
+
 export default {
   title: 'Components/Tooltip',
   tags: ['autodocs'],
@@ -6,245 +8,384 @@ export default {
     docs: {
       description: {
         component:
-          'Light-DOM tooltip wrapper. Place your trigger element **inside** the component. Supports placement, HTML content (trusted), variants, custom classes, manual control, and custom container.',
+          'Light-DOM tooltip wrapper. Place your trigger element inside the component. Supports placement, HTML content (trusted), variants, custom classes, manual control, and custom container.',
       },
     },
   },
+
   argTypes: {
-    // component props/attrs
-    message: { control: 'text' },
-    tooltipTitle: { control: 'text', name: 'tooltip-title' },
-    htmlContent: { control: 'boolean', name: 'html-content' },
+    // Component props
+    message: { control: 'text', table: { category: 'Tooltip Options' }, description: 'Message fallback when no title/data-original-title supplied.' },
+
+    tooltipTitle: {
+      control: 'text',
+      name: 'tooltip-title',
+      table: { category: 'Tooltip Options' },
+      description:
+        'Title/content string; if empty, falls back to `title`/`data-original-title` attributes or `message` prop. Recommended for use with `html-content` to avoid escaping. Overrides `message` if both present.',
+    },
+
+    htmlContent: {
+      control: 'boolean',
+      name: 'html-content',
+      table: { category: 'Tooltip Options', defaultValue: { summary: false } },
+      description: 'Treat tooltip content as trusted HTML. "tooltipTitle" recommended.',
+    },
+
     position: {
       control: 'select',
       options: ['auto', 'top', 'bottom', 'left', 'right'],
+      table: { category: 'Tooltip Options' },
+      description: 'Tooltip placement, top, bottom, left, right, relative to trigger element.',
     },
+
     trigger: {
       control: 'text',
-      description: 'Space-separated: "hover", "focus", "click", "manual"',
+      table: { category: 'Tooltip Options' },
+      description: 'Space-separated: "hover focus click manual"',
     },
-    animation: { control: 'boolean' },
-    container: { control: 'text' },
-    customClass: { control: 'text' },
+
+    animation: {
+      control: 'boolean',
+      table: { category: 'Tooltip Options', defaultValue: { summary: true } },
+      description: 'Enable or disable tooltip animation.',
+    },
+
+    container: {
+      control: 'text',
+      table: { category: 'Tooltip Options' },
+      description: 'CSS selector or element reference for custom tooltip container. Defaults to body.',
+    },
+
+    customClass: {
+      control: 'text',
+      name: 'custom-class',
+      table: { category: 'Tooltip Options' },
+      description: 'Custom class(es) can be added to the tooltip element for custom styling.',
+    },
+
     variant: {
       control: 'select',
       options: ['', 'primary', 'secondary', 'success', 'danger', 'info', 'warning', 'dark'],
-    },
-    visible: {
-      control: 'boolean',
-      description: 'With trigger containing "manual", toggles via API.',
+      table: { category: 'Tooltip Options' },
+      description: 'Applies Bootstrap color variants, primary, secondary, success, danger, info, warning, dark, to the tooltip.',
     },
 
-    // demo-only helpers
-    btnText: { control: 'text', description: 'Trigger button text' },
+    visible: {
+      control: 'boolean',
+      table: { category: 'Tooltip Options', defaultValue: { summary: false } },
+      description: 'Used only with manual trigger (not wired here).',
+    },
+
+    // Demo helpers
+    btnText: {
+      control: 'text',
+      name: 'btn-text',
+      table: { category: 'Demo Helpers' },
+      description: 'Text for the internal demo trigger button only.',
+    },
+
     btnVariant: {
       control: 'select',
       options: ['secondary', 'primary', 'success', 'danger', 'info', 'warning', 'dark'],
-      description: '<button-component> variant',
+      name: 'btn-variant',
+      table: { category: 'Demo Helpers' },
+      description: 'Variant for the internal demo trigger button only.',
     },
   },
 };
 
-const boolAttr = (name, on) => (on ? ` ${name}` : '');
-const attr = (name, v) =>
-  v === undefined || v === null || v === '' ? '' : ` ${name}="${String(v)}"`;
+// ======================================================
+// Helpers
+// ======================================================
 
-/** Base one-off tooltip story (playground) */
-const Template = (args) => {
-  const id = `tt-${Math.random().toString(36).slice(2)}`;
+/** Collapse blank lines + trim edges */
+const normalize = txt => {
+  const lines = txt
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map(l => l.replace(/[ \t]+$/g, ''));
+
+  const out = [];
+  let prevBlank = false;
+
+  for (const line of lines) {
+    const blank = line.trim() === '';
+    if (blank) {
+      if (prevBlank) continue;
+      prevBlank = true;
+      out.push('');
+      continue;
+    }
+    prevBlank = false;
+    out.push(line);
+  }
+
+  while (out[0] === '') out.shift();
+  while (out[out.length - 1] === '') out.pop();
+
+  return out.join('\n');
+};
+
+/** Build clean attribute block */
+const attrs = pairs =>
+  pairs
+    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
+    .map(([k, v]) => (v === true ? k : `${k}="${String(v)}"`))
+    .join('\n    ');
+
+/** Generate markup from args */
+const buildTooltipMarkup = (args, id) => {
   const htmlFlag = !!args.htmlContent;
-  // We feed the content through data-original-title so it wins in resolveTitle().
+
   const dataTitle = (args.tooltipTitle || args.message || 'Tooltip content').replaceAll('"', '&quot;');
 
-  const markup = `
+  const attributeBlock = attrs([
+    ['id', id],
+    ['position', args.position],
+    ['trigger', args.trigger],
+    ['custom-class', args.customClass],
+    ['variant', args.variant],
+    ['container', args.container],
+    ['message', args.message],
+    ['animation', args.animation],
+    ['html-content', htmlFlag],
+    ['data-original-title', dataTitle],
+    ['data-html', htmlFlag ? true : null],
+  ]);
+
+  return normalize(`
 <div style="display:inline-block">
   <tooltip-component
-    id="${id}"
-    ${attr('position', args.position)}
-    ${attr('trigger', args.trigger)}
-    ${attr('customClass', args.customClass)}
-    ${attr('variant', args.variant)}
-    ${attr('container', args.container)}
-    ${attr('message', args.message)}
-    ${boolAttr('animation', args.animation)}
-    ${boolAttr('htmlContent', htmlFlag)}
-    data-original-title="${dataTitle}"
-    ${htmlFlag ? 'data-html' : ''}
+    ${attributeBlock}
   >
-    <button-component btn-text="${args.btnText}" size="sm" ${attr('variant', args.btnVariant)}></button-component>
+    <button-component
+      btn-text="${args.btnText}"
+      size="sm"
+      variant="${args.btnVariant}"
+    ></button-component>
   </tooltip-component>
-
-  <script>
-    (function(){
-      const el = document.getElementById('${id}');
-      // reflect "visible" when manual trigger is chosen
-      const hasManual = ((${JSON.stringify(args.trigger || '')}).split(/\\s+/).includes('manual'));
-      if (hasManual) {
-        if (${!!args.visible}) { el.show(); }
-        else { el.hide(); }
-      }
-    })();
-  </script>
-</div>`.trim();
-
-  return markup;
+</div>
+  `);
 };
 
-export const Playground = Template.bind({});
-Playground.args = {
-  // tooltip props
-  message: '',
-  tooltipTitle: 'Hello from tooltip!',
-  htmlContent: false,
-  position: 'top',
-  trigger: 'hover focus',
-  animation: true,
-  container: '',
-  customClass: '',
-  variant: '',
-  visible: false,
+// ======================================================
+// Playground (Controls-enabled)
+// ======================================================
 
-  // demo helpers
-  btnText: 'Hover me',
-  btnVariant: 'secondary',
-};
+// export const Playground = {
+//   render: args => {
+//     const id = `tt-${Math.random().toString(36).slice(2)}`;
+//     return buildTooltipMarkup(args, id);
+//   },
 
-/* ====== Focused examples (matching your docs) ====== */
+//   parameters: {
+//     docs: {
+//       source: {
+//         language: 'html',
+//         transform: (_, ctx) => {
+//           const id = `tt-doc-${Math.random().toString(36).slice(2)}`;
+//           return buildTooltipMarkup(ctx.args, id);
+//         },
+//       },
+//       description: {
+//         story:
+//           'Use the controls to customize the tooltip. Note: "tooltip-title" is used for the tooltip content in this demo to avoid escaping issues with the default "title" attribute. In practice, you would typically use one or the other, not both.',
+//       },
+//     },
+//   },
+// };
 
-export const PositionsGrid = () => `
+// Playground.args = {
+//   message: '',
+//   tooltipTitle: 'Hello from tooltip!',
+//   htmlContent: false,
+//   position: 'top',
+//   trigger: 'hover focus',
+//   animation: true,
+//   container: '',
+//   customClass: '',
+//   variant: '',
+//   visible: false,
+
+//   btnText: 'Hover me',
+//   btnVariant: 'secondary',
+// };
+
+// ======================================================
+// Static Examples (Docs code preview forced to HTML)
+// ======================================================
+
+const POSITIONS_GRID_HTML = normalize(`
 <div style="display:flex; gap:10px; flex-wrap:wrap">
-  <tooltip-component data-placement="top" data-original-title="Tooltip on top" data-trigger="hover focus">
+  <tooltip-component position="top" data-original-title="Tooltip on top" trigger="hover focus">
     <button-component btn-text="Top" size="sm" variant="secondary"></button-component>
   </tooltip-component>
 
-  <tooltip-component data-placement="right" data-original-title="Tooltip on right" data-trigger="hover focus">
+  <tooltip-component position="right" data-original-title="Tooltip on right" trigger="hover focus">
     <button-component btn-text="Right" size="sm" variant="secondary"></button-component>
   </tooltip-component>
 
-  <tooltip-component data-placement="left" data-original-title="Tooltip on left" data-trigger="hover focus">
+  <tooltip-component position="left" data-original-title="Tooltip on left" trigger="hover focus">
     <button-component btn-text="Left" size="sm" variant="secondary"></button-component>
   </tooltip-component>
 
-  <tooltip-component data-placement="bottom" data-original-title="Tooltip on bottom" data-trigger="hover focus">
+  <tooltip-component position="bottom" data-original-title="Tooltip on bottom" trigger="hover focus">
     <button-component btn-text="Bottom" size="sm" variant="secondary"></button-component>
   </tooltip-component>
 
-  <tooltip-component data-placement="auto" data-original-title="Placement auto" data-trigger="hover focus">
+  <tooltip-component position="auto" data-original-title="Placement auto" trigger="hover focus">
     <button-component btn-text="Auto" size="sm" variant="secondary"></button-component>
   </tooltip-component>
 </div>
-`.trim();
+`);
 
-export const WithHTMLContent = () => `
+export const PositionsGrid = {
+  render: () => POSITIONS_GRID_HTML,
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        code: POSITIONS_GRID_HTML,
+      },
+      description: {
+        story: 'Use the `position` prop to specify tooltip placement, top, right, bottom, left, or auto, relative to the trigger element.',
+      },
+    },
+  },
+};
+
+const WITH_HTML_CONTENT_HTML = normalize(`
 <div style="display:flex; gap:10px; flex-wrap:wrap">
   <tooltip-component
-    data-placement="top"
-    data-original-title="<span style='display:flex;align-items:center;gap:6px'><i class='fa fa-tachometer'></i> Tooltip with icon</span>"
-    data-trigger="hover focus"
+    position="top"
+    data-original-title="<strong>HTML</strong> tooltip"
+    trigger="hover focus"
+    html-content
     data-html
   >
-    <button-component btn-text="HTML + Icon" size="sm" variant="secondary"></button-component>
-  </tooltip-component>
-
-  <tooltip-component
-    data-placement="top"
-    data-original-title="<em>Tooltip</em> with <strong>HTML</strong> styling"
-    data-trigger="hover focus"
-    data-html
-  >
-    <button-component btn-text="Rich HTML" size="sm" variant="secondary"></button-component>
+    <button-component btn-text="HTML Content" size="sm" variant="secondary"></button-component>
   </tooltip-component>
 </div>
-`.trim();
+`);
 
-export const Variants = () => `
+export const WithHTMLContent = {
+  render: () => WITH_HTML_CONTENT_HTML,
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        code: WITH_HTML_CONTENT_HTML,
+      },
+      description: {
+        story:
+          'Set the `html-content` prop (or `data-html` attribute) to treat the tooltip content as trusted HTML. The `tooltip-title` prop is recommended for use with this option to avoid escaping issues.',
+      },
+    },
+  },
+};
+
+const VARIANTS_HTML = normalize(`
 <div style="display:flex; gap:10px; flex-wrap:wrap">
-  <tooltip-component data-placement="top" data-original-title="Informational" data-trigger="hover focus" variant="info">
+  <tooltip-component position="top" data-original-title="Primary" trigger="hover focus" variant="primary">
+    <button-component btn-text="Primary" size="sm" variant="secondary"></button-component>
+  </tooltip-component>
+
+  <tooltip-component position="top" data-original-title="Secondary" trigger="hover focus" variant="secondary">
+    <button-component btn-text="Secondary" size="sm" variant="secondary"></button-component>
+  </tooltip-component>
+
+  <tooltip-component position="top" data-original-title="Info" trigger="hover focus" variant="info">
     <button-component btn-text="Info" size="sm" variant="secondary"></button-component>
   </tooltip-component>
 
-  <tooltip-component data-placement="top" data-original-title="Danger" data-trigger="hover focus" variant="danger">
+  <tooltip-component position="top" data-original-title="Danger" trigger="hover focus" variant="danger">
     <button-component btn-text="Danger" size="sm" variant="secondary"></button-component>
   </tooltip-component>
 
-  <tooltip-component data-placement="top" data-original-title="Warning" data-trigger="hover focus" variant="warning">
+  <tooltip-component position="top" data-original-title="Warning" trigger="hover focus" variant="warning">
     <button-component btn-text="Warning" size="sm" variant="secondary"></button-component>
   </tooltip-component>
 
-  <tooltip-component data-placement="top" data-original-title="Success" data-trigger="hover focus" variant="success">
+  <tooltip-component position="top" data-original-title="Success" trigger="hover focus" variant="success">
     <button-component btn-text="Success" size="sm" variant="secondary"></button-component>
   </tooltip-component>
 
-  <tooltip-component data-placement="top" data-original-title="Custom class color" data-trigger="hover focus" customClass="purple">
-    <button-component btn-text="Custom class" size="sm" variant="secondary"></button-component>
+  <tooltip-component position="top" data-original-title="Dark" trigger="hover focus" variant="dark">
+    <button-component btn-text="Dark" size="sm" variant="secondary"></button-component>
   </tooltip-component>
 </div>
-`.trim();
+`);
 
-export const InlineLinks = () => `
-<p style="max-width:680px; line-height:1.6">
-  Placeholder text to demonstrate some
-  <tooltip-component data-placement="top" data-original-title="Default tooltip" data-trigger="hover focus">
-    <a href="javascript:void(0)">inline links</a>
-  </tooltip-component>
-  with tooltips. This is now just filler, no killer. Content placed here just to mimic the presence of
-  <tooltip-component data-placement="top" data-original-title="Another tooltip" data-trigger="hover focus">
-    <a href="javascript:void(0)">real text</a>
-  </tooltip-component>.
-  And all that just to give you an idea of how tooltips would look when used in real-world situations. So hopefully you've now seen how
-  <tooltip-component data-placement="top" data-original-title="Another one here too" data-trigger="hover focus">
-    <a href="javascript:void(0)">these tooltips on links</a>
-  </tooltip-component>
-  can work in practice, once you use them on
-  <tooltip-component data-placement="top" data-original-title="And the last tip!" data-trigger="hover focus">
-    <a href="javascript:void(0)">your own</a>
-  </tooltip-component>
-  site or project.
-</p>
-`.trim();
-
-export const ManualTrigger = () => {
-  const id = `manual-${Math.random().toString(36).slice(2)}`;
-  return `
-<div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
-  <tooltip-component id="${id}" trigger="manual click" position="bottom" data-original-title="Manually controlled tooltip">
-    <button-component btn-text="Target" size="sm" variant="secondary"></button-component>
-  </tooltip-component>
-
-  <button-component btn-text="Show" size="sm" variant="primary" id="${id}-show"></button-component>
-  <button-component btn-text="Hide" size="sm" variant="danger" id="${id}-hide"></button-component>
-  <button-component btn-text="Toggle" size="sm" variant="info" id="${id}-toggle"></button-component>
-
-  <script>
-    (function(){
-      const el = document.getElementById('${id}');
-      const showBtn = document.getElementById('${id}-show');
-      const hideBtn = document.getElementById('${id}-hide');
-      const toggleBtn = document.getElementById('${id}-toggle');
-
-      showBtn?.addEventListener('click', () => el.show());
-      hideBtn?.addEventListener('click', () => el.hide());
-      toggleBtn?.addEventListener('click', () => (el.visible ? el.hide() : el.show()));
-    })();
-  </script>
-</div>
-  `.trim();
+export const Variants = {
+  render: () => VARIANTS_HTML,
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        code: VARIANTS_HTML,
+      },
+      description: {
+        story: 'Use the `variant` prop to apply different visual styles, primary, secondary, success, danger, warning, info, or dark, to the tooltip.',
+      },
+    },
+  },
 };
 
-export const CustomContainer = () => {
-  const id = `ctn-${Math.random().toString(36).slice(2)}`;
-  return `
+const INLINE_LINKS_HTML = normalize(`
+<p style="max-width:680px; line-height:1.6">
+  This paragraph contains
+  <tooltip-component position="top" data-original-title="Inline tooltip" trigger="hover focus">
+    <a href="javascript:void(0)">inline links</a>
+  </tooltip-component>
+  with tooltips for demonstration.
+</p>
+`);
+
+export const InlineLinks = {
+  render: () => INLINE_LINKS_HTML,
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        code: INLINE_LINKS_HTML,
+      },
+      description: {
+        story: 'Tooltips can be used on inline elements like links. The tooltip will be positioned relative to the link and will not disrupt the flow of the text.',
+      },
+    },
+  },
+};
+
+const CUSTOM_CONTAINER_HTML = normalize(`
 <div>
-  <div id="${id}-container" style="position:relative; border:1px dashed #ccc; padding:20px; height:160px; overflow:auto">
-    <div style="height:320px">
-      <div style="margin-top:80px">
-        <tooltip-component container="#${id}-container" position="right" data-original-title="Inside scrollable container" data-trigger="hover focus">
-          <button-component btn-text="Hover me in container" size="sm" variant="secondary"></button-component>
-        </tooltip-component>
-      </div>
+  <div id="sb-tooltip-container" style="position:relative; border:1px dashed #ccc; padding:20px; height:160px; overflow:auto">
+    <div style="height:320px; margin-top:80px">
+      <tooltip-component
+        container="#sb-tooltip-container"
+        position="right"
+        data-original-title="Inside scrollable container"
+        trigger="hover focus"
+      >
+        <button-component btn-text="Hover me" size="sm" variant="secondary"></button-component>
+      </tooltip-component>
     </div>
   </div>
-  <small style="color:#666">Tooltip is appended inside the dashed box and respects its scroll.</small>
+  <small style="color:#666">Tooltip stays inside container.</small>
 </div>
-`.trim();
+`);
+
+export const CustomContainer = {
+  render: () => CUSTOM_CONTAINER_HTML,
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        code: CUSTOM_CONTAINER_HTML,
+      },
+      description: {
+        story: 'Tooltips can be contained within a custom container. This is useful for scrollable or constrained areas.',
+      },
+    },
+  },
 };

@@ -4,30 +4,9 @@ exports[`toasts-component renders HTML content via contentHtml and matches snaps
 <toasts-component position="bottom-right">
   <!---->
   <div>
-    <svg class="d-none" xmlns="http://www.w3.org/2000/svg">
-      <symbol id="check-circle-fill" viewBox="0 0 22 22">
-        <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"></path>
-      </symbol>
-      <symbol id="check-circle-outline" viewBox="0 0 22 22">
-        <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z"></path>
-      </symbol>
-      <symbol id="info-fill" viewBox="0 0 22 22">
-        <path d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
-      </symbol>
-      <symbol id="info-outlined" viewBox="0 0 22 22">
-        <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"></path>
-      </symbol>
-      <symbol id="exclamation-triangle-fill" viewBox="0 0 22 22">
-        <path d="M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z"></path>
-      </symbol>
+    <svg aria-hidden="true" class="d-none" focusable="false" xmlns="http://www.w3.org/2000/svg">
       <symbol id="exclamation-triangle-outline" viewBox="0 0 22 22">
         <path d="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"></path>
-      </symbol>
-      <symbol id="exclamation-circle-fill" viewBox="0 0 22 22">
-        <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
-      </symbol>
-      <symbol id="exclamation-circle-outline" viewBox="0 0 22 22">
-        <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z"></path>
       </symbol>
     </svg>
     <div class="toaster toaster-bottom-right" id="toaster-bottom-right">
@@ -73,30 +52,9 @@ exports[`toasts-component renders a solid toast variant and matches snapshot: so
 <toasts-component position="bottom-left">
   <!---->
   <div>
-    <svg class="d-none" xmlns="http://www.w3.org/2000/svg">
+    <svg aria-hidden="true" class="d-none" focusable="false" xmlns="http://www.w3.org/2000/svg">
       <symbol id="check-circle-fill" viewBox="0 0 22 22">
         <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"></path>
-      </symbol>
-      <symbol id="check-circle-outline" viewBox="0 0 22 22">
-        <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z"></path>
-      </symbol>
-      <symbol id="info-fill" viewBox="0 0 22 22">
-        <path d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
-      </symbol>
-      <symbol id="info-outlined" viewBox="0 0 22 22">
-        <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"></path>
-      </symbol>
-      <symbol id="exclamation-triangle-fill" viewBox="0 0 22 22">
-        <path d="M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z"></path>
-      </symbol>
-      <symbol id="exclamation-triangle-outline" viewBox="0 0 22 22">
-        <path d="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"></path>
-      </symbol>
-      <symbol id="exclamation-circle-fill" viewBox="0 0 22 22">
-        <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
-      </symbol>
-      <symbol id="exclamation-circle-outline" viewBox="0 0 22 22">
-        <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z"></path>
       </symbol>
     </svg>
     <div class="toaster toaster-bottom-left" id="toaster-bottom-left">
@@ -124,30 +82,9 @@ exports[`toasts-component renders a standard toast (string content) and matches 
 <toasts-component position="top-left">
   <!---->
   <div>
-    <svg class="d-none" xmlns="http://www.w3.org/2000/svg">
-      <symbol id="check-circle-fill" viewBox="0 0 22 22">
-        <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"></path>
-      </symbol>
-      <symbol id="check-circle-outline" viewBox="0 0 22 22">
-        <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z"></path>
-      </symbol>
+    <svg aria-hidden="true" class="d-none" focusable="false" xmlns="http://www.w3.org/2000/svg">
       <symbol id="info-fill" viewBox="0 0 22 22">
         <path d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
-      </symbol>
-      <symbol id="info-outlined" viewBox="0 0 22 22">
-        <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"></path>
-      </symbol>
-      <symbol id="exclamation-triangle-fill" viewBox="0 0 22 22">
-        <path d="M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z"></path>
-      </symbol>
-      <symbol id="exclamation-triangle-outline" viewBox="0 0 22 22">
-        <path d="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"></path>
-      </symbol>
-      <symbol id="exclamation-circle-fill" viewBox="0 0 22 22">
-        <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
-      </symbol>
-      <symbol id="exclamation-circle-outline" viewBox="0 0 22 22">
-        <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z"></path>
       </symbol>
     </svg>
     <div class="toaster toaster-top-left" id="toaster-top-left">
@@ -185,30 +122,9 @@ exports[`toasts-component renders plumage toast (max) with HTML content and matc
 <toasts-component position="top-right">
   <!---->
   <div>
-    <svg class="d-none" xmlns="http://www.w3.org/2000/svg">
-      <symbol id="check-circle-fill" viewBox="0 0 22 22">
-        <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"></path>
-      </symbol>
-      <symbol id="check-circle-outline" viewBox="0 0 22 22">
-        <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z"></path>
-      </symbol>
+    <svg aria-hidden="true" class="d-none" focusable="false" xmlns="http://www.w3.org/2000/svg">
       <symbol id="info-fill" viewBox="0 0 22 22">
         <path d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
-      </symbol>
-      <symbol id="info-outlined" viewBox="0 0 22 22">
-        <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"></path>
-      </symbol>
-      <symbol id="exclamation-triangle-fill" viewBox="0 0 22 22">
-        <path d="M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z"></path>
-      </symbol>
-      <symbol id="exclamation-triangle-outline" viewBox="0 0 22 22">
-        <path d="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"></path>
-      </symbol>
-      <symbol id="exclamation-circle-fill" viewBox="0 0 22 22">
-        <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
-      </symbol>
-      <symbol id="exclamation-circle-outline" viewBox="0 0 22 22">
-        <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z"></path>
       </symbol>
     </svg>
     <div class="pl-toaster toaster-top-right" id="toaster-top-right">

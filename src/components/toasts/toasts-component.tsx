@@ -2,15 +2,13 @@
 import { Component, h, Prop, State, Method, Element } from '@stencil/core';
 
 export type ToastVariant = '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark' | 'light';
-
-// ✅ export so components.d.ts can see it
 export type ToastPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 // Avoid JSX.Element in public types; use `any`
 export interface ToastItem {
   id: number;
-  content?: string | any; // plain text / JSX
-  contentHtml?: string; // trusted HTML, rendered via innerHTML
+  content?: string | any;
+  contentHtml?: string;
   additionalHdrContent?: string | any;
   variantClass: ToastVariant | '';
   duration: number;
@@ -28,6 +26,45 @@ export interface ToastItem {
   hideTimeout?: any;
 }
 
+/**
+ * Icon registry: only the icons in this map can be rendered.
+ * Anything else will be ignored (prevents broken <use> refs and keeps output tight).
+ */
+const ICONS: Record<string, { viewBox: string; path: string }> = {
+  'check-circle-fill': {
+    viewBox: '0 0 22 22',
+    path: 'M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z',
+  },
+  'check-circle-outline': {
+    viewBox: '0 0 22 22',
+    path: 'M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z',
+  },
+  'info-fill': {
+    viewBox: '0 0 22 22',
+    path: 'M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z',
+  },
+  'info-outlined': {
+    viewBox: '0 0 22 22',
+    path: 'M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z',
+  },
+  'exclamation-triangle-fill': {
+    viewBox: '0 0 22 22',
+    path: 'M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z',
+  },
+  'exclamation-triangle-outline': {
+    viewBox: '0 0 22 22',
+    path: 'M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16',
+  },
+  'exclamation-circle-fill': {
+    viewBox: '0 0 22 22',
+    path: 'M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z',
+  },
+  'exclamation-circle-outline': {
+    viewBox: '0 0 22 22',
+    path: 'M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z',
+  },
+};
+
 @Component({
   tag: 'toasts-component',
   styleUrls: ['toasts-styles.scss', '../utilities-styles.scss'],
@@ -36,86 +73,43 @@ export interface ToastItem {
 export class ToastsComponent {
   @Element() host!: HTMLElement;
 
-  /** (Optional) id used inside nested elements; does not override the host element id */
   @Prop() toastId: string = 'toast-component';
-
-  /** Where the toaster tray is anchored. */
   @Prop({ reflect: true }) position: ToastPosition = 'bottom-right';
-
-  /** Variant color for new toasts (can be overridden per-toast via showToast opts). */
   @Prop() variant: ToastVariant = '';
-
-  /** If true, use the “solid” toast style (Bootstrap-like) instead of bordered. */
   @Prop() solidToast: boolean = false;
-
-  /** If true, use the Plumage toast style. */
   @Prop() plumageToast: boolean = false;
-
-  /** If true with plumageToast, render the “max” layout. */
   @Prop() plumageToastMax: boolean = false;
-
-  /** If true, new toasts append to the end; otherwise they prepend (newest on top). */
   @Prop() appendToast: boolean = false;
-
-  /** Default lifespan in ms for auto-dismiss toasts. */
   @Prop() duration: number = 5000;
-
-  /** Disable fade-in/out transitions globally. */
   @Prop() noAnimation: boolean = false;
-
-  /** Prevent hover from pausing auto-hide globally. */
   @Prop() noHoverPause: boolean = false;
-
-  /** Make toasts persistent by default (no auto-hide). */
   @Prop() persistent: boolean = false;
 
   /** Default icon symbol id (from the inline sprite) for new toasts. */
   @Prop() svgIcon?: string;
 
-  /** Default header/body helper classes. */
   @Prop() headerClass?: string;
   @Prop() bodyClass?: string;
-
-  /** When true, use polite/status instead of alert/assertive on aria-live for new toasts. */
   @Prop() isStatus: boolean = false;
-
-  /** If true, hide the × close button by default. */
   @Prop() noCloseButton: boolean = false;
-
-  /** If true, use the “plumage icon” layout on compact plumage variant. */
   @Prop() iconPlumageStyle: boolean = false;
-
-  /** Optional default title for new toasts. (Renamed from reserved `title`.) */
   @Prop() toastTitle?: string;
-
-  /** Optional default message for simple string-only toasts. */
   @Prop() message?: string;
-
-  /** Optional header content (string/JSX) appearing next to the title (e.g., timestamp). */
   @Prop() additionalHeaderContent?: any;
-
-  /** Optional custom content for the body (string/JSX). Prefer using slots in apps. */
   @Prop() customContent?: any;
-
-  /** Default time label (ZULU). */
   @Prop() time: string = ToastsComponent.getCurrentZuluTime();
 
-  /** Internal list of active toasts. */
   @State() private toasts: ToastItem[] = [];
 
   // ---------- Public API ----------
 
-  /** Show a toast. Returns the id of the created toast. */
   @Method()
   async showToast(opts: Partial<Omit<ToastItem, 'id' | 'state'>> = {}): Promise<number> {
     const id = Date.now() + Math.floor(Math.random() * 1000);
 
     const content: string | any = (opts && opts.content) ?? this.customContent ?? this.message ?? '';
-
     const contentHtml: string | undefined = opts?.contentHtml;
-
     const additionalHdr = (opts && opts.additionalHdrContent) ?? this.additionalHeaderContent;
-
     const variantClass: ToastVariant | '' = (opts && (opts.variantClass as ToastVariant)) ?? this.variant ?? '';
 
     const toast: ToastItem = {
@@ -155,10 +149,9 @@ export class ToastsComponent {
     return id;
   }
 
-  /** Start fade-out, then remove. */
   @Method()
   async startRemoveToast(id: number): Promise<void> {
-    const idx = this.toasts.findIndex(t => t.id === id);
+    const idx = this.toasts.findIndex((t) => t.id === id);
     if (idx < 0) return;
 
     if (!this.noAnimation) {
@@ -170,17 +163,16 @@ export class ToastsComponent {
     }
   }
 
-  /** Remove toast immediately. */
   @Method()
   async removeToast(id: number): Promise<void> {
-    this.toasts = this.toasts.filter(t => t.id !== id);
+    this.toasts = this.toasts.filter((t) => t.id !== id);
   }
 
   // ---------- Internals ----------
 
   private static getCurrentZuluTime(): string {
     const now = new Date();
-    return now.toISOString().substring(11, 19) + 'Z'; // HH:MM:SSZ
+    return now.toISOString().substring(11, 19) + 'Z';
   }
 
   private handleMouseEnter = (toast: ToastItem) => {
@@ -219,38 +211,37 @@ export class ToastsComponent {
     }
   }
 
-  // ---------- Renderers ----------
+  /** Collect only icons actually being used right now. */
+  private getUsedIconIds(): string[] {
+    const ids = new Set<string>();
 
-  private renderSvgSprite() {
+    // Include default prop icon only if it exists (so a “default” preview can still work),
+    // but don’t render anything if it’s empty.
+    if (this.svgIcon && ICONS[this.svgIcon]) ids.add(this.svgIcon);
+
+    for (const t of this.toasts) {
+      if (t.svgIcon && ICONS[t.svgIcon]) ids.add(t.svgIcon);
+    }
+
+    return [...ids];
+  }
+
+  /** Render ONLY the symbols that are currently used. Render nothing if none are used. */
+  private renderSvgSprite(usedIds: string[]) {
+    if (!usedIds.length) return null;
+
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-        <symbol id="check-circle-fill" viewBox="0 0 22 22">
-          <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" />
-        </symbol>
-        <symbol id="check-circle-outline" viewBox="0 0 22 22">
-          <path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z" />
-        </symbol>
-        <symbol id="info-fill" viewBox="0 0 22 22">
-          <path d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
-        </symbol>
-        <symbol id="info-outlined" viewBox="0 0 22 22">
-          <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z" />
-        </symbol>
-        <symbol id="exclamation-triangle-fill" viewBox="0 0 22 22">
-          <path d="M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z" />
-        </symbol>
-        <symbol id="exclamation-triangle-outline" viewBox="0 0 22 22">
-          <path d="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16" />
-        </symbol>
-        <symbol id="exclamation-circle-fill" viewBox="0 0 22 22">
-          <path d="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
-        </symbol>
-        <symbol id="exclamation-circle-outline" viewBox="0 0 22 22">
-          <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z" />
-        </symbol>
+      <svg xmlns="http://www.w3.org/2000/svg" class="d-none" aria-hidden="true" focusable="false">
+        {usedIds.map((id) => (
+          <symbol id={id} viewBox={ICONS[id].viewBox}>
+            <path d={ICONS[id].path} />
+          </symbol>
+        ))}
       </svg>
     );
   }
+
+  // ---------- Renderers ----------
 
   private renderStandardToast(toast: ToastItem) {
     const classes = [
@@ -280,7 +271,7 @@ export class ToastsComponent {
         <div id={this.toastId} tabIndex={0}>
           <header class={`toast-header ${toast.headerClass || ''}`}>
             <div class="d-flex flex-grow-1 align-items-center">
-              {toast.svgIcon ? (
+              {toast.svgIcon && ICONS[toast.svgIcon] ? (
                 <svg class="toast-svg flex-shrink-0 me-2" role="img" aria-label="Icon" style={{ fill: 'currentColor' }}>
                   <use href={`#${toast.svgIcon}`}></use>
                 </svg>
@@ -336,7 +327,7 @@ export class ToastsComponent {
             <div class={`toast-body d-flex align-items-center ${toast.bodyClass || ''}`} innerHTML={toast.contentHtml}></div>
           ) : (
             <div class={`toast-body d-flex align-items-center ${toast.bodyClass || ''}`}>
-              {toast.svgIcon ? (
+              {toast.svgIcon && ICONS[toast.svgIcon] ? (
                 <svg class="toast-svg flex-shrink-0 me-2" role="img" aria-label="Icon" style={{ fill: 'currentColor' }}>
                   <use href={`#${toast.svgIcon}`}></use>
                 </svg>
@@ -356,7 +347,15 @@ export class ToastsComponent {
   }
 
   private renderPlumageToast(toast: ToastItem) {
-    const classes = ['pl-toast', 'fade', toast.state, toast.persistent ? 'persistent' : '', toast.variantClass ? `toast-${toast.variantClass}` : ''].filter(Boolean).join(' ');
+    const classes = [
+      'pl-toast',
+      'fade',
+      toast.state,
+      toast.persistent ? 'persistent' : '',
+      toast.variantClass ? `toast-${toast.variantClass}` : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
 
     const style = { '--toast-duration': `${toast.duration / 1000}s` } as any;
 
@@ -377,7 +376,7 @@ export class ToastsComponent {
               <div title="" class="pl-toast-content d-flex">
                 <div class="align-self-center">
                   <div class="pl-toast-icon">
-                    {toast.svgIcon ? (
+                    {toast.svgIcon && ICONS[toast.svgIcon] ? (
                       <svg class="toast-svg flex-shrink-0 me-2" role="img" aria-label="Icon" style={{ fill: this.getIconColor(toast.variantClass) }}>
                         <use href={`#${toast.svgIcon}`}></use>
                       </svg>
@@ -396,12 +395,7 @@ export class ToastsComponent {
                     </div>
                   </div>
                   <div class={`d-flex flex-column toast-data ${toast.bodyClass || ''}`}>
-                    {toast.contentHtml ? (
-                      <div innerHTML={toast.contentHtml}></div>
-                    ) : (
-                      // Keep slot for backward-compat (if users projected markup before)
-                      <slot name="custom-content">{toast.content}</slot>
-                    )}
+                    {toast.contentHtml ? <div innerHTML={toast.contentHtml}></div> : <slot name="custom-content">{toast.content}</slot>}
                   </div>
                 </div>
               </div>
@@ -411,7 +405,6 @@ export class ToastsComponent {
       );
     }
 
-    // compact plumage styles
     return (
       <div
         id={`${this.toastId}__toast_outer`}
@@ -427,7 +420,7 @@ export class ToastsComponent {
           {toast.iconPlumageStyle
             ? [
                 <div class="pl-toast-icon">
-                  {toast.svgIcon ? (
+                  {toast.svgIcon && ICONS[toast.svgIcon] ? (
                     <svg class="toast-svg flex-shrink-0 me-2" role="img" aria-label="Icon" style={{ fill: this.getIconColor(toast.variantClass) }}>
                       <use href={`#${toast.svgIcon}`}></use>
                     </svg>
@@ -481,20 +474,24 @@ export class ToastsComponent {
 
   private renderBody() {
     const trayClass = (this.plumageToast ? 'pl-toaster' : 'toaster') + ` toaster-${this.position}`;
-
     return (
       <div id={`toaster-${this.position}`} class={trayClass}>
         <div class="toaster-slot">
-          {this.toasts.map(t => (this.solidToast ? this.renderSolidToast(t) : this.plumageToast ? this.renderPlumageToast(t) : this.renderStandardToast(t)))}
+          {this.toasts.map((t) =>
+            this.solidToast ? this.renderSolidToast(t) : this.plumageToast ? this.renderPlumageToast(t) : this.renderStandardToast(t),
+          )}
         </div>
       </div>
     );
   }
 
   render() {
+    const usedIconIds = this.getUsedIconIds();
+
     return (
       <div>
-        {this.renderSvgSprite()}
+        {/* ✅ Only render sprite if at least one icon is in use */}
+        {this.renderSvgSprite(usedIconIds)}
         {this.renderBody()}
       </div>
     );

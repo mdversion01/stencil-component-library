@@ -1,628 +1,829 @@
-// src/stories/toasts-component.stories.js
+// stories/toasts-component.stories.js
+import DocsPage from './toasts-component.docs.mdx';
+
+const TAG = 'toasts-component';
+
+/* -----------------------------
+ Helpers
+------------------------------ */
+
+const normalize = (txt) => {
+  const lines = String(txt ?? '')
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map((l) => l.replace(/[ \t]+$/g, ''));
+
+  const out = [];
+  let prevBlank = false;
+
+  for (const line of lines) {
+    const blank = line.trim() === '';
+    if (blank) {
+      if (prevBlank) continue;
+      out.push('');
+      prevBlank = true;
+      continue;
+    }
+    out.push(line);
+    prevBlank = false;
+  }
+
+  while (out.length && out[0] === '') out.shift();
+  while (out.length && out[out.length - 1] === '') out.pop();
+
+  return out.join('\n');
+};
+
+const uid = () => `${Math.random().toString(36).slice(2, 8)}-${Date.now().toString(36)}`;
+
+const makeIds = (baseMap, context) => {
+  const base = (context?.id || 'sb').split('--').pop() || 'sb';
+  const scope = context?.viewMode || 'story';
+  const token = `${base}-${scope}-${uid()}`;
+
+  const out = {};
+  Object.keys(baseMap).forEach((k) => (out[k] = `${baseMap[k]}-${token}`));
+  return out;
+};
+
+const setAttr = (el, name, value) => {
+  if (value === true) el.setAttribute(name, '');
+  else if (value === false || value == null || value === '') el.removeAttribute(name);
+  else el.setAttribute(name, String(value));
+};
+
+const whenReady = async (el) => {
+  try {
+    await customElements.whenDefined(TAG);
+    await el?.componentOnReady?.();
+  } catch (_) {
+    // no-op
+  }
+};
+
+const safeShowToast = async (el, opts) => {
+  if (!el) return;
+  await whenReady(el);
+  try {
+    await el.showToast(opts);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn('[toasts-story] showToast failed:', e);
+  }
+};
+
+/* -----------------------------
+ Docs helpers (DISPLAY code only)
+------------------------------ */
+
+const docsCode = (html, js) => normalize(`${html}\n\n${js}`);
+
+const jsPreviewBlock = (lines) =>
+  normalize(`
+// JavaScript (autoplay for visual preview only)
+${lines.join('\n')}
+`);
+
+/* -----------------------------
+ Autoplay: re-run ONLY when args change (per story instance)
+------------------------------ */
+
+const AUTOPLAY_STATE_KEY = '__plumage_toasts_autoplay_state__';
+
+const runOnArgsChange = (key, args, fn) => {
+  window[AUTOPLAY_STATE_KEY] = window[AUTOPLAY_STATE_KEY] || {};
+  const store = window[AUTOPLAY_STATE_KEY];
+
+  const hash = JSON.stringify(args ?? {});
+  if (store[key] === hash) return;
+
+  store[key] = hash;
+  requestAnimationFrame(() => fn());
+};
+
+/* -----------------------------
+ Docs/source helpers from args
+------------------------------ */
+
+const truthyAttr = (name, value) => (value ? ` ${name}` : '');
+
+const valueAttr = (name, value) =>
+  value == null || value === '' ? '' : ` ${name}="${String(value).replace(/"/g, '&quot;')}"`;
+
+const buildToastContent = (args) => {
+  if (args.customContent && String(args.customContent).trim()) {
+    return { contentHtml: String(args.customContent) };
+  }
+  if (args.message && String(args.message).trim()) {
+    return { content: String(args.message) };
+  }
+  return { content: 'This is a default toast example!' };
+};
+
+const buildToastOptions = (args) => {
+  const content = buildToastContent(args);
+
+  return {
+    toastId: args.toastId || undefined,
+    toastTitle: args.toastTitle || 'Title Text',
+    ...content,
+    additionalHdrContent: args.additionalHeaderContent || undefined,
+    duration: Number.isFinite(args.duration) ? args.duration : 5000,
+    svgIcon: args.svgIcon || undefined,
+    time: args.time || undefined,
+
+    persistent: !!args.persistent,
+    noCloseButton: !!args.noCloseButton,
+    iconPlumageStyle: !!args.iconPlumageStyle,
+    isStatus: !!args.isStatus,
+
+    headerClass: args.headerClass || undefined,
+    bodyClass: args.bodyClass || undefined,
+
+    // Component API uses variantClass
+    variantClass: args.variant || '',
+  };
+};
+
+const applyHostProps = (host, args, overrides = {}) => {
+  const a = { ...args, ...overrides };
+
+  setAttr(host, 'position', a.position || '');
+  setAttr(host, 'solid-toast', !!a.solidToast);
+  setAttr(host, 'plumage-toast', !!a.plumageToast);
+  setAttr(host, 'plumage-toast-max', !!a.plumageToastMax);
+  setAttr(host, 'append-toast', !!a.appendToast);
+  setAttr(host, 'no-animation', !!a.noAnimation);
+  setAttr(host, 'no-hover-pause', !!a.noHoverPause);
+
+  return a;
+};
+
+/* -----------------------------
+ Storybook meta
+------------------------------ */
 
 export default {
   title: 'Components/Toasts',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',
+    docs: {
+      page: DocsPage,
+      description: {
+        component:
+          'Visual styling previews for `<toasts-component>`. Stories are controls-driven. A small autoplay runs to render example toasts so you can see styles; it re-runs when controls change.',
+      },
+    },
   },
-  argTypes: {
-    // --- Demo helpers (not component props) ---
-    demoWidth: {
-      control: { type: 'number', min: 180, step: 10 },
-      description: 'Wrapper width (px) for the preview.',
-    },
-    demoTitle: { control: 'text', description: 'Title for the next toast you spawn.' },
-    demoMessage: { control: 'text', description: 'Body (text) for the next toast you spawn.' },
-    demoHtml: {
-      control: 'text',
-      description: 'If set, uses trusted HTML for the toast body (replaces demoMessage).',
-    },
-    demoButtonText: { control: 'text', description: 'Label for the “Show toast” button.' },
 
-    // --- Component props ---
-    toastId: { control: 'text', name: 'toast-id' },
+  argTypes: {
+    additionalHeaderContent: {
+      control: 'text',
+      name: 'additional-header-content',
+      table: { category: 'Toast Options' },
+      description:
+        'Optional header content (string/HTML) appearing next to the title, such as timestamps or status indicators.',
+    },
+    bodyClass: {
+      control: 'text',
+      name: 'body-class',
+      table: { category: 'Toast Options' },
+      description: 'Additional CSS class(es) to apply to the toast body for custom styling.',
+    },
+    customContent: {
+      control: 'text',
+      name: 'custom-content',
+      table: { category: 'Toast Options' },
+      description: 'Optional custom HTML content for the body. Prefer using slots in apps.',
+    },
+    duration: {
+      control: 'number',
+      table: { category: 'Toast Options', defaultValue: { summary: 5000 } },
+      description: 'Duration in milliseconds before the toast automatically dismisses. Default is 5000.',
+    },
+    headerClass: {
+      control: 'text',
+      name: 'header-class',
+      table: { category: 'Toast Options' },
+      description: 'Additional CSS class(es) to apply to the toast header for custom styling.',
+    },
+    iconPlumageStyle: {
+      control: 'boolean',
+      name: 'icon-plumage-style',
+      table: { category: 'Toast Options', defaultValue: { summary: false } },
+      description: 'When true, applies Plumage styling to the toast icon (if an SVG icon is used).',
+    },
+    isStatus: {
+      control: 'boolean',
+      name: 'is-status',
+      table: { category: 'Toast Options', defaultValue: { summary: false } },
+      description: 'When true, the toast is announced as a status update (aria-live="polite").',
+    },
     position: {
       control: 'select',
-      options: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+      options: ['', 'top-left', 'top-right', 'bottom-left', 'bottom-right'],
+      table: { category: 'Component Props' },
+      description: 'Position of the toast container on the screen.',
+    },
+    solidToast: {
+      control: 'boolean',
+      name: 'solid-toast',
+      table: { category: 'Component Props', defaultValue: { summary: false } },
+      description: 'Enable solid background styling for toasts.',
+    },
+    message: {
+      control: 'text',
+      name: 'message',
+      table: { category: 'Toast Options' },
+      description: 'Optional simple message (plain text). If set, it will be used when custom-content is empty.',
+    },
+    noAnimation: {
+      control: 'boolean',
+      name: 'no-animation',
+      table: { category: 'Component Props', defaultValue: { summary: false } },
+      description: 'Disable show/hide animations for toasts.',
+    },
+    noCloseButton: {
+      control: 'boolean',
+      name: 'no-close-button',
+      table: { category: 'Toast Options', defaultValue: { summary: false } },
+      description:
+        'When true, the toast will not display a close button and can only be dismissed by timeout or programmatically.',
+    },
+    noHoverPause: {
+      control: 'boolean',
+      name: 'no-hover-pause',
+      table: { category: 'Component Props', defaultValue: { summary: false } },
+      description: 'When true, hovering over a toast does not pause its auto-dismiss timer.',
+    },
+    persistent: {
+      control: 'boolean',
+      name: 'persistent',
+      table: { category: 'Toast Options', defaultValue: { summary: false } },
+      description: 'When true, the toast will not auto-dismiss and requires user interaction to close.',
+    },
+    plumageToast: {
+      control: 'boolean',
+      name: 'plumage-toast',
+      table: { category: 'Component Props', defaultValue: { summary: false } },
+      description: 'Enable Plumage styling for toasts (different from solid-toast).',
+    },
+    plumageToastMax: {
+      control: 'boolean',
+      name: 'plumage-toast-max',
+      table: { category: 'Component Props', defaultValue: { summary: false } },
+      description: 'Enable Plumage Max styling for toasts (larger, more prominent).',
+    },
+    appendToast: {
+      control: 'boolean',
+      name: 'append-toast',
+      table: { category: 'Component Props', defaultValue: { summary: false } },
+      description: 'When true, new toasts are added below existing ones instead of above.',
+    },
+    svgIcon: {
+      control: 'select',
+      options: ['', 'exclamation-triangle-outline', 'exclamation-circle-fill', 'exclamation-circle-outline', 'exclamation-triangle-fill', 'check-circle-fill', 'check-circle-outline', 'info-fill', 'info-outline'],
+      name: 'svg-icon',
+      table: { category: 'Toast Options' },
+      description: 'Name of the SVG icon to display (e.g., "exclamation-triangle-outline").',
+    },
+    time: {
+      control: 'text',
+      name: 'time',
+      table: { category: 'Toast Options' },
+      description: 'Default time label (ZULU) in the toast header.',
+    },
+    toastId: {
+      control: 'text',
+      name: 'toast-id',
+      table: { category: 'Toast Options' },
+      description: 'Optional ID for the toast, useful for programmatic control (e.g., dismissal).',
+    },
+    toastTitle: {
+      control: 'text',
+      name: 'toast-title',
+      table: { category: 'Toast Options' },
+      description: 'Optional default title for new toasts.',
     },
     variant: {
       control: 'select',
-      options: ['', 'primary', 'secondary', 'success', 'danger', 'info', 'warning', 'dark', 'light'],
+      options: ['', 'primary', 'secondary', 'success', 'danger', 'warning', 'info'],
+      table: { category: 'Toast Options' },
+      description:
+        "Visual variant of the toast, mapped to the toast option `variantClass` ('primary', 'secondary', 'success', 'danger', 'warning', 'info').",
     },
-    solidToast: { control: 'boolean', name: 'solid-toast' },
-    plumageToast: { control: 'boolean', name: 'plumage-toast' },
-    plumageToastMax: { control: 'boolean', name: 'plumage-toast-max' },
-    appendToast: { control: 'boolean', name: 'append-toast' },
-    duration: { control: { type: 'number', min: 500, step: 500 } },
-    noAnimation: { control: 'boolean', name: 'no-animation' },
-    noHoverPause: { control: 'boolean', name: 'no-hover-pause' },
-    persistent: { control: 'boolean' },
-    svgIcon: {
-      control: 'select',
-      options: [
-        undefined,
-        'check-circle-fill',
-        'check-circle-outline',
-        'info-fill',
-        'info-outlined',
-        'exclamation-triangle-fill',
-        'exclamation-triangle-outline',
-        'exclamation-circle-fill',
-        'exclamation-circle-outline',
-      ],
-      description: 'Symbol id from the component’s built-in SVG sprite.',
-    },
-    headerClass: { control: 'text', name: 'header-class' },
-    bodyClass: { control: 'text', name: 'body-class' },
-    isStatus: { control: 'boolean', name: 'is-status' },
-    noCloseButton: { control: 'boolean', name: 'no-close-button' },
-    iconPlumageStyle: { control: 'boolean', name: 'icon-plumage-style' },
-    toastTitle: { control: 'text', name: 'toast-title' },
-    message: { control: 'text' },
-    additionalHeaderContent: { control: 'text', name: 'additional-header-content' },
-    time: { control: 'text' },
+  },
+
+  args: {
+    additionalHeaderContent: '43 seconds ago',
+    bodyClass: '',
+    customContent: '',
+    duration: 7000,
+    headerClass: '',
+    iconPlumageStyle: false,
+    isStatus: false,
+    message: '',
+    noAnimation: false,
+    noCloseButton: false,
+    noHoverPause: false,
+    persistent: true,
+
+    position: 'top-right',
+    solidToast: false,
+    plumageToast: false,
+    plumageToastMax: false,
+    appendToast: true,
+
+    svgIcon: 'exclamation-triangle-outline',
+    time: '',
+    toastId: '',
+    toastTitle: 'Title Text',
+    variant: '',
   },
 };
 
-/** Small helper for boolean attributes */
-const boolAttr = (name, on) => (on ? ` ${name}` : '');
-/** Helper for normal attributes */
-const attr = (name, v) =>
-  v === undefined || v === null || v === '' ? '' : ` ${name}="${String(v)}"`;
+/* =========================================================
+   1) Default Toast (single preview; args-driven)
+   ========================================================= */
 
-/** Base template that also wires a “Show toast” button to call `showToast()` */
-const Template = (args) => {
-  const hostId = args.toastId && args.toastId !== 'toast-component'
-    ? args.toastId
-    : `toasts-${Math.random().toString(36).slice(2)}`;
+export const DefaultToast = {
+  name: 'Default: Toast',
+  render: (args, context) => {
+    const ids = makeIds({ host: 'defaultToastHost' }, context);
 
-  const wrapperStyle = Number.isFinite(args.demoWidth) ? `style="width:${args.demoWidth}px"` : '';
+    const wrap = document.createElement('div');
+    wrap.className = 'cwrapper';
 
-  return `
-<div ${wrapperStyle}>
-  <div style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap">
-    <button type="button" id="${hostId}-show" class="btn btn-secondary btn-sm">
-      ${args.demoButtonText || 'Show toast'}
-    </button>
-    <button type="button" id="${hostId}-clear" class="btn btn-outline-secondary btn-sm">
-      Clear all
-    </button>
-  </div>
+    const section = document.createElement('section');
+    section.className = 'display-box-demo';
 
-  <toasts-component
-    id="${hostId}"
-    ${attr('toast-id', hostId)}
-    ${attr('position', args.position)}
-    ${attr('variant', args.variant)}
-    ${boolAttr('solid-toast', args.solidToast)}
-    ${boolAttr('plumage-toast', args.plumageToast)}
-    ${boolAttr('plumage-toast-max', args.plumageToastMax)}
-    ${boolAttr('append-toast', args.appendToast)}
-    ${attr('duration', args.duration)}
-    ${boolAttr('no-animation', args.noAnimation)}
-    ${boolAttr('no-hover-pause', args.noHoverPause)}
-    ${boolAttr('persistent', args.persistent)}
-    ${attr('svg-icon', args.svgIcon)}
-    ${attr('header-class', args.headerClass)}
-    ${attr('body-class', args.bodyClass)}
-    ${boolAttr('is-status', args.isStatus)}
-    ${boolAttr('no-close-button', args.noCloseButton)}
-    ${boolAttr('icon-plumage-style', args.iconPlumageStyle)}
-    ${attr('toast-title', args.toastTitle)}
-    ${attr('message', args.message)}
-    ${attr('additional-header-content', args.additionalHeaderContent)}
-    ${attr('time', args.time)}
-  ></toasts-component>
+    const label = document.createElement('div');
+    label.textContent = 'Default toast styling preview:';
+    label.style.marginBottom = '8px';
+    label.style.fontSize = '0.75rem';
 
-  <script>
-    (function(){
-      const el = document.getElementById('${hostId}');
-      const btn = document.getElementById('${hostId}-show');
-      const clr = document.getElementById('${hostId}-clear');
+    const host = document.createElement(TAG);
+    host.id = ids.host;
 
-      if (btn && !btn._wired) {
-        btn._wired = true;
-        btn.addEventListener('click', async () => {
-          await customElements.whenDefined('toasts-component');
-          await el?.componentOnReady?.();
+    applyHostProps(host, args);
 
-          const opts = {
-            toastTitle: ${JSON.stringify(args.demoTitle || args.toastTitle || 'Notification')},
-            content: ${args.demoHtml ? 'undefined' : JSON.stringify(args.demoMessage || args.message || 'Hello from toast!')},
-            contentHtml: ${args.demoHtml ? JSON.stringify(args.demoHtml) : 'undefined'},
-            variantClass: ${JSON.stringify(args.variant || '')},
-            svgIcon: ${args.svgIcon ? JSON.stringify(args.svgIcon) : 'undefined'},
-            duration: ${Number.isFinite(args.duration) ? Number(args.duration) : 5000},
-            persistent: ${!!args.persistent},
-            noCloseButton: ${!!args.noCloseButton},
-            iconPlumageStyle: ${!!args.iconPlumageStyle},
-            bodyClass: ${args.bodyClass ? JSON.stringify(args.bodyClass) : 'undefined'},
-            headerClass: ${args.headerClass ? JSON.stringify(args.headerClass) : 'undefined'},
-            isStatus: ${!!args.isStatus},
-            noHoverPause: ${!!args.noHoverPause},
-            time: ${args.time ? JSON.stringify(args.time) : 'undefined'},
-            additionalHdrContent: ${args.additionalHeaderContent ? JSON.stringify(args.additionalHeaderContent) : 'undefined'}
-          };
+    section.append(label, host);
+    wrap.append(section);
 
-          try { await el.showToast(opts); } catch(e) { console.warn('showToast failed:', e); }
-        });
-      }
+    runOnArgsChange(`${context.id}::DefaultToast`, args, async () => {
+      const t = document.getElementById(ids.host);
+      await safeShowToast(t, buildToastOptions(args));
+    });
 
-      if (clr && !clr._wired) {
-        clr._wired = true;
-        clr.addEventListener('click', async () => {
-          await customElements.whenDefined('toasts-component');
-          await el?.componentOnReady?.();
-          const list = (el?.toasts || []).slice();
-          for (const t of list) { try { await el.removeToast(t.id); } catch(_){} }
-        });
-      }
-    })();
-  </script>
-</div>`;
-};
+    return wrap;
+  },
 
-/* =========================
-   Stories
-   ========================= */
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: (_code, ctx) => {
+          const ids = makeIds({ host: 'defaultToastHost' }, ctx);
+          const a = ctx?.args || {};
+          const opts = buildToastOptions(a);
 
-export const Default = Template.bind({});
-Default.args = {
-  // demo
-  demoWidth: 420,
-  demoTitle: 'Saved',
-  demoMessage: 'Your changes have been saved.',
-  demoHtml: '',
-  demoButtonText: 'Show toast',
+          const html = normalize(`
+<div class="cwrapper">
+  <section class="display-box-demo">
+    <div style="margin-bottom: 8px; font-size: 0.75rem">Default toast styling preview:</div>
+    <toasts-component
+      id="${ids.host}"
+      ${valueAttr('position', a.position || '')}
+      ${truthyAttr('solid-toast', !!a.solidToast)}
+      ${truthyAttr('plumage-toast', !!a.plumageToast)}
+      ${truthyAttr('plumage-toast-max', !!a.plumageToastMax)}
+      ${truthyAttr('append-toast', !!a.appendToast)}
+      ${truthyAttr('no-animation', !!a.noAnimation)}
+      ${truthyAttr('no-hover-pause', !!a.noHoverPause)}
+    ></toasts-component>
+  </section>
+</div>
+          `);
 
-  // component
-  toastId: 'toast-component',
-  position: 'bottom-right',
-  variant: '',
-  solidToast: false,
-  plumageToast: false,
-  plumageToastMax: false,
-  appendToast: false,
-  duration: 5000,
-  noAnimation: false,
-  noHoverPause: false,
-  persistent: false,
-  svgIcon: undefined,
-  headerClass: '',
-  bodyClass: '',
-  isStatus: false,
-  noCloseButton: false,
-  iconPlumageStyle: false,
-  toastTitle: 'Notification',
-  message: '',
-  additionalHeaderContent: '',
-  time: undefined,
-};
+          const js = jsPreviewBlock([
+            `const t = document.getElementById('${ids.host}');`,
+            `t && t.showToast(${JSON.stringify(opts, null, 2)});`,
+          ]);
 
-export const SolidStyle = Template.bind({});
-SolidStyle.args = {
-  ...Default.args,
-  solidToast: true,
-  variant: 'success',
-  demoTitle: 'Success',
-  demoMessage: 'Solid toast with success styling.',
-  svgIcon: 'check-circle-fill',
-};
-
-export const Plumage = Template.bind({});
-Plumage.args = {
-  ...Default.args,
-  plumageToast: true,
-  variant: 'info',
-  position: 'top-right',
-  demoTitle: 'Heads up',
-  demoMessage: 'This is a Plumage toast.',
-  svgIcon: 'info-fill',
-};
-
-export const PlumageMaxLayout = Template.bind({});
-PlumageMaxLayout.args = {
-  ...Plumage.args,
-  plumageToastMax: true,
-  iconPlumageStyle: true,
-  demoTitle: 'Expanded',
-  demoHtml: '<p><strong>Expanded layout</strong> with <em>HTML content</em>.</p>',
-};
-
-export const WarningPersistent = Template.bind({});
-WarningPersistent.args = {
-  ...Default.args,
-  variant: 'warning',
-  persistent: true,
-  demoTitle: 'Action required',
-  demoMessage: 'This toast will remain until closed.',
-  svgIcon: 'exclamation-triangle-fill',
-};
-
-export const DangerNoAnimation = Template.bind({});
-DangerNoAnimation.args = {
-  ...Default.args,
-  variant: 'danger',
-  noAnimation: true,
-  demoTitle: 'Error',
-  demoMessage: 'No fade transitions are used.',
-  svgIcon: 'exclamation-circle-fill',
+          return docsCode(html, js);
+        },
+      },
+      story: { height: '220px' },
+    },
+  },
 };
 
 /* =========================================================
-   EXTRA: Full DOM Examples + your initialization script
+   2) Default Variant Colors (STACKED in ONE host; args-driven)
    ========================================================= */
 
-export const ExamplesFromDocs = () => `
-<style>
-  .display-box-demo { margin: 12px 0; }
-  .btn { cursor: pointer; }
-</style>
+export const DefaultVariantColors = {
+  name: 'Default: Variant Colors (Stacked)',
+  args: {
+    solidToast: false,
+    plumageToast: false,
+    plumageToastMax: false,
+    appendToast: true,
+    position: 'top-right',
+  },
+  render: (args, context) => {
+    const ids = makeIds({ host: 'defaultVariantsHost' }, context);
 
-<section class="display-box-demo">
-  <button class="btn btn-secondary btn-sm" onclick="showNotification1c()">Show Toast</button>
-  <button class="btn btn-secondary btn-sm" onclick="showCustomNotification1d()">Show Custom Toast</button>
-  <button class="btn btn-secondary btn-sm" onclick="simulateStackedNotifications()">Simulate RealTime Stacked Notifications</button>
+    const wrap = document.createElement('div');
+    wrap.className = 'cwrapper';
 
-  <toasts-component id="toast1c" position="bottom-left"></toasts-component>
+    const section = document.createElement('section');
+    section.className = 'display-box-demo';
 
-  <div style="margin-top: 15px">
-    <div style="margin-bottom: 5px; font-size: 0.75rem">Toast Styling Example:</div>
-    <toasts-component id="toast3" position=""></toasts-component>
-  </div>
-</section>
+    const label = document.createElement('div');
+    label.textContent = 'Default variants stacked into one host:';
+    label.style.marginBottom = '8px';
+    label.style.fontSize = '0.75rem';
 
-<section class="display-box-demo">
-  <div style="margin-top: 15px">
-    <div style="margin-bottom: 5px; font-size: 0.75rem">Toast Variant Colors Example:</div>
+    const host = document.createElement(TAG);
+    host.id = ids.host;
 
-    <div style="display: flex; gap: 16px;">
-      <div style="flex: 1 1 auto">
-        <toasts-component id="toast3a" position=""></toasts-component>
-        <toasts-component id="toast3b" position=""></toasts-component>
-      </div>
-      <div style="flex: 1 1 auto">
-        <toasts-component id="toast3c" position=""></toasts-component>
-        <toasts-component id="toast3d" position=""></toasts-component>
-      </div>
-    </div>
-  </div>
-</section>
+    // Force appendToast on for stacking preview
+    applyHostProps(host, args, { appendToast: true });
 
-<section class="display-box-demo">
-  <button class="btn btn-secondary btn-sm" onclick="showNotification2a()">Show Plumage Toast</button>
-  <toasts-component id="toast2a" position="top-right" plumage-toast></toasts-component>
+    section.append(label, host);
+    wrap.append(section);
 
-  <div style="margin-top: 15px; max-width: 500px;">
-    <div style="margin-bottom: 5px; font-size: 0.75rem">Plumage Toast Styling Example:</div>
-    <toasts-component id="toast2" position="" plumage-toast></toasts-component>
-  </div>
-</section>
+    runOnArgsChange(`${context.id}::DefaultVariantColors`, args, async () => {
+      const t = document.getElementById(ids.host);
 
-<section class="display-box-demo">
-  <button class="btn btn-secondary btn-sm" onclick="showNotification1a()">Show Toast</button>
-  <button class="btn btn-secondary btn-sm" onclick="showCustomNotification1b()">Show Custom Toast</button>
+      const base = {
+        ...buildToastOptions(args),
+        toastTitle: args.toastTitle || 'Title Text',
+        additionalHdrContent: args.additionalHeaderContent || '43 seconds ago',
+        persistent: true,
+      };
 
-  <toasts-component id="toast1a" position="bottom-right" solid-toast></toasts-component>
-  <toasts-component id="toast1b" position="bottom-left" solid-toast></toasts-component>
-
-  <div style="margin-top: 15px">
-    <div style="margin-bottom: 5px; font-size: 0.75rem">Single Toast Styling Example:</div>
-    <toasts-component id="toast1" position="" solid-toast></toasts-component>
-  </div>
-</section>
-
-<section class="display-box-demo">
-  <div style="margin-top: 15px">
-    <div style="margin-bottom: 5px; font-size: 0.75rem">Toast Variant Colors Example:</div>
-
-    <div style="display: flex; gap: 16px;">
-      <div style="flex: 1 1 auto">
-        <toasts-component id="toast1g" solid-toast position=""></toasts-component>
-        <toasts-component id="toast1d" solid-toast position=""></toasts-component>
-      </div>
-      <div style="flex: 1 1 auto">
-        <toasts-component id="toast1e" solid-toast position=""></toasts-component>
-        <toasts-component id="toast1f" solid-toast position=""></toasts-component>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="display-box-demo">
-  <div style="margin-top: 15px">
-    <div style="margin-bottom: 5px; font-size: 0.75rem">Plumage Toast Max Examples:</div>
-    <toasts-component id="toast4" position="top-right" plumage-toast plumage-toast-max></toasts-component>
-    <toasts-component id="toast2b" position="top-right" plumage-toast plumage-toast-max></toasts-component>
-  </div>
-</section>
-
-<script>
-(function attachExamples(){
-  function run() {
-    // Ensure CE is defined before calling methods
-    customElements.whenDefined('toasts-component').then(() => {
-      ${`
-window.addEventListener("DOMContentLoaded", () => {
-  const toast1 = document.getElementById("toast1");
-  toast1 && toast1.showToast({
-    toastTitle: "Solid Toast",
-    content: "This is a solid toast example!",
-    duration: 5000,
-    svgIcon: "exclamation-triangle-outline",
-    persistent: true,
-    variant: toast1.variant, // (uses component default if set)
-  });
-
-  const toast1g = document.getElementById("toast1g");
-  toast1g && toast1g.showToast({
-    toastTitle: "Solid Toast",
-    content: "This is a solid toast example!",
-    duration: 5000,
-    svgIcon: "exclamation-triangle-outline",
-    persistent: true,
-    variantClass: "primary",
-  });
-
-  const toast1d = document.getElementById("toast1d");
-  toast1d && toast1d.showToast({
-    toastTitle: "Solid Toast",
-    content: "This is a solid toast example!",
-    duration: 5000,
-    svgIcon: "exclamation-triangle-outline",
-    persistent: true,
-    variantClass: "secondary",
-  });
-
-  const toast1e = document.getElementById("toast1e");
-  toast1e && toast1e.showToast({
-    toastTitle: "Solid Toast",
-    content: "This is a solid toast example!",
-    duration: 5000,
-    svgIcon: "exclamation-triangle-outline",
-    persistent: true,
-    variantClass: "danger",
-  });
-
-  const toast1f = document.getElementById("toast1f");
-  toast1f && toast1f.showToast({
-    toastTitle: "Solid Toast",
-    content: "This is a solid toast example!",
-    duration: 5000,
-    svgIcon: "exclamation-triangle-outline",
-    persistent: true,
-    variantClass: "success",
-  });
-
-  const toast2 = document.getElementById("toast2");
-  toast2 && toast2.showToast({
-    toastTitle: "Plumage Toast",
-    content: "This is a Plumage styled toast example!",
-    duration: 5000,
-    svgIcon: "exclamation-circle-fill",
-    persistent: true,
-    noCloseButton: true,
-    iconPlumageStyle: true,
-    variantClass: "info",
-  });
-
-  const toast3 = document.getElementById("toast3");
-  toast3 && toast3.showToast({
-    toastTitle: "Title Text",
-    content: "This is a default toast example!",
-    additionalHdrContent: "43 seconds ago",
-    duration: 5000,
-    svgIcon: "exclamation-triangle-outline",
-    persistent: true,
-  });
-
-  const toast3a = document.getElementById("toast3a");
-  toast3a && toast3a.showToast({
-    toastTitle: "Title Text",
-    content: "This is a default toast example!",
-    additionalHdrContent: "43 seconds ago",
-    duration: 5000,
-    svgIcon: "exclamation-triangle-outline",
-    persistent: true,
-    variantClass: "primary",
-  });
-
-  const toast3b = document.getElementById("toast3b");
-  toast3b && toast3b.showToast({
-    toastTitle: "Title Text",
-    content: "This is a default toast example!",
-    additionalHdrContent: "43 seconds ago",
-    duration: 5000,
-    svgIcon: "exclamation-triangle-outline",
-    persistent: true,
-    variantClass: "danger",
-  });
-
-  const toast3c = document.getElementById("toast3c");
-  toast3c && toast3c.showToast({
-    toastTitle: "Title Text",
-    content: "This is a default toast example!",
-    additionalHdrContent: "43 seconds ago",
-    duration: 5000,
-    svgIcon: "exclamation-triangle-outline",
-    persistent: true,
-    variantClass: "warning",
-  });
-
-  const toast3d = document.getElementById("toast3d");
-  toast3d && toast3d.showToast({
-    toastTitle: "Title Text",
-    content: "This is a default toast example!",
-    additionalHdrContent: "43 seconds ago",
-    duration: 5000,
-    svgIcon: "exclamation-triangle-outline",
-    persistent: true,
-    variantClass: "success",
-  });
-
-  const toast4 = document.getElementById("toast4");
-  toast4 && toast4.showToast({
-    toastTitle: "Plumage Toast Max",
-    contentHtml: "<div><div>This is data</div><div>This is data</div></div>",
-    duration: 7000,
-    svgIcon: "exclamation-circle-fill",
-    persistent: true,
-    iconPlumageStyle: true,
-    variantClass: "danger",
-  });
-});
-
-window.showNotification1a = function () {
-  const t = document.getElementById("toast1a");
-  t && t.showToast({
-    content: "This is a toast message!",
-    variantClass: "primary",
-    duration: 5000,
-    svgIcon: "exclamation-triangle-outline",
-    persistent: false,
-    noHoverPause: true,
-  });
-};
-
-window.showCustomNotification1b = function () {
-  const t = document.getElementById("toast1a");
-  t && t.showToast({
-    content: "This is a custom toast with an icon!",
-    variantClass: "light",
-    duration: 7000,
-    svgIcon: "info-fill",
-    persistent: false,
-  });
-};
-
-window.showNotification1c = function () {
-  const t = document.getElementById("toast1c");
-  t && t.showToast({
-    toastTitle: "Title Text",
-    content: "This is a toast message!",
-    additionalHdrContent: "43 seconds ago",
-    variantClass: "primary",
-    duration: 5000,
-    svgIcon: "exclamation-triangle-outline",
-    persistent: false,
-  });
-};
-
-window.showCustomNotification1d = function () {
-  const t = document.getElementById("toast1c");
-  t && t.showToast({
-    toastTitle: "Title Text",
-    contentHtml: "<div><div>This is data</div><div>This is data</div></div>",
-    additionalHdrContent: "43 seconds ago",
-    variantClass: "danger",
-    duration: 5000,
-    svgIcon: "exclamation-triangle-outline",
-    persistent: false,
-  });
-};
-
-window.showNotification2a = function () {
-  const t = document.getElementById("toast2a");
-  t && t.showToast({
-    toastTitle: "Title Text",
-    content: "This is a Plumage Styled toast message!",
-    duration: 5000,
-    svgIcon: "exclamation-circle-fill",
-    persistent: false,
-    noCloseButton: false,
-    iconPlumageStyle: true,
-    variantClass: "danger",
-  });
-};
-
-window.showNotification2b = function () {
-  const t = document.getElementById("toast2b");
-  t && t.showToast({
-    toastTitle: "Plumage Toast Max",
-    contentHtml: \`<div slot="custom-content">
-            <div>This is data</div>
-            <div>This is data</div>
-          </div>\`,
-    duration: 7000,
-    svgIcon: "exclamation-circle-fill",
-    persistent: false,
-    noCloseButton: false,
-    iconPlumageStyle: true,
-    variantClass: "danger",
-  });
-};
-
-// Simulate real-time notifications
-(function simulateRealTimeNotifications() {
-  const types = ["error", "update", "news"];
-  const messages = {
-    error: "An error toast example!",
-    update: "System update toast example!",
-    news: "Breaking news alert/toast example !",
-  };
-  const variants = { error: "danger", update: "info", news: "primary" };
-  const icons = {
-    error: "exclamation-triangle-fill",
-    update: "info-fill",
-    news: "check-circle-fill",
-  };
-
-  setInterval(() => {
-    const type = types[Math.floor(Math.random() * types.length)];
-    const t = document.getElementById("toast1a");
-    t && t.showToast({
-      toastTitle: type[0].toUpperCase() + type.slice(1),
-      content: messages[type],
-      variantClass: variants[type],
-      duration: 7000,
-      svgIcon: icons[type],
-      persistent: false,
+      await safeShowToast(t, { ...base, content: 'Primary variant', variantClass: 'primary' });
+      await safeShowToast(t, { ...base, content: 'Secondary variant', variantClass: 'secondary' });
+      await safeShowToast(t, { ...base, content: 'Danger variant', variantClass: 'danger' });
+      await safeShowToast(t, { ...base, content: 'Warning variant', variantClass: 'warning' });
+      await safeShowToast(t, { ...base, content: 'Success variant', variantClass: 'success' });
+      await safeShowToast(t, { ...base, content: 'Info variant', variantClass: 'info' });
     });
-  }, 10000);
-})();
 
-window.simulateStackedNotifications = function () {
-  const t = document.getElementById("toast1c");
-  const notifications = [
-    {
-      toastTitle: "Title Text 1",
-      content: "Stacked Notification 1",
-      variantClass: "info",
-      additionalHdrContent: "43 seconds ago",
-    },
-    {
-      toastTitle: "Title Text 2",
-      content: "Stacked Notification 2",
-      variantClass: "danger",
-    },
-    {
-      toastTitle: "Title Text 3",
-      content: "Stacked Notification 3",
-      variantClass: "success",
-    },
-  ];
+    return wrap;
+  },
 
-  let delay = 0;
-  notifications.forEach((n) => {
-    setTimeout(
-      () =>
-        t && t.showToast({
-          ...n,
-          duration: 10000,
-          svgIcon: "exclamation-triangle-outline",
-          persistent: false,
-        }),
-      delay
-    );
-    delay += 2000;
-  });
-};`.trim()}
-    }); // whenDefined
-  }
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: (_code, ctx) => {
+          const ids = makeIds({ host: 'defaultVariantsHost' }, ctx);
+          const a = { ...(ctx?.args || {}), appendToast: true };
 
-  if (document.readyState !== 'loading') run();
-  else window.addEventListener('DOMContentLoaded', run);
-})();
-</script>
-`;
+          const base = {
+            ...buildToastOptions(a),
+            toastTitle: a.toastTitle || 'Title Text',
+            additionalHdrContent: a.additionalHeaderContent || '43 seconds ago',
+            persistent: true,
+          };
+
+          const html = normalize(`
+<div class="cwrapper">
+  <section class="display-box-demo">
+    <div style="margin-bottom: 8px; font-size: 0.75rem">Default variants stacked into one host:</div>
+    <toasts-component
+      id="${ids.host}"
+      ${valueAttr('position', a.position || '')}
+      append-toast
+    ></toasts-component>
+  </section>
+</div>
+          `);
+
+          const js = jsPreviewBlock([
+            `const t = document.getElementById('${ids.host}');`,
+            `t && t.showToast(${JSON.stringify({ ...base, content: 'Primary variant', variantClass: 'primary' }, null, 2)});`,
+            `t && t.showToast(${JSON.stringify({ ...base, content: 'Secondary variant', variantClass: 'secondary' }, null, 2)});`,
+            `t && t.showToast(${JSON.stringify({ ...base, content: 'Danger variant', variantClass: 'danger' }, null, 2)});`,
+            `t && t.showToast(${JSON.stringify({ ...base, content: 'Warning variant', variantClass: 'warning' }, null, 2)});`,
+            `t && t.showToast(${JSON.stringify({ ...base, content: 'Success variant', variantClass: 'success' }, null, 2)});`,
+            `t && t.showToast(${JSON.stringify({ ...base, content: 'Info variant', variantClass: 'info' }, null, 2)});`,
+          ]);
+
+          return docsCode(html, js);
+        },
+      },
+      story: { height: '380px' },
+      description: {
+        story:
+          'Default toast variants stacked into a single host so you can compare visual styles without overlapping containers.',
+      },
+    },
+  },
+};
+
+/* =========================================================
+   3) Solid Toast (single preview; args-driven)
+   ========================================================= */
+
+export const SolidToast = {
+  name: 'Solid: Toast',
+  args: {
+    solidToast: true,
+    plumageToast: false,
+    plumageToastMax: false,
+    appendToast: true,
+    position: 'bottom-right',
+  },
+  render: (args, context) => {
+    const ids = makeIds({ host: 'solidToastHost' }, context);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'cwrapper';
+
+    const section = document.createElement('section');
+    section.className = 'display-box-demo';
+
+    const label = document.createElement('div');
+    label.textContent = 'Solid toast styling preview:';
+    label.style.marginBottom = '8px';
+    label.style.fontSize = '0.75rem';
+
+    const host = document.createElement(TAG);
+    host.id = ids.host;
+
+    applyHostProps(host, args);
+
+    section.append(label, host);
+    wrap.append(section);
+
+    runOnArgsChange(`${context.id}::SolidToast`, args, async () => {
+      const t = document.getElementById(ids.host);
+
+      const opts = {
+        ...buildToastOptions(args),
+        toastTitle: args.toastTitle || 'Solid Toast',
+        content: args.message || 'This is a solid toast example!',
+        variantClass: args.variant || '',
+      };
+
+      await safeShowToast(t, opts);
+    });
+
+    return wrap;
+  },
+
+  parameters: {
+    docs: {
+      story: { height: '220px' },
+      description: {
+        story:
+          'The "Solid" variant provides a bold appearance with solid backgrounds corresponding to each variant type.',
+      },
+    },
+  },
+};
+
+/* =========================================================
+   4) Solid Variant Colors (STACKED in ONE host; args-driven)
+   ========================================================= */
+
+export const SolidVariantColors = {
+  name: 'Solid: Variant Colors (Stacked)',
+  args: {
+    solidToast: true,
+    plumageToast: false,
+    plumageToastMax: false,
+    appendToast: true,
+    position: 'top-right',
+  },
+  render: (args, context) => {
+    const ids = makeIds({ host: 'solidVariantsHost' }, context);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'cwrapper';
+
+    const section = document.createElement('section');
+    section.className = 'display-box-demo';
+
+    const label = document.createElement('div');
+    label.textContent = 'Solid variants stacked into one host:';
+    label.style.marginBottom = '8px';
+    label.style.fontSize = '0.75rem';
+
+    const host = document.createElement(TAG);
+    host.id = ids.host;
+
+    applyHostProps(host, args, { solidToast: true, appendToast: true });
+
+    section.append(label, host);
+    wrap.append(section);
+
+    runOnArgsChange(`${context.id}::SolidVariantColors`, args, async () => {
+      const t = document.getElementById(ids.host);
+
+      const base = {
+        ...buildToastOptions(args),
+        toastTitle: args.toastTitle || 'Solid Toast',
+        duration: Number.isFinite(args.duration) ? args.duration : 7000,
+        persistent: true,
+      };
+
+      await safeShowToast(t, { ...base, content: 'Primary solid variant', variantClass: 'primary' });
+      await safeShowToast(t, { ...base, content: 'Secondary solid variant', variantClass: 'secondary' });
+      await safeShowToast(t, { ...base, content: 'Danger solid variant', variantClass: 'danger' });
+      await safeShowToast(t, { ...base, content: 'Warning solid variant', variantClass: 'warning' });
+      await safeShowToast(t, { ...base, content: 'Success solid variant', variantClass: 'success' });
+      await safeShowToast(t, { ...base, content: 'Info solid variant', variantClass: 'info' });
+    });
+
+    return wrap;
+  },
+
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: (_code, ctx) => {
+          const ids = makeIds({ host: 'solidVariantsHost' }, ctx);
+          const a = { ...(ctx?.args || {}), solidToast: true, appendToast: true };
+
+          const base = {
+            ...buildToastOptions(a),
+            toastTitle: a.toastTitle || 'Solid Toast',
+            duration: Number.isFinite(a.duration) ? a.duration : 7000,
+            persistent: true,
+          };
+
+          const html = normalize(`
+<div class="cwrapper">
+  <section class="display-box-demo">
+    <div style="margin-bottom: 8px; font-size: 0.75rem">Solid variants stacked into one host:</div>
+    <toasts-component
+      id="${ids.host}"
+      solid-toast
+      ${valueAttr('position', a.position || '')}
+      append-toast
+    ></toasts-component>
+  </section>
+</div>
+          `);
+
+          const js = jsPreviewBlock([
+            `const t = document.getElementById('${ids.host}');`,
+            `t && t.showToast(${JSON.stringify({ ...base, content: 'Primary solid variant', variantClass: 'primary' }, null, 2)});`,
+            `t && t.showToast(${JSON.stringify({ ...base, content: 'Secondary solid variant', variantClass: 'secondary' }, null, 2)});`,
+            `t && t.showToast(${JSON.stringify({ ...base, content: 'Danger solid variant', variantClass: 'danger' }, null, 2)});`,
+            `t && t.showToast(${JSON.stringify({ ...base, content: 'Warning solid variant', variantClass: 'warning' }, null, 2)});`,
+            `t && t.showToast(${JSON.stringify({ ...base, content: 'Success solid variant', variantClass: 'success' }, null, 2)});`,
+            `t && t.showToast(${JSON.stringify({ ...base, content: 'Info solid variant', variantClass: 'info' }, null, 2)});`,
+          ]);
+
+          return docsCode(html, js);
+        },
+      },
+      story: { height: '380px' },
+      description: {
+        story:
+          'Solid variants stacked into a single host so you can compare solid styling across all variants.',
+      },
+    },
+  },
+};
+
+/* =========================================================
+   5) Plumage Toast (single preview; args-driven)
+   ========================================================= */
+
+export const PlumageToast = {
+  name: 'Plumage: Toast',
+  args: {
+    solidToast: false,
+    plumageToast: true,
+    plumageToastMax: false,
+    appendToast: true,
+    position: 'top-right',
+    iconPlumageStyle: true,
+    noCloseButton: true,
+    variant: 'info',
+    svgIcon: 'exclamation-circle-fill',
+  },
+  render: (args, context) => {
+    const ids = makeIds({ host: 'plumageToastHost' }, context);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'cwrapper';
+
+    const section = document.createElement('section');
+    section.className = 'display-box-demo';
+
+    const label = document.createElement('div');
+    label.textContent = 'Plumage toast styling preview:';
+    label.style.marginBottom = '8px';
+    label.style.fontSize = '0.75rem';
+
+    const host = document.createElement(TAG);
+    host.id = ids.host;
+
+    applyHostProps(host, args, { plumageToast: true });
+
+    section.append(label, host);
+    wrap.append(section);
+
+    runOnArgsChange(`${context.id}::PlumageToast`, args, async () => {
+      const t = document.getElementById(ids.host);
+
+      const opts = {
+        ...buildToastOptions(args),
+        toastTitle: args.toastTitle || 'Plumage Toast',
+        content: args.message || 'This is a Plumage styled toast example!',
+        variantClass: args.variant || 'info',
+      };
+
+      await safeShowToast(t, opts);
+    });
+
+    return wrap;
+  },
+
+  parameters: {
+    docs: {
+      story: { height: '220px' },
+      description: {
+        story:
+          'The "Plumage" variant offers a modern and clean design using Plumage-specific styling.',
+      },
+    },
+  },
+};
+
+/* =========================================================
+   6) Plumage Toast Max (single preview; args-driven)
+   ========================================================= */
+
+export const PlumageToastMax = {
+  name: 'Plumage: Toast Max',
+  args: {
+    solidToast: false,
+    plumageToast: true,
+    plumageToastMax: true,
+    appendToast: true,
+    position: 'top-right',
+    iconPlumageStyle: true,
+    variant: 'danger',
+    svgIcon: 'exclamation-circle-fill',
+    customContent: '<div><div>This is data</div><div>This is data</div></div>',
+  },
+  render: (args, context) => {
+    const ids = makeIds({ host: 'plumageToastMaxHost' }, context);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'cwrapper';
+
+    const section = document.createElement('section');
+    section.className = 'display-box-demo';
+
+    const label = document.createElement('div');
+    label.textContent = 'Plumage toast max styling preview:';
+    label.style.marginBottom = '8px';
+    label.style.fontSize = '0.75rem';
+
+    const host = document.createElement(TAG);
+    host.id = ids.host;
+
+    applyHostProps(host, args, { plumageToast: true, plumageToastMax: true });
+
+    section.append(label, host);
+    wrap.append(section);
+
+    runOnArgsChange(`${context.id}::PlumageToastMax`, args, async () => {
+      const t = document.getElementById(ids.host);
+
+      const opts = {
+        ...buildToastOptions(args),
+        toastTitle: args.toastTitle || 'Plumage Toast Max',
+        // prefer customContent for max
+        ...buildToastContent(args),
+        variantClass: args.variant || 'danger',
+      };
+
+      await safeShowToast(t, opts);
+    });
+
+    return wrap;
+  },
+
+  parameters: {
+    docs: {
+      story: { height: '220px' },
+      description: {
+        story:
+          'The "Plumage Max" variant is designed for more prominent notifications, featuring larger content and a more prominent layout.',
+      },
+    },
+  },
+};
