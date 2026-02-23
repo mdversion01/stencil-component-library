@@ -1,0 +1,94 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <div style="margin-bottom: 20px">
+          <datepicker-component calendar></datepicker-component>
+        </div>
+
+        <div style="width: 210px">
+          <datepicker-component input-id="dp-test" date-format="MM-DD-YYYY" size="lg"></datepicker-component>
+        </div>
+
+        <div style="margin-bottom: 20px">
+          <datepicker-component calendar plumage></datepicker-component>
+        </div>
+
+        <div style="width: 210px">
+          <datepicker-component date-format="MM-DD-YYYY" plumage required validation validation-message="Invalid date"></datepicker-component>
+        </div>
+
+        <div>
+          <date-range-picker-component size="sm" range-picker></date-range-picker-component>
+        </div>
+
+        <div style="width: 325px">
+          <date-range-picker-component input-id="drp-1" form-layout="inline" show-long required validation validation-message="Invalid date"></date-range-picker-component>
+        </div>
+
+        <div>
+          <date-range-picker-component size="sm" plumage show-iso range-picker></date-range-picker-component>
+        </div>
+
+        <div style="width: 325px">
+          <date-range-picker-component plumage show-ymd required validation validation-message="Invalid date"></date-range-picker-component>
+        </div>
+
+        <div>
+          <date-range-time-picker-component size="sm" range-time-picker date-format="MM-DD-YYYY" show-duration></date-range-time-picker-component>
+        </div>
+
+        <div>
+          <date-range-time-picker-component size="sm" range-time-picker plumage date-format="MM-DD-YYYY" show-duration></date-range-time-picker-component>
+        </div>
+
+        <div style="width: 554px">
+          <date-range-time-picker-component
+            size="sm"
+            show-long
+            is-twenty-four-hour-format="false"
+            form-layout="inline"
+            plumage
+            show-duration
+            required
+            validation
+            validation-message="Invalid date"
+          ></date-range-time-picker-component>
+        </div>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

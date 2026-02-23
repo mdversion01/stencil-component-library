@@ -1,0 +1,53 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <modal-component modal-id="myModal" cancel-close-btn="Cancel" size="sm" btn-text="Launch demo modal" variant="primary" title="Modal title">
+          <p>
+            Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at
+            eros.
+          </p>
+
+          <div slot="footer">
+            <button class="btn btn-primary btn-sm">Save</button>
+          </div>
+        </modal-component>
+
+        <br />
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

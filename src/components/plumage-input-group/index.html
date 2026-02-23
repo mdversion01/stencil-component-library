@@ -1,0 +1,87 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <form-component>
+          <plumage-input-group-component
+            slot="formField"
+            input-id="pl-input-group-1"
+            label="Test Label"
+            label-size="xs"
+            other-content
+            append
+            prepend
+            prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
+          >
+            <button-component slot="append" type="button">Go</button-component>
+          </plumage-input-group-component>
+
+          <plumage-input-group-component
+            slot="formField"
+            input-id="pl-input-group-3"
+            label="Test Label"
+            append
+            prepend
+            prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
+          >
+            <button-component slot="append" outlined variant="secondary" size="sm" type="button">Go</button-component>
+          </plumage-input-group-component>
+
+          <plumage-input-group-component
+            slot="formField"
+            input-id="pl-input-group-2"
+            label="Test Label"
+            size="lg"
+            label-size="xs"
+            append
+            append-icon="fa-solid fa-dollar-sign"
+            prepend
+            prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
+          >
+          </plumage-input-group-component>
+
+          <plumage-input-group-component slot="formField" label="Search" plumage-search> </plumage-input-group-component>
+        </form-component>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

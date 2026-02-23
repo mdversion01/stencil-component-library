@@ -1,0 +1,60 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <badge-component badge-id="badge1" elevation="6" shape="square">Badge Base</badge-component>
+
+        <badge-component badge-id="badge1" elevation="6" shape="square" icon>
+          Badge Base
+          <span slot="icon"><icon-component icon="fas fa-info-circle"></icon-component></span>
+        </badge-component>
+
+        <badge-component badge-id="badge2" variant="success" outlined size="lg">Badge Large</badge-component>
+
+        <badge-component badge-id="badge3" variant="purple" outlined shape="pill" size="sm">Badge Small</badge-component>
+
+        <badge-component id="badge4" bdg-position="left" elevation="3" variant="primary" token addBorder shape="circle" inset>
+          <button-component type="button" variant="primary" outlined size="sm">Badge token on a button with icon</button-component>
+          <span slot="token"><i class="fa-solid fa-house"></i></span
+        ></badge-component>
+
+        <badge-component badge-id="badge5" elevation="1" dot pulse variant="danger">
+          <button-component type="button" variant="secondary" outlined size="sm">Badge dot on a button</button-component>
+        </badge-component>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

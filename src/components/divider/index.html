@@ -1,0 +1,93 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        <divider-component></divider-component>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+
+        <section>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+          <divider-component dashed></divider-component>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        </section>
+
+        <section>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+          <divider-component orientation="center">Text Center</divider-component>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        </section>
+
+        <section class="display-box-demo">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+          <divider-component orientation="left">Text Left</divider-component>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        </section>
+
+        <section class="display-box-demo">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+          <divider-component orientation="left" remove-orientation-margin="left">Text Left</divider-component>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        </section>
+
+        <section>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+          <divider-component orientation="right">Text Right</divider-component>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        </section>
+
+        <section>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+          <divider-component orientation="right" remove-orientation-margin="right">Text Right</divider-component>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        </section>
+
+        <section>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+          <divider-component styles="color:red;" orientation="center" plain>Text Center and Plain</divider-component>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.</p>
+        </section>
+
+        <section class="display-box-demo">
+          <div class="txt-14">
+            Test <divider-component type="vertical"></divider-component> Test <divider-component type="vertical"></divider-component> Test
+            <divider-component type="vertical"></divider-component>
+          </div>
+        </section>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

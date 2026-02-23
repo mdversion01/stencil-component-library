@@ -1,0 +1,103 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+
+
+        <plumage-select-field-component
+          label="Favorite Fruit"
+          select-field-id="fruit4"
+          label-align="right"
+          label-size="lg"
+          size="lg"
+          value=""
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></plumage-select-field-component>
+
+        <plumage-select-field-component
+          label="Favorite Fruit"
+          select-field-id="fruit5"
+          form-layout="horizontal"
+          label-align="right"
+          value=""
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></plumage-select-field-component>
+
+        <plumage-select-field-component
+          label="Favorite Fruit"
+          select-field-id="fruit6"
+          form-layout="horizontal"
+          label-align="right"
+          value=""
+          size="lg"
+           required
+          validation
+          validation-message="Please make a selection"
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></plumage-select-field-component>
+
+      <plumage-select-field-component
+          label="Favorite Fruit"
+          multiple
+          required
+          validation
+          validation-message="Please make a selection"
+          show-default-in-multiple
+          field-height="2"
+          select-field-id="fruit"
+          value=""
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></plumage-select-field-component>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

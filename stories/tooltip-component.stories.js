@@ -15,7 +15,11 @@ export default {
 
   argTypes: {
     // Component props
-    message: { control: 'text', table: { category: 'Tooltip Options' }, description: 'Message fallback when no title/data-original-title supplied.' },
+    message: {
+      control: 'text',
+      table: { category: 'Tooltip Options' },
+      description: 'Message fallback when no title/data-original-title supplied.',
+    },
 
     tooltipTitle: {
       control: 'text',
@@ -74,7 +78,7 @@ export default {
     visible: {
       control: 'boolean',
       table: { category: 'Tooltip Options', defaultValue: { summary: false } },
-      description: 'Used only with manual trigger (not wired here).',
+      description: 'Used only with manual trigger (wired in ManualTrigger story).',
     },
 
     // Demo helpers
@@ -101,7 +105,7 @@ export default {
 
 /** Collapse blank lines + trim edges */
 const normalize = txt => {
-  const lines = txt
+  const lines = String(txt ?? '')
     .replace(/\r\n/g, '\n')
     .split('\n')
     .map(l => l.replace(/[ \t]+$/g, ''));
@@ -121,11 +125,13 @@ const normalize = txt => {
     out.push(line);
   }
 
-  while (out[0] === '') out.shift();
-  while (out[out.length - 1] === '') out.pop();
+  while (out.length && out[0] === '') out.shift();
+  while (out.length && out[out.length - 1] === '') out.pop();
 
   return out.join('\n');
 };
+
+const uid = () => `${Math.random().toString(36).slice(2, 8)}-${Date.now().toString(36)}`;
 
 /** Build clean attribute block */
 const attrs = pairs =>
@@ -137,7 +143,6 @@ const attrs = pairs =>
 /** Generate markup from args */
 const buildTooltipMarkup = (args, id) => {
   const htmlFlag = !!args.htmlContent;
-
   const dataTitle = (args.tooltipTitle || args.message || 'Tooltip content').replaceAll('"', '&quot;');
 
   const attributeBlock = attrs([
@@ -173,44 +178,44 @@ const buildTooltipMarkup = (args, id) => {
 // Playground (Controls-enabled)
 // ======================================================
 
-// export const Playground = {
-//   render: args => {
-//     const id = `tt-${Math.random().toString(36).slice(2)}`;
-//     return buildTooltipMarkup(args, id);
-//   },
+export const Playground = {
+  render: args => {
+    const id = `tt-${uid()}`;
+    return buildTooltipMarkup(args, id);
+  },
 
-//   parameters: {
-//     docs: {
-//       source: {
-//         language: 'html',
-//         transform: (_, ctx) => {
-//           const id = `tt-doc-${Math.random().toString(36).slice(2)}`;
-//           return buildTooltipMarkup(ctx.args, id);
-//         },
-//       },
-//       description: {
-//         story:
-//           'Use the controls to customize the tooltip. Note: "tooltip-title" is used for the tooltip content in this demo to avoid escaping issues with the default "title" attribute. In practice, you would typically use one or the other, not both.',
-//       },
-//     },
-//   },
-// };
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: (_code, ctx) => {
+          const id = `tt-doc-${uid()}`;
+          return buildTooltipMarkup(ctx.args, id);
+        },
+      },
+      description: {
+        story:
+          'Use the controls to customize the tooltip. Note: `tooltip-title` is used for the tooltip content in this demo to avoid escaping issues. In practice, you would typically use one content source (message OR tooltip-title OR data-original-title).',
+      },
+    },
+  },
+};
 
-// Playground.args = {
-//   message: '',
-//   tooltipTitle: 'Hello from tooltip!',
-//   htmlContent: false,
-//   position: 'top',
-//   trigger: 'hover focus',
-//   animation: true,
-//   container: '',
-//   customClass: '',
-//   variant: '',
-//   visible: false,
+Playground.args = {
+  message: '',
+  tooltipTitle: 'Hello from tooltip!',
+  htmlContent: false,
+  position: 'top',
+  trigger: 'hover focus',
+  animation: true,
+  container: '',
+  customClass: '',
+  variant: '',
+  visible: false,
 
-//   btnText: 'Hover me',
-//   btnVariant: 'secondary',
-// };
+  btnText: 'Hover me',
+  btnVariant: 'secondary',
+};
 
 // ======================================================
 // Static Examples (Docs code preview forced to HTML)
@@ -244,12 +249,9 @@ export const PositionsGrid = {
   render: () => POSITIONS_GRID_HTML,
   parameters: {
     docs: {
-      source: {
-        language: 'html',
-        code: POSITIONS_GRID_HTML,
-      },
+      source: { language: 'html', code: POSITIONS_GRID_HTML },
       description: {
-        story: 'Use the `position` prop to specify tooltip placement, top, right, bottom, left, or auto, relative to the trigger element.',
+        story: 'Use the `position` prop to specify tooltip placement: top, right, bottom, left, or auto.',
       },
     },
   },
@@ -273,13 +275,10 @@ export const WithHTMLContent = {
   render: () => WITH_HTML_CONTENT_HTML,
   parameters: {
     docs: {
-      source: {
-        language: 'html',
-        code: WITH_HTML_CONTENT_HTML,
-      },
+      source: { language: 'html', code: WITH_HTML_CONTENT_HTML },
       description: {
         story:
-          'Set the `html-content` prop (or `data-html` attribute) to treat the tooltip content as trusted HTML. The `tooltip-title` prop is recommended for use with this option to avoid escaping issues.',
+          'Set `html-content` (or `data-html`) to treat the tooltip content as trusted HTML. Use `tooltip-title` in apps when you want to avoid attribute escaping.',
       },
     },
   },
@@ -321,12 +320,9 @@ export const Variants = {
   render: () => VARIANTS_HTML,
   parameters: {
     docs: {
-      source: {
-        language: 'html',
-        code: VARIANTS_HTML,
-      },
+      source: { language: 'html', code: VARIANTS_HTML },
       description: {
-        story: 'Use the `variant` prop to apply different visual styles, primary, secondary, success, danger, warning, info, or dark, to the tooltip.',
+        story: 'Use the `variant` prop to apply visual styles: primary, secondary, success, danger, warning, info, or dark.',
       },
     },
   },
@@ -334,11 +330,11 @@ export const Variants = {
 
 const INLINE_LINKS_HTML = normalize(`
 <p style="max-width:680px; line-height:1.6">
-  This paragraph contains
-  <tooltip-component position="top" data-original-title="Inline tooltip" trigger="hover focus">
+  Placeholder text to demonstrate some
+  <tooltip-component position="top" data-original-title="Default tooltip" trigger="hover focus">
     <a href="javascript:void(0)">inline links</a>
   </tooltip-component>
-  with tooltips for demonstration.
+  with tooltips.
 </p>
 `);
 
@@ -346,12 +342,123 @@ export const InlineLinks = {
   render: () => INLINE_LINKS_HTML,
   parameters: {
     docs: {
+      source: { language: 'html', code: INLINE_LINKS_HTML },
+      description: {
+        story: 'Tooltips can be used on inline elements like links without disrupting text flow.',
+      },
+    },
+  },
+};
+
+// ======================================================
+// Manual Trigger (rendered with JS wiring, docs show HTML)
+// ======================================================
+
+// Docs preview MUST be HTML only (per your requirement).
+// The story itself wires button handlers in JS (no <script> tag needed).
+const manualTriggerDocsHtml = ids =>
+  normalize(`
+<div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+  <tooltip-component id="${ids.tip}" trigger="manual click" position="bottom" data-original-title="Manually controlled tooltip">
+    <button-component btn-text="Target" size="sm" variant="secondary"></button-component>
+  </tooltip-component>
+
+  <button-component btn-text="Show" size="sm" variant="primary" id="${ids.show}"></button-component>
+  <button-component btn-text="Hide" size="sm" variant="danger" id="${ids.hide}"></button-component>
+  <button-component btn-text="Toggle" size="sm" variant="info" id="${ids.toggle}"></button-component>
+</div>
+`);
+
+export const ManualTrigger = {
+  render: () => {
+    const token = `manual-${uid()}`;
+    const ids = {
+      tip: token,
+      show: `${token}-show`,
+      hide: `${token}-hide`,
+      toggle: `${token}-toggle`,
+    };
+
+    const wrap = document.createElement('div');
+    wrap.style.display = 'flex';
+    wrap.style.gap = '10px';
+    wrap.style.alignItems = 'center';
+    wrap.style.flexWrap = 'wrap';
+
+    const tip = document.createElement('tooltip-component');
+    tip.setAttribute('id', ids.tip);
+    tip.setAttribute('trigger', 'manual click');
+    tip.setAttribute('position', 'bottom');
+    tip.setAttribute('data-original-title', 'Manually controlled tooltip');
+
+    const targetBtn = document.createElement('button-component');
+    targetBtn.setAttribute('btn-text', 'Target');
+    targetBtn.setAttribute('size', 'sm');
+    targetBtn.setAttribute('variant', 'secondary');
+    tip.appendChild(targetBtn);
+
+    const showBtn = document.createElement('button-component');
+    showBtn.setAttribute('id', ids.show);
+    showBtn.setAttribute('btn-text', 'Show');
+    showBtn.setAttribute('size', 'sm');
+    showBtn.setAttribute('variant', 'primary');
+
+    const hideBtn = document.createElement('button-component');
+    hideBtn.setAttribute('id', ids.hide);
+    hideBtn.setAttribute('btn-text', 'Hide');
+    hideBtn.setAttribute('size', 'sm');
+    hideBtn.setAttribute('variant', 'danger');
+
+    const toggleBtn = document.createElement('button-component');
+    toggleBtn.setAttribute('id', ids.toggle);
+    toggleBtn.setAttribute('btn-text', 'Toggle');
+    toggleBtn.setAttribute('size', 'sm');
+    toggleBtn.setAttribute('variant', 'info');
+
+    wrap.append(tip, showBtn, hideBtn, toggleBtn);
+
+    // ✅ Wire up the tooltip API (no <script> injection)
+    // IMPORTANT: Don't rely on tip.visible staying in sync.
+    // Track state locally so Toggle truly toggles.
+    let isOpen = false;
+
+    const safeShow = () => {
+      isOpen = true;
+      if (typeof tip.show === 'function') tip.show();
+      else tip.setAttribute('visible', ''); // fallback if boolean attr is supported
+    };
+
+    const safeHide = () => {
+      isOpen = false;
+      if (typeof tip.hide === 'function') tip.hide();
+      else tip.removeAttribute('visible'); // fallback
+    };
+
+    showBtn.addEventListener('click', () => safeShow());
+    hideBtn.addEventListener('click', () => safeHide());
+
+    toggleBtn.addEventListener('click', () => {
+      if (isOpen) safeHide();
+      else safeShow();
+    });
+
+    return wrap;
+  },
+
+  parameters: {
+    docs: {
       source: {
         language: 'html',
-        code: INLINE_LINKS_HTML,
+        transform: () =>
+          manualTriggerDocsHtml({
+            tip: 'manual-tooltip',
+            show: 'manual-tooltip-show',
+            hide: 'manual-tooltip-hide',
+            toggle: 'manual-tooltip-toggle',
+          }),
       },
       description: {
-        story: 'Tooltips can be used on inline elements like links. The tooltip will be positioned relative to the link and will not disrupt the flow of the text.',
+        story: 'Tooltips can be manually controlled via API (show/hide), with external buttons wired in JS.',
       },
     },
   },
@@ -379,12 +486,9 @@ export const CustomContainer = {
   render: () => CUSTOM_CONTAINER_HTML,
   parameters: {
     docs: {
-      source: {
-        language: 'html',
-        code: CUSTOM_CONTAINER_HTML,
-      },
+      source: { language: 'html', code: CUSTOM_CONTAINER_HTML },
       description: {
-        story: 'Tooltips can be contained within a custom container. This is useful for scrollable or constrained areas.',
+        story: 'Tooltips can be contained within a custom container. Useful for scrollable or constrained areas.',
       },
     },
   },

@@ -223,16 +223,17 @@ $fa-font-path: '/assets/fonts'; // ✅ must be before imports!
 //   color: #e91e63 !important;
 // }
 
-// .purple {
-//   background-color: #9c27b0 !important;
-//   border-color: #9c27b0 !important;
-// }
+.purple {
+  background-color: #9c27b0 !important;
+  border-color: #9c27b0 !important;
+}
 
-// .purple.outlined {
-//   background-color: transparent !important;
-//   border-color: #9c27b0 !important;
-//   color: #9c27b0 !important;
-// }
+.purple.outlined,
+.badge--outlined.purple {
+  background-color: transparent !important;
+  border-color: #9c27b0 !important;
+  color: #9c27b0 !important;
+}
 
 // .red {
 //   background-color: #f44336 !important;

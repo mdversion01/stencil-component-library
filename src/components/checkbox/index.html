@@ -1,0 +1,78 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <checkbox-component size="lg" input-id="checkbox0" name="checkbox0" label-txt="Regular Checkbox"></checkbox-component>
+
+        <checkbox-component custom-checkbox input-id="checkbox1" name="checkbox1" label-txt="Checkbox 1"></checkbox-component>
+
+        <checkbox-component disabled size="sm" validation validation-msg="Must select" input-id="checkboxA" required name="checkboxA" label-txt="Checkbox A"></checkbox-component>
+
+        <checkbox-component
+          size="lg"
+          custom-checkbox-group
+          inline
+          validation
+          disabled
+          validation-msg="Must select at least one"
+          required
+          name="fruits"
+          group-title="Select your fruits"
+          group-title-size="lg"
+          group-options='[
+            { "value": "apple", "labelTxt": "Apple", "inputId": "chk-apple", "checked": false, "disabled": false },
+            { "value": "banana", "labelTxt": "Banana", "inputId": "chk-banana", "checked": true, "disabled": false },
+            { "value": "cherry", "labelTxt": "Cherry", "inputId": "chk-cherry", "checked": false, "disabled": true }
+          ]'
+        ></checkbox-component>
+        <br />
+        <checkbox-component
+          checkbox-group
+          size="lg"
+          disabled
+          name="fruits"
+          group-title="Select your fruits"
+          group-title-size="lg"
+          group-options='[
+            { "value": "apple", "labelTxt": "Apple", "inputId": "chk-apple1", "checked": false, "disabled": false },
+            { "value": "banana", "labelTxt": "Banana", "inputId": "chk-banana1", "checked": true, "disabled": false },
+            { "value": "cherry", "labelTxt": "Cherry", "inputId": "chk-cherry1", "checked": false, "disabled": true }
+          ]'
+        ></checkbox-component>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

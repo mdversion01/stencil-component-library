@@ -1,0 +1,88 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <plumage-autocomplete-multiple-selections-component
+            id="aci4"
+            editable
+            input-id="ac-21"
+            label="Autocomplete Multiple Selections"
+            placeholder="Type to search..."
+            data-autocomplete="true"
+            placeholder="Type to search..."
+
+            size="lg"
+            label-size="xs"
+            required
+            add-btn
+            validation
+            validation-message="Please fill in"
+            placeholder="Type to search..."
+            form-layout="horizontal"
+            label-align="right"
+          ></plumage-autocomplete-multiple-selections-component>
+      </div>
+    </app-wrapper>
+
+    <script type="module">
+      window.addEventListener('DOMContentLoaded', () => {
+          let aci4Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango', 'Bet', 'Betty', 'Bobby', 'Bob', 'Bobby Brown', 'Bobby Blue', 'Bobby Green'];
+
+        const aci4 = document.getElementById('aci4');
+
+        (async () => {
+          if (window.customElements?.whenDefined) {
+            await customElements.whenDefined('autocomplete-multiple-selections');
+          }
+          if (typeof aci4.componentOnReady === 'function') {
+            await aci4.componentOnReady();
+          }
+
+          // seed options by assigning the prop (the component’s @Watch('options') will pick it up)
+          aci4.options = aci4Options.slice();
+
+          // there is NO optionsChange in this component by default.
+          // You can still listen to selection changes:
+          aci4.addEventListener('multiSelectChange', e => {
+            console.log('[aci4 selectedItems]', e.detail);
+          });
+
+          // If you want to mirror user-added options back to app state,
+          // you must add an `@Event({eventName:'optionsChange'})` inside the component
+          // and emit it when options are upserted/deleted. Otherwise, there’s no hook.
+        })();
+      });
+    </script>
+  </body>
+</html>

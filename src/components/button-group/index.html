@@ -1,0 +1,52 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <button-group vertical>
+          <button-component title-attr="Go Ahead" start size="sm" variant="active-blue" active vertical group-btn btn-text="Default Button"></button-component>
+          <button-component title-attr="Go Ahead" variant="active-blue" size="sm" vertical group-btn btn-text="Default Button"></button-component>
+          <button-component title-attr="Go Ahead" variant="active-blue" disabled size="sm" vertical group-btn end btn-text="Default This Button"></button-component>
+        </button-group>
+
+        <button-group>
+          <button-component title-attr="Go Ahead" start size="sm" variant="primary" group-btn btn-text="Default Button"></button-component>
+          <button-component title-attr="Go Ahead" variant="danger" size="sm" group-btn btn-text="Default Button"></button-component>
+          <button-component title-attr="Go Ahead" variant="success" size="sm" group-btn end btn-text="Default This Button"></button-component>
+        </button-group>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

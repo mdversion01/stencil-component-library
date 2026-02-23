@@ -1,0 +1,58 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <svg-component
+          class="icon"
+          width="24"
+          height="24"
+          fill="#000000"
+          path='<path d="M341.8 72.6C329.5 61.2 310.5 61.2 298.3 72.6L74.3 280.6C64.7 289.6 61.5 303.5 66.3 315.7C71.1 327.9 82.8 336 96 336L112 336L112 512C112 547.3 140.7 576 176 576L464 576C499.3 576 528 547.3 528 512L528 336L544 336C557.2 336 569 327.9 573.8 315.7C578.6 303.5 575.4 289.5 565.8 280.6L341.8 72.6zM304 384L336 384C362.5 384 384 405.5 384 432L384 528L256 528L256 432C256 405.5 277.5 384 304 384z" />'
+        ></svg-component>
+
+        <svg-component class="icon" width="48" height="48" fill="blue"></svg-component>
+
+        <hr />
+
+        <svg-component class="icon" width="48" height="48" view-box="0 0 640 640" fill="blue" svg-margin="left" svg-aria-hidden="true"></svg-component>
+
+        <hr />
+
+        <svg-component class="icon" width="48" height="48" view-box="0 0 640 640" fill="blue" svg-margin="both" svg-aria-hidden="true"></svg-component>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

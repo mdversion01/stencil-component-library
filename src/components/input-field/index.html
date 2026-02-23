@@ -1,0 +1,83 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <input-field-component label="First Name" label-size="xs" size="sm" value="" input-id="firstName" form-layout="horizontal" label-align="right"></input-field-component>
+
+        <input-field-component label="Last Name" value="" input-id="lastName" label-size="base" size="lg" form-layout="horizontal" label-align="right"></input-field-component>
+
+        <input-field-component label="Email" value="" input-id="email" size="lg" form-layout="horizontal" label-size="xs" label-align="right"></input-field-component>
+      </div>
+      <div class="cwrapper">
+        <form-component>
+          <input-field-component
+            required
+            validation
+            validation-message="Please enter First name"
+            label="First Name"
+            label-size="sm"
+            size="sm"
+            value=""
+            input-id="input-5"
+            slot="formField"
+          ></input-field-component>
+
+          <input-field-component
+            required
+            validation
+            validation-message="Please enter Last name"
+            label="Last Name"
+            value=""
+            input-id="input-6"
+            slot="formField"
+          ></input-field-component>
+
+          <input-field-component
+            required
+            validation
+            validation-message="Please enter Last name"
+            label="Last Name"
+            value=""
+            input-id="input-6"
+            slot="formField"
+            size="lg"
+            label-size="lg"
+          ></input-field-component>
+        </form-component>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

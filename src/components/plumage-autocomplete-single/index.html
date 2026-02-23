@@ -1,0 +1,88 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <plumage-autocomplete-single
+          id="aci1"
+          required
+          validation
+          validation-message="Please fill in"
+          add-btn
+          size="sm"
+          size="sm"
+          label-size="sm"
+          input-id="ac-single1"
+          label="Autocomplete Single"
+          label-align="right"
+        ></plumage-autocomplete-single>
+
+        <plumage-autocomplete-single
+          id="aci2"
+          input-id="ac-single2"
+          label="Autocomplete Single"
+          clear-icon="fa-solid fa-xmark"
+          size="sm"
+          required
+          validation
+          validation-message="Please fill in"
+          form-layout="horizontal"
+          label-align="right"
+        ></plumage-autocomplete-single>
+      </div>
+    </app-wrapper>
+
+    <script type="module">
+      window.addEventListener('DOMContentLoaded', () => {
+        // const el = document.querySelector('input-group-component');
+        // el.addEventListener('valueChange', e => console.log('valueChange:', e.detail.value));
+        // // Back-compat:
+        // el.addEventListener('change', e => console.log('change:', e.detail.value));
+
+        const aci1 = document.getElementById('aci1');
+        const aci1Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+        setTimeout(() => {
+          aci1.options = aci1Options;
+        }, 300); // delay to allow stencil hydration
+
+       /***********************************/
+
+        const aci2 = document.getElementById('aci2');
+        const aci2Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+        setTimeout(() => {
+          aci2.options = aci2Options;
+        }, 300); // delay to allow stencil hydration
+      });
+    </script>
+  </body>
+</html>

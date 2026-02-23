@@ -1,0 +1,80 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <form-component>
+          <input-group-component
+            slot="formField"
+            label="Amount"
+            label-size="lg"
+            size="sm"
+            input-id="amount1"
+            other-content
+            append
+            prepend
+            prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
+          >
+            <button-component slot="append" type="button" variant="secondary">Go</button-component>
+          </input-group-component>
+
+          <input-group-component slot="formField" label="Amount" input-id="amount" other-content append form-layout="horizontal" label-align="right">
+            <button-component slot="append" type="button" variant="secondary">Go</button-component>
+          </input-group-component>
+
+          <input-group-component
+            slot="formField"
+            label="Amount"
+            size="lg"
+            input-id="amount2"
+            append
+            append-icon="fa-solid fa-dollar-sign"
+            prepend
+            prepend-icon="fa-solid fa-dollar-sign"
+            form-layout="horizontal"
+            label-align="right"
+          >
+          </input-group-component>
+
+          <input-group-component slot="formField" label="Search" input-id="q" append other-content>
+            <button-component slot="append" type="button" variant="secondary">Go</button-component>
+          </input-group-component>
+        </form-component>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

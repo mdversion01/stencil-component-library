@@ -1,0 +1,111 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <toggle-switch-component
+          input-id="agree-switch"
+          label-txt="Accept Terms"
+          toggle-txt="true"
+          new-toggle-txt='{"on":"Yes","off":"No"}'
+          checked="true"
+          size="sm"
+          required
+          validation
+          validation-message="Please accept the terms"
+        ></toggle-switch-component>
+        <br />
+        <toggle-switch-component
+          input-id="agree-switch-2"
+          label-txt="Custom Accept Terms"
+          toggle-txt="true"
+          new-toggle-txt='{"on":"Yes","off":"No"}'
+          checked="true"
+          size="sm"
+          custom-switch="true"
+          required
+          validation
+          validation-message="Please accept the terms"
+        ></toggle-switch-component>
+
+        <toggle-switch-component id="toggle-group" input-id="groupTS" switches custom-switch="true" size="sm"></toggle-switch-component>
+
+        <br /><br />
+        <toggle-switch-component id="group-inline" input-id="tsInline" switches inline></toggle-switch-component>
+      </div>
+    </app-wrapper>
+
+    <script type="module">
+      document.addEventListener('DOMContentLoaded', () => {
+        // Dynamically selectable option
+        const dditems = document.getElementById('dditems');
+        if (dditems) {
+          dditems.options = [
+            { name: 'Action', inputId: '1', checked: true, disabled: false },
+            { name: 'Another Action', inputId: '2', checked: false, disabled: false },
+            { name: 'Something else here', inputId: '3', checked: false, disabled: false },
+
+            // Add more items as needed
+          ];
+        }
+
+        const group = document.getElementById('toggle-group');
+        group.switchesArray = [
+          {
+            id: '1',
+            label: 'Notifications',
+            checked: true,
+            toggleTxt: true,
+            newToggleTxt: { on: 'On', off: 'Off' },
+            required: true,
+            validation: true,
+            validationMessage: 'Please enable email updates',
+          },
+          {
+            id: '2',
+            label: 'Email Updates',
+            checked: false,
+            required: true,
+            validation: true,
+            validationMessage: 'Please enable email updates',
+          },
+        ];
+
+        document.getElementById('group-inline').switchesArray = [
+          { id: 'a', label: 'One', checked: true, validation: true, validationMessage: 'Please enable status updates', required: true },
+          { id: 'b', label: 'Two', checked: false, toggleTxt: true, validation: true, validationMessage: 'Please enable email updates', required: true },
+        ];
+      });
+    </script>
+  </body>
+</html>

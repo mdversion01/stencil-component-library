@@ -1,0 +1,141 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+       <plumage-input-field-component
+          label="First Name"
+          label-size="lg"
+          size="sm"
+          value=""
+          input-id="firstName"
+          form-layout="horizontal"
+          label-align="right"
+        ></plumage-input-field-component>
+
+        <plumage-input-field-component
+          label="Last Name"
+          value=""
+          input-id="lastName"
+          label-size="base"
+          size="sm"
+          form-layout="horizontal"
+          label-align="right"
+        ></plumage-input-field-component>
+
+        <plumage-input-field-component
+          label="Email"
+          value=""
+          input-id="email"
+          size="lg"
+          label-size="xs"
+          form-layout="horizontal"
+          label-align="right"
+        ></plumage-input-field-component>
+      </div>
+      <div class="cwrapper">
+        <form-component>
+          <plumage-input-field-component
+            required
+            validation
+            validation-message="Please enter First name"
+            label="First Name"
+            label-size="sm"
+            size="sm"
+            value=""
+            input-id="input-5"
+            slot="formField"
+          ></plumage-input-field-component>
+
+          <plumage-input-field-component
+            required
+            validation
+            validation-message="Please enter Last name"
+            label="Last Name"
+            value=""
+            input-id="input-6"
+            slot="formField"
+          ></plumage-input-field-component>
+
+          <plumage-input-field-component
+            required
+            validation
+            validation-message="Please enter Last name"
+            label="Last Name"
+            value=""
+            input-id="input-6"
+            slot="formField"
+            size="lg"
+            label-size="lg"
+          ></plumage-input-field-component>
+
+          <plumage-input-field-component
+          input-id="input-1"
+          size="sm"
+          label="Test Label2"
+          required
+          validation
+          validation-message="Please enter First name"
+        ></plumage-input-field-component>
+
+        <plumage-input-field-component input-id="input-2" label="Test Label" label-hidden></plumage-input-field-component>
+
+        <plumage-input-field-component input-id="input-3" size="lg" label="Test Label2"></plumage-input-field-component>
+
+        <plumage-input-field-component
+          input-id="input-4"
+          label="Test Label"
+          form-layout="inline"
+          required
+          validation
+          validation-message="Please enter First name"
+        ></plumage-input-field-component>
+
+        <plumage-input-field-component
+          input-id="input-5"
+          label-align="right"
+          label="Test Label"
+          label-col="6"
+          input-col="6"
+          form-layout="horizontal"
+          required
+          validation
+          validation-message="Please enter First name"
+        ></plumage-input-field-component>
+        </form-component>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <select-field-component
+          label="Favorite Fruit"
+          label-size="lg"
+          size="lg"
+          select-field-id="fruit1"
+          form-layout="horizontal"
+          label-align="right"
+          value=""
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></select-field-component>
+
+        <select-field-component
+          label="Favorite Fruit"
+          label-size="lg"
+          size="sm"
+          select-field-id="fruit2"
+          form-layout="horizontal"
+          label-align="right"
+          value=""
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></select-field-component>
+
+        <select-field-component
+          label="Favorite Fruit"
+          size="lg"
+          form-layout="horizontal"
+          label-align="right"
+          select-field-id="fruit3"
+          value=""
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+        ></select-field-component>
+        </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

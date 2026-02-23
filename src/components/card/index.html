@@ -1,0 +1,131 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <card-component>
+          <div slot="header">Card Header</div>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+          <div slot="footer">
+            <p>Card Footer</p>
+          </div>
+        </card-component>
+
+        <card-component no-header>
+          <div slot="header">Card Header</div>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+          <div slot="footer">
+            <p>Card Footer</p>
+          </div>
+        </card-component>
+
+        <card-component no-footer>
+          <div slot="header">Card Header</div>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+          <div slot="footer">
+            <p>Card Footer</p>
+          </div>
+        </card-component>
+
+        <card-component no-header no-footer>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+        </card-component>
+
+        <card-component actions>
+          <div slot="header">Card Header</div>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+          <div slot="actions">Action Buttons or Links can go here.</div>
+        </card-component>
+
+        <card-component img img-src="https://th.bing.com/th/id/OIP.uHaqRdiMzWSMCR2LzsmhtQHaEZ?w=265&h=180&c=7&r=0&o=5&pid=1.7">
+          <div slot="header">Card Header</div>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+          <div slot="footer">
+            <p>Card Footer</p>
+          </div>
+        </card-component>
+
+        <card-component img img-src="https://th.bing.com/th/id/OIP.uHaqRdiMzWSMCR2LzsmhtQHaEZ?w=265&h=180&c=7&r=0&o=5&pid=1.7" actions>
+          <div slot="header">Card Header</div>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+          <div slot="actions">Action Buttons or Links can go here.</div>
+          <div slot="footer">
+            <p>Card Footer</p>
+          </div>
+        </card-component>
+
+        <card-component elevation="8">
+          <div slot="header">Card Header</div>
+          <div slot="title">Card Title</div>
+          <div slot="text">
+            <p>Example of the card's body text. Example of the card's body text.</p>
+            <p>Example of the card's body text.</p>
+          </div>
+          <div slot="footer">
+            <p>Card Footer</p>
+          </div>
+        </card-component>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

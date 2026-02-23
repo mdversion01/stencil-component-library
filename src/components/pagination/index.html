@@ -1,0 +1,249 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <!-- ==========================================================
+          DEMO 1: Parent -> STANDARD (default)
+          ========================================================== -->
+        <!-- No flags => renders <standard-pagination> internally -->
+        <div style="width: 500px">
+          DEMO 1: Parent -> STANDARD (default)<br /><br />
+          <pagination-component
+            current-page="1"
+            total-pages="1"
+            total-rows="200"
+            page-size="10"
+            pagination-layout="center"
+            size="sm"
+            limit="1"
+            go-to-buttons="icon"
+            pagination-variant-color="primary"
+            items-per-page
+            display-total-number-of-pages
+          ></pagination-component>
+
+          <!-- try: "", "text", "icon" -->
+          <script type="module">
+            const pagerA = document.querySelector('pagination-component');
+            pagerA.addEventListener('page-changed', e => {
+              // why: sync your data fetch / table page
+              const { page, pageSize } = e.detail;
+              console.log('page-changed →', page, pageSize);
+            });
+          </script>
+        </div>
+        <!-- =========================================================
+=  DEMO 2: Parent -> MINIMIZE                               =
+========================================================= -->
+        <div style="width: 500px">
+          DEMO 2: Parent -> MINIMIZE<br /><br />
+          <pagination-component use-minimize-pagination current-page="3" total-pages="12" pagination-layout="end" go-to-buttons=""></pagination-component>
+        </div>
+        <!-- =========================================================
+=  DEMO 3: Parent -> BY-PAGE                                =
+========================================================= -->
+        <div style="width: 500px">
+          DEMO 3: Parent -> BY-PAGE<br /><br />
+          <pagination-component use-by-page-pagination current-page="5" total-pages="42" pagination-layout="center" go-to-buttons="text"></pagination-component>
+        </div>
+
+        <script type="module">
+          // Hook up events (optional)
+          const [demo1, demo2, demo3] = document.querySelectorAll('pagination-component');
+
+          [demo1, demo2, demo3].forEach((el, i) => {
+            el.addEventListener('page-changed', e => {
+              const { page, pageSize } = e.detail;
+              console.log(`Demo ${i + 1} page-changed →`, page, pageSize);
+            });
+            el.addEventListener('page-size-changed', e => {
+              console.log(`Demo ${i + 1} page-size-changed →`, e.detail.pageSize);
+            });
+          });
+        </script>
+        <!-- =========================================================
+=  DEMO 4: Parent with SIZE CHANGER + DISPLAY RANGE         =
+========================================================= -->
+        <div style="width: 500px">
+          DEMO 4: Parent with SIZE CHANGER + DISPLAY RANGE <br /><br />
+          <pagination-component
+            current-page="3"
+            total-pages="1"
+            total-rows="1234"
+            show-size-changer
+            items-per-page-options
+            page-size-options='[10,20,50,100,"All"]'
+            pagination-layout="start"
+            items-per-page
+          >
+            <!-- try: center | end | fill-left | fill-right -->
+          </pagination-component>
+
+          <script type="module">
+            const pager2 = document.querySelectorAll('pagination-component')[1];
+            pager2.addEventListener('page-size-changed', e => {
+              const { pageSize } = e.detail;
+              console.log('page-size-changed →', pageSize);
+            });
+            pager2.addEventListener('page-changed', e => {
+              const { page, pageSize } = e.detail;
+              console.log('page-changed →', page, pageSize);
+            });
+          </script>
+        </div>
+        <!-- =========================================================
+=  DEMO 5A: Standalone CHILD (STANDARD)                     =
+========================================================= -->
+
+        <div style="width: 500px">
+          DEMO 5A: Standalone CHILD (STANDARD)<br /><br />
+          <standard-pagination-component
+            current-page="1"
+            total-rows="200"
+            page-size="10"
+            limit="1"
+            total-pages="20"
+            go-to-buttons="icon"
+            pagination-variant-color="primary"
+            pagination-layout="center"
+            items-per-page
+            display-total-number-of-pages
+          ></standard-pagination-component>
+
+          <script type="module">
+            const std = document.querySelector('standard-pagination-component');
+            std.addEventListener('change-page', e => {
+              console.log('standard change-page →', e.detail.page);
+            });
+          </script>
+        </div>
+        <!-- =========================================================
+=  DEMO 5B: Standalone CHILD (MINIMIZE)                     =
+========================================================= -->
+        <div style="width: 500px">
+          DEMO 5B: Standalone CHILD (MINIMIZE)<br /><br />
+          <minimize-pagination-component
+            items-per-page
+            display-total-number-of-pages
+            current-page="1"
+            total-rows="200"
+            page-size="10"
+            total-pages="20"
+            items-per-page
+            display-total-number-of-pages
+            pagination-layout="end"
+          >
+            <!-- avoid using 'id' prop; use control-id if needed -->
+          </minimize-pagination-component>
+
+          <script type="module">
+            const mini = document.querySelector('minimize-pagination-component');
+            mini.addEventListener('change-page', e => {
+              console.log('minimize change-page →', e.detail.page);
+            });
+          </script>
+        </div>
+        <!-- =========================================================
+=  DEMO 5C: Standalone CHILD (BY-PAGE)                      =
+========================================================= -->
+        <div style="width: 500px">
+          DEMO 5C: Standalone CHILD (BY-PAGE)<br /><br />
+          <by-page-pagination-component
+            current-page="1"
+            total-rows="50"
+            page-size="10"
+            total-pages="20"
+            items-per-page
+            display-total-number-of-pages
+            pagination-layout="start"
+            go-to-buttons=""
+            size="sm"
+            pagination-layout="center"
+            control-id="my-table"
+          ></by-page-pagination-component>
+
+          <script type="module">
+            const byp = document.querySelector('by-page-pagination-component');
+            byp.addEventListener('change-page', e => {
+              console.log('by-page change-page →', e.detail.page);
+            });
+          </script>
+        </div>
+      </div>
+
+      <div class="cwrapper">
+
+        <div class="demo">
+          <pagination-component
+            id="pager"
+            current-page="1"
+            page-size="10"
+            total-rows="423"
+            items-per-page
+            display-total-number-of-pages
+            pagination-layout="start"
+            go-to-buttons="icon"
+            limit="5"
+            position="top"
+            table-id="demoTable"
+          ></pagination-component>
+
+          <table id="demoTable"></table>
+
+          <script type="module">
+            import { demoRows, rowsForPage } from '/assets/demo/pagination-demo-data.js';
+
+            const pager = document.getElementById('pager');
+            const table = document.getElementById('demoTable');
+
+            function render() {
+              const { currentPage, pageSize } = pager;
+              const rows = rowsForPage(currentPage, pageSize);
+              table.innerHTML = `
+      <thead><tr><th>ID</th><th>Name</th><th>Email</th></tr></thead>
+      <tbody>${rows.map(r => `<tr><td>${r.id}</td><td>${r.name}</td><td>${r.email}</td></tr>`).join('')}</tbody>
+    `;
+            }
+
+            pager.addEventListener('page-changed', render);
+            pager.addEventListener('page-size-changed', render);
+            render();
+          </script>
+        </div>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

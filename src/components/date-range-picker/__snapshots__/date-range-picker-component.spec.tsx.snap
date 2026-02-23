@@ -273,7 +273,7 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                         </span>
                       </div>
                       <div aria-label="February 18, 2026" class="calendar-grid-item" data-date="2026-02-18" data-day="18" data-month="2" data-year="2026" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                           18
                         </span>
                       </div>
@@ -298,7 +298,7 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                         </span>
                       </div>
                       <div aria-label="February 23, 2026" class="calendar-grid-item" data-date="2026-02-23" data-day="23" data-month="2" data-year="2026" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
                           23
                         </span>
                       </div>
@@ -948,7 +948,7 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                         </span>
                       </div>
                       <div aria-label="February 18, 2026" class="calendar-grid-item" data-date="2026-02-18" data-day="18" data-month="2" data-year="2026" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                           18
                         </span>
                       </div>
@@ -973,7 +973,7 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                         </span>
                       </div>
                       <div aria-label="February 23, 2026" class="calendar-grid-item" data-date="2026-02-23" data-day="23" data-month="2" data-year="2026" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
                           23
                         </span>
                       </div>

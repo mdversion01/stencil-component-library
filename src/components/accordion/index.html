@@ -1,0 +1,68 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <accordion-component target-id="accordion-section-3" content-txt-size="sm" icon="fa-solid fa-plus, fa-solid fa-minus" accordion aria-label="Accordion Section">
+          <span slot="accordion-header">Using Other Icons</span>
+          <div slot="content">This content can be collapsed</div>
+        </accordion-component>
+        <br />
+
+       <accordion-component target-id="accordion-section-1" is-open="true" variant="default" aria-label="Frequently Asked Questions">
+          <span slot="button-text">What is your return policy?</span>
+          <div slot="content">
+            <p>You can return any item within 30 days of purchase for a full refund. Please ensure the product is in original condition.</p>
+          </div>
+        </accordion-component>
+        <br />
+        <accordion-component link target-id="link-1">
+          <span slot="button-text">Toggle Link 1</span>
+          <div slot="content">Toggle content 1</div>
+        </accordion-component>
+        <br />
+
+         <accordion-container id="accordion-1" content-txt-size="sm" parent-id="accordion-example"></accordion-container>
+
+        <script>
+          const collapseData = [
+            { header: 'Accordion 1', content: 'Content 1' },
+            { header: 'Accordion 2', content: 'Content 2' },
+            { header: 'Accordion 3', content: 'Content 3' },
+            { header: 'Accordion 4', content: 'Content 4' },
+          ];
+          document.getElementById('accordion-1').data = collapseData;
+        </script>
+
+        <br /><br />
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

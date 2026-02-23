@@ -1,0 +1,86 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <button-component title-attr="Go Ahead" block variant="default" btn-text="Default Button"></button-component>
+
+        <button-component title-attr="Go Ahead" variant="danger" btn-text="Click Button"></button-component>
+
+        <button-component title-attr="Go Ahead" outlined variant="success" btn-text="Outlined Button"></button-component>
+
+        <button-component title-attr="Go Ahead" link btn-text="Link Button"></button-component>
+
+        <button-component title-attr="Go Ahead" disabled variant="info" btn-text="disabled Button"></button-component>
+
+        <button-component title-attr="Go Ahead" stripped btn-text="Stripped Button"></button-component>
+
+        <button-component title-attr="Go Ahead" variant="default" size="xs" btn-text="XSmall Button"></button-component>
+
+        <button-component title-attr="Go Ahead" variant="default" size="sm" btn-text="Small Button"></button-component>
+
+        <button-component title-attr="Go Ahead" variant="default" size="lg" btn-text="Lg Button"></button-component>
+
+        <button-component title-attr="Go Ahead" variant="default" shape="pill" btn-text="Pill Button"></button-component>
+
+        <button-component title-attr="Go Ahead" variant="default" shape="square" btn-text="Square Button"></button-component>
+
+        <button-component title-attr="Icon" icon-btn elevation="3" variant="primary"><i class="fa-solid fa-house"></i></button-component>
+
+        <button-component title-attr="Icon" btn-icon variant="primary"><i class="fa-solid fa-house"></i></button-component>
+
+        <button-component title-attr="Go Ahead" btn-text="Ripple Effect Button" variant="primary" ripple></button-component>
+
+        <button-component title-attr="Go Ahead" btn-text="Text Button" text-btn variant="primary"></button-component>
+
+        <button-component title-attr="Go Ahead" btn-text="Just Text (Button)" text variant="primary"></button-component>
+
+        <button-component title-attr="Button with text and Icon" slot-side="left" btn-text="Home" variant="primary"><i class="fa-solid fa-house"></i></button-component>
+
+        <button-component title-attr="Button with text and Icon" slot-side="right" btn-text="Home" variant="primary"><i class="fa-solid fa-house"></i></button-component>
+
+        <button-component title-attr="Icon" slot-side="left" btn-text="Home" variant="primary"
+          ><i class="fa-solid fa-house"></i><span>Text</span><i class="fa-solid fa-house"></i
+        ></button-component>
+
+        <button-component title-attr="Button with Badge" btn-text="With a badge" variant="primary">
+          <badge-component badge-id="badge12" variant="light" bdg-position="right" size="sm">1</badge-component>
+        </button-component>
+
+        <button-component title-attr="Go Ahead" variant="active-blue" class-names="active" btn-text="Active State Button"></button-component>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>
