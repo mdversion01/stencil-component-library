@@ -63,6 +63,7 @@ export class Datepicker {
 
   /** Label & placeholder */
   @Prop({ mutable: true, reflect: true }) label: string = 'Date Picker';
+  @Prop() labelAlign: '' | 'right' = '';
   @Prop({ mutable: true, reflect: true }) labelHidden: boolean = false;
   @Prop() labelSize: '' | 'sm' | 'lg' = '';
   @Prop({ mutable: true, reflect: true }) placeholder: string = 'YYYY-MM-DD';
@@ -1218,6 +1219,7 @@ export class Datepicker {
       'form-control-label',
       this.showAsRequired() ? 'required' : '',
       this.labelHidden ? 'sr-only' : '',
+      this.labelAlign === 'right' ? 'align-right' : '',
       this.validationEnabled && this.validation ? 'invalid' : '',
     ]
       .filter(Boolean)
@@ -1238,7 +1240,7 @@ export class Datepicker {
     return (
       <button
         onClick={this.toggleDropdown}
-        class={`calendar-button btn${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text`}
+        class={`calendar-button btn${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text${this.validation ? ' is-invalid' : ''}`}
         aria-label="Toggle Calendar Picker"
         aria-haspopup="dialog"
         aria-expanded={this.dropdownOpen ? 'true' : 'false'}
@@ -1253,7 +1255,7 @@ export class Datepicker {
     return (
       <button
         onClick={this.toggleDropdown}
-        class={`calendar-button btn${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text`}
+        class={`calendar-button btn${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text pp-left${this.validation ? ' is-invalid' : ''}`}
         aria-label="Toggle Calendar Picker"
         aria-haspopup="dialog"
         aria-expanded={this.dropdownOpen ? 'true' : 'false'}
@@ -1287,7 +1289,7 @@ export class Datepicker {
 
           {/* Input column */}
           <div class={this.isHorizontal() ? inputColClass : undefined}>
-            <div class={['input-group', this.groupSizeClass()].filter(Boolean).join(' ')} role="group" aria-label="Date Picker Group">
+            <div class={['input-group', this.groupSizeClass(), this.validation ? ' is-invalid' : '',this.disabled ? 'disabled' : ''].filter(Boolean).join(' ')} role="group" aria-label="Date Picker Group">
               {this.prependProp ? this.renderPrepend() : null}
 
               <div class="drp-input-field">
@@ -1316,7 +1318,7 @@ export class Datepicker {
                 ) : null}
               </div>
 
-              {this.appendProp ? this.renderAppend() : null}
+              {this.appendProp && !this.prependProp ? this.renderAppend() : null}
             </div>
 
             {this.validationEnabled && this.validation ? (
@@ -1355,11 +1357,11 @@ export class Datepicker {
 
           {/* Input column */}
           <div class={this.isHorizontal() ? inputColClass : undefined}>
-            <div class={['input-group', this.groupSizeClass(), this.disabled ? 'disabled' : ''].filter(Boolean).join(' ')} role="group" aria-label="Date Picker Group">
+            <div class={['input-group', this.groupSizeClass(), this.validation ? ' is-invalid' : '',this.disabled ? 'disabled' : ''].filter(Boolean).join(' ')} role="group" aria-label="Date Picker Group">
               {this.prependProp ? (
                 <button
                   onClick={this.toggleDropdown}
-                  class="calendar-button btn input-group-text"
+                  class={`calendar-button btn input-group-text ${this.validation ? ' is-invalid' : ''}`}
                   aria-label="Toggle Calendar Picker"
                   aria-haspopup="dialog"
                   aria-expanded={this.dropdownOpen ? 'true' : 'false'}
@@ -1397,7 +1399,7 @@ export class Datepicker {
               {this.appendProp ? (
                 <button
                   onClick={this.toggleDropdown}
-                  class="calendar-button btn input-group-text"
+                  class={`calendar-button btn input-group-text ${this.validation ? ' is-invalid' : ''}`}
                   aria-label="Toggle Calendar Picker"
                   aria-haspopup="dialog"
                   aria-expanded={this.dropdownOpen ? 'true' : 'false'}

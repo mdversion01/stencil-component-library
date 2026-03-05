@@ -48,6 +48,7 @@ export class DateRangeTimePickerComponent {
 
   @Prop() disabled: boolean = false;
   @Prop() label: string = 'Date and Time Picker';
+  @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
   /** '', 'horizontal', or 'inline' */
   @Prop() formLayout: '' | 'horizontal' | 'inline' = '';
@@ -1035,7 +1036,7 @@ export class DateRangeTimePickerComponent {
     return this.formLayout === 'inline';
   }
   private labelClassBase() {
-    return ['form-control-label', this.showAsRequired() ? 'required' : '', this.labelHidden ? 'sr-only' : '', this.validation ? 'invalid' : ''].filter(Boolean).join(' ');
+    return ['form-control-label', this.showAsRequired() ? 'required' : '', this.labelHidden ? 'sr-only' : '', this.labelAlign === 'right' ? 'align-right' : '', this.validation ? 'invalid' : ''].filter(Boolean).join(' ');
   }
   private labelClassHorizontal(labelColClass: string) {
     return [this.labelClassBase(), labelColClass, 'no-padding', 'col-form-label'].filter(Boolean).join(' ');
@@ -1778,7 +1779,7 @@ export class DateRangeTimePickerComponent {
               {this.prependProp ? (
                 <button
                   onClick={this.toggleDropdown}
-                  class={`calendar-button btn input-group-text${this.validation ? ' is-invalid' : ''}`}
+                  class={`calendar-button btn input-group-text pp-left${this.validation ? ' is-invalid' : ''}`}
                   aria-label="Toggle Calendar Picker"
                   aria-haspopup="dialog"
                   aria-expanded={this.dropdownOpen ? 'true' : 'false'}
@@ -1857,10 +1858,10 @@ export class DateRangeTimePickerComponent {
 
     this.getComputedCols();
 
-    const groupClass = ['input-group', this.groupSizeClass(), this.validation ? ' is-invalid' : ''].filter(Boolean).join(' ');
+    const groupClass = ['input-group', this.groupSizeClass(), this.validation ? ' is-invalid' : '', this.disabled ? 'disabled' : ''].filter(Boolean).join(' ');
 
     return (
-      <div class={this.formLayout || undefined}>
+      <Fragment>
         <div class={['form-group', 'form-input-group-basic', this.formLayout, isRow ? 'row' : ''].filter(Boolean).join(' ')}>
           {this.labelHidden ? null : (
             <label
@@ -1937,7 +1938,7 @@ export class DateRangeTimePickerComponent {
             ) : null}
           </div>
         </div>
-      </div>
+      </Fragment>
     );
   }
 

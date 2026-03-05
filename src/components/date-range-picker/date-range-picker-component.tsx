@@ -45,6 +45,7 @@ export class DateRangePickerComponent {
 
   @Prop() disabled: boolean = false;
   @Prop() label: string = 'Date Range Picker';
+  @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
 
   /** '', 'horizontal', or 'inline' */
@@ -748,7 +749,15 @@ export class DateRangePickerComponent {
   }
 
   private labelClassBase() {
-    return ['form-control-label', this.showAsRequired() ? 'required' : '', this.labelHidden ? 'sr-only' : '', this.validation ? 'invalid' : ''].filter(Boolean).join(' ');
+    return [
+      'form-control-label',
+      this.showAsRequired() ? 'required' : '',
+      this.labelHidden ? 'sr-only' : '',
+      this.labelAlign === 'right' ? 'align-right' : '',
+      this.validation ? 'invalid' : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
   }
   private labelClassHorizontal(labelColClass: string) {
     return [this.labelClassBase(), labelColClass, 'no-padding', 'col-form-label'].filter(Boolean).join(' ');
@@ -1445,10 +1454,10 @@ export class DateRangePickerComponent {
     // Validate numeric fallbacks if needed (no-op when string specs provided)
     this.getComputedCols();
 
-    const groupClass = ['input-group', this.groupSizeClass(), this.validation ? ' is-invalid' : ''].filter(Boolean).join(' ');
+    const groupClass = ['input-group', this.groupSizeClass(), this.validation ? ' is-invalid' : '', this.disabled ? 'disabled' : ''].filter(Boolean).join(' ');
 
     return (
-      <div class={this.formLayout || undefined}>
+      <Fragment>
         <div class={['form-group', 'form-input-group-basic', this.formLayout, isRow ? 'row' : ''].filter(Boolean).join(' ')}>
           {/* Label */}
           {this.labelHidden ? null : (
@@ -1470,7 +1479,7 @@ export class DateRangePickerComponent {
                 <div class="input-group-prepend">
                   <button
                     onClick={this.toggleDropdown}
-                    class={`calendar-button btn input-group-text${this.validation ? ' is-invalid' : ''}`}
+                    class={`calendar-button btn pp-left${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text${this.validation ? ' is-invalid' : ''}`}
                     aria-label="Toggle Calendar Picker"
                     aria-haspopup="dialog"
                     aria-expanded={this.dropdownOpen ? 'true' : 'false'}
@@ -1506,7 +1515,7 @@ export class DateRangePickerComponent {
                 <div class="input-group-append">
                   <button
                     onClick={this.toggleDropdown}
-                    class={`calendar-button btn input-group-text${this.validation ? ' is-invalid' : ''}`}
+                    class={`calendar-button btn${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text${this.validation ? ' is-invalid' : ''}`}
                     aria-label="Toggle Calendar Picker"
                     aria-haspopup="dialog"
                     aria-expanded={this.dropdownOpen ? 'true' : 'false'}
@@ -1527,7 +1536,7 @@ export class DateRangePickerComponent {
             ) : null}
           </div>
         </div>
-      </div>
+      </Fragment>
     );
   }
 
@@ -1563,7 +1572,7 @@ export class DateRangePickerComponent {
               {this.prependProp ? (
                 <button
                   onClick={this.toggleDropdown}
-                  class={`calendar-button btn input-group-text${this.validation ? ' is-invalid' : ''}`}
+                  class={`calendar-button btn pp-left input-group-text${this.validation ? ' is-invalid' : ''}`}
                   aria-label="Toggle Calendar Picker"
                   aria-haspopup="dialog"
                   aria-expanded={this.dropdownOpen ? 'true' : 'false'}
@@ -1645,10 +1654,8 @@ export class DateRangePickerComponent {
   // -------------------- render ---------------------------
   render() {
     if (this.rangePicker) {
-      return ( this.plumage ? <div class="plumage">{this.renderDateRangePicker()}</div> : this.renderDateRangePicker() );
+      return this.plumage ? <div class="plumage">{this.renderDateRangePicker()}</div> : this.renderDateRangePicker();
     }
-    return (
-      this.plumage ? <div class="plumage">{this.renderInputs()}</div> : this.renderInputs()
-    );
+    return this.plumage ? <div class="plumage">{this.renderInputs()}</div> : this.renderInputs();
   }
 }

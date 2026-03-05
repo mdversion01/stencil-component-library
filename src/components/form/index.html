@@ -1,0 +1,78 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .purple {
+        background-color: purple !important;
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <form-component>
+          <input-field-component label="First Name" input-id="input-1" slot="formField" value=""></input-field-component
+          ><input-field-component label="Last Name" input-id="input-2" slot="formField" value=""></input-field-component
+          ><button-component variant="primary" slot="formField">Submit</button-component>
+        </form-component>
+      </div>
+
+      <div class="cwrapper">
+        <form-component
+          ><input-field-component label="First Name" input-id="input-1" slot="formField" value="" form-layout="horizontal"></input-field-component
+          ><input-field-component label="Last Name" input-id="input-2" slot="formField" value="" form-layout="horizontal"></input-field-component
+          ><input-field-component label="Email" input-id="input-3" slot="formField" value="" form-layout="horizontal"></input-field-component
+          ><button-component variant="primary" slot="formField">Submit</button-component></form-component
+        >
+      </div>
+
+      <div class="cwrapper">
+        <form-component
+          ><input-field-component label="First Name" input-id="input-1" slot="formField" value="" form-layout="inline"></input-field-component
+          ><input-field-component label="Last Name" input-id="input-2" slot="formField" value="" form-layout="inline"></input-field-component
+          ><input-field-component label="Email" input-id="input-3" slot="formField" value="" form-layout="inline"></input-field-component
+          ><button-component variant="primary" slot="formField">Submit</button-component></form-component
+        >
+      </div>
+
+      <div class="cwrapper">
+        <form-component fieldset form-id="form-1"><input-field-component form-id="form-1" label="First Name" input-id="input-1" slot="formField" value=""></input-field-component
+          ><input-field-component form-id="form-1" label="Last Name" input-id="input-2" slot="formField" value=""></input-field-component
+          ><button-component form-id="form-1" variant="primary" slot="formField">Submit</button-component></form-component
+        >
+      </div>
+
+      <div class="cwrapper">
+        <form-component fieldset="" legend="" legend-txt="This is the Legend" legend-position="left" legend-size="large" form-id="form-2"><input-field-component form-id="form-2" label="First Name" input-id="input-1" slot="formField" value=""></input-field-component
+          ><input-field-component form-id="form-2" label="Last Name" input-id="input-2" slot="formField" value=""></input-field-component
+          ><button-component form-id="form-2" variant="primary" slot="formField">Submit</button-component></form-component
+        >
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

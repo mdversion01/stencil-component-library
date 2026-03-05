@@ -8,7 +8,7 @@ import { Component, Prop, h, State, Event, EventEmitter, Element, Watch } from '
 export class CheckboxComponent {
   @Element() host!: HTMLElement;
 
-  @Prop() checkbox = false;
+  // @Prop() checkbox = false;
   @Prop() checkboxGroup = false;
   @Prop() customCheckbox = false;
   @Prop() customCheckboxGroup = false;

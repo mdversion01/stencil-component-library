@@ -4,23 +4,21 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
 <date-range-picker-component>
   <div class="date-picker">
     <div class="dropdown-wrapper">
-      <div>
-        <div class="form-group form-input-group-basic">
-          <label aria-hidden="true" class="form-control-label" htmlfor="drp" id="drp-label">
-            <span>
-              Date Range Picker
-            </span>
-          </label>
-          <div>
-            <div aria-label="Date Picker Group" class="input-group" role="group">
-              <div class="drp-input-field">
-                <input aria-describedby="datepicker-desc" aria-labelledby="drp-label" class="form-control" id="drp" placeholder="YYYY-MM-DD  -  YYYY-MM-DD" type="text" value="">
-              </div>
-              <div class="input-group-append">
-                <button aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text">
-                  <i class="fa-calendar-alt fas"></i>
-                </button>
-              </div>
+      <div class="form-group form-input-group-basic">
+        <label aria-hidden="true" class="form-control-label" htmlfor="drp" id="drp-label">
+          <span>
+            Date Range Picker
+          </span>
+        </label>
+        <div>
+          <div aria-label="Date Picker Group" class="input-group" role="group">
+            <div class="drp-input-field">
+              <input aria-describedby="datepicker-desc" aria-labelledby="drp-label" class="form-control" id="drp" placeholder="YYYY-MM-DD  -  YYYY-MM-DD" type="text" value="">
+            </div>
+            <div class="input-group-append">
+              <button aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text">
+                <i class="fa-calendar-alt fas"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -298,7 +296,7 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                         </span>
                       </div>
                       <div aria-label="February 23, 2026" class="calendar-grid-item" data-date="2026-02-23" data-day="23" data-month="2" data-year="2026" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                           23
                         </span>
                       </div>
@@ -313,7 +311,7 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                         </span>
                       </div>
                       <div aria-label="February 26, 2026" class="calendar-grid-item" data-date="2026-02-26" data-day="26" data-month="2" data-year="2026" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
                           26
                         </span>
                       </div>
@@ -679,23 +677,21 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
 <date-range-picker-component rangepicker="true">
   <div class="date-picker">
     <div class="dropdown-wrapper">
-      <div>
-        <div class="form-group form-input-group-basic">
-          <label aria-hidden="true" class="form-control-label" htmlfor="drp" id="drp-label">
-            <span>
-              Date Range Picker
-            </span>
-          </label>
-          <div>
-            <div aria-label="Date Picker Group" class="input-group" role="group">
-              <div class="drp-input-field">
-                <input aria-describedby="datepicker-desc" aria-labelledby="drp-label" class="form-control" id="drp" placeholder="YYYY-MM-DD  -  YYYY-MM-DD" type="text" value="">
-              </div>
-              <div class="input-group-append">
-                <button aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text">
-                  <i class="fa-calendar-alt fas"></i>
-                </button>
-              </div>
+      <div class="form-group form-input-group-basic">
+        <label aria-hidden="true" class="form-control-label" htmlfor="drp" id="drp-label">
+          <span>
+            Date Range Picker
+          </span>
+        </label>
+        <div>
+          <div aria-label="Date Picker Group" class="input-group" role="group">
+            <div class="drp-input-field">
+              <input aria-describedby="datepicker-desc" aria-labelledby="drp-label" class="form-control" id="drp" placeholder="YYYY-MM-DD  -  YYYY-MM-DD" type="text" value="">
+            </div>
+            <div class="input-group-append">
+              <button aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text">
+                <i class="fa-calendar-alt fas"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -973,7 +969,7 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                         </span>
                       </div>
                       <div aria-label="February 23, 2026" class="calendar-grid-item" data-date="2026-02-23" data-day="23" data-month="2" data-year="2026" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                           23
                         </span>
                       </div>
@@ -988,7 +984,7 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                         </span>
                       </div>
                       <div aria-label="February 26, 2026" class="calendar-grid-item" data-date="2026-02-26" data-day="26" data-month="2" data-year="2026" role="gridcell" tabindex="-1">
-                        <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
                           26
                         </span>
                       </div>

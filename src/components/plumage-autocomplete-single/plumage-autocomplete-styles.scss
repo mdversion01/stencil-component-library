@@ -83,6 +83,9 @@ $fs-lg: 1.2rem;
   .autocomplete-dropdown-item {
     padding: 5px 10px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
     &.sm {
       font-size: $fs-sm;
@@ -96,7 +99,7 @@ $fs-lg: 1.2rem;
     }
     &:active {
       background-color: $brand;
-      color: $gray-50;
+      color: #fff;
       text-decoration: none;
     }
 
@@ -115,6 +118,7 @@ $fs-lg: 1.2rem;
     .option-btn {
       background: transparent;
       border: none;
+      color: inherit;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -133,7 +137,7 @@ $fs-lg: 1.2rem;
       justify-content: center;
       padding: 0;
       margin-left: 0.25rem;
-      color: #666;
+      color: inherit;
       width: 0.75rem;
       height: 0.75rem;
 
@@ -162,6 +166,12 @@ $fs-lg: 1.2rem;
     width: 100%;
     border: none !important;
     border-radius: 0;
+
+    &.disabled {
+      background-color: #e9ecef;
+      pointer-events: none;
+      opacity: 0.65;
+    }
 
     &:invalid,
     &.is-invalid {
@@ -219,7 +229,7 @@ $fs-lg: 1.2rem;
         display: flex !important;
         flex: 1 1 200px;
         width: 200px;
-        padding: 0.375rem 0.75rem;
+        // padding: 0.375rem 0.75rem;
       }
 
       input:focus {
@@ -235,44 +245,116 @@ $fs-lg: 1.2rem;
     align-items: center;
     justify-content: center;
     position: relative;
-
+    font-weight: normal !important;
     display: flex;
     height: 30px;
     margin: 0.25rem;
-    padding: 0.35rem 0.5rem;
+    padding: 0 0.5rem !important;
 
     font-size: $fs-sm;
-    color: #000 !important;
+    color: #000;
 
-    background-color: transparent !important;
-    border: 1px solid $gray-600 !important;
-    border-radius: $radius-pill;
+    background-color: transparent;
+    border: 1px solid $gray-600;
+    // border-radius: $radius-pill;
+
+    &.sm {
+      font-size: 0.65rem !important;
+      height: 28px;
+    }
+    &.lg {
+      font-size: 1rem !important;
+      height: 38px;
+    }
+
+    &.square {
+      border-radius: 0;
+    }
+    &.pill {
+      border-radius: 1.75rem;
+      padding: 0 0.5rem;
+    }
 
     span {
       cursor: pointer;
       margin-right: 0.5rem;
-      margin-top: -0.1rem;
     }
 
     .remove-btn {
       @include reset-btn;
       border-radius: 25%;
-      width: 16px;
-      height: 16px;
+      color: inherit;
+      margin: 2px 0 0;
+      width: 17px;
+      height: 17px;
 
       svg {
         cursor: pointer;
         position: relative;
         z-index: 1;
 
-        width: 1rem;
-        height: 1rem;
+        width: 1.063rem;
+        height: 1.063rem;
         fill: $gray-700;
       }
 
       &:hover svg,
       &:focus svg {
         fill: #ff5d6d;
+      }
+
+      &:hover,
+      &:focus {
+        color: #b30009;
+        outline: none;
+      }
+    }
+
+    &.lg .remove-btn {
+      width: 23px;
+      height: 23px;
+
+      svg {
+        width: 1.438rem;
+        height: 1.438rem;
+      }
+    }
+
+    &.sm .remove-btn {
+      width: 15px;
+      height: 15px;
+
+      svg {
+        width: 0.938rem;
+        height: 0.938rem;
+      }
+    }
+
+    /* Themed badges — keep remove button legible */
+    .text-bg-primary,
+    .text-bg-secondary,
+    .text-bg-success,
+    .text-bg-danger,
+    .text-bg-dark {
+      .remove-btn {
+        color: #fff;
+
+        &:hover,
+        &focus {
+          color: #f7caca;
+        }
+      }
+    }
+
+    .text-bg-warning,
+    .text-bg-info {
+      .remove-btn {
+        color: #000;
+
+        &:hover,
+        &focus {
+          color: #a90000;
+        }
       }
     }
   }

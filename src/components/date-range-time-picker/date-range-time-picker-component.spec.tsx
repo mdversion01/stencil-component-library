@@ -737,23 +737,21 @@ describe('<date-range-time-picker-component>', () => {
 <date-range-time-picker-component>
   <div class="date-picker">
     <div class="dropdown-wrapper">
-      <div>
-        <div class="form-group form-input-group-basic">
-          <label aria-hidden="true" class="form-control-label" htmlfor="date-range-time" id="date-range-time-label">
-            <span>
-              Date and Time Picker
-            </span>
-          </label>
-          <div>
-            <div aria-label="Date Picker Group" class="input-group" role="group">
-              <div class="drp-input-field">
-                <input aria-describedby="datepicker-desc" aria-labelledby="date-range-time-label" class="form-control" id="date-range-time" placeholder="YYYY-MM-DD HH:MM  -  YYYY-MM-DD HH:MM" type="text" value="">
-              </div>
-              <div class="input-group-append">
-                <button aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text">
-                  <i class="fa-calendar-alt fas"></i>
-                </button>
-              </div>
+      <div class="form-group form-input-group-basic">
+        <label aria-hidden="true" class="form-control-label" htmlfor="date-range-time" id="date-range-time-label">
+          <span>
+            Date and Time Picker
+          </span>
+        </label>
+        <div>
+          <div aria-label="Date Picker Group" class="input-group" role="group">
+            <div class="drp-input-field">
+              <input aria-describedby="datepicker-desc" aria-labelledby="date-range-time-label" class="form-control" id="date-range-time" placeholder="YYYY-MM-DD HH:MM  -  YYYY-MM-DD HH:MM" type="text" value="">
+            </div>
+            <div class="input-group-append">
+              <button aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text">
+                <i class="fa-calendar-alt fas"></i>
+              </button>
             </div>
           </div>
         </div>

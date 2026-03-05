@@ -190,6 +190,10 @@
     line-height: 1.5;
     user-select: none;
     transition: color 0.15s ease-in-out 0s, background-color 0.15s ease-in-out 0s, border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+
+    &.pp-left {
+      padding-left: 0.75rem !important;
+    }
   }
 
   .calendar-button:hover,
@@ -267,6 +271,7 @@
   }
 
   .clear-input-button {
+    background-color: transparent !important;
     color: #838383;
     opacity: 0;
     transition: opacity 0.2s ease-in-out, color 0.2s ease-in-out;
@@ -425,6 +430,10 @@
     border: none;
     border-radius: 0.2rem 0 0 0.2rem;
     padding: 0.4rem 0.75rem;
+  }
+
+  .input-group.disabled {
+    background-color: var(--bs-secondary-bg) !important;
   }
 
   .input-group-lg > .drp-input-field > .form-control,
@@ -707,6 +716,10 @@
 
   .input-group:hover {
     border-color: rgb(155, 196, 246);
+  }
+
+  .input-group.disabled:hover {
+    border-color: rgb(206, 212, 218);
   }
 
   .input-group.focus {

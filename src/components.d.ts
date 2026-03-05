@@ -253,7 +253,7 @@ export namespace Components {
          */
         "options": string[];
         /**
-          * @default 'Type to search/filter...'
+          * @default ''
          */
         "placeholder": string;
         /**
@@ -292,6 +292,10 @@ export namespace Components {
           * @default ''
          */
         "validationMessage": string;
+        /**
+          * @default []
+         */
+        "value": string[];
     }
     interface AutocompleteMultiselect {
         /**
@@ -411,11 +415,15 @@ export namespace Components {
          */
         "options": string[];
         /**
-          * @default 'Type to search/filter...'
+          * @default ''
          */
         "placeholder": string;
         "preserveInputOnSelect"?: boolean;
         "rawInputName"?: string;
+        /**
+          * @default false
+         */
+        "removeBtnBorder": boolean;
         /**
           * @default false
          */
@@ -448,9 +456,14 @@ export namespace Components {
           * @default ''
          */
         "validationMessage": string;
+        /**
+          * @default []
+         */
+        "value": string[];
     }
     interface AutocompleteSingle {
         /**
+          * id(s) of label(s) that label this input (space-separated).
           * @default ''
          */
         "arialabelledBy": string;
@@ -529,7 +542,7 @@ export namespace Components {
          */
         "options": string[];
         /**
-          * @default 'Type to search/filter...'
+          * @default ''
          */
         "placeholder": string;
         /**
@@ -549,6 +562,7 @@ export namespace Components {
          */
         "type": string;
         /**
+          * Validation controlled externally (prop remains source of truth)
           * @default false
          */
         "validation": boolean;
@@ -556,6 +570,11 @@ export namespace Components {
           * @default ''
          */
         "validationMessage": string;
+        /**
+          * Value controlled externally (don’t mutate the prop)
+          * @default ''
+         */
+        "value": string;
     }
     interface BadgeComponent {
         /**
@@ -1018,10 +1037,6 @@ export namespace Components {
         /**
           * @default false
          */
-        "checkbox": boolean;
-        /**
-          * @default false
-         */
         "checkboxGroup": boolean;
         /**
           * @default false
@@ -1148,6 +1163,10 @@ export namespace Components {
           * @default 'Date Range Picker'
          */
         "label": string;
+        /**
+          * @default ''
+         */
+        "labelAlign": '' | 'right';
         /**
           * Legacy numeric cols (fallback)
           * @default 2
@@ -1289,6 +1308,10 @@ export namespace Components {
           * @default 'Date and Time Picker'
          */
         "label": string;
+        /**
+          * @default ''
+         */
+        "labelAlign": '' | 'right';
         /**
           * Grid like date-range-picker-component
           * @default 2
@@ -1439,6 +1462,10 @@ export namespace Components {
           * @default 'Date Picker'
          */
         "label": string;
+        /**
+          * @default ''
+         */
+        "labelAlign": '' | 'right';
         /**
           * Legacy numeric cols (fallback)
           * @default 2
@@ -1684,6 +1711,10 @@ export namespace Components {
           * @default 'left'
          */
         "legendPosition": 'left' | 'center' | 'right' | string;
+        /**
+          * @default 'base'
+         */
+        "legendSize": 'small' | 'base' | 'large' | 'xlarge' | string;
         /**
           * @default 'Add Title Here'
          */
@@ -2350,6 +2381,11 @@ export namespace Components {
           * @default ''
          */
         "validationMessage": string;
+        /**
+          * ✅ Controlled selected values (external source of truth). Do NOT mutate this prop.
+          * @default []
+         */
+        "value": string[];
     }
     interface PlumageAutocompleteMultiselectComponent {
         /**
@@ -2504,6 +2540,11 @@ export namespace Components {
           * @default ''
          */
         "validationMessage": string;
+        /**
+          * ✅ Controlled selected values (external source of truth). Do NOT mutate this prop.
+          * @default []
+         */
+        "value": string[];
     }
     interface PlumageAutocompleteSingle {
         /**
@@ -4321,6 +4362,7 @@ declare global {
         "clear": void;
         "componentError": { message: string; stack?: string };
         "multiSelectChange": string[];
+        "valueChange": string[];
         "optionDelete": string;
     }
     interface HTMLAutocompleteMultipleSelectionsElement extends Components.AutocompleteMultipleSelections, HTMLStencilElement {
@@ -4342,6 +4384,7 @@ declare global {
         "clear": void;
         "componentError": { message: string; stack?: string };
         "multiSelectChange": string[];
+        "valueChange": string[];
         "optionsChange": {
     options: string[];
     reason: 'add' | 'delete' | 'replace';
@@ -4367,6 +4410,7 @@ declare global {
         "itemSelect": string;
         "clear": void;
         "componentError": { message: string; stack?: string };
+        "valueChange": string;
     }
     interface HTMLAutocompleteSingleElement extends Components.AutocompleteSingle, HTMLStencilElement {
         addEventListener<K extends keyof HTMLAutocompleteSingleElementEventMap>(type: K, listener: (this: HTMLAutocompleteSingleElement, ev: AutocompleteSingleCustomEvent<HTMLAutocompleteSingleElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4713,6 +4757,7 @@ declare global {
         "clear": void;
         "componentError": { message: string; stack?: string };
         "multiSelectChange": string[];
+        "valueChange": string[];
         "optionsChange": {
     options: string[];
     reason: 'add' | 'delete' | 'replace';
@@ -4739,6 +4784,7 @@ declare global {
         "clear": void;
         "componentError": { message: string; stack?: string };
         "multiSelectChange": string[];
+        "valueChange": string[];
         "optionsChange": {
     options: string[];
     reason: 'add' | 'delete' | 'replace';
@@ -5262,11 +5308,15 @@ declare namespace LocalJSX {
         "onMultiSelectChange"?: (event: AutocompleteMultipleSelectionsCustomEvent<string[]>) => void;
         "onOptionDelete"?: (event: AutocompleteMultipleSelectionsCustomEvent<string>) => void;
         /**
+          * ✅ NEW: mirror controlled value changes (array)
+         */
+        "onValueChange"?: (event: AutocompleteMultipleSelectionsCustomEvent<string[]>) => void;
+        /**
           * @default []
          */
         "options"?: string[];
         /**
-          * @default 'Type to search/filter...'
+          * @default ''
          */
         "placeholder"?: string;
         /**
@@ -5305,6 +5355,10 @@ declare namespace LocalJSX {
           * @default ''
          */
         "validationMessage"?: string;
+        /**
+          * @default []
+         */
+        "value"?: string[];
     }
     interface AutocompleteMultiselect {
         /**
@@ -5427,15 +5481,23 @@ declare namespace LocalJSX {
     value?: string; // the added/removed item, if applicable
   }>) => void;
         /**
+          * ✅ NEW: mirror controlled value changes (array)
+         */
+        "onValueChange"?: (event: AutocompleteMultiselectCustomEvent<string[]>) => void;
+        /**
           * @default []
          */
         "options"?: string[];
         /**
-          * @default 'Type to search/filter...'
+          * @default ''
          */
         "placeholder"?: string;
         "preserveInputOnSelect"?: boolean;
         "rawInputName"?: string;
+        /**
+          * @default false
+         */
+        "removeBtnBorder"?: boolean;
         /**
           * @default false
          */
@@ -5460,9 +5522,14 @@ declare namespace LocalJSX {
           * @default ''
          */
         "validationMessage"?: string;
+        /**
+          * @default []
+         */
+        "value"?: string[];
     }
     interface AutocompleteSingle {
         /**
+          * id(s) of label(s) that label this input (space-separated).
           * @default ''
          */
         "arialabelledBy"?: string;
@@ -5539,12 +5606,13 @@ declare namespace LocalJSX {
         "onClear"?: (event: AutocompleteSingleCustomEvent<void>) => void;
         "onComponentError"?: (event: AutocompleteSingleCustomEvent<{ message: string; stack?: string }>) => void;
         "onItemSelect"?: (event: AutocompleteSingleCustomEvent<string>) => void;
+        "onValueChange"?: (event: AutocompleteSingleCustomEvent<string>) => void;
         /**
           * @default []
          */
         "options"?: string[];
         /**
-          * @default 'Type to search/filter...'
+          * @default ''
          */
         "placeholder"?: string;
         /**
@@ -5564,6 +5632,7 @@ declare namespace LocalJSX {
          */
         "type"?: string;
         /**
+          * Validation controlled externally (prop remains source of truth)
           * @default false
          */
         "validation"?: boolean;
@@ -5571,6 +5640,11 @@ declare namespace LocalJSX {
           * @default ''
          */
         "validationMessage"?: string;
+        /**
+          * Value controlled externally (don’t mutate the prop)
+          * @default ''
+         */
+        "value"?: string;
     }
     interface BadgeComponent {
         /**
@@ -6042,10 +6116,6 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
-        "checkbox"?: boolean;
-        /**
-          * @default false
-         */
         "checkboxGroup"?: boolean;
         /**
           * @default false
@@ -6170,6 +6240,10 @@ declare namespace LocalJSX {
           * @default 'Date Range Picker'
          */
         "label"?: string;
+        /**
+          * @default ''
+         */
+        "labelAlign"?: '' | 'right';
         /**
           * Legacy numeric cols (fallback)
           * @default 2
@@ -6319,6 +6393,10 @@ declare namespace LocalJSX {
           * @default 'Date and Time Picker'
          */
         "label"?: string;
+        /**
+          * @default ''
+         */
+        "labelAlign"?: '' | 'right';
         /**
           * Grid like date-range-picker-component
           * @default 2
@@ -6480,6 +6558,10 @@ declare namespace LocalJSX {
           * @default 'Date Picker'
          */
         "label"?: string;
+        /**
+          * @default ''
+         */
+        "labelAlign"?: '' | 'right';
         /**
           * Legacy numeric cols (fallback)
           * @default 2
@@ -6729,6 +6811,10 @@ declare namespace LocalJSX {
           * @default 'left'
          */
         "legendPosition"?: 'left' | 'center' | 'right' | string;
+        /**
+          * @default 'base'
+         */
+        "legendSize"?: 'small' | 'base' | 'large' | 'xlarge' | string;
         /**
           * @default 'Add Title Here'
          */
@@ -7356,6 +7442,7 @@ declare namespace LocalJSX {
     reason: 'add' | 'delete' | 'replace';
     value?: string;
   }>) => void;
+        "onValueChange"?: (event: PlumageAutocompleteMultipleSelectionsComponentCustomEvent<string[]>) => void;
         /**
           * @default []
          */
@@ -7398,6 +7485,11 @@ declare namespace LocalJSX {
           * @default ''
          */
         "validationMessage"?: string;
+        /**
+          * ✅ Controlled selected values (external source of truth). Do NOT mutate this prop.
+          * @default []
+         */
+        "value"?: string[];
     }
     interface PlumageAutocompleteMultiselectComponent {
         /**
@@ -7519,6 +7611,7 @@ declare namespace LocalJSX {
     reason: 'add' | 'delete' | 'replace';
     value?: string;
   }>) => void;
+        "onValueChange"?: (event: PlumageAutocompleteMultiselectComponentCustomEvent<string[]>) => void;
         /**
           * @default []
          */
@@ -7557,6 +7650,11 @@ declare namespace LocalJSX {
           * @default ''
          */
         "validationMessage"?: string;
+        /**
+          * ✅ Controlled selected values (external source of truth). Do NOT mutate this prop.
+          * @default []
+         */
+        "value"?: string[];
     }
     interface PlumageAutocompleteSingle {
         /**

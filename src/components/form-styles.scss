@@ -66,7 +66,9 @@ form {
 }
 
 legend {
-  padding: 0 10px;
+  float: none !important;
+  padding: 0 10px !important;
+  width: auto !important;
 }
 
 legend.left {
@@ -81,9 +83,26 @@ legend.center {
   text-align: center;
 }
 
+legend.small {
+  font-size: 0.875rem;
+}
+
+legend.base {
+  font-size: 1rem;
+}
+
+legend.large {
+  font-size: 1.25rem;
+}
+
+legend.xlarge {
+  font-size: 1.5rem;
+}
+
 fieldset {
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid #ccc !important;
+  border-radius: 5px !important;
+  padding: 0.35rem 0.625rem !important;
 }
 
 input {

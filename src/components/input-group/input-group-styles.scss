@@ -13,14 +13,16 @@ $radius-lg: 0.5rem;
 // Helpers
 // =============================================
 @mixin input-group-btn-radii($r) {
-  .btn {
-    &:first-child {
+  .prepend-btn {
+    .btn  {
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
       border-top-left-radius: $r;
       border-bottom-left-radius: $r;
     }
-    &:last-child {
+  }
+  .append-btn {
+    .btn {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
       border-top-right-radius: $r;

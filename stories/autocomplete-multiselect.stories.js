@@ -1,6 +1,147 @@
 // stories/autocomplete-multiselect.stories.js
 
-// tiny helpers
+// ======================================================
+// Docs: wrap long code lines + show formatted HTML
+// (same treatment as autocomplete-multiselect)
+// ======================================================
+
+// Inject CSS so Docs code blocks wrap instead of one long line.
+const DocsWrapStyles = () => {
+  const style = document.createElement('style');
+  style.innerHTML = `
+    .sbdocs pre,
+    .sbdocs pre code {
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: auto !important;
+    }
+  `;
+  return style;
+};
+
+/** Collapse extra blank lines + trim edges (keeps intentional line breaks) */
+const normalize = (txt) => {
+  const lines = String(txt)
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map((l) => l.replace(/[ \t]+$/g, ''));
+
+  const out = [];
+  let prevBlank = false;
+
+  for (const line of lines) {
+    const blank = line.trim() === '';
+    if (blank) {
+      if (prevBlank) continue;
+      prevBlank = true;
+      out.push('');
+      continue;
+    }
+    prevBlank = false;
+    out.push(line);
+  }
+
+  while (out[0] === '') out.shift();
+  while (out[out.length - 1] === '') out.pop();
+
+  return out.join('\n');
+};
+
+/** Put each attribute on its own line (for Docs code previews) */
+const attrLines = (pairs) =>
+  pairs
+    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
+    .map(([k, v]) => (v === true ? `${k}` : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
+    .join('\n  ');
+
+/** HTML shown in Docs "Code" panel (always HTML + line-broken attrs) */
+const buildDocsHtml = (args) =>
+  normalize(`
+<autocomplete-multiselect
+  ${attrLines([
+    // ids/labels
+    ['id', args.id],
+    ['input-id', args.inputId],
+    ['label', args.label],
+    ['placeholder', args.placeholder],
+
+    // layout
+    ['form-id', args.formId],
+    ['form-layout', args.formLayout],
+    ['label-align', args.labelAlign],
+    ['label-size', args.labelSize],
+    ['size', args.size],
+
+    // legacy numeric columns (horizontal)
+    ['label-col', args.labelCol],
+    ['input-col', args.inputCol],
+
+    // responsive cols
+    ['label-cols', args.labelCols],
+    ['input-cols', args.inputCols],
+
+    // validation / state
+    ['required', args.required],
+    ['validation', args.validation],
+    ['validation-message', args.validationMessage],
+    ['error', args.error],
+    ['error-message', args.errorMessage],
+    ['disabled', args.disabled],
+    ['label-hidden', args.labelHidden],
+    ['dev-mode', args.devMode],
+
+    // actions / icons
+    ['add-btn', args.addBtn],
+    ['editable', args.editable],
+    ['add-icon', args.addIcon],
+    ['remove-clear-btn', args.removeClearBtn],
+    ['remove-btn-border', args.removeBtnBorder],
+    ['clear-icon', args.clearIcon],
+    ['clear-input-on-blur-outside', args.clearInputOnBlurOutside],
+
+    // behavior
+    ['auto-sort', args.autoSort],
+    ['add-new-on-enter', args.addNewOnEnter],
+    ['preserve-input-on-select', args.preserveInputOnSelect],
+
+    // controlled selection (Docs-only: shown as JSON string; applied via property at runtime)
+    ['value', Array.isArray(args.value) ? JSON.stringify(args.value) : ''],
+
+    // form names
+    ['name', args.name],
+    ['raw-input-name', args.rawInputName],
+    ['type', args.type],
+
+    // badge display
+    ['badge-variant', args.badgeVariant],
+    ['badge-shape', args.badgeShape],
+    ['badge-inline-styles', args.badgeInlineStyles],
+  ])}
+></autocomplete-multiselect>
+`);
+
+/** Docs wrapper */
+const wrapDocsHtml = (innerHtml) =>
+  normalize(`
+<div style="max-width:680px;">
+  ${String(innerHtml).replace(/\n/g, '\n  ')}
+</div>
+`);
+
+/** Multi-snippet docs helper (single wrapper, multiple components) */
+const buildDocsHtmlMany = (snippets) =>
+  wrapDocsHtml(
+    normalize(`
+<div style="display:grid; gap:14px;">
+${snippets.map((s) => `  ${String(s).replace(/\n/g, '\n  ')}`).join('\n')}
+</div>
+`),
+  );
+
+// ======================================================
+// Tiny helpers
+// ======================================================
+
 const setAttr = (el, name, value) => {
   if (value === true) el.setAttribute(name, '');
   else if (value === false || value == null || value === '') el.removeAttribute(name);
@@ -9,155 +150,451 @@ const setAttr = (el, name, value) => {
 
 const setOptionsWhenReady = async (el, options) => {
   const safe = Array.isArray(options) ? options : [];
+
   // Prefer Stencil's componentOnReady if present, otherwise whenDefined
   if (typeof el.componentOnReady === 'function') {
     await el.componentOnReady();
     await el.setOptions(safe);
-  } else {
+  } else if (window.customElements?.whenDefined) {
     await customElements.whenDefined('autocomplete-multiselect');
     await el.setOptions(safe);
+  } else {
+    await el.setOptions(safe);
   }
+};
+
+const setValueWhenReady = async (el, value) => {
+  const safe = Array.isArray(value) ? value.slice() : [];
+
+  if (typeof el.componentOnReady === 'function') {
+    await el.componentOnReady();
+  } else if (window.customElements?.whenDefined) {
+    await customElements.whenDefined('autocomplete-multiselect');
+  }
+
+  // value is a PROP (array); set via property, not attribute
+  el.value = safe;
+};
+
+const wrapEl = (childEl) => {
+  const wrap = document.createElement('div');
+  wrap.style.maxWidth = '680px';
+  wrap.appendChild(childEl);
+  return wrap;
+};
+
+// ✅ sample data used by all stories
+const FRUIT = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango', 'Bet', 'Betty', 'Bobby', 'Bob', 'Bobby Brown', 'Bobby Blue', 'Bobby Green'];
+
+// ✅ extract render logic so stories can reuse it (no duplication)
+const renderComponent = (args) => {
+  const el = document.createElement('autocomplete-multiselect');
+
+  // string/enum attrs
+  setAttr(el, 'id', args.id);
+  setAttr(el, 'input-id', args.inputId);
+  setAttr(el, 'label', args.label);
+  setAttr(el, 'placeholder', args.placeholder);
+  setAttr(el, 'form-id', args.formId);
+  setAttr(el, 'form-layout', args.formLayout);
+  setAttr(el, 'label-align', args.labelAlign);
+  setAttr(el, 'label-size', args.labelSize);
+  setAttr(el, 'size', args.size);
+  setAttr(el, 'arialabelled-by', args.arialabelledBy);
+
+  setAttr(el, 'label-col', args.labelCol);
+  setAttr(el, 'input-col', args.inputCol);
+
+  setAttr(el, 'label-cols', args.labelCols);
+  setAttr(el, 'input-cols', args.inputCols);
+
+  setAttr(el, 'validation-message', args.validationMessage);
+  setAttr(el, 'clear-icon', args.clearIcon);
+  setAttr(el, 'add-icon', args.addIcon);
+  setAttr(el, 'name', args.name);
+  setAttr(el, 'raw-input-name', args.rawInputName);
+  setAttr(el, 'badge-variant', args.badgeVariant);
+  setAttr(el, 'badge-shape', args.badgeShape);
+  setAttr(el, 'badge-inline-styles', args.badgeInlineStyles);
+  setAttr(el, 'type', args.type || 'text');
+
+  // booleans
+  args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
+  args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
+  args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
+  setAttr(el, 'error-message', args.errorMessage);
+  args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
+  args.labelHidden ? el.setAttribute('label-hidden', '') : el.removeAttribute('label-hidden');
+  args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
+  args.addBtn ? el.setAttribute('add-btn', '') : el.removeAttribute('add-btn');
+  args.editable ? el.setAttribute('editable', '') : el.removeAttribute('editable');
+  args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
+  args.removeBtnBorder ? el.setAttribute('remove-btn-border', '') : el.removeAttribute('remove-btn-border');
+  args.clearInputOnBlurOutside ? el.setAttribute('clear-input-on-blur-outside', '') : el.removeAttribute('clear-input-on-blur-outside');
+
+  // behavior flags (mapped to attributes; component reads as props)
+  setAttr(el, 'auto-sort', args.autoSort);
+  setAttr(el, 'add-new-on-enter', args.addNewOnEnter);
+  setAttr(el, 'preserve-input-on-select', args.preserveInputOnSelect);
+
+  // quick event logs
+  el.addEventListener('multiSelectChange', (e) => console.log('[acm] selectionChange', e.detail));
+  el.addEventListener('valueChange', (e) => console.log('[acm] valueChange', e.detail));
+  el.addEventListener('optionDelete', (e) => console.log('[acm] optionDelete', e.detail));
+  el.addEventListener('clear', () => console.log('[acm] clear'));
+
+  // provide options after hydration
+  const fallback = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
+  setOptionsWhenReady(el, Array.isArray(args.options) && args.options.length ? args.options : fallback);
+
+  // ✅ controlled selections (value prop) via property
+  setValueWhenReady(el, Array.isArray(args.value) ? args.value : []);
+
+  return wrapEl(el);
 };
 
 export default {
   title: 'Form/Autocomplete Multiselect',
   tags: ['autodocs'],
-  render: (args) => {
-    const el = document.createElement('autocomplete-multiselect');
-
-    // string/enum attributes
-    setAttr(el, 'id', args.id);
-    setAttr(el, 'input-id', args.inputId);
-    setAttr(el, 'label', args.label);
-    setAttr(el, 'placeholder', args.placeholder);
-    setAttr(el, 'form-layout', args.formLayout);
-    setAttr(el, 'label-align', args.labelAlign);
-    setAttr(el, 'label-size', args.labelSize);
-    setAttr(el, 'size', args.size);
-    setAttr(el, 'label-cols', args.labelCols);
-    setAttr(el, 'input-cols', args.inputCols);
-    setAttr(el, 'validation-message', args.validationMessage);
-    setAttr(el, 'clear-icon', args.clearIcon);
-    setAttr(el, 'add-icon', args.addIcon);
-    setAttr(el, 'name', args.name);
-    setAttr(el, 'raw-input-name', args.rawInputName);
-    setAttr(el, 'badge-variant', args.badgeVariant);
-    setAttr(el, 'badge-shape', args.badgeShape);
-    setAttr(el, 'badge-inline-styles', args.badgeInlineStyles);
-
-    // booleans
-    args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
-    args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
-    args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
-    args.labelHidden ? el.setAttribute('label-hidden', '') : el.removeAttribute('label-hidden');
-    args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
-    args.addBtn ? el.setAttribute('add-btn', '') : el.removeAttribute('add-btn');
-    args.editable ? el.setAttribute('editable', '') : el.removeAttribute('editable');
-    args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
-    args.clearInputOnBlurOutside ? el.setAttribute('clear-input-on-blur-outside', '') : el.removeAttribute('clear-input-on-blur-outside');
-
-    // behavior toggles as attributes (they’re props internally)
-    setAttr(el, 'auto-sort', args.autoSort);
-    setAttr(el, 'add-new-on-enter', args.addNewOnEnter);
-    setAttr(el, 'preserve-input-on-select', args.preserveInputOnSelect);
-
-    // wire events for quick sanity logs
-    el.addEventListener('multiSelectChange', (e) => console.log('[autocomplete-multiselect] selectionChange', e.detail));
-    el.addEventListener('optionsChange', (e) => console.log('[autocomplete-multiselect] optionsChange', e.detail));
-    el.addEventListener('optionDelete', (e) => console.log('[autocomplete-multiselect] optionDelete', e.detail));
-    el.addEventListener('clear', () => console.log('[autocomplete-multiselect] clear'));
-
-    // provide options via PUBLIC API (property set won’t trigger setOptions hooks)
-    const fallback = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
-    setOptionsWhenReady(el, (Array.isArray(args.options) && args.options.length) ? args.options : fallback);
-
-    // little layout nicety
-    el.style.display = 'block';
-    el.style.margin = '16px 0';
-    return el;
+  decorators: [
+    (Story) => {
+      const wrap = document.createElement('div');
+      wrap.appendChild(DocsWrapStyles());
+      wrap.appendChild(Story());
+      return wrap;
+    },
+  ],
+  parameters: {
+    docs: {
+      description: {
+        component: ['Autocomplete Multiselect component for selecting multiple options from a list with autocomplete functionality.', ''].join('\n'),
+      },
+      source: {
+        language: 'html',
+        transform: (_src, ctx) => wrapDocsHtml(buildDocsHtml(ctx.args)),
+      },
+    },
   },
 
+  render: (args) => renderComponent(args),
+
   argTypes: {
-    // enums
-    formLayout: { control: { type: 'select' }, options: ['', 'horizontal', 'inline'] },
-    labelAlign: { control: { type: 'select' }, options: ['', 'right'] },
-    size: { control: { type: 'select' }, options: ['', 'sm', 'lg'] },
-    labelSize: { control: { type: 'select' }, options: ['xs', 'sm', 'base', 'lg'] },
+    /* =========================
+     * Attributes
+     * ========================= */
+    addNewOnEnter: {
+      control: 'boolean',
+      name: 'add-new-on-enter',
+      table: { category: 'Attributes', defaultValue: { summary: true } },
+      description: 'Adds a new option when the Enter key is pressed (editable mode).',
+    },
+    autoSort: {
+      control: 'boolean',
+      name: 'auto-sort',
+      table: { category: 'Attributes', defaultValue: { summary: true } },
+      description: 'Automatically sorts the options array when inserting new values.',
+    },
+    clearInputOnBlurOutside: {
+      control: 'boolean',
+      name: 'clear-input-on-blur-outside',
+      table: { category: 'Attributes', defaultValue: { summary: false } },
+      description: 'Clears the input when clicking outside the component.',
+    },
+    editable: {
+      control: 'boolean',
+      name: 'editable',
+      table: { category: 'Attributes', defaultValue: { summary: false } },
+      description: 'Allows adding/removing options at runtime.',
+    },
+    id: {
+      control: 'text',
+      name: 'id',
+      table: { category: 'Attributes' },
+      description: 'The unique identifier for the component instance. This is used to associate the component with the javascript API and for accessibility purposes.',
+    },
+    preserveInputOnSelect: {
+      control: 'boolean',
+      name: 'preserve-input-on-select',
+      table: { category: 'Attributes', defaultValue: { summary: false } },
+      description: 'Preserves the typed input value after selecting an option.',
+    },
+    rawInputName: {
+      control: 'text',
+      name: 'raw-input-name',
+      table: { category: 'Attributes' },
+      description: 'The name attribute for the raw input hidden field.',
+    },
 
-    // strings
-    id: { control: 'text' },
-    inputId: { control: 'text' },
-    label: { control: 'text' },
-    placeholder: { control: 'text' },
-    labelCols: { control: 'text' },
-    inputCols: { control: 'text' },
-    validationMessage: { control: 'text' },
-    clearIcon: { control: 'text' },
-    addIcon: { control: 'text' },
-    name: { control: 'text' },
-    rawInputName: { control: 'text' },
-    badgeVariant: { control: 'text' },
-    badgeShape: { control: 'text' },
-    badgeInlineStyles: { control: 'text' },
+    /* =========================
+     * Badge Attributes
+     * ========================= */
+    badgeInlineStyles: {
+      control: 'text',
+      name: 'badge-inline-styles',
+      table: { category: 'Badge Attributes' },
+      description: 'Inline styles for the badge.',
+    },
+    badgeShape: {
+      control: 'text',
+      name: 'badge-shape',
+      table: { category: 'Badge Attributes' },
+      description: 'The shape of the badge.',
+    },
+    badgeVariant: {
+      control: 'text',
+      name: 'badge-variant',
+      table: { category: 'Badge Attributes' },
+      description: 'The variant style for the badge.',
+    },
 
-    // booleans
-    required: { control: 'boolean' },
-    validation: { control: 'boolean' },
-    disabled: { control: 'boolean' },
-    labelHidden: { control: 'boolean' },
-    devMode: { control: 'boolean' },
-    addBtn: { control: 'boolean' },
-    editable: { control: 'boolean' },
-    removeClearBtn: { control: 'boolean' },
-    clearInputOnBlurOutside: { control: 'boolean' },
+    /* =========================
+     * Button Attributes
+     * ========================= */
+    addBtn: {
+      control: 'boolean',
+      name: 'add-btn',
+      table: { category: 'Button Attributes', defaultValue: { summary: false } },
+      description: 'Displays the add button for adding new items.',
+    },
+    addIcon: {
+      control: 'text',
+      name: 'add-icon',
+      table: { category: 'Button Attributes' },
+      description: 'The icon to use for the add button.',
+    },
+    clearIcon: {
+      control: 'text',
+      name: 'clear-icon',
+      table: { category: 'Button Attributes' },
+      description: 'The icon to use for the clear button.',
+    },
+    removeBtnBorder: {
+      control: 'boolean',
+      name: 'remove-btn-border',
+      table: { category: 'Button Attributes', defaultValue: { summary: false } },
+      description: 'Removes the border from the action button(s).',
+    },
+    removeClearBtn: {
+      control: 'boolean',
+      name: 'remove-clear-btn',
+      table: { category: 'Button Attributes', defaultValue: { summary: false } },
+      description: 'Removes the clear button from the input field.',
+    },
 
-    // behavior flags
-    autoSort: { control: 'boolean' },
-    addNewOnEnter: { control: 'boolean' },
-    preserveInputOnSelect: { control: 'boolean' },
+    /* =========================
+     * Data
+     * ========================= */
+    options: {
+      control: 'object',
+      name: 'options',
+      table: { category: 'Data' },
+      description:
+        'The array of options available for selection in the autocomplete. Note: options must be set at runtime (not via attribute) for the autocomplete to work properly.',
+    },
+    value: {
+      control: 'object',
+      name: 'value',
+      table: { category: 'Data' },
+      description:
+        'Controlled selected values (array). Applied via property at runtime (not as an attribute). Use this to preselect items or drive selections externally.',
+    },
 
-    // data
-    options: { control: 'object' },
+    /* =========================
+     * Dev Mode
+     * ========================= */
+    devMode: {
+      control: 'boolean',
+      name: 'dev-mode',
+      table: { category: 'Dev Mode', defaultValue: { summary: false } },
+      description: 'Enables developer mode (extra logging).',
+    },
+
+    /* =========================
+     * Input Attributes
+     * ========================= */
+    arialabelledBy: {
+      control: 'text',
+      name: 'arialabelled-by',
+      table: { category: 'Input Attributes' },
+      description: 'The id of the element that labels the input for accessibility purposes.',
+    },
+    disabled: {
+      control: 'boolean',
+      name: 'disabled',
+      table: { category: 'Input Attributes', defaultValue: { summary: false } },
+      description: 'Disables the input field, preventing user interaction.',
+    },
+    formId: {
+      control: 'text',
+      name: 'form-id',
+      table: { category: 'Layout' },
+      description: 'The id of the parent form element to associate with when using form layouts. This is necessary when the component is not a direct child of the form element.',
+    },
+    formLayout: {
+      control: { type: 'select' },
+      options: ['', 'horizontal', 'inline'],
+      name: 'form-layout',
+      table: { category: 'Layout' },
+      description: 'Sets the form layout style. "horizontal" applies a two-column grid layout, while "inline" arranges elements in a single row.',
+    },
+    inputCol: {
+      control: 'text',
+      name: 'input-col',
+      table: { category: 'Layout', defaultValue: { summary: 10 } },
+      description: 'Used with horizontal form layouts. Single numeric column for the input in a grid. Default is 10 (col-10).',
+    },
+    inputCols: {
+      control: 'text',
+      name: 'input-cols',
+      table: { category: 'Layout' },
+      description: 'Used with horizontal form layouts. Responsive input column classes, e.g. "col", "col-sm-9 col-md-8".',
+    },
+    inputId: {
+      control: 'text',
+      name: 'input-id',
+      table: { category: 'Input Attributes' },
+      description: 'The unique identifier for the input element within the component. This is used for accessibility and form association.',
+    },
+    label: {
+      control: 'text',
+      name: 'label',
+      table: { category: 'Input Attributes' },
+      description: 'The text label for the component. This is used for accessibility and user guidance.',
+    },
+    labelAlign: {
+      control: { type: 'select' },
+      options: ['', 'right'],
+      name: 'label-align',
+      table: { category: 'Layout' },
+      description: 'Aligns the label text. "right" aligns the label to the right, which is typically used in horizontal form layouts.',
+    },
+    labelCol: {
+      control: 'text',
+      name: 'label-col',
+      table: { category: 'Layout', defaultValue: { summary: 2 } },
+      description: 'Used with horizontal form layouts. Single numeric column for the label in a grid. Default is 2 (col-2).',
+    },
+    labelCols: {
+      control: 'text',
+      name: 'label-cols',
+      table: { category: 'Layout' },
+      description: 'Used with horizontal form layouts. Responsive label column classes, e.g. "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4".',
+    },
+    labelHidden: {
+      control: 'boolean',
+      name: 'label-hidden',
+      table: { category: 'Layout', defaultValue: { summary: false } },
+      description: 'Hides the label visually while keeping it accessible for screen readers.',
+    },
+    labelSize: {
+      control: { type: 'select' },
+      options: ['xs', 'sm', 'base', 'lg'],
+      name: 'label-size',
+      table: { category: 'Layout' },
+      description: 'Sets the size of the label text. Options include "xs" (extra small), "sm" (small), "base" (default), and "lg" (large).',
+    },
+    name: {
+      control: 'text',
+      name: 'name',
+      table: { category: 'Input Attributes' },
+      description: 'The name attribute for the selected items hidden inputs.',
+    },
+    placeholder: {
+      control: 'text',
+      name: 'placeholder',
+      table: { category: 'Input Attributes' },
+      description: 'The placeholder text for the input element. This provides a hint to the user about what to enter.',
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['', 'sm', 'lg'],
+      name: 'size',
+      table: { category: 'Layout' },
+      description: 'Sets the size of the input field. Options include "sm" (small) and "lg" (large). Not adding any size will use the default.',
+    },
+    type: {
+      control: 'text',
+      name: 'type',
+      table: { category: 'Input Attributes' },
+      description: 'The type attribute for the input element. This can be used to specify the type of data expected (e.g., "text", "email", "number").',
+    },
+
+    /* =========================
+     * Validation
+     * ========================= */
+    error: {
+      control: 'boolean',
+      name: 'error',
+      table: { category: 'Validation', defaultValue: { summary: false } },
+      description: 'Marks the input as having an error state, which will typically apply error styling to the component.',
+    },
+    errorMessage: {
+      control: 'text',
+      name: 'error-message',
+      table: { category: 'Validation', defaultValue: { summary: '' } },
+      description: 'The error message to display when the input is in an error state.',
+    },
+    required: {
+      control: 'boolean',
+      name: 'required',
+      table: { category: 'Validation', defaultValue: { summary: false } },
+      description: 'Marks the input as required, which will trigger validation if the field is left empty.',
+    },
+    validation: {
+      control: 'boolean',
+      name: 'validation',
+      table: { category: 'Validation', defaultValue: { summary: false } },
+      description: 'Enables validation for the input field.',
+    },
+    validationMessage: {
+      control: 'text',
+      name: 'validation-message',
+      table: { category: 'Validation' },
+      description: 'The validation message to display when the input is invalid.',
+    },
   },
 
   args: {
-    id: 'aci-multi',
-    inputId: 'ac-multi',
-    label: 'Autocomplete Multiselect',
-    placeholder: 'Type to search/filter...',
-    formLayout: '',
-    labelAlign: '',
-    labelSize: '',
-    size: '',
-    labelCols: '',
-    inputCols: '',
-
-    required: false,
-    validation: false,
-    validationMessage: 'Please fill in',
-    disabled: false,
-    labelHidden: false,
-    devMode: false,
-
     addBtn: false,
     addIcon: 'fas fa-plus',
-    editable: false,
-    removeClearBtn: false,
+    addNewOnEnter: true,
+    arialabelledBy: '',
+    autoSort: true,
+    badgeInlineStyles: '',
+    badgeShape: '',
+    badgeVariant: '',
     clearIcon: 'fa-solid fa-xmark',
     clearInputOnBlurOutside: false,
-
-    autoSort: true,
-    addNewOnEnter: true,
-    preserveInputOnSelect: false,
-
+    devMode: false,
+    disabled: false,
+    editable: false,
+    error: false,
+    errorMessage: '',
+    formId: '',
+    formLayout: '',
+    id: 'aci4',
+    inputCol: '',
+    inputCols: '',
+    inputId: 'ac-2',
+    label: 'Autocomplete Multiselect',
+    labelAlign: '',
+    labelCol: '',
+    labelCols: '',
+    labelHidden: false,
+    labelSize: '',
     name: '',
+    options: FRUIT,
+    placeholder: '',
+    preserveInputOnSelect: false,
     rawInputName: '',
-
-    badgeVariant: '',
-    badgeShape: '',
-    badgeInlineStyles: '',
-
-    options: ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'],
+    removeBtnBorder: false,
+    removeClearBtn: false,
+    required: false,
+    size: '',
+    type: 'text',
+    validation: false,
+    validationMessage: 'Please fill in',
+    value: [],
   },
 };
 
@@ -165,31 +602,282 @@ export default {
 
 export const Basic = {
   args: {
+    addBtn: false,
+    addIcon: 'fas fa-plus',
+    addNewOnEnter: true,
+    badgeInlineStyles: '',
+    badgeShape: '',
+    badgeVariant: '',
+    clearIcon: 'fa-solid fa-xmark',
+    clearInputOnBlurOutside: false,
+    devMode: false,
+    disabled: false,
+    editable: false,
     formLayout: '',
     labelAlign: '',
-  },
-};
-
-export const EditableWithAddButton = {
-  name: 'Editable + Add Button',
-  args: {
-    editable: true,
-    addBtn: true,
+    labelCols: '',
+    labelCol: '',
+    inputCol: '',
+    labelHidden: false,
+    labelSize: '',
     preserveInputOnSelect: false,
-    clearInputOnBlurOutside: false,
+    removeClearBtn: false,
+    required: false,
+    size: '',
+    validation: false,
+    validationMessage: 'Please fill in',
+    value: [],
+  },
+};
+Basic.storyName = 'Basic';
+Basic.parameters = {
+  docs: {
+    description: { story: 'The default configuration of the component with basic args.' },
+    story: { height: '300px' },
   },
 };
 
-export const HorizontalGrid = {
+export const HorizontalLayout = {
   args: {
     formLayout: 'horizontal',
     labelAlign: 'right',
-   },
+    labelCol: '4',
+    inputCol: '8',
+  },
+};
+HorizontalLayout.storyName = 'Horizontal Layout';
+HorizontalLayout.parameters = {
+  docs: {
+    description: {
+      story:
+        'Applies a horizontal Bootstrap layout with the label aligned to the right. This layout is suitable for forms where labels and inputs are arranged in a two-column format.',
+    },
+    story: { height: '300px' },
+  },
 };
 
 export const InlineLayout = {
   args: {
     formLayout: 'inline',
     labelAlign: '',
+  },
+};
+InlineLayout.storyName = 'Inline Layout';
+InlineLayout.parameters = {
+  docs: {
+    description: { story: 'Applies an inline layout where the label and input are displayed in a single line.' },
+    story: { height: '300px' },
+  },
+};
+
+export const EditableDropdown = {
+  args: {
+    editable: true,
+    addBtn: true,
+    clearInputOnBlurOutside: false,
+  },
+};
+EditableDropdown.storyName = 'Adding new items to the dropdown list (Editable)';
+EditableDropdown.parameters = {
+  docs: {
+    description: {
+      story:
+        'When "editable" is enabled, users can type new items/options into the field and those items will appear in the dropdown list if removed from the input. This also allows users to delete the added item by clicking the "x" from the dropdown list.',
+    },
+    story: { height: '300px' },
+  },
+};
+
+// ✅ NEW: Controlled Value story (array) — single source of truth is args.value
+export const ControlledValue = {
+  render: (args, ctx) => {
+    const container = document.createElement('div');
+    container.style.display = 'grid';
+    container.style.gap = '12px';
+    container.style.maxWidth = '760px';
+
+    const controls = document.createElement('div');
+    controls.style.display = 'flex';
+    controls.style.flexWrap = 'wrap';
+    controls.style.gap = '8px';
+
+    const mkBtn = (label, onClick) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn btn-sm btn-secondary';
+      b.textContent = label;
+      b.addEventListener('click', onClick);
+      return b;
+    };
+
+    const elWrap = renderComponent({
+      ...args,
+      id: args.id || 'acm_controlled',
+      inputId: args.inputId || 'acm-controlled',
+      label: args.label || 'Controlled Value',
+    });
+
+    const el = elWrap.querySelector('autocomplete-multiselect');
+
+    const setNext = (next) => {
+      const safe = Array.isArray(next) ? next.slice() : [];
+      ctx.updateArgs?.({ value: safe });
+      if (el) el.value = safe;
+    };
+
+    controls.appendChild(mkBtn('Set: ["Apple","Mango"]', () => setNext(['Apple', 'Mango'])));
+    controls.appendChild(
+      mkBtn('Add "Banana"', () => {
+        const cur = Array.isArray(args.value) ? args.value.slice() : [];
+        if (!cur.includes('Banana')) cur.push('Banana');
+        setNext(cur);
+      }),
+    );
+    controls.appendChild(mkBtn('Clear []', () => setNext([])));
+
+    const hint = document.createElement('div');
+    hint.style.opacity = '0.75';
+    hint.textContent = `Current args.value: ${JSON.stringify(Array.isArray(args.value) ? args.value : [])}`;
+
+    container.appendChild(controls);
+    container.appendChild(hint);
+    container.appendChild(elWrap);
+
+    return container;
+  },
+  args: {
+    value: ['Apple'],
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: (_src, ctx) => wrapDocsHtml(buildDocsHtml(ctx.args)),
+      },
+      description: {
+        story:
+          'Demonstrates the controlled `value` prop (array). Buttons call `updateArgs({ value })` and also set the element property immediately so the UI updates without waiting for a Storybook re-render.',
+      },
+      story: { height: '420px' },
+    },
+  },
+};
+ControlledValue.storyName = 'Controlled Value (array)';
+
+// ✅ NEW: Sizes story (sm, default "", lg) using the `size` arg values
+const SIZE_VARIANTS = [
+  { key: 'sm', label: 'Small', size: 'sm', inputId: 'acms-sm', id: 'acm_sm' },
+  { key: 'default', label: 'Default', size: '', inputId: 'acms-md', id: 'acm_md' },
+  { key: 'lg', label: 'Large', size: 'lg', inputId: 'acms-lg', id: 'acm_lg' },
+];
+
+export const Sizes = {
+  render: (args) => {
+    const container = document.createElement('div');
+    container.style.display = 'grid';
+    container.style.gap = '14px';
+    container.style.maxWidth = '760px';
+
+    for (const v of SIZE_VARIANTS) {
+      const el = renderComponent({
+        ...args,
+        id: v.id,
+        inputId: v.inputId,
+        label: v.label,
+        size: v.size,
+      });
+      container.appendChild(el);
+    }
+
+    return container;
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: (_src, ctx) =>
+          buildDocsHtmlMany(
+            SIZE_VARIANTS.map((v) =>
+              buildDocsHtml({
+                ...ctx.args,
+                id: v.id,
+                inputId: v.inputId,
+                label: v.label,
+                size: v.size,
+                options: undefined,
+              }),
+            ),
+          ),
+      },
+      description: {
+        story:
+          'Shows the three supported sizes by setting the `size` arg to `sm`, empty string (default), and `lg`. Note: options are set at runtime (not via attribute) for the autocomplete to work properly, so the "Options" control here is an array that gets passed in after hydration.',
+      },
+      story: { height: '480px' },
+    },
+  },
+};
+Sizes.storyName = 'Sizes';
+
+export const FieldValidation = {
+  args: {
+    validation: true,
+    validationMessage: 'This field is required.',
+    required: true,
+  },
+};
+FieldValidation.storyName = 'Required with Validation Message';
+FieldValidation.parameters = {
+  docs: {
+    description: {
+      story: 'Enables validation for the input field. When the field is left empty and loses focus, the specified validation message will be displayed.',
+    },
+    story: { height: '300px' },
+  },
+};
+
+export const Disabled = {
+  args: {
+    inputId: 'acm-disabled',
+    label: 'Disabled',
+    disabled: true,
+    validationMessage: '',
+    addBtn: false,
+    addIcon: '',
+    clearIcon: '',
+    autoSort: false,
+    addNewOnEnter: false,
+    badgeVariant: '',
+    value: ['Banana', 'Cherry'],
+  },
+};
+Disabled.storyName = 'Disabled';
+Disabled.parameters = {
+  docs: {
+    description: {
+      story: 'Disables the input field, preventing user interaction.',
+    },
+  },
+};
+
+export const BadgeStyling = {
+  args: {
+    inputId: 'acms-badges',
+    label: 'With custom badge style',
+    editable: true,
+    addBtn: true,
+    badgeVariant: 'info',
+    badgeShape: 'rounded-pill',
+    badgeInlineStyles: 'border-radius:14px; font-weight:600;',
+  },
+};
+BadgeStyling.storyName = 'Custom Badge Styling';
+BadgeStyling.parameters = {
+  docs: {
+    description: {
+      story:
+        'Use the "Badge Variant" control to apply Bootstrap text-bg color classes (e.g. "primary", "success", "danger") or your own CSS class for custom colors. The "Badge Shape" control can be used to apply a custom class for pill/rounded styling. For full control, use the "Badge Inline Styles" to add any CSS properties you want directly to each badge (e.g. "border-radius:12px; font-weight:600;").',
+    },
+    story: { height: '300px' },
   },
 };

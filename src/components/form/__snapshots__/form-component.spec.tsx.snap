@@ -11,7 +11,7 @@ exports[`<form-component> matches snapshot (fieldset + legend + styles, outsideO
 <form-component bcolor="red" bradius="4" bstyle="dashed" bwidth="1" fieldset="" form-id="external" legend="" legend-position="right" legend-txt="Settings" outside-of-form="" styles="padding:2px;">
   <!---->
   <fieldset style="padding: 2px; border-color: red; border-style: dashed; border-width: 1px; border-radius: 4px;">
-    <legend class="right">
+    <legend class="base right">
       Settings
     </legend>
     <div slot="formField">

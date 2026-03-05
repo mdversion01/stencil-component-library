@@ -31,7 +31,7 @@ export class InputGroupComponent {
 
   @Prop() label: string = '';
   @Prop() labelSize: 'base' | 'xs' | 'sm' | 'lg' = 'sm';
-   @Prop() labelAlign: '' | 'right' = '';
+  @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
   @Prop() otherContent: boolean = false;
   @Prop() placeholder: string = '';
@@ -115,7 +115,7 @@ export class InputGroupComponent {
 
   // ----- Typing/required UX helpers (re-added) -----
   private meetsTypingThreshold() {
-    return (this.valueState || '').trim().length >= 3;
+    return (this.valueState || '').trim().length >= 2;
   }
 
   private showAsRequired() {
@@ -331,7 +331,7 @@ export class InputGroupComponent {
                 );
               }
               return this.otherContent ? (
-                <slot name="prepend" />
+                <span class="prepend-btn"><slot name="prepend" /></span>
               ) : (
                 <span class={`input-group-text ${this.isInvalidNow() ? 'is-invalid' : ''}`} id={this.prependId || undefined}>
                   <slot name="prepend" />
@@ -371,7 +371,7 @@ export class InputGroupComponent {
                 );
               }
               return this.otherContent ? (
-                <slot name="append" />
+                <span class="append-btn"><slot name="append" /></span>
               ) : (
                 <span class={`input-group-text ${this.isInvalidNow() ? 'is-invalid' : ''}`} id={this.appendId || undefined}>
                   <slot name="append" />

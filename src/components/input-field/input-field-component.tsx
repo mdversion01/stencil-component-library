@@ -22,9 +22,9 @@ export class InputFieldComponent {
   @Prop() readOnly: boolean = false;
   @Prop() required: boolean = false;
   @Prop() type: string = 'text';
-  @Prop() validation: boolean = false;         // external control
+  @Prop() validation: boolean = false; // external control
   @Prop() validationMessage: string = '';
-  @Prop() value: string = '';                  // external value
+  @Prop() value: string = ''; // external value
   @Prop() placeholder?: string;
 
   /** Legacy numeric cols (fallback) */
@@ -93,9 +93,7 @@ export class InputFieldComponent {
 
   private camelCase(str: string) {
     if (!str) return '';
-    return str
-      .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase()))
-      .replace(/\s+/g, '');
+    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase())).replace(/\s+/g, '');
   }
 
   /** Sanitize user-typed input: strip tags, remove control chars, trim, cap length. */
@@ -153,8 +151,12 @@ export class InputFieldComponent {
   };
 
   // ----- Layout helpers (unchanged) -----
-  private isHorizontal() { return this.formLayout === 'horizontal'; }
-  private isInline() { return this.formLayout === 'inline'; }
+  private isHorizontal() {
+    return this.formLayout === 'horizontal';
+  }
+  private isInline() {
+    return this.formLayout === 'inline';
+  }
 
   private parseColsSpec(spec?: string): string {
     if (!spec) return '';
@@ -162,10 +164,19 @@ export class InputFieldComponent {
     const out: string[] = [];
     for (const t of tokens) {
       if (!t) continue;
-      if (/^col(-\w+)?(-\d+)?$/.test(t)) { out.push(t); continue; }
-      if (/^\d{1,2}$/.test(t)) { out.push(`col-${Math.max(1, Math.min(12, parseInt(t, 10)))}`); continue; }
+      if (/^col(-\w+)?(-\d+)?$/.test(t)) {
+        out.push(t);
+        continue;
+      }
+      if (/^\d{1,2}$/.test(t)) {
+        out.push(`col-${Math.max(1, Math.min(12, parseInt(t, 10)))}`);
+        continue;
+      }
       const m = /^(xs|sm|md|lg|xl|xxl)-(\d{1,2})$/.exec(t);
-      if (m) { out.push(m[1] === 'xs' ? `col-${m[2]}` : `col-${m[1]}-${m[2]}`); continue; }
+      if (m) {
+        out.push(m[1] === 'xs' ? `col-${m[2]}` : `col-${m[1]}-${m[2]}`);
+        continue;
+      }
       if (t === 'col') out.push('col');
     }
     return Array.from(new Set(out)).join(' ');
@@ -206,7 +217,7 @@ export class InputFieldComponent {
     if (this.isHorizontal() && !this.labelCols && !this.inputCols && label + input !== 12) {
       console.error(
         '[input-field-component] For formLayout="horizontal", labelCol + inputCol must equal 12. ' +
-          `Received: ${this.labelCol} + ${this.inputCol} = ${Number(this.labelCol) + Number(this.inputCol)}. Falling back to 2/10.`
+          `Received: ${this.labelCol} + ${this.inputCol} = ${Number(this.labelCol) + Number(this.inputCol)}. Falling back to 2/10.`,
       );
       return { label: DEFAULT_LABEL, input: DEFAULT_INPUT };
     }
@@ -224,7 +235,9 @@ export class InputFieldComponent {
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.isInline() ? `col-form-label` : '',
       this.validationState ? 'invalid' : '',
-    ].filter(Boolean).join(' ');
+    ]
+      .filter(Boolean)
+      .join(' ');
 
     const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
 
@@ -240,9 +253,7 @@ export class InputFieldComponent {
     const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
     const classes = ['form-control', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
 
-    const placeholder = this.labelHidden
-      ? this.label || this.placeholder || 'Placeholder Text'
-      : this.label || this.placeholder || 'Placeholder Text';
+    const placeholder = (this.placeholder && this.placeholder.trim().length > 0 ? this.placeholder : this.label) || 'Placeholder Text';
 
     return (
       <Fragment>
@@ -285,12 +296,7 @@ export class InputFieldComponent {
     this.getComputedCols();
 
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass =
-      this.isHorizontal()
-        ? this.buildColClass('input') || undefined
-        : this.isInline()
-        ? this.buildColClass('input') || undefined
-        : undefined;
+    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     return (
       <div class={outerClass}>
@@ -298,8 +304,10 @@ export class InputFieldComponent {
           {this.renderInputLabel(ids, labelColClass)}
           {this.isHorizontal() ? (
             <div class={inputColClass}>{this.validationState ? <div>{this.renderInput(ids, names)}</div> : this.renderInput(ids, names)}</div>
+          ) : this.validationState ? (
+            <div>{this.renderInput(ids, names)}</div>
           ) : (
-            this.validationState ? <div>{this.renderInput(ids, names)}</div> : this.renderInput(ids, names)
+            this.renderInput(ids, names)
           )}
         </div>
       </div>

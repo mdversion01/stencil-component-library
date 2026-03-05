@@ -642,7 +642,7 @@ export class PlumageAutocompleteSingle {
   }
 
   private renderInputField(ids: string, names: string) {
-    const placeholder = this.label || this.placeholder || 'Placeholder Text';
+    const placeholder = (this.placeholder && this.placeholder.trim().length > 0 ? this.placeholder : this.label) || 'Placeholder Text';
     return (
       <input
         ref={el => (this.inputEl = el as HTMLInputElement)}
@@ -678,9 +678,9 @@ export class PlumageAutocompleteSingle {
   }
 
   private renderClearButton() {
-    if (this.removeClearBtn || !this.inputValue) return null;
+    if (this.removeClearBtn || this.disabled || !this.inputValue) return null;
     return (
-      <button class="clear-btn" role="button" onClick={this.clearInput} aria-label="Clear input" title="Clear input" disabled={this.disabled}>
+      <button class="input-group-btn clear clear-btn" role="button" onClick={this.clearInput} aria-label="Clear input" title="Clear input" disabled={this.disabled}>
         <i class={this.clearIcon || 'fas fa-times'} />
       </button>
     );

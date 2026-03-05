@@ -48,6 +48,9 @@ export class PlumageAutocompleteMultiselectComponent {
   @Prop({ mutable: true }) validation = false;
   @Prop() validationMessage = '';
 
+  /** ✅ Controlled selected values (external source of truth). Do NOT mutate this prop. */
+  @Prop() value: string[] = [];
+
   /** Submit names */
   @Prop() name?: string; // selected items
   @Prop() rawInputName?: string; // raw typed text
@@ -83,13 +86,14 @@ export class PlumageAutocompleteMultiselectComponent {
   @State() hasBeenInteractedWith = false;
   @State() dropdownOpen = false;
 
-  // virtual focus inside each row: option vs delete
   @State() focusedPart: 'option' | 'delete' = 'option';
   @State() listEntered = false;
 
-  // Mirrors (parity with other plumage-* components)
+  // Mirrors
   @State() private validationState: boolean = false;
   @State() private _resolvedFormId: string = '';
+  @State() private valueState: string[] = [];
+
   private _preserveInputOnSelect = false;
 
   // internals
@@ -102,6 +106,7 @@ export class PlumageAutocompleteMultiselectComponent {
   @Event() clear!: EventEmitter<void>;
   @Event() componentError!: EventEmitter<{ message: string; stack?: string }>;
   @Event({ eventName: 'multiSelectChange' }) selectionChange!: EventEmitter<string[]>;
+  @Event({ eventName: 'valueChange' }) valueChange!: EventEmitter<string[]>;
   @Event({ eventName: 'optionsChange' }) optionsChange!: EventEmitter<{
     options: string[];
     reason: 'add' | 'delete' | 'replace';
@@ -130,9 +135,27 @@ export class PlumageAutocompleteMultiselectComponent {
     this.applyFormAttribute();
   }
 
+  /** ✅ When host controls `value`, mirror it into internal selection state. */
+  @Watch('value')
+  onValuePropChange(v: string[]) {
+    const next = this.sanitizeValueArray(v);
+
+    this.valueState = next;
+    this.selectedItems = next;
+
+    this.filteredOptions = [];
+    this.focusedOptionIndex = -1;
+    this.focusedPart = 'option';
+    this.listEntered = false;
+    this.dropdownOpen = false;
+
+    const invalidNow = this.required && !this.isSatisfiedNow();
+    this.validationState = invalidNow;
+    this.validation = invalidNow;
+  }
+
   // ---------------- Lifecycle -------------
   connectedCallback() {
-    // inherit layout/formId from nearest <form-component>
     const formComponent = this.el.closest('form-component') as any;
     const fcFormId = formComponent?.formId;
     const fcLayout = formComponent?.formLayout;
@@ -145,10 +168,12 @@ export class PlumageAutocompleteMultiselectComponent {
       }
     }
 
-    // seed mirrors
     this.validationState = !!this.validation;
 
-    // Outside click collapses underline — bubble phase (same as input-group)
+    // ✅ seed controlled selection mirror
+    this.valueState = this.sanitizeValueArray(this.value);
+    this.selectedItems = [...this.valueState];
+
     document.addEventListener('click', this.handleDocumentClick);
   }
 
@@ -162,12 +187,10 @@ export class PlumageAutocompleteMultiselectComponent {
       logWarn(this.devMode, 'PlumageAutocompleteMultiselect', 'Missing label prop; accessibility may be impacted');
     }
 
-    // resolve preserve flag
     this._preserveInputOnSelect = !!this.preserveInputOnSelect;
   }
 
   componentDidLoad() {
-    // capture phase for quick dropdown-close on outside click
     document.addEventListener('click', this.handleClickOutside, true);
     this.applyFormAttribute();
   }
@@ -187,7 +210,6 @@ export class PlumageAutocompleteMultiselectComponent {
 
   // ---------------- Underline focus UX ----
   private handleInteraction = (event: Event) => {
-    // prevent outside-click underline collapse
     event.stopPropagation();
 
     const bFocusDiv = this.el.querySelector<HTMLDivElement>('.b-focus');
@@ -206,7 +228,6 @@ export class PlumageAutocompleteMultiselectComponent {
   };
 
   private handleDocumentClick = (ev: Event) => {
-    // If the click occurred inside this component, ignore it
     const path = (ev as any).composedPath ? (ev as any).composedPath() : [];
     if (path && path.includes(this.el)) return;
 
@@ -223,19 +244,38 @@ export class PlumageAutocompleteMultiselectComponent {
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase())).replace(/[\s-]+/g, '');
   }
 
-  /** Sanitize user-typed input: strip tags, remove control chars, collapse whitespace, cap length. */
   private sanitizeInput(value: string): string {
     if (typeof value !== 'string') return '';
-    // remove HTML tags
     let v = value.replace(/<[^>]*>/g, '');
-    // remove control characters (except common whitespace)
     v = v.replace(/[\u0000-\u001F\u007F]/g, '');
-    // collapse whitespace
     v = v.replace(/\s+/g, ' ').trim();
-    // cap length
     const MAX_LEN = 512;
     if (v.length > MAX_LEN) v = v.slice(0, MAX_LEN);
     return v;
+  }
+
+  /** ✅ Sanitize externally-controlled value array (strip tags, trim, drop empties, de-dupe). */
+  private sanitizeValueArray(value: any): string[] {
+    const arr = Array.isArray(value) ? value : [];
+    const out: string[] = [];
+    const seen = new Set<string>();
+
+    for (const raw of arr) {
+      const cleaned = this.sanitizeInput(String(raw ?? '')).trim();
+      if (!cleaned) continue;
+      const key = cleaned.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(cleaned);
+    }
+
+    return out;
+  }
+
+  private emitValue(next: string[]) {
+    this.valueState = [...next];
+    this.valueChange.emit([...this.valueState]);
+    this.el.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true, detail: { value: [...this.valueState] } }));
   }
 
   private isHorizontal() {
@@ -255,10 +295,9 @@ export class PlumageAutocompleteMultiselectComponent {
     return this.required && !this.isSatisfiedNow();
   }
 
-  /** Case-insensitive exact-equality check. */
   private hasOptionCi(value: string): boolean {
     const t = (value || '').trim().toLowerCase();
-    return (this.options || []).some(o => (o || '').trim().toLowerCase() === t);
+    return (this.options || []).some((o) => (o || '').trim().toLowerCase() === t);
   }
 
   private upsertOption(raw: string): void {
@@ -287,12 +326,14 @@ export class PlumageAutocompleteMultiselectComponent {
       return;
     }
 
-    this.options = (this.options || []).filter(o => o !== option);
+    this.options = (this.options || []).filter((o) => o !== option);
 
     const wasSelected = this.selectedItems.includes(option);
     if (wasSelected) {
-      this.selectedItems = this.selectedItems.filter(s => s !== option);
+      const nextSel = this.selectedItems.filter((s) => s !== option);
+      this.selectedItems = nextSel;
       this.selectionChange.emit(this.selectedItems);
+      this.emitValue(this.selectedItems);
     }
 
     this.userAddedOptions.delete(option);
@@ -304,7 +345,6 @@ export class PlumageAutocompleteMultiselectComponent {
     logInfo(this.devMode, 'PlumageAutocompleteMultiselect', 'Deleted user-added option', { option, wasSelected });
   }
 
-  /** Col specs parsing (Bootstrap-like) */
   private parseColsSpec(spec?: string): string {
     if (!spec) return '';
     const tokens = spec.trim().split(/\s+/);
@@ -372,7 +412,6 @@ export class PlumageAutocompleteMultiselectComponent {
   }
 
   private inputClasses() {
-    // Visual invalid reflects validationState OR error (parity with plumage single)
     return ['form-control', this.validationState || this.error ? 'is-invalid' : ''].filter(Boolean).join(' ');
   }
 
@@ -382,18 +421,11 @@ export class PlumageAutocompleteMultiselectComponent {
   }
 
   private containerClasses() {
-    return [
-      'ac-multi-select-container',
-      this.validationState ? 'is-invalid' : '',
-      // this.isFocused ? 'ac-focused' : '',
-      // this.size || '',
-    ]
-      .filter(Boolean)
-      .join(' ');
+    return ['ac-multi-select-container', this.disabled ? 'disabled' : '', this.validationState ? 'is-invalid' : ''].filter(Boolean).join(' ');
   }
 
   private getAvailableOptions(): string[] {
-    return (this.options || []).filter(opt => !this.selectedItems.includes(opt));
+    return (this.options || []).filter((opt) => !this.selectedItems.includes(opt));
   }
 
   // ---------------- Handlers ----------------
@@ -416,14 +448,12 @@ export class PlumageAutocompleteMultiselectComponent {
       const stillInComponent = !!ae && this.el.contains(ae);
 
       if (stillInComponent) {
-        // Close dropdown but DO NOT clear input
         this.filteredOptions = [];
         this.focusedOptionIndex = -1;
         this.focusedPart = 'option';
         this.dropdownOpen = false;
         this.listEntered = false;
       } else {
-        // Left the component: close, optionally clear input
         this.closeDropdown({ clearInput: this.clearInputOnBlurOutside });
       }
 
@@ -436,7 +466,6 @@ export class PlumageAutocompleteMultiselectComponent {
       this.validation = invalidNow;
     }
 
-    // Collapse underline on blur
     const bFocusDiv = this.el.querySelector<HTMLDivElement>('.b-focus');
     if (bFocusDiv) {
       bFocusDiv.style.width = '0';
@@ -452,11 +481,9 @@ export class PlumageAutocompleteMultiselectComponent {
     }
   };
 
-  // Keyboard & input
   private handleInput = (event: InputEvent | KeyboardEvent) => {
     const input = event.target as HTMLInputElement;
 
-    // keep "form" attribute linked
     if (this._resolvedFormId) input.setAttribute('form', this._resolvedFormId);
     else input.removeAttribute('form');
 
@@ -536,7 +563,6 @@ export class PlumageAutocompleteMultiselectComponent {
       if (key === 'Enter') {
         event.preventDefault();
 
-        // If virtually focused on delete, perform delete
         if (this.listEntered && this.dropdownOpen && this.focusedOptionIndex >= 0 && this.focusedPart === 'delete') {
           const opt = this.filteredOptions[this.focusedOptionIndex];
           if (this.editable && this.userAddedOptions.has(opt)) {
@@ -548,14 +574,14 @@ export class PlumageAutocompleteMultiselectComponent {
         const typedRaw = (this.inputValue || '').trim();
         const typed = typedRaw.toLowerCase();
         const hasFocusedPick = this.listEntered && this.focusedOptionIndex >= 0 && this.filteredOptions[this.focusedOptionIndex];
-        const exactMatch = this.filteredOptions.find(opt => (opt || '').toLowerCase() === typed);
+        const exactMatch = this.filteredOptions.find((opt) => (opt || '').toLowerCase() === typed);
 
         if (hasFocusedPick) {
-          this.toggleItem(this.filteredOptions[this.focusedOptionIndex]); // closes dropdown
+          this.toggleItem(this.filteredOptions[this.focusedOptionIndex]);
           return;
         }
         if (exactMatch) {
-          this.toggleItem(exactMatch); // closes dropdown
+          this.toggleItem(exactMatch);
           return;
         }
 
@@ -577,7 +603,6 @@ export class PlumageAutocompleteMultiselectComponent {
         return;
       }
     } else {
-      // sanitize + filter + validation
       this.inputValue = this.sanitizeInput(input.value);
       this.filterOptions();
       this.hasBeenInteractedWith = true;
@@ -697,7 +722,6 @@ export class PlumageAutocompleteMultiselectComponent {
     const available = this.getAvailableOptions();
 
     if (v.length === 0) {
-      // keep it closed
       this.filteredOptions = [];
       this.dropdownOpen = false;
       this.focusedOptionIndex = -1;
@@ -706,7 +730,7 @@ export class PlumageAutocompleteMultiselectComponent {
       return;
     }
 
-    this.filteredOptions = available.filter(opt => (opt || '').toLowerCase().includes(v));
+    this.filteredOptions = available.filter((opt) => (opt || '').toLowerCase().includes(v));
     this.dropdownOpen = this.filteredOptions.length > 0;
 
     if (this.dropdownOpen) {
@@ -723,7 +747,7 @@ export class PlumageAutocompleteMultiselectComponent {
   private recomputeSuggestionsAfterChange(keepOpen: boolean) {
     const v = this.inputValue.trim().toLowerCase();
     const pool = this.getAvailableOptions();
-    const next = v.length > 0 ? pool.filter(opt => (opt || '').toLowerCase().includes(v)) : pool;
+    const next = v.length > 0 ? pool.filter((opt) => (opt || '').toLowerCase().includes(v)) : pool;
 
     this.filteredOptions = next;
 
@@ -755,21 +779,20 @@ export class PlumageAutocompleteMultiselectComponent {
     updated.has(option) ? updated.delete(option) : updated.add(option);
 
     this.selectedItems = Array.from(updated);
+
     this.selectionChange.emit(this.selectedItems);
+    this.emitValue(this.selectedItems);
 
     if (!this._preserveInputOnSelect) {
       this.inputValue = '';
     }
 
-    // Update validation mirrors
     const invalidNow = this.required && !this.isSatisfiedNow();
     this.validationState = invalidNow;
     this.validation = invalidNow;
 
-    // Close dropdown after each pick (component’s behavior)
     this.closeDropdown({ clearInput: false });
 
-    // Keep focus for quick next selection
     setTimeout(() => this.el.querySelector('input')?.focus(), 0);
 
     logInfo(this.devMode, 'PlumageAutocompleteMultiselect', 'Toggled item (dropdown closed)', {
@@ -795,11 +818,14 @@ export class PlumageAutocompleteMultiselectComponent {
 
   private removeItemAt(index: number) {
     if (index < 0 || index >= this.selectedItems.length) return;
-    const removed = this.selectedItems[index];
-    this.selectedItems = [...this.selectedItems.slice(0, index), ...this.selectedItems.slice(index + 1)];
-    this.selectionChange.emit(this.selectedItems);
 
-    // Keep suggestions in sync but force dropdown closed
+    const removed = this.selectedItems[index];
+    const next = [...this.selectedItems.slice(0, index), ...this.selectedItems.slice(index + 1)];
+    this.selectedItems = next;
+
+    this.selectionChange.emit(this.selectedItems);
+    this.emitValue(this.selectedItems);
+
     this.recomputeSuggestionsAfterChange(false);
 
     const invalidNow = this.required && !this.isSatisfiedNow();
@@ -837,6 +863,8 @@ export class PlumageAutocompleteMultiselectComponent {
     this.dropdownOpen = false;
     this.selectionChange.emit([]);
 
+    this.emitValue([]);
+
     this.hasBeenInteractedWith = true;
     this.listEntered = false;
 
@@ -852,8 +880,8 @@ export class PlumageAutocompleteMultiselectComponent {
   private parseInlineStyles(styles: string): { [k: string]: string } | undefined {
     if (!styles || typeof styles !== 'string') return undefined;
     return styles.split(';').reduce((acc, rule) => {
-      const [key, value] = rule.split(':').map(s => s.trim());
-      if (key && value) acc[key.replace(/-([a-z])/g, g => g[1].toUpperCase())] = value;
+      const [key, value] = rule.split(':').map((s) => s.trim());
+      if (key && value) acc[key.replace(/-([a-z])/g, (g) => g[1].toUpperCase())] = value;
       return acc;
     }, {} as { [k: string]: string });
   }
@@ -870,9 +898,11 @@ export class PlumageAutocompleteMultiselectComponent {
       return (
         <div class={classMap} style={this.parseInlineStyles(this.badgeInlineStyles)} key={`${item}-${index}`}>
           <span>{item}</span>
-          <button type="button" onClick={() => this.removeItemAt(index)} aria-label={`Remove ${item}`} data-tag={item} role="button" class="remove-btn" title="Remove Tag">
-            <i class="fa-solid fa-circle-xmark" />
-          </button>
+          {!this.disabled ? (
+            <button type="button" onClick={() => this.removeItemAt(index)} aria-label={`Remove ${item}`} data-tag={item} role="button" class="remove-btn" title="Remove Tag">
+              <i class="fa-solid fa-xmark" />
+            </button>
+          ) : null}
         </div>
       );
     });
@@ -895,12 +925,12 @@ export class PlumageAutocompleteMultiselectComponent {
         class="add-btn"
         role="button"
         disabled={this.disabled}
-        onMouseDown={e => {
+        onMouseDown={(e) => {
           e.preventDefault();
           e.stopPropagation();
           this.suppressBlur = true;
         }}
-        onClick={e => {
+        onClick={(e) => {
           e.preventDefault();
           this.handleAddItem();
           setTimeout(() => {
@@ -918,7 +948,7 @@ export class PlumageAutocompleteMultiselectComponent {
 
   private renderClearButton() {
     const hasInputOrSelection = this.inputValue.trim().length > 0 || this.selectedItems.length > 0;
-    if (this.removeClearBtn || !hasInputOrSelection) return null;
+    if (this.removeClearBtn || this.disabled || !hasInputOrSelection) return null;
 
     return (
       <button
@@ -927,12 +957,12 @@ export class PlumageAutocompleteMultiselectComponent {
         aria-label="Clear input"
         disabled={this.disabled}
         title="Clear input"
-        onMouseDown={e => {
+        onMouseDown={(e) => {
           e.preventDefault();
           e.stopPropagation();
           this.suppressBlur = true;
         }}
-        onClick={e => {
+        onClick={(e) => {
           e.preventDefault();
           this.clearAll();
           setTimeout(() => {
@@ -959,7 +989,7 @@ export class PlumageAutocompleteMultiselectComponent {
   }
 
   private renderInputField(ids: string, names: string) {
-    const placeholder = this.labelHidden ? this.label || this.placeholder || 'Placeholder Text' : this.label || this.placeholder || 'Placeholder Text';
+    const placeholder = (this.placeholder && this.placeholder.trim().length > 0 ? this.placeholder : this.label) || 'Placeholder Text';
 
     return (
       <input
@@ -1015,7 +1045,6 @@ export class PlumageAutocompleteMultiselectComponent {
               onMouseDown={this.onRowMouseDown}
               tabIndex={-1}
             >
-              {/* OPTION BUTTON */}
               <button
                 id={`${ids}-option-${i}`}
                 type="button"
@@ -1023,15 +1052,14 @@ export class PlumageAutocompleteMultiselectComponent {
                   'option-btn': true,
                   'virtually-focused': this.listEntered && this.focusedOptionIndex === i && this.focusedPart === 'option',
                 }}
-                onMouseDown={e => this.onOptionButtonMouseDown(e)}
-                onClick={e => this.onOptionButtonClick(e, option)}
+                onMouseDown={(e) => this.onOptionButtonMouseDown(e)}
+                onClick={(e) => this.onOptionButtonClick(e, option)}
                 aria-label={`Select ${option}`}
                 tabIndex={-1}
               >
                 <span>{option}</span>
               </button>
 
-              {/* DELETE BUTTON (only for user-added options when editable) */}
               {showDelete ? (
                 <button
                   type="button"
@@ -1043,7 +1071,7 @@ export class PlumageAutocompleteMultiselectComponent {
                   aria-label={`Delete ${option}`}
                   title={`Delete ${option}`}
                   onMouseDown={this.onDeleteButtonMouseDown}
-                  onClick={e => this.onDeleteButtonClick(e, option)}
+                  onClick={(e) => this.onDeleteButtonClick(e, option)}
                   tabIndex={-1}
                 >
                   {this.renderDeleteIcon()}
@@ -1102,7 +1130,9 @@ export class PlumageAutocompleteMultiselectComponent {
   }
 
   private renderFormFields() {
-    const selected = this.name ? this.selectedItems.map(v => <input type="hidden" name={this.name!.endsWith('[]') ? this.name! : `${this.name}[]`} value={v} />) : null;
+    const selected = this.name
+      ? this.selectedItems.map((v) => <input type="hidden" name={this.name!.endsWith('[]') ? this.name! : `${this.name}[]`} value={v} />)
+      : null;
     const raw = this.rawInputName ? <input type="hidden" name={this.rawInputName} value={this.inputValue} /> : null;
     return [...(selected ?? []), ...(raw ? [raw] : [])];
   }
@@ -1123,7 +1153,6 @@ export class PlumageAutocompleteMultiselectComponent {
           </div>
         </div>
 
-        {/* Underline/focus bar (exactly like plumage-input-group / plumage-autocomplete-single) */}
         <div class={`b-underline${this.validationState ? ' invalid' : ''}`} role="presentation">
           <div
             class={`b-focus${this.disabled ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`}
@@ -1140,7 +1169,11 @@ export class PlumageAutocompleteMultiselectComponent {
     const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
 
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
+    const inputColClass = this.isHorizontal()
+      ? this.buildColClass('input') || undefined
+      : this.isInline()
+        ? this.buildColClass('input') || undefined
+        : undefined;
 
     if (this.isRowLayout()) {
       return (
@@ -1160,7 +1193,6 @@ export class PlumageAutocompleteMultiselectComponent {
       );
     }
 
-    // Stacked
     return (
       <div class={outerClass}>
         {this.renderInputLabel(ids)}

@@ -18,6 +18,7 @@ export class FormComponent {
   // ⚠ Use inline union types so components.d.ts doesn’t reference unknown names
   @Prop() legendPosition: 'left' | 'center' | 'right' | string = 'left';
   @Prop() legendTxt: string = 'Add Title Here';
+  @Prop() legendSize: 'small' | 'base' | 'large' | 'xlarge' | string = 'base';
 
   /** Layout + identity used by slotted children */
   @Prop() formLayout: '' | 'horizontal' | 'inline' = '';
@@ -81,7 +82,7 @@ export class FormComponent {
     if (this.outsideOfForm) {
       return (
         <fieldset style={{ cssText }}>
-          {this.legend ? <legend class={this.legendPosition || 'left'}>{this.legendTxt || 'Add Title Here'}</legend> : null}
+          {this.legend ? <legend class={`${this.legendPosition || 'left'} ${this.legendSize || 'base'}`}>{this.legendTxt || 'Add Title Here'}</legend> : null}
           {this.renderSlot()}
         </fieldset>
       );
@@ -94,7 +95,7 @@ export class FormComponent {
         method={this.method || undefined}
       >
         <fieldset style={{ cssText }}>
-          {this.legend ? <legend class={this.legendPosition || 'left'}>{this.legendTxt || 'Add Title Here'}</legend> : null}
+          {this.legend ? <legend class={`${this.legendPosition || 'left'} ${this.legendSize || 'base'}`}>{this.legendTxt || 'Add Title Here'}</legend> : null}
           {this.renderSlot()}
         </fieldset>
       </form>

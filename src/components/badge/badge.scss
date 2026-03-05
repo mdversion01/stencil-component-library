@@ -9,8 +9,12 @@
     }
 
     .text-bg-#{"" + $name} {
-      background-color: #{$value};
-      color: if(#{$name} == yellow, #000, #fff);
+      background-color: #{$value} !important;
+      color: if(#{$name} == yellow, #000, #fff) !important;
+
+      button {
+        color: inherit !important;
+      }
     }
 
     .bg-#{"" + $name}.outlined {

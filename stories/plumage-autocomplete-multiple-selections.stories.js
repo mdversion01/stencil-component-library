@@ -1,463 +1,1060 @@
+// stories/plumage-autocomplete-multiple-selections.stories.js
+
 /* ------------------------------------------------------------------
  * Storybook: Plumage Autocomplete – Multiple Selections
  * Component tag: <plumage-autocomplete-multiple-selections-component>
  * ------------------------------------------------------------------ */
 
+const TAG = 'plumage-autocomplete-multiple-selections-component';
+
+/* ======================================================
+ * Docs: wrap long code lines + show formatted HTML
+ * ====================================================== */
+
+// Inject CSS so Docs code blocks wrap instead of horizontal scrolling forever.
+const DocsWrapStyles = () => {
+  const style = document.createElement('style');
+  style.innerHTML = `
+    .sbdocs pre,
+    .sbdocs pre code {
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: auto !important;
+    }
+  `;
+  return style;
+};
+
+/** Collapse extra blank lines + trim edges (keeps intentional line breaks) */
+const normalize = txt => {
+  const lines = String(txt)
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map(l => l.replace(/[ \t]+$/g, ''));
+
+  const out = [];
+  let prevBlank = false;
+
+  for (const line of lines) {
+    const blank = line.trim() === '';
+    if (blank) {
+      if (prevBlank) continue;
+      prevBlank = true;
+      out.push('');
+      continue;
+    }
+    prevBlank = false;
+    out.push(line);
+  }
+
+  while (out[0] === '') out.shift();
+  while (out[out.length - 1] === '') out.pop();
+
+  return out.join('\n');
+};
+
+/** Put each attribute on its own line (for Docs code previews) */
+const attrLines = pairs =>
+  pairs
+    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
+    .map(([k, v]) => (v === true ? `${k}` : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
+    .join('\n  ');
+
+/** Docs wrapper */
+const wrapDocsHtml = innerHtml =>
+  normalize(`
+<div style="max-width:680px;">
+  ${String(innerHtml).replace(/\n/g, '\n  ')}
+</div>
+`);
+
+/** HTML shown in Docs "Code" panel (always HTML + line-broken attrs) */
+const buildDocsHtml = args =>
+  normalize(`
+<${TAG}
+  ${attrLines([
+    // ids/labels
+    ['id', args.id],
+    ['input-id', args.inputId],
+    ['label', args.label],
+    ['placeholder', args.placeholder],
+
+    // ✅ controlled selections (as attribute in docs)
+    // Note: Stencil string[] props passed via attribute arrive as string; we hydrate property in JS below.
+    ['value', Array.isArray(args.value) ? args.value.join(', ') : args.value],
+
+    // layout
+    ['form-layout', args.formLayout],
+    ['label-align', args.labelAlign],
+    ['label-size', args.labelSize],
+    ['size', args.size],
+
+    // legacy numeric columns (horizontal)
+    ['label-col', args.labelCol],
+    ['input-col', args.inputCol],
+
+    // responsive cols
+    ['label-cols', args.labelCols],
+    ['input-cols', args.inputCols],
+
+    // validation / state
+    ['required', args.required],
+    ['validation', args.validation],
+    ['validation-message', args.validationMessage],
+    ['error', args.error],
+    ['error-message', args.errorMessage],
+    ['disabled', args.disabled],
+    ['label-hidden', args.labelHidden],
+    ['dev-mode', args.devMode],
+
+    // actions / icons
+    ['add-btn', args.addBtn],
+    ['editable', args.editable],
+    ['add-icon', args.addIcon],
+    ['remove-clear-btn', args.removeClearBtn],
+    ['remove-btn-border', args.removeBtnBorder],
+    ['clear-icon', args.clearIcon],
+    ['clear-input-on-blur-outside', args.clearInputOnBlurOutside],
+
+    // behavior
+    ['auto-sort', args.autoSort],
+    ['add-new-on-enter', args.addNewOnEnter],
+    ['preserve-input-on-select', args.preserveInputOnSelect],
+
+    // badges
+    ['badge-variant', args.badgeVariant],
+    ['badge-shape', args.badgeShape],
+    ['badge-inline-styles', args.badgeInlineStyles],
+
+    // form data
+    ['name', args.name],
+    ['raw-input-name', args.rawInputName],
+
+    // misc & a11y
+    ['type', args.type],
+    ['form-id', args.formId],
+    ['arialabelled-by', args.arialabelledBy],
+  ])}
+></${TAG}>
+`);
+
+/** For multi-instance stories (like Sizes) */
+const buildDocsHtmlMany = blocks =>
+  normalize(`
+<div style="display:grid; gap:14px; max-width:760px;">
+${blocks.map(b => `  ${b.replace(/\n/g, '\n  ')}`).join('\n')}
+</div>
+`);
+
+/* ======================================================
+ * DOM render helpers (no blank lines in Docs preview)
+ * ====================================================== */
+
+const setAttr = (el, name, value) => {
+  if (value === true) el.setAttribute(name, '');
+  else if (value === false || value == null || value === '') el.removeAttribute(name);
+  else el.setAttribute(name, String(value));
+};
+
+const setOptionsWhenReady = async (el, options) => {
+  const safe = Array.isArray(options) ? options.slice() : [];
+
+  if (typeof el.componentOnReady === 'function') {
+    await el.componentOnReady();
+  } else if (window.customElements?.whenDefined) {
+    await customElements.whenDefined(TAG);
+  }
+
+  el.options = safe;
+};
+
+const setValueWhenReady = async (el, value) => {
+  const safe = Array.isArray(value) ? value.slice() : [];
+
+  if (typeof el.componentOnReady === 'function') {
+    await el.componentOnReady();
+  } else if (window.customElements?.whenDefined) {
+    await customElements.whenDefined(TAG);
+  }
+
+  // ✅ set as PROPERTY so the component receives string[]
+  el.value = safe;
+};
+
+const wrapEl = childEl => {
+  const wrap = document.createElement('div');
+  wrap.style.maxWidth = '680px';
+  wrap.appendChild(childEl);
+  return wrap;
+};
+
+const wireLogsOnce = el => {
+  if (!el || el._wired) return;
+  el.addEventListener('multiSelectChange', e => console.log('[multiSelectChange]', e.detail));
+  el.addEventListener('valueChange', e => console.log('[valueChange]', e.detail));
+  el.addEventListener('itemSelect', e => console.log('[itemSelect]', e.detail));
+  el.addEventListener('clear', () => console.log('[clear]'));
+  el._wired = true;
+};
+
+const renderOne = (args, { idOverride } = {}) => {
+  const el = document.createElement(TAG);
+
+  const id = idOverride || args.inputId || args.id || 'plumage-ac-multi-selections';
+  setAttr(el, 'id', id);
+
+  // core
+  setAttr(el, 'id', args.id);
+  setAttr(el, 'input-id', args.inputId);
+  setAttr(el, 'label', args.label);
+  setAttr(el, 'placeholder', args.placeholder);
+
+  // ui/layout
+  setAttr(el, 'size', args.size);
+  setAttr(el, 'form-layout', args.formLayout);
+  setAttr(el, 'label-hidden', args.labelHidden);
+  setAttr(el, 'label-align', args.labelAlign);
+  setAttr(el, 'label-size', args.labelSize);
+  setAttr(el, 'label-col', args.labelCol);
+  setAttr(el, 'input-col', args.inputCol);
+  setAttr(el, 'label-cols', args.labelCols);
+  setAttr(el, 'input-cols', args.inputCols);
+
+  // validation/state
+  args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
+  args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
+  setAttr(el, 'validation-message', args.validationMessage);
+
+  args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
+  setAttr(el, 'error-message', args.errorMessage);
+
+  args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
+
+  // controls
+  args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
+  setAttr(el, 'clear-icon', args.clearIcon);
+  args.removeBtnBorder ? el.setAttribute('remove-btn-border', '') : el.removeAttribute('remove-btn-border');
+
+  // add/keep-open
+  args.addBtn ? el.setAttribute('add-btn', '') : el.removeAttribute('add-btn');
+  setAttr(el, 'add-icon', args.addIcon);
+  args.editable ? el.setAttribute('editable', '') : el.removeAttribute('editable');
+  setAttr(el, 'add-new-on-enter', args.addNewOnEnter);
+  setAttr(el, 'auto-sort', args.autoSort);
+  args.preserveInputOnSelect ? el.setAttribute('preserve-input-on-select', '') : el.removeAttribute('preserve-input-on-select');
+  args.clearInputOnBlurOutside ? el.setAttribute('clear-input-on-blur-outside', '') : el.removeAttribute('clear-input-on-blur-outside');
+
+  // badges
+  setAttr(el, 'badge-variant', args.badgeVariant);
+  setAttr(el, 'badge-shape', args.badgeShape);
+  setAttr(el, 'badge-inline-styles', args.badgeInlineStyles);
+
+  // form data
+  setAttr(el, 'name', args.name);
+  setAttr(el, 'raw-input-name', args.rawInputName);
+
+  // misc/a11y
+  setAttr(el, 'type', args.type || 'text');
+  setAttr(el, 'form-id', args.formId);
+  args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
+  setAttr(el, 'arialabelled-by', args.arialabelledBy);
+
+  wireLogsOnce(el);
+
+  // options prop assignment after hydration
+  setOptionsWhenReady(el, Array.isArray(args.options) ? args.options : []);
+
+  // ✅ value prop assignment after hydration
+  setValueWhenReady(el, Array.isArray(args.value) ? args.value : []);
+
+  return wrapEl(el);
+};
+
+/* ======================================================
+ * Sample data
+ * ====================================================== */
+
+const FRUIT = [
+  'Apple',
+  'Apparatus',
+  'Apple Pie',
+  'Applegate',
+  'Apricot',
+  'Banana',
+  'Blackberry',
+  'Blueberry',
+  'Cherry',
+  'Clementine',
+  'Date',
+  'Dragonfruit',
+  'Grape',
+  'Grapefruit',
+  'Kiwi',
+  'Lemon',
+  'Lime',
+  'Mango',
+  'Orange',
+  'Papaya',
+  'Peach',
+  'Pear',
+  'Pineapple',
+  'Plum',
+  'Strawberry',
+];
+
+/* ======================================================
+ * Default export
+ * ====================================================== */
+
 export default {
   title: 'Form/Plumage Autocomplete Multiple Selections',
   tags: ['autodocs'],
+
+  decorators: [
+    Story => {
+      const wrap = document.createElement('div');
+      wrap.appendChild(DocsWrapStyles());
+      wrap.appendChild(Story());
+      return wrap;
+    },
+  ],
+
   parameters: {
     layout: 'padded',
     docs: {
       description: {
         component:
-          'Plumage-styled multi-pick autocomplete with badges, fast keyboard navigation (arrows/Home/End/PageUp/PageDown/Escape), optional add/delete of user options, responsive layouts (stacked, horizontal, inline), and keep-open-after-select UX.',
+          'Plumage-styled Autocomplete Multiple Selections component with badges, fast keyboard navigation (arrows/Home/End/PageUp/PageDown/Escape), optional add/delete of user options, responsive layouts (stacked, horizontal, inline), and keep-open-after-select UX.',
+      },
+      source: {
+        language: 'html',
+        transform: (_src, ctx) => wrapDocsHtml(buildDocsHtml(ctx.args)),
       },
     },
   },
+
+  render: args => renderOne(args),
+
   argTypes: {
-    // Core
-    inputId: { control: 'text', table: { category: 'Props' } },
-    label: { control: 'text', table: { category: 'Props' } },
-    placeholder: { control: 'text', table: { category: 'Props' } },
+    /* =========================
+     * Attributes
+     * ========================= */
 
-    // Dataset
-    options: { control: 'object', table: { category: 'Data' }, description: 'Array of strings (set at runtime).' },
-    autoSort: { control: 'boolean', table: { category: 'Data' } },
-    editable: { control: 'boolean', table: { category: 'Data' }, description: 'Allow adding/deleting options.' },
+    addNewOnEnter: {
+      control: 'boolean',
+      name: 'add-new-on-enter',
+      table: { category: 'Attributes', defaultValue: { summary: true } },
+      description: 'Adds a new option when the Enter key is pressed (editable mode).',
+    },
+    autoSort: {
+      control: 'boolean',
+      name: 'auto-sort',
+      table: { category: 'Attributes', defaultValue: { summary: true } },
+      description: 'Automatically sorts the options array when inserting new values.',
+    },
+    clearInputOnBlurOutside: {
+      control: 'boolean',
+      name: 'clear-input-on-blur-outside',
+      table: { category: 'Attributes', defaultValue: { summary: false } },
+      description: 'Clears the input when clicking outside the component.',
+    },
+    editable: {
+      control: 'boolean',
+      name: 'editable',
+      table: { category: 'Attributes', defaultValue: { summary: false } },
+      description: 'Allows adding/removing options at runtime.',
+    },
+    id: {
+      control: 'text',
+      name: 'id',
+      table: { category: 'Attributes' },
+      description:
+        'The unique identifier for the component instance. This is used to associate the component with the javascript API and for accessibility purposes.',
+    },
+    preserveInputOnSelect: {
+      control: 'boolean',
+      name: 'preserve-input-on-select',
+      table: { category: 'Attributes', defaultValue: { summary: false } },
+      description: 'Preserves the typed input value after selecting an option.',
+    },
+    rawInputName: {
+      control: 'text',
+      name: 'raw-input-name',
+      table: { category: 'Attributes' },
+      description: 'The name attribute for the raw input hidden field.',
+    },
 
-    // Behavior
-    required: { control: 'boolean', table: { category: 'Validation' } },
-    validation: { control: 'boolean', table: { category: 'Validation' } },
-    validationMessage: { control: 'text', table: { category: 'Validation' } },
-    error: { control: 'boolean', table: { category: 'Validation' } },
-    errorMessage: { control: 'text', table: { category: 'Validation' } },
+    /* ✅ NEW: Controlled value (selected items) */
+    value: {
+      control: 'object',
+      name: 'value',
+      table: { category: 'Attributes' },
+      description: 'Controlled selected items (string[]). Set as a property at runtime (not as an attribute).',
+    },
 
-    // UI
-    size: { control: { type: 'select' }, options: ['', 'sm', 'lg'], table: { category: 'UI' } },
-    disabled: { control: 'boolean', table: { category: 'UI' } },
-    removeClearBtn: { control: 'boolean', table: { category: 'UI' } },
-    clearIcon: { control: 'text', table: { category: 'UI' } },
-    removeBtnBorder: { control: 'boolean', table: { category: 'UI' } },
+    /* =========================
+     * Badge Attributes
+     * ========================= */
 
-    // Add & keep-open behaviors
-    addBtn: { control: 'boolean', table: { category: 'Add/Keep Open' } },
-    addIcon: { control: 'text', table: { category: 'Add/Keep Open' } },
-    addNewOnEnter: { control: 'boolean', table: { category: 'Add/Keep Open' } },
-    preserveInputOnSelect: { control: 'boolean', table: { category: 'Add/Keep Open' } },
-    clearInputOnBlurOutside: { control: 'boolean', table: { category: 'Add/Keep Open' } },
+    badgeInlineStyles: {
+      control: 'text',
+      name: 'badge-inline-styles',
+      table: { category: 'Badge Attributes' },
+      description: 'Inline styles for the badge.',
+    },
+    badgeShape: {
+      control: 'text',
+      name: 'badge-shape',
+      table: { category: 'Badge Attributes' },
+      description: 'The shape of the badge.',
+    },
+    badgeVariant: {
+      control: 'text',
+      name: 'badge-variant',
+      table: { category: 'Badge Attributes' },
+      description: 'The variant style for the badge.',
+    },
 
-    // Labels & layout
-    formLayout: { control: { type: 'select' }, options: ['', 'horizontal', 'inline'], table: { category: 'Layout' } },
-    labelHidden: { control: 'boolean', table: { category: 'Layout' } },
-    labelAlign: { control: { type: 'select' }, options: ['', 'right'], table: { category: 'Layout' } },
-    labelSize: { control: { type: 'select' }, options: ['base', 'xs', 'sm', 'lg'], table: { category: 'Layout' } },
-    labelCol: { control: { type: 'number', min: 0, max: 12 }, table: { category: 'Layout' } },
-    inputCol: { control: { type: 'number', min: 0, max: 12 }, table: { category: 'Layout' } },
-    labelCols: { control: 'text', table: { category: 'Layout' }, description: 'e.g. "col-12 col-sm-4"' },
-    inputCols: { control: 'text', table: { category: 'Layout' }, description: 'e.g. "col-12 col-sm-8"' },
+    /* =========================
+     * Button Attributes
+     * ========================= */
 
-    // Badges
-    badgeVariant: { control: 'text', table: { category: 'Badges' }, description: 'e.g. "primary", "success" (text-bg-*)' },
-    badgeShape: { control: 'text', table: { category: 'Badges' }, description: 'Custom class for pill/rounded.' },
-    badgeInlineStyles: { control: 'text', table: { category: 'Badges' }, description: 'Inline CSS, e.g. "border-radius:12px;"' },
+    addBtn: {
+      control: 'boolean',
+      name: 'add-btn',
+      table: { category: 'Button Attributes', defaultValue: { summary: false } },
+      description: 'Displays the add button for adding new items.',
+    },
+    addIcon: {
+      control: 'text',
+      name: 'add-icon',
+      table: { category: 'Button Attributes' },
+      description: 'The icon to use for the add button.',
+    },
+    clearIcon: {
+      control: 'text',
+      name: 'clear-icon',
+      table: { category: 'Button Attributes' },
+      description: 'The icon to use for the clear button.',
+    },
+    removeBtnBorder: {
+      control: 'boolean',
+      name: 'remove-btn-border',
+      table: { category: 'Button Attributes', defaultValue: { summary: false } },
+      description: 'Removes the border from the action button(s).',
+    },
+    removeClearBtn: {
+      control: 'boolean',
+      name: 'remove-clear-btn',
+      table: { category: 'Button Attributes', defaultValue: { summary: false } },
+      description: 'Removes the clear button from the input field.',
+    },
 
-    // Form data
-    name: { control: 'text', table: { category: 'Form data' }, description: 'Hidden inputs for selected items (array).' },
-    rawInputName: { control: 'text', table: { category: 'Form data' }, description: 'Hidden input for raw typed text.' },
+    /* =========================
+     * Data
+     * ========================= */
+    options: {
+      control: 'object',
+      name: 'options',
+      table: { category: 'Data' },
+      description: 'The array of options available for selection in the autocomplete.',
+    },
 
-    // Misc & a11y
-    type: { control: 'text', table: { category: 'Advanced' } },
-    formId: { control: 'text', table: { category: 'Advanced' } },
-    devMode: { control: 'boolean', table: { category: 'Advanced' } },
-    arialabelledBy: { control: 'text', table: { category: 'A11y' } },
+    /* =========================
+     * Dev Mode
+     * ========================= */
+    devMode: {
+      control: 'boolean',
+      name: 'dev-mode',
+      table: { category: 'Dev Mode', defaultValue: { summary: false } },
+      description: 'Enables developer mode (extra logging).',
+    },
+
+    /* =========================
+     * Input Attributes
+     * ========================= */
+    arialabelledBy: {
+      control: 'text',
+      name: 'arialabelled-by',
+      table: { category: 'Input Attributes' },
+      description: 'The id of the element that labels the input for accessibility purposes.',
+    },
+    disabled: {
+      control: 'boolean',
+      name: 'disabled',
+      table: { category: 'Input Attributes', defaultValue: { summary: false } },
+      description: 'Disables the input field, preventing user interaction.',
+    },
+    inputId: {
+      control: 'text',
+      name: 'input-id',
+      table: { category: 'Input Attributes' },
+      description: 'The unique identifier for the input element within the component. This is used for accessibility and form association.',
+    },
+    label: {
+      control: 'text',
+      name: 'label',
+      table: { category: 'Input Attributes' },
+      description: 'The text label for the component. This is used for accessibility and user guidance.',
+    },
+    name: {
+      control: 'text',
+      name: 'name',
+      table: { category: 'Input Attributes' },
+      description: 'The name attribute for the selected items hidden inputs.',
+    },
+    placeholder: {
+      control: 'text',
+      name: 'placeholder',
+      table: { category: 'Input Attributes' },
+      description: 'The placeholder text for the input element. This provides a hint to the user about what to enter.',
+    },
+    type: {
+      control: 'text',
+      table: { category: 'Input Attributes' },
+      description: 'The type attribute for the input element. This can be used to specify the type of data expected (e.g., "text", "email", "number").',
+    },
+
+    /* =========================
+     * Layout
+     * ========================= */
+
+    formId: {
+      control: 'text',
+      table: { category: 'Layout' },
+      description:
+        'The id of the parent form element to associate with when using form layouts. This is necessary when the component is not a direct child of the form element.',
+    },
+    formLayout: {
+      control: { type: 'select' },
+      options: ['', 'horizontal', 'inline'],
+      name: 'form-layout',
+      table: { category: 'Layout' },
+      description:
+        'Sets the form layout style. "horizontal" applies a two-column grid layout, while "inline" arranges elements in a single row.',
+    },
+    inputCol: {
+      control: 'text',
+      name: 'input-col',
+      table: { category: 'Layout', defaultValue: { summary: 10 } },
+      description: 'Used with horizontal form layouts. Single numeric column for the input in a grid. Default is 10 (col-10).',
+    },
+    inputCols: {
+      control: 'text',
+      name: 'input-cols',
+      table: { category: 'Layout' },
+      description: 'Used with horizontal form layouts. Responsive input column classes, e.g. "col", "col-sm-9 col-md-8".',
+    },
+    labelAlign: {
+      control: { type: 'select' },
+      options: ['', 'right'],
+      name: 'label-align',
+      table: { category: 'Layout' },
+      description: 'Aligns the label text. "right" aligns the label to the right, which is typically used in horizontal form layouts.',
+    },
+    labelCol: {
+      control: 'text',
+      name: 'label-col',
+      table: { category: 'Layout', defaultValue: { summary: 2 } },
+      description: 'Used with horizontal form layouts. Single numeric column for the label in a grid. Default is 2 (col-2).',
+    },
+    labelCols: {
+      control: 'text',
+      name: 'label-cols',
+      table: { category: 'Layout' },
+      description: 'Used with horizontal form layouts. Responsive label column classes, e.g. "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4".',
+    },
+    labelHidden: {
+      control: 'boolean',
+      name: 'label-hidden',
+      table: { category: 'Layout', defaultValue: { summary: false } },
+      description: 'Hides the label visually while keeping it accessible for screen readers.',
+    },
+    labelSize: {
+      control: { type: 'select' },
+      options: ['xs', 'sm', 'base', 'lg'],
+      name: 'label-size',
+      table: { category: 'Layout' },
+      description: 'Sets the size of the label text. Options include "xs" (extra small), "sm" (small), "base" (default), and "lg" (large).',
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['', 'sm', 'lg'],
+      name: 'size',
+      table: { category: 'Layout' },
+      description: 'Sets the size of the input field. Options include "sm" (small) and "lg" (large). Not adding any size will use the default.',
+    },
+
+    /* =========================
+     * Validation
+     * ========================= */
+    error: {
+      control: 'boolean',
+      table: { category: 'Validation', defaultValue: { summary: false } },
+      description: 'Marks the input as having an error state, which will typically apply error styling to the component.',
+    },
+    errorMessage: {
+      control: 'text',
+      table: { category: 'Validation', defaultValue: { summary: '' } },
+      description: 'The error message to display when the input is in an error state.',
+    },
+    required: {
+      control: 'boolean',
+      name: 'required',
+      table: { category: 'Validation', defaultValue: { summary: false } },
+      description: 'Marks the input as required, which will trigger validation if the field is left empty.',
+    },
+    validation: {
+      control: 'boolean',
+      name: 'validation',
+      table: { category: 'Validation', defaultValue: { summary: false } },
+      description: 'Enables validation for the input field.',
+    },
+    validationMessage: {
+      control: 'text',
+      name: 'validation-message',
+      table: { category: 'Validation' },
+      description: 'The validation message to display when the input is invalid.',
+    },
+  },
+
+  args: {
+    addBtn: false,
+    addIcon: 'fas fa-plus',
+    addNewOnEnter: true,
+    arialabelledBy: '',
+    autoSort: true,
+    badgeInlineStyles: '',
+    badgeShape: '',
+    badgeVariant: '',
+    clearIcon: 'fa-solid fa-xmark',
+    clearInputOnBlurOutside: false,
+    devMode: false,
+    disabled: false,
+    editable: true,
+    error: false,
+    errorMessage: '',
+    formId: '',
+    formLayout: '',
+    id: 'aci4',
+    inputCol: '',
+    inputCols: '',
+    inputId: 'acms-basic',
+    label: 'Autocomplete Multiple Selections',
+    labelAlign: '',
+    labelCol: '',
+    labelCols: '',
+    labelHidden: false,
+    labelSize: '',
+    name: '',
+    options: FRUIT,
+    placeholder: '',
+    preserveInputOnSelect: false,
+    rawInputName: '',
+    removeBtnBorder: false,
+    removeClearBtn: false,
+    required: false,
+    size: '',
+    type: 'text',
+    validation: false,
+    validationMessage: 'Pick at least one item or type 3+ characters.',
+
+    // ✅ NEW default controlled selections (none)
+    value: [],
   },
 };
 
-/* ---------- helpers ---------- */
+/* ======================================================
+ * Stories
+ * ====================================================== */
 
-const attr = (name, v) => {
-  if (v === undefined || v === null || v === '' || v === false) return '';
-  if (v === true) return ` ${name}`;
-  return ` ${name}="${String(v).replace(/"/g, '&quot;')}"`;
+export const Basic = {
+  args: {
+    addBtn: false,
+    addIcon: '',
+    addNewOnEnter: true,
+    badgeInlineStyles: '',
+    badgeShape: '',
+    badgeVariant: '',
+    clearIcon: 'fa-solid fa-xmark',
+    clearInputOnBlurOutside: false,
+    devMode: false,
+    disabled: false,
+    editable: false,
+    formLayout: '',
+    labelAlign: '',
+    labelCol: '',
+    labelCols: '',
+    labelHidden: false,
+    labelSize: '',
+    preserveInputOnSelect: false,
+    removeBtnBorder: false,
+    removeClearBtn: false,
+    required: false,
+    size: '',
+    validation: false,
+    validationMessage: '',
+    value: [],
+  },
+};
+Basic.storyName = 'Basic';
+Basic.parameters = {
+  docs: {
+    description: {
+      story:
+        'The default configuration of the component with no specific layout applied. Note: options are set via the `options` property after hydration.',
+    },
+    story: { height: '300px' },
+  },
 };
 
-// Hydrate + inject options + wire up events after render
-const hydrate = (id, args) => `
+export const HorizontalLayout = {
+  args: {
+    inputId: 'acms-horizontal',
+    label: 'Organizations',
+    formLayout: 'horizontal',
+    labelAlign: 'right',
+    labelSize: 'lg',
+    labelCol: 3,
+    inputCol: 9,
+    placeholder: 'Start typing...',
+    size: '',
+    editable: false,
+    addBtn: false,
+    addIcon: '',
+    validationMessage: '',
+    autoSort: false,
+    addNewOnEnter: false,
+    options: ['Acme, Inc.', 'Acme Labs', 'Alpha Co', 'Beta Corp', 'Delta Systems', 'Epsilon Partners', 'Gamma Group'],
+    value: [],
+  },
+};
+HorizontalLayout.storyName = 'Horizontal Layout';
+HorizontalLayout.parameters = {
+  docs: {
+    description: {
+      story:
+        'Applies a horizontal Bootstrap layout with the label aligned to the right. This layout is suitable for forms where labels and inputs are arranged in a two-column format.',
+    },
+    story: { height: '300px' },
+  },
+};
+
+export const InlineLayout = {
+  args: {
+    inputId: 'acms-inline-1',
+    label: 'Cities',
+    formLayout: 'inline',
+    editable: false,
+    size: '',
+    addBtn: false,
+    addIcon: '',
+    validationMessage: '',
+    autoSort: false,
+    addNewOnEnter: false,
+    options: ['Austin', 'Boston', 'Chicago', 'Denver', 'Los Angeles', 'New York', 'Portland', 'Seattle', 'San Francisco'],
+    value: [],
+  },
+
+  render: args => renderOne(args, { idOverride: 'acms_inline1' }),
+
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: (_src, ctx) => wrapDocsHtml(buildDocsHtml(ctx.args)),
+      },
+      description: {
+        story: 'Applies an inline layout where the label and input are displayed in a single line.',
+      },
+      story: { height: '300px' },
+    },
+  },
+};
+
+export const EditableKeepOpenRapidPick = {
+  name: 'Adding new items to the dropdown list (Editable)',
+
+  args: {
+    inputId: 'acms-editable',
+    label: 'Tags',
+    editable: true,
+    addBtn: true,
+    addIcon: 'fas fa-plus',
+    preserveInputOnSelect: false,
+    badgeVariant: 'success',
+    badgeShape: 'rounded-pill',
+    placeholder: 'Type to add/select…',
+    validationMessage: '',
+    devMode: true,
+    options: ['Frontend', 'Backend', 'Fullstack', 'DevOps', 'Data', 'Design', 'QA', 'Product'],
+    value: ['Frontend', 'DevOps'],
+  },
+
+  render: args => renderOne(args, { idOverride: 'acms_edit' }),
+
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: (_src, ctx) => wrapDocsHtml(buildDocsHtml(ctx.args)),
+      },
+      description: {
+        story:
+          'When "editable" is enabled, users can type new items/options into the field and those items will appear in the dropdown list if removed from the input. This also allows users to delete the added item by clicking the "x" from the dropdown list.',
+      },
+      story: { height: '300px' },
+    },
+  },
+};
+
+/* ✅ NEW: Controlled Value (array) story */
+export const ControlledValue = {
+  name: 'Controlled Value (array)',
+  args: {
+    inputId: 'acms-controlled',
+    label: 'Controlled selections',
+    editable: false,
+    addBtn: false,
+    addIcon: '',
+    placeholder: 'Type to filter…',
+    options: FRUIT,
+    value: ['Apple', 'Mango'],
+    validationMessage: '',
+  },
+  render: args => {
+    const wrap = document.createElement('div');
+    wrap.style.maxWidth = '760px';
+
+    const elWrap = renderOne(args, { idOverride: 'acms_controlled' });
+    const el = elWrap.querySelector(TAG);
+
+    const buttons = document.createElement('div');
+    buttons.style.marginTop = '12px';
+    buttons.style.display = 'flex';
+    buttons.style.gap = '8px';
+    buttons.style.flexWrap = 'wrap';
+
+    const mkBtn = (label) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn btn-sm btn-secondary';
+      b.textContent = label;
+      return b;
+    };
+
+    const btnAppleMango = mkBtn('Set: Apple + Mango');
+    const btnCitrus = mkBtn('Set: Orange + Lemon + Lime');
+    const btnClear = mkBtn('Clear');
+    const btnWeird = mkBtn('Set: (sanitization demo)');
+
+    buttons.appendChild(btnAppleMango);
+    buttons.appendChild(btnCitrus);
+    buttons.appendChild(btnClear);
+    buttons.appendChild(btnWeird);
+
+    const setVal = async (next) => {
+      if (!el) return;
+      await (typeof el.componentOnReady === 'function' ? el.componentOnReady() : customElements.whenDefined(TAG));
+      el.value = Array.isArray(next) ? next : [];
+      // also update Storybook controls so Docs code reflects the new value
+      args.value = Array.isArray(next) ? next : [];
+    };
+
+    btnAppleMango.addEventListener('click', () => setVal(['Apple', 'Mango']));
+    btnCitrus.addEventListener('click', () => setVal(['Orange', 'Lemon', 'Lime']));
+    btnClear.addEventListener('click', () => setVal([]));
+    btnWeird.addEventListener('click', () => setVal(['  <b>Apple</b>  ', 'MANGO', 'mango', '\u0007Bad\u0000', '']));
+
+    wrap.appendChild(elWrap);
+    wrap.appendChild(buttons);
+    return wrap;
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: (_src, ctx) =>
+          wrapDocsHtml(
+            normalize(`
+${buildDocsHtml(ctx.args)}
+<!-- Value is a string[] prop; in real usage you typically set it as a property:
 <script>
-  (function () {
-    var el = document.getElementById('${id}');
-    if (!el || el._wired) return;
-
-    try {
-      var opts = ${JSON.stringify(args.options ?? [])};
-      if (Array.isArray(opts) && opts.length) {
-        // this component accepts direct prop assignment for options
-        el.componentOnReady?.().then(function(){
-          el.options = opts.slice();
-        });
-      }
-    } catch (e) { console.warn('[plumage-multi-selections story] options hydration failed:', e); }
-
-    // Useful console logs for dev
-    el.addEventListener('multiSelectChange', function(e){ console.log('[multiSelectChange]', e.detail); });
-    el.addEventListener('itemSelect', function(e){ console.log('[itemSelect]', e.detail); });
-    el.addEventListener('clear', function(){ console.log('[clear]'); });
-
-    el._wired = true;
-  })();
+  const el = document.querySelector('${TAG}');
+  el.value = ${JSON.stringify(ctx.args.value || [])};
 </script>
-`;
-
-/* ---------- base template ---------- */
-
-const Template = (args) => {
-  const id = args._id || args.inputId || 'plumage-ac-multi-selections';
-  return `
-<plumage-autocomplete-multiple-selections-component
-  id="${id}"
-  ${attr('input-id', args.inputId)}
-  ${attr('label', args.label)}
-  ${attr('placeholder', args.placeholder)}
-  ${attr('size', args.size)}
-  ${attr('form-layout', args.formLayout)}
-  ${attr('label-hidden', args.labelHidden)}
-  ${attr('label-align', args.labelAlign)}
-  ${attr('label-size', args.labelSize)}
-  ${attr('label-col', args.labelCol)}
-  ${attr('input-col', args.inputCol)}
-  ${attr('label-cols', args.labelCols)}
-  ${attr('input-cols', args.inputCols)}
-
-  ${attr('required', args.required)}
-  ${attr('validation', args.validation)}
-  ${attr('validation-message', args.validationMessage)}
-  ${attr('error', args.error)}
-  ${attr('error-message', args.errorMessage)}
-
-  ${attr('disabled', args.disabled)}
-  ${attr('remove-clear-btn', args.removeClearBtn)}
-  ${attr('clear-icon', args.clearIcon)}
-  ${attr('remove-btn-border', args.removeBtnBorder)}
-
-  ${attr('add-btn', args.addBtn)}
-  ${attr('add-icon', args.addIcon)}
-  ${attr('editable', args.editable)}
-  ${attr('add-new-on-enter', args.addNewOnEnter)}
-  ${attr('auto-sort', args.autoSort)}
-  ${attr('preserve-input-on-select', args.preserveInputOnSelect)}
-  ${attr('clear-input-on-blur-outside', args.clearInputOnBlurOutside)}
-
-  ${attr('badge-variant', args.badgeVariant)}
-  ${attr('badge-shape', args.badgeShape)}
-  ${attr('badge-inline-styles', args.badgeInlineStyles)}
-
-  ${attr('name', args.name)}
-  ${attr('raw-input-name', args.rawInputName)}
-
-  ${attr('type', args.type || 'text')}
-  ${attr('form-id', args.formId)}
-  ${attr('dev-mode', args.devMode)}
-  ${attr('arialabelled-by', args.arialabelledBy)}
-></plumage-autocomplete-multiple-selections-component>
-${hydrate(id, args)}
-`.trim();
+-->
+`),
+          ),
+      },
+      description: {
+        story:
+          'Demonstrates the controlled `value` prop (string[]). Buttons set `el.value` as a property to update selected items programmatically (and shows sanitization behavior).',
+      },
+      story: { height: '380px' },
+    },
+  },
 };
 
-/* ---------- sample data ---------- */
-
-const FRUIT = [
-  'Apple','Apparatus','Apple Pie','Applegate','Apricot',
-  'Banana','Blackberry','Blueberry','Cherry','Clementine',
-  'Date','Dragonfruit','Grape','Grapefruit','Kiwi',
-  'Lemon','Lime','Mango','Orange','Papaya','Peach','Pear','Pineapple','Plum','Strawberry'
+// ✅ helper: one source of truth for the Sizes story
+const SIZES_VARIANTS = [
+  {
+    idOverride: 'acms_sm',
+    inputId: 'acms-sm',
+    size: 'sm',
+    label: 'Small',
+    editable: false,
+    addBtn: false,
+    validationMessage: '',
+    autoSort: false,
+    addNewOnEnter: false,
+    addIcon: '',
+    value: [],
+  },
+  {
+    idOverride: 'acms_md',
+    inputId: 'acms-md',
+    size: '',
+    label: 'Default',
+    editable: false,
+    addBtn: false,
+    validationMessage: '',
+    autoSort: false,
+    addNewOnEnter: false,
+    addIcon: '',
+    value: [],
+  },
+  {
+    idOverride: 'acms_lg',
+    inputId: 'acms-lg',
+    size: 'lg',
+    label: 'Large',
+    editable: false,
+    addBtn: false,
+    validationMessage: '',
+    autoSort: false,
+    addNewOnEnter: false,
+    addIcon: '',
+    value: [],
+  },
 ];
 
-/* ---------- Stories ---------- */
+export const Sizes = {
+  render: args => {
+    const container = document.createElement('div');
+    container.style.display = 'grid';
+    container.style.gap = '14px';
+    container.style.maxWidth = '760px';
 
-export const Playground = Template.bind({});
-Playground.args = {
-  _id: 'acms_playground',
-  inputId: 'acms-playground',
-  label: 'Autocomplete Multiple Selections',
-  placeholder: 'Type to search...',
-  options: FRUIT,
+    for (const v of SIZES_VARIANTS) {
+      const elWrap = renderOne({ ...args, ...v }, { idOverride: v.idOverride });
+      container.appendChild(elWrap);
+      const el = elWrap.querySelector(TAG);
+      if (el) {
+        setOptionsWhenReady(el, FRUIT);
+        setValueWhenReady(el, Array.isArray(v.value) ? v.value : []);
+      }
+    }
 
-  // Behavior
-  required: false,
-  validation: false,
-  validationMessage: 'Pick at least one item or type 3+ characters.',
-  error: false,
-  errorMessage: '',
+    return container;
+  },
 
-  // UI
-  size: '',
-  disabled: false,
-  removeClearBtn: false,
-  clearIcon: 'fa-solid fa-xmark',
-  removeBtnBorder: false,
-
-  // Add/keep-open
-  editable: true,
-  addBtn: true,
-  addIcon: 'fas fa-plus',
-  addNewOnEnter: true,
-  autoSort: true,
-  preserveInputOnSelect: false,
-  clearInputOnBlurOutside: false,
-
-  // Layout
-  formLayout: '',
-  labelHidden: false,
-  labelAlign: '',
-  labelSize: 'sm',
-  labelCol: 2,
-  inputCol: 10,
-  labelCols: '',
-  inputCols: '',
-
-  // Badges
-  badgeVariant: 'primary',
-  badgeShape: 'rounded-pill',
-  badgeInlineStyles: '',
-
-  // Form data
-  name: 'tags[]',
-  rawInputName: 'tags_raw',
-
-  // Misc
-  devMode: false,
-  arialabelledBy: '',
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: (_src, ctx) =>
+          buildDocsHtmlMany(
+            SIZES_VARIANTS.map(v =>
+              buildDocsHtml({
+                ...ctx.args,
+                ...v,
+                options: undefined, // never show options as attribute in docs
+              }),
+            ),
+          ),
+      },
+      description: {
+        story:
+          'Shows the three supported sizes by setting the `size` arg to `sm`, empty string (default), and `lg`. Options/value are applied at runtime as properties.',
+      },
+      story: { height: '480px' },
+    },
+  },
 };
 
-export const Sizes = () => `
-<div style="display:grid; gap:14px; max-width:760px;">
-  <plumage-autocomplete-multiple-selections-component id="acms_sm" input-id="acms-sm" size="sm" label="Small" editable add-btn></plumage-autocomplete-multiple-selections-component>
-  <plumage-autocomplete-multiple-selections-component id="acms_md" input-id="acms-md" label="Default" editable add-btn></plumage-autocomplete-multiple-selections-component>
-  <plumage-autocomplete-multiple-selections-component id="acms_lg" input-id="acms-lg" size="lg" label="Large" editable add-btn></plumage-autocomplete-multiple-selections-component>
-  <script>
-    (function(){
-      ['acms_sm','acms_md','acms_lg'].forEach(function(id){
-        var el = document.getElementById(id); if(!el) return;
-        el.componentOnReady?.().then(function(){ el.options = ${JSON.stringify(FRUIT)}; });
-      });
-    })();
-  </script>
-</div>
-`;
+export const FieldValidation = {
+  args: {
+    inputId: 'acms-required',
+    label: 'Favorite Fruits',
+    required: true,
+    validation: true,
+    validationMessage: 'Pick at least one fruit or type 3+ characters',
+    editable: false,
+    addBtn: false,
+    addIcon: '',
+    badgeVariant: 'secondary',
+    badgeShape: 'rounded-pill',
+    options: FRUIT,
+    value: [],
+  },
+};
+FieldValidation.storyName = 'Required with Validation Message';
+FieldValidation.parameters = {
+  docs: {
+    description: {
+      story: 'Enables validation for the input field. When the field is left empty and loses focus, the specified validation message will be displayed.',
+    },
+    story: { height: '300px' },
+  },
+};
 
-export const RequiredValidation = () => `
-<div style="max-width:640px;">
-  <plumage-autocomplete-multiple-selections-component
-    id="acms_req"
-    input-id="acms-required"
-    label="Favorite Fruits"
-    required
-    validation
-    validation-message="Pick at least one fruit or type 3+ characters"
-    editable
-    add-btn
-    badge-variant="danger"
-    badge-shape="rounded-pill"
-  ></plumage-autocomplete-multiple-selections-component>
-  <script>
-    (function(){
-      var el = document.getElementById('acms_req'); if(!el) return;
-      el.componentOnReady?.().then(function(){ el.options = ${JSON.stringify(FRUIT)}; });
-    })();
-  </script>
-</div>
-`;
+export const Disabled = {
+  args: {
+    inputId: 'acms-disabled',
+    label: 'Disabled',
+    disabled: true,
+    badgeVariant: '',
+    options: FRUIT,
+    validationMessage: '',
+    addBtn: false,
+    addIcon: '',
+    editable: false,
+    autoSort: false,
+    addNewOnEnter: false,
+    clearIcon: '',
+    value: ['Banana', 'Mango'],
+  },
+};
+Disabled.storyName = 'Disabled';
+Disabled.parameters = {
+  docs: {
+    description: {
+      story: 'Disables the input field, preventing user interaction.',
+    },
+  },
+};
 
-export const HorizontalLayout = () => `
-<div style="max-width: 900px;">
-  <plumage-autocomplete-multiple-selections-component
-    id="acms_hz"
-    input-id="acms-horizontal"
-    label="Organizations"
-    form-layout="horizontal"
-    label-align="right"
-    label-size="lg"
-    label-col="3"
-    input-col="9"
-    placeholder="Start typing..."
-    editable
-    add-btn
-  ></plumage-autocomplete-multiple-selections-component>
-  <script>
-    (function(){
-      var el = document.getElementById('acms_hz'); if(!el) return;
-      el.options = ['Acme, Inc.','Acme Labs','Alpha Co','Beta Corp','Delta Systems','Epsilon Partners','Gamma Group'];
-    })();
-  </script>
-</div>
-`;
-
-export const InlineLayout = () => `
-<div style="display:flex; gap:12px; flex-wrap:wrap;">
-  <plumage-autocomplete-multiple-selections-component
-    id="acms_inline1"
-    input-id="acms-inline-1"
-    label="Cities"
-    form-layout="inline"
-    size="sm"
-    editable
-    add-btn
-  ></plumage-autocomplete-multiple-selections-component>
-
-  <plumage-autocomplete-multiple-selections-component
-    id="acms_inline2"
-    input-id="acms-inline-2"
-    label="States"
-    form-layout="inline"
-    size="sm"
-  ></plumage-autocomplete-multiple-selections-component>
-
-  <script>
-    (function(){
-      var cities = document.getElementById('acms_inline1');
-      var states = document.getElementById('acms_inline2');
-      if (cities) cities.options = ['Austin','Boston','Chicago','Denver','Los Angeles','New York','Portland','Seattle','San Francisco'];
-      if (states) states.options = ['AL','AK','AZ','CA','CO','FL','GA','IL','MA','NY','OR','TX','WA'];
-    })();
-  </script>
-</div>
-`;
-
-export const Disabled = () => `
-<plumage-autocomplete-multiple-selections-component
-  id="acms_disabled"
-  input-id="acms-disabled"
-  label="Disabled"
-  disabled
-  badge-variant="secondary"
-></plumage-autocomplete-multiple-selections-component>
-<script>
-  (function(){
-    var el = document.getElementById('acms_disabled'); if(!el) return;
-    el.options = ${JSON.stringify(FRUIT)};
-  })();
-</script>
-`;
-
-export const EditableKeepOpenRapidPick = () => `
-<div style="max-width:680px;">
-  <p style="margin:0 0 8px;opacity:.75;">Enter or click selects and keeps the dropdown open for quick multi-picking. Right/Left within a focused row toggles virtual focus to the delete button; Enter deletes (user-added only).</p>
-  <plumage-autocomplete-multiple-selections-component
-    id="acms_edit"
-    input-id="acms-editable"
-    label="Tags"
-    editable
-    add-btn
-    add-icon="fas fa-plus"
-    preserve-input-on-select
-    badge-variant="success"
-    badge-shape="rounded-pill"
-    placeholder="Type to add/select…"
-    dev-mode
-  ></plumage-autocomplete-multiple-selections-component>
-  <script>
-    (function(){
-      var el = document.getElementById('acms_edit'); if(!el) return;
-      el.options = ['Frontend','Backend','Fullstack','DevOps','Data','Design','QA','Product'];
-    })();
-  </script>
-</div>
-`;
-
-export const BadgeStyling = () => `
-<div style="max-width:680px;">
-  <plumage-autocomplete-multiple-selections-component
-    id="acms_badges"
-    input-id="acms-badges"
-    label="With custom badge style"
-    editable
-    add-btn
-    badge-variant="info"
-    badge-shape="rounded-pill"
-    badge-inline-styles="border-radius:14px; font-weight:600;"
-  ></plumage-autocomplete-multiple-selections-component>
-  <script>
-    (function(){
-      var el = document.getElementById('acms_badges'); if(!el) return;
-      el.options = ${JSON.stringify(FRUIT)};
-    })();
-  </script>
-</div>
-`;
-
-export const PreserveAndClearBehavior = () => `
-<div style="display:grid; gap:18px; max-width:720px;">
-  <div>
-    <h4 style="margin:0 0 8px;">Preserve input on select</h4>
-    <plumage-autocomplete-multiple-selections-component
-      id="acms_preserve"
-      input-id="acms-preserve"
-      label="Preserve"
-      preserve-input-on-select
-      editable
-      add-btn
-    ></plumage-autocomplete-multiple-selections-component>
-  </div>
-
-  <div>
-    <h4 style="margin:16px 0 8px;">Clear input when clicking outside</h4>
-    <plumage-autocomplete-multiple-selections-component
-      id="acms_clear_outside"
-      input-id="acms-clear-outside"
-      label="Clear on outside blur"
-      clear-input-on-blur-outside
-      editable
-      add-btn
-    ></plumage-autocomplete-multiple-selections-component>
-  </div>
-
-  <script>
-    (function(){
-      var a = document.getElementById('acms_preserve');
-      var b = document.getElementById('acms_clear_outside');
-      var data = ${JSON.stringify(FRUIT)};
-      if (a) a.options = data;
-      if (b) b.options = data;
-    })();
-  </script>
-</div>
-`;
-
-export const ProgrammaticAPI = () => `
-<div style="max-width:780px;">
-  <plumage-autocomplete-multiple-selections-component
-    id="acms_api"
-    input-id="acms-api"
-    label="Programmatic API"
-    editable
-    add-btn
-    dev-mode
-  ></plumage-autocomplete-multiple-selections-component>
-
-  <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
-    <button id="btn_replace" class="btn btn-sm btn-secondary" type="button">Replace Options</button>
-    <button id="btn_read" class="btn btn-sm btn-secondary" type="button">Read Options</button>
-    <button id="btn_remove_item" class="btn btn-sm btn-secondary" type="button">Remove "Mango"</button>
-  </div>
-
-  <script>
-    (function(){
-      var el = document.getElementById('acms_api'); if(!el) return;
-      el.options = ${JSON.stringify(FRUIT)};
-
-      document.getElementById('btn_replace').addEventListener('click', function(){
-        // This component supports direct prop assignment for options
-        el.options = ['Alpha','Beta','Gamma','Delta'];
-      });
-      document.getElementById('btn_read').addEventListener('click', function(){
-        console.log('[current options]', el.options);
-        alert('Options: ' + (el.options || []).join(', '));
-      });
-      document.getElementById('btn_remove_item').addEventListener('click', async function(){
-        await el.removeItem('Mango'); // uses public @Method()
-      });
-    })();
-  </script>
-</div>
-`;
+export const BadgeStyling = {
+  args: {
+    inputId: 'acms-badges',
+    label: 'With custom badge style',
+    editable: true,
+    addBtn: true,
+    badgeVariant: 'info',
+    badgeShape: 'rounded-pill',
+    badgeInlineStyles: 'border-radius:14px; font-weight:600;',
+    options: FRUIT,
+    value: ['Apple', 'Orange'],
+  },
+};
+BadgeStyling.storyName = 'Custom Badge Styling';
+BadgeStyling.parameters = {
+  docs: {
+    description: {
+      story:
+        'Use the "Badge Variant" control to apply Bootstrap text-bg color classes (e.g. "primary", "success", "danger") or your own CSS class for custom colors. The "Badge Shape" control can be used to apply a custom class for pill/rounded styling. For full control, use the "Badge Inline Styles" to add any CSS properties you want directly to each badge (e.g. "border-radius:12px; font-weight:600;").',
+    },
+    story: { height: '300px' },
+  },
+};

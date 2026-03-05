@@ -61,8 +61,10 @@ describe('<form-component>', () => {
     expect(fieldset).toBeTruthy();
     expect(legend).toBeTruthy();
     expect(legend.textContent).toBe('Add Title Here');
-    // default legend position class
-    expect(legend.className).toBe('left');
+
+    // legend now includes BOTH position + size classes (e.g., "left base")
+    expect(legend.classList.contains('left')).toBe(true);
+    expect(legend.classList.contains('base')).toBe(true);
   });
 
   it('renders fieldset inside <form> when not outsideOfForm, with custom legend & styles', async () => {
@@ -72,7 +74,7 @@ describe('<form-component>', () => {
              fieldset
              legend
              legend-txt="Profile"
-             legend-position="center"
+             legend-position="left"
              bcolor="#333"
              bstyle="solid"
              bwidth="2"
@@ -88,7 +90,10 @@ describe('<form-component>', () => {
     expect(form).toBeTruthy();
     expect(fieldset).toBeTruthy();
     expect(legend.textContent).toBe('Profile');
-    expect(legend.className).toBe('center');
+
+    // legend now includes BOTH position + size classes (e.g., "left base")
+    expect(legend.classList.contains('left')).toBe(true);
+    expect(legend.classList.contains('base')).toBe(true);
 
     // cssText normalization varies (spaces after ':' etc.). Use regex-friendly checks.
     const css = (fieldset.style && fieldset.style.cssText) || fieldset.getAttribute('style') || '';
