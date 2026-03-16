@@ -15,9 +15,9 @@ exports[`plumage-autocomplete-multiple-selections-component closes dropdown on o
             <div class="ac-selected-items"></div>
             <div class="ac-input-container">
               <div class="input-group">
-                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Pets" role="combobox" type="text" value="e">
+                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Type to search..." role="combobox" type="text" value="e">
                 <button aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
-                  <i class="fa-times fas"></i>
+                  <i class="fa-solid fa-xmark"></i>
                 </button>
               </div>
             </div>
@@ -50,15 +50,15 @@ exports[`plumage-autocomplete-multiple-selections-component keeps dropdown open 
                   Ant
                 </span>
                 <button aria-label="Remove Ant" class="remove-btn" data-tag="Ant" role="button" title="Remove Tag" type="button">
-                  <i class="fa-circle-xmark fa-solid"></i>
+                  <i class="fa-solid fa-xmark"></i>
                 </button>
               </div>
             </div>
             <div class="ac-input-container">
               <div class="input-group">
-                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="true" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Pets" role="combobox" type="text" value="">
+                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="true" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Type to search..." role="combobox" type="text" value="">
                 <button aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
-                  <i class="fa-times fas"></i>
+                  <i class="fa-solid fa-xmark"></i>
                 </button>
               </div>
             </div>
@@ -134,9 +134,9 @@ exports[`plumage-autocomplete-multiple-selections-component opens dropdown on ty
             <div class="ac-selected-items"></div>
             <div class="ac-input-container">
               <div class="input-group">
-                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="true" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Pets" role="combobox" type="text" value="a">
+                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="true" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Type to search..." role="combobox" type="text" value="a">
                 <button aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
-                  <i class="fa-times fas"></i>
+                  <i class="fa-solid fa-xmark"></i>
                 </button>
               </div>
             </div>
@@ -205,7 +205,7 @@ exports[`plumage-autocomplete-multiple-selections-component renders and matches 
             <div class="ac-selected-items"></div>
             <div class="ac-input-container">
               <div class="input-group">
-                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Pets" role="combobox" type="text" value="">
+                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Type to search..." role="combobox" type="text" value="">
               </div>
             </div>
           </div>
@@ -237,15 +237,15 @@ exports[`plumage-autocomplete-multiple-selections-component typing after a selec
                   Ant
                 </span>
                 <button aria-label="Remove Ant" class="remove-btn" data-tag="Ant" role="button" title="Remove Tag" type="button">
-                  <i class="fa-circle-xmark fa-solid"></i>
+                  <i class="fa-solid fa-xmark"></i>
                 </button>
               </div>
             </div>
             <div class="ac-input-container">
               <div class="input-group">
-                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="true" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Pets" role="combobox" type="text" value="be">
+                <input aria-autocomplete="list" aria-controls="pets-listbox" aria-expanded="true" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="pets" inputmode="text" placeholder="Type to search..." role="combobox" type="text" value="be">
                 <button aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
-                  <i class="fa-times fas"></i>
+                  <i class="fa-solid fa-xmark"></i>
                 </button>
               </div>
             </div>

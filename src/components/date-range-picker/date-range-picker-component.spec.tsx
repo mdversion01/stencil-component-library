@@ -1,6 +1,36 @@
-// File: src/components/datepicker/date-range-picker-componet.spec.tsx
+// File: src/components/date-range-picker/date-range-picker-component.spec.tsx
 import { newSpecPage } from '@stencil/core/testing';
-import { DateRangePickerComponent } from './date-range-picker-component';
+
+// ✅ CSS.escape polyfill MUST run before the component module is imported.
+// In Jest/ESM, static imports are hoisted, so we use require() for the component.
+
+const g: any = globalThis as any;
+
+// Ensure global CSS object exists (JSDOM often doesn't provide it)
+if (!g.CSS) g.CSS = {};
+
+// Polyfill CSS.escape if missing
+if (typeof g.CSS.escape !== 'function') {
+  g.CSS.escape = (value: string) => {
+    const s = String(value ?? '');
+    // Sufficient for id selectors we generate (letters/numbers/dash/underscore)
+    // Escape anything else conservatively.
+    return s.replace(/[^a-zA-Z0-9_-]/g, (ch) => `\\${ch}`);
+  };
+}
+
+// If window exists, mirror to window.CSS as well (some code paths read from there)
+if (typeof (globalThis as any).window !== 'undefined') {
+  const w: any = (globalThis as any).window;
+  if (!w.CSS) w.CSS = g.CSS;
+  if (typeof w.CSS.escape !== 'function') w.CSS.escape = g.CSS.escape;
+}
+
+// ✅ Import component AFTER the polyfill
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { DateRangePickerComponent } = require('./date-range-picker-component') as {
+  DateRangePickerComponent: any;
+};
 
 // ---- Popper mock ----
 jest.mock('@popperjs/core', () => ({
@@ -25,8 +55,7 @@ afterAll(() => {
 // ---- Focus + activeElement patch (prototype-safe) ----
 let _activeEl: Element | null = null;
 
-const docProto: any =
-  Object.getPrototypeOf(document) || (document as any).__proto__ || Document.prototype;
+const docProto: any = Object.getPrototypeOf(document) || (document as any).__proto__ || Document.prototype;
 const existingActiveDescriptor =
   (Object.getOwnPropertyDescriptor(docProto, 'activeElement') as PropertyDescriptor | undefined) ??
   (Object.getOwnPropertyDescriptor(document, 'activeElement') as PropertyDescriptor | undefined);
@@ -77,6 +106,31 @@ describe('date-range-picker-component (rangePicker mode)', () => {
     expect(page.root).toMatchSnapshot();
   });
 
+  // ✅ regression: weekdays row should be above the grid and not nested inside it
+  test('renders calendars with weekday row above grid (regression)', async () => {
+    const page = await newSpecPage({
+      components: [DateRangePickerComponent],
+      html: `<date-range-picker-component rangePicker="true"></date-range-picker-component>`,
+    });
+    await flush(page);
+
+    const root = page.root as HTMLElement;
+    const cal = root.querySelector('.dp-calendar') as HTMLElement;
+    expect(cal).toBeTruthy();
+
+    const weekdays = cal.querySelector('.calendar-grid-weekdays') as HTMLElement;
+    const grid = cal.querySelector('.calendar-grid') as HTMLElement;
+    expect(weekdays).toBeTruthy();
+    expect(grid).toBeTruthy();
+
+    const children = Array.from(cal.children);
+    const weekdayIdx = children.indexOf(weekdays);
+    const gridIdx = children.indexOf(grid);
+    expect(weekdayIdx).toBeGreaterThanOrEqual(0);
+    expect(gridIdx).toBeGreaterThanOrEqual(0);
+    expect(weekdayIdx).toBeLessThan(gridIdx);
+  });
+
   test('arrow-key navigation moves by one day (no skipping)', async () => {
     const page = await newSpecPage({
       components: [DateRangePickerComponent],
@@ -89,9 +143,7 @@ describe('date-range-picker-component (rangePicker mode)', () => {
     expect(wrapper).toBeTruthy();
 
     const cells = () =>
-      Array.from(
-        root.querySelectorAll('.calendar-grid-item:not(.previous-month-day):not(.next-month-day)'),
-      ) as HTMLElement[];
+      Array.from(root.querySelectorAll('.calendar-grid-item:not(.previous-month-day):not(.next-month-day)')) as HTMLElement[];
 
     const focusedCell = () => {
       const span = root.querySelector('.calendar-grid-item span.focus') as HTMLElement | null;
@@ -104,36 +156,31 @@ describe('date-range-picker-component (rangePicker mode)', () => {
       return fc ? list.indexOf(fc) : -1;
     };
 
-    // 1) Seed: focus wrapper and press ArrowRight once.
     wrapper.setAttribute('tabindex', '0');
     wrapper.focus();
-    keyDownOn(wrapper, 'ArrowRight'); // wrapper listener activates first cell & applies +1
-    await flush(page);
 
-    // Sanity: we should have a focused cell now
-    expect(focusedCell()).toBeTruthy();
-    let idx0 = focusedIndex();
-    expect(idx0).toBeGreaterThanOrEqual(0);
-
-    // 2) Press ArrowRight again on WRAPPER (do NOT refocus the cell in-between)
     keyDownOn(wrapper, 'ArrowRight');
     await flush(page);
-    let idx1 = focusedIndex();
-    expect(idx1).toBe(idx0 + 1); // move +1
 
-    // 3) ArrowDown = +7 (clamped) on WRAPPER
+    expect(focusedCell()).toBeTruthy();
+    const idx0 = focusedIndex();
+    expect(idx0).toBeGreaterThanOrEqual(0);
+
+    keyDownOn(wrapper, 'ArrowRight');
+    await flush(page);
+    const idx1 = focusedIndex();
+    expect(idx1).toBe(idx0 + 1);
+
     keyDownOn(wrapper, 'ArrowDown');
     await flush(page);
     const idxDown = focusedIndex();
     expect(idxDown).toBe(Math.min(idx1 + 7, cells().length - 1));
 
-    // 4) ArrowUp = -7 (clamped) on WRAPPER
     keyDownOn(wrapper, 'ArrowUp');
     await flush(page);
     const idxUp = focusedIndex();
     expect(idxUp).toBe(Math.max(idxDown - 7, 0));
 
-    // 5) ArrowLeft = -1 (clamped) on WRAPPER
     keyDownOn(wrapper, 'ArrowLeft');
     await flush(page);
     const idxLeft = focusedIndex();

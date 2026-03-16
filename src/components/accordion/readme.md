@@ -7,22 +7,23 @@
 
 ## Properties
 
-| Property         | Attribute          | Description | Type                                           | Default               |
-| ---------------- | ------------------ | ----------- | ---------------------------------------------- | --------------------- |
-| `accordion`      | `accordion`        |             | `boolean`                                      | `false`               |
-| `block`          | `block`            |             | `boolean`                                      | `false`               |
-| `classNames`     | `class-names`      |             | `string`                                       | `''`                  |
-| `contentTxtSize` | `content-txt-size` |             | `string`                                       | `''`                  |
-| `disabled`       | `disabled`         |             | `boolean`                                      | `false`               |
-| `flush`          | `flush`            |             | `boolean`                                      | `false`               |
-| `icon`           | `icon`             |             | `string`                                       | `'fas fa-angle-down'` |
-| `isOpen`         | `is-open`          |             | `boolean`                                      | `false`               |
-| `link`           | `link`             |             | `boolean`                                      | `false`               |
-| `outlined`       | `outlined`         |             | `boolean`                                      | `false`               |
-| `ripple`         | `ripple`           |             | `boolean`                                      | `false`               |
-| `size`           | `size`             |             | `"" \| "lg" \| "plumage-size" \| "sm" \| "xs"` | `''`                  |
-| `targetId`       | `target-id`        |             | `string`                                       | `''`                  |
-| `variant`        | `variant`          |             | `string`                                       | `''`                  |
+| Property           | Attribute           | Description                                                                 | Type                                           | Default               |
+| ------------------ | ------------------- | --------------------------------------------------------------------------- | ---------------------------------------------- | --------------------- |
+| `accordion`        | `accordion`         |                                                                             | `boolean`                                      | `false`               |
+| `block`            | `block`             |                                                                             | `boolean`                                      | `false`               |
+| `classNames`       | `class-names`       |                                                                             | `string`                                       | `''`                  |
+| `contentTxtSize`   | `content-txt-size`  |                                                                             | `string`                                       | `''`                  |
+| `disabled`         | `disabled`          |                                                                             | `boolean`                                      | `false`               |
+| `flush`            | `flush`             |                                                                             | `boolean`                                      | `false`               |
+| `icon`             | `icon`              |                                                                             | `string`                                       | `'fas fa-angle-down'` |
+| `isOpen`           | `is-open`           |                                                                             | `boolean`                                      | `false`               |
+| `link`             | `link`              |                                                                             | `boolean`                                      | `false`               |
+| `outlined`         | `outlined`          |                                                                             | `boolean`                                      | `false`               |
+| `regionLabelledby` | `region-labelledby` | Optional: allow an external label for the region instead of the toggle text | `string`                                       | `undefined`           |
+| `ripple`           | `ripple`            |                                                                             | `boolean`                                      | `false`               |
+| `size`             | `size`              |                                                                             | `"" \| "lg" \| "plumage-size" \| "sm" \| "xs"` | `''`                  |
+| `targetId`         | `target-id`         |                                                                             | `string`                                       | `''`                  |
+| `variant`          | `variant`           |                                                                             | `string`                                       | `''`                  |
 
 
 ## Events

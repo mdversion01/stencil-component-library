@@ -58,6 +58,10 @@ export namespace Components {
          */
         "outlined": boolean;
         /**
+          * Optional: allow an external label for the region instead of the toggle text
+         */
+        "regionLabelledby"?: string;
+        /**
           * @default false
          */
         "ripple": boolean;
@@ -75,6 +79,14 @@ export namespace Components {
         "variant": string;
     }
     interface AccordionContainer {
+        /**
+          * Optional: accessible name for the container (use when it stands alone)
+         */
+        "ariaLabel"?: string;
+        /**
+          * Optional: external label element id for the container
+         */
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -149,7 +161,14 @@ export namespace Components {
           * @default true
          */
         "addNewOnEnter": boolean;
+        "ariaDescribedby"?: string;
         /**
+          * Standard ARIA naming hooks
+         */
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
+        /**
+          * @deprecated Use `ariaLabelledby` (mapped to `aria-labelledby`) instead. Kept for backward compatibility.
           * @default ''
          */
         "arialabelledBy": string;
@@ -231,7 +250,7 @@ export namespace Components {
          */
         "labelCol": number;
         /**
-          * Responsive columns (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")
+          * Responsive columns
           * @default ''
          */
         "labelCols": string;
@@ -281,7 +300,7 @@ export namespace Components {
          */
         "size": '' | 'sm' | 'lg';
         /**
-          * @default ''
+          * @default 'text'
          */
         "type": string;
         /**
@@ -310,7 +329,14 @@ export namespace Components {
           * @default true
          */
         "addNewOnEnter": boolean;
+        "ariaDescribedby"?: string;
         /**
+          * Standard ARIA naming hooks
+         */
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
+        /**
+          * @deprecated Use `ariaLabelledby` (mapped to `aria-labelledby`) instead. Kept for backward compatibility.
           * @default ''
          */
         "arialabelledBy": string;
@@ -347,6 +373,7 @@ export namespace Components {
          */
         "disabled": boolean;
         /**
+          * Can users add/delete options at runtime?
           * @default false
          */
         "editable": boolean;
@@ -368,7 +395,7 @@ export namespace Components {
          */
         "formLayout": '' | 'horizontal' | 'inline';
         /**
-          * 🔎 Read current options from the component (for hosts).
+          * Read current options (for hosts).
          */
         "getOptions": () => Promise<string[]>;
         /**
@@ -408,6 +435,9 @@ export namespace Components {
           * @default 'sm'
          */
         "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        /**
+          * Selected items hidden inputs name; if it ends with [] one input per item is emitted.
+         */
         "name"?: string;
         "navigateOptions": (direction: number) => Promise<void>;
         /**
@@ -418,7 +448,13 @@ export namespace Components {
           * @default ''
          */
         "placeholder": string;
+        /**
+          * Keep the typed text after a selection? Default false (clear).
+         */
         "preserveInputOnSelect"?: boolean;
+        /**
+          * Also submit whatever the user typed under this name (verbatim).
+         */
         "rawInputName"?: string;
         /**
           * @default false
@@ -428,16 +464,13 @@ export namespace Components {
           * @default false
          */
         "removeClearBtn": boolean;
-        /**
-          * Back-compat: remove first match of a value (callable by hosts)
-         */
         "removeItem": (value: string) => Promise<void>;
         /**
           * @default false
          */
         "required": boolean;
         /**
-          * 🔧 Replace options from the host (for hosts). Also emits optionsChange('replace').
+          * Replace options from the host (and clear "user-added" tracking). Emits optionsChange('replace').
          */
         "setOptions": (next: string[]) => Promise<void>;
         /**
@@ -445,7 +478,7 @@ export namespace Components {
          */
         "size": '' | 'sm' | 'lg';
         /**
-          * @default ''
+          * @default 'text'
          */
         "type": string;
         /**
@@ -457,13 +490,20 @@ export namespace Components {
          */
         "validationMessage": string;
         /**
+          * Controlled selections (external source of truth; do not mutate the prop)
           * @default []
          */
         "value": string[];
     }
     interface AutocompleteSingle {
+        "ariaDescribedby"?: string;
         /**
-          * id(s) of label(s) that label this input (space-separated).
+          * Standard ARIA naming hooks
+         */
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
+        /**
+          * @deprecated Use `ariaLabelledby` (mapped to `aria-labelledby`) instead. Kept for backward compatibility.
           * @default ''
          */
         "arialabelledBy": string;
@@ -558,7 +598,7 @@ export namespace Components {
          */
         "size": '' | 'sm' | 'lg';
         /**
-          * @default ''
+          * @default 'text'
          */
         "type": string;
         /**
@@ -777,14 +817,16 @@ export namespace Components {
          */
         "active": boolean;
         /**
-          * Allow consumers to opt-out of nested focusable neutralization (e.g., if they need an actual focusable child on purpose).
           * @default false
          */
         "allowFocusableChildren": boolean;
+        "ariaDescribedby"?: string;
         /**
+          * Prefer using aria-labelledby when the label exists elsewhere in DOM.
           * @default ''
          */
         "ariaLabel": string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -850,7 +892,7 @@ export namespace Components {
          */
         "outlined": boolean;
         /**
-          * Current pressed state (for toggle buttons). Reflected & mutable so markup stays clean: - attribute omitted when false - attribute present (empty) when true
+          * Current pressed state (for toggle buttons).
           * @default false
          */
         "pressed": boolean;
@@ -880,6 +922,7 @@ export namespace Components {
          */
         "stripped": boolean;
         /**
+          * Inline CSS styles for the inner <button> or <a> element.
           * @default ''
          */
         "styles": string;
@@ -900,7 +943,7 @@ export namespace Components {
          */
         "titleAttr": string;
         /**
-          * Enable toggle-button behavior. When true, clicking (or keyboard activate) flips the `pressed` state.
+          * Enable toggle-button behavior.
           * @default false
          */
         "toggle": boolean;
@@ -908,6 +951,11 @@ export namespace Components {
           * @default ''
          */
         "top": string;
+        /**
+          * Native button type (ignored for link mode).
+          * @default 'button'
+         */
+        "type": ButtonType;
         /**
           * @default ''
          */
@@ -927,13 +975,27 @@ export namespace Components {
     }
     interface ButtonGroup {
         /**
+          * Optional additional description id(s).
+         */
+        "ariaDescribedby"?: string;
+        /**
+          * Accessible name via aria-label (used only if ariaLabelledby is not provided).
           * @default ''
          */
         "ariaLabel": string;
         /**
+          * Accessible name via element id(s). Preferred when a visible label exists.
+         */
+        "ariaLabelledby"?: string;
+        /**
           * @default ''
          */
         "classNames": string;
+        /**
+          * Communicates a disabled state for the group (does not automatically disable children).
+          * @default false
+         */
+        "disabled": boolean;
         /**
           * @default false
          */
@@ -991,10 +1053,12 @@ export namespace Components {
           * @default ''
          */
         "altText": string;
+        "ariaDescribedby"?: string;
         /**
-          * @default 'Card section'
+          * Accessible naming hooks (preferred)
          */
-        "ariaLabel": string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default '20'
          */
@@ -1004,9 +1068,27 @@ export namespace Components {
          */
         "classNames": string;
         /**
+          * @default false
+         */
+        "clickable": boolean;
+        /**
+          * If true, image is decorative and will be hidden from AT (alt="").
+          * @default false
+         */
+        "decorativeImage": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
           * @default ''
          */
         "elevation": string;
+        /**
+          * Heading level for the title slot.
+          * @default 5
+         */
+        "headingLevel": number;
         /**
           * @default false
          */
@@ -1026,12 +1108,15 @@ export namespace Components {
         /**
           * @default false
          */
+        "landmark": boolean;
+        /**
+          * @default false
+         */
         "noFooter": boolean;
         /**
           * @default false
          */
         "noHeader": boolean;
-        "tab"?: string;
     }
     interface CheckboxComponent {
         /**
@@ -1147,7 +1232,6 @@ export namespace Components {
          */
         "inputCol": number;
         /**
-          * Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for input column when formLayout is "horizontal"
           * @default ''
          */
         "inputCols": string;
@@ -1173,7 +1257,7 @@ export namespace Components {
          */
         "labelCol": number;
         /**
-          * Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for label column when formLayout is "horizontal"
+          * Responsive column class specs
           * @default ''
          */
         "labelCols": string;
@@ -1404,6 +1488,11 @@ export namespace Components {
          */
         "appendProp": boolean;
         /**
+          * NEW: Autocomplete
+          * @default 'off'
+         */
+        "autocomplete": AutocompleteValue;
+        /**
           * @default false
          */
         "calendar": boolean;
@@ -1418,7 +1507,7 @@ export namespace Components {
         /**
           * @default 'YYYY-MM-DD'
          */
-        "dateFormat": 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        "dateFormat": DateFormat;
         /**
           * @default false
          */
@@ -1472,7 +1561,7 @@ export namespace Components {
          */
         "labelCol": number;
         /**
-          * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+          * Responsive column class specs
           * @default ''
          */
         "labelCols": string;
@@ -1841,6 +1930,10 @@ export namespace Components {
         "value": string;
     }
     interface InputGroupComponent {
+        /**
+          * @default false
+         */
+        "appendField": boolean;
         "appendIcon"?: string;
         /**
           * @default ''
@@ -1858,14 +1951,6 @@ export namespace Components {
           * @default ''
          */
         "formLayout": '' | 'horizontal' | 'inline';
-        /**
-          * @default false
-         */
-        "hasAppend": boolean;
-        /**
-          * @default false
-         */
-        "hasPrepend": boolean;
         /**
           * @default ''
          */
@@ -1921,6 +2006,10 @@ export namespace Components {
           * @default ''
          */
         "placeholder": string;
+        /**
+          * @default false
+         */
+        "prependField": boolean;
         "prependIcon"?: string;
         /**
           * @default ''
@@ -1935,7 +2024,7 @@ export namespace Components {
          */
         "size": '' | 'sm' | 'lg';
         /**
-          * @default ''
+          * @default 'text'
          */
         "type": string;
         /**
@@ -2713,6 +2802,10 @@ export namespace Components {
         /**
           * @default false
          */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
         /**
           * @default ''
@@ -2737,7 +2830,6 @@ export namespace Components {
     }
     interface PlumageInputGroupComponent {
         /**
-          * Side fields: support BOTH old and new attribute spellings. Current attributes: prepend/append Legacy attributes:  prepend-field/append-field
           * @default false
          */
         "appendField": boolean;
@@ -2801,14 +2893,6 @@ export namespace Components {
           * @default 'sm'
          */
         "labelSize": 'base' | 'xs' | 'sm' | 'lg';
-        /**
-          * @default false
-         */
-        "legacyAppendField": boolean;
-        /**
-          * @default false
-         */
-        "legacyPrependField": boolean;
         /**
           * @default false
          */
@@ -3255,13 +3339,25 @@ export namespace Components {
     }
     interface RadioInputComponent {
         /**
-          * @default false
+          * Optional: external description element id (help text)
          */
-        "customRadio": boolean;
+        "ariaDescribedby"?: string;
         /**
           * @default false
          */
-        "customRadioGroup": boolean;
+        "basicRadio": boolean;
+        /**
+          * @default false
+         */
+        "basicRadioGroup": boolean;
+        /**
+          * @default false
+         */
+        "bsRadio": boolean;
+        /**
+          * @default false
+         */
+        "bsRadioGroup": boolean;
         /**
           * @default false
          */
@@ -3294,14 +3390,6 @@ export namespace Components {
           * @default ''
          */
         "name": string;
-        /**
-          * @default false
-         */
-        "radio": boolean;
-        /**
-          * @default false
-         */
-        "radioGroup": boolean;
         /**
           * @default false
          */
@@ -4114,9 +4202,15 @@ export namespace Components {
          */
         "labelTxt": string;
         /**
+          * Programmatic API (property): el.newToggleTxt = { on:'On', off:'Off' } IMPORTANT: do not mutate this prop internally.
           * @default { on: 'On', off: 'Off' }
          */
         "newToggleTxt": { on: string; off: string };
+        /**
+          * Attribute API: <toggle-switch-component new-toggle-txt='{"on":"A","off":"B"}'> This is a STRING prop because HTML attributes are strings.
+          * @default ''
+         */
+        "newToggleTxtAttr": string;
         /**
           * @default false
          */
@@ -4385,11 +4479,7 @@ declare global {
         "componentError": { message: string; stack?: string };
         "multiSelectChange": string[];
         "valueChange": string[];
-        "optionsChange": {
-    options: string[];
-    reason: 'add' | 'delete' | 'replace';
-    value?: string; // the added/removed item, if applicable
-  };
+        "optionsChange": { options: string[]; reason: 'add' | 'delete' | 'replace'; value?: string };
         "optionDelete": string;
     }
     interface HTMLAutocompleteMultiselectElement extends Components.AutocompleteMultiselect, HTMLStencilElement {
@@ -4502,7 +4592,7 @@ declare global {
         new (): HTMLByPagePaginationComponentElement;
     };
     interface HTMLCardComponentElementEventMap {
-        "customClick": any;
+        "customClick": void;
     }
     interface HTMLCardComponentElement extends Components.CardComponent, HTMLStencilElement {
         addEventListener<K extends keyof HTMLCardComponentElementEventMap>(type: K, listener: (this: HTMLCardComponentElement, ev: CardComponentCustomEvent<HTMLCardComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4565,10 +4655,10 @@ declare global {
     startTime: string;
     endTime: string;
     duration: string;
-    startDateIso?: string; // YYYY-MM-DD
-    endDateIso?: string; // YYYY-MM-DD
-    startDateTimeIso?: string; // YYYY-MM-DDTHH:mm:ss.sssZ
-    endDateTimeIso?: string; // YYYY-MM-DDTHH:mm:ss.sssZ
+    startDateIso?: string;
+    endDateIso?: string;
+    startDateTimeIso?: string;
+    endDateTimeIso?: string;
   };
     }
     /**
@@ -5113,6 +5203,10 @@ declare namespace LocalJSX {
          */
         "outlined"?: boolean;
         /**
+          * Optional: allow an external label for the region instead of the toggle text
+         */
+        "regionLabelledby"?: string;
+        /**
           * @default false
          */
         "ripple"?: boolean;
@@ -5130,6 +5224,14 @@ declare namespace LocalJSX {
         "variant"?: string;
     }
     interface AccordionContainer {
+        /**
+          * Optional: accessible name for the container (use when it stands alone)
+         */
+        "ariaLabel"?: string;
+        /**
+          * Optional: external label element id for the container
+         */
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -5204,7 +5306,14 @@ declare namespace LocalJSX {
           * @default true
          */
         "addNewOnEnter"?: boolean;
+        "ariaDescribedby"?: string;
         /**
+          * Standard ARIA naming hooks
+         */
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
+        /**
+          * @deprecated Use `ariaLabelledby` (mapped to `aria-labelledby`) instead. Kept for backward compatibility.
           * @default ''
          */
         "arialabelledBy"?: string;
@@ -5286,7 +5395,7 @@ declare namespace LocalJSX {
          */
         "labelCol"?: number;
         /**
-          * Responsive columns (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")
+          * Responsive columns
           * @default ''
          */
         "labelCols"?: string;
@@ -5307,9 +5416,6 @@ declare namespace LocalJSX {
         "onItemSelect"?: (event: AutocompleteMultipleSelectionsCustomEvent<string>) => void;
         "onMultiSelectChange"?: (event: AutocompleteMultipleSelectionsCustomEvent<string[]>) => void;
         "onOptionDelete"?: (event: AutocompleteMultipleSelectionsCustomEvent<string>) => void;
-        /**
-          * ✅ NEW: mirror controlled value changes (array)
-         */
         "onValueChange"?: (event: AutocompleteMultipleSelectionsCustomEvent<string[]>) => void;
         /**
           * @default []
@@ -5344,7 +5450,7 @@ declare namespace LocalJSX {
          */
         "size"?: '' | 'sm' | 'lg';
         /**
-          * @default ''
+          * @default 'text'
          */
         "type"?: string;
         /**
@@ -5373,7 +5479,14 @@ declare namespace LocalJSX {
           * @default true
          */
         "addNewOnEnter"?: boolean;
+        "ariaDescribedby"?: string;
         /**
+          * Standard ARIA naming hooks
+         */
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
+        /**
+          * @deprecated Use `ariaLabelledby` (mapped to `aria-labelledby`) instead. Kept for backward compatibility.
           * @default ''
          */
         "arialabelledBy"?: string;
@@ -5410,6 +5523,7 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
+          * Can users add/delete options at runtime?
           * @default false
          */
         "editable"?: boolean;
@@ -5466,23 +5580,16 @@ declare namespace LocalJSX {
           * @default 'sm'
          */
         "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
+        /**
+          * Selected items hidden inputs name; if it ends with [] one input per item is emitted.
+         */
         "name"?: string;
         "onClear"?: (event: AutocompleteMultiselectCustomEvent<void>) => void;
         "onComponentError"?: (event: AutocompleteMultiselectCustomEvent<{ message: string; stack?: string }>) => void;
         "onItemSelect"?: (event: AutocompleteMultiselectCustomEvent<string>) => void;
         "onMultiSelectChange"?: (event: AutocompleteMultiselectCustomEvent<string[]>) => void;
         "onOptionDelete"?: (event: AutocompleteMultiselectCustomEvent<string>) => void;
-        /**
-          * 🔔 Hook for hosts to mirror/persist options
-         */
-        "onOptionsChange"?: (event: AutocompleteMultiselectCustomEvent<{
-    options: string[];
-    reason: 'add' | 'delete' | 'replace';
-    value?: string; // the added/removed item, if applicable
-  }>) => void;
-        /**
-          * ✅ NEW: mirror controlled value changes (array)
-         */
+        "onOptionsChange"?: (event: AutocompleteMultiselectCustomEvent<{ options: string[]; reason: 'add' | 'delete' | 'replace'; value?: string }>) => void;
         "onValueChange"?: (event: AutocompleteMultiselectCustomEvent<string[]>) => void;
         /**
           * @default []
@@ -5492,7 +5599,13 @@ declare namespace LocalJSX {
           * @default ''
          */
         "placeholder"?: string;
+        /**
+          * Keep the typed text after a selection? Default false (clear).
+         */
         "preserveInputOnSelect"?: boolean;
+        /**
+          * Also submit whatever the user typed under this name (verbatim).
+         */
         "rawInputName"?: string;
         /**
           * @default false
@@ -5511,7 +5624,7 @@ declare namespace LocalJSX {
          */
         "size"?: '' | 'sm' | 'lg';
         /**
-          * @default ''
+          * @default 'text'
          */
         "type"?: string;
         /**
@@ -5523,13 +5636,20 @@ declare namespace LocalJSX {
          */
         "validationMessage"?: string;
         /**
+          * Controlled selections (external source of truth; do not mutate the prop)
           * @default []
          */
         "value"?: string[];
     }
     interface AutocompleteSingle {
+        "ariaDescribedby"?: string;
         /**
-          * id(s) of label(s) that label this input (space-separated).
+          * Standard ARIA naming hooks
+         */
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
+        /**
+          * @deprecated Use `ariaLabelledby` (mapped to `aria-labelledby`) instead. Kept for backward compatibility.
           * @default ''
          */
         "arialabelledBy"?: string;
@@ -5628,7 +5748,7 @@ declare namespace LocalJSX {
          */
         "size"?: '' | 'sm' | 'lg';
         /**
-          * @default ''
+          * @default 'text'
          */
         "type"?: string;
         /**
@@ -5849,14 +5969,16 @@ declare namespace LocalJSX {
          */
         "active"?: boolean;
         /**
-          * Allow consumers to opt-out of nested focusable neutralization (e.g., if they need an actual focusable child on purpose).
           * @default false
          */
         "allowFocusableChildren"?: boolean;
+        "ariaDescribedby"?: string;
         /**
+          * Prefer using aria-labelledby when the label exists elsewhere in DOM.
           * @default ''
          */
         "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -5918,16 +6040,13 @@ declare namespace LocalJSX {
          */
         "link"?: boolean;
         "onCustomClick"?: (event: ButtonComponentCustomEvent<void>) => void;
-        /**
-          * Fired whenever `pressed` changes (useful for external sync / two-way binding).
-         */
         "onPressedChange"?: (event: ButtonComponentCustomEvent<boolean>) => void;
         /**
           * @default false
          */
         "outlined"?: boolean;
         /**
-          * Current pressed state (for toggle buttons). Reflected & mutable so markup stays clean: - attribute omitted when false - attribute present (empty) when true
+          * Current pressed state (for toggle buttons).
           * @default false
          */
         "pressed"?: boolean;
@@ -5957,6 +6076,7 @@ declare namespace LocalJSX {
          */
         "stripped"?: boolean;
         /**
+          * Inline CSS styles for the inner <button> or <a> element.
           * @default ''
          */
         "styles"?: string;
@@ -5977,7 +6097,7 @@ declare namespace LocalJSX {
          */
         "titleAttr"?: string;
         /**
-          * Enable toggle-button behavior. When true, clicking (or keyboard activate) flips the `pressed` state.
+          * Enable toggle-button behavior.
           * @default false
          */
         "toggle"?: boolean;
@@ -5985,6 +6105,11 @@ declare namespace LocalJSX {
           * @default ''
          */
         "top"?: string;
+        /**
+          * Native button type (ignored for link mode).
+          * @default 'button'
+         */
+        "type"?: ButtonType;
         /**
           * @default ''
          */
@@ -6004,13 +6129,27 @@ declare namespace LocalJSX {
     }
     interface ButtonGroup {
         /**
+          * Optional additional description id(s).
+         */
+        "ariaDescribedby"?: string;
+        /**
+          * Accessible name via aria-label (used only if ariaLabelledby is not provided).
           * @default ''
          */
         "ariaLabel"?: string;
         /**
+          * Accessible name via element id(s). Preferred when a visible label exists.
+         */
+        "ariaLabelledby"?: string;
+        /**
           * @default ''
          */
         "classNames"?: string;
+        /**
+          * Communicates a disabled state for the group (does not automatically disable children).
+          * @default false
+         */
+        "disabled"?: boolean;
         /**
           * @default false
          */
@@ -6069,10 +6208,12 @@ declare namespace LocalJSX {
           * @default ''
          */
         "altText"?: string;
+        "ariaDescribedby"?: string;
         /**
-          * @default 'Card section'
+          * Accessible naming hooks (preferred)
          */
         "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default '20'
          */
@@ -6082,9 +6223,27 @@ declare namespace LocalJSX {
          */
         "classNames"?: string;
         /**
+          * @default false
+         */
+        "clickable"?: boolean;
+        /**
+          * If true, image is decorative and will be hidden from AT (alt="").
+          * @default false
+         */
+        "decorativeImage"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
           * @default ''
          */
         "elevation"?: string;
+        /**
+          * Heading level for the title slot.
+          * @default 5
+         */
+        "headingLevel"?: number;
         /**
           * @default false
          */
@@ -6104,13 +6263,16 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "landmark"?: boolean;
+        /**
+          * @default false
+         */
         "noFooter"?: boolean;
         /**
           * @default false
          */
         "noHeader"?: boolean;
-        "onCustomClick"?: (event: CardComponentCustomEvent<any>) => void;
-        "tab"?: string;
+        "onCustomClick"?: (event: CardComponentCustomEvent<void>) => void;
     }
     interface CheckboxComponent {
         /**
@@ -6224,7 +6386,6 @@ declare namespace LocalJSX {
          */
         "inputCol"?: number;
         /**
-          * Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for input column when formLayout is "horizontal"
           * @default ''
          */
         "inputCols"?: string;
@@ -6250,7 +6411,7 @@ declare namespace LocalJSX {
          */
         "labelCol"?: number;
         /**
-          * Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for label column when formLayout is "horizontal"
+          * Responsive column class specs
           * @default ''
          */
         "labelCols"?: string;
@@ -6416,10 +6577,10 @@ declare namespace LocalJSX {
     startTime: string;
     endTime: string;
     duration: string;
-    startDateIso?: string; // YYYY-MM-DD
-    endDateIso?: string; // YYYY-MM-DD
-    startDateTimeIso?: string; // YYYY-MM-DDTHH:mm:ss.sssZ
-    endDateTimeIso?: string; // YYYY-MM-DDTHH:mm:ss.sssZ
+    startDateIso?: string;
+    endDateIso?: string;
+    startDateTimeIso?: string;
+    endDateTimeIso?: string;
   }>) => void;
         /**
           * External placeholder (immutable). We derive default into state.
@@ -6500,6 +6661,11 @@ declare namespace LocalJSX {
          */
         "appendProp"?: boolean;
         /**
+          * NEW: Autocomplete
+          * @default 'off'
+         */
+        "autocomplete"?: AutocompleteValue;
+        /**
           * @default false
          */
         "calendar"?: boolean;
@@ -6514,7 +6680,7 @@ declare namespace LocalJSX {
         /**
           * @default 'YYYY-MM-DD'
          */
-        "dateFormat"?: 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        "dateFormat"?: DateFormat;
         /**
           * @default false
          */
@@ -6568,7 +6734,7 @@ declare namespace LocalJSX {
          */
         "labelCol"?: number;
         /**
-          * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+          * Responsive column class specs
           * @default ''
          */
         "labelCols"?: string;
@@ -6942,6 +7108,10 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     interface InputGroupComponent {
+        /**
+          * @default false
+         */
+        "appendField"?: boolean;
         "appendIcon"?: string;
         /**
           * @default ''
@@ -6959,14 +7129,6 @@ declare namespace LocalJSX {
           * @default ''
          */
         "formLayout"?: '' | 'horizontal' | 'inline';
-        /**
-          * @default false
-         */
-        "hasAppend"?: boolean;
-        /**
-          * @default false
-         */
-        "hasPrepend"?: boolean;
         /**
           * @default ''
          */
@@ -7023,6 +7185,10 @@ declare namespace LocalJSX {
           * @default ''
          */
         "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "prependField"?: boolean;
         "prependIcon"?: string;
         /**
           * @default ''
@@ -7037,7 +7203,7 @@ declare namespace LocalJSX {
          */
         "size"?: '' | 'sm' | 'lg';
         /**
-          * @default ''
+          * @default 'text'
          */
         "type"?: string;
         /**
@@ -7828,6 +7994,10 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
         /**
           * @default ''
@@ -7852,7 +8022,6 @@ declare namespace LocalJSX {
     }
     interface PlumageInputGroupComponent {
         /**
-          * Side fields: support BOTH old and new attribute spellings. Current attributes: prepend/append Legacy attributes:  prepend-field/append-field
           * @default false
          */
         "appendField"?: boolean;
@@ -7916,14 +8085,6 @@ declare namespace LocalJSX {
           * @default 'sm'
          */
         "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
-        /**
-          * @default false
-         */
-        "legacyAppendField"?: boolean;
-        /**
-          * @default false
-         */
-        "legacyPrependField"?: boolean;
         "onValueChange"?: (event: PlumageInputGroupComponentCustomEvent<string>) => void;
         /**
           * @default false
@@ -8368,13 +8529,25 @@ declare namespace LocalJSX {
     }
     interface RadioInputComponent {
         /**
-          * @default false
+          * Optional: external description element id (help text)
          */
-        "customRadio"?: boolean;
+        "ariaDescribedby"?: string;
         /**
           * @default false
          */
-        "customRadioGroup"?: boolean;
+        "basicRadio"?: boolean;
+        /**
+          * @default false
+         */
+        "basicRadioGroup"?: boolean;
+        /**
+          * @default false
+         */
+        "bsRadio"?: boolean;
+        /**
+          * @default false
+         */
+        "bsRadioGroup"?: boolean;
         /**
           * @default false
          */
@@ -8408,14 +8581,6 @@ declare namespace LocalJSX {
          */
         "name"?: string;
         "onGroupChange"?: (event: RadioInputComponentCustomEvent<string>) => void;
-        /**
-          * @default false
-         */
-        "radio"?: boolean;
-        /**
-          * @default false
-         */
-        "radioGroup"?: boolean;
         /**
           * @default false
          */
@@ -9226,9 +9391,15 @@ declare namespace LocalJSX {
          */
         "labelTxt"?: string;
         /**
+          * Programmatic API (property): el.newToggleTxt = { on:'On', off:'Off' } IMPORTANT: do not mutate this prop internally.
           * @default { on: 'On', off: 'Off' }
          */
         "newToggleTxt"?: { on: string; off: string };
+        /**
+          * Attribute API: <toggle-switch-component new-toggle-txt='{"on":"A","off":"B"}'> This is a STRING prop because HTML attributes are strings.
+          * @default ''
+         */
+        "newToggleTxtAttr"?: string;
         "onCheckedChanged"?: (event: ToggleSwitchComponentCustomEvent<{ id: string; checked: boolean }>) => void;
         /**
           * @default false

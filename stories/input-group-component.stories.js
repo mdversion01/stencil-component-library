@@ -18,6 +18,39 @@ export default {
     },
   },
   argTypes: {
+    // =========================
+    // Input Attributes (A–Z)
+    // =========================
+    disabled: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'Input Attributes' },
+      description: 'When enabled, the input group and its child input field will be disabled, preventing user interaction and applying appropriate disabled styles.',
+    },
+    inputId: {
+      control: 'text',
+      name: 'input-id',
+      table: { category: 'Input Attributes', defaultValue: { summary: 'amount-play' } },
+      description: 'ID for the input field, used to associate the label with the input for accessibility. This should be unique on the page.',
+    },
+    placeholder: {
+      control: 'text',
+      table: { category: 'Input Attributes' },
+      description: 'Placeholder text for the input field.',
+    },
+    type: {
+      control: 'text',
+      table: { category: 'Input Attributes' },
+      description: 'Type of the input field (e.g., "text", "password", "email").',
+    },
+    value: {
+      control: 'text',
+      description: 'The value of the input field',
+      table: { category: 'Input Attributes' },
+    },
+
+    // =========================
+    // Layout (A–Z)
+    // =========================
     append: {
       control: 'boolean',
       table: { category: 'Layout', defaultValue: { summary: true } },
@@ -31,10 +64,11 @@ export default {
       description:
         'Specify an icon class (e.g., from Font Awesome) to display an icon on the right side of the input field. This is a quick way to add an icon without needing to use the append slot.',
     },
-    disabled: {
-      control: 'boolean',
-      table: { defaultValue: { summary: false }, category: 'Attributes' },
-      description: 'When enabled, the input group and its child input field will be disabled, preventing user interaction and applying appropriate disabled styles.',
+    appendId: {
+      control: 'text',
+      name: 'append-id',
+      table: { category: 'Layout' },
+      description: 'ID for the append element, used for accessibility or targeting with JavaScript.',
     },
     formLayout: {
       control: { type: 'select' },
@@ -64,12 +98,6 @@ export default {
       name: 'input-cols',
       description: 'e.g. "col-sm-9 col-md-8" or "xs-12 sm-6 md-8"',
     },
-    inputId: {
-      control: 'text',
-      name: 'input-id',
-      table: { category: 'Attributes', defaultValue: { summary: 'amount-play' } },
-      description: 'ID for the input field, used to associate the label with the input for accessibility. This should be unique on the page.',
-    },
     label: { control: 'text', table: { category: 'Layout' }, description: 'Label text for the input' },
     labelAlign: {
       control: { type: 'select' },
@@ -89,7 +117,7 @@ export default {
     },
     labelCols: {
       control: 'text',
-      table: { category: 'Layout'},
+      table: { category: 'Layout' },
       name: 'label-cols',
       description: 'e.g. "col-sm-3 col-md-4" or "xs-12 sm-6 md-4"',
     },
@@ -99,16 +127,12 @@ export default {
       table: { category: 'Layout', defaultValue: { summary: false } },
       description: 'Visually hide the label (but keep it accessible to screen readers)',
     },
+    labelSize: { control: { type: 'select' }, options: ['base', 'xs', 'sm', 'lg'], table: { category: 'Layout' } },
     otherContent: {
       control: 'boolean',
       name: 'other-content',
       table: { category: 'Layout', defaultValue: { summary: false } },
       description: 'When enabled, the story will include example content in the prepend and append slots to demonstrate how they work.',
-    },
-    placeholder: {
-      control: 'text',
-      table: { category: 'Layout' },
-      description: 'Placeholder text for the input field.',
     },
     prepend: {
       control: 'boolean',
@@ -121,16 +145,26 @@ export default {
       table: { category: 'Layout' },
       description: 'Specify an icon class to display an icon inside the prepend slot.',
     },
-    required: {
-      control: 'boolean',
-      table: { defaultValue: { summary: false }, category: 'Validation' },
-      description: 'Mark the input as required',
+    prependId: {
+      control: 'text',
+      name: 'prepend-id',
+      table: { category: 'Layout' },
+      description: 'ID for the prepend element, used for accessibility or targeting with JavaScript.',
     },
     size: {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
       table: { category: 'Layout' },
       description: 'Size variant.',
+    },
+
+    // =========================
+    // Validation (A–Z)
+    // =========================
+    required: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'Validation' },
+      description: 'Mark the input as required',
     },
     validation: {
       control: 'boolean',
@@ -143,11 +177,6 @@ export default {
       name: 'validation-message',
       table: { category: 'Validation' },
       description: 'Message to display when validation fails',
-    },
-    value: {
-      control: 'text',
-      description: 'The value of the input field',
-      table: { category: 'Attributes' },
     },
   },
 };
@@ -167,30 +196,30 @@ const buildDocsHtml = args => {
   const a = { ...args };
 
   const attrs = [
-    ['label', normalize(a.label)],
-    ['input-id', normalize(a.inputId)],
-    ['placeholder', normalize(a.placeholder)],
-    ['size', normalize(a.size)],
-    ['form-layout', normalize(a.formLayout)],
-    ['label-align', normalize(a.labelAlign)],
-    ['icon', normalize(a.icon)],
-    ['prepend-icon', normalize(a.prependIcon)],
+    ['append', !!a.append],
     ['append-icon', normalize(a.appendIcon)],
+    ['append-id', normalize(a.appendId)],
+    ['disabled', !!a.disabled],
+    ['form-layout', normalize(a.formLayout)],
+    ['icon', normalize(a.icon)],
+    ['input-col', Number.isFinite(a.inputCol) ? a.inputCol : undefined],
+    ['input-cols', normalize(a.inputCols)],
+    ['input-id', normalize(a.inputId)],
+    ['label', normalize(a.label)],
+    ['label-align', normalize(a.labelAlign)],
+    ['label-col', Number.isFinite(a.labelCol) ? a.labelCol : undefined],
+    ['label-cols', normalize(a.labelCols)],
+    ['label-hidden', !!a.labelHidden],
+    ['other-content', !!a.otherContent],
+    ['placeholder', normalize(a.placeholder)],
+    ['prepend', !!a.prepend],
+    ['prepend-icon', normalize(a.prependIcon)],
+    ['prepend-id', normalize(a.prependId)],
+    ['required', !!a.required],
+    ['size', normalize(a.size)],
+    ['validation', !!a.validation],
     ['validation-message', normalize(a.validationMessage)],
     ['value', normalize(a.value)],
-    ['label-cols', normalize(a.labelCols)],
-    ['input-cols', normalize(a.inputCols)],
-    ['label-col', Number.isFinite(a.labelCol) ? a.labelCol : undefined],
-    ['input-col', Number.isFinite(a.inputCol) ? a.inputCol : undefined],
-
-    // boolean attrs (presence-based)
-    ['label-hidden', !!a.labelHidden],
-    ['required', !!a.required],
-    ['disabled', !!a.disabled],
-    ['prepend', !!a.prepend],
-    ['append', !!a.append],
-    ['other-content', !!a.otherContent],
-    ['validation', !!a.validation],
   ];
 
   const attrStr = attrs
@@ -225,32 +254,30 @@ const Template = args => {
 
   return `
 <input-group-component
- ${attr('label', args.label)}
- ${attr('input-id', args.inputId)}
- ${attr('placeholder', args.placeholder)}
- ${attr('size', args.size)}
- ${attr('form-layout', args.formLayout)}
- ${boolAttr('label-hidden', !!args.labelHidden)}
- ${attr('label-align', args.labelAlign)}
- ${boolAttr('required', !!args.required)}
- ${boolAttr('disabled', !!args.disabled)}
-
- ${boolAttr('prepend', !!args.prepend)}
- ${boolAttr('append', !!args.append)}
- ${boolAttr('other-content', !!args.otherContent)}
- ${attr('icon', args.icon)}
-
- ${usePrependSlot ? '' : attr('prepend-icon', args.prependIcon)}
+${boolAttr('append', !!args.append)}
  ${useAppendSlot ? '' : attr('append-icon', args.appendIcon)}
-
+ ${attr('append-id', args.appendId)}
+ ${boolAttr('disabled', !!args.disabled)}
+ ${attr('form-layout', args.formLayout)}
+ ${attr('icon', args.icon)}
+ ${attr('input-col', args.inputCol)}
+ ${attr('input-cols', args.inputCols)}
+ ${attr('input-id', args.inputId)}
+ ${attr('label', args.label)}
+ ${attr('label-align', args.labelAlign)}
+ ${attr('label-col', args.labelCol)}
+ ${attr('label-cols', args.labelCols)}
+ ${boolAttr('label-hidden', !!args.labelHidden)}
+ ${boolAttr('other-content', !!args.otherContent)}
+ ${attr('placeholder', args.placeholder)}
+ ${boolAttr('prepend', !!args.prepend)}
+ ${usePrependSlot ? '' : attr('prepend-icon', args.prependIcon)}
+ ${attr('prepend-id', args.prependId)}
+ ${boolAttr('required', !!args.required)}
+ ${attr('size', args.size)}
  ${boolAttr('validation', !!args.validation)}
  ${attr('validation-message', args.validationMessage)}
  ${attr('value', args.value)}
-
- ${attr('label-cols', args.labelCols)}
- ${attr('input-cols', args.inputCols)}
- ${attr('label-col', args.labelCol)}
- ${attr('input-col', args.inputCol)}
 >
  ${usePrependSlot ? `<button-component slot="prepend" type="button" variant="secondary">Go</button-component>` : ''}
  ${useAppendSlot ? `<button-component slot="append" type="button" variant="secondary">Go</button-component>` : ''}
@@ -276,6 +303,8 @@ Basic.args = {
   icon: '',
   prependIcon: 'fa-solid fa-dollar-sign',
   appendIcon: 'fa-solid fa-dollar-sign',
+  appendId: '',
+  prependId: '',
 
   validation: false,
   validationMessage: 'Please provide a value.',
@@ -290,8 +319,7 @@ Basic.storyName = 'Basic Usage';
 Basic.parameters = {
   docs: {
     description: {
-      story:
-        'This is a basic example of the input group component with an append icon. You can customize the label, placeholder, and icons using the controls.',
+      story: 'This is a basic example of the input group component with an append icon. You can customize the label, placeholder, and icons using the controls.',
     },
   },
 };
@@ -314,6 +342,28 @@ RequiredWithValidation.parameters = {
     description: {
       story:
         'This example demonstrates the required and validation states. The input is marked as required, and validation is enabled. If you try to submit without entering a value, the validation message will appear.',
+    },
+  },
+};
+
+export const DisabledState = Template.bind({});
+DisabledState.storyName = 'Disabled';
+DisabledState.args = {
+  ...Basic.args,
+  inputId: 'amount-disabled',
+  label: 'Amount',
+  disabled: true,
+  prepend: false,
+  append: true,
+  otherContent: false,
+  prependIcon: '',
+  appendIcon: 'fa-solid fa-dollar-sign',
+};
+DisabledState.parameters = {
+  docs: {
+    description: {
+      story:
+        'This example shows the disabled state of the input group. When disabled, the input and any content in the prepend and append slots will be non-interactive and styled accordingly.',
     },
   },
 };

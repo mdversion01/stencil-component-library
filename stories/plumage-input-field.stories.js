@@ -9,216 +9,573 @@ export default {
     layout: 'padded',
     docs: {
       description: {
-        component:
-          'Single Plumage-styled text input with focus underline, validation messaging, and responsive layouts (stacked, horizontal, inline).',
+        component: 'A customizable single Plumage-styled text input field component with various props for label, size, validation, and layout.',
+      },
+      source: {
+        language: 'html',
+        // IMPORTANT: docs preview must reflect CURRENT args (including Controls changes)
+        transform: (_src, ctx) => buildDocsHtml(ctx.args),
       },
     },
   },
   argTypes: {
-    // Core
-    inputId: { control: 'text', table: { category: 'Props' } },
-    label: { control: 'text', table: { category: 'Props' } },
-    value: { control: 'text', table: { category: 'Props' } },
-    type: { control: 'text', table: { category: 'Props' }, description: 'HTML input type' },
-    placeholder: { control: 'text', table: { category: 'Props' } },
+    /* =========================
+     * Input Attributes
+     * ========================= */
+    disabled: {
+      control: 'boolean',
+      name: 'disabled',
+      table: { category: 'Input Attributes', defaultValue: { summary: false } },
+      description: 'Disables the input field, preventing user interaction.',
+    },
+    placeholder: {
+      control: 'text',
+      name: 'placeholder',
+      table: { category: 'Input Attributes' },
+      description: 'The placeholder text for the input element. This provides a hint to the user about what to enter.',
+    },
+    readOnly: {
+      control: 'boolean',
+      name: 'read-only',
+      description: 'Whether the input field is read-only',
+      table: { category: 'Input Attributes', defaultValue: { summary: false } },
+    },
+    type: {
+      control: 'text',
+      description: 'The type of the input field',
+      table: { category: 'Input Attributes' },
+    },
+    value: {
+      control: 'text',
+      description: 'The value of the input field',
+      table: { category: 'Input Attributes' },
+    },
 
-    // Behavior
-    disabled: { control: 'boolean', table: { category: 'Behavior' } },
-    required: { control: 'boolean', table: { category: 'Behavior' } },
+    /* =========================
+     * Layout
+     * ========================= */
+    formLayout: {
+      control: { type: 'select' },
+      options: ['', 'horizontal', 'inline'],
+      name: 'form-layout',
+      table: { category: 'Layout' },
+      description: 'Sets the form layout style. "horizontal" applies a two-column grid layout, while "inline" arranges elements in a single row.',
+    },
+    inputCol: {
+      control: 'text',
+      name: 'input-col',
+      table: { category: 'Layout', defaultValue: { summary: 10 } },
+      description: 'Used with horizontal form layouts. Single numeric column for the input in a grid. Default is 10 (col-10).',
+    },
+    inputCols: {
+      control: 'text',
+      name: 'input-cols',
+      table: { category: 'Layout' },
+      description: 'Used with horizontal form layouts. Responsive input column classes.',
+    },
+    inputId: {
+      control: 'text',
+      name: 'input-id',
+      table: { category: 'Layout' },
+      description: 'The unique identifier for the input element within the component. This is used for accessibility and form association.',
+    },
+    label: {
+      control: 'text',
+      name: 'label',
+      table: { category: 'Layout' },
+      description: 'The text label for the component. This is used for accessibility and user guidance.',
+    },
+    labelAlign: {
+      control: { type: 'select' },
+      options: ['', 'right'],
+      name: 'label-align',
+      table: { category: 'Layout' },
+      description: 'Aligns the label text. "right" aligns the label to the right, which is typically used in horizontal form layouts.',
+    },
+    labelCol: {
+      control: 'text',
+      name: 'label-col',
+      table: { category: 'Layout', defaultValue: { summary: 2 } },
+      description: 'Used with horizontal form layouts. Single numeric column for the label in a grid. Default is 2 (col-2).',
+    },
+    labelCols: {
+      control: 'text',
+      name: 'label-cols',
+      table: { category: 'Layout' },
+      description: 'Used with horizontal form layouts. Responsive label column classes.',
+    },
+    labelHidden: {
+      control: 'boolean',
+      name: 'label-hidden',
+      table: { category: 'Layout', defaultValue: { summary: false } },
+      description: 'Hides the label visually while keeping it accessible for screen readers.',
+    },
+    labelSize: {
+      control: { type: 'select' },
+      options: ['xs', 'sm', 'lg'],
+      name: 'label-size',
+      table: { category: 'Layout' },
+      description: 'Sets the size of the label text. Options include "xs" (extra small), "sm" (small), and "lg" (large).',
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['', 'sm', 'lg'],
+      name: 'size',
+      table: { category: 'Layout' },
+      description: 'Sets the size of the input field. Options include "sm" (small) and "lg" (large). Not adding any size will use the default.',
+    },
 
-    // Layout
-    formLayout: { control: { type: 'select' }, options: ['', 'horizontal', 'inline'], table: { category: 'Layout' } },
-    labelHidden: { control: 'boolean', table: { category: 'Layout' } },
-    labelAlign: { control: { type: 'select' }, options: ['', 'right'], table: { category: 'Layout' } },
-    labelSize: { control: { type: 'select' }, options: ['base', 'xs', 'sm', 'lg'], table: { category: 'Layout' } },
-    size: { control: { type: 'select' }, options: ['', 'sm', 'lg'], table: { category: 'Layout' } },
+    /* =========================
+     * Storybook Only
+     * ========================= */
+    wrapWithForm: {
+      control: 'boolean',
+      description:
+        'When enabled, the input field will be wrapped in a `<form-component>` and `slot="formField"` is added to the `<input-field-component>` in the docs preview. This allows you to test form-related props like formLayout and see how the input behaves within a form context. This is a story-only control and does not affect the actual component props.',
+      table: { category: 'Storybook Only', defaultValue: { summary: false } },
+    },
 
-    // Grid (either numeric or string specs)
-    labelCol: { control: { type: 'number', min: 0, max: 12 }, table: { category: 'Layout' } },
-    inputCol: { control: { type: 'number', min: 0, max: 12 }, table: { category: 'Layout' } },
-    labelCols: { control: 'text', table: { category: 'Layout' }, description: 'e.g. "col-12 col-sm-3"' },
-    inputCols: { control: 'text', table: { category: 'Layout' }, description: 'e.g. "col-12 col-sm-9"' },
-
-    // Validation
-    validation: { control: 'boolean', table: { category: 'Validation' } },
-    validationMessage: { control: 'text', table: { category: 'Validation' } },
+    /* =========================
+     * Validation
+     * ========================= */
+    required: {
+      control: 'boolean',
+      name: 'required',
+      table: { category: 'Validation', defaultValue: { summary: false } },
+      description: 'Marks the input as required, which will trigger validation if the field is left empty.',
+    },
+    validation: {
+      control: 'boolean',
+      name: 'validation',
+      table: { category: 'Validation', defaultValue: { summary: false } },
+      description: 'Enables validation for the input field.',
+    },
+    validationMessage: {
+      control: 'text',
+      name: 'validation-message',
+      table: { category: 'Validation' },
+      description: 'The validation message to display when the input is invalid.',
+    },
+  },
+  args: {
+    disabled: false,
+    formLayout: '',
+    inputCol: 10,
+    inputCols: '',
+    inputId: 'first-name',
+    label: 'First Name',
+    labelAlign: '',
+    labelCol: 2,
+    labelCols: '',
+    labelHidden: false,
+    labelSize: 'xs',
+    placeholder: '',
+    readOnly: false,
+    required: false,
+    size: '',
+    type: 'text',
+    validation: false,
+    validationMessage: 'This field is required.',
+    value: '',
+    wrapWithForm: false,
   },
 };
 
-/* ---------- helpers ---------- */
+/** ---------------- Docs helpers ---------------- */
 
-const attr = (name, v) => {
-  if (v === undefined || v === null || v === '' || v === false) return '';
-  if (v === true) return ` ${name}`;
-  return ` ${name}="${String(v).replace(/"/g, '&quot;')}"`;
+const normalize = value => {
+  if (value === '' || value == null) return undefined;
+  if (value === true) return true;
+  if (value === false) return false;
+  return value;
 };
 
-/* Logs valueChange so you can see updates live in SB. */
-const wireValueChange = (id) => `
-<script>
-  (function(){
-    var el = document.getElementById('${id}');
-    if (!el || el._wired) return;
-    el.addEventListener('valueChange', function(e){ console.log('[plumage-input-field:valueChange]', e.detail); });
-    el._wired = true;
-  })();
-</script>
-`;
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-/* ---------- base template ---------- */
+const buildDocsHtml = args => {
+  const a = { ...args };
 
-const Template = (args) => {
-  const id = args.inputId || 'plumage-input-demo';
-  return `
-<plumage-input-field-component
-  id="${id}"
-  ${attr('input-id', args.inputId)}
-  ${attr('label', args.label)}
-  ${attr('value', args.value)}
-  ${attr('type', args.type || 'text')}
-  ${attr('placeholder', args.placeholder)}
-  ${attr('disabled', args.disabled)}
-  ${attr('required', args.required)}
-  ${attr('form-layout', args.formLayout)}
-  ${attr('label-hidden', args.labelHidden)}
-  ${attr('label-align', args.labelAlign)}
-  ${attr('label-size', args.labelSize)}
-  ${attr('size', args.size)}
-  ${attr('label-col', args.labelCol)}
-  ${attr('input-col', args.inputCol)}
-  ${attr('label-cols', args.labelCols)}
-  ${attr('input-cols', args.inputCols)}
-  ${attr('validation', args.validation)}
-  ${attr('validation-message', args.validationMessage)}
-></plumage-input-field-component>
-${wireValueChange(id)}
-`.trim();
+  // Story-only args should not appear in the component tag preview
+  delete a.wrapWithForm;
+
+  const attrs = [
+    ['label', normalize(a.label)],
+    ['input-id', normalize(a.inputId)],
+    ['type', normalize(a.type)],
+    ['value', normalize(a.value)],
+    ['placeholder', normalize(a.placeholder)],
+    ['size', normalize(a.size)],
+    ['label-size', normalize(a.labelSize)],
+    ['label-align', normalize(a.labelAlign)],
+    ['form-layout', normalize(a.formLayout)],
+    ['label-col', Number.isFinite(a.labelCol) ? a.labelCol : undefined],
+    ['input-col', Number.isFinite(a.inputCol) ? a.inputCol : undefined],
+    ['label-cols', normalize(a.labelCols)],
+    ['input-cols', normalize(a.inputCols)],
+    ['validation-message', normalize(a.validationMessage)],
+
+    // boolean attrs (presence-based)
+    ['label-hidden', !!a.labelHidden],
+    ['disabled', !!a.disabled],
+    ['read-only', !!a.readOnly],
+    ['required', !!a.required],
+    ['validation', !!a.validation],
+  ];
+
+  const attrStr = attrs
+    .filter(([_, v]) => v !== undefined && v !== false)
+    .map(([k, v]) => (v === true ? k : `${k}="${esc(v)}"`))
+    .join(' ');
+
+  const openTag = attrStr ? `<plumage-input-field-component ${attrStr}></plumage-input-field-component>` : '<plumage-input-field-component></plumage-input-field-component>';
+
+  // If the story is wrapped in a form (story-only behavior), reflect that in docs
+  if (args.wrapWithForm) {
+    const formAttrs = [['form-layout', normalize(args.formLayout)]]
+      .filter(([_, v]) => v !== undefined && v !== false)
+      .map(([k, v]) => `${k}="${esc(v)}"`)
+      .join(' ');
+
+    const formOpen = formAttrs ? `<form-component form-id="${esc(args.formId || 'demo-form')}" ${formAttrs}>` : `<form-component form-id="${esc(args.formId || 'demo-form')}">`;
+
+    return [formOpen, `  ${openTag.replace('<plumage-input-field-component', '<plumage-input-field-component slot="formField"')}`, '</form-component>'].join('\n');
+  }
+
+  return openTag;
 };
 
-/* ---------- Stories ---------- */
+/**
+ * Multi-render stories output more than one component,
+ * so we override docs.source.transform per-story.
+ */
+const buildDocsHtmlSizes = () => {
+  return [
+    '<div>',
+    '  <plumage-input-field-component label="Default" input-id="size-default"></plumage-input-field-component>',
+    '  <plumage-input-field-component label="Small" input-id="size-sm" size="sm"></plumage-input-field-component>',
+    '  <plumage-input-field-component label="Large" input-id="size-lg" size="lg"></plumage-input-field-component>',
+    '</div>',
+  ].join('\n');
+};
 
-export const Playground = Template.bind({});
-Playground.args = {
-  inputId: 'firstName',
-  label: 'First name',
-  value: '',
-  placeholder: 'Enter first name',
-  type: 'text',
-  disabled: false,
-  required: false,
+const buildDocsHtmlInlineLayout = () => {
+  return [
+    '<form-component form-layout="inline">',
+    '  <plumage-input-field-component',
+    '    slot="formField"',
+    '    label="City"',
+    '    input-id="city"',
+    '    form-layout="inline"',
+    '  ></plumage-input-field-component>',
+    '  <plumage-input-field-component',
+    '    slot="formField"',
+    '    label="State"',
+    '    input-id="state"',
+    '    form-layout="inline"',
+    '  ></plumage-input-field-component>',
+    '</form-component>',
+  ].join('\n');
+};
 
-  formLayout: '',
-  labelHidden: false,
-  labelAlign: '',
-  labelSize: 'sm',
-  size: '',
+// ✅ NEW: build docs HTML for ReadOnly + Disabled from the SAME args we render with
+const buildDocsHtmlReadOnlyAndDisabled = () => {
+  const roArgs = {
+    label: 'Read-only',
+    inputId: 'ro',
+    readOnly: true,
+    value: 'Read only value',
+    validationMessage: '',
+    labelCol: '',
+    inputCol: '',
+    wrapWithForm: false,
+  };
 
-  labelCol: 2,
-  inputCol: 10,
-  labelCols: '',
-  inputCols: '',
+  const disArgs = {
+    label: 'Disabled',
+    inputId: 'dis',
+    disabled: true,
+    value: 'Disabled value',
+    validationMessage: '',
+    labelCol: '',
+    inputCol: '',
+    wrapWithForm: false,
+  };
 
-  validation: false,
+  return ['<div>', `  ${buildDocsHtml(roArgs).replace(/\n/g, '\n  ')}`, `  ${buildDocsHtml(disArgs).replace(/\n/g, '\n  ')}`, '</div>'].join('\n');
+};
+
+/* ----------------------- Helpers ----------------------- */
+
+const makeInput = (args = {}) => {
+  const el = document.createElement('plumage-input-field-component');
+
+  // Assign props as properties (Stencil)
+  el.disabled = !!args.disabled;
+  el.formId = args.formId || '';
+  el.formLayout = args.formLayout || '';
+  el.inputId = args.inputId || '';
+  el.size = args.size || '';
+  el.label = args.label || '';
+  el.labelSize = args.labelSize || 'xs';
+  el.labelAlign = args.labelAlign || '';
+  el.labelHidden = !!args.labelHidden;
+  el.readOnly = !!args.readOnly;
+  el.required = !!args.required;
+  el.type = args.type || 'text';
+  el.validation = !!args.validation;
+  el.validationMessage = args.validationMessage || '';
+  el.value = args.value ?? '';
+  if (args.placeholder !== undefined) el.placeholder = args.placeholder;
+
+  el.labelCol = Number.isFinite(args.labelCol) ? args.labelCol : 2;
+  el.inputCol = Number.isFinite(args.inputCol) ? args.inputCol : 10;
+  el.labelCols = args.labelCols || '';
+  el.inputCols = args.inputCols || '';
+
+  // Storybook action wiring
+  el.addEventListener('valueChange', e => {
+    // eslint-disable-next-line no-console
+    console.log('[valueChange]', e.detail);
+  });
+
+  return el;
+};
+
+const wrapInForm = (inputEl, { formLayout = '', formId = 'demo-form' } = {}) => {
+  const form = document.createElement('form-component');
+  form.setAttribute('style', 'display:block; padding:12px;');
+  form.formLayout = formLayout || '';
+  form.formId = formId;
+  // must use the named slot to render in the form
+  inputEl.setAttribute('slot', 'formField');
+  form.appendChild(inputEl);
+  return form;
+};
+
+const Template = args => {
+  const input = makeInput(args);
+  return args.wrapWithForm ? wrapInForm(input, { formLayout: args.formLayout }) : input;
+};
+
+/* ----------------------- Stories ----------------------- */
+
+export const Basic = Template.bind({});
+Basic.args = {
+  label: 'First Name',
+  inputId: 'firstName1',
+  placeholder: 'Enter your first name',
   validationMessage: '',
+  labelCol: '',
+  inputCol: '',
+  labelSize: 'sm',
+};
+Basic.storyName = 'Basic';
+Basic.parameters = {
+  docs: {
+    description: {
+      story: 'A basic input field with a label and placeholder.',
+    },
+  },
 };
 
-export const Sizes = () => `
-<div style="display:grid; gap:14px; max-width:560px;">
-  <plumage-input-field-component label="Small" input-id="sm1" size="sm"></plumage-input-field-component>
-  <plumage-input-field-component label="Default" input-id="df1"></plumage-input-field-component>
-  <plumage-input-field-component label="Large" input-id="lg1" size="lg"></plumage-input-field-component>
-</div>
-`;
+export const Sizes = () => {
+  const container = document.createElement('div');
+  container.style.display = 'grid';
+  container.style.gap = '12px';
 
-export const Types = () => `
-<div style="display:grid; gap:14px; max-width:560px;">
-  <plumage-input-field-component label="Email" input-id="em1" type="email" placeholder="name@example.com"></plumage-input-field-component>
-  <plumage-input-field-component label="Password" input-id="pw1" type="password"></plumage-input-field-component>
-  <plumage-input-field-component label="Number" input-id="num1" type="number" placeholder="0"></plumage-input-field-component>
-</div>
-`;
+  container.append(
+    Template({ label: 'Default', inputId: 'size-default', size: '' }),
+    Template({ label: 'Small', inputId: 'size-sm', size: 'sm' }),
+    Template({ label: 'Large', inputId: 'size-lg', size: 'lg' }),
+  );
+  return container;
+};
+Sizes.parameters = {
+  docs: {
+    source: {
+      language: 'html',
+      transform: () => buildDocsHtmlSizes(),
+    },
+    description: {
+      story: 'Input fields with different sizes, demonstrating small, default, and large options.',
+    },
+  },
+};
 
-export const HorizontalLayout = () => `
-<div style="max-width: 720px;">
-  <plumage-input-field-component
-    label="Organization"
-    input-id="org1"
-    form-layout="horizontal"
-    label-align="right"
-    label-size="lg"
-    label-col="3"
-    input-col="9"
-    placeholder="Dept. of…"
-  ></plumage-input-field-component>
+// ✅ FIXED: Make HorizontalLayout args-driven so Docs "Code" matches Canvas.
+export const HorizontalLayout = {
+  args: {
+    formLayout: 'horizontal',
+    label: 'Email',
+    inputId: 'email',
+    type: 'email',
+    labelCol: 3,
+    inputCol: 9,
+    validationMessage: '',
+  },
+  render: args => Template(args),
+};
+HorizontalLayout.storyName = 'Horizontal Layout';
+HorizontalLayout.parameters = {
+  docs: {
+    description: {
+      story: 'An input field within a horizontal form layout, using labelCol and inputCol for grid sizing.',
+    },
+  },
+};
 
-  <plumage-input-field-component
-    label="Responsive Grid"
-    input-id="org2"
-    form-layout="horizontal"
-    label-align="right"
-    label-cols="col-12 col-sm-4"
-    input-cols="col-12 col-sm-8"
-    placeholder="Responsive columns"
-  ></plumage-input-field-component>
-</div>
-`;
+export const InlineLayout = () => {
+  const row = document.createElement('form-component');
+  row.formLayout = 'inline';
+  row.setAttribute('style', 'display:block; padding:12px; gap:12px;');
 
-export const InlineLayout = () => `
-<div style="display:flex; gap:12px; flex-wrap:wrap;">
-  <plumage-input-field-component
-    label="City"
-    input-id="city1"
-    form-layout="inline"
-    size="sm"
-  ></plumage-input-field-component>
+  const first = makeInput({
+    label: 'City',
+    inputId: 'city',
+    formLayout: 'inline',
+    labelCols: '',
+    inputCols: '',
+    validationMessage: '',
+    labelCol: '',
+    inputCol: '',
+  });
+  first.setAttribute('slot', 'formField');
 
-  <plumage-input-field-component
-    label="State"
-    input-id="state1"
-    form-layout="inline"
-    size="sm"
-    placeholder="CA"
-  ></plumage-input-field-component>
-</div>
-`;
+  const second = makeInput({
+    label: 'State',
+    inputId: 'state',
+    formLayout: 'inline',
+    labelCols: '',
+    inputCols: '',
+    validationMessage: '',
+    labelCol: '',
+    inputCol: '',
+  });
+  second.setAttribute('slot', 'formField');
 
-export const LabelHidden = () => `
-<div style="max-width: 560px;">
-  <plumage-input-field-component
-    label="Search"
-    input-id="searchHiddenLbl"
-    label-hidden
-    placeholder="Search"
-  ></plumage-input-field-component>
-</div>
-`;
+  row.append(first, second);
+  return row;
+};
+InlineLayout.storyName = 'Inline Layout';
+InlineLayout.parameters = {
+  docs: {
+    source: {
+      language: 'html',
+      transform: () => buildDocsHtmlInlineLayout(),
+    },
+    description: {
+      story: 'An input field within an inline form layout, demonstrating responsive column sizing.',
+    },
+  },
+};
 
-export const RequiredValidation = () => `
-<div style="max-width: 520px;">
-  <plumage-input-field-component
-    label="Required"
-    input-id="req1"
-    required
-    validation
-    validation-message="Please enter at least 3 characters"
-    placeholder="Type 3+ chars"
-  ></plumage-input-field-component>
-</div>
-`;
+export const RequiredWithValidation = Template.bind({});
+RequiredWithValidation.args = {
+  label: 'Username',
+  inputId: 'username',
+  required: true,
+  validation: true,
+  validationMessage: 'Please enter at least 3 characters.',
+  formLayout: '',
+  labelCol: '',
+  inputCol: '',
+};
+RequiredWithValidation.storyName = 'Required with Validation';
+RequiredWithValidation.parameters = {
+  docs: {
+    description: {
+      story: 'A required input field with validation enabled. The validation message will display if the field is left empty or does not meet the criteria.',
+    },
+  },
+};
 
-export const Disabled = () => `
-<plumage-input-field-component
-  label="Disabled"
-  input-id="disabled1"
-  value="Read only"
-  disabled
-></plumage-input-field-component>
-`;
+export const LabelHidden = Template.bind({});
+LabelHidden.args = {
+  label: 'Search',
+  inputId: 'search',
+  labelHidden: true,
+  placeholder: 'Search…',
+  validationMessage: '',
+  labelCol: '',
+  inputCol: '',
+  labelSize: '',
+};
+LabelHidden.storyName = 'Label Hidden';
+LabelHidden.parameters = {
+  docs: {
+    description: {
+      story: 'An input field with the label visually hidden but still accessible to screen readers.',
+    },
+  },
+};
 
-export const PreFilled = () => `
-<plumage-input-field-component
-  label="Prefilled"
-  input-id="prefill1"
-  value="Existing value"
-></plumage-input-field-component>
-`;
+// ✅ FIXED: Keep multi-render story, but make Docs "Code" derive from the SAME rendered values.
+export const ReadOnlyAndDisabled = {
+  render: () => {
+    const stack = document.createElement('div');
+    stack.style.display = 'grid';
+    stack.style.gap = '12px';
+
+    stack.append(
+      Template({
+        label: 'Read-only',
+        inputId: 'ro',
+        readOnly: true,
+        value: 'Read only value',
+        validationMessage: '',
+        labelCol: '',
+        inputCol: '',
+      }),
+      Template({
+        label: 'Disabled',
+        inputId: 'dis',
+        disabled: true,
+        value: 'Disabled value',
+        validationMessage: '',
+        labelCol: '',
+        inputCol: '',
+      }),
+    );
+
+    return stack;
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlReadOnlyAndDisabled(),
+      },
+      description: {
+        story:
+          'Two input fields demonstrating read-only and disabled states. The read-only field can be focused and its value can be selected, but not edited. The disabled field is non-interactive.',
+      },
+    },
+  },
+};
+ReadOnlyAndDisabled.storyName = 'Read-Only and Disabled';
+
+// ✅ FIXED: Make ResponsiveCols args-driven so Docs "Code" matches Canvas.
+export const ResponsiveCols = {
+  args: {
+    wrapWithForm: true,
+    formLayout: 'horizontal',
+    label: 'Company',
+    inputId: 'company',
+    // Use responsive string specs instead of numeric 2/10
+    labelCols: 'sm-3 md-4',
+    inputCols: 'sm-9 md-8',
+    validationMessage: '',
+    labelCol: '',
+    inputCol: '',
+  },
+  render: args => Template(args),
+};
+ResponsiveCols.storyName = 'Responsive Columns';
+ResponsiveCols.parameters = {
+  docs: {
+    description: {
+      story:
+        'An input field demonstrating responsive column sizing using `labelCols` and `inputCols` or `labelCol` and `inputCol` within a horizontal form layout. The label and input adjust their widths based on the screen size, ensuring a consistent and accessible layout across devices. Displayed using the `form-component` wrapper.',
+    },
+  },
+};

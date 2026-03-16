@@ -1,5 +1,10 @@
+// src/stories/plumage-input-group-component.stories.js
+
 /* ------------------------------------------------------------------
  * Storybook: Plumage Input Group (Web Component)
+ * Goal: Match input-group-component.stories.js exactly (same props,
+ *       same args, same stories) — only the tag + styling differ.
+ * Component tag: <plumage-input-group-component>
  * ------------------------------------------------------------------ */
 
 export default {
@@ -10,331 +15,478 @@ export default {
     docs: {
       description: {
         component:
-          'Plumage-styled input with optional prepend/append (icon or custom slot), focus underline, validation messaging, and responsive form layouts (stacked, horizontal, inline). Includes a search variant.',
+          'The `plumage-input-group-component` is a Plumage-styled wrapper for an input field that allows you to easily add prepend and append content, such as icons or buttons. It also supports various form layouts and validation states.',
+      },
+      source: {
+        language: 'html',
+        // IMPORTANT: docs preview must reflect CURRENT args (including Controls changes)
+        transform: (_src, ctx) => buildDocsHtml(ctx.args),
       },
     },
   },
   argTypes: {
-    /* Core */
-    inputId: { control: 'text', table: { category: 'Props' } },
-    label: { control: 'text', table: { category: 'Props' } },
-    value: { control: 'text', table: { category: 'Props' } },
-    type: { control: 'text', table: { category: 'Props' }, description: 'HTML input type' },
-    placeholder: { control: 'text', table: { category: 'Props' } },
+    // =========================
+    // Input Attributes (A–Z)
+    // =========================
+    disabled: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'Input Attributes' },
+      description: 'When enabled, the input group and its child input field will be disabled, preventing user interaction and applying appropriate disabled styles.',
+    },
+    inputId: {
+      control: 'text',
+      name: 'input-id',
+      table: { category: 'Input Attributes', defaultValue: { summary: 'amount-play' } },
+      description: 'ID for the input field, used to associate the label with the input for accessibility. This should be unique on the page.',
+    },
+    placeholder: {
+      control: 'text',
+      table: { category: 'Input Attributes' },
+      description: 'Placeholder text for the input field.',
+    },
+    type: {
+      control: 'text',
+      table: { category: 'Input Attributes' },
+      description: 'Type of the input field (e.g., "text", "password", "email").',
+    },
+    value: {
+      control: 'text',
+      description: 'The value of the input field',
+      table: { category: 'Input Attributes' },
+    },
 
-    /* Behavior */
-    disabled: { control: 'boolean', table: { category: 'Behavior' } },
-    required: { control: 'boolean', table: { category: 'Behavior' } },
-
-    /* Layout */
-    formLayout: { control: { type: 'select' }, options: ['', 'horizontal', 'inline'], table: { category: 'Layout' } },
-    labelHidden: { control: 'boolean', table: { category: 'Layout' } },
-    labelAlign: { control: { type: 'select' }, options: ['', 'right'], table: { category: 'Layout' } },
+    // =========================
+    // Layout (A–Z)
+    // =========================
+    append: {
+      control: 'boolean',
+      table: { category: 'Layout', defaultValue: { summary: true } },
+      description:
+        'When enabled, the append slot is available for adding content after the input field. This can be used for buttons, icons, or other elements that should appear on the right side of the input.',
+    },
+    appendIcon: {
+      control: 'text',
+      name: 'append-icon',
+      table: { category: 'Layout' },
+      description:
+        'Specify an icon class (e.g., from Font Awesome) to display an icon on the right side of the input field. This is a quick way to add an icon without needing to use the append slot.',
+    },
+    appendId: {
+      control: 'text',
+      name: 'append-id',
+      table: { category: 'Layout' },
+      description: 'ID for the append element, used for accessibility or targeting with JavaScript.',
+    },
+    formLayout: {
+      control: { type: 'select' },
+      options: ['', 'horizontal', 'inline'],
+      name: 'form-layout',
+      description:
+        'Form layout variant. "Horizontal" uses a grid layout with label and input side by side. "Inline" is similar but uses auto-width columns for a more compact display.',
+      table: { category: 'Layout' },
+    },
+    icon: {
+      control: 'text',
+      table: { category: 'Layout' },
+      description: 'Specify an icon class (e.g., from Font Awesome) to display an icon inside the input group.',
+    },
+    inputCol: {
+      control: 'number',
+      min: 0,
+      max: 12,
+      step: 1,
+      name: 'input-col',
+      table: { category: 'Layout' },
+      description: 'Number of grid columns for the input (horizontal layout only)',
+    },
+    inputCols: {
+      control: 'text',
+      table: { category: 'Layout' },
+      name: 'input-cols',
+      description: 'e.g. "col-sm-9 col-md-8" or "xs-12 sm-6 md-8"',
+    },
+    label: { control: 'text', table: { category: 'Layout' }, description: 'Label text for the input' },
+    labelAlign: {
+      control: { type: 'select' },
+      options: ['', 'right'],
+      name: 'label-align',
+      table: { category: 'Layout' },
+      description: 'Alignment for the label text (only applies when label is visible)',
+    },
+    labelCol: {
+      control: 'number',
+      min: 0,
+      max: 12,
+      step: 1,
+      name: 'label-col',
+      table: { category: 'Layout' },
+      description: 'Number of grid columns for the label (horizontal layout only)',
+    },
+    labelCols: {
+      control: 'text',
+      table: { category: 'Layout' },
+      name: 'label-cols',
+      description: 'e.g. "col-sm-3 col-md-4" or "xs-12 sm-6 md-4"',
+    },
+    labelHidden: {
+      control: 'boolean',
+      name: 'label-hidden',
+      table: { category: 'Layout', defaultValue: { summary: false } },
+      description: 'Visually hide the label (but keep it accessible to screen readers)',
+    },
     labelSize: { control: { type: 'select' }, options: ['base', 'xs', 'sm', 'lg'], table: { category: 'Layout' } },
-    size: { control: { type: 'select' }, options: ['', 'sm', 'lg'], table: { category: 'Layout' } },
+    otherContent: {
+      control: 'boolean',
+      name: 'other-content',
+      table: { category: 'Layout', defaultValue: { summary: false } },
+      description: 'When enabled, the story will include example content in the prepend and append slots to demonstrate how they work.',
+    },
+    prepend: {
+      control: 'boolean',
+      table: { category: 'Layout', defaultValue: { summary: false } },
+      description: 'When enabled, the prepend slot is available for adding content before the input field.',
+    },
+    prependIcon: {
+      control: 'text',
+      name: 'prepend-icon',
+      table: { category: 'Layout' },
+      description: 'Specify an icon class to display an icon inside the prepend slot.',
+    },
+    prependId: {
+      control: 'text',
+      name: 'prepend-id',
+      table: { category: 'Layout' },
+      description: 'ID for the prepend element, used for accessibility or targeting with JavaScript.',
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['', 'sm', 'lg'],
+      table: { category: 'Layout' },
+      description: 'Size variant.',
+    },
 
-    /* Grid (either numeric or string specs) */
-    labelCol: { control: { type: 'number', min: 0, max: 12 }, table: { category: 'Layout' } },
-    inputCol: { control: { type: 'number', min: 0, max: 12 }, table: { category: 'Layout' } },
-    labelCols: { control: 'text', table: { category: 'Layout' }, description: 'e.g. "col-12 col-sm-3"' },
-    inputCols: { control: 'text', table: { category: 'Layout' }, description: 'e.g. "col-12 col-sm-9"' },
+    // =========================
+    // Plumage Specific (A–Z)
+    // =========================
+    plumageSearch: { control: 'boolean', table: { category: 'Plumage Specific' } },
 
-    /* Validation */
-    validation: { control: 'boolean', table: { category: 'Validation' } },
-    validationMessage: { control: 'text', table: { category: 'Validation' } },
-
-    /* Addons (new + legacy) */
-    prepend: { control: 'boolean', table: { category: 'Addons' } },
-    append: { control: 'boolean', table: { category: 'Addons' } },
-    'prepend-field': { control: 'boolean', table: { category: 'Addons' } },
-    'append-field': { control: 'boolean', table: { category: 'Addons' } },
-    prependIcon: { control: 'text', table: { category: 'Addons' }, description: 'Font Awesome class, e.g. "fas fa-dollar-sign"' },
-    appendIcon: { control: 'text', table: { category: 'Addons' } },
-    otherContent: { control: 'boolean', table: { category: 'Addons' } },
-    prependId: { control: 'text', table: { category: 'Addons' } },
-    appendId: { control: 'text', table: { category: 'Addons' } },
-
-    /* Variant */
-    plumageSearch: { control: 'boolean', table: { category: 'Variant' } },
+    // =========================
+    // Validation (A–Z)
+    // =========================
+    required: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'Validation' },
+      description: 'Mark the input as required',
+    },
+    validation: {
+      control: 'boolean',
+      name: 'validation',
+      table: { category: 'Validation', defaultValue: { summary: false } },
+      description: 'Enable or disable validation state',
+    },
+    validationMessage: {
+      control: 'text',
+      name: 'validation-message',
+      table: { category: 'Validation' },
+      description: 'Message to display when validation fails',
+    },
   },
 };
 
-/* ---------- helpers ---------- */
+/** ---------------- Docs helpers ---------------- */
 
-const attr = (name, v) => {
-  if (v === undefined || v === null || v === '' || v === false) return '';
-  if (v === true) return ` ${name}`;
-  return ` ${name}="${String(v).replace(/"/g, '&quot;')}"`;
+const normalize = value => {
+  if (value === '' || value == null) return undefined;
+  if (value === true) return true;
+  if (value === false) return false;
+  return value;
 };
 
-/* Logs valueChange in the console so you can see updates live in SB. */
-const wireValueChange = (id) => `
-<script>
-  (function(){
-    var el = document.getElementById('${id}');
-    if (!el || el._wired) return;
-    el.addEventListener('valueChange', function(e){ console.log('[plumage-input-group:valueChange]', e.detail); });
-    el._wired = true;
-  })();
-</script>
-`;
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-/* ---------- base template ---------- */
+const buildDocsHtml = args => {
+  const a = { ...args };
 
-const Template = (args) => {
-  const id = args.inputId || 'plumage-input-demo';
+  const attrs = [
+    ['append', !!a.append],
+    ['append-icon', normalize(a.appendIcon)],
+    ['append-id', normalize(a.appendId)],
+    ['disabled', !!a.disabled],
+    ['form-layout', normalize(a.formLayout)],
+    ['icon', normalize(a.icon)],
+    ['input-col', Number.isFinite(a.inputCol) ? a.inputCol : undefined],
+    ['input-cols', normalize(a.inputCols)],
+    ['input-id', normalize(a.inputId)],
+    ['label', normalize(a.label)],
+    ['label-align', normalize(a.labelAlign)],
+    ['label-col', Number.isFinite(a.labelCol) ? a.labelCol : undefined],
+    ['label-cols', normalize(a.labelCols)],
+    ['label-hidden', !!a.labelHidden],
+    ['other-content', !!a.otherContent],
+    ['placeholder', normalize(a.placeholder)],
+    ['plumage-search', !!a.plumageSearch],
+    ['prepend', !!a.prepend],
+    ['prepend-icon', normalize(a.prependIcon)],
+    ['prepend-id', normalize(a.prependId)],
+    ['required', !!a.required],
+    ['size', normalize(a.size)],
+    ['validation', !!a.validation],
+    ['validation-message', normalize(a.validationMessage)],
+    ['value', normalize(a.value)],
+  ];
 
-  // Prefer modern flags (prepend/append) but also pass legacy spellings to help testing both
-  const showPrepend = !!(args.prepend || args['prepend-field']);
-  const showAppend = !!(args.append || args['append-field']);
+  const attrStr = attrs
+    .filter(([_, v]) => v !== undefined && v !== false)
+    .map(([k, v]) => (v === true ? k : `${k}="${esc(v)}"`))
+    .join(' ');
 
-  // Decide slot content (only used when no icon props are set)
-  const prependSlot = `<span slot="prepend">@</span>`;
-  const appendSlot = `<span slot="append">.com</span>`;
+  const openTag = attrStr ? `<plumage-input-group-component ${attrStr}>` : '<plumage-input-group-component>';
 
-  const prependIcon = args.prependIcon ? attr('prepend-icon', args.prependIcon) : '';
-  const appendIcon = args.appendIcon ? attr('append-icon', args.appendIcon) : '';
+  const slotLines = [];
+  if (a.otherContent && a.prepend) {
+    slotLines.push(`  <button-component slot="prepend" type="button" variant="secondary">Go</button-component>`);
+  }
+  if (a.otherContent && a.append) {
+    slotLines.push(`  <button-component slot="append" type="button" variant="secondary">Go</button-component>`);
+  }
+
+  return [openTag, ...slotLines, '</plumage-input-group-component>'].join('\n');
+};
+
+/** ---------------- Render (string markup so slots render correctly) ---------------- */
+
+const boolAttr = (name, on) => (on ? ` ${name}` : '');
+const attr = (name, val) => {
+  const v = normalize(val);
+  return v === undefined || v === false ? '' : v === true ? ` ${name}` : ` ${name}="${esc(v)}"`;
+};
+
+const Template = args => {
+  const usePrependSlot = !!args.otherContent && !!args.prepend;
+  const useAppendSlot = !!args.otherContent && !!args.append;
 
   return `
 <plumage-input-group-component
-  id="${id}"
-  ${attr('input-id', args.inputId)}
-  ${attr('label', args.label)}
-  ${attr('value', args.value)}
-  ${attr('type', args.type || 'text')}
-  ${attr('placeholder', args.placeholder)}
-  ${attr('disabled', args.disabled)}
-  ${attr('required', args.required)}
-  ${attr('form-layout', args.formLayout)}
-  ${attr('label-hidden', args.labelHidden)}
-  ${attr('label-align', args.labelAlign)}
-  ${attr('label-size', args.labelSize)}
-  ${attr('size', args.size)}
-  ${attr('label-col', args.labelCol)}
-  ${attr('input-col', args.inputCol)}
-  ${attr('label-cols', args.labelCols)}
-  ${attr('input-cols', args.inputCols)}
-  ${attr('validation', args.validation)}
-  ${attr('validation-message', args.validationMessage)}
-  ${attr('prepend', args.prepend)}
-  ${attr('append', args.append)}
-  ${attr('prepend-field', args['prepend-field'])}
-  ${attr('append-field', args['append-field'])}
-  ${attr('prepend-id', args.prependId)}
-  ${attr('append-id', args.appendId)}
-  ${prependIcon}
-  ${appendIcon}
-  ${attr('other-content', args.otherContent)}
-  ${attr('plumage-search', args.plumageSearch)}
+ ${boolAttr('append', !!args.append)}
+ ${useAppendSlot ? '' : attr('append-icon', args.appendIcon)}
+ ${attr('append-id', args.appendId)}
+ ${boolAttr('disabled', !!args.disabled)}
+ ${attr('form-layout', args.formLayout)}
+ ${attr('icon', args.icon)}
+ ${attr('input-col', args.inputCol)}
+ ${attr('input-cols', args.inputCols)}
+ ${attr('input-id', args.inputId)}
+ ${attr('label', args.label)}
+ ${attr('label-align', args.labelAlign)}
+ ${attr('label-col', args.labelCol)}
+ ${attr('label-cols', args.labelCols)}
+ ${boolAttr('label-hidden', !!args.labelHidden)}
+ ${boolAttr('other-content', !!args.otherContent)}
+ ${attr('placeholder', args.placeholder)}
+ ${boolAttr('plumage-search', !!args.plumageSearch)}
+ ${boolAttr('prepend', !!args.prepend)}
+ ${usePrependSlot ? '' : attr('prepend-icon', args.prependIcon)}
+ ${attr('prepend-id', args.prependId)}
+ ${boolAttr('required', !!args.required)}
+ ${attr('size', args.size)}
+ ${boolAttr('validation', !!args.validation)}
+ ${attr('validation-message', args.validationMessage)}
+ ${attr('value', args.value)}
 >
-  ${showPrepend && !args.prependIcon ? prependSlot : ''}
-  ${showAppend && !args.appendIcon ? appendSlot : ''}
+ ${usePrependSlot ? `<button-component slot="prepend" type="button" text styles="margin-right: 10px;" variant="secondary">Go</button-component>` : ''}
+ ${useAppendSlot ? `<button-component slot="append" type="button" text styles="margin-left: 10px;" variant="secondary">Go</button-component>` : ''}
 </plumage-input-group-component>
-${wireValueChange(id)}
-`.trim();
+`;
 };
 
-/* ---------- Stories ---------- */
+/** ---------------- Stories (MATCH input-group story set) ---------------- */
 
-export const Playground = Template.bind({});
-Playground.args = {
-  inputId: 'username',
-  label: 'Username',
-  value: '',
-  placeholder: 'Enter username',
-  type: 'text',
-  disabled: false,
-  required: false,
-
+export const Basic = Template.bind({});
+Basic.args = {
+  label: 'Amount',
+  inputId: 'amount-play',
+  placeholder: 'Enter amount',
+  size: '',
   formLayout: '',
   labelHidden: false,
   labelAlign: '',
-  labelSize: 'sm',
-  size: '',
+  required: false,
+  disabled: false,
 
-  labelCol: 2,
-  inputCol: 10,
-  labelCols: '',
-  inputCols: '',
+  prepend: false,
+  append: true,
+   otherContent: false,
+  icon: '',
+  prependIcon: '',
+  appendIcon: 'fa-solid fa-dollar-sign',
+  appendId: '',
+  prependId: '',
 
   validation: false,
   validationMessage: '',
+  value: '',
 
-  prepend: true,
-  append: true,
-  'prepend-field': false, // legacy alt spelling
-  'append-field': false,  // legacy alt spelling
-  prependIcon: '',
-  appendIcon: '',
-  otherContent: false,
-
-  plumageSearch: false,
+  labelCols: '',
+  inputCols: '',
+  labelCol: '',
+  inputCol: '',
+};
+Basic.storyName = 'Basic Usage';
+Basic.parameters = {
+  docs: {
+    description: {
+      story: 'This is a basic example of the input group component with an append icon. You can customize the label, placeholder, and icons using the controls.',
+    },
+  },
 };
 
-export const WithIcons = () => `
-<div style="max-width: 520px;">
-  <plumage-input-group-component
-    label="Amount"
-    input-id="amount"
-    type="number"
-    placeholder="0.00"
-    form-layout="horizontal"
-    label-align="right"
-    size="lg"
-    prepend
-    append
-    prepend-icon="fas fa-dollar-sign"
-    append-icon="fas fa-percentage"
-  ></plumage-input-group-component>
-</div>
-`;
+export const RequiredWithValidation = Template.bind({});
+RequiredWithValidation.storyName = 'Required + Validation';
+RequiredWithValidation.args = {
+  ...Basic.args,
+  required: true,
+  validation: true,
+  validationMessage: 'Please provide a value.',
+  value: '',
+  appendIcon: 'fa-solid fa-dollar-sign',
+  append: true,
+  prependIcon: '',
+  prepend: false,
+};
+RequiredWithValidation.parameters = {
+  docs: {
+    description: {
+      story:
+        'This example demonstrates the required and validation states. The input is marked as required, and validation is enabled. If you try to submit without entering a value, the validation message will appear.',
+    },
+  },
+};
 
-export const CustomSlots = () => `
-<div style="max-width: 520px;">
-  <plumage-input-group-component
-    label="Email"
-    input-id="email"
-    type="email"
-    placeholder="you"
-    prepend
-    append
-  >
-    <span slot="prepend">@</span>
-    <span slot="append">.example</span>
-  </plumage-input-group-component>
-</div>
-`;
+export const DisabledState = Template.bind({});
+DisabledState.storyName = 'Disabled';
+DisabledState.args = {
+  ...Basic.args,
+  inputId: 'amount-disabled',
+  label: 'Amount',
+  disabled: true,
+  prepend: false,
+  append: true,
+  otherContent: false,
+  prependIcon: '',
+  appendIcon: 'fa-solid fa-dollar-sign',
+};
+DisabledState.parameters = {
+  docs: {
+    description: {
+      story:
+        'This example shows the disabled state of the input group. When disabled, the input and any content in the prepend and append slots will be non-interactive and styled accordingly.',
+    },
+  },
+};
 
-export const ValidationState = () => `
-<div style="max-width: 520px;">
-  <plumage-input-group-component
-    label="Required Field"
-    input-id="req1"
-    required
-    validation
-    validation-message="Please enter at least 3 characters"
-    placeholder="Type 3+ chars"
-  ></plumage-input-group-component>
-</div>
-`;
+export const AppendAndPrependWithSlots = Template.bind({});
+AppendAndPrependWithSlots.storyName = 'Append + Prepend (Slots)';
+AppendAndPrependWithSlots.args = {
+  ...Basic.args,
+  inputId: 'amount1',
+  label: 'Amount',
+  prepend: true,
+  append: true,
+  otherContent: true,
+  prependIcon: 'fa-solid fa-dollar-sign',
+  appendIcon: '',
+};
+AppendAndPrependWithSlots.parameters = {
+  docs: {
+    description: {
+      story:
+        'This example shows both prepend and append content using slots. The prepend slot contains a dollar sign icon, and the append slot contains a button. This demonstrates how you can use the slots to add more complex content on either side of the input.',
+    },
+  },
+};
 
-export const Disabled = () => `
-<plumage-input-group-component
-  label="Disabled"
-  input-id="disabled1"
-  value="Read only"
-  disabled
-  prepend
-  append
->
-  <span slot="prepend">#</span>
-  <span slot="append">.lock</span>
-</plumage-input-group-component>
-`;
+export const AppendSlotOnly = Template.bind({});
+AppendSlotOnly.storyName = 'Append Slot Only';
+AppendSlotOnly.args = {
+  ...Basic.args,
+  inputId: 'amount-append',
+  prepend: false,
+  append: true,
+  otherContent: true,
+};
+AppendSlotOnly.parameters = {
+  docs: {
+    description: {
+      story:
+        'This example demonstrates using only the append slot. The append slot contains a button, while the prepend side is left empty. This shows how you can choose to use only one of the slots if needed.',
+    },
+  },
+};
 
-export const Sizes = () => `
-<div style="display:grid; gap:14px; max-width:560px;">
-  <plumage-input-group-component
-    label="Small"
-    input-id="sm1"
-    size="sm"
-    prepend
-  >
-    <span slot="prepend">@</span>
-  </plumage-input-group-component>
+export const PrependSlotOnly = Template.bind({});
+PrependSlotOnly.storyName = 'Prepend Slot Only';
+PrependSlotOnly.args = {
+  ...Basic.args,
+  inputId: 'amount-prepend',
+  prepend: true,
+  append: false,
+  otherContent: true,
 
-  <plumage-input-group-component
-    label="Default"
-    input-id="df1"
-    prepend
-  >
-    <span slot="prepend">@</span>
-  </plumage-input-group-component>
+  // IMPORTANT: clear icons so the component uses the SLOT path
+  icon: '',
+  prependIcon: '',
+  appendIcon: '',
+};
+PrependSlotOnly.parameters = {
+  docs: {
+    description: {
+      story:
+        'This example demonstrates using only the prepend slot. The prepend slot contains a dollar sign icon, while the append side is left empty. This shows how you can choose to use only one of the slots if needed.',
+    },
+  },
+};
 
-  <plumage-input-group-component
-    label="Large"
-    input-id="lg1"
-    size="lg"
-    prepend
-  >
-    <span slot="prepend">@</span>
-  </plumage-input-group-component>
-</div>
-`;
+export const IconsBothSides = Template.bind({});
+IconsBothSides.storyName = 'Icons on Both Sides (No Slots)';
+IconsBothSides.args = {
+  ...Basic.args,
+  inputId: 'amount2',
+  otherContent: false,
+  prepend: true,
+  append: true,
+  prependIcon: 'fa-solid fa-dollar-sign',
+  appendIcon: 'fa-solid fa-dollar-sign',
+};
+IconsBothSides.parameters = {
+  docs: {
+    description: {
+      story:
+        'This example shows how to use icons on both sides of the input without using the slots. By setting the prependIcon and appendIcon properties, you can easily add icons to either side of the input field.',
+    },
+  },
+};
 
-export const HorizontalLayout = () => `
-<div style="max-width: 720px;">
-  <plumage-input-group-component
-    label="Domain"
-    input-id="domain1"
-    form-layout="horizontal"
-    label-align="right"
-    label-size="lg"
-    prepend
-    append
-    label-col="3"
-    input-col="9"
-  >
-    <span slot="prepend">https://</span>
-    <span slot="append">.gov</span>
-  </plumage-input-group-component>
-
-  <plumage-input-group-component
-    label="Responsive Grid"
-    input-id="domain2"
-    form-layout="horizontal"
-    label-align="right"
-    label-cols="col-12 col-sm-4"
-    input-cols="col-12 col-sm-8"
-    prepend
-  >
-    <span slot="prepend">https://</span>
-  </plumage-input-group-component>
-</div>
-`;
-
-export const InlineLayout = () => `
-<div style="display:flex; gap:12px; flex-wrap:wrap;">
-  <plumage-input-group-component
-    label="City"
-    input-id="city1"
-    form-layout="inline"
-    size="sm"
-  ></plumage-input-group-component>
-
-  <plumage-input-group-component
-    label="State"
-    input-id="state1"
-    form-layout="inline"
-    size="sm"
-    prepend
-  >
-    <span slot="prepend">US-</span>
-  </plumage-input-group-component>
-</div>
-`;
-
-export const SearchVariant = () => `
-<div style="max-width: 560px;">
-  <plumage-input-group-component
-    input-id="search1"
-    plumage-search
-    placeholder="Search datasets"
-  ></plumage-input-group-component>
-</div>
-`;
-
-export const LegacyAttributes = () => `
-<div style="max-width: 520px;">
-  <!-- Uses legacy attribute names: prepend-field / append-field -->
-  <plumage-input-group-component
-    label="Handle"
-    input-id="legacy1"
-    prepend-field
-    append-field
-  >
-    <span slot="prepend">@</span>
-    <span slot="append">.org</span>
-  </plumage-input-group-component>
-</div>
-`;
+export const PlumageSearchField = Template.bind({});
+PlumageSearchField.storyName = 'Plumage Search Field';
+PlumageSearchField.args = {
+  ...Basic.args,
+  inputId: 'search1',
+  plumageSearch: true,
+  placeholder: 'Search datasets',
+  prependIcon: '',
+  appendIcon: '',
+  label: '',
+  labelCols: '',
+  inputCols: '',
+  labelCol: '',
+  inputCol: '',
+  validationMessage: '',
+};
+PlumageSearchField.parameters = {
+  docs: {
+    description: {
+      story:
+        'This example demonstrates the "plumage-search" variant of the input group. When the "plumage-search" attribute is set to true, the component applies specific styles to create a search field appearance, which may include rounded edges and a different background color. This variant is ideal for search inputs.',
+    },
+  },
+};

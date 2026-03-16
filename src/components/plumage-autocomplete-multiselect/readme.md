@@ -46,6 +46,7 @@
 | `type`                    | `type`                        |                                                                                                    | `string`                         | `''`                         |
 | `validation`              | `validation`                  | Validation controlled externally; we mirror to state for visuals (don’t mutate prop in user-land). | `boolean`                        | `false`                      |
 | `validationMessage`       | `validation-message`          |                                                                                                    | `string`                         | `''`                         |
+| `value`                   | --                            | ✅ Controlled selected values (external source of truth). Do NOT mutate this prop.                  | `string[]`                       | `[]`                         |
 
 
 ## Events
@@ -58,6 +59,7 @@
 | `multiSelectChange` |             | `CustomEvent<string[]>`                                                                       |
 | `optionDelete`      |             | `CustomEvent<string>`                                                                         |
 | `optionsChange`     |             | `CustomEvent<{ options: string[]; reason: "replace" \| "delete" \| "add"; value?: string; }>` |
+| `valueChange`       |             | `CustomEvent<string[]>`                                                                       |
 
 
 ## Methods

@@ -9,7 +9,6 @@
 
 | Property              | Attribute               | Description | Type      | Default |
 | --------------------- | ----------------------- | ----------- | --------- | ------- |
-| `checkbox`            | `checkbox`              |             | `boolean` | `false` |
 | `checkboxGroup`       | `checkbox-group`        |             | `boolean` | `false` |
 | `checked`             | `checked`               |             | `boolean` | `false` |
 | `customCheckbox`      | `custom-checkbox`       |             | `boolean` | `false` |

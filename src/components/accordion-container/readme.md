@@ -9,6 +9,8 @@
 
 | Property         | Attribute          | Description                                                                       | Type                                           | Default               |
 | ---------------- | ------------------ | --------------------------------------------------------------------------------- | ---------------------------------------------- | --------------------- |
+| `ariaLabel`      | `aria-label`       | Optional: accessible name for the container (use when it stands alone)            | `string`                                       | `undefined`           |
+| `ariaLabelledby` | `aria-labelledby`  | Optional: external label element id for the container                             | `string`                                       | `undefined`           |
 | `block`          | `block`            |                                                                                   | `boolean`                                      | `false`               |
 | `classNames`     | `class-names`      |                                                                                   | `string`                                       | `''`                  |
 | `contentTxtSize` | `content-txt-size` |                                                                                   | `string`                                       | `''`                  |

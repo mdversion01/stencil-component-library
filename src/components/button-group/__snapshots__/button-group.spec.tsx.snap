@@ -7,6 +7,13 @@ exports[`button-group applies additional classNames 1`] = `
 </button-group>
 `;
 
+exports[`button-group prefers aria-labelledby over aria-label (and clears aria-label when labelledby present) 1`] = `
+<button-group aria-label="Label Should Not Win" aria-labelledby="groupLabel">
+  <!---->
+  <div aria-labelledby="groupLabel" class="btn-group" role="group"></div>
+</button-group>
+`;
+
 exports[`button-group renders horizontal by default with default aria-label 1`] = `
 <button-group>
   <!---->
@@ -18,8 +25,22 @@ exports[`button-group renders slotted buttons 1`] = `
 <button-group>
   <!---->
   <div aria-label="Button Group" class="btn-group" role="group">
-    <button-component btn-text="One"></button-component>
-    <button-component btn-text="Two"></button-component>
+    <button-component btn-text="One">
+      <!---->
+      <button class="btn" type="button">
+        <span class="btn__content">
+          One
+        </span>
+      </button>
+    </button-component>
+    <button-component btn-text="Two">
+      <!---->
+      <button class="btn" type="button">
+        <span class="btn__content">
+          Two
+        </span>
+      </button>
+    </button-component>
   </div>
 </button-group>
 `;
@@ -28,6 +49,20 @@ exports[`button-group renders vertical layout when vertical prop is true 1`] = `
 <button-group vertical="">
   <!---->
   <div aria-label="Button Group" class="btn-group-vertical" role="group"></div>
+</button-group>
+`;
+
+exports[`button-group sets aria-describedby when provided 1`] = `
+<button-group aria-describedby="groupHelp">
+  <!---->
+  <div aria-describedby="groupHelp" aria-label="Button Group" class="btn-group" role="group"></div>
+</button-group>
+`;
+
+exports[`button-group sets aria-disabled when disabled is true 1`] = `
+<button-group disabled="">
+  <!---->
+  <div aria-disabled="true" aria-label="Button Group" class="btn-group" role="group"></div>
 </button-group>
 `;
 

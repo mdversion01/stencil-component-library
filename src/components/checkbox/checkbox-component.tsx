@@ -1,3 +1,4 @@
+// src/components/checkbox-component/checkbox-component.tsx
 import { Component, Prop, h, State, Event, EventEmitter, Element, Watch } from '@stencil/core';
 
 @Component({
@@ -8,7 +9,6 @@ import { Component, Prop, h, State, Event, EventEmitter, Element, Watch } from '
 export class CheckboxComponent {
   @Element() host!: HTMLElement;
 
-  // @Prop() checkbox = false;
   @Prop() checkboxGroup = false;
   @Prop() customCheckbox = false;
   @Prop() customCheckboxGroup = false;
@@ -23,7 +23,7 @@ export class CheckboxComponent {
   @Prop() labelTxt = '';
   @Prop() required = false;
   @Prop() size = '';
-  @Prop() checked: boolean = false; // @Prop({ mutable: true, reflect: true }) checked = false; // Only if you need mutable prop
+  @Prop() checked: boolean = false;
   @Prop() disabled: boolean = false;
   @Prop() validation = false;
   @Prop() validationMsg = '';
@@ -34,46 +34,92 @@ export class CheckboxComponent {
   @State() singleChecked = false;
 
   @Event() groupChange: EventEmitter<string[]>;
-
   @Event() toggle: EventEmitter<{ checked: boolean; value: string; inputId: string }>;
+
+  // ---------- Unique IDs (prevents collisions) ----------
+  private static _seq = 0;
+  private _baseId = '';
+
+  private resolveBaseId() {
+    if (this._baseId) return;
+
+    const raw = (this.inputId || this.name || this.groupTitle || this.labelTxt || '').trim();
+    let base = raw
+      ? raw
+          .replace(/\s+/g, '-')
+          .replace(/[^A-Za-z0-9\-_:.]/g, '')
+          .toLowerCase()
+      : '';
+
+    if (!base) {
+      CheckboxComponent._seq += 1;
+      const rnd = Math.random().toString(36).slice(2, 6);
+      base = `chk-${CheckboxComponent._seq}-${rnd}`;
+    }
+
+    // If id already exists elsewhere, suffix it
+    const existing = document.getElementById(base);
+    if (existing && !this.host.contains(existing)) {
+      CheckboxComponent._seq += 1;
+      const rnd = Math.random().toString(36).slice(2, 6);
+      base = `${base}-${CheckboxComponent._seq}-${rnd}`;
+    }
+
+    this._baseId = base;
+  }
+
+  private get ids(): string {
+    this.resolveBaseId();
+    return this._baseId;
+  }
+
+  private get groupLegendId(): string {
+    return `${this.ids}-legend`;
+  }
+
+  private get validationId(): string {
+    return `${this.ids}-validation`;
+  }
+
+  private normalizeOptions(input: any): any[] {
+    if (Array.isArray(input)) return input;
+    if (typeof input === 'string') {
+      try {
+        const parsed = JSON.parse(input);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  }
+
+  private optionId(option: any, idx: number): string {
+    // Prefer provided id, else generate stable-per-index id
+    const raw = String(option?.inputId || '').trim();
+    if (raw) return raw;
+    return `${this.ids}-opt-${idx}`;
+  }
 
   @Watch('checked')
   onCheckedPropChange(next: boolean) {
-    // keep internal state in sync when parent updates prop
     this.singleChecked = !!next;
   }
 
   componentWillLoad() {
-    if (Array.isArray(this.groupOptions)) {
-      this.parsedOptions = this.groupOptions;
-    } else if (typeof this.groupOptions === 'string') {
-      try {
-        this.parsedOptions = JSON.parse(this.groupOptions);
-      } catch (e) {
-        console.error('Invalid groupOptions JSON:', e);
-        this.parsedOptions = [];
-      }
-    }
+    this.parsedOptions = this.normalizeOptions(this.groupOptions);
 
-    // Initialize single from prop so it renders correctly on first paint
     this.singleChecked = !!this.checked;
 
-    this.checkedValues = this.parsedOptions.filter(opt => opt.checked).map(opt => opt.value);
+    this.checkedValues = this.parsedOptions.filter(opt => !!opt?.checked).map(opt => String(opt.value));
   }
-
-  // @Watch('checked')
-  // syncSingleFromProp(newVal: boolean) {
-  //   this.singleChecked = !!newVal;
-  // }
 
   private handleGroupChange(event: Event, value: string) {
     const target = event.target as HTMLInputElement;
     let updated = [...this.checkedValues];
 
     if (target.checked) {
-      if (!updated.includes(value)) {
-        updated.push(value);
-      }
+      if (!updated.includes(value)) updated.push(value);
     } else {
       updated = updated.filter(v => v !== value);
     }
@@ -85,59 +131,79 @@ export class CheckboxComponent {
   private handleSingleChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.singleChecked = target.checked;
-    // this.checked = target.checked; // keep prop+state in sync for re-renders
 
-    // 🔊 Emit an event parents can listen to (your dropdown uses onToggle)
     this.toggle.emit({ checked: this.singleChecked, value: this.value, inputId: this.inputId });
 
-    // (Optional) also bubble a generic change for consumers who rely on it
-    this.host.dispatchEvent(new CustomEvent('change', { detail: { checked: this.singleChecked }, bubbles: true, composed: true }));
+    this.host.dispatchEvent(
+      new CustomEvent('change', {
+        detail: { checked: this.singleChecked },
+        bubbles: true,
+        composed: true,
+      }),
+    );
   }
 
   render() {
+    this.resolveBaseId();
+
     // GROUP RENDER
     if (this.checkboxGroup || this.customCheckboxGroup) {
       const wrapperClass = this.customCheckboxGroup ? 'custom-control custom-checkbox' : 'form-check';
       const inputClass = this.customCheckboxGroup ? 'custom-control-input' : 'form-check-input';
       const labelClass = this.customCheckboxGroup ? 'custom-control-label' : 'form-check-label';
 
-      const showValidation = this.validation && this.required && this.checkedValues.length === 0;
+      const invalid = this.validation && this.required && this.checkedValues.length === 0;
+      const showValidation = invalid && !!this.validationMsg;
 
       return (
-        <div class="check-box">
-          <div class={`checkbox-group ${showValidation ? 'was-validated' : ''}`}>
-            <div class={`group-title ${this.groupTitleSize}`}>
+        <div class={`check-box ${this.noPadding ? '' : ''}`}>
+          {/* Best practice: fieldset/legend for checkbox group labeling */}
+          <fieldset
+            class={`checkbox-group ${invalid ? 'was-validated' : ''}`}
+            aria-describedby={showValidation ? this.validationId : undefined}
+            aria-invalid={invalid ? 'true' : undefined}
+          >
+            {/* legend is the programmatic group label */}
+            <legend id={this.groupLegendId} class={`group-title ${this.groupTitleSize}`}>
               {this.groupTitle}
-              {this.required ? <span class="required">*</span> : ''}
-            </div>
+              {this.required ? <span class="required" aria-hidden="true">*</span> : ''}
+            </legend>
+
             <div class={`form-group ${this.inline ? 'form-inline' : ''} no-pad`}>
-              {this.parsedOptions.map(option => (
-                <div class={wrapperClass}>
-                  <input
-                    class={`${inputClass} ${this.size}`}
-                    type="checkbox"
-                    name={this.name}
-                    id={option.inputId}
-                    value={option.value}
-                    checked={this.checkedValues.includes(option.value)}
-                    disabled={option.disabled}
-                    required={this.required}
-                    aria-checked={this.checkedValues.includes(option.value) ? 'true' : 'false'}
-                    aria-disabled={option.disabled ? 'true' : 'false'}
-                    onChange={e => this.handleGroupChange(e, option.value)}
-                  />
-                  <label class={`${labelClass} ${this.size}`} htmlFor={option.inputId}>
-                    {option.labelTxt}
-                  </label>
-                </div>
-              ))}
+              {this.parsedOptions.map((option, idx) => {
+                const id = this.optionId(option, idx);
+                const value = String(option?.value ?? '');
+                const disabled = !!option?.disabled;
+
+                return (
+                  <div class={wrapperClass}>
+                    <input
+                      class={`${inputClass} ${this.size}`}
+                      type="checkbox"
+                      name={this.name}
+                      id={id}
+                      value={value}
+                      checked={this.checkedValues.includes(value)}
+                      disabled={disabled}
+                      required={this.required}
+                      aria-describedby={showValidation ? this.validationId : undefined}
+                      aria-invalid={invalid ? 'true' : undefined}
+                      onChange={e => this.handleGroupChange(e, value)}
+                    />
+                    <label class={`${labelClass} ${this.size}`} htmlFor={id}>
+                      {option?.labelTxt}
+                    </label>
+                  </div>
+                );
+              })}
             </div>
-            {showValidation && this.validationMsg ? (
-              <div class="invalid-feedback form-text" style={{ display: showValidation ? 'block' : '' }}>
+
+            {showValidation ? (
+              <div id={this.validationId} class="invalid-feedback form-text" aria-live="polite">
                 {this.validationMsg}
               </div>
             ) : null}
-          </div>
+          </fieldset>
         </div>
       );
     }
@@ -147,30 +213,38 @@ export class CheckboxComponent {
     const singleInputClass = this.customCheckbox ? 'custom-control-input' : 'form-check-input';
     const singleLabelClass = this.customCheckbox ? 'custom-control-label' : 'form-check-label';
 
-    const showSingleValidation = this.validation && this.required && !this.singleChecked;
+    const invalid = this.validation && this.required && !this.singleChecked;
+    const showValidation = invalid && !!this.validationMsg;
+
+    // Ensure we always have a usable id for label wiring
+    const id = (this.inputId || '').trim() || `${this.ids}-single`;
 
     return (
-      <div class={`form-group check-box no-pad ${showSingleValidation ? 'was-validated' : ''}`}>
+      <div class={`form-group check-box no-pad ${invalid ? 'was-validated' : ''}`}>
         <div class={singleWrapperClass}>
           <input
             class={`${singleInputClass} ${this.size}`}
-            id={this.inputId}
+            id={id}
             type="checkbox"
             name={this.name}
             value={this.value}
-            // ✅ CRITICAL: bind "checked" so parent-controlled state reflects in UI
             checked={this.singleChecked}
             disabled={this.disabled}
             required={this.required}
-            aria-checked={this.singleChecked ? 'true' : 'false'}
-            aria-disabled={this.disabled ? 'true' : 'false'}
+            aria-describedby={showValidation ? this.validationId : undefined}
+            aria-invalid={invalid ? 'true' : undefined}
             onChange={e => this.handleSingleChange(e)}
           />
-          <label class={`${singleLabelClass} ${this.size}`} htmlFor={this.inputId}>
+          <label class={`${singleLabelClass} ${this.size}`} htmlFor={id}>
             {this.labelTxt}
-            {this.required ? <span class="required">*</span> : ''}
+            {this.required ? <span class="required" aria-hidden="true">*</span> : ''}
           </label>
-          {showSingleValidation && this.validationMsg ? <div class="invalid-feedback form-text">{this.validationMsg}</div> : null}
+
+          {showValidation ? (
+            <div id={this.validationId} class="invalid-feedback form-text" aria-live="polite">
+              {this.validationMsg}
+            </div>
+          ) : null}
         </div>
       </div>
     );

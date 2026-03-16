@@ -5,7 +5,7 @@ exports[`<autocomplete-multiple-selections> matches snapshot (default render) 1`
   <div class="autocomplete-container form-group">
     <div>
       <div>
-        <label class="form-control-label label-sm" htmlfor="tags">
+        <label class="form-control-label label-sm" htmlfor="tags" id="tags-label">
           <span>
             Tags
           </span>
@@ -15,7 +15,7 @@ exports[`<autocomplete-multiple-selections> matches snapshot (default render) 1`
             <div class="ac-selected-items"></div>
             <div class="ac-input-container">
               <div class="input-group">
-                <input aria-autocomplete="list" aria-controls="tags-listbox" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="" aria-required="false" autocomplete="off" class="form-control" id="tags" inputmode="text" placeholder="Tags" role="combobox" spellcheck="false" type="" value="">
+                <input aria-autocomplete="list" aria-controls="tags-listbox" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="tags-label" autocomplete="off" class="form-control" id="tags" inputmode="text" placeholder="Tags" role="combobox" spellcheck="false" type="text" value="">
               </div>
             </div>
           </div>
@@ -31,7 +31,7 @@ exports[`<autocomplete-multiple-selections> matches snapshot (open with matches 
   <div class="autocomplete-container form-group">
     <div>
       <div>
-        <label class="form-control-label label-sm" htmlfor="tags">
+        <label class="form-control-label label-sm" htmlfor="tags" id="tags-label">
           <span>
             Tags
           </span>
@@ -43,41 +43,41 @@ exports[`<autocomplete-multiple-selections> matches snapshot (open with matches 
                 <span>
                   Alpha
                 </span>
-                <button aria-label="Remove Alpha" class="remove-btn" data-tag="Alpha" role="button" title="Remove Tag" type="button">
-                  <i class="fa-circle-xmark fa-solid"></i>
+                <button aria-label="Remove Alpha" class="remove-btn" data-tag="Alpha" title="Remove Tag" type="button">
+                  <i aria-hidden="true" class="fa-solid fa-xmark"></i>
                 </button>
               </div>
               <div class="badge">
                 <span>
                   Gamma
                 </span>
-                <button aria-label="Remove Gamma" class="remove-btn" data-tag="Gamma" role="button" title="Remove Tag" type="button">
-                  <i class="fa-circle-xmark fa-solid"></i>
+                <button aria-label="Remove Gamma" class="remove-btn" data-tag="Gamma" title="Remove Tag" type="button">
+                  <i aria-hidden="true" class="fa-solid fa-xmark"></i>
                 </button>
               </div>
             </div>
             <div class="ac-input-container">
               <div class="input-group">
-                <input aria-autocomplete="list" aria-controls="tags-listbox" aria-expanded="true" aria-haspopup="listbox" aria-labelledby="" aria-required="false" autocomplete="off" class="form-control" id="tags" inputmode="text" placeholder="Tags" role="combobox" spellcheck="false" type="" value="a">
-                <button aria-label="Add item" class="add-btn" role="button" title="Add item" type="button">
-                  <i class="fa-plus fas"></i>
+                <input aria-autocomplete="list" aria-controls="tags-listbox" aria-expanded="true" aria-haspopup="listbox" aria-labelledby="tags-label" autocomplete="off" class="form-control" id="tags" inputmode="text" placeholder="Tags" role="combobox" spellcheck="false" type="text" value="a">
+                <button aria-label="Add item" class="add-btn" title="Add item" type="button">
+                  <i aria-hidden="true" class="fa-plus fas"></i>
                 </button>
                 <button aria-label="Clear input" class="clear-btn" title="Clear input" type="button">
-                  <i class="fa-times fas"></i>
+                  <i aria-hidden="true" class="fa-times fas"></i>
                 </button>
               </div>
             </div>
           </div>
           <div aria-live="polite" class="autocomplete-dropdown">
-            <ul id="tags-listbox" role="listbox" tabindex="-1">
-              <li aria-selected="false" class="autocomplete-dropdown-item" id="tags-row-0" role="option" tabindex="-1">
+            <ul aria-multiselectable="true" id="tags-listbox" role="listbox" tabindex="-1">
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="tags-row-0" role="option">
                 <button aria-label="Select Beta" class="option-btn" id="tags-option-0" tabindex="-1" type="button">
                   <span>
                     Beta
                   </span>
                 </button>
               </li>
-              <li aria-selected="false" class="autocomplete-dropdown-item" id="tags-row-1" role="option" tabindex="-1">
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="tags-row-1" role="option">
                 <button aria-label="Select Delta" class="option-btn" id="tags-option-1" tabindex="-1" type="button">
                   <span>
                     Delta

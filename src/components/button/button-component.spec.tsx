@@ -6,33 +6,58 @@ const getControl = (root: HTMLElement) =>
   (root.querySelector('button') as HTMLElement) || (root.querySelector('a') as HTMLElement);
 
 describe('button-component (new spec)', () => {
-  it('renders default <button> with text and stable aria-label', async () => {
+  it('renders default <button> with text (no forced role, no aria-label by default)', async () => {
     const page = await newSpecPage({
       components: [Button],
       html: `<button-component btn-text="Click me"></button-component>`,
     });
+
     const btn = getControl(page.root);
 
-    // Default behavior: no slot-side attribute unless explicitly provided
     expect(page.root.hasAttribute('slot-side')).toBe(false);
 
     expect(btn).toBeTruthy();
     expect(btn.tagName).toBe('BUTTON');
-    expect(btn.getAttribute('aria-label')).toBe('Click me');
+
+    // Native button: do not force role
+    expect(btn.getAttribute('role')).toBeNull();
+
+    // Visible text already names the control; aria-label should be omitted unless needed
+    expect(btn.getAttribute('aria-label')).toBeNull();
+
     expect(btn).toMatchSnapshot();
   });
 
   it('renders <a> link with aria-disabled and proper role/tabindex when disabled', async () => {
     const page = await newSpecPage({
       components: [Button],
-      html: `<button-component link disabled btn-text="Disabled Link"></button-component>`,
+      html: `<button-component link disabled btn-text="Disabled Link" url="https://example.com"></button-component>`,
     });
     const a = getControl(page.root);
+
     expect(a.tagName).toBe('A');
+
+    // Disabled link should not be navigable
+    expect(a.getAttribute('href')).toBeNull();
+
     expect(a.getAttribute('aria-disabled')).toBe('true');
     expect(a.getAttribute('role')).toBe('button');
     expect(a.getAttribute('tabindex')).toBe('-1');
+
     expect(a).toMatchSnapshot();
+  });
+
+  it('link enabled: sets href when url is valid (not empty/#), role=button, tabindex=0 by default', async () => {
+    const page = await newSpecPage({
+      components: [Button],
+      html: `<button-component link btn-text="Go" url="/path"></button-component>`,
+    });
+    const a = getControl(page.root);
+
+    expect(a.tagName).toBe('A');
+    expect(a.getAttribute('href')).toBe('/path');
+    expect(a.getAttribute('role')).toBe('button');
+    expect(a.getAttribute('tabindex')).toBe('0');
   });
 
   it('applies aria-pressed only when toggle=true; respects aria-label override', async () => {
@@ -41,6 +66,7 @@ describe('button-component (new spec)', () => {
       html: `<button-component toggle pressed btn-text="Submit" aria-label="Submit form"></button-component>`,
     });
     const btn = getControl(page.root);
+
     expect(btn.getAttribute('aria-pressed')).toBe('true');
     expect(btn.getAttribute('aria-label')).toBe('Submit form');
     expect(btn).toMatchSnapshot();
@@ -53,6 +79,19 @@ describe('button-component (new spec)', () => {
     });
     const btn = getControl(page.root);
     expect(btn.hasAttribute('aria-pressed')).toBe(false);
+  });
+
+  it('uses aria-labelledby over aria-label when provided', async () => {
+    const page = await newSpecPage({
+      components: [Button],
+      html: `<button-component btn-text="Ignored" aria-label="Label" aria-labelledby="lbl-id" aria-describedby="desc-id"></button-component>`,
+    });
+    const btn = getControl(page.root);
+
+    expect(btn.getAttribute('aria-labelledby')).toBe('lbl-id');
+    expect(btn.getAttribute('aria-describedby')).toBe('desc-id');
+    // When labelledby is present, aria-label should be omitted to avoid conflicts
+    expect(btn.getAttribute('aria-label')).toBeNull();
   });
 
   it('slotSide="left" adds ms-1 and keeps me-1 off', async () => {
@@ -85,7 +124,8 @@ describe('button-component (new spec)', () => {
       html: `<button-component btn-icon><span>🔔</span></button-component>`,
     });
     const btn = getControl(page.root);
-    expect(btn.getAttribute('aria-label')).toBe('Button'); // fallback when no name is supplied
+
+    expect(btn.getAttribute('aria-label')).toBe('Button');
     expect(btn).toMatchSnapshot();
   });
 
@@ -104,6 +144,7 @@ describe('button-component (new spec)', () => {
       html: `<button-component group-btn start btn-text="Start Btn"></button-component>`,
     });
     const btn = getControl(page.root);
+
     expect(btn.classList.contains('btn-group')).toBe(true);
     expect(btn.classList.contains('btn-group-start')).toBe(true);
     expect(btn).toMatchSnapshot();
@@ -115,6 +156,7 @@ describe('button-component (new spec)', () => {
       html: `<button-component btn-text="Elevated" elevation="2" variant="primary" size="lg"></button-component>`,
     });
     const btn = getControl(page.root);
+
     expect(btn.classList.contains('elevated-2')).toBe(true);
     expect(btn.classList.contains('btn-primary')).toBe(true);
     expect(btn.classList.contains('btn-lg')).toBe(true);
@@ -180,7 +222,7 @@ describe('button-component (new spec)', () => {
     expect(btn.getAttribute('aria-expanded')).toBe('false');
     expect(btn.getAttribute('aria-controls')).toBe('panel-1');
 
-    comp.isOpen = true; // mutable prop triggers re-render
+    comp.isOpen = true;
     await page.waitForChanges();
 
     expect(btn.getAttribute('aria-expanded')).toBe('true');
@@ -230,7 +272,6 @@ describe('button-component (new spec)', () => {
     const pressedSpy = jest.fn();
     btnEl.addEventListener('pressedChange', (e: CustomEvent) => pressedSpy(e.detail));
 
-    // initially false; aria-pressed present only on toggle buttons
     expect(btn.getAttribute('aria-pressed')).toBe('false');
 
     btn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -242,5 +283,33 @@ describe('button-component (new spec)', () => {
     await page.waitForChanges();
     expect(btn.getAttribute('aria-pressed')).toBe('false');
     expect(pressedSpy).toHaveBeenLastCalledWith(false);
+  });
+
+  it('native button type prop maps to <button type="submit">', async () => {
+    const page = await newSpecPage({
+      components: [Button],
+      html: `<button-component type="submit" btn-text="Submit"></button-component>`,
+    });
+    const btn = getControl(page.root);
+    expect(btn.tagName).toBe('BUTTON');
+    expect(btn.getAttribute('type')).toBe('submit');
+  });
+
+  it('respects explicit role passthrough on native button when provided on host', async () => {
+    const page = await newSpecPage({
+      components: [Button],
+      html: `<button-component role="menuitem" btn-text="Menu Item"></button-component>`,
+    });
+    const btn = getControl(page.root);
+    expect(btn.getAttribute('role')).toBe('menuitem');
+  });
+
+  it('respects explicit tabindex passthrough on native button when provided on host', async () => {
+    const page = await newSpecPage({
+      components: [Button],
+      html: `<button-component tabindex="2" btn-text="Tabbed"></button-component>`,
+    });
+    const btn = getControl(page.root);
+    expect(btn.getAttribute('tabindex')).toBe('2');
   });
 });

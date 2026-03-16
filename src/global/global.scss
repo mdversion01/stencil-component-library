@@ -24,6 +24,8 @@ $fa-font-path: '/assets/fonts'; // ✅ must be before imports!
 
 @import '../components/slider/slider-component-styles.scss';
 
+@import '../components/checkbox/checkbox.scss';
+
 :root {
   --bs-link-color: #1154A7 !important;
 }

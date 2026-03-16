@@ -12,311 +12,610 @@ export default {
         component:
           'A Plumage-styled `<select>` with focus underline, optional horizontal/inline form layout, validation, and multi-select. Works in the light DOM and accepts a JSON array for `options`.',
       },
+    source: {
+        language: 'html',
+        // IMPORTANT: docs preview must reflect CURRENT args (including Controls changes)
+        transform: (_src, ctx) => buildDocsHtml(ctx.args),
+      },
     },
   },
-  argTypes: {
-    /* Core props */
-    label: { control: 'text', table: { category: 'Props' } },
-    selectFieldId: { control: 'text', table: { category: 'Props' } },
-    options: {
-      control: 'object',
-      description: 'Array<{ value, name }>',
-      table: { category: 'Props' },
-    },
-    value: {
-      control: 'text',
-      description: 'Selected value (string) or JSON array string for multi',
-      table: { category: 'Props' },
-    },
 
-    /* Layout + sizes */
+  // ✅ alphabetized (within category) + grouped by category
+  argTypes: {
+    /* =========================
+     * Layout
+     * ========================= */
+    classes: { control: 'text', table: { category: 'Layout' }, description: 'Additional CSS classes' },
+    formId: {
+      control: 'text',
+      name: 'form-id',
+      table: { category: 'Layout' },
+      description: 'ID of the parent form element, used for accessibility and form association',
+    },
     formLayout: {
       control: { type: 'select' },
       options: ['', 'horizontal', 'inline'],
+      name: 'form-layout',
       table: { category: 'Layout' },
+      description:
+        'Sets the form layout style. "horizontal" applies a two-column grid layout, while "inline" arranges elements in a single row.',
     },
+    inputCol: {
+      control: 'text',
+      name: 'input-col',
+      table: { category: 'Layout', defaultValue: { summary: 10 } },
+      description: 'Used with horizontal form layouts. Single numeric column for the input in a grid. Default is 10 (col-10).',
+    },
+    inputCols: {
+      control: 'text',
+      name: 'input-cols',
+      table: { category: 'Layout' },
+      description: 'Used with horizontal form layouts. Responsive input column classes.',
+    },
+    label: { control: 'text', table: { category: 'Layout' }, description: 'Label text for the select field' },
     labelAlign: {
       control: { type: 'select' },
       options: ['', 'right'],
+      name: 'label-align',
       table: { category: 'Layout' },
+      description: 'Alignment of the label',
     },
+    labelCol: {
+      control: 'text',
+      name: 'label-col',
+      table: { category: 'Layout', defaultValue: { summary: 2 } },
+      description: 'Used with horizontal form layouts. Single numeric column for the label in a grid. Default is 2 (col-2).',
+    },
+    labelCols: {
+      control: 'text',
+      name: 'label-cols',
+      table: { category: 'Layout' },
+      description: 'Used with horizontal form layouts. Responsive label column classes.',
+    },
+    labelHidden: { control: 'boolean', name: 'label-hidden', table: { category: 'Layout' }, description: 'Hide the label' },
     labelSize: {
       control: { type: 'select' },
-      options: ['base', 'xs', 'sm', 'lg'],
+      options: ['', 'xs', 'sm', 'lg'],
+      name: 'label-size',
       table: { category: 'Layout' },
+      description: 'Size variant of the label',
     },
     size: {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
       table: { category: 'Layout' },
+      description: 'Size variant of the select field',
     },
-    labelHidden: { control: 'boolean', table: { category: 'Layout' } },
-    labelCol: { control: { type: 'number', min: 0, max: 12 }, table: { category: 'Layout' } },
-    inputCol: { control: { type: 'number', min: 0, max: 12 }, table: { category: 'Layout' } },
-    labelCols: { control: 'text', table: { category: 'Layout' } },
-    inputCols: { control: 'text', table: { category: 'Layout' } },
 
-    /* Behavior */
-    multiple: { control: 'boolean', table: { category: 'Behavior' } },
-    required: { control: 'boolean', table: { category: 'Behavior' } },
-    disabled: { control: 'boolean', table: { category: 'Behavior' } },
-    fieldHeight: { control: { type: 'number', min: 0, max: 12 }, table: { category: 'Behavior' } },
+    /* =========================
+     * Options
+     * ========================= */
+    multiple: { control: 'boolean', table: { category: 'Options', defaultValue: false }, description: 'Enable multiple selection mode' },
+    options: { control: 'object', description: 'Array of { value, name } or JSON string', table: { category: 'Options' } },
 
-    /* Placeholder / default option */
-    defaultOptionTxt: { control: 'text', table: { category: 'Props' } },
+    /* =========================
+     * Other
+     * ========================= */
+    withTable: {
+      control: 'boolean',
+      name: 'with-table',
+      table: { category: 'Other', defaultValue: { summary: false } },
+      description: 'This associates the select field with a table for synchronized behavior.',
+    },
 
-    /* Validation */
-    validation: { control: 'boolean', table: { category: 'Validation' } },
-    validationMessage: { control: 'text', table: { category: 'Validation' } },
+    /* =========================
+     * Select Field Attributes
+     * ========================= */
+    custom: {
+      control: 'boolean',
+      table: { category: 'Select Field Attributes', defaultValue: false },
+      description: 'Enable custom styling for the select field',
+    },
+    defaultOptionTxt: {
+      control: 'text',
+      name: 'default-option-txt',
+      table: { category: 'Select Field Attributes' },
+      description: 'Text for the default (unselected) option',
+    },
+    disabled: {
+      control: 'boolean',
+      table: { category: 'Select Field Attributes', defaultValue: false },
+      description: 'Disable the select field',
+    },
+    fieldHeight: {
+      control: { type: 'number', min: 2, step: 1 },
+      name: 'field-height',
+      table: { category: 'Select Field Attributes' },
+      description: "Number for the Select Field's height when used with the `multiple` attribute for multiple selection.",
+    },
+    selectFieldId: {
+      control: 'text',
+      name: 'select-field-id',
+      table: { category: 'Select Field Attributes' },
+      description: 'ID of the select field, used for accessibility and form association',
+    },
+    value: {
+      control: 'text',
+      table: { category: 'Select Field Attributes' },
+      description: 'For single select; in multiple mode prefer selection via UI',
+    },
 
-    /* Appearance hooks */
-    classes: { control: 'text', table: { category: 'Appearance' } },
+    /* =========================
+     * Validation
+     * ========================= */
+    required: { control: 'boolean', table: { category: 'Validation', defaultValue: false }, description: 'Mark the field as required' },
+    validation: { control: 'boolean', table: { category: 'Validation', defaultValue: false }, description: 'Enable validation' },
+    validationMessage: {
+      control: 'text',
+      name: 'validation-message',
+      table: { category: 'Validation' },
+      description: 'Validation message to display',
+    },
   },
 };
 
-/* ---------- helpers ---------- */
+/* ======================================================
+ * Docs helpers (no blank lines + consistent HTML)
+ * ====================================================== */
+
+const normalize = txt => {
+  const lines = String(txt || '')
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map(l => l.replace(/[ \t]+$/g, ''));
+
+  const out = [];
+  let prevBlank = false;
+
+  for (const line of lines) {
+    const blank = line.trim() === '';
+    if (blank) {
+      if (prevBlank) continue;
+      prevBlank = true;
+      out.push('');
+      continue;
+    }
+    prevBlank = false;
+    out.push(line);
+  }
+
+  while (out[0] === '') out.shift();
+  while (out[out.length - 1] === '') out.pop();
+
+  return out.join('\n');
+};
+
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+const normalizeAttrValue = value => {
+  if (value === '' || value == null) return undefined;
+  if (value === true) return true;
+  if (value === false) return false;
+  return value;
+};
+
+const serializeOptions = opts => {
+  if (!opts) return '';
+  if (typeof opts === 'string') return opts; // allow raw JSON string
+  try {
+    return JSON.stringify(opts);
+  } catch {
+    return '[]';
+  }
+};
+
+const buildDocsHtml = args => {
+  const a = { ...args };
+
+  // only show value attribute for single-select
+  const valueAttr = !a.multiple ? normalizeAttrValue(a.value) : undefined;
+
+  const attrs = [
+    // Layout / label
+    ['classes', normalizeAttrValue(a.classes)],
+    ['form-id', normalizeAttrValue(a.formId)],
+    ['form-layout', normalizeAttrValue(a.formLayout)],
+    ['input-col', normalizeAttrValue(a.inputCol)],
+    ['input-cols', normalizeAttrValue(a.inputCols)],
+    ['label', normalizeAttrValue(a.label)],
+    ['label-align', normalizeAttrValue(a.labelAlign)],
+    ['label-col', normalizeAttrValue(a.labelCol)],
+    ['label-cols', normalizeAttrValue(a.labelCols)],
+    ['label-size', normalizeAttrValue(a.labelSize)],
+    ['size', normalizeAttrValue(a.size)],
+
+    // Select field attributes
+    ['default-option-txt', normalizeAttrValue(a.defaultOptionTxt)],
+    ['field-height', normalizeAttrValue(a.fieldHeight)],
+    ['select-field-id', normalizeAttrValue(a.selectFieldId)],
+    ['value', valueAttr],
+
+    // Options
+    ['options', normalizeAttrValue(serializeOptions(a.options))],
+
+    // Validation
+    ['validation-message', normalizeAttrValue(a.validationMessage)],
+
+    // boolean attrs (presence-based)
+    ['custom', !!a.custom],
+    ['disabled', !!a.disabled],
+    ['label-hidden', !!a.labelHidden],
+    ['multiple', !!a.multiple],
+    ['required', !!a.required],
+    ['validation', !!a.validation],
+    ['with-table', !!a.withTable],
+  ];
+
+  const attrLines = attrs
+    .filter(([_, v]) => v !== undefined && v !== false)
+    .map(([k, v]) => (v === true ? `  ${k}` : `  ${k}="${esc(v)}"`))
+    .join('\n');
+
+  const open = attrLines ? `<plumage-select-field-component\n${attrLines}\n></plumage-select-field-component>` : '<plumage-select-field-component></plumage-select-field-component>';
+
+  return normalize(open);
+};
+
+/* ======================================================
+ * Render helpers
+ * ====================================================== */
+
+const boolAttr = (name, on) => (on ? ` ${name}` : '');
 
 const attr = (name, v) => {
   if (v === undefined || v === null || v === '') return '';
-  if (typeof v === 'boolean') return v ? ` ${name}` : '';
-  return ` ${name}="${String(v).replace(/"/g, '&quot;')}"`;
+  const s = String(v);
+  // Prefer single-quoted attribute if the value contains double quotes (e.g., JSON)
+  const useSingle = s.includes('"');
+  const escaped = useSingle ? s.replace(/'/g, '&#39;') : s.replace(/"/g, '&quot;');
+  return ` ${name}=${useSingle ? `'${escaped}'` : `"${escaped}"`}`;
 };
 
-const toOptionsJson = (arr) =>
-  JSON.stringify(
-    Array.isArray(arr) && arr.length
-      ? arr
-      : [
-          { value: 'apple', name: 'Apple' },
-          { value: 'banana', name: 'Banana' },
-          { value: 'cherry', name: 'Cherry' },
-        ],
-  );
+const serializeOptionsForAttr = opts => {
+  if (!opts) return '';
+  if (typeof opts === 'string') return opts;
+  try {
+    return JSON.stringify(opts);
+  } catch {
+    return '[]';
+  }
+};
 
-/* A small script inside the template to echo valueChange events into SB Actions (console) */
-const wireValueChange = (id) => `
-<script>
-  (function(){
-    var el = document.getElementById('${id}');
-    if (!el || el._wired) return;
-    el.addEventListener('valueChange', function(e){ console.log('[valueChange]', e.detail); });
-    el._wired = true;
-  })();
-</script>
-`;
+const attrAllowEmpty = (name, v) => {
+  if (v === undefined || v === null) return '';
+  const s = String(v);
+  const useSingle = s.includes('"');
+  const escaped = useSingle ? s.replace(/'/g, '&#39;') : s.replace(/"/g, '&quot;');
+  return ` ${name}=${useSingle ? `'${escaped}'` : `"${escaped}"`}`;
+};
 
-/* ---------- base template ---------- */
-
-const Template = (args) => {
-  const id = args.selectFieldId || 'fruit-demo';
-  const optionsJson = toOptionsJson(args.options);
-
-  return `
+/* Base template --------------------------------------------------------- */
+const Template = args => `
 <plumage-select-field-component
-  id="${id}"
   ${attr('label', args.label)}
-  ${attr('select-field-id', args.selectFieldId)}
-  ${attr('form-layout', args.formLayout)}
-  ${attr('label-align', args.labelAlign)}
   ${attr('label-size', args.labelSize)}
+  ${attr('label-align', args.labelAlign)}
+  ${boolAttr('label-hidden', args.labelHidden)}
+
   ${attr('size', args.size)}
-  ${attr('label-hidden', args.labelHidden)}
+  ${boolAttr('custom', args.custom)}
+  ${attr('classes', args.classes)}
+
+  ${boolAttr('multiple', args.multiple)}
+  ${boolAttr('required', args.required)}
+  ${boolAttr('disabled', args.disabled)}
+
+  ${boolAttr('validation', args.validation)}
+  ${attr('validation-message', args.validationMessage)}
+
+  ${attr('default-option-txt', args.defaultOptionTxt)}
+  ${!args.multiple ? attrAllowEmpty('value', args.value ?? '') : ''}
+
+  ${attr('options', serializeOptionsForAttr(args.options))}
+
+  ${attr('form-id', args.formId)}
+  ${attr('form-layout', args.formLayout)}
+  ${attr('select-field-id', args.selectFieldId)}
+
+  ${args.fieldHeight != null && args.fieldHeight !== '' ? attr('field-height', args.fieldHeight) : ''}
+
   ${attr('label-col', args.labelCol)}
   ${attr('input-col', args.inputCol)}
   ${attr('label-cols', args.labelCols)}
   ${attr('input-cols', args.inputCols)}
-  ${attr('multiple', args.multiple)}
-  ${attr('required', args.required)}
-  ${attr('disabled', args.disabled)}
-  ${attr('field-height', args.fieldHeight)}
-  ${attr('default-option-txt', args.defaultOptionTxt)}
-  ${attr('validation', args.validation)}
-  ${attr('validation-message', args.validationMessage)}
-  ${attr('classes', args.classes)}
-  ${attr('value', args.value)}
-  options='${optionsJson}'
+
+  ${boolAttr('with-table', args.withTable)}
 ></plumage-select-field-component>
-${wireValueChange(id)}
-`.trim();
-};
+`;
 
-/* ---------- Stories ---------- */
+/* Stories --------------------------------------------------------------- */
 
-export const Playground = Template.bind({});
-Playground.args = {
-  label: 'Favorite Fruit',
-  selectFieldId: 'fruit-playground',
-  formLayout: '',
-  labelAlign: '',
+export const BasicSingle = Template.bind({});
+BasicSingle.args = {
+  label: 'Fruits',
   labelSize: 'sm',
-  size: '',
+  labelAlign: '',
   labelHidden: false,
-  labelCol: 2,
-  inputCol: 10,
+
+  size: '',
+  custom: false,
+  classes: '',
+
   multiple: false,
   required: false,
   disabled: false,
-  defaultOptionTxt: 'Select an option',
+
   validation: false,
   validationMessage: '',
+
+  defaultOptionTxt: 'Select a fruit',
   value: '',
   options: [
     { value: 'apple', name: 'Apple' },
     { value: 'banana', name: 'Banana' },
     { value: 'cherry', name: 'Cherry' },
   ],
+
+  formId: '',
+  formLayout: '',
+  selectFieldId: 'fruit',
+
+  fieldHeight: null,
+
+  labelCol: '',
+  inputCol: '',
+  labelCols: '',
+  inputCols: '',
+
+  withTable: false,
+};
+BasicSingle.storyName = 'Basic (single select)';
+BasicSingle.parameters = {
+  docs: {
+    description: {
+      story: 'A basic single-select example with default args. Use Controls to customize and explore different configurations.',
+    },
+  },
 };
 
-export const Horizontal = () => `
-<div style="max-width: 640px;">
-  <plumage-select-field-component
-    label="Favorite Fruit"
-    select-field-id="fruit-h"
-    form-layout="horizontal"
-    label-align="right"
-    label-size="lg"
-    size="lg"
-    default-option-txt="Choose one"
-    options='[{"value":"apple","name":"Apple"},{"value":"banana","name":"Banana"},{"value":"cherry","name":"Cherry"}]'
-    value=""
-  ></plumage-select-field-component>
-</div>
-`;
+export const WithSelection = Template.bind({});
+WithSelection.args = {
+  ...BasicSingle.args,
+  value: 'banana',
+};
+WithSelection.storyName = 'With Selection';
+WithSelection.parameters = {
+  docs: {
+    description: {
+      story: 'A single-select example with a pre-selected value.',
+    },
+  },
+};
 
-export const InlineLayout = () => `
-<div style="max-width: 100%; display:flex; gap:12px; flex-wrap:wrap;">
-  <plumage-select-field-component
-    label="Fruit"
-    select-field-id="fruit-inline"
-    form-layout="inline"
-    size="sm"
-    default-option-txt="Pick fruit"
-    options='[{"value":"apple","name":"Apple"},{"value":"banana","name":"Banana"},{"value":"cherry","name":"Cherry"}]'
-  ></plumage-select-field-component>
+export const MultipleSelection = Template.bind({});
+MultipleSelection.args = {
+  ...BasicSingle.args,
+  label: 'Tags',
+  multiple: true,
+  // For multiple, leave `value` empty and use UI to select; you can also set via property in a play() if needed.
+  defaultOptionTxt: 'Choose tags',
+  options: [
+    { value: 'ux', name: 'UX' },
+    { value: 'web', name: 'Web' },
+    { value: 'mobile', name: 'Mobile' },
+    { value: 'data', name: 'Data' },
+  ],
+  fieldHeight: 6, // show more rows
+};
+MultipleSelection.storyName = 'Multiple Selections';
+MultipleSelection.parameters = {
+  docs: {
+    description: {
+      story: 'An example of the select field in multiple selection mode. The `field-height` attribute can be used to control the height of the select box when `multiple` is enabled.',
+    },
+  },
+};
 
-  <plumage-select-field-component
-    label="Toppings"
-    select-field-id="toppings-inline"
-    form-layout="inline"
-    multiple
-    field-height="4"
-    default-option-txt="Select toppings"
-    options='[
-      {"value":"sprinkles","name":"Sprinkles"},
-      {"value":"nuts","name":"Nuts"},
-      {"value":"choc","name":"Chocolate Chips"},
-      {"value":"caramel","name":"Caramel Drizzle"}
-    ]'
-  ></plumage-select-field-component>
-</div>
-`;
+export const HorizontalLayout = Template.bind({});
+HorizontalLayout.args = {
+  ...BasicSingle.args,
+  formLayout: 'horizontal',
+  labelCols: 'col-sm-3',
+  inputCols: 'col-sm-9',
+  value: 'cherry',
+};
+HorizontalLayout.storyName = 'Horizontal Layout';
+HorizontalLayout.parameters = {
+  docs: {
+    description: {
+      story: 'The select field can be used within a horizontal form layout. Use the `form-layout` prop set to "horizontal" and specify column widths for the label and input using `label-cols` and `input-cols`.',
+    },
+  },
+};
 
-export const WithValidation = () => `
-<div style="max-width: 520px;">
-  <plumage-select-field-component
-    label="Favorite Fruit"
-    select-field-id="fruit-validate"
-    form-layout="horizontal"
-    label-align="right"
-    required
-    validation
-    validation-message="Please make a selection"
-    default-option-txt="Select an option"
-    options='[{"value":"apple","name":"Apple"},{"value":"banana","name":"Banana"},{"value":"cherry","name":"Cherry"}]'
-    value=""
-  ></plumage-select-field-component>
-</div>
-`;
+export const InlineLayout = Template.bind({});
+InlineLayout.args = {
+  ...BasicSingle.args,
+  formLayout: 'inline',
+  value: 'apple',
+};
+InlineLayout.storyName = 'Inline Layout';
+InlineLayout.parameters = {
+  docs: {
+    description: {
+      story: 'The select field can also be used within an inline form layout. Set the `form-layout` prop to "inline" to arrange the label and select field in a single row.',
+    },
+  },
+};
 
-export const MultipleSelect = () => `
-<div style="max-width: 520px;">
-  <plumage-select-field-component
-    label="Choose Fruits"
-    select-field-id="fruit-multi"
-    multiple
-    required
-    validation
-    validation-message="Pick at least one fruit"
-    field-height="5"
-    default-option-txt="(Optional placeholder)"
-    options='[{"value":"apple","name":"Apple"},{"value":"banana","name":"Banana"},{"value":"cherry","name":"Cherry"},{"value":"grape","name":"Grape"},{"value":"orange","name":"Orange"}]'
-    value='["banana","cherry"]'
-  ></plumage-select-field-component>
-</div>
-`;
+export const WithValidationRequired = Template.bind({});
+WithValidationRequired.args = {
+  ...BasicSingle.args,
+  required: true,
+  validation: true,
+  validationMessage: 'Please select an option.',
+  defaultOptionTxt: 'Please choose…',
+};
+WithValidationRequired.storyName = 'With Validation (Required)';
+WithValidationRequired.parameters = {
+  docs: {
+    description: {
+      story: 'An example of the select field with validation enabled and a required selection.',
+    },
+  },
+};
 
-export const DisabledState = () => `
-<plumage-select-field-component
-  label="Disabled Field"
-  select-field-id="fruit-disabled"
-  disabled
-  default-option-txt="Unavailable"
-  options='[{"value":"apple","name":"Apple"},{"value":"banana","name":"Banana"}]'
-></plumage-select-field-component>
-`;
+export const Disabled = Template.bind({});
+Disabled.args = {
+  ...BasicSingle.args,
+  disabled: true,
+  defaultOptionTxt: 'Not available',
+};
+Disabled.storyName = 'Disabled';
+Disabled.parameters = {
+  docs: {
+    description: {
+      story: 'An example of the select field in a disabled state.',
+    },
+  },
+};
 
-export const SizesAndLabels = () => `
-<div style="display:grid; gap:14px; max-width:640px;">
-  <plumage-select-field-component
-    label="Small"
-    select-field-id="fruit-sm"
-    size="sm"
-    default-option-txt="Select"
-    options='[{"value":"apple","name":"Apple"},{"value":"banana","name":"Banana"}]'
-  ></plumage-select-field-component>
+// ✅ helper used only by the Sizes story
+const SIZE_VARIANTS = [
+  { key: 'sm', labelSize: 'xs', size: 'sm', selectFieldId: 'fruit-size-sm', label: 'Small field with x-small label', },
+  { key: 'default', labelSize: 'sm', size: '', selectFieldId: 'fruit-size-default', label: 'Default field with sm label' },
+  { key: 'lg', labelSize: 'lg', size: 'lg', selectFieldId: 'fruit-size-lg', label: 'Large field with lg label' },
+];
 
-  <plumage-select-field-component
-    label="Base"
-    select-field-id="fruit-base"
-    label-size="base"
-    default-option-txt="Select"
-    options='[{"value":"apple","name":"Apple"},{"value":"banana","name":"Banana"}]'
-  ></plumage-select-field-component>
+export const SizeVariants = {
+  render: (args) => {
+    const container = document.createElement('div');
+    container.style.display = 'grid';
+    container.style.gap = '12px';
+    container.style.maxWidth = '680px';
 
-  <plumage-select-field-component
-    label="Large + Horizontal"
-    select-field-id="fruit-lg"
-    size="lg"
-    label-size="lg"
-    form-layout="horizontal"
-    label-align="right"
-    default-option-txt="Select"
-    options='[{"value":"apple","name":"Apple"},{"value":"banana","name":"Banana"},{"value":"cherry","name":"Cherry"}]'
-  ></plumage-select-field-component>
-</div>
-`;
+    SIZE_VARIANTS.forEach((v) => {
+      const block = document.createElement('div');
+      block.style.display = 'grid';
+      block.style.gap = '6px';
 
-/* Demonstrates grid control with labelCol/inputCol when horizontal */
-export const HorizontalGridControl = () => `
-<div style="max-width: 720px;">
-  <plumage-select-field-component
-    label="2/10 split (default)"
-    select-field-id="fruit-grid-1"
-    form-layout="horizontal"
-    label-align="right"
-    label-col="2"
-    input-col="10"
-    options='[{"value":"apple","name":"Apple"},{"value":"banana","name":"Banana"}]'
-  ></plumage-select-field-component>
+      const markup = Template({
+        ...args,
+        label: v.label,
+        labelSize: v.labelSize,
+        size: v.size,
+        selectFieldId: v.selectFieldId,
+      });
 
-  <plumage-select-field-component
-    label="3/9 split"
-    select-field-id="fruit-grid-2"
-    form-layout="horizontal"
-    label-align="right"
-    label-col="3"
-    input-col="9"
-    options='[{"value":"apple","name":"Apple"},{"value":"banana","name":"Banana"}]'
-  ></plumage-select-field-component>
+      const mount = document.createElement('div');
+      mount.innerHTML = markup.trim();
 
-  <plumage-select-field-component
-    label="Custom classes"
-    select-field-id="fruit-grid-3"
-    form-layout="horizontal"
-    label-align="right"
-    label-cols="col-12 col-sm-4"
-    input-cols="col-12 col-sm-8"
-    options='[{"value":"apple","name":"Apple"},{"value":"banana","name":"Banana"}]'
-  ></plumage-select-field-component>
-</div>
-`;
+      block.appendChild(mount.firstElementChild);
+
+      container.appendChild(block);
+    });
+
+    return container;
+  },
+
+  args: {
+    ...BasicSingle.args,
+    // keep the base args consistent; each variant overrides `size`
+  },
+
+  storyName: 'Size Variants',
+
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows the three supported sizes by setting `size` to `sm`, empty string (default), and `lg`.',
+      },
+      source: {
+        language: 'html',
+        transform: (_src, ctx) =>
+          [
+            '<div style="display:grid; gap:12px; max-width:680px;">',
+            ...SIZE_VARIANTS.map((v) =>
+              [
+                `  <!-- ${v.label} -->`,
+                `  ${Template({
+                  ...ctx.args,
+                  size: v.size,
+                  selectFieldId: v.selectFieldId,
+                })
+                  .trim()
+                  .replace(/\n/g, '\n  ')}`,
+              ].join('\n'),
+            ),
+            '</div>',
+          ].join('\n'),
+      },
+    },
+  },
+};
+
+export const CustomStyling = Template.bind({});
+CustomStyling.args = {
+  ...BasicSingle.args,
+  custom: true,
+  classes: 'my-shadow-1',
+  value: 'apple',
+};
+CustomStyling.storyName = 'Custom Styling';
+CustomStyling.parameters = {
+  docs: {
+    description: {
+      story: 'An example of the select field with custom styling applied.',
+    },
+  },
+};
+
+export const OptionsViaJSONAttribute = () => {
+  const wrap = document.createElement('div');
+  wrap.innerHTML = `
+    <plumage-select-field-component
+      label="Continents"
+      default-option-txt="Select continent"
+      options='[
+        { "value": "af", "name": "Africa" },
+        { "value": "as", "name": "Asia" },
+        { "value": "eu", "name": "Europe" },
+        { "value": "na", "name": "North America" },
+        { "value": "oc", "name": "Oceania" },
+        { "value": "sa", "name": "South America" }
+      ]'
+    ></plumage-select-field-component>
+  `;
+
+  const el = wrap.querySelector('plumage-select-field-component');
+  // ensure placeholder is the selected option
+  if (el) el.value = '';
+
+  return wrap;
+};
+
+OptionsViaJSONAttribute.parameters = {
+  docs: {
+    source: {
+      language: 'html',
+      transform: () =>
+        normalize(`
+          <plumage-select-field-component
+            label="Continents"
+            default-option-txt="Select continent"
+            options='[
+              { "value": "af", "name": "Africa" },
+              { "value": "as", "name": "Asia" },
+              { "value": "eu", "name": "Europe" },
+              { "value": "na", "name": "North America" },
+              { "value": "oc", "name": "Oceania" },
+              { "value": "sa", "name": "South America" }
+            ]'
+          ></plumage-select-field-component>
+      `),
+    },
+    description: {
+      story: 'An example of passing options as a JSON string via the `options` attribute.',
+    },
+  },
+};

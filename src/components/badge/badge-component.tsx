@@ -1,4 +1,5 @@
-import { Component, Prop, h, Element, Event, EventEmitter } from '@stencil/core';
+// src/components/badge/badge.tsx
+import { Component, Prop, h, Element, Event, EventEmitter, Host } from '@stencil/core';
 import { buildBadgeClass } from '../../utils/buildBadgeClass';
 import { renderTokenSpan } from '../../utils/render.helpers';
 import { logInfo } from '../../utils/log-debug';
@@ -48,6 +49,30 @@ export class Badge {
 
   private attr(v?: string) {
     return v && v.trim() ? v : undefined;
+  }
+
+  private hasAccessibleName(): boolean {
+    return !!this.attr(this.ariaLabel) || !!this.attr(this.ariaLabelledby) || !!this.attr(this.ariaDescribedby);
+  }
+
+  private getHostRole(): string | undefined {
+    const explicitRole = this.el.getAttribute('role');
+    if (explicitRole && explicitRole.trim()) return explicitRole;
+
+    const named = this.hasAccessibleName();
+
+    if (this.token || this.dot) return 'status';
+    if (named) return 'note';
+
+    return undefined;
+  }
+
+  private getHostAriaHidden(): 'true' | null {
+    const named = this.hasAccessibleName();
+    if (named) return null;
+
+    // If it's not a token/dot and has no name, keep it out of the a11y tree.
+    return !this.token && !this.dot ? 'true' : null;
   }
 
   private getDynamicStyles(): { [key: string]: string } {
@@ -113,7 +138,7 @@ export class Badge {
     });
 
     return (
-      <div class={wrapperClass} aria-label={this.attr(this.ariaLabel)} aria-disabled={this.disabled ? 'true' : 'false'} id={this.attr(this.badgeId)}>
+      <div class={wrapperClass} id={this.attr(this.badgeId)}>
         <slot />
         <span class="badge__wrapper">
           {renderTokenSpan({
@@ -151,7 +176,7 @@ export class Badge {
     };
 
     return (
-      <div class={wrapperClass} aria-label={this.attr(this.ariaLabel)} aria-disabled={this.disabled ? 'true' : 'false'} id={this.attr(this.badgeId)}>
+      <div class={wrapperClass} id={this.attr(this.badgeId)}>
         <slot />
         <span class="badge__wrapper">
           {renderTokenSpan({
@@ -168,15 +193,7 @@ export class Badge {
 
   private renderPositionedBadge(classAttr: string) {
     return (
-      <div
-        class={`${classAttr} ${this.bdgPosition === 'left' ? 'me-1' : 'ms-1'}`}
-        aria-label={this.attr(this.ariaLabel)}
-        aria-disabled={this.disabled ? 'true' : 'false'}
-        aria-hidden={!this.token && !this.dot ? 'true' : null}
-        aria-labelledby={this.ariaLabelledby}
-        aria-describedby={this.ariaDescribedby}
-        id={this.attr(this.badgeId)}
-      >
+      <div class={`${classAttr} ${this.bdgPosition === 'left' ? 'me-1' : 'ms-1'}`} id={this.attr(this.badgeId)}>
         <slot />
       </div>
     );
@@ -184,16 +201,7 @@ export class Badge {
 
   private renderDefaultBadge(classAttr: string) {
     return (
-      <div
-        class={classAttr}
-        aria-label={this.attr(this.ariaLabel)}
-        aria-disabled={this.disabled ? 'true' : 'false'}
-        aria-hidden={!this.token && !this.dot ? 'true' : null}
-        aria-labelledby={this.ariaLabelledby}
-        aria-describedby={this.ariaDescribedby}
-        style={this.parseInlineStyles(this.styles)}
-        id={this.attr(this.badgeId)}
-      >
+      <div class={classAttr} style={this.parseInlineStyles(this.styles)} id={this.attr(this.badgeId)}>
         <div class="badge__content">
           <slot />
           {this.icon && (
@@ -209,7 +217,6 @@ export class Badge {
   render() {
     const classAttr = buildBadgeClass({
       base: this.token ? 'badge__badge' : 'badge',
-      // outlined: this.outlined,
       variant: this.outlined ? `badge--outlined ${this.variant}` : this.variant ? 'bg-' + this.variant : 'bg-secondary',
       elevation: this.elevation,
       size: this.size,
@@ -218,16 +225,39 @@ export class Badge {
       classNames: this.classNames,
     });
 
+    const role = this.getHostRole();
+    const ariaHidden = this.getHostAriaHidden();
+    const named = this.hasAccessibleName();
+    const isLiveStatus = role === 'status';
+
     logInfo(this.devMode, 'Badge', 'render() decision tree', {
       token: this.token,
       dot: this.dot,
       bdgPosition: this.bdgPosition,
       classAttr,
+      role,
+      ariaHidden,
+      named,
     });
 
-    if (this.token) return this.renderBadgeToken();
-    if (this.dot) return this.renderDotBadge();
-    if (this.bdgPosition) return this.renderPositionedBadge(classAttr);
-    return this.renderDefaultBadge(classAttr);
+    return (
+      <Host
+        role={role}
+        aria-hidden={ariaHidden}
+        aria-label={named ? this.attr(this.ariaLabel) : undefined}
+        aria-labelledby={named ? this.attr(this.ariaLabelledby) : undefined}
+        aria-describedby={named ? this.attr(this.ariaDescribedby) : undefined}
+        aria-live={isLiveStatus ? 'polite' : undefined}
+        aria-atomic={isLiveStatus ? 'true' : undefined}
+      >
+        {this.token
+          ? this.renderBadgeToken()
+          : this.dot
+            ? this.renderDotBadge()
+            : this.bdgPosition
+              ? this.renderPositionedBadge(classAttr)
+              : this.renderDefaultBadge(classAttr)}
+      </Host>
+    );
   }
 }

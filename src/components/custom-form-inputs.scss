@@ -1,13 +1,13 @@
 .custom-control-label.sm:before {
-  width: 0.8rem;
-  height: 0.8rem;
-  margin-top: 0.2rem;
-  left: -1.25rem;
+  width: 1rem;
+  height: 1rem;
+  margin-top: -2px;
+  // left: -1.25rem;
 }
 
 .custom-control-label.sm::after {
-  top: 0.1rem;
-  left: -1.35rem;
+  top: 3px;
+  // left: -1.35rem;
   background-size: 70% 68%;
 }
 
@@ -151,22 +151,22 @@
   color: #b30009;
 }
 
-.custom-radio .custom-control-label::before {
-  border-radius: 50%;
-  content: '';
-}
+// .custom-radio .custom-control-label::before {
+//   border-radius: 50%;
+//   content: '';
+// }
 
-.custom-radio .custom-control-input:checked ~ .custom-control-label::before {
-  background-color: #007bff;
-  content: '';
-}
+// .custom-radio .custom-control-input:checked ~ .custom-control-label::before {
+//   background-color: #007bff;
+//   content: '';
+// }
 
-.custom-radio .custom-control-input:checked ~ .custom-control-label::after {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='%23fff'/%3E%3C/svg%3E");
-  content: '';
-}
+// .custom-radio .custom-control-input:checked ~ .custom-control-label::after {
+//   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='%23fff'/%3E%3C/svg%3E");
+//   content: '';
+// }
 
-.custom-radio .custom-control-input:disabled:checked ~ .custom-control-label::before {
-  background-color: #e9ecef;
-  content: '';
-}
+// .custom-radio .custom-control-input:disabled:checked ~ .custom-control-label::before {
+//   background-color: #e9ecef;
+//   content: '';
+// }

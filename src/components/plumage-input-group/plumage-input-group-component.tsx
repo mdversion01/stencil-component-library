@@ -42,17 +42,8 @@ export class PlumageInputGroupComponent {
   @Prop() icon: string = ''; // e.g. "fa-solid fa-dollar-sign"
   @Prop() otherContent: boolean = false; // when true, raw slot is used without wrapper span
 
-  /**
-   * Side fields: support BOTH old and new attribute spellings.
-   * Current attributes: prepend/append
-   * Legacy attributes:  prepend-field/append-field
-   */
   @Prop({ attribute: 'append' }) appendField: boolean = false;
   @Prop({ attribute: 'prepend' }) prependField: boolean = false;
-
-  // Legacy aliases (to match tests using prepend-field/append-field)
-  @Prop({ attribute: 'append-field' }) legacyAppendField: boolean = false;
-  @Prop({ attribute: 'prepend-field' }) legacyPrependField: boolean = false;
 
   @Prop() appendId: string = '';
   @Prop() prependId: string = '';
@@ -355,7 +346,7 @@ export class PlumageInputGroupComponent {
 
   private renderPrepend() {
     // support both spellings
-    const showPrepend = this.prependField || this.legacyPrependField;
+    const showPrepend = this.prependField;
     if (!showPrepend) return null;
 
     const classes = [this.validationState ? 'is-invalid' : ''].filter(Boolean).join(' ');
@@ -384,7 +375,7 @@ export class PlumageInputGroupComponent {
 
   private renderAppend() {
     // support both spellings
-    const showAppend = this.appendField || this.legacyAppendField;
+    const showAppend = this.appendField;
     if (!showAppend) return null;
 
     const classes = [this.validationState ? 'is-invalid' : ''].filter(Boolean).join(' ');
@@ -407,7 +398,7 @@ export class PlumageInputGroupComponent {
     const groupClasses = ['input-group', sizeClass, this.disabled ? 'disabled' : ''].filter(Boolean).join(' ');
     const inputClasses = ['form-control', this.validationState ? 'is-invalid' : ''].filter(Boolean).join(' ');
 
-    const placeholder = this.labelHidden ? this.label || this.placeholder || 'Placeholder Text' : this.label || this.placeholder || 'Placeholder Text';
+    const placeholder = this.labelHidden ? this.placeholder || this.label || 'Placeholder Text' : this.placeholder || this.label || 'Placeholder Text';
 
     return (
       <div class={groupClasses} onClick={this.handleInteraction}>

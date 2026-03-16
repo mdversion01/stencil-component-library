@@ -36,7 +36,7 @@
         <radio-input-component
           validation
           size="sm"
-          custom-radio
+          basic-radio
           validation-msg="Must select"
           required
           input-id="radio1"
@@ -45,11 +45,27 @@
           value="radio1"
         ></radio-input-component>
 
-        <radio-input-component size="sm" input-id="radio2" custom-radio name="radio2" label-txt="Radio 2" value="radio2"></radio-input-component>
+        <radio-input-component size="sm" input-id="radio2" basic-radio name="radio2" label-txt="Radio 2" value="radio2"></radio-input-component>
 
-        <radio-input-component input-id="radio1a" name="radio1a" label-txt="Regular Radio 1" value="radio1a"></radio-input-component>
+        <radio-input-component input-id="radio1a" size="sm" name="radio1a" label-txt="Regular Radio 1" value="radio1a"></radio-input-component>
+        <radio-input-component input-id="radio2a" size="" name="radio2a" label-txt="Regular Radio 2" value="radio2a"></radio-input-component>
+        <radio-input-component input-id="radio3a" size="lg" name="radio3a" label-txt="Regular Radio 3" value="radio3a"></radio-input-component>
+        <br />
 
-        <radio-input-component input-id="radio2a" name="radio2a" label-txt="Regular Radio 2" value="radio2a"></radio-input-component>
+        <radio-input-component
+          required
+          validation
+          disabled
+          validation-msg="Must select one"
+          inline
+          bs-radio-group
+          name="colors"
+          group-title="Choose a color"
+          group-title-size="sm"
+          size="lg"
+          group-options='[{"value":"red","labelTxt":"Red","inputId":"radio-red","checked":false,"disabled":false},{"value":"green","labelTxt":"Green","inputId":"radio-green","checked":false,"disabled":false},{"value":"blue","labelTxt":"Blue","inputId":"radio-blue","checked":false,"disabled":false}]'
+        ></radio-input-component>
+
 
         <br />
         <radio-input-component
@@ -57,7 +73,7 @@
           validation
           disabled
           validation-msg="Must select one"
-          custom-radio-group
+          basic-radio-group
           inline
           name="colors"
           group-title="Choose a color"
@@ -71,7 +87,7 @@
           disabled
           validation
           validation-msg="Must select one"
-          custom-radio-group
+          basic-radio-group
           name="colors1"
           group-title="Choose a color"
           group-title-size="md"

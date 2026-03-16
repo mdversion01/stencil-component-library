@@ -8,7 +8,7 @@ exports[`toggle-switch-component renders a toggle with toggleTxt and newToggleTx
       <label class="form-check-label" htmlfor="txt-toggle">
         Power
         <span class="toggleTxt-bold">
-          On
+          Enabled
         </span>
       </label>
     </div>
@@ -21,13 +21,13 @@ exports[`toggle-switch-component renders multiple switches from switchesArray 1`
   <div class="form-group ts-group">
     <div id="toggle-group" role="group">
       <div class="form-check form-switch">
-        <input aria-checked="false" aria-disabled="undefined" class="form-check-input" id="toggle-group_option_one" role="switch" type="checkbox">
+        <input aria-checked="false" aria-disabled="false" class="form-check-input" id="toggle-group_option_one" role="switch" type="checkbox">
         <label class="form-check-label" htmlfor="toggle-group_option_one">
           First
         </label>
       </div>
       <div class="form-check form-switch">
-        <input aria-checked="true" aria-disabled="undefined" checked="" class="form-check-input" id="toggle-group_option_two" role="switch" type="checkbox">
+        <input aria-checked="true" aria-disabled="false" checked="" class="form-check-input" id="toggle-group_option_two" role="switch" type="checkbox">
         <label class="form-check-label" htmlfor="toggle-group_option_two">
           Second
         </label>

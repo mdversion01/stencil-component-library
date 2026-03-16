@@ -1,12 +1,11 @@
 // stories/autocomplete-multiple-selections.stories.js
 
-import { auto } from '@popperjs/core';
+// (removed unused) import { auto } from '@popperjs/core';
 
 // ======================================================
 // Docs: wrap long code lines + show formatted HTML
 // ======================================================
 
-// Inject CSS so Docs code blocks wrap instead of horizontal scrolling forever.
 const DocsWrapStyles = () => {
   const style = document.createElement('style');
   style.innerHTML = `
@@ -65,6 +64,13 @@ const buildDocsComponentHtml = (args) =>
     ['input-id', args.inputId],
     ['label', args.label],
     ['placeholder', args.placeholder],
+
+    // NEW standard a11y
+    ['aria-label', args.ariaLabel],
+    ['aria-labelledby', args.ariaLabelledby],
+    ['aria-describedby', args.ariaDescribedby],
+
+    // legacy a11y
     ['arialabelled-by', args.arialabelledBy],
 
     // layout
@@ -106,7 +112,7 @@ const buildDocsComponentHtml = (args) =>
     ['add-new-on-enter', args.addNewOnEnter],
     ['preserve-input-on-select', args.preserveInputOnSelect],
 
-    // controlled selection (Docs-only: shown as JSON string; applied via property at runtime)
+    // controlled selection (Docs-only)
     ['value', Array.isArray(args.value) ? JSON.stringify(args.value) : ''],
 
     // form names
@@ -149,27 +155,15 @@ const setAttr = (el, name, value) => {
 
 const setOptionsWhenReady = async (el, options) => {
   const safe = Array.isArray(options) ? options.slice() : [];
-
-  // This component watches the `options` PROP, so assign after it's defined/hydrated
-  if (typeof el.componentOnReady === 'function') {
-    await el.componentOnReady();
-  } else if (window.customElements?.whenDefined) {
-    await customElements.whenDefined('autocomplete-multiple-selections');
-  }
-
+  if (typeof el.componentOnReady === 'function') await el.componentOnReady();
+  else if (window.customElements?.whenDefined) await customElements.whenDefined('autocomplete-multiple-selections');
   el.options = safe;
 };
 
 const setValueWhenReady = async (el, value) => {
   const safe = Array.isArray(value) ? value.slice() : [];
-
-  if (typeof el.componentOnReady === 'function') {
-    await el.componentOnReady();
-  } else if (window.customElements?.whenDefined) {
-    await customElements.whenDefined('autocomplete-multiple-selections');
-  }
-
-  // value is a PROP (array); set via property, not attribute
+  if (typeof el.componentOnReady === 'function') await el.componentOnReady();
+  else if (window.customElements?.whenDefined) await customElements.whenDefined('autocomplete-multiple-selections');
   el.value = safe;
 };
 
@@ -181,7 +175,22 @@ const wrapEl = (childEl) => {
 };
 
 // ✅ sample data used by all stories
-const FRUIT = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango', 'Bet', 'Betty', 'Bobby', 'Bob', 'Bobby Brown', 'Bobby Blue', 'Bobby Green'];
+const FRUIT = [
+  'Apple',
+  'Apparatus',
+  'Apple Pie',
+  'Applegate',
+  'Banana',
+  'Orange',
+  'Mango',
+  'Bet',
+  'Betty',
+  'Bobby',
+  'Bob',
+  'Bobby Brown',
+  'Bobby Blue',
+  'Bobby Green',
+];
 
 // ✅ extract render logic so stories can reuse it (no duplication)
 const renderComponent = (args) => {
@@ -197,11 +206,17 @@ const renderComponent = (args) => {
   setAttr(el, 'label-align', args.labelAlign);
   setAttr(el, 'label-size', args.labelSize);
   setAttr(el, 'size', args.size);
+
+  // NEW standard a11y attrs
+  setAttr(el, 'aria-label', args.ariaLabel);
+  setAttr(el, 'aria-labelledby', args.ariaLabelledby);
+  setAttr(el, 'aria-describedby', args.ariaDescribedby);
+
+  // legacy a11y
   setAttr(el, 'arialabelled-by', args.arialabelledBy);
 
   setAttr(el, 'label-col', args.labelCol);
   setAttr(el, 'input-col', args.inputCol);
-
   setAttr(el, 'label-cols', args.labelCols);
   setAttr(el, 'input-cols', args.inputCols);
 
@@ -214,12 +229,12 @@ const renderComponent = (args) => {
   setAttr(el, 'badge-shape', args.badgeShape);
   setAttr(el, 'badge-inline-styles', args.badgeInlineStyles);
   setAttr(el, 'type', args.type || 'text');
+  setAttr(el, 'error-message', args.errorMessage);
 
   // booleans
   args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
   args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
   args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
-  setAttr(el, 'error-message', args.errorMessage);
   args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
   args.labelHidden ? el.setAttribute('label-hidden', '') : el.removeAttribute('label-hidden');
   args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
@@ -229,7 +244,7 @@ const renderComponent = (args) => {
   args.removeBtnBorder ? el.setAttribute('remove-btn-border', '') : el.removeAttribute('remove-btn-border');
   args.clearInputOnBlurOutside ? el.setAttribute('clear-input-on-blur-outside', '') : el.removeAttribute('clear-input-on-blur-outside');
 
-  // behavior flags (mapped to attributes; component reads as props)
+  // behavior
   setAttr(el, 'auto-sort', args.autoSort);
   setAttr(el, 'add-new-on-enter', args.addNewOnEnter);
   setAttr(el, 'preserve-input-on-select', args.preserveInputOnSelect);
@@ -312,7 +327,8 @@ export default {
       control: 'text',
       name: 'id',
       table: { category: 'Attributes' },
-      description: 'The unique identifier for the component instance. This is used to associate the component with the javascript API and for accessibility purposes.',
+      description:
+        'The unique identifier for the component instance. This is used to associate the component with the javascript API and for accessibility purposes.',
     },
     preserveInputOnSelect: {
       control: 'boolean',
@@ -414,12 +430,34 @@ export default {
     /* =========================
      * Input Attributes
      * ========================= */
+    // NEW standard a11y
+    ariaLabel: {
+      control: 'text',
+      name: 'aria-label',
+      table: { category: 'Accessibility' },
+      description: 'Optional accessible name for the combobox (used only when aria-labelledby is not set).',
+    },
+    ariaLabelledby: {
+      control: 'text',
+      name: 'aria-labelledby',
+      table: { category: 'Accessibility' },
+      description: 'Optional external id reference used to label the combobox (preferred).',
+    },
+    ariaDescribedby: {
+      control: 'text',
+      name: 'aria-describedby',
+      table: { category: 'Accessibility' },
+      description: 'Optional helper text id reference. Component also appends validation/error ids when present.',
+    },
+
+    // legacy
     arialabelledBy: {
       control: 'text',
       name: 'arialabelled-by',
       table: { category: 'Input Attributes' },
-      description: 'The id of the element that labels the input for accessibility purposes.',
+      description: 'Legacy: The id of the element that labels the input for accessibility purposes.',
     },
+
     disabled: {
       control: 'boolean',
       name: 'disabled',
@@ -430,20 +468,23 @@ export default {
       control: 'text',
       name: 'form-id',
       table: { category: 'Layout' },
-      description: 'The id of the parent form element to associate with when using form layouts. This is necessary when the component is not a direct child of the form element.',
+      description:
+        'The id of the parent form element to associate with when using form layouts. This is necessary when the component is not a direct child of the form element.',
     },
     formLayout: {
       control: { type: 'select' },
       options: ['', 'horizontal', 'inline'],
       name: 'form-layout',
       table: { category: 'Layout' },
-      description: 'Sets the form layout style. "horizontal" applies a two-column grid layout, while "inline" arranges elements in a single row.',
+      description:
+        'Sets the form layout style. "horizontal" applies a two-column grid layout, while "inline" arranges elements in a single row.',
     },
     inputCol: {
       control: 'text',
       name: 'input-col',
       table: { category: 'Layout', defaultValue: { summary: 10 } },
-      description: 'Used with horizontal form layouts. Single numeric column for the input in a grid. Default is 10 (col-10).',
+      description:
+        'Used with horizontal form layouts. Single numeric column for the input in a grid. Default is 10 (col-10).',
     },
     inputCols: {
       control: 'text',
@@ -455,7 +496,8 @@ export default {
       control: 'text',
       name: 'input-id',
       table: { category: 'Input Attributes' },
-      description: 'The unique identifier for the input element within the component. This is used for accessibility and form association.',
+      description:
+        'The unique identifier for the input element within the component. This is used for accessibility and form association.',
     },
     label: {
       control: 'text',
@@ -468,19 +510,22 @@ export default {
       options: ['', 'right'],
       name: 'label-align',
       table: { category: 'Layout' },
-      description: 'Aligns the label text. "right" aligns the label to the right, which is typically used in horizontal form layouts.',
+      description:
+        'Aligns the label text. "right" aligns the label to the right, which is typically used in horizontal form layouts.',
     },
     labelCol: {
       control: 'text',
       name: 'label-col',
       table: { category: 'Layout', defaultValue: { summary: 2 } },
-      description: 'Used with horizontal form layouts. Single numeric column for the label in a grid. Default is 2 (col-2).',
+      description:
+        'Used with horizontal form layouts. Single numeric column for the label in a grid. Default is 2 (col-2).',
     },
     labelCols: {
       control: 'text',
       name: 'label-cols',
       table: { category: 'Layout' },
-      description: 'Used with horizontal form layouts. Responsive label column classes, e.g. "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4".',
+      description:
+        'Used with horizontal form layouts. Responsive label column classes, e.g. "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4".',
     },
     labelHidden: {
       control: 'boolean',
@@ -493,7 +538,8 @@ export default {
       options: ['xs', 'sm', 'base', 'lg'],
       name: 'label-size',
       table: { category: 'Layout' },
-      description: 'Sets the size of the label text. Options include "xs" (extra small), "sm" (small), "base" (default), and "lg" (large).',
+      description:
+        'Sets the size of the label text. Options include "xs" (extra small), "sm" (small), "base" (default), and "lg" (large).',
     },
     name: {
       control: 'text',
@@ -512,13 +558,15 @@ export default {
       options: ['', 'sm', 'lg'],
       name: 'size',
       table: { category: 'Layout' },
-      description: 'Sets the size of the input field. Options include "sm" (small) and "lg" (large). Not adding any size will use the default.',
+      description:
+        'Sets the size of the input field. Options include "sm" (small) and "lg" (large). Not adding any size will use the default.',
     },
     type: {
       control: 'text',
       name: 'type',
       table: { category: 'Input Attributes' },
-      description: 'The type attribute for the input element. This can be used to specify the type of data expected (e.g., "text", "email", "number").',
+      description:
+        'The type attribute for the input element. This can be used to specify the type of data expected (e.g., "text", "email", "number").',
     },
 
     /* =========================
@@ -528,7 +576,8 @@ export default {
       control: 'boolean',
       name: 'error',
       table: { category: 'Validation', defaultValue: { summary: false } },
-      description: 'Marks the input as having an error state, which will typically apply error styling to the component.',
+      description:
+        'Marks the input as having an error state, which will typically apply error styling to the component.',
     },
     errorMessage: {
       control: 'text',
@@ -540,7 +589,8 @@ export default {
       control: 'boolean',
       name: 'required',
       table: { category: 'Validation', defaultValue: { summary: false } },
-      description: 'Marks the input as required, which will trigger validation if the field is left empty.',
+      description:
+        'Marks the input as required, which will trigger validation if the field is left empty.',
     },
     validation: {
       control: 'boolean',
@@ -597,10 +647,15 @@ export default {
     validation: false,
     validationMessage: 'Please fill in',
     value: [],
+
+    // NEW standard a11y args
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
   },
 };
 
-// --- Variants ---
+// --- Variants (kept; none removed) ---
 export const Basic = {
   args: {
     addBtn: false,
@@ -695,7 +750,7 @@ EditableKeepOpen.parameters = {
   },
 };
 
-// ✅ NEW: Controlled Value story (array) — single source of truth is args.value
+// ✅ Controlled Value story (array) — single source of truth is args.value
 export const ControlledValue = {
   render: (args, ctx) => {
     const container = document.createElement('div');
@@ -734,9 +789,7 @@ export const ControlledValue = {
       if (el) el.value = safe;
     };
 
-    controls.appendChild(
-      mkBtn('Set: ["Apple","Mango"]', () => setNext(['Apple', 'Mango'])),
-    );
+    controls.appendChild(mkBtn('Set: ["Apple","Mango"]', () => setNext(['Apple', 'Mango'])));
     controls.appendChild(
       mkBtn('Add "Banana"', () => {
         const cur = Array.isArray(args.value) ? args.value.slice() : [];
@@ -744,9 +797,7 @@ export const ControlledValue = {
         setNext(cur);
       }),
     );
-    controls.appendChild(
-      mkBtn('Clear []', () => setNext([])),
-    );
+    controls.appendChild(mkBtn('Clear []', () => setNext([])));
 
     const hint = document.createElement('div');
     hint.style.opacity = '0.75';
@@ -777,7 +828,7 @@ export const ControlledValue = {
 };
 ControlledValue.storyName = 'Controlled Value (array)';
 
-// ✅ NEW: Sizes story (sm, default "", lg) using the `size` arg values
+// ✅ Sizes story (sm, default "", lg) using the `size` arg values
 const SIZE_VARIANTS = [
   { key: 'sm', label: 'Small', size: 'sm', inputId: 'acms-sm', id: 'acms_sm' },
   { key: 'default', label: 'Default', size: '', inputId: 'acms-md', id: 'acms_md' },
@@ -843,7 +894,8 @@ FieldValidation.storyName = 'Required with Validation Message';
 FieldValidation.parameters = {
   docs: {
     description: {
-      story: 'Enables validation for the input field. When the field is left empty and loses focus, the specified validation message will be displayed.',
+      story:
+        'Enables validation for the input field. When the field is left empty and loses focus, the specified validation message will be displayed.',
     },
     story: { height: '300px' },
   },
@@ -892,5 +944,233 @@ BadgeStyling.parameters = {
         'Use the "Badge Variant" control to apply Bootstrap text-bg color classes (e.g. "primary", "success", "danger") or your own CSS class for custom colors. The "Badge Shape" control can be used to apply a custom class for pill/rounded styling. For full control, use the "Badge Inline Styles" to add any CSS properties you want directly to each badge (e.g. "border-radius:12px; font-weight:600;").',
     },
     story: { height: '300px' },
+  },
+};
+
+// --- NEW: Accessibility matrix story ---
+export const AccessibilityMatrix = {
+  name: 'Accessibility matrix (computed)',
+  render: (args) => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '16px';
+    wrap.style.maxWidth = '980px';
+
+    const title = document.createElement('div');
+    title.innerHTML = `<strong>Accessibility matrix</strong><div style="opacity:.8">Prints computed combobox/listbox/label wiring + validation/error ids. Also shows id de-dupe with two instances.</div>`;
+    wrap.appendChild(title);
+
+    const row = (labelText, build) => {
+      const card = document.createElement('div');
+      card.style.display = 'grid';
+      card.style.gridTemplateColumns = '280px 1fr';
+      card.style.gap = '12px';
+      card.style.alignItems = 'start';
+      card.style.border = '1px solid #ddd';
+      card.style.borderRadius = '8px';
+      card.style.padding = '12px';
+
+      const left = document.createElement('div');
+      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+
+      const right = document.createElement('div');
+      right.style.display = 'grid';
+      right.style.gap = '8px';
+
+      const demo = document.createElement('div');
+      const built = build();
+      demo.appendChild(built);
+
+      const pre = document.createElement('pre');
+      pre.style.margin = '0';
+      pre.style.padding = '10px';
+      pre.style.borderRadius = '8px';
+      pre.style.overflow = 'auto';
+      pre.style.border = '1px solid #eee';
+      pre.style.background = '#fafafa';
+      pre.textContent = 'Loading…';
+
+      right.appendChild(demo);
+      right.appendChild(pre);
+
+      card.appendChild(left);
+      card.appendChild(right);
+
+      const snapshot = () => {
+        const host = demo.querySelector('autocomplete-multiple-selections');
+        const input = host?.querySelector('input[role="combobox"]');
+        const listbox = host?.querySelector('[role="listbox"]');
+        const labelEl = host?.querySelector('label');
+
+        pre.textContent = JSON.stringify(
+          {
+            hostId: host?.getAttribute('id') ?? null,
+            inputId: input?.getAttribute('id') ?? null,
+            labelId: labelEl?.getAttribute('id') ?? null,
+            'aria-labelledby': input?.getAttribute('aria-labelledby') ?? null,
+            'aria-label': input?.getAttribute('aria-label') ?? null,
+            'aria-describedby': input?.getAttribute('aria-describedby') ?? null,
+            'aria-controls': input?.getAttribute('aria-controls') ?? null,
+            'aria-expanded': input?.getAttribute('aria-expanded') ?? null,
+            'aria-activedescendant': input?.getAttribute('aria-activedescendant') ?? null,
+            'aria-required': input?.getAttribute('aria-required') ?? null,
+            'aria-invalid': input?.getAttribute('aria-invalid') ?? null,
+            listboxId: listbox?.getAttribute('id') ?? null,
+            hasValidation: !!host?.querySelector('.invalid-feedback'),
+            hasError: !!host?.querySelector('.error-message'),
+          },
+          null,
+          2,
+        );
+      };
+
+      queueMicrotask(() => requestAnimationFrame(snapshot));
+      return card;
+    };
+
+    wrap.appendChild(
+      row('Default (internal label wiring)', () =>
+        renderComponent({
+          ...args,
+          inputId: 'mx-default',
+          label: 'Default A11y',
+          validation: false,
+          error: false,
+          value: [],
+        }),
+      ),
+    );
+
+    wrap.appendChild(
+      row('Validation (aria-invalid + describedby)', () =>
+        renderComponent({
+          ...args,
+          inputId: 'mx-val',
+          label: 'Required',
+          required: true,
+          validation: true,
+          validationMessage: 'This is required.',
+        }),
+      ),
+    );
+
+    wrap.appendChild(
+      row('External aria-labelledby/aria-describedby (overrides)', () => {
+        const outer = document.createElement('div');
+        outer.style.display = 'grid';
+        outer.style.gap = '6px';
+
+        const lbl = document.createElement('div');
+        lbl.id = 'mx-external-label';
+        lbl.textContent = 'External label text';
+        lbl.style.fontWeight = '600';
+
+        const desc = document.createElement('div');
+        desc.id = 'mx-external-desc';
+        desc.textContent = 'External description/help.';
+        desc.style.opacity = '0.85';
+
+        outer.appendChild(lbl);
+        outer.appendChild(desc);
+
+        const wrapped = renderComponent({
+          ...args,
+          inputId: 'mx-ext',
+          label: 'Internal label still exists',
+          ariaLabelledby: 'mx-external-label',
+          ariaDescribedby: 'mx-external-desc',
+        });
+
+        outer.appendChild(wrapped);
+        return outer;
+      }),
+    );
+
+    // ✅ UPDATED: snapshot enumerates BOTH instances to prove id de-dupe works
+    wrap.appendChild(
+      (() => {
+        const labelText = 'ID de-dupe (two instances share same input-id)';
+        const build = () => {
+          const outer = document.createElement('div');
+          outer.style.display = 'grid';
+          outer.style.gap = '10px';
+
+          const a = renderComponent({ ...args, inputId: 'dup', label: 'First dup' });
+          const b = renderComponent({ ...args, inputId: 'dup', label: 'Second dup' });
+
+          outer.appendChild(a);
+          outer.appendChild(b);
+
+          return outer;
+        };
+
+        const card = document.createElement('div');
+        card.style.display = 'grid';
+        card.style.gridTemplateColumns = '280px 1fr';
+        card.style.gap = '12px';
+        card.style.alignItems = 'start';
+        card.style.border = '1px solid #ddd';
+        card.style.borderRadius = '8px';
+        card.style.padding = '12px';
+
+        const left = document.createElement('div');
+        left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+
+        const right = document.createElement('div');
+        right.style.display = 'grid';
+        right.style.gap = '8px';
+
+        const demo = document.createElement('div');
+        const built = build();
+        demo.appendChild(built);
+
+        const pre = document.createElement('pre');
+        pre.style.margin = '0';
+        pre.style.padding = '10px';
+        pre.style.borderRadius = '8px';
+        pre.style.overflow = 'auto';
+        pre.style.border = '1px solid #eee';
+        pre.style.background = '#fafafa';
+        pre.textContent = 'Loading…';
+
+        right.appendChild(demo);
+        right.appendChild(pre);
+
+        card.appendChild(left);
+        card.appendChild(right);
+
+        const snapshot = () => {
+          const hosts = Array.from(demo.querySelectorAll('autocomplete-multiple-selections'));
+          const instances = hosts.map((host) => {
+            const input = host.querySelector('input[role="combobox"]');
+            const labelEl = host.querySelector('label');
+            const listboxId = input?.getAttribute('aria-controls') ?? null;
+            return {
+              hostId: host.getAttribute('id') ?? null,
+              inputId: input?.getAttribute('id') ?? null,
+              labelId: labelEl?.getAttribute('id') ?? null,
+              labelledby: input?.getAttribute('aria-labelledby') ?? null,
+              controls: listboxId,
+            };
+          });
+
+          pre.textContent = JSON.stringify({ instances }, null, 2);
+        };
+
+        queueMicrotask(() => requestAnimationFrame(snapshot));
+        return card;
+      })(),
+    );
+
+    return wrap;
+  },
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Prints computed accessibility wiring for the combobox + listbox: `aria-labelledby`, `aria-describedby` (including validation/error ids), `aria-controls`, `aria-expanded`, `aria-activedescendant`, and shows id de-dupe when multiple instances use the same `input-id`.',
+      },
+    },
   },
 };

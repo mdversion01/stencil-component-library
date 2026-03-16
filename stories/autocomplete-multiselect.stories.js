@@ -2,10 +2,8 @@
 
 // ======================================================
 // Docs: wrap long code lines + show formatted HTML
-// (same treatment as autocomplete-multiselect)
 // ======================================================
 
-// Inject CSS so Docs code blocks wrap instead of one long line.
 const DocsWrapStyles = () => {
   const style = document.createElement('style');
   style.innerHTML = `
@@ -47,7 +45,6 @@ const normalize = (txt) => {
   return out.join('\n');
 };
 
-/** Put each attribute on its own line (for Docs code previews) */
 const attrLines = (pairs) =>
   pairs
     .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
@@ -64,6 +61,14 @@ const buildDocsHtml = (args) =>
     ['input-id', args.inputId],
     ['label', args.label],
     ['placeholder', args.placeholder],
+
+    // NEW standard a11y attrs (preferred)
+    ['aria-label', args.ariaLabel],
+    ['aria-labelledby', args.ariaLabelledby],
+    ['aria-describedby', args.ariaDescribedby],
+
+    // legacy a11y
+    ['arialabelled-by', args.arialabelledBy],
 
     // layout
     ['form-id', args.formId],
@@ -104,7 +109,7 @@ const buildDocsHtml = (args) =>
     ['add-new-on-enter', args.addNewOnEnter],
     ['preserve-input-on-select', args.preserveInputOnSelect],
 
-    // controlled selection (Docs-only: shown as JSON string; applied via property at runtime)
+    // controlled selection (Docs-only)
     ['value', Array.isArray(args.value) ? JSON.stringify(args.value) : ''],
 
     // form names
@@ -120,7 +125,6 @@ const buildDocsHtml = (args) =>
 ></autocomplete-multiselect>
 `);
 
-/** Docs wrapper */
 const wrapDocsHtml = (innerHtml) =>
   normalize(`
 <div style="max-width:680px;">
@@ -128,7 +132,6 @@ const wrapDocsHtml = (innerHtml) =>
 </div>
 `);
 
-/** Multi-snippet docs helper (single wrapper, multiple components) */
 const buildDocsHtmlMany = (snippets) =>
   wrapDocsHtml(
     normalize(`
@@ -148,31 +151,28 @@ const setAttr = (el, name, value) => {
   else el.setAttribute(name, String(value));
 };
 
-const setOptionsWhenReady = async (el, options) => {
-  const safe = Array.isArray(options) ? options : [];
-
-  // Prefer Stencil's componentOnReady if present, otherwise whenDefined
-  if (typeof el.componentOnReady === 'function') {
+const whenReady = async (el, tagName) => {
+  if (typeof el?.componentOnReady === 'function') {
     await el.componentOnReady();
-    await el.setOptions(safe);
-  } else if (window.customElements?.whenDefined) {
-    await customElements.whenDefined('autocomplete-multiselect');
-    await el.setOptions(safe);
-  } else {
-    await el.setOptions(safe);
+    return;
   }
+  if (window.customElements?.whenDefined) {
+    await customElements.whenDefined(tagName);
+  }
+};
+
+const setOptionsWhenReady = async (el, options) => {
+  const safe = Array.isArray(options) ? options.slice() : [];
+  await whenReady(el, 'autocomplete-multiselect');
+  // component exposes setOptions()
+  if (typeof el.setOptions === 'function') await el.setOptions(safe);
+  else el.options = safe;
 };
 
 const setValueWhenReady = async (el, value) => {
   const safe = Array.isArray(value) ? value.slice() : [];
-
-  if (typeof el.componentOnReady === 'function') {
-    await el.componentOnReady();
-  } else if (window.customElements?.whenDefined) {
-    await customElements.whenDefined('autocomplete-multiselect');
-  }
-
-  // value is a PROP (array); set via property, not attribute
+  await whenReady(el, 'autocomplete-multiselect');
+  // value is a PROP array; set via property, not attribute
   el.value = safe;
 };
 
@@ -183,10 +183,31 @@ const wrapEl = (childEl) => {
   return wrap;
 };
 
-// ✅ sample data used by all stories
-const FRUIT = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango', 'Bet', 'Betty', 'Bobby', 'Bob', 'Bobby Brown', 'Bobby Blue', 'Bobby Green'];
+// ======================================================
+// Sample data
+// ======================================================
 
-// ✅ extract render logic so stories can reuse it (no duplication)
+const FRUIT = [
+  'Apple',
+  'Apparatus',
+  'Apple Pie',
+  'Applegate',
+  'Banana',
+  'Orange',
+  'Mango',
+  'Bet',
+  'Betty',
+  'Bobby',
+  'Bob',
+  'Bobby Brown',
+  'Bobby Blue',
+  'Bobby Green',
+];
+
+// ======================================================
+// Reusable render logic
+// ======================================================
+
 const renderComponent = (args) => {
   const el = document.createElement('autocomplete-multiselect');
 
@@ -200,14 +221,22 @@ const renderComponent = (args) => {
   setAttr(el, 'label-align', args.labelAlign);
   setAttr(el, 'label-size', args.labelSize);
   setAttr(el, 'size', args.size);
+
+  // NEW standard a11y attrs
+  setAttr(el, 'aria-label', args.ariaLabel);
+  setAttr(el, 'aria-labelledby', args.ariaLabelledby);
+  setAttr(el, 'aria-describedby', args.ariaDescribedby);
+
+  // legacy a11y
   setAttr(el, 'arialabelled-by', args.arialabelledBy);
 
+  // layout cols
   setAttr(el, 'label-col', args.labelCol);
   setAttr(el, 'input-col', args.inputCol);
-
   setAttr(el, 'label-cols', args.labelCols);
   setAttr(el, 'input-cols', args.inputCols);
 
+  // misc strings
   setAttr(el, 'validation-message', args.validationMessage);
   setAttr(el, 'clear-icon', args.clearIcon);
   setAttr(el, 'add-icon', args.addIcon);
@@ -217,12 +246,12 @@ const renderComponent = (args) => {
   setAttr(el, 'badge-shape', args.badgeShape);
   setAttr(el, 'badge-inline-styles', args.badgeInlineStyles);
   setAttr(el, 'type', args.type || 'text');
+  setAttr(el, 'error-message', args.errorMessage);
 
   // booleans
   args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
   args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
   args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
-  setAttr(el, 'error-message', args.errorMessage);
   args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
   args.labelHidden ? el.setAttribute('label-hidden', '') : el.removeAttribute('label-hidden');
   args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
@@ -232,14 +261,15 @@ const renderComponent = (args) => {
   args.removeBtnBorder ? el.setAttribute('remove-btn-border', '') : el.removeAttribute('remove-btn-border');
   args.clearInputOnBlurOutside ? el.setAttribute('clear-input-on-blur-outside', '') : el.removeAttribute('clear-input-on-blur-outside');
 
-  // behavior flags (mapped to attributes; component reads as props)
+  // behavior
   setAttr(el, 'auto-sort', args.autoSort);
   setAttr(el, 'add-new-on-enter', args.addNewOnEnter);
   setAttr(el, 'preserve-input-on-select', args.preserveInputOnSelect);
 
-  // quick event logs
+  // logs
   el.addEventListener('multiSelectChange', (e) => console.log('[acm] selectionChange', e.detail));
   el.addEventListener('valueChange', (e) => console.log('[acm] valueChange', e.detail));
+  el.addEventListener('optionsChange', (e) => console.log('[acm] optionsChange', e.detail));
   el.addEventListener('optionDelete', (e) => console.log('[acm] optionDelete', e.detail));
   el.addEventListener('clear', () => console.log('[acm] clear'));
 
@@ -247,11 +277,15 @@ const renderComponent = (args) => {
   const fallback = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
   setOptionsWhenReady(el, Array.isArray(args.options) && args.options.length ? args.options : fallback);
 
-  // ✅ controlled selections (value prop) via property
+  // controlled selections via property
   setValueWhenReady(el, Array.isArray(args.value) ? args.value : []);
 
   return wrapEl(el);
 };
+
+// ======================================================
+// Default export
+// ======================================================
 
 export default {
   title: 'Form/Autocomplete Multiselect',
@@ -310,7 +344,7 @@ export default {
       control: 'text',
       name: 'id',
       table: { category: 'Attributes' },
-      description: 'The unique identifier for the component instance. This is used to associate the component with the javascript API and for accessibility purposes.',
+      description: 'The unique identifier for the component instance.',
     },
     preserveInputOnSelect: {
       control: 'boolean',
@@ -323,6 +357,35 @@ export default {
       name: 'raw-input-name',
       table: { category: 'Attributes' },
       description: 'The name attribute for the raw input hidden field.',
+    },
+
+    /* =========================
+     * Accessibility (NEW standard + legacy)
+     * ========================= */
+    ariaLabel: {
+      control: 'text',
+      name: 'aria-label',
+      table: { category: 'Accessibility' },
+      description: 'Optional accessible name for the combobox (used only when aria-labelledby is not set).',
+    },
+    ariaLabelledby: {
+      control: 'text',
+      name: 'aria-labelledby',
+      table: { category: 'Accessibility' },
+      description: 'Optional external id reference used to label the combobox (preferred).',
+    },
+    ariaDescribedby: {
+      control: 'text',
+      name: 'aria-describedby',
+      table: { category: 'Accessibility' },
+      description: 'Optional helper text id reference. Component appends validation/error ids when present.',
+    },
+    arialabelledBy: {
+      control: 'text',
+      name: 'arialabelled-by',
+      table: { category: 'Accessibility' },
+      description:
+        'Legacy: id(s) of label(s) that label this input (space-separated). If empty, component falls back to its internal <label> id.',
     },
 
     /* =========================
@@ -388,15 +451,13 @@ export default {
       control: 'object',
       name: 'options',
       table: { category: 'Data' },
-      description:
-        'The array of options available for selection in the autocomplete. Note: options must be set at runtime (not via attribute) for the autocomplete to work properly.',
+      description: 'Options array (applied at runtime via setOptions/property).',
     },
     value: {
       control: 'object',
       name: 'value',
       table: { category: 'Data' },
-      description:
-        'Controlled selected values (array). Applied via property at runtime (not as an attribute). Use this to preselect items or drive selections externally.',
+      description: 'Controlled selected values (array). Applied via property at runtime.',
     },
 
     /* =========================
@@ -410,14 +471,8 @@ export default {
     },
 
     /* =========================
-     * Input Attributes
+     * Input / Layout Attributes
      * ========================= */
-    arialabelledBy: {
-      control: 'text',
-      name: 'arialabelled-by',
-      table: { category: 'Input Attributes' },
-      description: 'The id of the element that labels the input for accessibility purposes.',
-    },
     disabled: {
       control: 'boolean',
       name: 'disabled',
@@ -428,95 +483,95 @@ export default {
       control: 'text',
       name: 'form-id',
       table: { category: 'Layout' },
-      description: 'The id of the parent form element to associate with when using form layouts. This is necessary when the component is not a direct child of the form element.',
+      description: 'The id of the parent form element to associate with when using form layouts.',
     },
     formLayout: {
       control: { type: 'select' },
       options: ['', 'horizontal', 'inline'],
       name: 'form-layout',
       table: { category: 'Layout' },
-      description: 'Sets the form layout style. "horizontal" applies a two-column grid layout, while "inline" arranges elements in a single row.',
+      description: 'Sets the form layout style.',
     },
     inputCol: {
       control: 'text',
       name: 'input-col',
       table: { category: 'Layout', defaultValue: { summary: 10 } },
-      description: 'Used with horizontal form layouts. Single numeric column for the input in a grid. Default is 10 (col-10).',
+      description: 'Numeric column width for input (horizontal).',
     },
     inputCols: {
       control: 'text',
       name: 'input-cols',
       table: { category: 'Layout' },
-      description: 'Used with horizontal form layouts. Responsive input column classes, e.g. "col", "col-sm-9 col-md-8".',
+      description: 'Responsive input col classes, e.g. "xs-12 sm-8".',
     },
     inputId: {
       control: 'text',
       name: 'input-id',
       table: { category: 'Input Attributes' },
-      description: 'The unique identifier for the input element within the component. This is used for accessibility and form association.',
+      description: 'Identifier used as the base for internal ids (deduped when needed).',
     },
     label: {
       control: 'text',
       name: 'label',
       table: { category: 'Input Attributes' },
-      description: 'The text label for the component. This is used for accessibility and user guidance.',
+      description: 'Visible label text (still rendered as sr-only when labelHidden).',
     },
     labelAlign: {
       control: { type: 'select' },
       options: ['', 'right'],
       name: 'label-align',
       table: { category: 'Layout' },
-      description: 'Aligns the label text. "right" aligns the label to the right, which is typically used in horizontal form layouts.',
+      description: 'Align label text (useful in horizontal layout).',
     },
     labelCol: {
       control: 'text',
       name: 'label-col',
       table: { category: 'Layout', defaultValue: { summary: 2 } },
-      description: 'Used with horizontal form layouts. Single numeric column for the label in a grid. Default is 2 (col-2).',
+      description: 'Numeric column width for label (horizontal).',
     },
     labelCols: {
       control: 'text',
       name: 'label-cols',
       table: { category: 'Layout' },
-      description: 'Used with horizontal form layouts. Responsive label column classes, e.g. "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4".',
+      description: 'Responsive label col classes, e.g. "xs-12 sm-4".',
     },
     labelHidden: {
       control: 'boolean',
       name: 'label-hidden',
       table: { category: 'Layout', defaultValue: { summary: false } },
-      description: 'Hides the label visually while keeping it accessible for screen readers.',
+      description: 'Hide the label visually (kept for screen readers).',
     },
     labelSize: {
       control: { type: 'select' },
       options: ['xs', 'sm', 'base', 'lg'],
       name: 'label-size',
       table: { category: 'Layout' },
-      description: 'Sets the size of the label text. Options include "xs" (extra small), "sm" (small), "base" (default), and "lg" (large).',
+      description: 'Label size.',
     },
     name: {
       control: 'text',
       name: 'name',
       table: { category: 'Input Attributes' },
-      description: 'The name attribute for the selected items hidden inputs.',
+      description: 'Name for selected values hidden inputs.',
     },
     placeholder: {
       control: 'text',
       name: 'placeholder',
       table: { category: 'Input Attributes' },
-      description: 'The placeholder text for the input element. This provides a hint to the user about what to enter.',
+      description: 'Placeholder text for the input element.',
     },
     size: {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
       name: 'size',
       table: { category: 'Layout' },
-      description: 'Sets the size of the input field. Options include "sm" (small) and "lg" (large). Not adding any size will use the default.',
+      description: 'Input size.',
     },
     type: {
       control: 'text',
       name: 'type',
       table: { category: 'Input Attributes' },
-      description: 'The type attribute for the input element. This can be used to specify the type of data expected (e.g., "text", "email", "number").',
+      description: 'Input type (default "text").',
     },
 
     /* =========================
@@ -526,31 +581,31 @@ export default {
       control: 'boolean',
       name: 'error',
       table: { category: 'Validation', defaultValue: { summary: false } },
-      description: 'Marks the input as having an error state, which will typically apply error styling to the component.',
+      description: 'Marks error state.',
     },
     errorMessage: {
       control: 'text',
       name: 'error-message',
       table: { category: 'Validation', defaultValue: { summary: '' } },
-      description: 'The error message to display when the input is in an error state.',
+      description: 'Error message text.',
     },
     required: {
       control: 'boolean',
       name: 'required',
       table: { category: 'Validation', defaultValue: { summary: false } },
-      description: 'Marks the input as required, which will trigger validation if the field is left empty.',
+      description: 'Marks input required.',
     },
     validation: {
       control: 'boolean',
       name: 'validation',
       table: { category: 'Validation', defaultValue: { summary: false } },
-      description: 'Enables validation for the input field.',
+      description: 'Externally toggled invalid state.',
     },
     validationMessage: {
       control: 'text',
       name: 'validation-message',
       table: { category: 'Validation' },
-      description: 'The validation message to display when the input is invalid.',
+      description: 'Validation message text.',
     },
   },
 
@@ -558,7 +613,15 @@ export default {
     addBtn: false,
     addIcon: 'fas fa-plus',
     addNewOnEnter: true,
+
+    // legacy a11y (still supported)
     arialabelledBy: '',
+
+    // NEW standard a11y
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
+
     autoSort: true,
     badgeInlineStyles: '',
     badgeShape: '',
@@ -572,10 +635,10 @@ export default {
     errorMessage: '',
     formId: '',
     formLayout: '',
-    id: 'aci4',
+    id: 'acm-story',
     inputCol: '',
     inputCols: '',
-    inputId: 'ac-2',
+    inputId: 'acm-2',
     label: 'Autocomplete Multiselect',
     labelAlign: '',
     labelCol: '',
@@ -598,7 +661,7 @@ export default {
   },
 };
 
-// ------- Stories -------
+// ------- Stories (existing kept; none removed) -------
 
 export const Basic = {
   args: {
@@ -688,7 +751,6 @@ EditableDropdown.parameters = {
   },
 };
 
-// ✅ NEW: Controlled Value story (array) — single source of truth is args.value
 export const ControlledValue = {
   render: (args, ctx) => {
     const container = document.createElement('div');
@@ -764,11 +826,10 @@ export const ControlledValue = {
 };
 ControlledValue.storyName = 'Controlled Value (array)';
 
-// ✅ NEW: Sizes story (sm, default "", lg) using the `size` arg values
 const SIZE_VARIANTS = [
-  { key: 'sm', label: 'Small', size: 'sm', inputId: 'acms-sm', id: 'acm_sm' },
-  { key: 'default', label: 'Default', size: '', inputId: 'acms-md', id: 'acm_md' },
-  { key: 'lg', label: 'Large', size: 'lg', inputId: 'acms-lg', id: 'acm_lg' },
+  { key: 'sm', label: 'Small', size: 'sm', inputId: 'acm-sm', id: 'acm_sm' },
+  { key: 'default', label: 'Default', size: '', inputId: 'acm-md', id: 'acm_md' },
+  { key: 'lg', label: 'Large', size: 'lg', inputId: 'acm-lg', id: 'acm_lg' },
 ];
 
 export const Sizes = {
@@ -811,7 +872,7 @@ export const Sizes = {
       },
       description: {
         story:
-          'Shows the three supported sizes by setting the `size` arg to `sm`, empty string (default), and `lg`. Note: options are set at runtime (not via attribute) for the autocomplete to work properly, so the "Options" control here is an array that gets passed in after hydration.',
+          'Shows the three supported sizes by setting the `size` arg to `sm`, empty string (default), and `lg`. Note: options are set at runtime (not via attribute).',
       },
       story: { height: '480px' },
     },
@@ -862,7 +923,7 @@ Disabled.parameters = {
 
 export const BadgeStyling = {
   args: {
-    inputId: 'acms-badges',
+    inputId: 'acm-badges',
     label: 'With custom badge style',
     editable: true,
     addBtn: true,
@@ -876,8 +937,213 @@ BadgeStyling.parameters = {
   docs: {
     description: {
       story:
-        'Use the "Badge Variant" control to apply Bootstrap text-bg color classes (e.g. "primary", "success", "danger") or your own CSS class for custom colors. The "Badge Shape" control can be used to apply a custom class for pill/rounded styling. For full control, use the "Badge Inline Styles" to add any CSS properties you want directly to each badge (e.g. "border-radius:12px; font-weight:600;").',
+        'Use the "Badge Variant" control to apply Bootstrap text-bg color classes (e.g. "primary", "success", "danger") or your own CSS class for custom colors. The "Badge Shape" control can be used to apply a custom class for pill/rounded styling. For full control, use "Badge Inline Styles".',
     },
     story: { height: '300px' },
+  },
+};
+
+// --- Accessibility matrix story (kept, updated to include role + aria-* + ids) ---
+export const AccessibilityMatrix = {
+  name: 'Accessibility matrix (computed)',
+  render: (args) => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '16px';
+    wrap.style.maxWidth = '980px';
+
+    const title = document.createElement('div');
+    title.innerHTML =
+      `<strong>Accessibility matrix</strong>` +
+      `<div style="opacity:.8">Prints computed combobox/listbox/label wiring: role + aria-* + ids (default/inline/horizontal, error/validation, disabled).</div>`;
+    wrap.appendChild(title);
+
+    const card = (labelText, build) => {
+      const c = document.createElement('div');
+      c.style.display = 'grid';
+      c.style.gridTemplateColumns = '300px 1fr';
+      c.style.gap = '12px';
+      c.style.alignItems = 'start';
+      c.style.border = '1px solid #ddd';
+      c.style.borderRadius = '8px';
+      c.style.padding = '12px';
+
+      const left = document.createElement('div');
+      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+
+      const right = document.createElement('div');
+      right.style.display = 'grid';
+      right.style.gap = '8px';
+
+      const demo = document.createElement('div');
+      const built = build();
+      demo.appendChild(built);
+
+      const pre = document.createElement('pre');
+      pre.style.margin = '0';
+      pre.style.padding = '10px';
+      pre.style.borderRadius = '8px';
+      pre.style.overflow = 'auto';
+      pre.style.border = '1px solid #eee';
+      pre.style.background = '#fafafa';
+      pre.textContent = 'Loading…';
+
+      right.appendChild(demo);
+      right.appendChild(pre);
+
+      c.appendChild(left);
+      c.appendChild(right);
+
+      const snapshot = () => {
+        const host = demo.querySelector('autocomplete-multiselect');
+        const input = host?.querySelector('input[role="combobox"]');
+        const labelEl = host?.querySelector('label');
+
+        const listboxId = input?.getAttribute('aria-controls') || null;
+        const listbox = listboxId ? host?.querySelector(`#${CSS.escape(listboxId)}`) : host?.querySelector('[role="listbox"]');
+
+        pre.textContent = JSON.stringify(
+          {
+            hostId: host?.getAttribute('id') ?? null,
+            inputId: input?.getAttribute('id') ?? null,
+            labelId: labelEl?.getAttribute('id') ?? null,
+            labelFor: labelEl?.getAttribute('for') ?? labelEl?.getAttribute('htmlfor') ?? null,
+            labelText: labelEl?.textContent?.trim() ?? null,
+            labelCount: host ? host.querySelectorAll('label').length : null,
+
+            role: input?.getAttribute('role') ?? null,
+            'aria-labelledby': input?.getAttribute('aria-labelledby') ?? null,
+            'aria-label': input?.getAttribute('aria-label') ?? null,
+            'aria-describedby': input?.getAttribute('aria-describedby') ?? null,
+            'aria-controls': input?.getAttribute('aria-controls') ?? null,
+            'aria-expanded': input?.getAttribute('aria-expanded') ?? null,
+            'aria-activedescendant': input?.getAttribute('aria-activedescendant') ?? null,
+            'aria-required': input?.getAttribute('aria-required') ?? null,
+            'aria-invalid': input?.getAttribute('aria-invalid') ?? null,
+            'aria-disabled': input?.getAttribute('aria-disabled') ?? null,
+            disabledAttr: input?.hasAttribute('disabled') ?? null,
+
+            listboxPresent: !!listbox,
+            listboxId: listbox?.getAttribute('id') ?? null,
+            hasValidation: !!host?.querySelector('.invalid-feedback'),
+            hasError: !!host?.querySelector('.error-message'),
+          },
+          null,
+          2,
+        );
+      };
+
+      queueMicrotask(() => requestAnimationFrame(snapshot));
+      return c;
+    };
+
+    wrap.appendChild(
+      card('Default (stacked)', () =>
+        renderComponent({
+          ...args,
+          inputId: 'mx-default',
+          label: 'Default A11y',
+          formLayout: '',
+          disabled: false,
+          error: false,
+          validation: false,
+          value: [],
+          // keep external labelling empty so internal label id is used
+          ariaLabel: '',
+          ariaLabelledby: '',
+          ariaDescribedby: '',
+          arialabelledBy: '',
+        }),
+      ),
+    );
+
+    wrap.appendChild(
+      card('Inline layout', () =>
+        renderComponent({
+          ...args,
+          inputId: 'mx-inline',
+          label: 'Inline',
+          formLayout: 'inline',
+          labelAlign: '',
+          error: false,
+          validation: false,
+          value: [],
+          ariaLabel: '',
+          ariaLabelledby: '',
+          ariaDescribedby: '',
+          arialabelledBy: '',
+        }),
+      ),
+    );
+
+    wrap.appendChild(
+      card('Horizontal layout', () =>
+        renderComponent({
+          ...args,
+          inputId: 'mx-horizontal',
+          label: 'Horizontal',
+          formLayout: 'horizontal',
+          labelAlign: 'right',
+          labelCols: 'xs-12 sm-4',
+          inputCols: 'xs-12 sm-8',
+          error: false,
+          validation: false,
+          value: [],
+          ariaLabel: '',
+          ariaLabelledby: '',
+          ariaDescribedby: '',
+          arialabelledBy: '',
+        }),
+      ),
+    );
+
+    wrap.appendChild(
+      card('Error + Validation', () =>
+        renderComponent({
+          ...args,
+          inputId: 'mx-ev',
+          label: 'Error + Validation',
+          required: true,
+          validation: true,
+          validationMessage: 'This is required.',
+          error: true,
+          errorMessage: 'Something went wrong.',
+          value: [],
+          ariaLabel: '',
+          ariaLabelledby: '',
+          ariaDescribedby: '',
+          arialabelledBy: '',
+        }),
+      ),
+    );
+
+    wrap.appendChild(
+      card('Disabled', () =>
+        renderComponent({
+          ...args,
+          inputId: 'mx-disabled',
+          label: 'Disabled',
+          disabled: true,
+          editable: true,
+          addBtn: true,
+          value: ['Banana'],
+          ariaLabel: '',
+          ariaLabelledby: '',
+          ariaDescribedby: '',
+          arialabelledBy: '',
+        }),
+      ),
+    );
+
+    return wrap;
+  },
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Prints computed accessibility wiring for the combobox + listbox: role + `aria-*` attributes + ids. Includes default/inline/horizontal, error+validation, and disabled examples.',
+      },
+    },
   },
 };

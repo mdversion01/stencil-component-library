@@ -39,7 +39,7 @@
           toggle-txt="true"
           new-toggle-txt='{"on":"Yes","off":"No"}'
           checked="true"
-          size="sm"
+          size="lg"
           required
           validation
           validation-message="Please accept the terms"
@@ -49,7 +49,7 @@
           input-id="agree-switch-2"
           label-txt="Custom Accept Terms"
           toggle-txt="true"
-          new-toggle-txt='{"on":"Yes","off":"No"}'
+          new-toggle-txt='{"on":"A","off":"B"}'
           checked="true"
           size="sm"
           custom-switch="true"
@@ -67,17 +67,6 @@
 
     <script type="module">
       document.addEventListener('DOMContentLoaded', () => {
-        // Dynamically selectable option
-        const dditems = document.getElementById('dditems');
-        if (dditems) {
-          dditems.options = [
-            { name: 'Action', inputId: '1', checked: true, disabled: false },
-            { name: 'Another Action', inputId: '2', checked: false, disabled: false },
-            { name: 'Something else here', inputId: '3', checked: false, disabled: false },
-
-            // Add more items as needed
-          ];
-        }
 
         const group = document.getElementById('toggle-group');
         group.switchesArray = [

@@ -1,3 +1,4 @@
+// src/components/date-range-picker-component/date-range-picker-component.tsx
 import { Component, Prop, State, h, Element, Event, EventEmitter, Watch, Method, Fragment } from '@stencil/core';
 import { createPopper, Instance as PopperInstance } from '@popperjs/core';
 
@@ -79,9 +80,8 @@ export class DateRangePickerComponent {
   @Prop() labelCol: number = 2;
   @Prop() inputCol: number = 10;
 
-  /** Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for label column when formLayout is "horizontal" */
+  /** Responsive column class specs */
   @Prop() labelCols: string = '';
-  /** Responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") for used for input column when formLayout is "horizontal" */
   @Prop() inputCols: string = '';
 
   // -------------------- internal state --------------------
@@ -117,8 +117,79 @@ export class DateRangePickerComponent {
     endDateIso: string; // YYYY-MM-DD
   }>;
 
+  // ---------- Unique ID protection (prevents ARIA collisions) ----------
+  private static _seq = 0;
+  private _baseId = '';
+
+  /**
+   * Make an ID token safe for:
+   * - use as an HTML id
+   * - use in querySelector(`#id`) WITHOUT needing CSS.escape (important for Jest/JSDOM)
+   */
+  private sanitizeIdToken(raw: string): string {
+    const s0 = String(raw ?? '').trim();
+
+    // keep only safe id characters; convert others to '-'
+    let s = s0
+      .replace(/\s+/g, '-') // whitespace -> dash
+      .replace(/[^\w:\-\.]/g, '-'); // anything else -> dash
+
+    // collapse multiple dashes
+    s = s.replace(/-+/g, '-');
+
+    // must start with letter/_ for safe CSS selector `#id`
+    if (!/^[A-Za-z_]/.test(s)) s = `drp-${s || 'id'}`;
+
+    return s;
+  }
+
+  private resolveBaseId() {
+    if (this._baseId) return;
+
+    DateRangePickerComponent._seq += 1;
+    const rnd = Math.random().toString(36).slice(2, 6);
+    const raw = (this.inputId || 'drp').trim();
+
+    // ✅ selector-safe id, no CSS.escape needed
+    const safe = this.sanitizeIdToken(raw);
+    this._baseId = `${safe}-${DateRangePickerComponent._seq}-${rnd}`;
+  }
+
+  private get ids() {
+    this.resolveBaseId();
+    return this._baseId;
+  }
+
+  private get labelId() {
+    return `${this.ids}-label`;
+  }
+  private get dialogTitleId() {
+    return `${this.ids}-dialog-title`;
+  }
+  private get dialogDescId() {
+    return `${this.ids}-dialog-desc`;
+  }
+  private get validationId() {
+    return `${this.ids}-validation`;
+  }
+  private get monthSelectId() {
+    return `${this.ids}-months`;
+  }
+  private get yearSelectId() {
+    return `${this.ids}-year`;
+  }
+  private get startGridId() {
+    return `${this.ids}-grid-start`;
+  }
+  private get endGridId() {
+    return `${this.ids}-grid-end`;
+  }
+
   // -------------------- lifecycle -------------------------
   componentWillLoad() {
+    // Ensure unique ids exist before render (important for aria-* references)
+    this.resolveBaseId();
+
     // placeholder reflects *display* format example
     this.placeholderText = this.placeholder ?? `${this.displayFormatExample()} ${this.joinBy} ${this.displayFormatExample()}`;
 
@@ -157,7 +228,7 @@ export class DateRangePickerComponent {
       });
     }
 
-    // outside clicks
+    // outside clicks (capture true)
     document.addEventListener('click', this.handleOutsideClick, { capture: true });
 
     // reset events
@@ -201,15 +272,19 @@ export class DateRangePickerComponent {
   syncMonthYearSelectors() {
     const root = this.el;
     if (!root) return;
-    const monthSelect = root.querySelector('#months') as HTMLSelectElement | null;
-    const yearSelect = root.querySelector('#year') as HTMLSelectElement | null;
+
+    // ✅ No CSS.escape (not available in Jest/JSDOM); ids are already selector-safe
+    const monthSelect = root.querySelector(`#${this.monthSelectId}`) as HTMLSelectElement | null;
+    const yearSelect = root.querySelector(`#${this.yearSelectId}`) as HTMLSelectElement | null;
+
     if (monthSelect) monthSelect.value = String(this.currentStartMonth);
     if (yearSelect) yearSelect.value = String(this.currentStartYear);
   }
 
   // -------------------- public method ---------------------
   /** Programmatically clear the selection and reset */
-  @Method() async clear() {
+  @Method()
+  async clear() {
     this.clearInputField();
   }
 
@@ -232,21 +307,39 @@ export class DateRangePickerComponent {
     return this.dateFormat === 'MM-DD-YYYY' ? 'MM-DD-YYYY' : 'YYYY-MM-DD';
   }
 
+  private joinIdRefs(...vals: Array<string | undefined | null>) {
+    const tokens: string[] = [];
+    for (const v of vals) {
+      const raw = String(v ?? '').trim();
+      if (!raw) continue;
+      tokens.push(
+        ...raw
+          .split(/\s+/)
+          .map(t => t.trim())
+          .filter(Boolean),
+      );
+    }
+    const seen = new Set<string>();
+    const out = tokens.filter(t => (seen.has(t) ? false : (seen.add(t), true)));
+    return out.length ? out.join(' ') : undefined;
+  }
+
   // -------------------- dropdown & popper -----------------
   private openDropdown = () => {
     this.dropdownOpen = true;
     this.userNavigated = false; // opening fresh; don't auto-apply focusedDate visually
     this.createPopperInstance();
+
     const calendarWrapper = this.el.querySelector('.calendar-wrapper');
     if (calendarWrapper) {
       calendarWrapper.addEventListener('keydown', this.handleKeyDown as any);
       calendarWrapper.addEventListener('focus', this.handleWrapperFocus as any);
-      // per-calendar focus listeners (if added later)
       Array.from(this.el.querySelectorAll('.dp-calendar')).forEach(cal => {
         cal.addEventListener('focus', this.handleCalendarFocus as any);
         cal.addEventListener('focusout', this.handleCalendarFocusOut as any);
       });
     }
+
     // Focus the dialog container (NOT a day cell)
     setTimeout(() => this.dropdownContentEl?.focus(), 0);
   };
@@ -458,7 +551,6 @@ export class DateRangePickerComponent {
 
     // Primary format based on flags
     if (this.showIso) {
-      // allow full ISO or YYYY-MM-DD
       const d = new Date(s);
       if (!Number.isNaN(d.getTime())) return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
       const short = tryYmd();
@@ -712,8 +804,8 @@ export class DateRangePickerComponent {
   private updateDisplayedDateRange() {
     const root = this.el;
     if (!root) return;
-    const sEl = root.querySelector('.start-date') as HTMLElement | null;
-    const eEl = root.querySelector('.end-date') as HTMLElement | null;
+    const sEl = root.querySelector(`.${'start-date'}`) as HTMLElement | null;
+    const eEl = root.querySelector(`.${'end-date'}`) as HTMLElement | null;
 
     if (sEl) sEl.textContent = this.formatForOutput(this.startDate);
     if (eEl) eEl.textContent = this.formatForOutput(this.endDate);
@@ -795,7 +887,6 @@ export class DateRangePickerComponent {
         out.push('col');
         continue;
       }
-      // unknown token -> ignore
     }
 
     return Array.from(new Set(out)).join(' ');
@@ -901,13 +992,23 @@ export class DateRangePickerComponent {
       }
       this.activateFirstFocusableCell();
 
-      // After activation, apply one step in the pressed direction
       const gridsNow = this.el.querySelectorAll('.calendar-grid');
-      const cellsNow = Array.from(gridsNow).flatMap(g => Array.from(g.querySelectorAll('.calendar-grid-item:not(.previous-month-day):not(.next-month-day)')) as HTMLElement[]);
+      const cellsNow = Array.from(gridsNow).flatMap(g =>
+        Array.from(g.querySelectorAll('.calendar-grid-item:not(.previous-month-day):not(.next-month-day)')) as HTMLElement[],
+      );
       const focusEl = (this.el.getRootNode() as Document | ShadowRoot)['activeElement'] as HTMLElement | null;
       const startIndex = focusEl ? cellsNow.indexOf(focusEl) : -1;
       if (startIndex >= 0) {
-        const delta = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? +1 : event.key === 'ArrowUp' ? -7 : event.key === 'ArrowDown' ? +7 : 0;
+        const delta =
+          event.key === 'ArrowLeft'
+            ? -1
+            : event.key === 'ArrowRight'
+              ? +1
+              : event.key === 'ArrowUp'
+                ? -7
+                : event.key === 'ArrowDown'
+                  ? +7
+                  : 0;
         const nextIndex = Math.max(0, Math.min(cellsNow.length - 1, startIndex + delta));
         if (nextIndex !== startIndex) this.moveFocusToNewIndex(cellsNow, nextIndex);
       }
@@ -1056,7 +1157,6 @@ export class DateRangePickerComponent {
     this.clearAllFocus();
     if (targetSpan) {
       targetSpan.classList.add('focus');
-      // NOTE: do not move DOM focus here; let arrows activate it
       const dataDate = (targetSpan.parentElement as HTMLElement).getAttribute('data-date');
       if (dataDate) this.focusedDate = new Date(`${dataDate}T00:00:00Z`);
       this.updateActiveDateElements();
@@ -1082,7 +1182,6 @@ export class DateRangePickerComponent {
     this.currentEndYear = selectedMonth === 11 ? this.currentStartYear + 1 : this.currentStartYear;
     this.userNavigated = false; // layout change
     this.syncMonthYearSelectors();
-    // keep visual cue but no DOM focus jump
     setTimeout(this.setVisualFocusFirstDayOfStartMonth, 0);
   };
 
@@ -1093,7 +1192,6 @@ export class DateRangePickerComponent {
     this.currentEndYear = this.currentStartMonth === 11 ? selectedYear + 1 : selectedYear;
     this.userNavigated = false; // layout change
     this.syncMonthYearSelectors();
-    // keep visual cue but no DOM focus jump
     setTimeout(this.setVisualFocusFirstDayOfStartMonth, 0);
   };
 
@@ -1108,11 +1206,9 @@ export class DateRangePickerComponent {
   private renderSelects(plumage = false) {
     const monthSelectEl = (
       <select
-        id="months"
+        id={this.monthSelectId}
         class="form-select form-control select-sm months"
-        aria-label="Select Month"
-        aria-labelledby="monthSelectField"
-        role="listbox"
+        aria-label="Select month"
         onChange={this.handleMonthChange}
         onFocus={plumage ? this.handleInputFocusStyle : this.handleFocus}
         onBlur={plumage ? this.handleInputBlurStyle : this.handleBlur}
@@ -1130,11 +1226,9 @@ export class DateRangePickerComponent {
 
     const yearSelectEl = (
       <select
-        id="year"
+        id={this.yearSelectId}
         class="form-select form-control select-sm years"
-        aria-label="Select Year"
-        aria-labelledby="yearSelectField"
-        role="listbox"
+        aria-label="Select year"
         onChange={this.handleYearChange}
         onFocus={plumage ? this.handleInputFocusStyle : this.handleFocus}
         onBlur={plumage ? this.handleInputBlurStyle : this.handleBlur}
@@ -1153,12 +1247,12 @@ export class DateRangePickerComponent {
     if (!plumage) {
       return (
         <Fragment>
-          <label id="monthSelectField" class="sr-only visually-hidden" htmlFor="months">
-            Select Month
+          <label class="sr-only visually-hidden" htmlFor={this.monthSelectId}>
+            Select month
           </label>
           {monthSelectEl}
-          <label id="yearSelectField" class="sr-only visually-hidden" htmlFor="year">
-            Select Year
+          <label class="sr-only visually-hidden" htmlFor={this.yearSelectId}>
+            Select year
           </label>
           {yearSelectEl}
         </Fragment>
@@ -1168,20 +1262,20 @@ export class DateRangePickerComponent {
     // Plumage framing (underline/focus bar)
     return (
       <Fragment>
-        <label id="monthSelectField" class="sr-only visually-hidden" htmlFor="months">
-          Select Month
+        <label class="sr-only visually-hidden" htmlFor={this.monthSelectId}>
+          Select month
         </label>
-        <div class="input-container me-2" role="presentation" aria-labelledby="monthSelectField">
+        <div class="input-container me-2" role="presentation">
           {monthSelectEl}
           <div class="b-underline" role="presentation">
             <div class="b-focus" role="presentation" aria-hidden="true" />
           </div>
         </div>
 
-        <label id="yearSelectField" class="sr-only visually-hidden" htmlFor="year">
-          Select Year
+        <label class="sr-only visually-hidden" htmlFor={this.yearSelectId}>
+          Select year
         </label>
-        <div class="input-container me-2" role="presentation" aria-labelledby="yearSelectField">
+        <div class="input-container me-2" role="presentation">
           {yearSelectEl}
           <div class="b-underline" role="presentation">
             <div class="b-focus" role="presentation" aria-hidden="true" />
@@ -1194,13 +1288,10 @@ export class DateRangePickerComponent {
   // Replace your current handlers with these
   private handleInputFocusStyle = (ev: FocusEvent) => {
     const target = ev.currentTarget as HTMLElement | null;
-    // 1) Prefer the inline plumage underline next to this control
     const container = target?.closest('.input-container') as HTMLElement | null;
     let bf: HTMLElement | null =
       (container && (container.querySelector('.b-focus') as HTMLElement | null)) ||
-      // 2) Fallback to the group-level underline (input group plumage)
       ((target?.closest('.plumage') as HTMLElement | null)?.querySelector('.b-underline .b-focus') as HTMLElement | null) ||
-      // 3) Last resort: first one in the component
       (this.el.querySelector('.b-underline .b-focus') as HTMLElement | null);
 
     if (bf) {
@@ -1223,24 +1314,23 @@ export class DateRangePickerComponent {
     }
   };
 
-  private renderCalendar(month0b: number, year: number) {
+  private renderCalendar(month0b: number, year: number, which: 'start' | 'end') {
     const formattedMonthYear = new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'long',
-    }).format(new Date(year, month0b, 1));
+      timeZone: 'UTC',
+    }).format(new Date(Date.UTC(year, month0b, 1)));
+
+    const gridId = which === 'start' ? this.startGridId : this.endGridId;
+    const captionId = `${gridId}-caption`;
 
     return (
-      <div
-        class="calendar dp-calendar form-control h-auto text-center pt-2"
-        role="grid"
-        aria-roledescription="Calendar"
-        aria-label={`Calendar for ${formattedMonthYear}`}
-        tabindex={0}
-      >
-        <div aria-live="polite" aria-atomic="true" class="calendar-grid-caption text-center font-weight-bold" id="calendar-grid-caption">
+      <div class="calendar dp-calendar form-control h-auto text-center pt-2">
+        <div id={captionId} aria-live="polite" aria-atomic="true" class="calendar-grid-caption text-center font-weight-bold">
           {formattedMonthYear}
         </div>
 
+        {/* ✅ Keep weekday row ABOVE the grid, as a sibling (matches your original CSS) */}
         <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d, i) => (
             <small
@@ -1254,7 +1344,8 @@ export class DateRangePickerComponent {
           ))}
         </div>
 
-        <div class="calendar-grid" role="grid">
+        {/* ✅ Keep .calendar-grid as the grid container like before */}
+        <div class="calendar-grid" role="grid" id={gridId} aria-labelledby={captionId}>
           {this.renderCalendarDays(month0b, year)}
         </div>
       </div>
@@ -1267,7 +1358,6 @@ export class DateRangePickerComponent {
     const daysInMonth = new Date(Date.UTC(year, month0b + 1, 0)).getUTCDate();
     const firstDayOfWeek = firstDay === 0 ? 0 : firstDay;
 
-    // Always render a 6-row grid (42 cells)
     let date = 1;
     let nextMonthDay = 1;
     const rows: any[] = [];
@@ -1283,14 +1373,12 @@ export class DateRangePickerComponent {
       let ariaLabel = '';
 
       if (idx < firstDayOfWeek) {
-        // leading days from previous month
         day = prevMonthLastDate - firstDayOfWeek + idx + 1;
         dataMonth = month0b === 0 ? 12 : month0b;
         dataYear = month0b === 0 ? year - 1 : year;
         itemClasses.push('previous-month-day');
         spanClasses.push('text-muted');
       } else if (date <= daysInMonth) {
-        // in-month days
         day = date++;
         const currentDate = new Date(Date.UTC(year, month0b, day));
         spanClasses.push('text-dark', 'font-weight-bold');
@@ -1302,13 +1390,11 @@ export class DateRangePickerComponent {
         if (this.isDateInRange(currentDate)) itemClasses.push('selected-range');
         if (this.isStartOrEndDate(currentDate)) itemClasses.push('selected-range-active');
 
-        // render-time focus only after user navigated
         const fd = this.focusedDate;
         if (this.userNavigated && fd && currentDate.getTime() === Date.UTC(fd.getUTCFullYear(), fd.getUTCMonth(), fd.getUTCDate())) {
           spanClasses.push('focus');
         }
       } else {
-        // trailing days from next month
         day = nextMonthDay++;
         dataMonth = month0b === 11 ? 1 : month0b + 2;
         dataYear = month0b === 11 ? year + 1 : year;
@@ -1320,7 +1406,9 @@ export class DateRangePickerComponent {
         spanClasses.push('btn-outline-light');
       }
 
-      ariaLabel = day ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(dataYear, dataMonth - 1, day)) : '';
+      ariaLabel = day
+        ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(Date.UTC(dataYear, dataMonth - 1, day)))
+        : '';
 
       const dataDate = day ? `${dataYear}-${String(dataMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}` : '';
 
@@ -1328,7 +1416,7 @@ export class DateRangePickerComponent {
         <div
           class={itemClasses.join(' ')}
           role="gridcell"
-          tabindex={-1}
+          tabIndex={-1}
           data-month={String(dataMonth)}
           data-year={String(dataYear)}
           data-day={String(day ?? '')}
@@ -1343,8 +1431,11 @@ export class DateRangePickerComponent {
       currentRow.push(cell);
 
       if (currentRow.length === 7) {
-        // Always push the row, even if it's all next-month days (fixes trailing days e.g. after February)
-        rows.push(<Fragment>{currentRow}</Fragment>);
+        rows.push(
+          <div role="row" class="calendar-grid-row" style={{ display: 'contents' }}>
+            {currentRow}
+          </div>,
+        );
         currentRow = [];
       }
     }
@@ -1363,10 +1454,10 @@ export class DateRangePickerComponent {
 
     return (
       <div class="date-picker">
-        <div class="range-picker-wrapper" role="region" aria-label={this.ariaLabel || 'Date Range Picker'}>
-          <div class="range-picker-nav mb-1" aria-label="Navigation Controls">
-            <button onClick={() => this.prevMonth()} class="range-picker-nav-btn btn-outline-secondary" aria-label="Previous Month">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+        <div class="range-picker-wrapper">
+          <div class="range-picker-nav mb-1" aria-label="Navigation controls">
+            <button type="button" onClick={() => this.prevMonth()} class="range-picker-nav-btn btn-outline-secondary" aria-label="Previous month">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" aria-hidden="true" focusable="false">
                 <path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c-12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path>
               </svg>
             </button>
@@ -1374,24 +1465,29 @@ export class DateRangePickerComponent {
             <div class="selectors">
               {this.renderSelects(this.plumage)}
 
-              <button onClick={() => this.el.dispatchEvent(new CustomEvent('reset-picker', { bubbles: true, composed: true }))} class="reset-btn" aria-label="Reset Calendar">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <button
+                type="button"
+                onClick={() => this.el.dispatchEvent(new CustomEvent('reset-picker', { bubbles: true, composed: true }))}
+                class="reset-btn"
+                aria-label="Reset calendar"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true" focusable="false">
                   <path d="M48.5 224L40 224c-13.3 0-24-10.7-24-24L16 72c0-9.7 5.8-18.5 14.8-22.2s19.3-1.7 26.2 5.2L98.6 96.6c87.6-86.5 228.7-86.2 315.8 1c87.5 87.5 87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3c-62.2-62.2-162.7-62.5-225.3-1L185 183c6.9 6.9 8.9 17.2 5.2 26.2s-12.5 14.8-22.2 14.8L48.5 224z"></path>
                 </svg>
               </button>
             </div>
 
-            <button onClick={() => this.nextMonth()} class="range-picker-nav-btn btn-outline-secondary" aria-label="Next Month">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+            <button type="button" onClick={() => this.nextMonth()} class="range-picker-nav-btn btn-outline-secondary" aria-label="Next month">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" aria-hidden="true" focusable="false">
                 <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s-32.8-12.5 45.3 0l160 160z"></path>
               </svg>
             </button>
           </div>
 
           <div class="range-picker">
-            <div class="calendar-wrapper" role="application" aria-label="Calendars" tabindex={0}>
-              {this.renderCalendar(sm, sy)}
-              {this.renderCalendar(nm, ny)}
+            <div class="calendar-wrapper" aria-label="Calendars" tabIndex={0}>
+              {this.renderCalendar(sm, sy, 'start')}
+              {this.renderCalendar(nm, ny, 'end')}
             </div>
 
             <footer class="border-top small text-center">
@@ -1400,8 +1496,8 @@ export class DateRangePickerComponent {
               </div>
             </footer>
 
-            <div class="date-range-display" role="region" aria-labelledby="date-ranges" tabIndex={0}>
-              <div id="date-ranges" class="date-ranges">
+            <div class="date-range-display" role="region" aria-labelledby={`${this.ids}-date-ranges`} tabIndex={0}>
+              <div id={`${this.ids}-date-ranges`} class="date-ranges">
                 <span class={`start-end-ranges${this.showIso ? ' iso' : this.showLong ? ' long' : ''}`}>
                   <span class="start-date">N/A</span>
                   <span class="to-spacing">{this.joinBy}</span>
@@ -1413,7 +1509,7 @@ export class DateRangePickerComponent {
 
           {showOk ? (
             <div class="ok-button">
-              <button onClick={this._handleOkClick} class="btn btn-primary" aria-label="Confirm or close date picker">
+              <button type="button" onClick={this._handleOkClick} class="btn btn-primary" aria-label="Confirm or close date picker">
                 {this.okButtonLabel}
               </button>
             </div>
@@ -1430,11 +1526,19 @@ export class DateRangePickerComponent {
           class="dropdown-content"
           role="dialog"
           aria-modal="true"
-          aria-labelledby="datepicker-desc"
-          tabindex={-1}
+          aria-labelledby={this.dialogTitleId}
+          aria-describedby={this.dialogDescId}
+          tabIndex={-1}
           ref={el => (this.dropdownContentEl = el as HTMLDivElement)}
           onClick={e => e.stopPropagation()}
         >
+          <div id={this.dialogTitleId} class="sr-only visually-hidden">
+            {this.ariaLabel || this.label || 'Date Range Picker'}
+          </div>
+          <div id={this.dialogDescId} class="sr-only visually-hidden">
+            Select a start date and an end date. Use arrow keys to navigate days. Press Enter to select.
+          </div>
+
           {this.renderDateRangePicker()}
         </div>
       </div>
@@ -1445,47 +1549,43 @@ export class DateRangePickerComponent {
   private renderInputGroupClassic() {
     const isRow = this.isHorizontal() || this.isInline();
 
-    // Compute col classes
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
     const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
 
-    // Validate numeric fallbacks if needed (no-op when string specs provided)
     this.getComputedCols();
 
     const groupClass = ['input-group', this.groupSizeClass(), this.validation ? ' is-invalid' : '', this.disabled ? 'disabled' : ''].filter(Boolean).join(' ');
+    const describedby = this.joinIdRefs(this.dialogDescId, this.validation ? this.validationId : undefined);
 
     return (
       <Fragment>
         <div class={['form-group', 'form-input-group-basic', this.formLayout, isRow ? 'row' : ''].filter(Boolean).join(' ')}>
-          {/* Label */}
           {this.labelHidden ? null : (
-            <label
-              id={`${this.inputId}-label`}
-              class={this.isHorizontal() ? this.labelClassHorizontal(labelColClass) : this.labelClassBase()}
-              htmlFor={this.inputId}
-              aria-hidden="true"
-            >
+            <label id={this.labelId} class={this.isHorizontal() ? this.labelClassHorizontal(labelColClass) : this.labelClassBase()} htmlFor={this.inputId}>
               <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
               {this.required ? <span class="required">*</span> : null}
             </label>
           )}
 
-          {/* Input column */}
           <div class={this.isHorizontal() ? inputColClass : undefined}>
-            <div class={groupClass} role="group" aria-label="Date Picker Group">
+            <div class={groupClass} role="group" aria-label="Date picker group">
               {this.prependProp ? (
                 <div class="input-group-prepend">
                   <button
+                    type="button"
                     onClick={this.toggleDropdown}
-                    class={`calendar-button btn pp-left${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text${this.validation ? ' is-invalid' : ''}`}
-                    aria-label="Toggle Calendar Picker"
+                    class={`calendar-button btn pp-left${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text${
+                      this.validation ? ' is-invalid' : ''
+                    }`}
+                    aria-label="Toggle calendar picker"
                     aria-haspopup="dialog"
                     aria-expanded={this.dropdownOpen ? 'true' : 'false'}
+                    aria-controls={this.dropdownOpen ? undefined : undefined}
                     disabled={this.disabled}
                   >
-                    <i class={this.icon} />
+                    <i class={this.icon} aria-hidden="true" />
                   </button>
                 </div>
               ) : null}
@@ -1501,12 +1601,14 @@ export class DateRangePickerComponent {
                   onInput={this.handleInputChange}
                   disabled={this.disabled}
                   aria-label={this.labelHidden ? this.label : undefined}
-                  aria-labelledby={!this.labelHidden ? `${this.inputId}-label` : undefined}
-                  aria-describedby="datepicker-desc"
+                  aria-labelledby={!this.labelHidden ? this.labelId : undefined}
+                  aria-describedby={describedby}
+                  aria-required={this.required ? 'true' : undefined}
+                  aria-invalid={this.validation ? 'true' : undefined}
                 />
                 {this.value ? (
-                  <button onClick={() => this.clearInputField()} class="clear-input-button" aria-label="Clear Field" role="button">
-                    <i class="fas fa-times-circle" />
+                  <button type="button" onClick={() => this.clearInputField()} class="clear-input-button" aria-label="Clear date range" disabled={this.disabled}>
+                    <i class="fas fa-times-circle" aria-hidden="true" />
                   </button>
                 ) : null}
               </div>
@@ -1514,14 +1616,15 @@ export class DateRangePickerComponent {
               {this.appendProp ? (
                 <div class="input-group-append">
                   <button
+                    type="button"
                     onClick={this.toggleDropdown}
                     class={`calendar-button btn${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text${this.validation ? ' is-invalid' : ''}`}
-                    aria-label="Toggle Calendar Picker"
+                    aria-label="Toggle calendar picker"
                     aria-haspopup="dialog"
                     aria-expanded={this.dropdownOpen ? 'true' : 'false'}
                     disabled={this.disabled}
                   >
-                    <i class={this.icon} />
+                    <i class={this.icon} aria-hidden="true" />
                   </button>
                 </div>
               ) : null}
@@ -1529,9 +1632,13 @@ export class DateRangePickerComponent {
 
             {this.validation ? (
               this.warningMessage ? (
-                <div class="invalid-feedback warning">{this.warningMessage}</div>
+                <div id={this.validationId} class="invalid-feedback warning">
+                  {this.warningMessage}
+                </div>
               ) : (
-                <div class="invalid-feedback validation">{this.validationMessage}</div>
+                <div id={this.validationId} class="invalid-feedback validation">
+                  {this.validationMessage}
+                </div>
               )
             ) : null}
           </div>
@@ -1544,43 +1651,41 @@ export class DateRangePickerComponent {
   private renderInputGroupPlumage() {
     const isRow = this.isHorizontal() || this.isInline();
 
-    // Compute col classes
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
     const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
 
-    // Validate numeric fallbacks if needed (no-op when string specs provided)
     this.getComputedCols();
 
     const groupClass = ['input-group', 'nowrap', this.groupSizeClass(), this.disabled ? 'disabled' : ''].filter(Boolean).join(' ');
+    const describedby = this.joinIdRefs(this.dialogDescId, this.validation ? this.validationId : undefined);
 
     return (
       <div class={this.formLayout ? this.formLayout : ''}>
         <div class={['form-group', 'form-input-group', this.formLayout || '', isRow ? 'row' : ''].filter(Boolean).join(' ')}>
-          {/* Label */}
           {this.labelHidden ? null : (
-            <label class={this.isHorizontal() ? this.labelClassHorizontal(labelColClass) : this.labelClassBase()} htmlFor={this.inputId} aria-hidden="true">
+            <label id={this.labelId} class={this.isHorizontal() ? this.labelClassHorizontal(labelColClass) : this.labelClassBase()} htmlFor={this.inputId}>
               <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
               {this.required ? <span class="required">*</span> : null}
             </label>
           )}
 
-          {/* Input column */}
           <div class={this.isHorizontal() ? inputColClass : undefined}>
-            <div class={groupClass} role="group" aria-label="Date Picker Group" tabIndex={0}>
+            <div class={groupClass} role="group" aria-label="Date picker group" tabIndex={0}>
               {this.prependProp ? (
                 <button
+                  type="button"
                   onClick={this.toggleDropdown}
                   class={`calendar-button btn pp-left input-group-text${this.validation ? ' is-invalid' : ''}`}
-                  aria-label="Toggle Calendar Picker"
+                  aria-label="Toggle calendar picker"
                   aria-haspopup="dialog"
                   aria-expanded={this.dropdownOpen ? 'true' : 'false'}
                   disabled={this.disabled}
                   onFocus={this.handleInputFocusStyle}
                   onBlur={this.handleInputBlurStyle}
                 >
-                  <i class={this.icon} />
+                  <i class={this.icon} aria-hidden="true" />
                 </button>
               ) : null}
 
@@ -1594,31 +1699,34 @@ export class DateRangePickerComponent {
                   value={this.value}
                   onInput={this.handleInputChange}
                   aria-label={this.labelHidden ? this.label : undefined}
-                  aria-labelledby={!this.labelHidden ? `${this.inputId}-label` : undefined}
+                  aria-labelledby={!this.labelHidden ? this.labelId : undefined}
+                  aria-describedby={describedby}
+                  aria-required={this.required ? 'true' : undefined}
+                  aria-invalid={this.validation ? 'true' : undefined}
                   name="selectedDate"
-                  aria-describedby="datepicker-desc"
                   disabled={this.disabled}
                   onFocus={this.handleInputFocusStyle}
                 />
                 {this.value ? (
-                  <button onClick={() => this.clearInputField()} class="clear-input-button" aria-label="Clear Field" role="button">
-                    <i class="fas fa-times-circle" />
+                  <button type="button" onClick={() => this.clearInputField()} class="clear-input-button" aria-label="Clear date range" disabled={this.disabled}>
+                    <i class="fas fa-times-circle" aria-hidden="true" />
                   </button>
                 ) : null}
               </div>
 
               {this.appendProp ? (
                 <button
+                  type="button"
                   onClick={this.toggleDropdown}
                   class={`calendar-button btn input-group-text${this.validation ? ' is-invalid' : ''}`}
-                  aria-label="Toggle Calendar Picker"
+                  aria-label="Toggle calendar picker"
                   aria-haspopup="dialog"
                   aria-expanded={this.dropdownOpen ? 'true' : 'false'}
                   disabled={this.disabled}
                   onFocus={this.handleInputFocusStyle}
                   onBlur={this.handleInputBlurStyle}
                 >
-                  <i class={this.icon} />
+                  <i class={this.icon} aria-hidden="true" />
                 </button>
               ) : null}
             </div>
@@ -1629,9 +1737,13 @@ export class DateRangePickerComponent {
 
             {this.validation ? (
               this.warningMessage ? (
-                <div class="invalid-feedback warning">{this.warningMessage}</div>
+                <div id={this.validationId} class="invalid-feedback warning">
+                  {this.warningMessage}
+                </div>
               ) : (
-                <div class="invalid-feedback validation">{this.validationMessage}</div>
+                <div id={this.validationId} class="invalid-feedback validation">
+                  {this.validationMessage}
+                </div>
               )
             ) : null}
           </div>

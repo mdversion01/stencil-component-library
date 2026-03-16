@@ -676,3 +676,163 @@ export const ButtonWithBadge = {
     },
   },
 };
+
+// Accessibility matrix: renders default/token/dot and prints computed host a11y attrs
+export const AccessibilityMatrix = {
+  name: 'Accessibility matrix (computed host ARIA)',
+  render: () => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '16px';
+    wrap.style.alignItems = 'start';
+    wrap.style.maxWidth = '980px';
+
+    const title = document.createElement('div');
+    title.innerHTML = `<strong>Accessibility matrix</strong><div style="opacity:.8">Shows computed host <code>role</code> / <code>aria-*</code> values for default/token/dot variants.</div>`;
+    wrap.appendChild(title);
+
+    const mkRow = (labelText, makeEl) => {
+      const row = document.createElement('div');
+      row.style.display = 'grid';
+      row.style.gridTemplateColumns = '220px 1fr';
+      row.style.gap = '12px';
+      row.style.alignItems = 'start';
+      row.style.border = '1px solid #ddd';
+      row.style.borderRadius = '8px';
+      row.style.padding = '12px';
+
+      const left = document.createElement('div');
+      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+
+      const right = document.createElement('div');
+      right.style.display = 'grid';
+      right.style.gap = '8px';
+
+      const demo = document.createElement('div');
+      demo.style.display = 'inline-flex';
+      demo.style.alignItems = 'center';
+      demo.style.gap = '8px';
+      demo.style.flexWrap = 'wrap';
+
+      const el = makeEl();
+      demo.appendChild(el);
+
+      const pre = document.createElement('pre');
+      pre.style.margin = '0';
+      pre.style.padding = '10px';
+      pre.style.borderRadius = '8px';
+      pre.style.overflow = 'auto';
+      pre.style.border = '1px solid #eee';
+      pre.style.background = '#fafafa';
+      pre.textContent = 'Loading computed attributes…';
+
+      right.appendChild(demo);
+      right.appendChild(pre);
+
+      row.appendChild(left);
+      row.appendChild(right);
+
+      // compute host attrs after element is connected & rendered
+      const update = () => {
+        const attrs = {
+          role: el.getAttribute('role'),
+          'aria-hidden': el.getAttribute('aria-hidden'),
+          'aria-label': el.getAttribute('aria-label'),
+          'aria-labelledby': el.getAttribute('aria-labelledby'),
+          'aria-describedby': el.getAttribute('aria-describedby'),
+          'aria-live': el.getAttribute('aria-live'),
+          'aria-atomic': el.getAttribute('aria-atomic'),
+        };
+        pre.textContent = JSON.stringify(attrs, null, 2);
+      };
+
+      // give Stencil a microtask + frame to render/reflect attrs
+      queueMicrotask(() => requestAnimationFrame(update));
+
+      return row;
+    };
+
+    // 1) Default badge: no a11y name => aria-hidden should be true (role absent)
+    wrap.appendChild(
+      mkRow('Default (no ARIA name)', () => {
+        const b = document.createElement('badge-component');
+        b.textContent = 'Default';
+        return b;
+      }),
+    );
+
+    // 2) Default badge with name => should get role="note" (unless overridden) and aria-hidden cleared
+    wrap.appendChild(
+      mkRow('Default (with aria-label)', () => {
+        const b = document.createElement('badge-component');
+        b.setAttribute('aria-label', 'Informational badge');
+        b.textContent = 'Named';
+        return b;
+      }),
+    );
+
+    // 3) Token badge: should compute role="status" + aria-live/atomic; name required (we provide)
+    wrap.appendChild(
+      mkRow('Token (with aria-label)', () => {
+        const b = document.createElement('badge-component');
+        b.setAttribute('token', '');
+        b.setAttribute('variant', 'info');
+        b.setAttribute('size', 'sm');
+        b.setAttribute('aria-label', 'Status badge');
+        b.textContent = 'Token';
+        return b;
+      }),
+    );
+
+    // 4) Dot badge: should compute role="status" + aria-live/atomic; name required (we provide)
+    wrap.appendChild(
+      mkRow('Dot (with aria-label)', () => {
+        const b = document.createElement('badge-component');
+        b.setAttribute('dot', '');
+        b.setAttribute('variant', 'danger');
+        b.setAttribute('pulse', '');
+        b.setAttribute('aria-label', 'Notification badge');
+        b.textContent = '';
+        return b;
+      }),
+    );
+
+    // 5) Explicit role override: verify we can override computed role
+    wrap.appendChild(
+      mkRow('Override role (role="img")', () => {
+        const b = document.createElement('badge-component');
+        b.setAttribute('role', 'img');
+        b.setAttribute('aria-label', 'Badge image role override');
+        b.textContent = 'Override';
+        return b;
+      }),
+    );
+
+    return wrap;
+  },
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Renders several badge modes and prints the **computed host** accessibility attributes (role + aria-*). Useful for validating 508 compliance behavior after changes.',
+      },
+      source: {
+        code: `<!-- Default (no ARIA name) -->
+<badge-component>Default</badge-component>
+
+<!-- Default (with aria-label) -->
+<badge-component aria-label="Informational badge">Named</badge-component>
+
+<!-- Token (with aria-label) -->
+<badge-component token variant="info" size="sm" aria-label="Status badge">Token</badge-component>
+
+<!-- Dot (with aria-label) -->
+<badge-component dot pulse variant="danger" aria-label="Notification badge"></badge-component>
+
+<!-- Override role -->
+<badge-component role="img" aria-label="Badge image role override">Override</badge-component>`,
+      },
+    },
+  },
+};

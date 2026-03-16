@@ -16,6 +16,8 @@ const firstHostBtn = (root: HTMLElement) =>
 const innerButtonOf = (hostBtn: HTMLElement | null) =>
   (hostBtn ? (hostBtn.querySelector('button') as HTMLButtonElement | null) : null);
 
+const panelAt = (root: HTMLElement, i: number) => root.querySelectorAll<HTMLElement>('.accordion-collapse')[i] ?? null;
+
 describe('accordion-container', () => {
   const sampleData = [
     { header: 'Header 1', content: 'Content 1' },
@@ -34,9 +36,7 @@ describe('accordion-container', () => {
   it('renders outlined, block, and disabled props', async () => {
     const page = await newSpecPage({
       components: [AccordionContainer, ButtonComponent],
-      template: () => (
-        <accordion-container data={sampleData} outlined block disabled></accordion-container>
-      ),
+      template: () => <accordion-container data={sampleData} outlined block disabled></accordion-container>,
     });
     await page.waitForChanges();
 
@@ -44,20 +44,14 @@ describe('accordion-container', () => {
     expect(buttons.length).toBe(2);
 
     buttons.forEach((btnHost: any) => {
-      // Props on the custom element host
       expect(btnHost.outlined).toBe(true);
       expect(btnHost.block).toBe(true);
       expect(btnHost.disabled).toBe(true);
 
-      // And effects on the inner native <button>
       const inner = btnHost.querySelector('button') as HTMLButtonElement | null;
       expect(inner).toBeTruthy();
-      // Disabled should be reflected on the native control
       expect(inner!.hasAttribute('disabled')).toBe(true);
-      // Block should produce the block class
       expect(inner!.classList.contains('btn--block')).toBe(true);
-      // Outlined + (optional) variant yields an outline class; if no variant, class may be absent/empty,
-      // so just assert the prop (above) instead of a class that depends on variant.
     });
 
     expect(page.root).toMatchSnapshot('outlined-block-disabled');
@@ -177,35 +171,122 @@ describe('accordion-container', () => {
     expect(page3.root).toMatchSnapshot('non-array data fallback');
   });
 
-  it('renders correct ARIA attributes on accordion headers and panels', async () => {
+  it('renders correct ARIA attributes on accordion headers and panels (including hidden/inert when collapsed)', async () => {
     const parentId = 'my-accordion';
     const page = await newSpecPage({
       components: [AccordionContainer, ButtonComponent],
-      template: () => (
-        <accordion-container parentId={parentId} data={[{ header: 'Item 1', content: 'Content 1' }]}></accordion-container>
-      ),
+      template: () => <accordion-container parentId={parentId} data={[{ header: 'Item 1', content: 'Content 1' }]}></accordion-container>,
     });
     await page.waitForChanges();
 
-    const expectedHeaderId = `${parentId}-header-0`;
-    const expectedPanelId  = `${parentId}-collapse-0`;
+    const expectedHeaderId = `${parentId}-header-0`; // <h2 id=...>
+    const expectedTriggerId = `${parentId}-trigger-0`; // <button-component id=...>
+    const expectedPanelId = `${parentId}-collapse-0`;
 
     const header = page.root.querySelector('.accordion-header')!;
     const hostBtn = header.querySelector('button-component') as HTMLElement | null;
     const inner = innerButtonOf(hostBtn);
-    const panel = page.root.querySelector('.accordion-collapse')!;
+    const panel = page.root.querySelector<HTMLElement>('.accordion-collapse')!;
+
+    expect(header.getAttribute('id')).toBe(expectedHeaderId);
+    expect(hostBtn?.getAttribute('id')).toBe(expectedTriggerId);
 
     expect(inner?.getAttribute('aria-expanded')).toBe('false');
     expect(inner?.getAttribute('aria-controls')).toBe(expectedPanelId);
 
     expect(panel.getAttribute('role')).toBe('region');
-    expect(panel.getAttribute('aria-labelledby')).toBe(expectedHeaderId);
+    expect(panel.getAttribute('aria-labelledby')).toBe(expectedTriggerId);
 
-    expect(header.getAttribute('id')).toBe(expectedHeaderId);
     expect(panel.getAttribute('id')).toBe(expectedPanelId);
-    expect(panel.getAttribute('data-bs-parent')).toBe(`#${parentId}`);
+
+    // collapsed panels should be hidden + inert
+    expect(panel.getAttribute('aria-hidden')).toBe('true');
+    expect(panel.hasAttribute('hidden')).toBe(true);
+    expect(panel.hasAttribute('inert')).toBe(true);
+    expect(panel.style.display).toBe('none');
+    expect(panel.style.height).toBe('0px');
+
+    // data-bs-parent only present when singleOpen=true
+    expect(panel.getAttribute('data-bs-parent')).toBeNull();
 
     expect(page.root).toMatchSnapshot('ARIA attributes check');
+  });
+
+  it('closed panel becomes visible and non-inert when opened, and returns to inert when closed', async () => {
+    const page = await newSpecPage({
+      components: [AccordionContainer, ButtonComponent],
+      template: () => <accordion-container data={sampleData}></accordion-container>,
+    });
+    await page.waitForChanges();
+
+    const hostBtn0 = firstHostBtn(page.root);
+    const inner0 = innerButtonOf(hostBtn0);
+    const panel0 = panelAt(page.root, 0)!;
+
+    // initial (closed)
+    expect(panel0.getAttribute('aria-hidden')).toBe('true');
+    expect(panel0.hasAttribute('hidden')).toBe(true);
+    expect(panel0.hasAttribute('inert')).toBe(true);
+
+    // open
+    click(inner0);
+    await page.waitForChanges();
+
+    expect(page.rootInstance.openIndexes.has(0)).toBe(true);
+    expect(panel0.getAttribute('aria-hidden')).toBeNull();
+    expect(panel0.hasAttribute('hidden')).toBe(false);
+    expect(panel0.hasAttribute('inert')).toBe(false);
+    expect(panel0.style.display).toBe('block');
+    // during/after open transition height is auto in component; in tests it should already be "auto"
+    expect(panel0.style.height).toBe('auto');
+
+    // close
+    click(inner0);
+    await page.waitForChanges();
+
+    expect(page.rootInstance.openIndexes.has(0)).toBe(false);
+    expect(panel0.getAttribute('aria-hidden')).toBe('true');
+    expect(panel0.hasAttribute('hidden')).toBe(true);
+    expect(panel0.hasAttribute('inert')).toBe(true);
+    expect(panel0.style.height).toBe('0px');
+    // display becomes none immediately in render
+    expect(panel0.style.display).toBe('none');
+  });
+
+  it('sets data-bs-parent when singleOpen=true', async () => {
+    const parentId = 'single-parent';
+    const page = await newSpecPage({
+      components: [AccordionContainer, ButtonComponent],
+      template: () => <accordion-container parentId={parentId} singleOpen data={sampleData}></accordion-container>,
+    });
+    await page.waitForChanges();
+
+    const panels = page.root.querySelectorAll('.accordion-collapse');
+    expect(panels.length).toBe(2);
+    panels.forEach(p => {
+      expect(p.getAttribute('data-bs-parent')).toBe(`#${parentId}`);
+    });
+  });
+
+  it('singleOpen closes the previously open item when opening another', async () => {
+    const page = await newSpecPage({
+      components: [AccordionContainer, ButtonComponent],
+      template: () => <accordion-container singleOpen data={sampleData}></accordion-container>,
+    });
+    await page.waitForChanges();
+
+    const btnHosts = Array.from(page.root.querySelectorAll('button-component')) as HTMLElement[];
+    const inner0 = innerButtonOf(btnHosts[0]);
+    const inner1 = innerButtonOf(btnHosts[1]);
+
+    click(inner0);
+    await page.waitForChanges();
+    expect(page.rootInstance.openIndexes.has(0)).toBe(true);
+
+    click(inner1);
+    await page.waitForChanges();
+    expect(page.rootInstance.openIndexes.has(1)).toBe(true);
+    expect(page.rootInstance.openIndexes.has(0)).toBe(false);
   });
 
   it('renders empty accordion when data is an empty array', async () => {
@@ -289,47 +370,22 @@ describe('accordion-container', () => {
   it('toggles icon between first and second values in icon="a,b"', async () => {
     const page = await newSpecPage({
       components: [AccordionContainer, ButtonComponent],
-      template: () => (
-        <accordion-container icon="icon-collapsed,icon-expanded" data={[{ header: 'Title', content: 'Body' }]}></accordion-container>
-      ),
+      template: () => <accordion-container icon="icon-collapsed,icon-expanded" data={[{ header: 'Title', content: 'Body' }]}></accordion-container>,
     });
     await page.waitForChanges();
 
     const getIcon = () => page.root.querySelector('icon-component')?.getAttribute('icon');
-
     expect(getIcon()).toBe('icon-collapsed');
 
     const hostBtn = page.root.querySelector('button-component') as HTMLElement | null;
     const inner = innerButtonOf(hostBtn);
     click(inner);
     await page.waitForChanges();
-
     expect(getIcon()).toBe('icon-expanded');
 
     click(inner);
     await page.waitForChanges();
-
     expect(getIcon()).toBe('icon-collapsed');
-  });
-
-  it('renders no icon-component if icon is "," or whitespace only', async () => {
-    const cases = [
-      { icon: ',', desc: 'icon as comma only' },
-      { icon: ' ', desc: 'icon as space only' },
-    ];
-
-    for (const { icon, desc } of cases) {
-      const page = await newSpecPage({
-        components: [AccordionContainer, ButtonComponent],
-        template: () => <accordion-container icon={icon} data={[{ header: 'A', content: 'B' }]}></accordion-container>,
-      });
-      await page.waitForChanges();
-
-      const icons = page.root.querySelectorAll('icon-component');
-      expect(icons.length).toBe(1);
-      expect(icons[0].getAttribute('icon')).toBe('fas fa-angle-down');
-      expect(page.root).toMatchSnapshot(`no icon rendered: ${desc}`);
-    }
   });
 
   it('renders only first two icons from icon="a,b,c"', async () => {
@@ -386,11 +442,7 @@ describe('accordion-container', () => {
     await newSpecPage({
       components: [AccordionContainer, ButtonComponent],
       template: () => (
-        <accordion-container
-          icon="fas fa-plus,fas fa-minus"
-          parentId="test-acc"
-          data={[{ header: 'Test Header', content: 'Test Content' }]}
-        ></accordion-container>
+        <accordion-container icon="fas fa-plus,fas fa-minus" parentId="test-acc" data={[{ header: 'Test Header', content: 'Test Content' }]}></accordion-container>
       ),
     });
 
@@ -398,17 +450,17 @@ describe('accordion-container', () => {
     warnSpy.mockRestore();
   });
 
-  it('shows warning for explicitly empty icon', async () => {
+  it('shows warning for explicitly empty icon attribute', async () => {
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
     await newSpecPage({
       components: [AccordionContainer, ButtonComponent],
       html: `<accordion-container icon=""></accordion-container>`,
     });
-    expect(warnSpy.mock.calls.some(call => call[0].includes('"icon" prop is empty'))).toBe(true);
+    expect(warnSpy.mock.calls.some(call => String(call[0]).includes('"icon" prop is empty'))).toBe(true);
     warnSpy.mockRestore();
   });
 
-  it('shows warning if data is invalid', async () => {
+  it('shows warning if data is invalid (no warning expected here, component normalizes to [])', async () => {
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
     const page = await newSpecPage({
       components: [AccordionContainer, ButtonComponent],

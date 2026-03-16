@@ -16,13 +16,41 @@ export default {
     },
   },
   argTypes: {
+    /* =========================
+     * Input Attributes
+     * ========================= */
     disabled: {
       control: 'boolean',
       name: 'disabled',
-      table: { category: 'Attributes', defaultValue: { summary: false } },
+      table: { category: 'Input Attributes', defaultValue: { summary: false } },
       description: 'Disables the input field, preventing user interaction.',
     },
+    placeholder: {
+      control: 'text',
+      name: 'placeholder',
+      table: { category: 'Input Attributes' },
+      description: 'The placeholder text for the input element. This provides a hint to the user about what to enter.',
+    },
+    readOnly: {
+      control: 'boolean',
+      name: 'read-only',
+      description: 'Whether the input field is read-only',
+      table: { category: 'Input Attributes', defaultValue: { summary: false } },
+    },
+    type: {
+      control: 'text',
+      description: 'The type of the input field',
+      table: { category: 'Input Attributes' },
+    },
+    value: {
+      control: 'text',
+      description: 'The value of the input field',
+      table: { category: 'Input Attributes' },
+    },
 
+    /* =========================
+     * Layout
+     * ========================= */
     formLayout: {
       control: { type: 'select' },
       options: ['', 'horizontal', 'inline'],
@@ -30,35 +58,30 @@ export default {
       table: { category: 'Layout' },
       description: 'Sets the form layout style. "horizontal" applies a two-column grid layout, while "inline" arranges elements in a single row.',
     },
-
     inputCol: {
       control: 'text',
       name: 'input-col',
-      table: { category: 'Attributes', defaultValue: { summary: 10 } },
+      table: { category: 'Layout', defaultValue: { summary: 10 } },
       description: 'Used with horizontal form layouts. Single numeric column for the input in a grid. Default is 10 (col-10).',
     },
-
     inputCols: {
       control: 'text',
       name: 'input-cols',
-      table: { category: 'Attributes' },
+      table: { category: 'Layout' },
       description: 'Used with horizontal form layouts. Responsive input column classes.',
     },
-
     inputId: {
       control: 'text',
       name: 'input-id',
-      table: { category: 'Attributes' },
+      table: { category: 'Layout' },
       description: 'The unique identifier for the input element within the component. This is used for accessibility and form association.',
     },
-
     label: {
       control: 'text',
       name: 'label',
-      table: { category: 'Attributes' },
+      table: { category: 'Layout' },
       description: 'The text label for the component. This is used for accessibility and user guidance.',
     },
-
     labelAlign: {
       control: { type: 'select' },
       options: ['', 'right'],
@@ -66,28 +89,24 @@ export default {
       table: { category: 'Layout' },
       description: 'Aligns the label text. "right" aligns the label to the right, which is typically used in horizontal form layouts.',
     },
-
     labelCol: {
       control: 'text',
       name: 'label-col',
-      table: { category: 'Attributes', defaultValue: { summary: 2 } },
+      table: { category: 'Layout', defaultValue: { summary: 2 } },
       description: 'Used with horizontal form layouts. Single numeric column for the label in a grid. Default is 2 (col-2).',
     },
-
     labelCols: {
       control: 'text',
       name: 'label-cols',
-      table: { category: 'Attributes' },
+      table: { category: 'Layout' },
       description: 'Used with horizontal form layouts. Responsive label column classes.',
     },
-
     labelHidden: {
       control: 'boolean',
       name: 'label-hidden',
-      table: { category: 'Attributes', defaultValue: { summary: false } },
+      table: { category: 'Layout', defaultValue: { summary: false } },
       description: 'Hides the label visually while keeping it accessible for screen readers.',
     },
-
     labelSize: {
       control: { type: 'select' },
       options: ['xs', 'sm', 'lg'],
@@ -95,28 +114,6 @@ export default {
       table: { category: 'Layout' },
       description: 'Sets the size of the label text. Options include "xs" (extra small), "sm" (small), and "lg" (large).',
     },
-
-    placeholder: {
-      control: 'text',
-      name: 'placeholder',
-      table: { category: 'Attributes' },
-      description: 'The placeholder text for the input element. This provides a hint to the user about what to enter.',
-    },
-
-    readOnly: {
-      control: 'boolean',
-      name: 'read-only',
-      description: 'Whether the input field is read-only',
-      table: { category: 'Attributes', defaultValue: { summary: false } },
-    },
-
-    required: {
-      control: 'boolean',
-      name: 'required',
-      table: { category: 'Attributes', defaultValue: { summary: false } },
-      description: 'Marks the input as required, which will trigger validation if the field is left empty.',
-    },
-
     size: {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
@@ -125,37 +122,36 @@ export default {
       description: 'Sets the size of the input field. Options include "sm" (small) and "lg" (large). Not adding any size will use the default.',
     },
 
-    type: {
-      control: 'text',
-      description: 'The type of the input field',
-      table: { category: 'Attributes' },
-    },
-
-    validation: {
-      control: 'boolean',
-      name: 'validation',
-      table: { category: 'Attributes', defaultValue: { summary: false } },
-      description: 'Enables validation for the input field.',
-    },
-
-    validationMessage: {
-      control: 'text',
-      name: 'validation-message',
-      table: { category: 'Attributes' },
-      description: 'The validation message to display when the input is invalid.',
-    },
-
-    value: {
-      control: 'text',
-      description: 'The value of the input field',
-      table: { category: 'Attributes' },
-    },
-
+    /* =========================
+     * Storybook Only
+     * ========================= */
     wrapWithForm: {
       control: 'boolean',
       description:
         'When enabled, the input field will be wrapped in a `<form-component>` and `slot="formField"` is added to the `<input-field-component>` in the docs preview. This allows you to test form-related props like formLayout and see how the input behaves within a form context. This is a story-only control and does not affect the actual component props.',
       table: { category: 'Storybook Only', defaultValue: { summary: false } },
+    },
+
+    /* =========================
+     * Validation
+     * ========================= */
+    required: {
+      control: 'boolean',
+      name: 'required',
+      table: { category: 'Validation', defaultValue: { summary: false } },
+      description: 'Marks the input as required, which will trigger validation if the field is left empty.',
+    },
+    validation: {
+      control: 'boolean',
+      name: 'validation',
+      table: { category: 'Validation', defaultValue: { summary: false } },
+      description: 'Enables validation for the input field.',
+    },
+    validationMessage: {
+      control: 'text',
+      name: 'validation-message',
+      table: { category: 'Validation' },
+      description: 'The validation message to display when the input is invalid.',
     },
   },
   args: {
@@ -259,15 +255,6 @@ const buildDocsHtmlSizes = () => {
   ].join('\n');
 };
 
-const buildDocsHtmlReadOnlyDisabled = () => {
-  return [
-    '<div>',
-    '  <input-field-component label="Read-only" input-id="ro" read-only value="Read only value"></input-field-component>',
-    '  <input-field-component label="Disabled" input-id="dis" disabled value="Disabled value"></input-field-component>',
-    '</div>',
-  ].join('\n');
-};
-
 const buildDocsHtmlInlineLayout = () => {
   return [
     '<form-component form-layout="inline">',
@@ -287,6 +274,33 @@ const buildDocsHtmlInlineLayout = () => {
     '  ></input-field-component>',
     '</form-component>',
   ].join('\n');
+};
+
+// ✅ NEW: build docs HTML for ReadOnly + Disabled from the SAME args we render with
+const buildDocsHtmlReadOnlyAndDisabled = () => {
+  const roArgs = {
+    label: 'Read-only',
+    inputId: 'ro',
+    readOnly: true,
+    value: 'Read only value',
+    validationMessage: '',
+    labelCol: '',
+    inputCol: '',
+    wrapWithForm: false,
+  };
+
+  const disArgs = {
+    label: 'Disabled',
+    inputId: 'dis',
+    disabled: true,
+    value: 'Disabled value',
+    validationMessage: '',
+    labelCol: '',
+    inputCol: '',
+    wrapWithForm: false,
+  };
+
+  return ['<div>', `  ${buildDocsHtml(roArgs).replace(/\n/g, '\n  ')}`, `  ${buildDocsHtml(disArgs).replace(/\n/g, '\n  ')}`, '</div>'].join('\n');
 };
 
 /* ----------------------- Helpers ----------------------- */
@@ -352,8 +366,9 @@ Basic.args = {
   validationMessage: '',
   labelCol: '',
   inputCol: '',
+  labelSize: 'sm',
 };
-Basic.storyName = 'Basic (default args)';
+Basic.storyName = 'Basic';
 Basic.parameters = {
   docs: {
     description: {
@@ -386,17 +401,18 @@ Sizes.parameters = {
   },
 };
 
-export const HorizontalLayout = () => {
-  const input = makeInput({
+// ✅ FIXED: Make HorizontalLayout args-driven so Docs "Code" matches Canvas.
+export const HorizontalLayout = {
+  args: {
+    formLayout: 'horizontal',
     label: 'Email',
     inputId: 'email',
     type: 'email',
-    formLayout: 'horizontal',
     labelCol: 3,
     inputCol: 9,
     validationMessage: '',
-  });
-  return wrapInForm(input, { formLayout: 'horizontal' });
+  },
+  render: args => Template(args),
 };
 HorizontalLayout.storyName = 'Horizontal Layout';
 HorizontalLayout.parameters = {
@@ -460,6 +476,8 @@ RequiredWithValidation.args = {
   validation: true,
   validationMessage: 'Please enter at least 3 characters.',
   formLayout: '',
+  labelCol: '',
+  inputCol: '',
 };
 RequiredWithValidation.storyName = 'Required with Validation';
 RequiredWithValidation.parameters = {
@@ -479,6 +497,7 @@ LabelHidden.args = {
   validationMessage: '',
   labelCol: '',
   inputCol: '',
+  labelSize: '',
 };
 LabelHidden.storyName = 'Label Hidden';
 LabelHidden.parameters = {
@@ -489,71 +508,73 @@ LabelHidden.parameters = {
   },
 };
 
-export const ReadOnlyAndDisabled = () => {
-  const stack = document.createElement('div');
-  stack.style.display = 'grid';
-  stack.style.gap = '12px';
+// ✅ FIXED: Keep multi-render story, but make Docs "Code" derive from the SAME rendered values.
+export const ReadOnlyAndDisabled = {
+  render: () => {
+    const stack = document.createElement('div');
+    stack.style.display = 'grid';
+    stack.style.gap = '12px';
 
-  stack.append(
-    Template({
-      label: 'Read-only',
-      inputId: 'ro',
-      readOnly: true,
-      value: 'Read only value',
-      validationMessage: '',
-      labelCol: '',
-      inputCol: '',
-    }),
-    Template({
-      label: 'Disabled',
-      inputId: 'dis',
-      disabled: true,
-      value: 'Disabled value',
-      validationMessage: '',
-      labelCol: '',
-      inputCol: '',
-    }),
-  );
-  return stack;
-};
-ReadOnlyAndDisabled.parameters = {
-  docs: {
-    source: {
-      language: 'html',
-      transform: () => buildDocsHtmlReadOnlyDisabled(),
+    stack.append(
+      Template({
+        label: 'Read-only',
+        inputId: 'ro',
+        readOnly: true,
+        value: 'Read only value',
+        validationMessage: '',
+        labelCol: '',
+        inputCol: '',
+      }),
+      Template({
+        label: 'Disabled',
+        inputId: 'dis',
+        disabled: true,
+        value: 'Disabled value',
+        validationMessage: '',
+        labelCol: '',
+        inputCol: '',
+      }),
+    );
+
+    return stack;
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlReadOnlyAndDisabled(),
+      },
+      description: {
+        story:
+          'Two input fields demonstrating read-only and disabled states. The read-only field can be focused and its value can be selected, but not edited. The disabled field is non-interactive.',
+      },
     },
   },
 };
 ReadOnlyAndDisabled.storyName = 'Read-Only and Disabled';
-ReadOnlyAndDisabled.parameters = {
-  docs: {
-    description: {
-      story:
-        'Two input fields demonstrating read-only and disabled states. The read-only field can be focused and its value can be selected, but not edited. The disabled field is non-interactive.',
-    },
-  },
-};
 
-export const ResponsiveCols = () => {
-  const input = makeInput({
+// ✅ FIXED: Make ResponsiveCols args-driven so Docs "Code" matches Canvas.
+export const ResponsiveCols = {
+  args: {
+    wrapWithForm: true,
+    formLayout: 'horizontal',
     label: 'Company',
     inputId: 'company',
-    formLayout: 'horizontal',
     // Use responsive string specs instead of numeric 2/10
     labelCols: 'sm-3 md-4',
     inputCols: 'sm-9 md-8',
     validationMessage: '',
     labelCol: '',
     inputCol: '',
-  });
-  return wrapInForm(input, { formLayout: 'horizontal' });
+  },
+  render: args => Template(args),
 };
 ResponsiveCols.storyName = 'Responsive Columns';
 ResponsiveCols.parameters = {
   docs: {
     description: {
       story:
-        'An input field demonstrating responsive column sizing using `labelCols` and `inputCols` or `labelCol` and `inputCol` within a horizontal form layout. The label and input adjust their widths based on the screen size, ensuring a consistent and accessible layout across devices.',
+        'An input field demonstrating responsive column sizing using `labelCols` and `inputCols` or `labelCol` and `inputCol` within a horizontal form layout. The label and input adjust their widths based on the screen size, ensuring a consistent and accessible layout across devices. Displayed using the `form-component` wrapper.',
     },
   },
 };

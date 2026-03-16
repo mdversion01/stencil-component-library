@@ -46,9 +46,11 @@ exports[`<input-group-component> mixes slot on append and icon on prepend using 
             <i class="fa-magnifying-glass fa-solid"></i>
           </span>
           <input aria-labelledby="search" class="form-control" id="q" name="search" placeholder="Search" type="text" value="">
-          <button class="btn btn-outline-secondary" slot="append" type="button">
-            Go
-          </button>
+          <span class="append-btn">
+            <button class="btn btn-outline-secondary" slot="append" type="button">
+              Go
+            </button>
+          </span>
         </div>
       </div>
     </div>

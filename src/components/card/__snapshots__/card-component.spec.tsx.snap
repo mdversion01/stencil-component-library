@@ -1,55 +1,85 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`card-component applies elevation and custom classes 1`] = `
+exports[`<card-component> applies elevation and custom classes to the article element 1`] = `
 <card-component class-names="custom-card" elevation="2">
   <!---->
-  <div aria-label="Card section" class="card custom-card elevated-2" role="region" style="max-width: 20rem;">
+  <article class="card custom-card elevated-2" style="max-width: 20rem;">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title"></h5>
-      <div class="card-text"></div>
+      <h5 class="card-title" id="card-8-0coo-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
     </div>
     <div class="card-footer"></div>
-  </div>
+  </article>
 </card-component>
 `;
 
-exports[`card-component is focusable when tabindex is provided 1`] = `
-<card-component tab="0">
+exports[`<card-component> heading-level attribute changes the title heading tag 1`] = `
+<card-component heading-level="2">
   <!---->
-  <div aria-label="Card section" class="card" role="region" tabindex="0" style="max-width: 20rem;">
+  <article class="card" style="max-width: 20rem;">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title"></h5>
-      <div class="card-text"></div>
+      <h2 class="card-title" id="card-9-nvhc-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h2>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
     </div>
     <div class="card-footer"></div>
-  </div>
+  </article>
 </card-component>
 `;
 
-exports[`card-component renders basic card with default aria attributes 1`] = `
-<card-component>
+exports[`<card-component> noHeader/noFooter remove their wrappers entirely 1`] = `
+<card-component no-footer="" no-header="">
   <!---->
-  <div aria-label="Card section" class="card" role="region" style="max-width: 20rem;">
-    <div class="card-header"></div>
+  <article class="card" style="max-width: 20rem;">
     <div class="card-body">
-      <h5 class="card-title"></h5>
-      <div class="card-text"></div>
+      <h5 class="card-title" id="card-12-2pht-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
     </div>
-    <div class="card-footer"></div>
-  </div>
+  </article>
 </card-component>
 `;
 
-exports[`card-component renders card with actions slot 1`] = `
+exports[`<card-component> renders actions wrapper only when actions=true 1`] = `
 <card-component actions="">
   <!---->
-  <div aria-label="Card section" class="card" role="region" style="max-width: 20rem;">
+  <article class="card" style="max-width: 20rem;">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title"></h5>
-      <div class="card-text"></div>
+      <h5 class="card-title" id="card-7-c4x6-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
     </div>
     <div class="card-actions">
       <div slot="actions">
@@ -57,35 +87,35 @@ exports[`card-component renders card with actions slot 1`] = `
       </div>
     </div>
     <div class="card-footer"></div>
-  </div>
+  </article>
 </card-component>
 `;
 
-exports[`card-component renders card with custom aria-label 1`] = `
-<card-component aria-label="Profile Card">
+exports[`<card-component> renders basic card (non-landmark, non-clickable) with no role by default 1`] = `
+<card-component>
   <!---->
-  <div aria-label="Profile Card" class="card" role="region" style="max-width: 20rem;">
+  <article class="card" style="max-width: 20rem;">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title"></h5>
+      <h5 class="card-title" id="card-1-e03n-title"></h5>
       <div class="card-text"></div>
     </div>
     <div class="card-footer"></div>
-  </div>
+  </article>
 </card-component>
 `;
 
-exports[`card-component renders card with header and footer slots 1`] = `
+exports[`<card-component> renders card with header and footer slots (wrapper elements always present unless noHeader/noFooter) 1`] = `
 <card-component>
   <!---->
-  <div aria-label="Card section" class="card" role="region" style="max-width: 20rem;">
+  <article class="card" style="max-width: 20rem;">
     <div class="card-header">
       <div slot="header">
         Header Content
       </div>
     </div>
     <div class="card-body">
-      <h5 class="card-title">
+      <h5 class="card-title" id="card-4-2v5f-title">
         <div slot="title">
           Card Title
         </div>
@@ -101,21 +131,96 @@ exports[`card-component renders card with header and footer slots 1`] = `
         Footer Content
       </div>
     </div>
-  </div>
+  </article>
 </card-component>
 `;
 
-exports[`card-component renders card with image 1`] = `
+exports[`<card-component> renders card with image (non-decorative) and preserves alt text 1`] = `
 <card-component alt-text="Sample Image" img="" img-src="https://example.com/image.jpg">
   <!---->
-  <div aria-label="Card section" class="card" role="region" style="max-width: 20rem;">
+  <article class="card" style="max-width: 20rem;">
     <img alt="Sample Image" class="card-img-top" src="https://example.com/image.jpg" style="height: 11.25rem; width: 100%; display: block;">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title"></h5>
-      <div class="card-text"></div>
+      <h5 class="card-title" id="card-5-d1f9-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
     </div>
     <div class="card-footer"></div>
-  </div>
+  </article>
+</card-component>
+`;
+
+exports[`<card-component> renders decorative image with alt="" and aria-hidden="true" 1`] = `
+<card-component alt-text="Ignored" decorative-image="" img="" img-src="https://example.com/image.jpg">
+  <!---->
+  <article class="card" style="max-width: 20rem;">
+    <img alt="" aria-hidden="true" class="card-img-top" src="https://example.com/image.jpg" style="height: 11.25rem; width: 100%; display: block;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title" id="card-6-couz-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
+    </div>
+    <div class="card-footer"></div>
+  </article>
+</card-component>
+`;
+
+exports[`<card-component> renders landmark region with aria-label when landmark=true and aria-label is provided 1`] = `
+<card-component aria-label="Profile Card" landmark="">
+  <!---->
+  <article aria-label="Profile Card" class="card" role="region" style="max-width: 20rem;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title" id="card-2-tlt4-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
+    </div>
+    <div class="card-footer"></div>
+  </article>
+</card-component>
+`;
+
+exports[`<card-component> renders landmark region with aria-labelledby when provided (preferred over aria-label) 1`] = `
+<card-component aria-label="Ignored Label" aria-labelledby="ext-label" landmark="">
+  <!---->
+  <article aria-labelledby="ext-label" class="card" role="region" style="max-width: 20rem;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title" id="card-3-ch3v-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
+    </div>
+    <div class="card-footer"></div>
+  </article>
 </card-component>
 `;

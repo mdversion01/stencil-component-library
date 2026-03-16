@@ -29,6 +29,7 @@ ISO / numeric / long display modes, and synchronized dropdown.
 | `isTwentyFourHourFormat` | `is-twenty-four-hour-format` | Time options                                                           | `boolean`                        | `true`                   |
 | `joinBy`                 | `join-by`                    |                                                                        | `string`                         | `' - '`                  |
 | `label`                  | `label`                      |                                                                        | `string`                         | `'Date and Time Picker'` |
+| `labelAlign`             | `label-align`                |                                                                        | `"" \| "right"`                  | `''`                     |
 | `labelCol`               | `label-col`                  | Grid like date-range-picker-component                                  | `number`                         | `2`                      |
 | `labelCols`              | `label-cols`                 |                                                                        | `string`                         | `''`                     |
 | `labelHidden`            | `label-hidden`               |                                                                        | `boolean`                        | `false`                  |

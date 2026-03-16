@@ -2,10 +2,12 @@
 import { Component, Prop, Event, EventEmitter, h, Element, Watch } from '@stencil/core';
 import { logInfo } from '../../utils/log-debug';
 
+type ButtonType = 'button' | 'submit' | 'reset';
+
 @Component({
   tag: 'button-component',
   styleUrl: 'button.scss',
-  shadow: false, // keep light DOM
+  shadow: false,
 })
 export class Button {
   @Element() hostEl!: HTMLElement;
@@ -13,7 +15,12 @@ export class Button {
   // ---- existing props ----
   @Prop() absolute = false;
   @Prop() active = false;
+
+  /** Prefer using aria-labelledby when the label exists elsewhere in DOM. */
   @Prop() ariaLabel = '';
+  @Prop() ariaLabelledby?: string;
+  @Prop() ariaDescribedby?: string;
+
   @Prop() block = false;
   @Prop() bottom = '';
   @Prop() btnIcon = false;
@@ -26,21 +33,18 @@ export class Button {
   @Prop() groupBtn = false;
   @Prop() iconBtn = false;
   @Prop() slotSide?: 'left' | 'right';
+
+  /** Inline CSS styles for the inner <button> or <a> element. */
   @Prop() styles = '';
+
   @Prop() left = '';
   @Prop() link = false;
   @Prop() outlined = false;
 
-  /**
-   * Enable toggle-button behavior. When true, clicking (or keyboard activate) flips the `pressed` state.
-   */
+  /** Enable toggle-button behavior. */
   @Prop() toggle = false;
 
-  /**
-   * Current pressed state (for toggle buttons). Reflected & mutable so markup stays clean:
-   * - attribute omitted when false
-   * - attribute present (empty) when true
-   */
+  /** Current pressed state (for toggle buttons). */
   @Prop({ reflect: true, mutable: true }) pressed = false;
 
   @Prop() right = '';
@@ -58,22 +62,18 @@ export class Button {
   @Prop() vertical = false;
   @Prop() zIndex = '';
 
+  /** Native button type (ignored for link mode). */
+  @Prop() type: ButtonType = 'button';
+
   // Accordion helpers (unchanged)
   @Prop({ mutable: true }) isOpen = false;
   @Prop() targetId = '';
   @Prop() accordion = false;
 
-  /**
-   * Allow consumers to opt-out of nested focusable neutralization (e.g., if they need
-   * an actual focusable child on purpose).
-   */
   @Prop() allowFocusableChildren = false;
-
   @Prop() devMode = false;
 
   @Event() customClick!: EventEmitter<void>;
-
-  /** Fired whenever `pressed` changes (useful for external sync / two-way binding). */
   @Event({ eventName: 'pressedChange' }) pressedChange!: EventEmitter<boolean>;
 
   @Watch('pressed')
@@ -81,7 +81,6 @@ export class Button {
     this.pressedChange.emit(!!v);
   }
 
-  // ---- lifecycle: neutralize nested focusables after render ----
   componentDidLoad() {
     this.neutralizeNestedInteractivesIfNeeded();
   }
@@ -90,9 +89,8 @@ export class Button {
   }
 
   private handleClick() {
-    // Toggle behavior
     if (this.toggle && !this.disabled) {
-      this.pressed = !this.pressed; // @Watch emits pressedChange
+      this.pressed = !this.pressed;
     }
     this.customClick.emit();
     logInfo(this.devMode, 'Button', 'Clicked');
@@ -119,33 +117,52 @@ export class Button {
     return s;
   }
 
-  // Neutralize nested interactive descendants to avoid a11y failures for nested buttons/links
+  private parseInlineStyles(styles: string): { [k: string]: string } {
+    const out: { [k: string]: string } = {};
+    if (!styles || typeof styles !== 'string') return out;
+
+    const rules = styles.split(';');
+    for (const rule of rules) {
+      const r = rule.trim();
+      if (!r) continue;
+
+      const idx = r.indexOf(':');
+      if (idx === -1) continue;
+
+      const rawKey = r.slice(0, idx).trim();
+      const rawVal = r.slice(idx + 1).trim();
+      if (!rawKey || !rawVal) continue;
+
+      const key = rawKey.replace(/-([a-z])/g, (_, c) => String(c).toUpperCase());
+      if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue;
+
+      out[key] = rawVal;
+    }
+    return out;
+  }
+
   private neutralizeNestedInteractivesIfNeeded() {
     if (this.allowFocusableChildren) return;
 
-    // Find the inner interactive root we render (<button> or <a>)
     const inner = this.hostEl.querySelector('button.btn, a.btn');
     if (!inner) return;
 
     const focusableSel =
       'a[href],area[href],button,details,[tabindex]:not([tabindex="-1"]),input,select,textarea,[contenteditable=""],[contenteditable="true"]';
 
-    // Any focusable descendant *inside* that is not the inner root itself gets neutralized
     const descendants = Array.from(inner.querySelectorAll<HTMLElement>(focusableSel)).filter(n => n !== inner);
 
     descendants.forEach(el => {
-      // Demote common interactive descendants to decorative
       if (el.tagName === 'A' || el.tagName === 'BUTTON' || el.hasAttribute('tabindex')) {
         el.setAttribute('tabindex', '-1');
         el.setAttribute('aria-hidden', 'true');
         if (el.tagName === 'A') el.removeAttribute('href');
-        // If it had a role, clear it to be purely presentational
         el.removeAttribute('role');
         if (this.devMode) {
-          console.warn('[button-component] Nested focusable child neutralized to avoid nested-interactive a11y issue:', el);
+          // eslint-disable-next-line no-console
+          console.warn('[button-component] Nested focusable child neutralized:', el);
         }
       }
-      // SVGs sometimes end up focusable; make them inert/decorative
       if (el.tagName === 'SVG') {
         el.setAttribute('focusable', 'false');
         el.setAttribute('aria-hidden', 'true');
@@ -157,7 +174,6 @@ export class Button {
     const hasLeft = this.slotSide === 'left';
     const hasRight = this.slotSide === 'right';
 
-    // In icon-only modes, the slot content is decorative; hide it from AT to avoid duplicate names
     const iconOnly = this.btnIcon || this.iconBtn;
 
     const content = this.btnIcon ? (
@@ -208,8 +224,40 @@ export class Button {
     return out;
   }
 
+  private computeA11y(passthrough: Record<string, any>) {
+    const hasVisibleText = !!(this.btnText && this.btnText.trim().length);
+    const iconOnly = this.btnIcon || this.iconBtn;
+
+    const propLabel = (this.ariaLabel || '').trim();
+    const propLabelledby = (this.ariaLabelledby || '').trim();
+    const propDescribedby = (this.ariaDescribedby || '').trim();
+
+    const hostLabel = typeof passthrough['aria-label'] === 'string' ? passthrough['aria-label'].trim() : '';
+    const hostLabelledby = typeof passthrough['aria-labelledby'] === 'string' ? passthrough['aria-labelledby'].trim() : '';
+    const hostDescribedby = typeof passthrough['aria-describedby'] === 'string' ? passthrough['aria-describedby'].trim() : '';
+
+    const labelledby = propLabelledby || hostLabelledby || undefined;
+    const describedby = propDescribedby || hostDescribedby || undefined;
+
+    // Prefer labelledby over label. Only apply aria-label when necessary.
+    let ariaLabel: string | undefined;
+    if (!labelledby) {
+      if (propLabel) ariaLabel = propLabel;
+      else if (hostLabel) ariaLabel = hostLabel;
+      else if (!hasVisibleText || iconOnly) {
+        const t = (this.titleAttr || '').trim();
+        ariaLabel = t || 'Button';
+      }
+    }
+
+    return { ariaLabel, labelledby, describedby };
+  }
+
   render() {
     const dynamicStyles = this.getDynamicStyles();
+    const userStyles = this.parseInlineStyles(this.styles);
+    const mergedStyles = { ...userStyles, ...dynamicStyles };
+
     const isGroup = !!this.groupBtn;
     const buttonGroup = this.vertical ? 'btn-group-vertical' : 'btn-group';
     const placement = this.start ? `${buttonGroup}-start` : this.end ? `${buttonGroup}-end` : 'btn-group__btn';
@@ -233,21 +281,12 @@ export class Button {
       this.textBtn && 'text-btn',
       this.text && 'text',
       this.btnIcon && 'btn-icon',
-      this.toggle && 'btn--toggle', // optional helper class for styling toggles
-      this.toggle && this.pressed && 'pressed', // optional styling hook when pressed
+      this.toggle && 'btn--toggle',
+      this.toggle && this.pressed && 'pressed',
     ]
       .filter(Boolean)
       .join(' ');
 
-    // Accessible name (esp. for icon-only)
-    const hasVisibleText = !!(this.btnText && this.btnText.trim().length);
-    const computedAriaLabel =
-      (this.ariaLabel && this.ariaLabel.trim()) ||
-      (hasVisibleText ? this.btnText.trim() : '') ||
-      (this.titleAttr && this.titleAttr.trim()) ||
-      'Button';
-
-    // ARIA for accordion toggles
     const ariaForAccordion: Record<string, any> = {};
     if (this.accordion && this.targetId) {
       ariaForAccordion['aria-expanded'] = String(!!this.isOpen);
@@ -255,15 +294,28 @@ export class Button {
     }
 
     const passthrough = this.collectHostA11yAndData();
+    const { ariaLabel, labelledby, describedby } = this.computeA11y(passthrough);
+
+    const consumerRole = passthrough['role']; // if present, honor it (but don't force role on <button>)
+    const consumerTabIndex = passthrough['tabindex'];
+
+    const isDisabledLink = this.link && this.disabled;
+    const href = !this.link
+      ? undefined
+      : isDisabledLink
+        ? undefined
+        : this.url && this.url.trim() !== '' && this.url !== '#'
+          ? this.url
+          : undefined;
 
     const common = {
       ...passthrough,
       ...ariaForAccordion,
-      // Only set aria-pressed for toggle buttons
-      'aria-pressed': this.toggle ? String(!!this.pressed) : undefined,
-      'aria-label': computedAriaLabel,
-      'aria-disabled': this.link && this.disabled ? 'true' : undefined,
-      style: dynamicStyles,
+      ...(labelledby ? { 'aria-labelledby': labelledby } : { 'aria-labelledby': undefined }),
+      ...(describedby ? { 'aria-describedby': describedby } : { 'aria-describedby': undefined }),
+      ...(ariaLabel ? { 'aria-label': ariaLabel } : { 'aria-label': undefined }),
+      ...(this.toggle ? { 'aria-pressed': String(!!this.pressed) } : { 'aria-pressed': undefined }),
+      style: mergedStyles,
       class: classList,
       onClick: (event: MouseEvent) => {
         if (this.disabled) {
@@ -278,17 +330,29 @@ export class Button {
       title: this.titleAttr,
     } as Record<string, any>;
 
-    return this.link ? (
-      <a
+    if (this.link) {
+      return (
+        <a
+          {...(common as any)}
+          href={href}
+          role={consumerRole || 'button'}
+          tabindex={isDisabledLink ? '-1' : consumerTabIndex ?? '0'}
+          aria-disabled={isDisabledLink ? 'true' : undefined}
+        >
+          {this.renderButtonContent()}
+        </a>
+      );
+    }
+
+    // Native button: do NOT force role unless consumer explicitly provided one.
+    return (
+      <button
         {...(common as any)}
-        href={this.url && this.url.trim() !== '' ? this.url : undefined}
-        role={common['role'] || 'button'}
-        tabindex={this.disabled ? '-1' : common['tabindex'] ?? '0'}
+        type={this.type}
+        disabled={this.disabled}
+        role={consumerRole || undefined}
+        tabindex={consumerTabIndex ?? undefined}
       >
-        {this.renderButtonContent()}
-      </a>
-    ) : (
-      <button {...(common as any)} role={common['role'] || 'button'} type="button" disabled={this.disabled}>
         {this.renderButtonContent()}
       </button>
     );

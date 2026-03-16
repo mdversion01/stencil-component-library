@@ -9,13 +9,12 @@
 
 | Property            | Attribute            | Description                                                                                 | Type                             | Default     |
 | ------------------- | -------------------- | ------------------------------------------------------------------------------------------- | -------------------------------- | ----------- |
+| `appendField`       | `append`             |                                                                                             | `boolean`                        | `false`     |
 | `appendIcon`        | `append-icon`        |                                                                                             | `string`                         | `undefined` |
 | `appendId`          | `append-id`          |                                                                                             | `string`                         | `''`        |
 | `disabled`          | `disabled`           |                                                                                             | `boolean`                        | `false`     |
 | `formId`            | `form-id`            |                                                                                             | `string`                         | `''`        |
 | `formLayout`        | `form-layout`        |                                                                                             | `"" \| "horizontal" \| "inline"` | `''`        |
-| `hasAppend`         | `append`             |                                                                                             | `boolean`                        | `false`     |
-| `hasPrepend`        | `prepend`            |                                                                                             | `boolean`                        | `false`     |
 | `icon`              | `icon`               |                                                                                             | `string`                         | `''`        |
 | `inputCol`          | `input-col`          |                                                                                             | `number`                         | `10`        |
 | `inputCols`         | `input-cols`         |                                                                                             | `string`                         | `''`        |
@@ -29,11 +28,12 @@
 | `labelSize`         | `label-size`         |                                                                                             | `"base" \| "lg" \| "sm" \| "xs"` | `'sm'`      |
 | `otherContent`      | `other-content`      |                                                                                             | `boolean`                        | `false`     |
 | `placeholder`       | `placeholder`        |                                                                                             | `string`                         | `''`        |
+| `prependField`      | `prepend`            |                                                                                             | `boolean`                        | `false`     |
 | `prependIcon`       | `prepend-icon`       |                                                                                             | `string`                         | `undefined` |
 | `prependId`         | `prepend-id`         |                                                                                             | `string`                         | `''`        |
 | `required`          | `required`           |                                                                                             | `boolean`                        | `false`     |
 | `size`              | `size`               |                                                                                             | `"" \| "lg" \| "sm"`             | `''`        |
-| `type`              | `type`               |                                                                                             | `string`                         | `''`        |
+| `type`              | `type`               |                                                                                             | `string`                         | `'text'`    |
 | `validation`        | `validation`         | External validation flag (rendered with UX overrides)                                       | `boolean`                        | `false`     |
 | `validationMessage` | `validation-message` |                                                                                             | `string`                         | `''`        |
 | `value`             | `value`              | External value (mutable for back-compat)                                                    | `string`                         | `''`        |

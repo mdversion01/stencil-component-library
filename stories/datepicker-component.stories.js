@@ -12,7 +12,6 @@ export default {
       },
       source: {
         language: 'html',
-        // IMPORTANT: docs preview must reflect CURRENT args (including Controls changes)
         transform: (_src, ctx) => buildDocsHtml(ctx.args),
       },
     },
@@ -38,6 +37,15 @@ export default {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Core' },
       description: 'Mark the input as required',
+    },
+
+    // Autocomplete
+    autocomplete: {
+      control: { type: 'select' },
+      options: ['off', 'bday', 'bday-day', 'bday-month', 'bday-year'],
+      table: { defaultValue: { summary: 'off' }, category: 'Core' },
+      description:
+        'HTML autocomplete value for the input. Use "bday" / "bday-*" when the date represents a birthday. Default is "off".',
     },
 
     // IMPORTANT: validation visuals are gated by the *presence* of the attribute
@@ -149,7 +157,7 @@ export default {
       options: ['YYYY-MM-DD', 'MM-DD-YYYY'],
       name: 'date-format',
       table: { category: 'Formatting', defaultValue: { summary: 'YYYY-MM-DD' } },
-      description: 'Date format used for parsing and displaying the selected date. Uses dayjs formatting tokens.',
+      description: 'Date format used for parsing and displaying the selected date.',
     },
     placeholder: {
       control: 'text',
@@ -162,7 +170,8 @@ export default {
       control: 'text',
       name: 'input-id',
       table: { category: 'Identity', defaultValue: { summary: 'datepicker' } },
-      description: 'ID for the input element (used for associating the label and calendar button)',
+      description:
+        'ID for the input element. If you omit the input-id attribute entirely, the component will generate a unique ID per instance.',
     },
 
     // Demo helpers
@@ -179,7 +188,6 @@ export default {
     },
   },
   args: {
-    // sensible defaults
     append: true,
     calendar: false,
     dateFormat: 'YYYY-MM-DD',
@@ -202,6 +210,7 @@ export default {
     prepend: false,
     required: false,
     size: '',
+    autocomplete: 'off',
     validationAttr: false,
     validationMessage: 'Please select a date.',
     warningMessage: '',
@@ -212,7 +221,6 @@ export default {
 // Helpers (normalize + docs builder)
 // ======================================================
 
-/** Collapse blank lines + trim edges (same helper used in your other stories) */
 const normalize = txt => {
   const lines = String(txt)
     .replace(/\r\n/g, '\n')
@@ -240,14 +248,12 @@ const normalize = txt => {
   return out.join('\n');
 };
 
-/** Build clean attribute block (prints one attribute per line for readable docs) */
 const attrs = pairs =>
   pairs
     .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
     .map(([k, v]) => (v === true ? k : `${k}="${String(v).replaceAll('"', '&quot;')}"`))
     .join('\n  ');
 
-/** Docs code preview (reflects CURRENT args, including Controls changes) */
 const buildDocsHtml = args => {
   const labelCol = Number.isFinite(Number(args.labelCol)) ? Number(args.labelCol) : 2;
   const inputCol = Number.isFinite(Number(args.inputCol)) ? Number(args.inputCol) : 10;
@@ -255,43 +261,44 @@ const buildDocsHtml = args => {
   const placeholder = (args.placeholder && String(args.placeholder).trim()) || args.dateFormat || 'YYYY-MM-DD';
   const icon = (args.icon && String(args.icon).trim()) || 'fas fa-calendar-alt';
 
-  const attributeBlock = attrs([
-    // presence-gated attributes
-    ['calendar', !!args.calendar],
-    ['plumage', !!args.plumage],
-    ['disabled', !!args.disabled],
-    ['required', !!args.required],
-    ['validation', !!args.validationAttr],
-    ['prepend', !!args.prepend],
-    ['append', !!args.append],
+  // Prefer showing explicit input-id only when the user set it or story provides it.
+  // (Leaving it out demonstrates the component’s auto-generated unique IDs.)
+  const shouldPrintInputId = args.inputId !== undefined && args.inputId !== null && String(args.inputId).trim() !== '';
 
-    // normal attrs / props
-    ['form-layout', args.formLayout],
-    ['size', args.size],
-    ['label-align', args.labelAlign],
-    ['label-hidden', !!args.labelHidden],
-    ['label', args.label],
-    ['label-size', args.labelSize],
+  const attributeBlock = attrs(
+    [
+      ['calendar', !!args.calendar],
+      ['plumage', !!args.plumage],
+      ['disabled', !!args.disabled],
+      ['required', !!args.required],
+      ['validation', !!args.validationAttr],
+      ['prepend', !!args.prepend],
+      ['append', !!args.append],
 
-    // grid
-    ['label-col', args.formLayout === 'horizontal' ? labelCol : args.labelCol], // still print if user sets it
-    ['input-col', args.formLayout === 'horizontal' ? inputCol : args.inputCol],
-    ['label-cols', args.labelCols],
-    ['input-cols', args.inputCols],
+      ['form-layout', args.formLayout],
+      ['size', args.size],
+      ['label-align', args.labelAlign],
+      ['label-hidden', !!args.labelHidden],
+      ['label', args.label],
+      ['label-size', args.labelSize],
 
-    // formatting / identity
-    ['date-format', args.dateFormat],
-    ['placeholder', placeholder],
-    ['input-id', args.inputId],
-    ['icon', icon],
+      ['label-col', args.formLayout === 'horizontal' ? labelCol : args.labelCol],
+      ['input-col', args.formLayout === 'horizontal' ? inputCol : args.inputCol],
+      ['label-cols', args.labelCols],
+      ['input-cols', args.inputCols],
 
-    // validation text
-    ['validation-message', args.validationMessage],
-    ['warning-message', args.warningMessage],
+      ['date-format', args.dateFormat],
+      ['placeholder', placeholder],
+      ['autocomplete', args.autocomplete],
+      [shouldPrintInputId ? 'input-id' : '', shouldPrintInputId ? args.inputId : ''],
+      ['icon', icon],
 
-    // demo helpers (usually omit; include only if true so docs show it)
-    ['display-context-examples', !!args.displayContextExamples],
-  ]);
+      ['validation-message', args.validationMessage],
+      ['warning-message', args.warningMessage],
+
+      ['display-context-examples', !!args.displayContextExamples],
+    ].filter(([k]) => !!k),
+  );
 
   return normalize(`
 <datepicker-component
@@ -312,49 +319,42 @@ const setBoolAttr = (el, name, on) => {
 const buildEl = args => {
   const el = document.createElement('datepicker-component');
 
-  // --- attribute presence (important for this component) ---
   setBoolAttr(el, 'calendar', !!args.calendar);
   setBoolAttr(el, 'plumage', !!args.plumage);
   setBoolAttr(el, 'disabled', !!args.disabled);
   setBoolAttr(el, 'required', !!args.required);
-
-  // validation visuals are gated by presence of "validation" attribute
   setBoolAttr(el, 'validation', !!args.validationAttr);
-
-  // adornments map to reserved attribute names (component uses appendProp/prependProp internally)
   setBoolAttr(el, 'prepend', !!args.prepend);
   setBoolAttr(el, 'append', !!args.append);
 
-  // layout & size
   if (typeof args.formLayout === 'string') el.formLayout = args.formLayout;
   if (typeof args.size === 'string') el.size = args.size;
 
-  // label, ids, icon
-  el.inputId = args.inputId;
+  // Only set inputId if provided; otherwise let component generate unique IDs.
+  if (args.inputId !== undefined && args.inputId !== null && String(args.inputId).trim() !== '') {
+    el.inputId = args.inputId;
+  }
+
   el.label = args.label;
   el.labelHidden = !!args.labelHidden;
   el.labelAlign = args.labelAlign || '';
   el.labelSize = args.labelSize || '';
   el.icon = args.icon || 'fas fa-calendar-alt';
 
-  // formatting
   el.dateFormat = args.dateFormat;
   el.placeholder = args.placeholder;
+  el.autocomplete = args.autocomplete || 'off';
 
-  // grid
   el.labelCol = Number(args.labelCol ?? 2);
   el.inputCol = Number(args.inputCol ?? 10);
   el.labelCols = args.labelCols || '';
   el.inputCols = args.inputCols || '';
 
-  // validation text
   el.validationMessage = args.validationMessage || '';
   el.warningMessage = args.warningMessage || '';
 
-  // demo helpers
   el.displayContextExamples = !!args.displayContextExamples;
 
-  // events -> actions
   el.addEventListener('date-selected', e => action('date-selected')(e.detail));
 
   return el;
@@ -436,7 +436,7 @@ InlineLayout.parameters = {
 export const WithValidation = Template.bind({});
 WithValidation.args = {
   required: true,
-  validationAttr: true, // attribute must be present to enable validation behavior
+  validationAttr: true,
   validationMessage: 'Date is required.',
   placeholder: 'YYYY-MM-DD',
   labelCol: '',
@@ -445,7 +445,7 @@ WithValidation.args = {
 WithValidation.parameters = {
   docs: {
     description: {
-      story: 'Datepicker with validation enabled. Try submitting without selecting a date to see the validation message.',
+      story: 'Datepicker with validation enabled. Try leaving the field empty then blurring to see the validation message.',
     },
     story: { height: '400px' },
   },
@@ -529,4 +529,235 @@ StandaloneCalendar.parameters = {
       story: 'Datepicker displayed as a standalone calendar. No input field is shown.',
     },
   },
+};
+
+// ======================================================
+// Accessibility matrix (updated for new structure)
+//  - help text is outside dialog
+//  - calendar grid role is "group" (not "grid")
+//  - validation feedback is aria-live polite + atomic
+//  - prints computed role + aria-* + ids AND validates aria-describedby references exist
+// ======================================================
+
+function pickAttrs(el, names) {
+  const out = {};
+  for (const n of names) {
+    const v = el.getAttribute(n);
+    if (v !== null && v !== '') out[n] = v;
+  }
+  return out;
+}
+
+function splitIds(v) {
+  return String(v || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function safeAttrSelectorValue(v) {
+  return String(v || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+function resolveIdsWithin(host, ids) {
+  const res = {};
+  for (const id of ids) {
+    const node = host.querySelector(`[id="${safeAttrSelectorValue(id)}"]`);
+    res[id] = !!node;
+  }
+  return res;
+}
+
+function snapshotA11y(host) {
+  const input = host.querySelector('input.form-control');
+  const label = host.querySelector('label.form-control-label');
+  const toggle = host.querySelector('button.calendar-button');
+  const dialog = host.querySelector('.dropdown-content');
+  const grid = host.querySelector('.calendar-grid');
+  const help = host.querySelector('[id$="__desc"]');
+  const validation = host.querySelector('[id$="__validation"]');
+
+  const describedByIds = input ? splitIds(input.getAttribute('aria-describedby')) : [];
+  const labelledByIds = input ? splitIds(input.getAttribute('aria-labelledby')) : [];
+
+  return {
+    input: input
+      ? {
+          tag: input.tagName.toLowerCase(),
+          id: input.getAttribute('id') || '',
+          role: input.getAttribute('role') || '',
+          ...pickAttrs(input, ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid', 'required', 'autocomplete']),
+          resolves: {
+            'aria-labelledby': resolveIdsWithin(host, labelledByIds),
+            'aria-describedby': resolveIdsWithin(host, describedByIds),
+          },
+        }
+      : null,
+    label: label
+      ? {
+          tag: label.tagName.toLowerCase(),
+          id: label.getAttribute('id') || '',
+          for: label.getAttribute('for') || '',
+          role: label.getAttribute('role') || '',
+        }
+      : null,
+    helpText: help
+      ? {
+          id: help.getAttribute('id') || '',
+          insideDialog: !!(dialog && dialog.contains(help)),
+        }
+      : null,
+    validation: validation
+      ? {
+          id: validation.getAttribute('id') || '',
+          ...pickAttrs(validation, ['aria-live', 'aria-atomic']),
+          text: (validation.textContent || '').trim(),
+        }
+      : null,
+    toggle: toggle
+      ? {
+          tag: toggle.tagName.toLowerCase(),
+          id: toggle.getAttribute('id') || '',
+          role: toggle.getAttribute('role') || '',
+          ...pickAttrs(toggle, ['aria-label', 'aria-haspopup', 'aria-expanded', 'aria-controls', 'disabled']),
+        }
+      : null,
+    dialog: dialog
+      ? {
+          tag: dialog.tagName.toLowerCase(),
+          id: dialog.getAttribute('id') || '',
+          role: dialog.getAttribute('role') || '',
+          ...pickAttrs(dialog, ['aria-modal', 'aria-labelledby']),
+        }
+      : null,
+    calendarGrid: grid
+      ? {
+          tag: grid.tagName.toLowerCase(),
+          id: grid.getAttribute('id') || '',
+          role: grid.getAttribute('role') || '',
+          ...pickAttrs(grid, ['aria-label']),
+        }
+      : null,
+  };
+}
+
+function renderMatrixRow({ title, args, idSuffix, forceInvalid = false }) {
+  const wrap = document.createElement('div');
+  wrap.style.border = '1px solid #ddd';
+  wrap.style.borderRadius = '12px';
+  wrap.style.padding = '12px';
+  wrap.style.display = 'grid';
+  wrap.style.gap = '10px';
+
+  const heading = document.createElement('div');
+  heading.style.fontWeight = '700';
+  heading.textContent = title;
+
+  const el = buildEl({
+    ...args,
+    inputId: `datepicker-matrix-${idSuffix}`,
+  });
+
+  const stage = document.createElement('div');
+  stage.style.maxWidth = '560px';
+
+  const pre = document.createElement('pre');
+  pre.style.margin = '0';
+  pre.style.padding = '10px';
+  pre.style.background = '#f6f8fa';
+  pre.style.borderRadius = '10px';
+  pre.style.overflowX = 'auto';
+  pre.style.fontSize = '12px';
+  pre.textContent = 'Collecting aria/role/id…';
+
+  stage.appendChild(el);
+  wrap.appendChild(heading);
+  wrap.appendChild(stage);
+  wrap.appendChild(pre);
+
+  const update = () => {
+    const snap = snapshotA11y(el);
+    pre.textContent = JSON.stringify(snap, null, 2);
+  };
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      if (forceInvalid) {
+        const input = el.querySelector('input.form-control');
+        if (input) {
+          input.value = '';
+          input.dispatchEvent(new Event('blur', { bubbles: true }));
+        }
+      }
+      requestAnimationFrame(update);
+    });
+  });
+
+  return wrap;
+}
+
+export const AccessibilityMatrix = () => {
+  const root = document.createElement('div');
+  root.style.display = 'grid';
+  root.style.gap = '16px';
+
+  const intro = document.createElement('div');
+  intro.innerHTML = `
+    <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
+    <div style="font-size:13px; color:#444;">
+      Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs.
+      Also reports whether <code>aria-labelledby</code> / <code>aria-describedby</code> resolve to real elements and whether help text is outside the dialog.
+    </div>
+  `;
+  root.appendChild(intro);
+
+  const rows = [
+    {
+      title: 'Default',
+      args: { label: 'Date', formLayout: '', disabled: false, required: false, validationAttr: false, autocomplete: 'off' },
+      forceInvalid: false,
+    },
+    {
+      title: 'Inline',
+      args: { label: 'Date', formLayout: 'inline', disabled: false, required: false, validationAttr: false, autocomplete: 'off' },
+      forceInvalid: false,
+    },
+    {
+      title: 'Horizontal',
+      args: { label: 'Date', formLayout: 'horizontal', labelCol: 3, inputCol: 9, disabled: false, required: false, validationAttr: false, autocomplete: 'off' },
+      forceInvalid: false,
+    },
+    {
+      title: 'Validation / Error (required + validation attr)',
+      args: { label: 'Date', formLayout: '', required: true, validationAttr: true, validationMessage: 'Date is required.', autocomplete: 'off' },
+      forceInvalid: true,
+    },
+    {
+      title: 'Disabled',
+      args: { label: 'Date', formLayout: '', disabled: true, required: false, validationAttr: false, autocomplete: 'off' },
+      forceInvalid: false,
+    },
+  ];
+
+  rows.forEach((r, idx) =>
+    root.appendChild(
+      renderMatrixRow({
+        ...r,
+        idSuffix: String(idx + 1),
+      }),
+    ),
+  );
+
+  return root;
+};
+
+AccessibilityMatrix.parameters = {
+  docs: {
+    description: {
+      story:
+        'Matrix of key states (default/inline/horizontal, validation/error, disabled). Each row prints computed role/aria/ids and whether ARIA references resolve.',
+    },
+    story: { height: '1100px' },
+  },
+  controls: { disable: true },
 };

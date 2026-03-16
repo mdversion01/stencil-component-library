@@ -4,7 +4,7 @@ exports[`autocomplete-multiselect renders full DOM output snapshot for given pro
 <autocomplete-multiselect add-btn="" badge-inline-styles="background-color: red; color: white;" badge-shape="rounded" badge-variant="danger" editable="" error="" error-message="Invalid input" input-id="tag-input" label="Tags" required="" validation-message="Required field.">
   <div class="autocomplete-container form-group">
     <div>
-      <label class="form-control-label label-sm" htmlfor="tagInput">
+      <label class="form-control-label invalid label-sm" htmlfor="tagInput" id="tagInput-label">
         <span>
           Tags
         </span>
@@ -19,19 +19,19 @@ exports[`autocomplete-multiselect renders full DOM output snapshot for given pro
               <span>
                 Two
               </span>
-              <button aria-label="Remove Two" class="remove-btn" data-tag="Two" role="button" title="Remove Tag" type="button">
-                <i class="fa-circle-xmark fa-solid"></i>
+              <button aria-label="Remove Two" class="remove-btn" data-tag="Two" title="Remove Tag" type="button">
+                <i aria-hidden="true" class="fa-solid fa-xmark"></i>
               </button>
             </div>
           </div>
           <div class="ac-input-container-multi">
             <div class="input-group is-invalid">
-              <input aria-autocomplete="list" aria-controls="tagInput-listbox" aria-describedby="tagInput-validation" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="" aria-required="true" autocomplete="off" class="form-control is-invalid" id="tagInput" inputmode="text" placeholder="Tags" role="combobox" spellcheck="false" type="" value="T">
-              <button aria-label="Add item" class="add-btn" role="button" title="Add item" type="button">
-                <i class="fa-plus fas"></i>
+              <input aria-autocomplete="list" aria-controls="tagInput-listbox" aria-describedby="tagInput-validation tagInput-error" aria-expanded="false" aria-haspopup="listbox" aria-invalid="true" aria-labelledby="tagInput-label" aria-required="true" autocomplete="off" class="form-control is-invalid" id="tagInput" inputmode="text" placeholder="Tags" role="combobox" spellcheck="false" type="text" value="T">
+              <button aria-label="Add item" class="add-btn" title="Add item" type="button">
+                <i aria-hidden="true" class="fa-plus fas"></i>
               </button>
-              <button aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
-                <i class="fa-times fas"></i>
+              <button aria-label="Clear input" class="clear-btn" title="Clear input" type="button">
+                <i aria-hidden="true" class="fa-solid fa-xmark"></i>
               </button>
             </div>
           </div>

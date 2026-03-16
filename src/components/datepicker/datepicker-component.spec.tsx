@@ -1,12 +1,17 @@
 /**
  * src/components/datepicker/datepicker-component.spec.tsx
  *
- * Test fixes:
- *  - Patch focus/blur and setSelectionRange per spec page (mock-doc quirks)
- *  - Remove :scope usage
- *  - labelHidden: accept any valid name/association (sr-only, for=id, aria-label, aria-labelledby)
- *  - inline layout: no grid classes even if input-col is provided (matches component behavior)
- *  - label association: accept for=id OR any valid ARIA naming
+ * Updates (for latest component changes):
+ *  - Remove dependency on global CSS.escape (not present in Jest/mock-doc).
+ *  - Resolve aria-labelledby via safe [id="..."] selector (attribute-escaped).
+ *  - NEW: assert aria-describedby always includes the help text id and that it exists near the input (outside dialog).
+ *  - NEW: when invalid, aria-describedby also includes validation id; validation node is aria-live polite + atomic.
+ *  - Keep existing behavior checks (sr-only OR for=id OR aria-label OR aria-labelledby resolves).
+ *
+ * Notes:
+ *  - Component only shows validation UI / aria-invalid when the `validation` attribute is present.
+ *  - Help text id is expected to end with `__desc` (ids.desc).
+ *  - Validation message id is expected to end with `__validation` (ids.validation).
  */
 
 import { newSpecPage } from '@stencil/core/testing';
@@ -22,6 +27,26 @@ function findAll<T extends Element = HTMLElement>(root: Element | ShadowRoot, se
 }
 function firstChildDiv<T extends HTMLElement = HTMLElement>(el: Element): T | null {
   return (Array.from(el.children).find(c => (c as HTMLElement).tagName === 'DIV') ?? null) as T | null;
+}
+
+/**
+ * Escape for attribute selector value: [id="..."].
+ * Minimal escaping for quotes and backslashes so querySelector stays valid.
+ */
+function escapeAttrValue(v: string): string {
+  return v.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+function queryById(root: Element | ShadowRoot, id: string): Element | null {
+  const safe = escapeAttrValue(id);
+  return (root as ParentNode).querySelector(`[id="${safe}"]`);
+}
+
+function parseIdRefs(value: string | null | undefined): string[] {
+  return String(value || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
 }
 
 // A11y association helper: passes if we can establish *any* reasonable association
@@ -47,8 +72,8 @@ function hasUsableAssociation(host: Element | ShadowRoot): boolean {
   const ariaLabelledby = (input.getAttribute('aria-labelledby') || '').trim();
   let labelledByResolves = false;
   if (ariaLabelledby) {
-    const ids = ariaLabelledby.split(/\s+/);
-    labelledByResolves = ids.some(x => !!(host as HTMLElement).querySelector(`#${CSS.escape(x)}`));
+    const ids = ariaLabelledby.split(/\s+/).filter(Boolean);
+    labelledByResolves = ids.some(x => !!queryById(host, x));
   }
 
   return srOnly || forMatches || hasAriaLabel || labelledByResolves;
@@ -77,6 +102,36 @@ async function makePage(html: string) {
   }
 
   return page;
+}
+
+// ----------------------------- a11y assertions ------------------------------
+
+function expectDescribedByResolves(host: HTMLElement, input: HTMLInputElement) {
+  const refs = parseIdRefs(input.getAttribute('aria-describedby'));
+  expect(refs.length).toBeGreaterThan(0);
+
+  for (const id of refs) {
+    const node = queryById(host, id);
+    expect(node).toBeTruthy();
+  }
+}
+
+function expectHasHelpTextOutsideDialog(host: HTMLElement, input: HTMLInputElement) {
+  const refs = parseIdRefs(input.getAttribute('aria-describedby'));
+  expect(refs.length).toBeGreaterThan(0);
+
+  const helpId = refs.find(id => id.endsWith('__desc'));
+  expect(helpId).toBeTruthy();
+
+  const helpEl = helpId ? queryById(host, helpId) : null;
+  expect(helpEl).toBeTruthy();
+  if (!helpEl) return;
+
+  // help text should not live inside the dropdown dialog
+  const dialog = find<HTMLElement>(host, '.dropdown-content');
+  if (dialog) {
+    expect(dialog.contains(helpEl)).toBe(false);
+  }
 }
 
 // --------------------------------- specs -----------------------------------
@@ -113,7 +168,7 @@ describe('datepicker-component', () => {
     expect(label).toBeTruthy();
     expect(label.className).toContain('col-3');
     expect(label.className).toContain('form-control-label');
-    expect(label.className).toMatch(/\blg\b|label-lg/); // tolerant to implementation
+    expect(label.className).toMatch(/\blg\b|label-lg/);
   });
 
   it('horizontal + labelHidden: expands input to col-12; a11y via sr-only/for=id/aria-label/aria-labelledby', async () => {
@@ -182,34 +237,51 @@ describe('datepicker-component', () => {
     const inputColDefault = inputGroupDefault.parentElement as HTMLElement;
     expect(inputColDefault.className).not.toMatch(/\bcol-\w+/);
 
-    // Even if a numeric width is provided, inline layout ignores grid classes (matches component behavior)
+    // Even if a numeric width is provided, inline layout ignores grid classes
     const page2 = await makePage(`
       <datepicker-component form-layout="inline" label="Date" input-col="6"></datepicker-component>
     `);
     const host2 = page2.root as HTMLElement;
+
     const inputGroup2 = find(host2, '.form-group .input-group')!;
     const inputColAfter = inputGroup2.parentElement as HTMLElement;
-
     expect(inputColAfter.className).not.toMatch(/\bcol-\w+/);
 
     const label2 = find(host2, 'label.form-control-label')!;
     expect(label2.className).not.toMatch(/\bcol-\w+/);
   });
 
-  // ------------------------------ interactions -----------------------------
+  // ------------------------------ aria-describedby / help text -----------------------------
 
-  it('input -> clear -> blur transitions to invalid when required (validation enabled)', async () => {
-    // IMPORTANT: validation attribute must be present to enable visual/ARIA invalid state
+  it('always renders help text id and keeps aria-describedby resolvable (help text outside dialog)', async () => {
     const page = await makePage(`
-    <datepicker-component required validation label="Date"></datepicker-component>
-  `);
+      <datepicker-component label="Birthday"></datepicker-component>
+    `);
+
+    const host = page.root as HTMLElement;
+    const input = find<HTMLInputElement>(host, 'input.form-control')!;
+    expect(input).toBeTruthy();
+
+    // aria-describedby must exist and resolve to real elements
+    expectDescribedByResolves(host, input);
+
+    // help text should be present and not inside the dialog container
+    expectHasHelpTextOutsideDialog(host, input);
+  });
+
+  // ------------------------------ interactions / validation -----------------------------
+
+  it('input -> clear -> blur transitions to invalid when required (validation enabled) and announces via live region', async () => {
+    const page = await makePage(`
+      <datepicker-component required validation label="Date" validation-message="Date is required."></datepicker-component>
+    `);
 
     const host = page.root as HTMLElement;
     const input = find<HTMLInputElement>(host, 'input.form-control');
     expect(input).toBeTruthy();
 
     // type a value
-    input!.value = '01/02/2022';
+    input!.value = '01-02-2022';
     input!.dispatchEvent(new page.win.Event('input', { bubbles: true }));
     await page.waitForChanges();
 
@@ -222,13 +294,23 @@ describe('datepicker-component', () => {
     input!.dispatchEvent(new page.win.Event('blur', { bubbles: true }));
     await page.waitForChanges();
 
-    const formGroup = find(host, '.form-group') as HTMLElement;
-    const hasInvalidClass = !!find(host, '.is-invalid') || input!.getAttribute('aria-invalid') === 'true' || formGroup?.classList.contains('has-danger');
+    const hasInvalid = !!find(host, '.is-invalid') || input!.getAttribute('aria-invalid') === 'true';
+    expect(hasInvalid).toBe(true);
 
-    expect(hasInvalidClass).toBe(true);
+    // validation message should exist, be referenced by aria-describedby, and be a polite live region
+    const describedByIds = parseIdRefs(input!.getAttribute('aria-describedby'));
+    const validationId = describedByIds.find(x => x.endsWith('__validation'));
+    expect(validationId).toBeTruthy();
 
-    // (optional but helpful) also confirm validation message renders when provided
-    // expect(find(host, '.invalid-feedback')).toBeTruthy();
+    const validationEl = validationId ? (queryById(host, validationId) as HTMLElement | null) : null;
+    expect(validationEl).toBeTruthy();
+    if (validationEl) {
+      expect((validationEl.getAttribute('aria-live') || '').toLowerCase()).toBe('polite');
+      expect((validationEl.getAttribute('aria-atomic') || '').toLowerCase()).toBe('true');
+    }
+
+    // describedby references should all resolve
+    expectDescribedByResolves(host, input!);
   });
 
   it('warns once when both placeholder and dateFormat are provided', async () => {

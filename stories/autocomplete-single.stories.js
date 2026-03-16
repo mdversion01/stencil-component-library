@@ -19,11 +19,11 @@ const DocsWrapStyles = () => {
 };
 
 /** Collapse blank lines + trim edges (keeps docs code previews clean) */
-const normalize = txt => {
+const normalize = (txt) => {
   const lines = String(txt || '')
     .replace(/\r\n/g, '\n')
     .split('\n')
-    .map(l => l.replace(/[ \t]+$/g, ''));
+    .map((l) => l.replace(/[ \t]+$/g, ''));
 
   const out = [];
   let prevBlank = false;
@@ -47,50 +47,70 @@ const normalize = txt => {
 };
 
 /** Put each attribute on its own line (for Docs code previews) */
-const attrLines = pairs =>
+const attrLines = (pairs) =>
   pairs
     .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
     .map(([k, v]) => (v === true ? `${k}` : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
     .join('\n  ');
 
 /** Build docs HTML for the component (options applied at runtime, not as attribute) */
-const buildDocsHtml = args =>
+const buildDocsHtml = (args) =>
   normalize(`
-  <autocomplete-single ${attrLines([
-    // ✅ alphabetized (kebab-case)
-    ['arialabelled-by', args.arialabelledBy],
-    ['auto-sort', args.autoSort],
-    ['clear-icon', args.clearIcon],
-    ['dev-mode', args.devMode],
-    ['disabled', args.disabled],
-    ['error', args.error],
-    ['error-message', args.errorMessage],
-    ['form-id', args.formId],
-    ['form-layout', args.formLayout],
+<autocomplete-single
+  ${attrLines([
+    // ids/labels
     ['id', args.id],
-    ['input-col', args.inputCol],
-    ['input-cols', args.inputCols],
     ['input-id', args.inputId],
     ['label', args.label],
-    ['label-align', args.labelAlign],
-    ['label-col', args.labelCol],
-    ['label-cols', args.labelCols],
-    ['label-hidden', args.labelHidden],
-    ['label-size', args.labelSize],
     ['placeholder', args.placeholder],
-    ['remove-clear-btn', args.removeClearBtn],
-    ['required', args.required],
+
+    // NEW standard a11y props (preferred)
+    ['aria-label', args.ariaLabel],
+    ['aria-labelledby', args.ariaLabelledby],
+    ['aria-describedby', args.ariaDescribedby],
+
+    // legacy a11y
+    ['arialabelled-by', args.arialabelledBy],
+
+    // layout
+    ['form-id', args.formId],
+    ['form-layout', args.formLayout],
+    ['label-align', args.labelAlign],
+    ['label-size', args.labelSize],
     ['size', args.size],
-    ['type', args.type],
+
+    // legacy numeric cols (horizontal)
+    ['label-col', args.labelCol],
+    ['input-col', args.inputCol],
+
+    // responsive cols
+    ['label-cols', args.labelCols],
+    ['input-cols', args.inputCols],
+
+    // state
+    ['required', args.required],
     ['validation', args.validation],
     ['validation-message', args.validationMessage],
+    ['error', args.error],
+    ['error-message', args.errorMessage],
+    ['disabled', args.disabled],
+    ['label-hidden', args.labelHidden],
+    ['dev-mode', args.devMode],
+
+    // behavior
+    ['auto-sort', args.autoSort],
+    ['remove-clear-btn', args.removeClearBtn],
+    ['clear-icon', args.clearIcon],
+    ['type', args.type],
+
+    // controlled value (string)
     ['value', args.value],
-  ])}>
-  </autocomplete-single>
+  ])}
+></autocomplete-single>
 `);
 
 /** Docs wrapper */
-const wrapDocsHtml = innerHtml =>
+const wrapDocsHtml = (innerHtml) =>
   normalize(`
 <div style="max-width:680px;">
   ${String(innerHtml).replace(/\n/g, '\n  ')}
@@ -98,11 +118,11 @@ const wrapDocsHtml = innerHtml =>
 `);
 
 /** Multi-snippet docs helper (single wrapper, multiple components) */
-const buildDocsHtmlMany = snippets =>
+const buildDocsHtmlMany = (snippets) =>
   wrapDocsHtml(
     normalize(`
 <div style="display:grid; gap:14px;">
-${snippets.map(s => `  ${String(s).replace(/\n/g, '\n  ')}`).join('\n')}
+${snippets.map((s) => `  ${String(s).replace(/\n/g, '\n  ')}`).join('\n')}
 </div>
 `),
   );
@@ -145,17 +165,13 @@ const setAutoSortWhenReady = async (el, autoSort) => {
 
 // best-effort Storybook args syncing (Canvas), while still working in Docs/static
 const updateArgsBestEffort = (ctx, updatedArgs) => {
-  // Storybook 7+ provides updateArgs on context
   if (typeof ctx?.updateArgs === 'function') {
     try {
       ctx.updateArgs(updatedArgs);
       return;
-    } catch (_e) {
-      // fall through
-    }
+    } catch (_e) {}
   }
 
-  // Older/best-effort channel emit (harmless if unsupported)
   try {
     const channel =
       window.__STORYBOOK_ADDONS_CHANNEL__ ||
@@ -167,9 +183,7 @@ const updateArgsBestEffort = (ctx, updatedArgs) => {
 
     channel.emit('updateStoryArgs', { storyId, updatedArgs });
     channel.emit('UPDATE_STORY_ARGS', { storyId, updatedArgs });
-  } catch (_e) {
-    // no-op
-  }
+  } catch (_e) {}
 };
 
 // ======================================================
@@ -179,6 +193,76 @@ const updateArgsBestEffort = (ctx, updatedArgs) => {
 const DEFAULT_OPTIONS = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
 
 // ======================================================
+// Reusable renderer (used by stories + a11y matrix)
+// ======================================================
+
+const renderComponent = (args, ctx) => {
+  const el = document.createElement('autocomplete-single');
+
+  // string attrs
+  setAttr(el, 'id', args.id);
+  setAttr(el, 'input-id', args.inputId);
+  setAttr(el, 'label', args.label);
+  setAttr(el, 'placeholder', args.placeholder);
+  setAttr(el, 'form-id', args.formId);
+  setAttr(el, 'form-layout', args.formLayout);
+  setAttr(el, 'label-align', args.labelAlign);
+  setAttr(el, 'label-size', args.labelSize);
+  setAttr(el, 'size', args.size);
+  setAttr(el, 'type', args.type || 'text');
+
+  // layout cols
+  setAttr(el, 'label-col', args.labelCol);
+  setAttr(el, 'input-col', args.inputCol);
+  setAttr(el, 'label-cols', args.labelCols);
+  setAttr(el, 'input-cols', args.inputCols);
+
+  // validation / state strings
+  setAttr(el, 'validation-message', args.validationMessage);
+  setAttr(el, 'error-message', args.errorMessage);
+  setAttr(el, 'clear-icon', args.clearIcon);
+
+  // NEW standard a11y attrs
+  setAttr(el, 'aria-label', args.ariaLabel);
+  setAttr(el, 'aria-labelledby', args.ariaLabelledby);
+  setAttr(el, 'aria-describedby', args.ariaDescribedby);
+
+  // legacy a11y
+  setAttr(el, 'arialabelled-by', args.arialabelledBy);
+
+  // booleans
+  args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
+  args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
+  args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
+  args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
+  args.labelHidden ? el.setAttribute('label-hidden', '') : el.removeAttribute('label-hidden');
+  args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
+  args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
+
+  // behavior props applied post-hydration
+  setOptionsWhenReady(el, Array.isArray(args.options) && args.options.length ? args.options : DEFAULT_OPTIONS);
+  setAutoSortWhenReady(el, args.autoSort);
+  setValueWhenReady(el, args.value);
+
+  // logs
+  el.addEventListener('itemSelect', (e) => console.log('[autocomplete-single] itemSelect', e.detail));
+  el.addEventListener('valueChange', (e) => console.log('[autocomplete-single] valueChange', e.detail));
+  el.addEventListener('clear', () => console.log('[autocomplete-single] clear'));
+
+  // reflect emitted changes back into args (Canvas)
+  el.addEventListener('valueChange', (e) => {
+    const next = e?.detail ?? '';
+    updateArgsBestEffort(ctx, { value: String(next) });
+  });
+  el.addEventListener('change', (e) => {
+    const next = e?.detail?.value;
+    if (next !== undefined) updateArgsBestEffort(ctx, { value: String(next) });
+  });
+
+  return el;
+};
+
+// ======================================================
 // Default export
 // ======================================================
 
@@ -186,7 +270,7 @@ export default {
   title: 'Form/Autocomplete Single',
   tags: ['autodocs'],
   decorators: [
-    Story => {
+    (Story) => {
       const wrap = document.createElement('div');
       wrap.appendChild(DocsWrapStyles());
       wrap.appendChild(Story());
@@ -205,61 +289,7 @@ export default {
     },
   },
 
-  render: (args, ctx) => {
-    const el = document.createElement('autocomplete-single');
-
-    // attributes (kebab-case)
-    setAttr(el, 'arialabelled-by', args.arialabelledBy);
-    setAttr(el, 'auto-sort', args.autoSort);
-    setAttr(el, 'clear-icon', args.clearIcon);
-    setAttr(el, 'error-message', args.errorMessage);
-    setAttr(el, 'form-id', args.formId);
-    setAttr(el, 'form-layout', args.formLayout);
-    setAttr(el, 'id', args.id);
-    setAttr(el, 'input-col', args.inputCol);
-    setAttr(el, 'input-cols', args.inputCols);
-    setAttr(el, 'input-id', args.inputId);
-    setAttr(el, 'label', args.label);
-    setAttr(el, 'label-align', args.labelAlign);
-    setAttr(el, 'label-col', args.labelCol);
-    setAttr(el, 'label-cols', args.labelCols);
-    setAttr(el, 'label-size', args.labelSize);
-    setAttr(el, 'placeholder', args.placeholder);
-    setAttr(el, 'size', args.size);
-    setAttr(el, 'type', args.type || 'text');
-    setAttr(el, 'validation-message', args.validationMessage);
-
-    // booleans
-    args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
-    args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
-    args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
-    args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
-    args.labelHidden ? el.setAttribute('label-hidden', '') : el.removeAttribute('label-hidden');
-    args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
-    args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
-
-    // options + autoSort + value (props; apply post-hydration)
-    setOptionsWhenReady(el, Array.isArray(args.options) && args.options.length ? args.options : DEFAULT_OPTIONS);
-    setAutoSortWhenReady(el, args.autoSort);
-    setValueWhenReady(el, args.value);
-
-    // logs
-    el.addEventListener('itemSelect', e => console.log('[autocomplete-single] itemSelect', e.detail));
-    el.addEventListener('valueChange', e => console.log('[autocomplete-single] valueChange', e.detail));
-    el.addEventListener('clear', () => console.log('[autocomplete-single] clear'));
-
-    // (optional) reflect emitted changes back into args (Canvas)
-    el.addEventListener('valueChange', e => {
-      const next = e?.detail ?? '';
-      updateArgsBestEffort(ctx, { value: String(next) });
-    });
-    el.addEventListener('change', e => {
-      const next = e?.detail?.value;
-      if (next !== undefined) updateArgsBestEffort(ctx, { value: String(next) });
-    });
-
-    return el;
-  },
+  render: (args, ctx) => renderComponent(args, ctx),
 
   argTypes: {
     /* =========================
@@ -282,18 +312,6 @@ export default {
       name: 'disabled',
       table: { category: 'Attributes', defaultValue: { summary: false } },
       description: 'Disables the input field, preventing user interaction.',
-    },
-    error: {
-      control: 'boolean',
-      name: 'error',
-      table: { category: 'Attributes', defaultValue: { summary: false } },
-      description: 'Marks the input as having an error state.',
-    },
-    errorMessage: {
-      control: 'text',
-      name: 'error-message',
-      table: { category: 'Attributes', defaultValue: { summary: '' } },
-      description: 'The error message to display when the input is in an error state.',
     },
     formId: {
       control: 'text',
@@ -341,14 +359,38 @@ export default {
     },
 
     /* =========================
-     * Input Attributes
+     * Accessibility (NEW)
      * ========================= */
+    ariaLabel: {
+      control: 'text',
+      name: 'aria-label',
+      table: { category: 'Accessibility' },
+      description: 'Optional accessible name for the combobox (used only when aria-labelledby is not set).',
+    },
+    ariaLabelledby: {
+      control: 'text',
+      name: 'aria-labelledby',
+      table: { category: 'Accessibility' },
+      description: 'Optional external id reference used to label the combobox (preferred).',
+    },
+    ariaDescribedby: {
+      control: 'text',
+      name: 'aria-describedby',
+      table: { category: 'Accessibility' },
+      description: 'Optional helper text id reference. Component appends validation/error ids when present.',
+    },
+
+    // legacy a11y
     arialabelledBy: {
       control: 'text',
       name: 'arialabelled-by',
       table: { category: 'Input Attributes' },
-      description: 'The id(s) of the element(s) that label the input.',
+      description: 'Legacy: The id(s) of the element(s) that label the input.',
     },
+
+    /* =========================
+     * Input Attributes
+     * ========================= */
     inputId: {
       control: 'text',
       name: 'input-id',
@@ -439,6 +481,18 @@ export default {
     /* =========================
      * Validation
      * ========================= */
+    error: {
+      control: 'boolean',
+      name: 'error',
+      table: { category: 'Validation', defaultValue: { summary: false } },
+      description: 'Marks the input as having an error state.',
+    },
+    errorMessage: {
+      control: 'text',
+      name: 'error-message',
+      table: { category: 'Validation', defaultValue: { summary: '' } },
+      description: 'The error message to display when the input is in an error state.',
+    },
     required: {
       control: 'boolean',
       name: 'required',
@@ -459,9 +513,15 @@ export default {
     },
   },
 
-  // ✅ Keep defaults aligned with plumage story
   args: {
+    // legacy a11y
     arialabelledBy: '',
+
+    // NEW standard a11y
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
+
     autoSort: true,
     clearIcon: 'fa-solid fa-xmark',
     devMode: false,
@@ -493,7 +553,7 @@ export default {
 };
 
 // ======================================================
-// Stories (match plumage-autocomplete-single)
+// Stories (existing kept; none removed)
 // ======================================================
 
 export const Basic = {
@@ -539,50 +599,21 @@ const SIZE_VARIANTS = [
 ];
 
 export const Sizes = {
-  render: args => {
+  render: (args, ctx) => {
     const container = document.createElement('div');
     container.style.display = 'grid';
     container.style.gap = '14px';
     container.style.maxWidth = '760px';
 
     for (const v of SIZE_VARIANTS) {
-      const el = document.createElement('autocomplete-single');
-
-      setAttr(el, 'arialabelled-by', args.arialabelledBy);
-      setAttr(el, 'auto-sort', args.autoSort);
-      setAttr(el, 'clear-icon', args.clearIcon);
-      setAttr(el, 'error-message', args.errorMessage);
-      setAttr(el, 'form-id', args.formId);
-      setAttr(el, 'form-layout', args.formLayout);
-
-      setAttr(el, 'id', v.id);
-      setAttr(el, 'input-col', args.inputCol);
-      setAttr(el, 'input-cols', args.inputCols);
-      setAttr(el, 'input-id', v.inputId);
-
-      setAttr(el, 'label', `${args.label || 'Autocomplete Single'} — ${v.label}`);
-      setAttr(el, 'label-align', args.labelAlign);
-      setAttr(el, 'label-col', args.labelCol);
-      setAttr(el, 'label-cols', args.labelCols);
-      setAttr(el, 'label-hidden', args.labelHidden);
-      setAttr(el, 'label-size', args.labelSize);
-
-      setAttr(el, 'placeholder', args.placeholder);
-      setAttr(el, 'size', v.size);
-      setAttr(el, 'type', args.type || 'text');
-      setAttr(el, 'validation-message', args.validationMessage);
-
-      args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
-      args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
-      args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
-      args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
-      args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
-      args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
-
-      setOptionsWhenReady(el, Array.isArray(args.options) && args.options.length ? args.options : DEFAULT_OPTIONS);
-      setAutoSortWhenReady(el, args.autoSort);
-      setValueWhenReady(el, args.value);
-
+      const nextArgs = {
+        ...args,
+        id: v.id,
+        inputId: v.inputId,
+        label: `${args.label || 'Autocomplete Single'} — ${v.label}`,
+        size: v.size,
+      };
+      const el = renderComponent(nextArgs, ctx);
       container.appendChild(el);
     }
 
@@ -594,7 +625,7 @@ export const Sizes = {
         language: 'html',
         transform: (_src, ctx) =>
           buildDocsHtmlMany(
-            SIZE_VARIANTS.map(v =>
+            SIZE_VARIANTS.map((v) =>
               buildDocsHtml({
                 ...ctx.args,
                 id: v.id,
@@ -627,47 +658,14 @@ export const ControlledValue = {
     wrap.style.display = 'grid';
     wrap.style.gap = '10px';
 
-    const el = document.createElement('autocomplete-single');
-
-    // apply attrs (same as default render)
-    setAttr(el, 'arialabelled-by', args.arialabelledBy);
-    setAttr(el, 'auto-sort', args.autoSort);
-    setAttr(el, 'clear-icon', args.clearIcon);
-    setAttr(el, 'error-message', args.errorMessage);
-    setAttr(el, 'form-id', args.formId);
-    setAttr(el, 'form-layout', args.formLayout);
-    setAttr(el, 'id', args.id);
-    setAttr(el, 'input-col', args.inputCol);
-    setAttr(el, 'input-cols', args.inputCols);
-    setAttr(el, 'input-id', args.inputId);
-    setAttr(el, 'label', args.label);
-    setAttr(el, 'label-align', args.labelAlign);
-    setAttr(el, 'label-col', args.labelCol);
-    setAttr(el, 'label-cols', args.labelCols);
-    setAttr(el, 'label-hidden', args.labelHidden);
-    setAttr(el, 'label-size', args.labelSize);
-    setAttr(el, 'placeholder', args.placeholder);
-    setAttr(el, 'size', args.size);
-    setAttr(el, 'type', args.type || 'text');
-    setAttr(el, 'validation-message', args.validationMessage);
-
-    args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
-    args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
-    args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
-    args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
-    args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
-    args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
-
-    setOptionsWhenReady(el, Array.isArray(args.options) && args.options.length ? args.options : DEFAULT_OPTIONS);
-    setAutoSortWhenReady(el, args.autoSort);
-    setValueWhenReady(el, args.value);
+    const el = renderComponent(args, ctx);
 
     const buttons = document.createElement('div');
     buttons.style.display = 'flex';
     buttons.style.gap = '8px';
     buttons.style.flexWrap = 'wrap';
 
-    const mkBtn = label => {
+    const mkBtn = (label) => {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'btn btn-sm btn-secondary';
@@ -683,11 +681,9 @@ export const ControlledValue = {
     buttons.appendChild(btnMango);
     buttons.appendChild(btnClear);
 
-    const applyValue = next => {
+    const applyValue = (next) => {
       const v = typeof next === 'string' ? next : '';
-      // always update component UI
       setValueWhenReady(el, v);
-      // try to sync Storybook args
       updateArgsBestEffort(ctx, { value: v });
     };
 
@@ -696,8 +692,8 @@ export const ControlledValue = {
     btnClear.addEventListener('click', () => applyValue(''));
 
     // reflect emitted changes back into args (Canvas)
-    el.addEventListener('valueChange', e => applyValue(String(e?.detail ?? '')));
-    el.addEventListener('change', e => {
+    el.addEventListener('valueChange', (e) => applyValue(String(e?.detail ?? '')));
+    el.addEventListener('change', (e) => {
       const next = e?.detail?.value;
       if (next !== undefined) applyValue(String(next));
     });
@@ -743,4 +739,210 @@ export const Disabled = {
 Disabled.storyName = 'Disabled';
 Disabled.parameters = {
   docs: { description: { story: 'Disabled state example (with a preset value).' } },
+};
+
+// ======================================================
+// NEW: Accessibility matrix story
+// ======================================================
+
+export const AccessibilityMatrix = {
+  name: 'Accessibility matrix (computed)',
+  render: (args, ctx) => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '16px';
+    wrap.style.maxWidth = '980px';
+
+    const title = document.createElement('div');
+    title.innerHTML = `<strong>Accessibility matrix</strong>
+<div style="opacity:.8">Prints computed label/combobox/listbox wiring: role + aria-* + ids (default/inline/horizontal, validation/error, disabled).</div>`;
+    wrap.appendChild(title);
+
+    const cardRow = (labelText, buildEl) => {
+      const card = document.createElement('div');
+      card.style.display = 'grid';
+      card.style.gridTemplateColumns = '280px 1fr';
+      card.style.gap = '12px';
+      card.style.alignItems = 'start';
+      card.style.border = '1px solid #ddd';
+      card.style.borderRadius = '8px';
+      card.style.padding = '12px';
+
+      const left = document.createElement('div');
+      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+
+      const right = document.createElement('div');
+      right.style.display = 'grid';
+      right.style.gap = '8px';
+
+      const demo = document.createElement('div');
+      const el = buildEl();
+      demo.appendChild(el);
+
+      const pre = document.createElement('pre');
+      pre.style.margin = '0';
+      pre.style.padding = '10px';
+      pre.style.borderRadius = '8px';
+      pre.style.overflow = 'auto';
+      pre.style.border = '1px solid #eee';
+      pre.style.background = '#fafafa';
+      pre.textContent = 'Loading…';
+
+      right.appendChild(demo);
+      right.appendChild(pre);
+
+      card.appendChild(left);
+      card.appendChild(right);
+
+      const snapshot = () => {
+        const host = demo.querySelector('autocomplete-single');
+        const input = host?.querySelector('input[role="combobox"]');
+        const listboxId = input?.getAttribute('aria-controls');
+        const listbox = listboxId ? host?.querySelector(`#${CSS.escape(listboxId)}`) : host?.querySelector('[role="listbox"]');
+        const labelEl = host?.querySelector('label');
+
+        pre.textContent = JSON.stringify(
+          {
+            hostTag: host?.tagName?.toLowerCase() ?? null,
+            inputId: input?.getAttribute('id') ?? null,
+            labelId: labelEl?.getAttribute('id') ?? null,
+            labelFor: labelEl?.getAttribute('for') ?? labelEl?.getAttribute('htmlfor') ?? null,
+            role: input?.getAttribute('role') ?? null,
+            'aria-labelledby': input?.getAttribute('aria-labelledby') ?? null,
+            'aria-label': input?.getAttribute('aria-label') ?? null,
+            'aria-describedby': input?.getAttribute('aria-describedby') ?? null,
+            'aria-controls': input?.getAttribute('aria-controls') ?? null,
+            'aria-expanded': input?.getAttribute('aria-expanded') ?? null,
+            'aria-activedescendant': input?.getAttribute('aria-activedescendant') ?? null,
+            'aria-required': input?.getAttribute('aria-required') ?? null,
+            'aria-invalid': input?.getAttribute('aria-invalid') ?? null,
+            'aria-disabled': input?.getAttribute('aria-disabled') ?? null,
+            listboxPresent: !!listbox,
+            listboxId: listbox?.getAttribute('id') ?? null,
+            hasValidation: !!host?.querySelector('.invalid-feedback'),
+            hasError: !!host?.querySelector('.error-message'),
+          },
+          null,
+          2,
+        );
+      };
+
+      queueMicrotask(() => requestAnimationFrame(snapshot));
+      return card;
+    };
+
+    // Default
+    wrap.appendChild(
+      cardRow('Default (stacked)', () =>
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-default',
+            label: 'Default A11y',
+            formLayout: '',
+            validation: false,
+            error: false,
+            disabled: false,
+            value: '',
+          },
+          ctx,
+        ),
+      ),
+    );
+
+    // Inline
+    wrap.appendChild(
+      cardRow('Inline layout', () =>
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-inline',
+            label: 'Inline A11y',
+            formLayout: 'inline',
+            labelAlign: '',
+            validation: false,
+            error: false,
+            disabled: false,
+            value: '',
+          },
+          ctx,
+        ),
+      ),
+    );
+
+    // Horizontal
+    wrap.appendChild(
+      cardRow('Horizontal layout', () =>
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-horizontal',
+            label: 'Horizontal A11y',
+            formLayout: 'horizontal',
+            labelAlign: 'right',
+            labelCol: 4,
+            inputCol: 8,
+            validation: false,
+            error: false,
+            disabled: false,
+            value: '',
+          },
+          ctx,
+        ),
+      ),
+    );
+
+    // Validation + Error
+    wrap.appendChild(
+      cardRow('Validation + Error (aria-invalid + describedby)', () =>
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-msg',
+            label: 'Messages',
+            required: true,
+            validation: true,
+            validationMessage: 'This is required.',
+            error: true,
+            errorMessage: 'Something went wrong.',
+            value: '',
+          },
+          ctx,
+        ),
+      ),
+    );
+
+    // Disabled
+    wrap.appendChild(
+      cardRow('Disabled (aria-disabled)', () =>
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-disabled',
+            label: 'Disabled',
+            disabled: true,
+            value: 'Banana',
+            validation: false,
+            error: false,
+          },
+          ctx,
+        ),
+      ),
+    );
+
+    return wrap;
+  },
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Prints computed accessibility wiring for the combobox + listbox: `role`, `aria-labelledby`, `aria-describedby` (including validation/error ids), `aria-controls`, `aria-expanded`, `aria-activedescendant`, plus id/label info across default/inline/horizontal, validation+error, and disabled.',
+      },
+      source: {
+        language: 'html',
+        transform: (_src, ctx) => wrapDocsHtml(buildDocsHtml(ctx.args)),
+      },
+    },
+  },
 };

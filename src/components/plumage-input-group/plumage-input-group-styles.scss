@@ -126,7 +126,7 @@ $radius: 0.25rem;
       border: none;
       border-radius: 0;
       margin-bottom: 0;
-      margin-left: 5px;
+      margin-left: 0;
     }
   }
 
@@ -143,6 +143,7 @@ $radius: 0.25rem;
     color: $gray-700;
     text-align: center;
     white-space: nowrap;
+    background-color: transparent;
 
     &.is-invalid {
       color: #b30009;

@@ -7,23 +7,24 @@
 
 ## Properties
 
-| Property            | Attribute            | Description | Type                           | Default                    |
-| ------------------- | -------------------- | ----------- | ------------------------------ | -------------------------- |
-| `checked`           | `checked`            |             | `boolean`                      | `false`                    |
-| `customSwitch`      | `custom-switch`      |             | `boolean`                      | `false`                    |
-| `disabled`          | `disabled`           |             | `boolean`                      | `false`                    |
-| `inline`            | `inline`             |             | `boolean`                      | `false`                    |
-| `inputId`           | `input-id`           |             | `string`                       | `''`                       |
-| `labelTxt`          | `label-txt`          |             | `string`                       | `''`                       |
-| `newToggleTxt`      | --                   |             | `{ on: string; off: string; }` | `{ on: 'On', off: 'Off' }` |
-| `required`          | `required`           |             | `boolean`                      | `false`                    |
-| `size`              | `size`               |             | `string`                       | `''`                       |
-| `switches`          | `switches`           |             | `boolean`                      | `false`                    |
-| `switchesArray`     | --                   |             | `ToggleItem[]`                 | `[]`                       |
-| `toggleTxt`         | `toggle-txt`         |             | `boolean`                      | `false`                    |
-| `validation`        | `validation`         |             | `boolean`                      | `false`                    |
-| `validationMessage` | `validation-message` |             | `string`                       | `''`                       |
-| `value`             | `value`              |             | `string`                       | `''`                       |
+| Property            | Attribute            | Description                                                                                                                               | Type                           | Default                    |
+| ------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | -------------------------- |
+| `checked`           | `checked`            |                                                                                                                                           | `boolean`                      | `false`                    |
+| `customSwitch`      | `custom-switch`      |                                                                                                                                           | `boolean`                      | `false`                    |
+| `disabled`          | `disabled`           |                                                                                                                                           | `boolean`                      | `false`                    |
+| `inline`            | `inline`             |                                                                                                                                           | `boolean`                      | `false`                    |
+| `inputId`           | `input-id`           |                                                                                                                                           | `string`                       | `''`                       |
+| `labelTxt`          | `label-txt`          |                                                                                                                                           | `string`                       | `''`                       |
+| `newToggleTxt`      | --                   | Programmatic API (property): el.newToggleTxt = { on:'On', off:'Off' } IMPORTANT: do not mutate this prop internally.                      | `{ on: string; off: string; }` | `{ on: 'On', off: 'Off' }` |
+| `newToggleTxtAttr`  | `new-toggle-txt`     | Attribute API: <toggle-switch-component new-toggle-txt='{"on":"A","off":"B"}'> This is a STRING prop because HTML attributes are strings. | `string`                       | `''`                       |
+| `required`          | `required`           |                                                                                                                                           | `boolean`                      | `false`                    |
+| `size`              | `size`               |                                                                                                                                           | `string`                       | `''`                       |
+| `switches`          | `switches`           |                                                                                                                                           | `boolean`                      | `false`                    |
+| `switchesArray`     | --                   |                                                                                                                                           | `ToggleItem[]`                 | `[]`                       |
+| `toggleTxt`         | `toggle-txt`         |                                                                                                                                           | `boolean`                      | `false`                    |
+| `validation`        | `validation`         |                                                                                                                                           | `boolean`                      | `false`                    |
+| `validationMessage` | `validation-message` |                                                                                                                                           | `string`                       | `''`                       |
+| `value`             | `value`              |                                                                                                                                           | `string`                       | `''`                       |
 
 
 ## Events

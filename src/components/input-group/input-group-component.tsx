@@ -11,7 +11,7 @@ export class InputGroupComponent {
 
   // ----- Props -----
   // Reserved attribute names mapped to safe prop names
-  @Prop({ attribute: 'append' }) hasAppend: boolean = false;
+  @Prop({ attribute: 'append' }) appendField: boolean = false; // use presence of "append" attribute to trigger append slot
   @Prop() appendId: string = '';
 
   @Prop() disabled: boolean = false;
@@ -36,12 +36,12 @@ export class InputGroupComponent {
   @Prop() otherContent: boolean = false;
   @Prop() placeholder: string = '';
 
-  @Prop({ attribute: 'prepend' }) hasPrepend: boolean = false;
+  @Prop({ attribute: 'prepend' }) prependField: boolean = false;
   @Prop() prependId: string = '';
 
   @Prop() required: boolean = false;
   @Prop() size: '' | 'sm' | 'lg' = '';
-  @Prop() type: string = '';
+  @Prop() type: string = 'text';
 
   /** External validation flag (rendered with UX overrides) */
   @Prop({ mutable: true }) validation: boolean = false;
@@ -319,7 +319,7 @@ export class InputGroupComponent {
     return (
       <div class={{ 'input-group': true, [this.groupSizeClass()]: !!this.groupSizeClass(), 'is-invalid': this.isInvalidNow() }}>
         {/* Prepend */}
-        {this.hasPrepend ? (
+        {this.prependField ? (
           <Fragment>
             {(() => {
               const sideIcon = this.prependIcon ?? this.icon; // side-specific wins, then global, else slot
@@ -359,7 +359,7 @@ export class InputGroupComponent {
         />
 
         {/* Append */}
-        {this.hasAppend ? (
+        {this.appendField ? (
           <Fragment>
             {(() => {
               const sideIcon = this.appendIcon ?? this.icon; // side-specific wins, then global, else slot

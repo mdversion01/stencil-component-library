@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`button-component (new spec) accordion props: sets aria-expanded/controls and toggles when isOpen changes 1`] = `
-<button aria-controls="panel-1" aria-expanded="true" aria-label="Toggle Section" class="btn" role="button" type="button">
+<button aria-controls="panel-1" aria-expanded="true" class="btn" type="button">
   <span class="btn__content">
     Toggle Section
   </span>
@@ -9,7 +9,7 @@ exports[`button-component (new spec) accordion props: sets aria-expanded/control
 `;
 
 exports[`button-component (new spec) applies aria-pressed only when toggle=true; respects aria-label override 1`] = `
-<button aria-label="Submit form" aria-pressed="true" class="btn btn--toggle pressed" role="button" type="button">
+<button aria-label="Submit form" aria-pressed="true" class="btn btn--toggle pressed" type="button">
   <span class="btn__content">
     Submit
   </span>
@@ -17,7 +17,7 @@ exports[`button-component (new spec) applies aria-pressed only when toggle=true;
 `;
 
 exports[`button-component (new spec) btnIcon (icon-only) uses fallback aria-label "Button" when no text/aria provided 1`] = `
-<button aria-label="Button" class="btn btn-icon" role="button" type="button">
+<button aria-label="Button" class="btn btn-icon" type="button">
   <span aria-hidden="true">
     <span>
       🔔
@@ -27,7 +27,7 @@ exports[`button-component (new spec) btnIcon (icon-only) uses fallback aria-labe
 `;
 
 exports[`button-component (new spec) grouped button with start placement adds group classes 1`] = `
-<button aria-label="Start Btn" class="btn btn-group btn-group-start" role="button" type="button">
+<button class="btn btn-group btn-group-start" type="button">
   <span class="btn__content">
     Start Btn
   </span>
@@ -35,7 +35,7 @@ exports[`button-component (new spec) grouped button with start placement adds gr
 `;
 
 exports[`button-component (new spec) iconBtn wraps slot in .btn__content 1`] = `
-<button aria-label="Button" class="btn icon-btn" role="button" type="button">
+<button aria-label="Button" class="btn icon-btn" type="button">
   <span aria-hidden="true" class="btn__content">
     <span>
       🔔
@@ -45,15 +45,15 @@ exports[`button-component (new spec) iconBtn wraps slot in .btn__content 1`] = `
 `;
 
 exports[`button-component (new spec) renders <a> link with aria-disabled and proper role/tabindex when disabled 1`] = `
-<a aria-disabled="true" aria-label="Disabled Link" class="btn link" role="button" tabindex="-1">
+<a aria-disabled="true" class="btn link" role="button" tabindex="-1">
   <span class="btn__content">
     Disabled Link
   </span>
 </a>
 `;
 
-exports[`button-component (new spec) renders default <button> with text and stable aria-label 1`] = `
-<button aria-label="Click me" class="btn" role="button" type="button">
+exports[`button-component (new spec) renders default <button> with text (no forced role, no aria-label by default) 1`] = `
+<button class="btn" type="button">
   <span class="btn__content">
     Click me
   </span>
@@ -61,7 +61,7 @@ exports[`button-component (new spec) renders default <button> with text and stab
 `;
 
 exports[`button-component (new spec) slotSide="left" adds ms-1 and keeps me-1 off 1`] = `
-<button aria-label="With Icon" class="btn" role="button" type="button">
+<button class="btn" type="button">
   <span class="btn__side left">
     <span>
       🌟
@@ -74,7 +74,7 @@ exports[`button-component (new spec) slotSide="left" adds ms-1 and keeps me-1 of
 `;
 
 exports[`button-component (new spec) slotSide="right" adds me-1 and keeps ms-1 off 1`] = `
-<button aria-label="Next" class="btn" role="button" type="button">
+<button class="btn" type="button">
   <span class="btn__content me-1">
     Next
   </span>

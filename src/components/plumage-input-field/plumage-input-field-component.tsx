@@ -19,6 +19,7 @@ export class PlumageInputFieldComponent {
   @Prop() labelSize: 'base' | 'xs' | 'sm' | 'lg' = 'sm';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
+  @Prop() readOnly: boolean = false;
   @Prop() required: boolean = false;
   @Prop() type: string = 'text';
   @Prop() validation: boolean = false;
@@ -300,7 +301,7 @@ export class PlumageInputFieldComponent {
     const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
     const classes = ['form-control', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
 
-    const placeholder = this.labelHidden ? this.label || this.placeholder || 'Placeholder Text' : this.label || this.placeholder || 'Placeholder Text';
+    const placeholder = this.labelHidden ? this.placeholder || this.label || 'Placeholder Text' : this.placeholder || this.label || 'Placeholder Text';
 
     return (
       <div class="input-container" role="presentation" aria-labelledby={names || undefined} onClick={this.handleInteraction}>
@@ -316,6 +317,7 @@ export class PlumageInputFieldComponent {
           aria-labelledby={names || undefined}
           aria-describedby={this.validationState ? 'validationMessage' : undefined}
           disabled={this.disabled}
+          readOnly={this.readOnly}
           required={this.required}
           onInput={this.handleInput}
           onFocus={this.handleInteraction}
