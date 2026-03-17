@@ -9,6 +9,18 @@ function normalizeHtml(node: Element | ShadowRoot | DocumentFragment | string) {
   return html.replace(ID_REGEX, 'modal-component-<id>');
 }
 
+/**
+ * Escape for attribute selector value: [id="..."].
+ * Minimal escaping for quotes and backslashes so querySelector stays valid.
+ */
+function escapeAttrValue(v: string): string {
+  return String(v).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+function queryById(root: ParentNode, id: string): Element | null {
+  const safe = escapeAttrValue(id);
+  return root.querySelector(`[id="${safe}"]`);
+}
+
 let randSpy: jest.SpyInstance<number, []>;
 
 // --- Mock Bootstrap Modal (default export) ---
@@ -43,7 +55,7 @@ describe('modal-component', () => {
     randSpy?.mockRestore();
   });
 
-  it('renders trigger + modal markup (snapshot)', async () => {
+  it('renders trigger + modal markup (snapshot) and includes required a11y attributes', async () => {
     const page = await newSpecPage({
       components: [ModalComponent],
       html: `<modal-component btn-text="Launch demo modal" variant="primary">
@@ -52,8 +64,31 @@ describe('modal-component', () => {
              </modal-component>`,
     });
 
+    const root = page.root as HTMLElement;
+    expect(root).toBeTruthy();
+
+    const trigger = root.querySelector('button[type="button"]') as HTMLButtonElement;
+    expect(trigger).toBeTruthy();
+    expect(trigger.getAttribute('aria-haspopup')).toBe('dialog');
+    expect(trigger.getAttribute('aria-controls')).toBeTruthy();
+    expect(trigger.getAttribute('aria-expanded')).toBeTruthy();
+
+    const modal = root.querySelector('.modal') as HTMLElement;
+    expect(modal).toBeTruthy();
+    expect(modal.getAttribute('role')).toBe('dialog');
+    expect(modal.getAttribute('aria-modal')).toBe('true');
+
+    // aria-labelledby / aria-describedby must resolve to elements (no CSS.escape in Jest)
+    const labelledby = modal.getAttribute('aria-labelledby');
+    const describedby = modal.getAttribute('aria-describedby');
+    expect(labelledby).toBeTruthy();
+    expect(describedby).toBeTruthy();
+
+    if (labelledby) expect(queryById(root, labelledby)).toBeTruthy();
+    if (describedby) expect(queryById(root, describedby)).toBeTruthy();
+
     // Snapshot the rendered host
-    expect(normalizeHtml(page.root as any)).toMatchSnapshot('render-default');
+    expect(normalizeHtml(root as any)).toMatchSnapshot('render-default');
   });
 
   it('applies dialog size, fullscreen and centered classes (snapshot)', async () => {
@@ -70,17 +105,15 @@ describe('modal-component', () => {
 
     const dialog = page.root!.querySelector('.modal-dialog') as HTMLElement;
     expect(dialog).toBeTruthy();
-    // Should include: modal-lg, modal-md-down, modal-dialog-centered
     expect(dialog.className).toEqual(expect.stringContaining('modal-lg'));
     expect(dialog.className).toEqual(expect.stringContaining('modal-md-down'));
     expect(dialog.className).toEqual(expect.stringContaining('modal-dialog-centered'));
 
-    // Snapshot the modal subtree only (keeps snapshot tidy)
     const modal = page.root!.querySelector('.modal') as HTMLElement;
     expect(normalizeHtml(modal)).toMatchSnapshot('render-sized-centered');
   });
 
-  it('opens programmatically (calls Bootstrap show)', async () => {
+  it('open() calls Bootstrap show', async () => {
     const page = await newSpecPage({
       components: [ModalComponent],
       html: `<modal-component modal-title="Programmatic"></modal-component>`,
@@ -88,10 +121,6 @@ describe('modal-component', () => {
 
     const instance = page.rootInstance as ModalComponent;
 
-    // Make the call deterministic in JSDOM by stubbing the Bootstrap instance
-    showMock.mockClear?.();
-    hideMock.mockClear?.();
-    disposeMock.mockClear?.();
     (instance as any).modalInstance = {
       show: showMock,
       hide: hideMock,
@@ -99,69 +128,101 @@ describe('modal-component', () => {
     };
 
     await instance.open();
-
     expect(showMock).toHaveBeenCalledTimes(1);
   });
 
-  it('closes programmatically (calls Bootstrap hide)', async () => {
+  it('close() calls Bootstrap hide and blurs active element inside modal first (best-effort)', async () => {
     const page = await newSpecPage({
       components: [ModalComponent],
       html: `<modal-component modal-title="Programmatic"></modal-component>`,
     });
 
-    const instance = page.rootInstance as ModalComponent;
+    const root = page.root as HTMLElement;
+    const instance = page.rootInstance as any;
 
-    // Ensure the component is fully rendered
     await page.waitForChanges();
 
-    // 🔧 Inject a mock Bootstrap Modal instance so open()/close() are deterministic
-    // If you already have showMock/hideMock/disposeMock at spec scope, this will reuse them.
-    showMock.mockClear?.();
-    hideMock.mockClear?.();
-    disposeMock.mockClear?.();
+    instance.modalInstance = { show: showMock, hide: hideMock, dispose: disposeMock };
 
-    (instance as any).modalInstance = {
-      show: showMock,
-      hide: hideMock,
-      dispose: disposeMock,
-    };
+    const modalEl = root.querySelector('.modal') as HTMLDivElement;
+    expect(modalEl).toBeTruthy();
+    instance.modalEl = modalEl;
 
-    await instance.open();
-    await instance.close();
+    const focused = root.ownerDocument!.createElement('button');
+    focused.textContent = 'Inside';
+    (focused as any).blur = jest.fn();
+    modalEl.appendChild(focused);
+
+    Object.defineProperty(root.ownerDocument, 'activeElement', {
+      configurable: true,
+      get() {
+        return focused;
+      },
+    });
+
+    await (instance as ModalComponent).open();
+    await (instance as ModalComponent).close();
 
     expect(showMock).toHaveBeenCalledTimes(1);
     expect(hideMock).toHaveBeenCalledTimes(1);
+    expect((focused as any).blur).toHaveBeenCalled();
   });
 
-  it('close button inside footer calls close()', async () => {
+  it('trigger click records lastTrigger and calls open()', async () => {
     const page = await newSpecPage({
       components: [ModalComponent],
-      html: `<modal-component modal-title="Close Test">
-             <div slot="footer">
-               <button class="btn btn-secondary" id="footer-close">Close</button>
-             </div>
-           </modal-component>`,
+      html: `<modal-component btn-text="Open Me"></modal-component>`,
+    });
+
+    const root = page.root as HTMLElement;
+    const instance = page.rootInstance as any;
+
+    instance.modalInstance = { show: showMock, hide: hideMock, dispose: disposeMock };
+
+    const trigger = root.querySelector('button[type="button"]') as HTMLButtonElement;
+    expect(trigger).toBeTruthy();
+
+    trigger.click();
+    await page.waitForChanges();
+
+    expect(showMock).toHaveBeenCalledTimes(1);
+    expect(instance.lastTrigger).toBe(trigger);
+  });
+
+  it('keydown Enter/Space on trigger opens (host capture path)', async () => {
+    const page = await newSpecPage({
+      components: [ModalComponent],
+      html: `<modal-component btn-text="Open Me"></modal-component>`,
+    });
+
+    const root = page.root as HTMLElement;
+    const instance = page.rootInstance as any;
+
+    instance.modalInstance = { show: showMock, hide: hideMock, dispose: disposeMock };
+
+    const trigger = root.querySelector('button[type="button"]') as HTMLButtonElement;
+    expect(trigger).toBeTruthy();
+
+    trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await page.waitForChanges();
+    expect(showMock).toHaveBeenCalledTimes(1);
+
+    showMock.mockClear();
+    trigger.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    await page.waitForChanges();
+    expect(showMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('disconnectedCallback disposes bootstrap instance (best-effort)', async () => {
+    const page = await newSpecPage({
+      components: [ModalComponent],
+      html: `<modal-component modal-title="Dispose"></modal-component>`,
     });
 
     const instance = page.rootInstance as any;
+    instance.modalInstance = { show: showMock, hide: hideMock, dispose: disposeMock };
 
-    // Ensure component lifecycle/refs have settled
-    await page.waitForChanges();
-
-    // 🔧 Inject a deterministic mock instance so .open()/.close() work even if
-    // Bootstrap's constructor didn't run in this test environment.
-    instance.modalInstance = {
-      show: showMock,
-      hide: hideMock,
-      dispose: disposeMock,
-    };
-
-    await (instance as ModalComponent).open();
-    expect(showMock).toHaveBeenCalledTimes(1);
-
-    // (Optional) pretend user wired a click handler on their footer button to call el.close().
-    // We directly call close() here to validate the component API.
-    await (instance as ModalComponent).close();
-    expect(hideMock).toHaveBeenCalledTimes(1);
+    instance.disconnectedCallback?.();
+    expect(disposeMock).toHaveBeenCalledTimes(1);
   });
 });

@@ -44,6 +44,11 @@ const buildAttrsBlock = a => {
     boolLine('plumage', a.plumage),
     attrLine('size', a.size),
     attrLine('total-rows', a.totalRows),
+
+    // ✅ NEW a11y props
+    attrLine('pagination-aria-label', a.paginationAriaLabel),
+    attrLine('page-size-label', a.pageSizeLabel),
+    attrLine('page-size-help-text', a.pageSizeHelpText),
   ].filter(Boolean);
 
   return lines.length ? `\n${lines.join('\n')}` : '';
@@ -95,6 +100,7 @@ export default {
             // Exact literal code is provided for these (scripts)
             case 'StandaloneRangeAndSizer':
             case 'Range Only':
+            case 'AccessibilityMatrix':
               return src;
 
             default:
@@ -109,8 +115,8 @@ export default {
   },
   argTypes: {
     /* -----------------------------
-   Accessibility
-  ------------------------------ */
+     Accessibility
+    ------------------------------ */
     controlId: {
       control: 'text',
       name: 'control-id',
@@ -118,9 +124,29 @@ export default {
       table: { category: 'Accessibility' },
     },
 
+    // ✅ NEW a11y props
+    paginationAriaLabel: {
+      control: 'text',
+      name: 'pagination-aria-label',
+      description: 'ARIA label for the <nav> landmark.',
+      table: { category: 'Accessibility' },
+    },
+    pageSizeLabel: {
+      control: 'text',
+      name: 'page-size-label',
+      description: 'Visible label text for the page-size <select> (standalone items-per-page).',
+      table: { category: 'Accessibility' },
+    },
+    pageSizeHelpText: {
+      control: 'text',
+      name: 'page-size-help-text',
+      description: 'SR-only help text referenced by aria-describedby on the page-size <select>.',
+      table: { category: 'Accessibility' },
+    },
+
     /* -----------------------------
-   Data / Paging
-  ------------------------------ */
+     Data / Paging
+    ------------------------------ */
     currentPage: {
       control: { type: 'number', min: 1 },
       name: 'current-page',
@@ -150,8 +176,8 @@ export default {
     },
 
     /* -----------------------------
-   Display
-  ------------------------------ */
+     Display
+    ------------------------------ */
     displayTotalNumberOfPages: {
       control: 'boolean',
       name: 'display-total-number-of-pages',
@@ -187,8 +213,8 @@ export default {
     },
 
     /* -----------------------------
-   Items Per Page
-  ------------------------------ */
+     Items Per Page
+    ------------------------------ */
     itemsPerPage: {
       control: 'boolean',
       name: 'items-per-page',
@@ -204,8 +230,8 @@ export default {
     },
 
     /* -----------------------------
-   Layout & Sizing
-  ------------------------------ */
+     Layout & Sizing
+    ------------------------------ */
     paginationLayout: {
       control: { type: 'select' },
       options: ['', 'start', 'center', 'end'],
@@ -223,8 +249,8 @@ export default {
     },
 
     /* -----------------------------
-   Styling
-  ------------------------------ */
+     Styling
+    ------------------------------ */
     plumage: {
       control: 'boolean',
       description: 'Enable Plumage styling.',
@@ -240,19 +266,21 @@ const Template = args => {
 
   const tag = buildComponentTag('minimize-pagination-component', args, { id: hostId });
 
-  const arrayScript = shouldIncludeItemsPerPageOptions(args) ? buildItemsPerPageOptionsScript(hostId, args.itemsPerPageOptions) : '';
+  const arrayScript = shouldIncludeItemsPerPageOptions(args)
+    ? buildItemsPerPageOptionsScript(hostId, args.itemsPerPageOptions)
+    : '';
 
   const eventScript = `
-    <script>
-      (() => {
-        const el = document.getElementById('${hostId}');
-        if (!el) return;
-        el.addEventListener('change-page', e => {
-          console.log('[minimize-pagination change-page]', e.detail);
-          if (e?.detail?.page != null) el.setAttribute('current-page', String(e.detail.page));
-        });
-      })();
-    </script>`;
+<script>
+  (() => {
+    const el = document.getElementById('${hostId}');
+    if (!el) return;
+    el.addEventListener('change-page', e => {
+      console.log('[minimize-pagination change-page]', e.detail);
+      if (e?.detail?.page != null) el.setAttribute('current-page', String(e.detail.page));
+    });
+  })();
+</script>`;
 
   return normalizeHtml(`${tag}${arrayScript ? `\n${arrayScript}` : ''}\n${eventScript}`);
 };
@@ -270,6 +298,11 @@ Minimized.args = {
   plumage: false,
   size: '',
   totalRows: 100,
+
+  // ✅ new props defaulted
+  paginationAriaLabel: 'Pagination',
+  pageSizeLabel: 'Items per page:',
+  pageSizeHelpText: 'Use this control to change how many items are shown per page.',
 };
 Minimized.parameters = {
   docs: {
@@ -427,23 +460,24 @@ ItemsPerPage.parameters = {
 
 export const WithRangeOnly = () =>
   normalizeHtml(`
-    <div style="margin-bottom: 20px">
-<minimize-pagination-component
-  current-page="1"
-  total-rows="100"
-  page-size="10"
-  display-total-number-of-pages
-  pagination-layout="start"
-></minimize-pagination-component>
-</div>
 <div style="margin-bottom: 20px">
-<minimize-pagination-component
-  current-page="1"
-  total-rows="100"
-  page-size="10"
-  display-total-number-of-pages
-  pagination-layout="end"
-></minimize-pagination-component>
+  <minimize-pagination-component
+    current-page="1"
+    total-rows="100"
+    page-size="10"
+    display-total-number-of-pages
+    pagination-layout="start"
+  ></minimize-pagination-component>
+</div>
+
+<div style="margin-bottom: 20px">
+  <minimize-pagination-component
+    current-page="1"
+    total-rows="100"
+    page-size="10"
+    display-total-number-of-pages
+    pagination-layout="end"
+  ></minimize-pagination-component>
 </div>
 `);
 WithRangeOnly.storyName = 'With Range Only';
@@ -482,4 +516,312 @@ StandaloneRangeAndSizer.parameters = {
     source: { code: StandaloneRangeAndSizer(), language: 'html' },
     description: { story: 'Pagination component demonstrating both range display and items-per-page selector.' },
   },
+};
+
+/* ============================== Playground (existing behavior) ============================== */
+
+export const Playground = Template.bind({});
+Playground.args = {
+  controlId: 'orders-table',
+  currentPage: 1,
+  displayTotalNumberOfPages: true,
+  goToButtons: '',
+  itemsPerPage: true,
+  itemsPerPageOptions: [10, 20, 50, 100, 'All'],
+  pageSize: 10,
+  paginationLayout: 'center',
+  plumage: false,
+  size: '',
+  totalRows: 420,
+
+  // ✅ new props
+  paginationAriaLabel: 'Pagination',
+  pageSizeLabel: 'Items per page:',
+  pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+};
+Playground.storyName = 'Playground';
+Playground.parameters = {
+  docs: {
+    description: { story: 'Interactive playground. itemsPerPageOptions is applied via property assignment in the docs source transform.' },
+  },
+};
+
+/* =============================================================================
+   Accessibility Matrix
+   - Same “other stories” layout: returns normalized HTML string markup.
+   - Renders common variants (default/inline/horizontal, error/validation, disabled)
+   - Prints computed role + aria-* + ids into <pre> blocks
+   - Validates aria-describedby references exist
+============================================================================= */
+
+function pickAttrs(el, names) {
+  const out = {};
+  for (const n of names) {
+    const v = el.getAttribute(n);
+    if (v !== null && v !== '') out[n] = v;
+  }
+  return out;
+}
+
+function splitIds(v) {
+  return String(v || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function resolveIdsWithin(host, ids) {
+  const res = {};
+  for (const id of ids) {
+    const safe = String(id).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    const node = host.querySelector(`[id="${safe}"]`);
+    res[id] = !!node;
+  }
+  return res;
+}
+
+function snapshotA11y(host) {
+  const nav = host.querySelector('nav');
+  const ul = host.querySelector('ul.pagination');
+  const range = host.querySelector('[id^="mpc-range-"]');
+  const label = host.querySelector('.size-changer label');
+  const select = host.querySelector('.size-changer select');
+
+  const describedByIds = select ? splitIds(select.getAttribute('aria-describedby')) : [];
+
+  return {
+    nav: nav
+      ? {
+          tag: nav.tagName.toLowerCase(),
+          ...pickAttrs(nav, ['aria-label']),
+        }
+      : null,
+    paginationList: ul
+      ? {
+          tag: ul.tagName.toLowerCase(),
+          role: ul.getAttribute('role') || '',
+          ...pickAttrs(ul, ['aria-label']),
+        }
+      : null,
+    range: range
+      ? {
+          id: range.getAttribute('id') || '',
+          role: range.getAttribute('role') || '',
+          ...pickAttrs(range, ['aria-live', 'aria-atomic']),
+          text: (range.textContent || '').trim(),
+        }
+      : null,
+    pageSize: select
+      ? {
+          label: label
+            ? {
+                text: (label.textContent || '').trim(),
+                for: label.getAttribute('for') || '',
+              }
+            : null,
+          select: {
+            id: select.getAttribute('id') || '',
+            tag: select.tagName.toLowerCase(),
+            ...pickAttrs(select, ['aria-describedby']),
+            resolves: {
+              'aria-describedby': resolveIdsWithin(host, describedByIds),
+            },
+          },
+        }
+      : null,
+  };
+}
+
+// Build a live instance (Node) so we can inspect computed DOM
+function buildMatrixEl(args) {
+  const el = document.createElement('minimize-pagination-component');
+
+  // set properties for correct runtime behavior
+  Object.assign(el, args);
+
+  // itemsPerPageOptions must be set as a property
+  if (Array.isArray(args.itemsPerPageOptions)) {
+    el.itemsPerPageOptions = args.itemsPerPageOptions;
+  }
+
+  // helpful: log events
+  el.addEventListener('change-page', e => console.log('[minimize change-page]', e.detail));
+
+  return el;
+}
+
+function renderMatrixRow({ title, args, idSuffix }) {
+  const wrap = document.createElement('div');
+  wrap.style.border = '1px solid #ddd';
+  wrap.style.borderRadius = '12px';
+  wrap.style.padding = '12px';
+  wrap.style.display = 'grid';
+  wrap.style.gap = '10px';
+
+  const heading = document.createElement('div');
+  heading.style.fontWeight = '700';
+  heading.textContent = title;
+
+  const stage = document.createElement('div');
+  stage.style.maxWidth = '820px';
+
+  const pre = document.createElement('pre');
+  pre.style.margin = '0';
+  pre.style.padding = '10px';
+  pre.style.background = '#f6f8fa';
+  pre.style.borderRadius = '10px';
+  pre.style.overflowX = 'auto';
+  pre.style.fontSize = '12px';
+  pre.textContent = 'Collecting aria/role/id…';
+
+  // Use stable identifiers by forcing a deterministic host id + control-id.
+  // Component IDs derive from controlId || host.id || uid
+  const hostId = `mpc-matrix-${idSuffix}`;
+  const controlId = `mpc-results-${idSuffix}`;
+
+  const el = buildMatrixEl({
+    ...args,
+    controlId,
+  });
+  el.id = hostId;
+
+  // Stage content
+  stage.appendChild(el);
+
+  wrap.appendChild(heading);
+  wrap.appendChild(stage);
+  wrap.appendChild(pre);
+
+  const update = () => {
+    const snap = snapshotA11y(el);
+    pre.textContent = JSON.stringify(snap, null, 2);
+  };
+
+  // Wait for render
+  requestAnimationFrame(() => requestAnimationFrame(update));
+
+  return wrap;
+}
+
+export const AccessibilityMatrix = () => {
+  const root = document.createElement('div');
+  root.style.display = 'grid';
+  root.style.gap = '16px';
+
+  const intro = document.createElement('div');
+  intro.innerHTML = `
+    <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
+    <div style="font-size:13px; color:#444;">
+      Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs.
+      Also reports whether <code>aria-describedby</code> resolves to real elements and shows the live range region.
+    </div>
+  `;
+  root.appendChild(intro);
+
+  const rows = [
+    {
+      title: 'Default (center)',
+      args: {
+        currentPage: 1,
+        totalRows: 100,
+        pageSize: 10,
+        paginationLayout: 'center',
+        displayTotalNumberOfPages: true,
+        itemsPerPage: false,
+        plumage: false,
+        paginationAriaLabel: 'Pagination',
+      },
+    },
+    {
+      title: '“Inline” (start, no range)',
+      args: {
+        currentPage: 2,
+        totalRows: 90,
+        pageSize: 10,
+        paginationLayout: 'start',
+        displayTotalNumberOfPages: false,
+        itemsPerPage: false,
+        plumage: false,
+        paginationAriaLabel: 'Pagination',
+      },
+    },
+    {
+      title: '“Horizontal-ish” (items-per-page + range, start)',
+      args: {
+        currentPage: 1,
+        totalRows: 420,
+        pageSize: 20,
+        paginationLayout: 'start',
+        displayTotalNumberOfPages: true,
+        itemsPerPage: true,
+        itemsPerPageOptions: [10, 20, 50, 100, 'All'],
+        plumage: true,
+        pageSizeLabel: 'Items per page:',
+        pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+        paginationAriaLabel: 'Pagination',
+      },
+    },
+    {
+      title: 'Error/Validation-ish (no rows: “All” disabled, range shows 0-0 of 0)',
+      args: {
+        currentPage: 1,
+        totalRows: 0,
+        pageSize: 10,
+        paginationLayout: 'end',
+        displayTotalNumberOfPages: true,
+        itemsPerPage: true,
+        itemsPerPageOptions: [10, 20, 'All'],
+        plumage: false,
+        pageSizeLabel: 'Items per page:',
+        pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+        paginationAriaLabel: 'Pagination',
+      },
+    },
+    {
+      title: 'Disabled-ish (at start: First/Prev disabled)',
+      args: {
+        currentPage: 1,
+        totalRows: 120,
+        pageSize: 10,
+        paginationLayout: 'center',
+        displayTotalNumberOfPages: false,
+        itemsPerPage: false,
+        plumage: false,
+        paginationAriaLabel: 'Pagination',
+      },
+    },
+  ];
+
+  rows.forEach((r, idx) => {
+    root.appendChild(
+      renderMatrixRow({
+        ...r,
+        idSuffix: String(idx + 1),
+      }),
+    );
+  });
+
+  return root;
+};
+
+AccessibilityMatrix.storyName = 'Accessibility Matrix (computed)';
+AccessibilityMatrix.parameters = {
+  docs: {
+    description: {
+      story:
+        'Matrix of key states (default/inline/horizontal, no-rows “validation-ish”, at-start disabled-ish). Each row prints computed role/aria/ids and whether aria-describedby resolves.',
+    },
+    story: { height: '1400px' },
+    // Provide literal code for docs, like the other multi-example stories
+    source: {
+      code: normalizeHtml(`
+<div style="display:grid; gap:16px;">
+  <!-- This story renders DOM nodes (not just HTML) so it can inspect computed role/aria/ids. -->
+  <!-- See Canvas for the live matrix output. -->
+</div>
+`),
+      language: 'html',
+    },
+  },
+  controls: { disable: true },
 };

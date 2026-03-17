@@ -597,7 +597,7 @@ export const ButtonWithBadge = {
 
 // --- NEW: Accessibility matrix (computed role/aria-*, href, tabindex) ---
 export const AccessibilityMatrix = {
-  name: 'Accessibility matrix (computed)',
+  name: 'Accessibility Matrix (computed)',
   render: () => {
     const wrap = document.createElement('div');
     wrap.style.display = 'grid';

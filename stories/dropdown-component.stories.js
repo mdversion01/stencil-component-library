@@ -11,10 +11,10 @@ export default {
     icon: 'fa-solid fa-ellipsis-vertical',
     iconDropdown: false,
     iconSize: 16,
-    id: '', // ✅ if you want it defaulted too
-    inputId: '', // ✅ add this
-    name: '', // ✅ (if you want these too)
-    value: '', // ✅
+    id: '',
+    inputId: '',
+    name: '',
+    value: '',
     listType: 'default',
     menuOffsetY: 0,
     outlined: false,
@@ -27,6 +27,11 @@ export default {
     titleAttr: '',
     variant: 'default',
     withSubmenu: true,
+
+    // ✅ NEW Storybook-only helpers for the Accessibility Matrix
+    formLayout: '', // '', 'inline', 'horizontal' (Storybook layout only)
+    validation: false, // Storybook-only "error/invalid" visuals wrapper
+    validationMessage: 'Required field', // Storybook-only text for error block
   },
   parameters: {
     actions: {
@@ -34,16 +39,18 @@ export default {
     },
     docs: {
       description: {
-        component: ['Dropdown component for selecting from a list of options.', 'Supports various list types and submenu configurations.', ''].join('\n'),
+        component: [
+          'Dropdown component for selecting from a list of options.',
+          'Supports various list types and submenu configurations.',
+          '',
+        ].join('\n'),
       },
-      // Programmatically control what the Docs "Code" tab shows
       source: {
         type: 'dynamic',
         language: 'html',
         transform: (src, context) => {
-          // --- Helpers used only for Docs code generation ---
           const { args } = context;
-          const storyName = String(context?.name ?? '').replace(/\s+/g, ''); // normalize display name -> "RightAligned"
+          const storyName = String(context?.name ?? '').replace(/\s+/g, '');
 
           const DEFAULTS = {
             'align-menu-right': false,
@@ -64,72 +71,10 @@ export default {
             'table-id': 'demo-table',
             'title-attr': '',
             'variant': 'default',
+            'input-id': '',
+            'name': '',
+            'value': '',
           };
-
-          const baseItems = () => [
-            { name: 'Action', value: 'action' },
-            { name: 'Another action', value: 'another' },
-            { name: 'Something else here', value: 'else' },
-          ];
-
-          const checkboxItems = () => [
-            { name: 'Apples', value: 'apples', checked: true },
-            { name: 'Bananas', value: 'bananas' },
-            { name: 'Cherries', value: 'cherries' },
-            { isDivider: true },
-            { name: 'Dates', value: 'dates' },
-          ];
-
-          const toggleItems = () => [
-            { name: 'Email alerts', value: 'email', checked: true },
-            { name: 'Push notifications', value: 'push' },
-            { name: 'SMS', value: 'sms' },
-          ];
-
-          const submenuItems = (subListType = 'default') => [
-            {
-              name: 'File',
-              submenu: [{ name: 'New', value: 'new' }, { name: 'Open…', value: 'open' }, { isDivider: true }, { name: 'Recent', value: 'recent' }],
-            },
-            {
-              name: 'View',
-              submenu: [
-                { name: 'Zoom In', value: 'zin' },
-                { name: 'Zoom Out', value: 'zout' },
-                { name: 'Reset Zoom', value: 'zreset' },
-              ],
-            },
-            {
-              name: 'Filters',
-              submenu: [
-                { name: 'Show completed', value: 'done', customListType: subListType, checked: true },
-                { name: 'Only mine', value: 'mine', customListType: subListType },
-                { name: 'High priority', value: 'hi', customListType: subListType },
-              ],
-            },
-          ];
-
-          const kitchenSinkItems = () => [
-            ...baseItems(),
-            { isDivider: true },
-            {
-              name: 'More',
-              submenu: [
-                { name: 'About', value: 'about' },
-                { name: 'Keyboard Shortcuts', value: 'keys' },
-                { isDivider: true },
-                { name: 'Experimental', value: 'exp' },
-                {
-                  name: 'Notifications',
-                  submenu: [
-                    { name: 'Email', value: 'email', customListType: 'toggleSwitches', checked: true },
-                    { name: 'Push', value: 'push', customListType: 'toggleSwitches' },
-                    { name: 'SMS', value: 'sms', customListType: 'toggleSwitches' },
-                  ],
-                },
-              ],
-            },
-          ];
 
           const attrsToString = attrs =>
             Object.entries(attrs)
@@ -137,42 +82,6 @@ export default {
               .map(([k, v]) => (v === true ? k : `${k}="${String(v)}"`))
               .join(' ');
 
-          // Show all props used + full JS (factory functions + options + listeners) in Docs code
-          const makeOptionsScript = (id, factories = [], itemsExpr = '[]') => {
-            // factories: array of { name: 'baseItems', src: 'function baseItems() { return [...] }' }
-            const factorySrc = factories
-              .map(f => (f && f.src ? f.src.trim() : ''))
-              .filter(Boolean)
-              .join('\n\n  ');
-            return [
-              '<script>',
-              '  // ---- JavaScript used in this example ----',
-              '  // Factory functions that create the dropdown items:',
-              factorySrc ? '  ' + factorySrc.replace(/\n/g, '\n  ') : '  // (no factories needed for this example)',
-              '',
-              '  // Helper: clone array (preserve object identity immutably)',
-              '  const cloneItems = (arr) => (Array.isArray(arr) ? arr.map(i => ({ ...i })) : []);',
-              '',
-              `  (function setup_${id.replace(/[^a-z0-9_]/gi, '_')}(){`,
-              `    const el = document.getElementById('${id}');`,
-              '    if (!el) return;',
-              `    const initialItems = ${itemsExpr};`,
-              '    el.options = cloneItems(initialItems);',
-              '',
-              '    // Keep the component’s internal state mirrored back to the prop',
-              '    el.addEventListener("items-changed", (e) => {',
-              '      el.options = cloneItems(e?.detail?.items || []);',
-              '    });',
-              '',
-              '    // Example logging',
-              '    el.addEventListener("itemSelected", (e) => console.log("[itemSelected]", e.detail));',
-              '    el.addEventListener("selection-changed", (e) => console.log("[selection-changed]", e.detail));',
-              '  })();',
-              '</script>',
-            ].join('\n');
-          };
-
-          // Build attribute bag but keep only the ones actually used (all non-defaults)
           const onlyNonDefault = all => {
             const out = {};
             for (const [k, v] of Object.entries(all)) {
@@ -185,7 +94,7 @@ export default {
             return out;
           };
 
-          // Factory function source strings (so Docs shows the real JS used to create items)
+          // ---- Item factories shown in docs (same as runtime) ----
           const src_baseItems = `
 function baseItems() {
   return [
@@ -217,7 +126,12 @@ function submenuItems(subListType = 'default') {
   return [
     {
       name: 'File',
-      submenu: [{ name: 'New', value: 'new' }, { name: 'Open…', value: 'open' }, { isDivider: true }, { name: 'Recent', value: 'recent' }],
+      submenu: [
+        { name: 'New', value: 'new' },
+        { name: 'Open…', value: 'open' },
+        { isDivider: true },
+        { name: 'Recent', value: 'recent' }
+      ],
     },
     {
       name: 'View',
@@ -237,38 +151,71 @@ function submenuItems(subListType = 'default') {
     },
   ];
 }`;
-          const src_kitchenSinkItems = `
-function kitchenSinkItems() {
-  return [
-    ...baseItems(),
-    { isDivider: true },
-    {
-      name: 'More',
-      submenu: [
-        { name: 'About', value: 'about' },
-        { name: 'Keyboard Shortcuts', value: 'keys' },
-        { isDivider: true },
-        { name: 'Experimental', value: 'exp' },
-        {
-          name: 'Notifications',
-          submenu: [
-            { name: 'Email', value: 'email', customListType: 'toggleSwitches', checked: true },
-            { name: 'Push', value: 'push', customListType: 'toggleSwitches' },
-            { name: 'SMS', value: 'sms', customListType: 'toggleSwitches' },
-          ],
-        },
-      ],
-    },
-  ];
-}`;
 
-          // Build per-story markup + script that match the actual runtime example.
-          // Each code sample prints all props that are *actually* used for the example,
-          // and includes the full JS that wires up item factories + listeners.
+          const makeOptionsScript = (id, factories = [], itemsExpr = '[]') => {
+            const factorySrc = factories
+              .map(f => (f && f.src ? f.src.trim() : ''))
+              .filter(Boolean)
+              .join('\n\n  ');
+
+            return [
+              '<script>',
+              '  // ---- JavaScript used in this example ----',
+              '  // Factory functions that create the dropdown items:',
+              factorySrc ? '  ' + factorySrc.replace(/\n/g, '\n  ') : '  // (no factories needed for this example)',
+              '',
+              '  // Helper: clone array (preserve object identity immutably)',
+              '  const cloneItems = (arr) => (Array.isArray(arr) ? arr.map(i => ({ ...i })) : []);',
+              '',
+              `  (function setup_${id.replace(/[^a-z0-9_]/gi, '_')}(){`,
+              `    const el = document.getElementById('${id}');`,
+              '    if (!el) return;',
+              `    const initialItems = ${itemsExpr};`,
+              '    el.options = cloneItems(initialItems);',
+              '',
+              '    // Keep the component’s internal state mirrored back to the prop',
+              '    el.addEventListener("items-changed", (e) => {',
+              '      el.options = cloneItems(e?.detail?.items || []);',
+              '    });',
+              '',
+              '    // Example logging',
+              '    el.addEventListener("itemSelected", (e) => console.log("[itemSelected]", e.detail));',
+              '    el.addEventListener("selection-changed", (e) => console.log("[selection-changed]", e.detail));',
+              '  })();',
+              '</script>',
+            ].join('\n');
+          };
+
+          // Default docs example should reflect current args (non-defaults)
+          const baseAttrs = onlyNonDefault({
+            id: args.id || '',
+            'align-menu-right': !!args.alignMenuRight,
+            'auto-focus-submenu': !!args.autoFocusSubmenu,
+            'button-text': args.buttonText,
+            'disabled': !!args.disabled,
+            'icon-dropdown': !!args.iconDropdown,
+            icon: args.icon,
+            'icon-size': typeof args.iconSize === 'number' ? args.iconSize : DEFAULTS['icon-size'],
+            outlined: !!args.outlined,
+            ripple: !!args.ripple,
+            shape: args.shape,
+            size: args.size,
+            variant: args.variant,
+            'list-type': args.listType,
+            'sub-menu-list-type': args.subMenuListType,
+            'menu-offset-y': args.menuOffsetY,
+            'submenu-offset-x': args.submenuOffsetX,
+            'table-id': args.tableId,
+            'title-attr': args.titleAttr,
+            'input-id': args.inputId,
+            name: args.name,
+            value: args.value,
+          });
+
           switch (storyName) {
             case 'Basic': {
               const id = 'dropdown-basic';
-              const attrs = onlyNonDefault({ id, variant: 'primary' });
+              const attrs = onlyNonDefault({ ...baseAttrs, id, variant: 'primary' });
               const html = `<dropdown-component ${attrsToString(attrs)}></dropdown-component>`;
               const js = makeOptionsScript(id, [{ name: 'baseItems', src: src_baseItems }], 'baseItems()');
               return `${html}\n\n${js}`;
@@ -276,7 +223,7 @@ function kitchenSinkItems() {
 
             case 'RightAligned': {
               const id = 'ddRightAlign';
-              const attrs = onlyNonDefault({ id, 'align-menu-right': true, 'variant': 'primary' });
+              const attrs = onlyNonDefault({ ...baseAttrs, id, 'align-menu-right': true, variant: 'primary' });
               const html = [
                 `<!-- Layout container is Storybook-only -->`,
                 `<div style="padding-left: 40px; box-sizing: border-box; min-height: 220px;">`,
@@ -292,13 +239,15 @@ function kitchenSinkItems() {
               const rightId = 'dropdown-submenu-right';
 
               const attrsLeft = onlyNonDefault({
+                ...baseAttrs,
                 id: leftId,
                 variant: 'secondary',
               });
 
               const attrsRight = onlyNonDefault({
-                'id': rightId,
-                'variant': 'secondary',
+                ...baseAttrs,
+                id: rightId,
+                variant: 'secondary',
                 'align-menu-right': true,
               });
 
@@ -338,12 +287,13 @@ function kitchenSinkItems() {
             case 'IconOnly': {
               const id = 'dropdown-icon';
               const attrs = onlyNonDefault({
+                ...baseAttrs,
                 id,
                 'icon-dropdown': true,
                 'title-attr': 'More actions',
-                'icon': args.icon ?? DEFAULTS.icon,
+                icon: args.icon ?? DEFAULTS.icon,
                 'icon-size': typeof args.iconSize === 'number' ? args.iconSize : DEFAULTS['icon-size'],
-                'variant': 'primary',
+                variant: 'primary',
               });
               const html = `<dropdown-component ${attrsToString(attrs)}></dropdown-component>`;
               const js = makeOptionsScript(id, [{ name: 'baseItems', src: src_baseItems }], 'baseItems()');
@@ -355,15 +305,17 @@ function kitchenSinkItems() {
               const idRight = 'dropdown-custom-checkboxes';
 
               const attrsLeft = onlyNonDefault({
-                'id': idLeft,
+                ...baseAttrs,
+                id: idLeft,
                 'list-type': 'checkboxes',
-                'variant': 'secondary',
+                variant: 'secondary',
               });
 
               const attrsRight = onlyNonDefault({
-                'id': idRight,
+                ...baseAttrs,
+                id: idRight,
                 'list-type': 'customCheckboxes',
-                'variant': 'secondary',
+                variant: 'secondary',
               });
 
               const html = [
@@ -391,16 +343,16 @@ function kitchenSinkItems() {
 
             case 'ToggleSwitches': {
               const id = 'dropdown-toggles';
-              const attrs = onlyNonDefault({ id, 'list-type': 'toggleSwitches', 'variant': 'secondary' });
+              const attrs = onlyNonDefault({ ...baseAttrs, id, 'list-type': 'toggleSwitches', variant: 'secondary' });
               const html = `<dropdown-component ${attrsToString(attrs)}></dropdown-component>`;
               const js = makeOptionsScript(id, [{ name: 'toggleItems', src: src_toggleItems }], 'toggleItems()');
               return `${html}\n\n${js}`;
             }
 
             case 'Sizes': {
-              const sm = { id: 'dropdown-size-sm', attrs: onlyNonDefault({ 'id': 'dropdown-size-sm', 'button-text': 'Small', 'size': 'sm', 'variant': 'primary' }) };
-              const md = { id: 'dropdown-size-md', attrs: onlyNonDefault({ 'id': 'dropdown-size-md', 'button-text': 'Default', 'variant': 'primary' }) };
-              const lg = { id: 'dropdown-size-lg', attrs: onlyNonDefault({ 'id': 'dropdown-size-lg', 'button-text': 'Large', 'size': 'lg', 'variant': 'primary' }) };
+              const sm = { id: 'dropdown-size-sm', attrs: onlyNonDefault({ ...baseAttrs, id: 'dropdown-size-sm', 'button-text': 'Small', size: 'sm', variant: 'primary' }) };
+              const md = { id: 'dropdown-size-md', attrs: onlyNonDefault({ ...baseAttrs, id: 'dropdown-size-md', 'button-text': 'Default', variant: 'primary' }) };
+              const lg = { id: 'dropdown-size-lg', attrs: onlyNonDefault({ ...baseAttrs, id: 'dropdown-size-lg', 'button-text': 'Large', size: 'lg', variant: 'primary' }) };
 
               const html = [
                 `<!-- Three side-by-side buttons (Storybook-only layout) -->`,
@@ -419,24 +371,12 @@ function kitchenSinkItems() {
               return [html, jsSm, jsMd, jsLg].join('\n\n');
             }
 
-            // case 'OffsetsAndFlip': {
-            //   const id = 'dropdown-offsets';
-            //   const attrs = onlyNonDefault({ id, 'menu-offset-y': 8, 'submenu-offset-x': 8, 'variant': 'secondary' });
-            //   const items = kitchenSinkItems();
-            //   const html = `<dropdown-component ${attrsToString(attrs)}></dropdown-component>`;
-            //   return `${html}\n\n${makeOptionsScript(id, items)}`;
-            // }
-
-            // case 'KitchenSink': {
-            //   const id = 'dropdown-kitchen';
-            //   const attrs = onlyNonDefault({ id, 'variant': 'primary', 'sub-menu-list-type': 'toggleSwitches' });
-            //   const items = kitchenSinkItems();
-            //   const html = `<dropdown-component ${attrsToString(attrs)}></dropdown-component>`;
-            //   return `${html}\n\n${makeOptionsScript(id, items)}`;
-            // }
+            case 'AccessibilityMatrix': {
+              // Keep docs code lightweight for matrix
+              return `<!-- See the Canvas for the live Accessibility Matrix output -->\n<div>(Accessibility Matrix)</div>`;
+            }
 
             default:
-              // Fallback: show whatever Storybook rendered
               return src;
           }
         },
@@ -504,8 +444,9 @@ function kitchenSinkItems() {
     },
     size: {
       control: { type: 'select' },
-      options: ['default', 'xs', 'sm', 'lg', 'plumage-size'],
-      description: 'Sets the size of the button, e.g., extra small (xs), small (sm), large (lg), or plumage-size. If not set, default size is used.',
+      options: ['', 'xs', 'sm', 'lg', 'plumage-size'],
+      description:
+        'Sets the size of the button, e.g., extra small (xs), small (sm), large (lg), or plumage-size. If not set, default size is used.',
       table: { category: 'Trigger Button' },
     },
     titleAttr: {
@@ -579,7 +520,8 @@ function kitchenSinkItems() {
   ------------------------------ */
     id: {
       control: 'text',
-      description: 'ID attribute for the dropdown component to uniquely identify it and use with other elements or scripts, such as labels or JavaScript',
+      description:
+        'ID attribute for the dropdown component to uniquely identify it and use with other elements or scripts, such as labels or JavaScript',
       name: 'id',
       table: { category: 'Integration' },
     },
@@ -601,6 +543,26 @@ function kitchenSinkItems() {
     },
 
     /* -----------------------------
+   Storybook-only (Accessibility Matrix helpers)
+  ------------------------------ */
+    formLayout: {
+      control: { type: 'select' },
+      options: ['', 'inline', 'horizontal'],
+      description: 'Storybook-only layout wrapper for matrix (does not affect component).',
+      table: { category: 'Storybook Only', disable: true },
+    },
+    validation: {
+      control: 'boolean',
+      description: 'Storybook-only invalid wrapper for matrix (does not affect component).',
+      table: { category: 'Storybook Only', disable: true },
+    },
+    validationMessage: {
+      control: 'text',
+      description: 'Storybook-only message shown in invalid wrapper for matrix.',
+      table: { category: 'Storybook Only', disable: true },
+    },
+
+    /* -----------------------------
    Storybook Only / Internal
   ------------------------------ */
     withSubmenu: {
@@ -614,14 +576,12 @@ function kitchenSinkItems() {
 
 /** ---------- Runtime Helpers (used by the actual stories) ---------- */
 
-// Make a stable, kebab-cased id piece
 const slug = s =>
   String(s ?? '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
 
-// Add *stable* inputId for each item so the custom checkbox subtree doesn't churn
 const withIds = (items, prefix = 'dd') =>
   (items || []).map((it, i) => {
     const key = it.value ?? it.name ?? i;
@@ -652,7 +612,12 @@ const toggleItems = () => [
 const submenuItems = (subListType = 'default') => [
   {
     name: 'File',
-    submenu: [{ name: 'New', value: 'new' }, { name: 'Open…', value: 'open' }, { isDivider: true }, { name: 'Recent', value: 'recent' }],
+    submenu: [
+      { name: 'New', value: 'new' },
+      { name: 'Open…', value: 'open' },
+      { isDivider: true },
+      { name: 'Recent', value: 'recent' },
+    ],
   },
   {
     name: 'View',
@@ -672,36 +637,12 @@ const submenuItems = (subListType = 'default') => [
   },
 ];
 
-// const kitchenSinkItems = () => [
-//   ...baseItems(),
-//   { isDivider: true },
-//   {
-//     name: 'More',
-//     submenu: [
-//       { name: 'About', value: 'about' },
-//       { name: 'Keyboard Shortcuts', value: 'keys' },
-//       { isDivider: true },
-//       { name: 'Experimental', value: 'exp' },
-//       {
-//         name: 'Notifications',
-//         submenu: [
-//           { name: 'Email', value: 'email', customListType: 'toggleSwitches', checked: true },
-//           { name: 'Push', value: 'push', customListType: 'toggleSwitches' },
-//           { name: 'SMS', value: 'sms', customListType: 'toggleSwitches' },
-//         ],
-//       },
-//     ],
-//   },
-// ];
-
 /** ---------- Element Builder (with stable IDs) ---------- */
 function buildDropdown(args, items, idPrefix = 'dd') {
   const el = document.createElement('dropdown-component');
 
-  // OPTIONAL: honor a provided id so Docs and runtime stay in sync
   if (args.id) el.id = String(args.id);
 
-  // core props
   el.buttonText = args.buttonText;
   el.disabled = args.disabled;
   el.iconDropdown = args.iconDropdown;
@@ -724,15 +665,11 @@ function buildDropdown(args, items, idPrefix = 'dd') {
   el.name = args.name;
   el.value = args.value;
 
-  // 🔑 IMPORTANT: pre-assign stable inputId values here and give the component a fresh array
   const itemsWithIds = withIds(items, idPrefix);
   el.options = itemsWithIds.map(i => ({ ...i }));
 
-  // helpful logging (visible in Canvas)
   el.addEventListener('itemSelected', e => console.log('[itemSelected]', e.detail));
   el.addEventListener('selection-changed', e => console.log('[selection-changed]', e.detail));
-
-  // Mirror updates back into prop with a NEW array — preserving inputId
   el.addEventListener('items-changed', e => {
     const next = (e?.detail?.items || []).map(i => ({ ...i }));
     el.options = next;
@@ -743,17 +680,10 @@ function buildDropdown(args, items, idPrefix = 'dd') {
 
 /** ---------- Templates ---------- */
 
-// NO submenu at all for Basic
 const BasicTemplate = args => {
   const id = args.id || 'dropdown-basic';
   return buildDropdown({ ...args, id }, baseItems());
 };
-
-// const Template = args => {
-//   const items = args.withSubmenu ? [...baseItems(), { isDivider: true }, ...submenuItems(args.subMenuListType)] : baseItems();
-//   const id = args.id || 'dropdown-basic';
-//   return buildDropdown({ ...args, id }, items);
-// };
 
 /** ---------- Stories ---------- */
 
@@ -764,9 +694,7 @@ Basic.args = {
 };
 Basic.parameters = {
   docs: {
-    description: {
-      story: 'A basic dropdown with default settings.',
-    },
+    description: { story: 'A basic dropdown with default settings.' },
     story: { height: '220px' },
   },
 };
@@ -791,9 +719,7 @@ RightAligned.decorators = [
 RightAligned.parameters = {
   docs: {
     story: { height: '220px' },
-    description: {
-      story: 'A right-aligned dropdown (menu opens to the left).',
-    },
+    description: { story: 'A right-aligned dropdown (menu opens to the left).' },
   },
 };
 
@@ -805,9 +731,17 @@ export const WithSubmenu = args => {
   wrap.style.gap = '24px';
   wrap.style.alignItems = 'center';
 
-  const left = buildDropdown({ ...args, id: 'dropdown-submenu-left', withSubmenu: true, alignMenuRight: false, variant: 'secondary' }, items, 'dd-sub-left');
+  const left = buildDropdown(
+    { ...args, id: 'dropdown-submenu-left', withSubmenu: true, alignMenuRight: false, variant: 'secondary' },
+    items,
+    'dd-sub-left',
+  );
 
-  const right = buildDropdown({ ...args, id: 'dropdown-submenu-right', withSubmenu: true, alignMenuRight: true, variant: 'secondary' }, items, 'dd-sub-right');
+  const right = buildDropdown(
+    { ...args, id: 'dropdown-submenu-right', withSubmenu: true, alignMenuRight: true, variant: 'secondary' },
+    items,
+    'dd-sub-right',
+  );
 
   const label = text => {
     const el = document.createElement('div');
@@ -833,10 +767,14 @@ WithSubmenu.args = {
   id: 'dropdown-submenu',
 };
 WithSubmenu.parameters = {
-  docs: { story: { height: '260px' }, description: { story: 'Dropdown with submenu items. Two examples shown: default (left) and right-aligned (right).' } },
+  docs: {
+    story: { height: '260px' },
+    description: { story: 'Dropdown with submenu items. Two examples shown: default (left) and right-aligned (right).' },
+  },
 };
 
-export const IconOnly = args => buildDropdown({ ...args, id: 'dropdown-icon', iconDropdown: true, buttonText: '', titleAttr: 'More actions' }, baseItems(), 'dd-icon');
+export const IconOnly = args =>
+  buildDropdown({ ...args, id: 'dropdown-icon', iconDropdown: true, buttonText: '', titleAttr: 'More actions' }, baseItems(), 'dd-icon');
 IconOnly.args = {
   icon: 'fa-solid fa-ellipsis-vertical',
   iconSize: 18,
@@ -859,7 +797,11 @@ export const CheckboxVariants = args => {
 
   const left = buildDropdown({ ...args, id: 'dropdown-checkboxes', variant: 'secondary', listType: 'checkboxes', withSubmenu: false }, items, 'dd-chk');
 
-  const right = buildDropdown({ ...args, id: 'dropdown-custom-checkboxes', variant: 'secondary', listType: 'customCheckboxes', withSubmenu: false }, items, 'dd-cchk');
+  const right = buildDropdown(
+    { ...args, id: 'dropdown-custom-checkboxes', variant: 'secondary', listType: 'customCheckboxes', withSubmenu: false },
+    items,
+    'dd-cchk',
+  );
 
   const label = text => {
     const el = document.createElement('div');
@@ -881,29 +823,18 @@ export const CheckboxVariants = args => {
 };
 CheckboxVariants.args = {};
 CheckboxVariants.parameters = {
-  docs: { story: { height: '260px' }, description: { story: 'Dropdown with checkbox items. Two examples shown: standard and custom checkboxes.' } },
+  docs: {
+    story: { height: '260px' },
+    description: { story: 'Dropdown with checkbox items. Two examples shown: standard and custom checkboxes.' },
+  },
 };
 
 export const ToggleSwitches = args =>
   buildDropdown({ ...args, id: 'dropdown-toggles', variant: 'secondary', listType: 'toggleSwitches', withSubmenu: false }, toggleItems(), 'dd-tgsw');
 ToggleSwitches.args = {};
 ToggleSwitches.parameters = {
-  docs: {
-    story: { height: '220px' },
-    description: { story: 'Dropdown with toggle switch items.' },
-  },
+  docs: { story: { height: '220px' }, description: { story: 'Dropdown with toggle switch items.' } },
 };
-
-// export const SubmenuWithToggles = args => {
-//   const items = [...baseItems(), { isDivider: true }, ...submenuItems('toggleSwitches')];
-//   return buildDropdown({ ...args, id: 'dropdown-subtoggles', variant: 'secondary', withSubmenu: true, autoFocusSubmenu: true }, items, 'dd-subtog');
-// };
-// SubmenuWithToggles.args = { autoFocusSubmenu: true };
-// SubmenuWithToggles.parameters = {
-//   docs: {
-//     story: { height: '220px' },
-//   },
-// };
 
 export const Sizes = args => {
   const wrap = document.createElement('div');
@@ -926,31 +857,245 @@ Sizes.parameters = {
   },
 };
 
-// export const OffsetsAndFlip = args =>
-//   buildDropdown({ ...args, id: 'dropdown-offsets', variant: 'secondary', menuOffsetY: 8, submenuOffsetX: 8 }, kitchenSinkItems(), 'dd-off');
-// OffsetsAndFlip.args = {
-//   alignMenuRight: false,
-// };
-// OffsetsAndFlip.parameters = {
-//   docs: {
-//     story: { height: '220px' },
-//   },
-// };
+// ======================================================
+// NEW: Accessibility Matrix story
+// - default / inline / horizontal (storybook wrappers)
+// - error/validation (storybook wrapper)
+// - disabled
+// - prints computed role + aria-* + ids (trigger + menu + first item)
+// ======================================================
 
-// export const KitchenSink = args =>
-//   buildDropdown(
-//     { ...args, id: 'dropdown-kitchen', variant: 'primary', withSubmenu: true, subMenuListType: 'toggleSwitches', iconDropdown: false },
-//     kitchenSinkItems(),
-//     'dd-kitchen',
-//   );
-// KitchenSink.args = {
-//   withSubmenu: true,
-//   subMenuListType: 'toggleSwitches',
-//   iconDropdown: false,
-//   variant: 'primary',
-// };
-// KitchenSink.parameters = {
-//   docs: {
-//     story: { height: '220px' },
-//   },
-// };
+const pickAttrs = (el, names) => {
+  const out = {};
+  if (!el) return out;
+  for (const n of names) {
+    const v = el.getAttribute(n);
+    if (v !== null && v !== '') out[n] = v;
+  }
+  return out;
+};
+
+const snapshotA11y = host => {
+  const triggerRoot = host.querySelector('[id$="-toggle-button"]');
+  const innerButton = triggerRoot?.querySelector('button');
+  const menu = host.querySelector('.dropdown-menu');
+  const firstItem = host.querySelector('.dropdown-item');
+
+  const triggerId = triggerRoot?.getAttribute('id') || '';
+  const menuId = menu?.getAttribute('id') || '';
+  const labelledby = menu?.getAttribute('aria-labelledby') || '';
+  const labelledbyResolves = labelledby ? !!host.querySelector(`#${CSS?.escape ? CSS.escape(labelledby) : labelledby}`) : null;
+
+  return {
+    host: {
+      tag: host.tagName.toLowerCase(),
+      id: host.getAttribute('id') || '',
+    },
+    triggerRoot: triggerRoot
+      ? {
+          tag: triggerRoot.tagName.toLowerCase(),
+          id: triggerId,
+        }
+      : null,
+    triggerButton: innerButton
+      ? {
+          tag: innerButton.tagName.toLowerCase(),
+          id: innerButton.getAttribute('id') || '',
+          ...pickAttrs(innerButton, ['aria-haspopup', 'aria-expanded', 'aria-controls', 'disabled', 'title']),
+        }
+      : null,
+    menu: menu
+      ? {
+          tag: menu.tagName.toLowerCase(),
+          id: menuId,
+          role: menu.getAttribute('role') || '',
+          class: menu.className,
+          ...pickAttrs(menu, ['aria-labelledby', 'aria-activedescendant', 'aria-owns', 'tabindex']),
+          resolves: {
+            'aria-labelledby': labelledbyResolves,
+          },
+        }
+      : null,
+    firstItem: firstItem
+      ? {
+          tag: firstItem.tagName.toLowerCase(),
+          id: firstItem.getAttribute('id') || '',
+          role: firstItem.getAttribute('role') || '',
+          tabIndex: firstItem.getAttribute('tabindex') || '',
+          class: firstItem.className,
+        }
+      : null,
+  };
+};
+
+function buildCard({ title, layout = '', invalid = false, invalidText = '', args, idSuffix }) {
+  const wrapper = document.createElement('div');
+  wrapper.style.border = '1px solid #e5e7eb';
+  wrapper.style.borderRadius = '12px';
+  wrapper.style.padding = '12px';
+  wrapper.style.background = 'white';
+  wrapper.style.display = 'grid';
+  wrapper.style.gap = '10px';
+
+  const heading = document.createElement('div');
+  heading.style.fontWeight = '700';
+  heading.textContent = title;
+
+  const row = document.createElement('div');
+
+  // Storybook-only layout wrappers
+  if (layout === 'inline') {
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
+    row.style.gap = '12px';
+  } else if (layout === 'horizontal') {
+    row.style.display = 'grid';
+    row.style.gridTemplateColumns = '160px 1fr';
+    row.style.alignItems = 'center';
+    row.style.gap = '12px';
+  }
+
+  const label = document.createElement('div');
+  label.textContent = layout === 'horizontal' ? 'Label' : '';
+  label.style.fontWeight = '600';
+  label.style.fontSize = '13px';
+  label.style.display = layout === 'horizontal' ? 'block' : 'none';
+
+  const stage = document.createElement('div');
+  stage.style.maxWidth = '560px';
+
+  const host = buildDropdown(
+    {
+      ...args,
+      id: `dropdown-matrix-${idSuffix}`,
+    },
+    baseItems(),
+    `dd-matrix-${idSuffix}`,
+  );
+
+  stage.appendChild(host);
+
+  // Storybook-only validation message
+  let validationEl = null;
+  if (invalid) {
+    validationEl = document.createElement('div');
+    validationEl.style.marginTop = '8px';
+    validationEl.style.color = '#b91c1c';
+    validationEl.style.fontSize = '12px';
+    validationEl.style.fontWeight = '600';
+    validationEl.textContent = invalidText || 'Required field';
+    stage.appendChild(validationEl);
+  }
+
+  if (layout === 'horizontal') row.append(label, stage);
+  else row.append(stage);
+
+  const pre = document.createElement('pre');
+  pre.style.margin = '0';
+  pre.style.padding = '10px';
+  pre.style.background = '#f6f8fa';
+  pre.style.borderRadius = '10px';
+  pre.style.overflowX = 'auto';
+  pre.style.fontSize = '12px';
+  pre.textContent = 'Collecting aria/role/id…';
+
+  wrapper.append(heading, row, pre);
+
+  const update = () => {
+    const snap = snapshotA11y(host);
+    pre.textContent = JSON.stringify(
+      {
+        ...snap,
+        storybookOnly: {
+          layout,
+          invalid,
+          validationText: validationEl ? validationEl.textContent : null,
+        },
+      },
+      null,
+      2,
+    );
+  };
+
+  // Defer until Stencil hydrates internal ids (componentId)
+  requestAnimationFrame(() => requestAnimationFrame(update));
+
+  return wrapper;
+}
+
+export const AccessibilityMatrix = args => {
+  const root = document.createElement('div');
+  root.style.display = 'grid';
+  root.style.gap = '16px';
+
+  const intro = document.createElement('div');
+  intro.innerHTML = `
+    <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
+    <div style="font-size:13px; color:#444;">
+      Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs from the light DOM.
+      (Layout + validation are Storybook-only wrappers; the component output is unchanged.)
+    </div>
+  `;
+  root.appendChild(intro);
+
+  const cases = [
+    {
+      title: 'Default (valid)',
+      layout: '',
+      invalid: false,
+      args: { ...args, disabled: false, iconDropdown: false, alignMenuRight: false },
+    },
+    {
+      title: 'Inline wrapper (valid)',
+      layout: 'inline',
+      invalid: false,
+      args: { ...args, disabled: false, iconDropdown: false, alignMenuRight: false },
+    },
+    {
+      title: 'Horizontal wrapper (valid)',
+      layout: 'horizontal',
+      invalid: false,
+      args: { ...args, disabled: false, iconDropdown: false, alignMenuRight: false },
+    },
+    {
+      title: 'Error / validation wrapper (storybook-only)',
+      layout: '',
+      invalid: true,
+      invalidText: args.validationMessage || 'Required field',
+      args: { ...args, disabled: false, iconDropdown: false, alignMenuRight: false },
+    },
+    {
+      title: 'Disabled',
+      layout: '',
+      invalid: false,
+      args: { ...args, disabled: true },
+    },
+  ];
+
+  cases.forEach((c, i) => {
+    root.appendChild(
+      buildCard({
+        title: c.title,
+        layout: c.layout,
+        invalid: c.invalid,
+        invalidText: c.invalidText,
+        args: c.args,
+        idSuffix: String(i + 1),
+      }),
+    );
+  });
+
+  return root;
+};
+
+AccessibilityMatrix.storyName = 'Accessibility Matrix (computed)';
+AccessibilityMatrix.parameters = {
+  docs: {
+    description: {
+      story:
+        'Matrix of common states (default/inline/horizontal wrappers, error/validation wrapper, disabled) and a live readout of key roles, aria-* attributes, and ids to help verify 508/ARIA compliance.',
+    },
+    story: { height: '1150px' },
+  },
+  controls: { disable: true },
+};

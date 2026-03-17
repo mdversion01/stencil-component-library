@@ -64,6 +64,15 @@ export class InputGroupComponent {
 
   private inputEl?: HTMLInputElement;
 
+  // ---- Stable per-instance IDs (prevents duplicate-id a11y violations) ----
+  private uid = `igc-${Math.random().toString(16).slice(2)}-${Date.now().toString(16)}`;
+  private ids = {
+    input: '',
+    label: '',
+    desc: '',
+    validation: '',
+  };
+
   // Avoid event name collision with native "change"
   @Event() valueChange: EventEmitter<{ value: string }>;
 
@@ -89,6 +98,9 @@ export class InputGroupComponent {
 
     // seed state mirror
     this.valueState = this.value ?? '';
+
+    // compute unique ids early
+    this.computeIds();
   }
 
   componentDidLoad() {
@@ -107,13 +119,24 @@ export class InputGroupComponent {
     this.valueState = newVal ?? '';
   }
 
+  @Watch('inputId')
+  onInputIdChange() {
+    this.computeIds();
+  }
+
+  @Watch('label')
+  onLabelChange() {
+    // if inputId is not provided, label may be used as base
+    this.computeIds();
+  }
+
   private applyFormAttribute() {
     if (!this.inputEl) return;
     if (this._computedFormId) this.inputEl.setAttribute('form', this._computedFormId);
     else this.inputEl.removeAttribute('form');
   }
 
-  // ----- Typing/required UX helpers (re-added) -----
+  // ----- Typing/required UX helpers -----
   private meetsTypingThreshold() {
     return (this.valueState || '').trim().length >= 2;
   }
@@ -133,13 +156,9 @@ export class InputGroupComponent {
   /** Sanitize user-typed input: strip tags, remove control chars, trim, cap length. */
   private sanitizeInput(value: string): string {
     if (typeof value !== 'string') return '';
-    // remove HTML tags
     let v = value.replace(/<[^>]*>/g, '');
-    // remove control characters (except common whitespace)
     v = v.replace(/[\u0000-\u001F\u007F]/g, '');
-    // collapse whitespace
     v = v.replace(/\s+/g, ' ').trim();
-    // cap length
     const MAX_LEN = 512;
     if (v.length > MAX_LEN) v = v.slice(0, MAX_LEN);
     return v;
@@ -149,13 +168,12 @@ export class InputGroupComponent {
   private handleInput = (ev: Event) => {
     const target = ev.target as HTMLInputElement;
 
-    // Keep the real input’s form association in sync (like input-field-component)
+    // Keep the real input’s form association in sync
     if (this._computedFormId) target.setAttribute('form', this._computedFormId);
     else target.removeAttribute('form');
 
     // Sanitize typed value on every input
     const sanitized = this.sanitizeInput(target.value);
-    // reflect sanitized text back to the input so UI matches internal state
     if (sanitized !== target.value) target.value = sanitized;
 
     // Update both prop (for back-compat/controlled usage) and state mirror (for UX helpers)
@@ -171,7 +189,23 @@ export class InputGroupComponent {
 
   // ----- Utils -----
   private camelCase(str: string): string {
+    if (!str) return '';
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase())).replace(/\s+/g, '');
+  }
+
+  private computeIds() {
+    // Prefer explicit inputId if provided; otherwise derive from label; otherwise uid.
+    const base =
+      (this.inputId && String(this.inputId).trim()) ||
+      (this.label && this.camelCase(this.label)) ||
+      this.uid;
+
+    // Make safe enough for id selectors
+    const safeBase = String(base).replace(/\s+/g, '').replace(/[^A-Za-z0-9\-_:.]/g, '');
+    this.ids.input = safeBase;
+    this.ids.label = `${safeBase}__label`;
+    this.ids.desc = `${safeBase}__desc`;
+    this.ids.validation = `${safeBase}__validation`;
   }
 
   // ----- Layout helpers (ported from input-field-component) -----
@@ -191,18 +225,15 @@ export class InputGroupComponent {
     for (const t of tokens) {
       if (!t) continue;
 
-      // Already a bootstrap col class
       if (/^col(-\w+)?(-\d+)?$/.test(t)) {
         out.push(t);
         continue;
       }
-      // Number only -> col-N
       if (/^\d{1,2}$/.test(t)) {
         const n = Math.max(1, Math.min(12, parseInt(t, 10)));
         out.push(`col-${n}`);
         continue;
       }
-      // breakpoint-number -> col-bp-n (xs means no bp prefix)
       const m = /^(xs|sm|md|lg|xl|xxl)-(\d{1,2})$/.exec(t);
       if (m) {
         const bp = m[1];
@@ -214,7 +245,6 @@ export class InputGroupComponent {
         out.push('col');
         continue;
       }
-      // Unknown token -> ignore
     }
 
     return Array.from(new Set(out)).join(' ');
@@ -227,12 +257,10 @@ export class InputGroupComponent {
     if (this.isHorizontal()) {
       if (spec) return this.parseColsSpec(spec);
 
-      // If label is visually hidden, default input to full width (unless user provides inputCols)
       if (kind === 'input' && this.labelHidden) {
         return this.inputCols ? this.parseColsSpec(this.inputCols) : 'col-12';
       }
 
-      // Fallback to numeric cols
       const num = kind === 'label' ? this.labelCol : this.inputCol;
       if (Number.isFinite(num)) {
         const n = Math.max(0, Math.min(12, Number(num)));
@@ -242,12 +270,7 @@ export class InputGroupComponent {
       return '';
     }
 
-    // Inline layout: allow user-provided classes, else no grid class
-    if (this.isInline()) {
-      return spec ? this.parseColsSpec(spec) : '';
-    }
-
-    // Stacked layout: no grid classes
+    if (this.isInline()) return spec ? this.parseColsSpec(spec) : '';
     return '';
   }
 
@@ -264,6 +287,7 @@ export class InputGroupComponent {
     const input = Number.isFinite(inp) ? Math.max(1, Math.min(11, inp)) : DEFAULT_INPUT;
 
     if (this.isHorizontal() && !this.labelCols && !this.inputCols && label + input !== 12) {
+      // eslint-disable-next-line no-console
       console.error(
         '[input-group-component] For formLayout="horizontal", labelCol + inputCol must equal 12. ' +
           `Received: ${this.labelCol} + ${this.inputCol} = ${Number(this.labelCol) + Number(this.inputCol)}. Falling back to 2/10.`,
@@ -283,6 +307,7 @@ export class InputGroupComponent {
       this.labelAlign === 'right' ? 'align-right' : '',
       this.labelHidden ? 'sr-only' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
+      this.isInline() ? 'col-form-label' : '',
       this.isInvalidNow() ? 'invalid' : '',
     ]
       .filter(Boolean)
@@ -297,97 +322,152 @@ export class InputGroupComponent {
     return this.size === 'sm' ? 'input-group-sm' : this.size === 'lg' ? 'input-group-lg' : '';
   }
 
-  // ----- Render pieces -----
-  private renderInputLabel(ids: string, labelColClass?: string) {
-    if (this.labelHidden) return null;
+  // ----- Accessibility helpers -----
+  private renderHelpText() {
+    // Always present so aria-describedby always resolves.
+    const labelText = (this.label || 'this field').trim();
+    const typeText = (this.type || 'text').trim();
+    const msg = `Enter ${labelText}. Type: ${typeText}.`;
+    return (
+      <div id={this.ids.desc} class="sr-only">
+        {msg}
+      </div>
+    );
+  }
 
+  // ----- Render pieces -----
+  private renderInputLabel(labelColClass?: string) {
+    // Always render a label element for association.
+    // If labelHidden=true, it becomes sr-only.
     const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
 
     return (
-      <label class={this.labelClasses(labelColClass)} htmlFor={ids || undefined}>
+      <label
+        id={this.ids.label}
+        class={this.labelClasses(labelColClass)}
+        htmlFor={this.ids.input || undefined}
+      >
         <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
         {this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
 
-  private renderInputBlock(ids: string, names: string) {
-    const placeholder = this.labelHidden ? this.placeholder || this.label || 'Placeholder Text' : this.placeholder || this.label || 'Placeholder Text';
+  private renderInputBlock(names: string) {
+    const placeholder =
+      (this.placeholder && this.placeholder.trim()) ||
+      this.label ||
+      'Placeholder Text';
 
-    const ariaDescribedBy = this.isInvalidNow() ? `${ids}-validation` : undefined;
+    // aria-describedby always includes help; includes validation when invalid
+    const describedBy = [
+      this.ids.desc,
+      this.isInvalidNow() && this.validationMessage ? this.ids.validation : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+
+    const sizeClass = this.groupSizeClass();
 
     return (
-      <div class={{ 'input-group': true, [this.groupSizeClass()]: !!this.groupSizeClass(), 'is-invalid': this.isInvalidNow() }}>
-        {/* Prepend */}
-        {this.prependField ? (
-          <Fragment>
-            {(() => {
-              const sideIcon = this.prependIcon ?? this.icon; // side-specific wins, then global, else slot
-              if (sideIcon) {
-                return (
-                  <span class={`input-group-text ${this.isInvalidNow() ? 'is-invalid' : ''}`}>
-                    <i class={sideIcon} />
+      <Fragment>
+        {this.renderHelpText()}
+
+        <div
+          class={{
+            'input-group': true,
+            [sizeClass]: !!sizeClass,
+            'is-invalid': this.isInvalidNow(),
+          }}
+        >
+          {/* Prepend */}
+          {this.prependField ? (
+            <Fragment>
+              {(() => {
+                const sideIcon = this.prependIcon ?? this.icon; // side-specific wins, then global, else slot
+                if (sideIcon) {
+                  return (
+                    <span class={`input-group-text ${this.isInvalidNow() ? 'is-invalid' : ''}`}>
+                      <i class={sideIcon} aria-hidden="true" />
+                    </span>
+                  );
+                }
+                return this.otherContent ? (
+                  <span class="prepend-btn">
+                    <slot name="prepend" />
+                  </span>
+                ) : (
+                  <span class={`input-group-text ${this.isInvalidNow() ? 'is-invalid' : ''}`} id={this.prependId || undefined}>
+                    <slot name="prepend" />
                   </span>
                 );
-              }
-              return this.otherContent ? (
-                <span class="prepend-btn"><slot name="prepend" /></span>
-              ) : (
-                <span class={`input-group-text ${this.isInvalidNow() ? 'is-invalid' : ''}`} id={this.prependId || undefined}>
-                  <slot name="prepend" />
-                </span>
-              );
-            })()}
-          </Fragment>
-        ) : null}
+              })()}
+            </Fragment>
+          ) : null}
 
-        {/* Input */}
-        <input
-          ref={el => (this.inputEl = el as HTMLInputElement)}
-          type={this.type || 'text'}
-          class={this.inputClasses()}
-          placeholder={placeholder}
-          id={ids || undefined}
-          name={names || undefined}
-          value={this.value}
-          aria-label={this.labelHidden ? names || undefined : undefined}
-          aria-labelledby={names || undefined}
-          aria-describedby={ariaDescribedBy}
-          disabled={this.disabled}
-          form={this._computedFormId || undefined}
-          onInput={this.handleInput}
-        />
+          {/* Input */}
+          <input
+            ref={el => {
+              this.inputEl = el as HTMLInputElement;
+              this.applyFormAttribute();
+            }}
+            type={this.type || 'text'}
+            class={this.inputClasses()}
+            placeholder={placeholder}
+            id={this.ids.input || undefined}
+            name={names || undefined}
+            value={this.value}
+            // Accessible name via label association
+            aria-labelledby={this.ids.label}
+            aria-describedby={describedBy || undefined}
+            aria-invalid={this.isInvalidNow() ? 'true' : undefined}
+            disabled={this.disabled}
+            required={this.required}
+            readOnly={false /* input-group does not expose readOnly prop; keep behavior unchanged */}
+            form={this._computedFormId || undefined}
+            onInput={this.handleInput}
+          />
 
-        {/* Append */}
-        {this.appendField ? (
-          <Fragment>
-            {(() => {
-              const sideIcon = this.appendIcon ?? this.icon; // side-specific wins, then global, else slot
-              if (sideIcon) {
-                return (
-                  <span class={`input-group-text ${this.isInvalidNow() ? 'is-invalid' : ''}`}>
-                    <i class={sideIcon} />
+          {/* Append */}
+          {this.appendField ? (
+            <Fragment>
+              {(() => {
+                const sideIcon = this.appendIcon ?? this.icon; // side-specific wins, then global, else slot
+                if (sideIcon) {
+                  return (
+                    <span class={`input-group-text ${this.isInvalidNow() ? 'is-invalid' : ''}`}>
+                      <i class={sideIcon} aria-hidden="true" />
+                    </span>
+                  );
+                }
+                return this.otherContent ? (
+                  <span class="append-btn">
+                    <slot name="append" />
+                  </span>
+                ) : (
+                  <span class={`input-group-text ${this.isInvalidNow() ? 'is-invalid' : ''}`} id={this.appendId || undefined}>
+                    <slot name="append" />
                   </span>
                 );
-              }
-              return this.otherContent ? (
-                <span class="append-btn"><slot name="append" /></span>
-              ) : (
-                <span class={`input-group-text ${this.isInvalidNow() ? 'is-invalid' : ''}`} id={this.appendId || undefined}>
-                  <slot name="append" />
-                </span>
-              );
-            })()}
-          </Fragment>
-        ) : null}
-      </div>
+              })()}
+            </Fragment>
+          ) : null}
+        </div>
+
+        {this.renderValidation()}
+      </Fragment>
     );
   }
 
-  private renderValidation(ids: string) {
+  private renderValidation() {
     if (!this.isInvalidNow() || !this.validationMessage) return null;
     return (
-      <div id={`${ids}-validation`} class="invalid-feedback" aria-live="polite">
+      <div
+        id={this.ids.validation}
+        class="invalid-feedback"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         {this.validationMessage}
       </div>
     );
@@ -395,7 +475,6 @@ export class InputGroupComponent {
 
   // ----- Render root -----
   render() {
-    const ids = this.camelCase(this.inputId).replace(/ /g, '');
     const names = this.camelCase(this.label).replace(/ /g, '');
 
     const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
@@ -408,21 +487,24 @@ export class InputGroupComponent {
     this.getComputedCols();
 
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
+    const inputColClass = this.isHorizontal()
+      ? this.buildColClass('input') || undefined
+      : this.isInline()
+        ? this.buildColClass('input') || undefined
+        : undefined;
 
     return (
       <div class={outerClass}>
         <div class={groupClasses.join(' ')}>
-          {this.renderInputLabel(ids, labelColClass)}
+          {this.renderInputLabel(labelColClass)}
+
           {this.isHorizontal() ? (
             <div class={inputColClass}>
-              {this.renderInputBlock(ids, names)}
-              {this.renderValidation(ids)}
+              {this.renderInputBlock(names)}
             </div>
           ) : (
             <div>
-              {this.renderInputBlock(ids, names)}
-              {this.renderValidation(ids)}
+              {this.renderInputBlock(names)}
             </div>
           )}
         </div>

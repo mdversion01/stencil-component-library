@@ -679,7 +679,7 @@ export const ButtonWithBadge = {
 
 // Accessibility matrix: renders default/token/dot and prints computed host a11y attrs
 export const AccessibilityMatrix = {
-  name: 'Accessibility matrix (computed host ARIA)',
+  name: 'Accessibility Matrix (computed)',
   render: () => {
     const wrap = document.createElement('div');
     wrap.style.display = 'grid';

@@ -6,7 +6,7 @@ exports[`<card-component> applies elevation and custom classes to the article el
   <article class="card custom-card elevated-2" style="max-width: 20rem;">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title" id="card-8-0coo-title">
+      <h5 class="card-title" id="card-8-uuqx-title">
         <div slot="title">
           Card Title
         </div>
@@ -28,7 +28,7 @@ exports[`<card-component> heading-level attribute changes the title heading tag 
   <article class="card" style="max-width: 20rem;">
     <div class="card-header"></div>
     <div class="card-body">
-      <h2 class="card-title" id="card-9-nvhc-title">
+      <h2 class="card-title" id="card-9-uke4-title">
         <div slot="title">
           Card Title
         </div>
@@ -49,7 +49,7 @@ exports[`<card-component> noHeader/noFooter remove their wrappers entirely 1`] =
   <!---->
   <article class="card" style="max-width: 20rem;">
     <div class="card-body">
-      <h5 class="card-title" id="card-12-2pht-title">
+      <h5 class="card-title" id="card-12-okgk-title">
         <div slot="title">
           Card Title
         </div>
@@ -70,7 +70,7 @@ exports[`<card-component> renders actions wrapper only when actions=true 1`] = `
   <article class="card" style="max-width: 20rem;">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title" id="card-7-c4x6-title">
+      <h5 class="card-title" id="card-7-gzzt-title">
         <div slot="title">
           Card Title
         </div>
@@ -97,7 +97,7 @@ exports[`<card-component> renders basic card (non-landmark, non-clickable) with 
   <article class="card" style="max-width: 20rem;">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title" id="card-1-e03n-title"></h5>
+      <h5 class="card-title" id="card-1-4tzb-title"></h5>
       <div class="card-text"></div>
     </div>
     <div class="card-footer"></div>
@@ -115,7 +115,7 @@ exports[`<card-component> renders card with header and footer slots (wrapper ele
       </div>
     </div>
     <div class="card-body">
-      <h5 class="card-title" id="card-4-2v5f-title">
+      <h5 class="card-title" id="card-4-e9jy-title">
         <div slot="title">
           Card Title
         </div>
@@ -142,7 +142,7 @@ exports[`<card-component> renders card with image (non-decorative) and preserves
     <img alt="Sample Image" class="card-img-top" src="https://example.com/image.jpg" style="height: 11.25rem; width: 100%; display: block;">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title" id="card-5-d1f9-title">
+      <h5 class="card-title" id="card-5-ls3d-title">
         <div slot="title">
           Card Title
         </div>
@@ -165,7 +165,7 @@ exports[`<card-component> renders decorative image with alt="" and aria-hidden="
     <img alt="" aria-hidden="true" class="card-img-top" src="https://example.com/image.jpg" style="height: 11.25rem; width: 100%; display: block;">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title" id="card-6-couz-title">
+      <h5 class="card-title" id="card-6-8h1b-title">
         <div slot="title">
           Card Title
         </div>
@@ -187,7 +187,7 @@ exports[`<card-component> renders landmark region with aria-label when landmark=
   <article aria-label="Profile Card" class="card" role="region" style="max-width: 20rem;">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title" id="card-2-tlt4-title">
+      <h5 class="card-title" id="card-2-myvx-title">
         <div slot="title">
           Card Title
         </div>
@@ -209,7 +209,7 @@ exports[`<card-component> renders landmark region with aria-labelledby when prov
   <article aria-labelledby="ext-label" class="card" role="region" style="max-width: 20rem;">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title" id="card-3-ch3v-title">
+      <h5 class="card-title" id="card-3-ra5z-title">
         <div slot="title">
           Card Title
         </div>

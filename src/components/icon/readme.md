@@ -7,16 +7,16 @@
 
 ## Properties
 
-| Property         | Attribute          | Description | Type      | Default     |
-| ---------------- | ------------------ | ----------- | --------- | ----------- |
-| `color`          | `color`            |             | `string`  | `undefined` |
-| `icon`           | `icon`             |             | `string`  | `''`        |
-| `iconAriaHidden` | `icon-aria-hidden` |             | `boolean` | `true`      |
-| `iconAriaLabel`  | `icon-aria-label`  |             | `string`  | `undefined` |
-| `iconMargin`     | `icon-margin`      |             | `string`  | `''`        |
-| `iconSize`       | `icon-size`        |             | `number`  | `undefined` |
-| `size`           | `size`             |             | `string`  | `''`        |
-| `tokenIcon`      | `token-icon`       |             | `boolean` | `false`     |
+| Property         | Attribute          | Description                                                                                                                        | Type      | Default     |
+| ---------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------- |
+| `color`          | `color`            |                                                                                                                                    | `string`  | `undefined` |
+| `icon`           | `icon`             |                                                                                                                                    | `string`  | `''`        |
+| `iconAriaHidden` | `icon-aria-hidden` |                                                                                                                                    | `boolean` | `true`      |
+| `iconAriaLabel`  | `icon-aria-label`  | Accessibility: - Decorative by default: aria-hidden="true" - Meaningful icon: set iconAriaHidden={false} AND provide iconAriaLabel | `string`  | `undefined` |
+| `iconMargin`     | `icon-margin`      |                                                                                                                                    | `string`  | `''`        |
+| `iconSize`       | `icon-size`        |                                                                                                                                    | `number`  | `undefined` |
+| `size`           | `size`             |                                                                                                                                    | `string`  | `''`        |
+| `tokenIcon`      | `token-icon`       |                                                                                                                                    | `boolean` | `false`     |
 
 
 ## Dependencies

@@ -1,16 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`divider-component renders dashed horizontal divider 1`] = `
+exports[`divider-component renders dashed horizontal divider (role + aria-orientation) 1`] = `
 <divider-component dashed="">
   <!---->
-  <div class="divider divider-dashed divider-horizontal" role="separator"></div>
+  <div aria-orientation="horizontal" class="divider divider-dashed divider-horizontal" role="separator"></div>
 </divider-component>
 `;
 
-exports[`divider-component renders divider with centered text 1`] = `
+exports[`divider-component renders divider with centered text and provides aria-label (derived from slot) + aria-orientation 1`] = `
 <divider-component orientation="center">
   <!---->
-  <div class="divider divider-horizontal divider-with-text divider-with-text-center" role="separator">
+  <div aria-label="Center" aria-orientation="horizontal" class="divider divider-horizontal divider-with-text divider-with-text-center" role="separator">
     <span class="divider-inner-text">
       Center
     </span>
@@ -18,10 +18,10 @@ exports[`divider-component renders divider with centered text 1`] = `
 </divider-component>
 `;
 
-exports[`divider-component renders divider with custom styles in text 1`] = `
+exports[`divider-component renders divider with custom styles in text span and keeps aria-label 1`] = `
 <divider-component orientation="center" styles="color: red; font-weight: bold;">
   <!---->
-  <div class="divider divider-horizontal divider-with-text divider-with-text-center" role="separator">
+  <div aria-label="Styled" aria-orientation="horizontal" class="divider divider-horizontal divider-with-text divider-with-text-center" role="separator">
     <span class="divider-inner-text" style="color: red; font-weight: bold;">
       Styled
     </span>
@@ -29,10 +29,10 @@ exports[`divider-component renders divider with custom styles in text 1`] = `
 </divider-component>
 `;
 
-exports[`divider-component renders divider with left aligned text and margin override 1`] = `
-<divider-component orientation="left" orientation-margin="left">
+exports[`divider-component renders divider with left aligned text and margin override class 1`] = `
+<divider-component orientation="left" remove-orientation-margin="left">
   <!---->
-  <div class="divider divider-horizontal divider-with-text divider-with-text-left" role="separator">
+  <div aria-label="Left" aria-orientation="horizontal" class="divider divider-horizontal divider-no-default-orientation-margin-left divider-with-text divider-with-text-left" role="separator">
     <span class="divider-inner-text">
       Left
     </span>
@@ -40,16 +40,27 @@ exports[`divider-component renders divider with left aligned text and margin ove
 </divider-component>
 `;
 
-exports[`divider-component renders horizontal divider by default 1`] = `
+exports[`divider-component renders horizontal divider by default (role + aria-orientation) 1`] = `
 <divider-component>
   <!---->
-  <div class="divider divider-horizontal" role="separator"></div>
+  <div aria-orientation="horizontal" class="divider divider-horizontal" role="separator"></div>
 </divider-component>
 `;
 
-exports[`divider-component renders vertical divider 1`] = `
-<divider-component type="vertical">
+exports[`divider-component renders vertical divider when direction="vertical" (role + aria-orientation) 1`] = `
+<divider-component direction="vertical">
   <!---->
-  <div class="divider divider-horizontal" role="separator"></div>
+  <div aria-orientation="vertical" class="divider divider-vertical" role="separator"></div>
+</divider-component>
+`;
+
+exports[`divider-component uses explicit aria-label prop (attribute) when provided (text variant) 1`] = `
+<divider-component aria-label="Section break" orientation="center">
+  <!---->
+  <div aria-label="Section break" aria-orientation="horizontal" class="divider divider-horizontal divider-with-text divider-with-text-center" role="separator">
+    <span class="divider-inner-text">
+      Center
+    </span>
+  </div>
 </divider-component>
 `;

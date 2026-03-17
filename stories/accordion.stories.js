@@ -201,7 +201,7 @@ export const LinkToggle = {
 
 // NEW: Accessibility matrix story (updated to include hidden/inert)
 export const AccessibilityMatrix = {
-  name: 'Accessibility matrix (computed)',
+  name: 'Accessibility Matrix (computed)',
   render: (_args, context) => {
     const wrap = document.createElement('div');
     wrap.style.display = 'grid';

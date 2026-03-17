@@ -945,7 +945,7 @@ BadgeStyling.parameters = {
 
 // --- Accessibility matrix story (kept, updated to include role + aria-* + ids) ---
 export const AccessibilityMatrix = {
-  name: 'Accessibility matrix (computed)',
+  name: 'Accessibility Matrix (computed)',
   render: (args) => {
     const wrap = document.createElement('div');
     wrap.style.display = 'grid';

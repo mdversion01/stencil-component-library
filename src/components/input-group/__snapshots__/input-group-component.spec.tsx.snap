@@ -5,19 +5,22 @@ exports[`<input-group-component> horizontal with numeric fallback cols (labelCol
   <!---->
   <div class="horizontal">
     <div class="form-group horizontal row">
-      <label class="col-3 col-form-label form-control-label label-sm no-padding" htmlfor="code">
+      <label class="col-3 col-form-label form-control-label label-sm no-padding" htmlfor="code" id="code__label">
         <span>
           Code:
         </span>
       </label>
       <div class="col-9">
+        <div class="sr-only" id="code__desc">
+          Enter Code. Type: text.
+        </div>
         <div class="input-group">
           <span class="input-group-text">
             <span slot="prepend">
               #
             </span>
           </span>
-          <input aria-labelledby="code" class="form-control" id="code" name="code" placeholder="Code" type="text" value="">
+          <input aria-describedby="code__desc" aria-labelledby="code__label" class="form-control" id="code" name="code" placeholder="Code" type="text" value="">
           <span class="input-group-text">
             <span slot="append">
               .js
@@ -35,17 +38,20 @@ exports[`<input-group-component> mixes slot on append and icon on prepend using 
   <!---->
   <div>
     <div class="form-group">
-      <label class="form-control-label label-sm" htmlfor="q">
+      <label class="form-control-label label-sm" htmlfor="q" id="q__label">
         <span>
           Search
         </span>
       </label>
       <div>
+        <div class="sr-only" id="q__desc">
+          Enter Search. Type: text.
+        </div>
         <div class="input-group">
           <span class="input-group-text">
-            <i class="fa-magnifying-glass fa-solid"></i>
+            <i aria-hidden="true" class="fa-magnifying-glass fa-solid"></i>
           </span>
-          <input aria-labelledby="search" class="form-control" id="q" name="search" placeholder="Search" type="text" value="">
+          <input aria-describedby="q__desc" aria-labelledby="q__label" class="form-control" id="q" name="search" placeholder="Search" type="text" value="">
           <span class="append-btn">
             <button class="btn btn-outline-secondary" slot="append" type="button">
               Go
@@ -58,19 +64,22 @@ exports[`<input-group-component> mixes slot on append and icon on prepend using 
 </input-group-component>
 `;
 
-exports[`<input-group-component> renders (stacked) with default props 1`] = `
+exports[`<input-group-component> renders (stacked) with default props and keeps aria-describedby resolvable 1`] = `
 <input-group-component input-id="user" label="Username">
   <!---->
   <div>
     <div class="form-group">
-      <label class="form-control-label label-sm" htmlfor="user">
+      <label class="form-control-label label-sm" htmlfor="user" id="user__label">
         <span>
           Username
         </span>
       </label>
       <div>
+        <div class="sr-only" id="user__desc">
+          Enter Username. Type: text.
+        </div>
         <div class="input-group">
-          <input aria-labelledby="username" class="form-control" id="user" name="username" placeholder="Username" type="text" value="">
+          <input aria-describedby="user__desc" aria-labelledby="user__label" class="form-control" id="user" name="username" placeholder="Username" type="text" value="">
         </div>
       </div>
     </div>
@@ -83,21 +92,24 @@ exports[`<input-group-component> renders horizontal layout with responsive cols,
   <!---->
   <div class="horizontal">
     <div class="form-group horizontal row">
-      <label class="col-12 col-form-label col-sm-4 form-control-label label-sm no-padding" htmlfor="amount">
+      <label class="col-12 col-form-label col-sm-4 form-control-label label-sm no-padding" htmlfor="amount" id="amount__label">
         <span>
           Amount:
         </span>
       </label>
       <div class="col-12 col-sm-8">
+        <div class="sr-only" id="amount__desc">
+          Enter Amount. Type: text.
+        </div>
         <div class="input-group">
           <span class="input-group-text">
             <span slot="prepend">
               Total
             </span>
           </span>
-          <input aria-labelledby="amount" class="form-control" id="amount" name="amount" placeholder="Amount" type="text" value="">
+          <input aria-describedby="amount__desc" aria-labelledby="amount__label" class="form-control" id="amount" name="amount" placeholder="Amount" type="text" value="">
           <span class="input-group-text">
-            <i class="fa-dollar-sign fa-solid"></i>
+            <i aria-hidden="true" class="fa-dollar-sign fa-solid"></i>
           </span>
         </div>
       </div>

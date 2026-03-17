@@ -1002,6 +1002,9 @@ export namespace Components {
         "vertical": boolean;
     }
     interface ByPagePaginationComponent {
+        /**
+          * Optional external id of a region that this pagination controls. Used for aria-controls on the nav buttons when provided.
+         */
         "controlId"?: string;
         /**
           * @default 1
@@ -1024,9 +1027,29 @@ export namespace Components {
          */
         "itemsPerPageOptions": Array<number | 'All'>;
         /**
+          * SR-only helper text for the page number input
+          * @default 'Type a page number and press Enter, or use the navigation buttons.'
+         */
+        "pageInputHelpText": string;
+        /**
           * @default 10
          */
         "pageSize": number;
+        /**
+          * SR-only helper text for the page-size select (standalone)
+          * @default 'Use this control to change how many items are shown per page.'
+         */
+        "pageSizeHelpText": string;
+        /**
+          * Label text for the page-size select (standalone)
+          * @default 'Items per page:'
+         */
+        "pageSizeLabel": string;
+        /**
+          * Optional aria-label for the pagination nav landmark.
+          * @default 'Pagination'
+         */
+        "paginationAriaLabel": string;
         /**
           * @default ''
          */
@@ -1659,6 +1682,10 @@ export namespace Components {
     }
     interface DividerComponent {
         /**
+          * Optional accessible label for the divider when it includes visible text. If omitted, we derive it from the slotted text content.
+         */
+        "ariaLabel"?: string;
+        /**
           * @default false
          */
         "dashed": boolean;
@@ -1783,6 +1810,12 @@ export namespace Components {
           * @default false
          */
         "fieldset": boolean;
+        "fieldsetAriaDescribedby"?: string;
+        "fieldsetAriaLabel"?: string;
+        "fieldsetAriaLabelledby"?: string;
+        "formAriaDescribedby"?: string;
+        "formAriaLabel"?: string;
+        "formAriaLabelledby"?: string;
         /**
           * @default ''
          */
@@ -1833,6 +1866,9 @@ export namespace Components {
           * @default true
          */
         "iconAriaHidden": boolean;
+        /**
+          * Accessibility: - Decorative by default: aria-hidden="true" - Meaningful icon: set iconAriaHidden={false} AND provide iconAriaLabel
+         */
         "iconAriaLabel"?: string;
         /**
           * @default ''
@@ -2043,6 +2079,9 @@ export namespace Components {
         "value": string;
     }
     interface MinimizePaginationComponent {
+        /**
+          * Optional external id of a region that this pagination controls. Used for aria-controls on the nav buttons when provided.
+         */
         "controlId"?: string;
         /**
           * @default 1
@@ -2068,6 +2107,21 @@ export namespace Components {
           * @default 10
          */
         "pageSize": number;
+        /**
+          * SR-only helper text for the page-size select (standalone)
+          * @default 'Use this control to change how many items are shown per page.'
+         */
+        "pageSizeHelpText": string;
+        /**
+          * Label text for the page-size select (standalone)
+          * @default 'Items per page:'
+         */
+        "pageSizeLabel": string;
+        /**
+          * Optional aria-label for the pagination nav landmark. Keep short and specific to the collection being paged.
+          * @default 'Pagination'
+         */
+        "paginationAriaLabel": string;
         /**
           * @default ''
          */
@@ -2270,6 +2324,21 @@ export namespace Components {
           * @default 10
          */
         "pageSize": number;
+        /**
+          * Optional SR-only help text appended to the page-size selector
+          * @default 'Use this control to change how many items are shown per page.'
+         */
+        "pageSizeHelpText": string;
+        /**
+          * Accessible label for the page-size selector group (visible label text)
+          * @default 'Items per page:'
+         */
+        "pageSizeLabel": string;
+        /**
+          * Accessible label for the pagination navigation region
+          * @default 'Pagination'
+         */
+        "paginationAriaLabel": string;
         /**
           * @default ''
          */
@@ -3607,6 +3676,10 @@ export namespace Components {
     }
     interface StandardPaginationComponent {
         /**
+          * Optional external id of a region that this pagination controls. Used for aria-controls on nav buttons when provided.
+         */
+        "controlId"?: string;
+        /**
           * @default 1
          */
         "currentPage": number;
@@ -3642,6 +3715,21 @@ export namespace Components {
           * @default 10
          */
         "pageSize": number;
+        /**
+          * SR-only helper text for the page-size select (standalone)
+          * @default 'Use this control to change how many items are shown per page.'
+         */
+        "pageSizeHelpText": string;
+        /**
+          * Label text for the page-size select (standalone)
+          * @default 'Items per page:'
+         */
+        "pageSizeLabel": string;
+        /**
+          * Optional aria-label for the pagination landmark
+          * @default 'Pagination'
+         */
+        "paginationAriaLabel": string;
         /**
           * @default ''
          */
@@ -6156,6 +6244,9 @@ declare namespace LocalJSX {
         "vertical"?: boolean;
     }
     interface ByPagePaginationComponent {
+        /**
+          * Optional external id of a region that this pagination controls. Used for aria-controls on the nav buttons when provided.
+         */
         "controlId"?: string;
         /**
           * @default 1
@@ -6179,9 +6270,29 @@ declare namespace LocalJSX {
         "itemsPerPageOptions"?: Array<number | 'All'>;
         "onChange-page"?: (event: ByPagePaginationComponentCustomEvent<{ page: number }>) => void;
         /**
+          * SR-only helper text for the page number input
+          * @default 'Type a page number and press Enter, or use the navigation buttons.'
+         */
+        "pageInputHelpText"?: string;
+        /**
           * @default 10
          */
         "pageSize"?: number;
+        /**
+          * SR-only helper text for the page-size select (standalone)
+          * @default 'Use this control to change how many items are shown per page.'
+         */
+        "pageSizeHelpText"?: string;
+        /**
+          * Label text for the page-size select (standalone)
+          * @default 'Items per page:'
+         */
+        "pageSizeLabel"?: string;
+        /**
+          * Optional aria-label for the pagination nav landmark.
+          * @default 'Pagination'
+         */
+        "paginationAriaLabel"?: string;
         /**
           * @default ''
          */
@@ -6835,6 +6946,10 @@ declare namespace LocalJSX {
     }
     interface DividerComponent {
         /**
+          * Optional accessible label for the divider when it includes visible text. If omitted, we derive it from the slotted text content.
+         */
+        "ariaLabel"?: string;
+        /**
           * @default false
          */
         "dashed"?: boolean;
@@ -6960,6 +7075,12 @@ declare namespace LocalJSX {
           * @default false
          */
         "fieldset"?: boolean;
+        "fieldsetAriaDescribedby"?: string;
+        "fieldsetAriaLabel"?: string;
+        "fieldsetAriaLabelledby"?: string;
+        "formAriaDescribedby"?: string;
+        "formAriaLabel"?: string;
+        "formAriaLabelledby"?: string;
         /**
           * @default ''
          */
@@ -7010,6 +7131,9 @@ declare namespace LocalJSX {
           * @default true
          */
         "iconAriaHidden"?: boolean;
+        /**
+          * Accessibility: - Decorative by default: aria-hidden="true" - Meaningful icon: set iconAriaHidden={false} AND provide iconAriaLabel
+         */
         "iconAriaLabel"?: string;
         /**
           * @default ''
@@ -7222,6 +7346,9 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     interface MinimizePaginationComponent {
+        /**
+          * Optional external id of a region that this pagination controls. Used for aria-controls on the nav buttons when provided.
+         */
         "controlId"?: string;
         /**
           * @default 1
@@ -7248,6 +7375,21 @@ declare namespace LocalJSX {
           * @default 10
          */
         "pageSize"?: number;
+        /**
+          * SR-only helper text for the page-size select (standalone)
+          * @default 'Use this control to change how many items are shown per page.'
+         */
+        "pageSizeHelpText"?: string;
+        /**
+          * Label text for the page-size select (standalone)
+          * @default 'Items per page:'
+         */
+        "pageSizeLabel"?: string;
+        /**
+          * Optional aria-label for the pagination nav landmark. Keep short and specific to the collection being paged.
+          * @default 'Pagination'
+         */
+        "paginationAriaLabel"?: string;
         /**
           * @default ''
          */
@@ -7445,6 +7587,21 @@ declare namespace LocalJSX {
           * @default 10
          */
         "pageSize"?: number;
+        /**
+          * Optional SR-only help text appended to the page-size selector
+          * @default 'Use this control to change how many items are shown per page.'
+         */
+        "pageSizeHelpText"?: string;
+        /**
+          * Accessible label for the page-size selector group (visible label text)
+          * @default 'Items per page:'
+         */
+        "pageSizeLabel"?: string;
+        /**
+          * Accessible label for the pagination navigation region
+          * @default 'Pagination'
+         */
+        "paginationAriaLabel"?: string;
         /**
           * @default ''
          */
@@ -8799,6 +8956,10 @@ declare namespace LocalJSX {
     }
     interface StandardPaginationComponent {
         /**
+          * Optional external id of a region that this pagination controls. Used for aria-controls on nav buttons when provided.
+         */
+        "controlId"?: string;
+        /**
           * @default 1
          */
         "currentPage"?: number;
@@ -8835,6 +8996,21 @@ declare namespace LocalJSX {
           * @default 10
          */
         "pageSize"?: number;
+        /**
+          * SR-only helper text for the page-size select (standalone)
+          * @default 'Use this control to change how many items are shown per page.'
+         */
+        "pageSizeHelpText"?: string;
+        /**
+          * Label text for the page-size select (standalone)
+          * @default 'Items per page:'
+         */
+        "pageSizeLabel"?: string;
+        /**
+          * Optional aria-label for the pagination landmark
+          * @default 'Pagination'
+         */
+        "paginationAriaLabel"?: string;
         /**
           * @default ''
          */

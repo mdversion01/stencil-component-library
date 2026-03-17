@@ -27,10 +27,48 @@ export class StandardPagination {
   @Prop() paginationVariantColor: string = '';
   @Prop() plumage: boolean = false;
 
+  /**
+   * Optional external id of a region that this pagination controls.
+   * Used for aria-controls on nav buttons when provided.
+   */
+  @Prop({ attribute: 'control-id' }) controlId?: string;
+
+  /** Optional aria-label for the pagination landmark */
+  @Prop() paginationAriaLabel: string = 'Pagination';
+
+  /** Label text for the page-size select (standalone) */
+  @Prop() pageSizeLabel: string = 'Items per page:';
+
+  /** SR-only helper text for the page-size select (standalone) */
+  @Prop() pageSizeHelpText: string = 'Use this control to change how many items are shown per page.';
+
   @State() private page: number = 1;
 
   private get isManagedByParent() {
     return !!this.el.closest('pagination-component');
+  }
+
+  private uid = `spc-${Math.random().toString(16).slice(2)}-${Date.now().toString(16)}`;
+
+  private get controlsId(): string | undefined {
+    const v = (this.controlId || '').trim();
+    return v ? v : undefined;
+  }
+
+  private get baseId(): string {
+    return this.controlsId || this.el.id || this.uid;
+  }
+
+  private get rangeId(): string {
+    return `spc-range-${this.baseId}`;
+  }
+
+  private get selectId(): string {
+    return `spc-pageSize-${this.baseId}`;
+  }
+
+  private get selectHelpId(): string {
+    return `${this.selectId}__help`;
   }
 
   private get maxPages(): number {
@@ -77,7 +115,7 @@ export class StandardPagination {
   private nextPage = () => {
     if (this.page < this.maxPages) this.setPageAndEmit(this.page + 1);
   };
-  private prevPage = () => this.setPageAndEmit(this.page - 1);
+  private prevPage = () => this.setPageAndEmit(Math.max(1, this.page - 1));
   private firstPage = () => this.setPageAndEmit(1);
   private lastPage = () => this.setPageAndEmit(this.maxPages);
 
@@ -88,6 +126,7 @@ export class StandardPagination {
 
     let start = (this.page - 1) * size + 1;
     let end = this.page * size;
+
     if (start > rows) start = rows;
     if (start < 1) start = 1;
     if (end < start) end = start;
@@ -107,13 +146,72 @@ export class StandardPagination {
     this.clampToBounds();
   };
 
+  /**
+   * A11y note:
+   * - Native <select> already exposes correct semantics. Do NOT add role="listbox".
+   * - Use a real <label for="..."> association.
+   * - Keep aria-describedby resolvable via a stable help node.
+   */
+  private renderSizeChanger() {
+    const sizeCls = this.size === 'sm' ? 'select-sm' : this.size === 'lg' ? 'select-lg' : '';
+    const wrap = 'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
+
+    const disableAll = this.totalRows === 0;
+
+    return (
+      <div class={wrap}>
+        <label htmlFor={this.selectId}>{this.pageSizeLabel || 'Items per page:'} </label>
+
+        <div id={this.selectHelpId} class="sr-only">
+          {this.pageSizeHelpText}
+        </div>
+
+        <select
+          id={this.selectId}
+          class={`form-select form-control ${sizeCls}`}
+          aria-describedby={this.selectHelpId}
+          onChange={this.onItemsPerPageChange}
+        >
+          {this.itemsPerPageOptions.map(opt => {
+            const isAll = opt === 'All';
+            const isNum = typeof opt === 'number';
+
+            const disabled = isAll ? disableAll : isNum && this.totalRows > 0 && opt > this.totalRows;
+            const selected = isAll ? this.totalRows > 0 && this.pageSize === this.totalRows : this.pageSize === (opt as any);
+
+            return (
+              <option value={String(opt)} selected={selected} disabled={disabled}>
+                {String(opt)}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+    );
+  }
+
+  private rowDisplay = (extra = '') => (
+    <div
+      id={this.rangeId}
+      class={'pagination-cell row-display' + (this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : '') + extra}
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      {this.displayRange}
+    </div>
+  );
+
   private renderEllipsis() {
     if (this.hideEllipsis || this.maxPages <= 1) return null;
+
     const flexLi = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-fill d-flex' : '';
     const flexA = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-fill d-flex' : '';
+
+    // Presentation-only: not interactive
     return (
-      <li role="separator" class={`page-item disabled bv-d-xs-down-none${flexLi}`}>
-        <span class={`page-link${flexA}`}>...</span>
+      <li class={`page-item disabled bv-d-xs-down-none${flexLi}`} aria-hidden="true">
+        <span class={`page-link${flexA}`}>…</span>
       </li>
     );
   }
@@ -122,18 +220,20 @@ export class StandardPagination {
     const liFlex = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-fill d-flex' : '';
     const aFlex = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-grow-1' : '';
     const active = this.page === page;
+
+    // Use aria-current for current page (preferred over menuitemradio)
     return (
-      <li role="presentation" class={`page-item${active ? ' active' : ''}${liFlex}`}>
+      <li class={`page-item${active ? ' active' : ''}${liFlex}`} role="listitem">
         <button
-          role="menuitemradio"
           type="button"
-          aria-controls="pagination"
-          aria-label={`Go to page ${page}`}
-          aria-checked={active ? ('true' as any) : ('false' as any)}
-          tabIndex={active ? -1 : 0}
+          aria-controls={this.controlsId}
+          aria-label={active ? `Current page, page ${page}` : `Go to page ${page}`}
+          aria-current={active ? ('page' as any) : undefined}
+          tabIndex={0}
           class={`page-link${aFlex}`}
           onClick={() => this.setPageAndEmit(page)}
           disabled={active}
+          aria-disabled={active ? 'true' : undefined}
         >
           {page}
         </button>
@@ -156,46 +256,16 @@ export class StandardPagination {
       buttons.push(this.renderPageButton(1));
       if (start > 2) buttons.push(this.renderEllipsis());
     }
+
     for (let i = start; i <= end; i++) buttons.push(this.renderPageButton(i));
+
     if (end < this.maxPages) {
       if (end < this.maxPages - 1) buttons.push(this.renderEllipsis());
       buttons.push(this.renderPageButton(this.maxPages));
     }
+
     return buttons;
   }
-
-  private renderSizeChanger() {
-    const sizeCls = this.size === 'sm' ? 'select-sm' : this.size === 'lg' ? 'select-lg' : '';
-    const wrap = 'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
-
-    const disableAll = this.totalRows === 0;
-
-    return (
-      <div class={wrap}>
-        <label>Items per page: </label>
-        <select class={`form-select form-control ${sizeCls}`} aria-label="selectField" onChange={this.onItemsPerPageChange}>
-          {this.itemsPerPageOptions.map(opt => {
-            const isAll = opt === 'All';
-            const isNum = typeof opt === 'number';
-
-            const disabled = isAll ? disableAll : isNum && this.totalRows > 0 && opt > this.totalRows;
-
-            const selected = isAll ? this.totalRows > 0 && this.pageSize === this.totalRows : this.pageSize === (opt as any);
-
-            return (
-              <option value={String(opt)} selected={selected} disabled={disabled}>
-                {String(opt)}
-              </option>
-            );
-          })}
-        </select>
-      </div>
-    );
-  }
-
-  private rowDisplay = (extra = '') => (
-    <div class={'pagination-cell row-display' + (this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : '') + extra}>{this.displayRange}</div>
-  );
 
   private renderBar() {
     const sizeCls = this.size === 'sm' ? ' pagination-sm' : this.size === 'lg' ? ' pagination-lg' : '';
@@ -216,76 +286,81 @@ export class StandardPagination {
     const liFlex = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-fill d-flex' : '';
     const aFlex = ['fill', 'fill-left', 'fill-right'].includes(this.paginationLayout) ? ' flex-grow-1' : '';
 
+    // ✅ Use nav landmark + standard pagination semantics (NOT menubar/menuitem)
     return (
-      <ul role="menubar" aria-disabled="false" aria-label="Pagination" class={`pagination b-pagination${sizeCls}${layoutCls}${colorCls}${plumageCls}`}>
-        {!this.hideGoToButtons ? (
-          <Fragment>
-            <li role="presentation" aria-hidden={atStart as any} class={`page-item${atStart ? ' disabled' : ''}${liFlex}`}>
-              <button
-                role="menuitem"
-                type="button"
-                tabIndex={atStart ? -1 : 0}
-                aria-label="Go to first page"
-                aria-controls="pagination"
-                class={`page-link${aFlex}`}
-                onClick={this.firstPage}
-                disabled={atStart}
-              >
-                {this.goToButtons === 'text' ? 'First' : <i class="fa-solid fa-angles-left"></i>}
-              </button>
-            </li>
-            <li role="presentation" aria-hidden={atStart as any} class={`page-item${atStart ? ' disabled' : ''}${liFlex}`}>
-              <button
-                role="menuitem"
-                type="button"
-                tabIndex={atStart ? -1 : 0}
-                aria-label="Go to previous page"
-                aria-controls="pagination"
-                class={`page-link${aFlex}`}
-                onClick={this.prevPage}
-                disabled={atStart}
-              >
-                {this.goToButtons === 'text' ? 'Prev' : <i class="fa-solid fa-angle-left"></i>}
-              </button>
-            </li>
-          </Fragment>
-        ) : null}
+      <nav aria-label={this.paginationAriaLabel || 'Pagination'}>
+        <ul class={`pagination b-pagination${sizeCls}${layoutCls}${colorCls}${plumageCls}`} aria-describedby={this.rangeId}>
+          {!this.hideGoToButtons ? (
+            <Fragment>
+              <li class={`page-item${atStart ? ' disabled' : ''}${liFlex}`} role="listitem">
+                <button
+                  type="button"
+                  tabIndex={atStart ? -1 : 0}
+                  aria-label="Go to first page"
+                  aria-controls={this.controlsId}
+                  class={`page-link${aFlex}`}
+                  onClick={this.firstPage}
+                  disabled={atStart}
+                  aria-disabled={atStart ? 'true' : undefined}
+                >
+                  {this.goToButtons === 'text' ? 'First' : <i class="fa-solid fa-angles-left" aria-hidden="true"></i>}
+                </button>
+              </li>
 
-        {this.generatePageButtons()}
+              <li class={`page-item${atStart ? ' disabled' : ''}${liFlex}`} role="listitem">
+                <button
+                  type="button"
+                  tabIndex={atStart ? -1 : 0}
+                  aria-label="Go to previous page"
+                  aria-controls={this.controlsId}
+                  class={`page-link${aFlex}`}
+                  onClick={this.prevPage}
+                  disabled={atStart}
+                  aria-disabled={atStart ? 'true' : undefined}
+                >
+                  {this.goToButtons === 'text' ? 'Prev' : <i class="fa-solid fa-angle-left" aria-hidden="true"></i>}
+                </button>
+              </li>
+            </Fragment>
+          ) : null}
 
-        {!this.hideGoToButtons ? (
-          <Fragment>
-            <li role="presentation" class={`page-item${atEnd ? ' disabled' : ''}${liFlex}`}>
-              <button
-                role="menuitem"
-                type="button"
-                tabIndex={atEnd ? -1 : 0}
-                aria-label="Go to next page"
-                aria-controls="pagination"
-                class={`page-link${aFlex}`}
-                onClick={this.nextPage}
-                disabled={atEnd}
-              >
-                {this.goToButtons === 'text' ? 'Next' : <i class="fa-solid fa-angle-right"></i>}
-              </button>
-            </li>
-            <li role="presentation" class={`page-item${atEnd ? ' disabled' : ''}${liFlex}`}>
-              <button
-                role="menuitem"
-                type="button"
-                tabIndex={atEnd ? -1 : 0}
-                aria-label="Go to last page"
-                aria-controls="pagination"
-                class={`page-link${aFlex}`}
-                onClick={this.lastPage}
-                disabled={atEnd}
-              >
-                {this.goToButtons === 'text' ? 'Last' : <i class="fa-solid fa-angles-right"></i>}
-              </button>
-            </li>
-          </Fragment>
-        ) : null}
-      </ul>
+          {this.generatePageButtons()}
+
+          {!this.hideGoToButtons ? (
+            <Fragment>
+              <li class={`page-item${atEnd ? ' disabled' : ''}${liFlex}`} role="listitem">
+                <button
+                  type="button"
+                  tabIndex={atEnd ? -1 : 0}
+                  aria-label="Go to next page"
+                  aria-controls={this.controlsId}
+                  class={`page-link${aFlex}`}
+                  onClick={this.nextPage}
+                  disabled={atEnd}
+                  aria-disabled={atEnd ? 'true' : undefined}
+                >
+                  {this.goToButtons === 'text' ? 'Next' : <i class="fa-solid fa-angle-right" aria-hidden="true"></i>}
+                </button>
+              </li>
+
+              <li class={`page-item${atEnd ? ' disabled' : ''}${liFlex}`} role="listitem">
+                <button
+                  type="button"
+                  tabIndex={atEnd ? -1 : 0}
+                  aria-label="Go to last page"
+                  aria-controls={this.controlsId}
+                  class={`page-link${aFlex}`}
+                  onClick={this.lastPage}
+                  disabled={atEnd}
+                  aria-disabled={atEnd ? 'true' : undefined}
+                >
+                  {this.goToButtons === 'text' ? 'Last' : <i class="fa-solid fa-angles-right" aria-hidden="true"></i>}
+                </button>
+              </li>
+            </Fragment>
+          ) : null}
+        </ul>
+      </nav>
     );
   }
 
@@ -387,6 +462,8 @@ export class StandardPagination {
 
     return (
       <div class={rootCls}>
+        {/* Always include the live range node for aria-describedby resolution */}
+        {this.rowDisplay(' sr-only') /* keep resolvable even if not visually shown */}
         <div class={cellPosCls}>{this.renderBar()}</div>
       </div>
     );

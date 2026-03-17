@@ -29,6 +29,48 @@ export default {
       description: 'The HTTP method to use when submitting the form.',
     },
 
+    // NEW: optional ARIA hooks for <form>
+    formAriaLabel: {
+      control: 'text',
+      name: 'form-aria-label',
+      table: { category: 'Accessibility' },
+      description: 'Optional aria-label applied to the native <form> (only when outsideOfForm=false).',
+    },
+    formAriaLabelledby: {
+      control: 'text',
+      name: 'form-aria-labelledby',
+      table: { category: 'Accessibility' },
+      description: 'Optional aria-labelledby applied to the native <form> (only when outsideOfForm=false).',
+    },
+    formAriaDescribedby: {
+      control: 'text',
+      name: 'form-aria-describedby',
+      table: { category: 'Accessibility' },
+      description: 'Optional aria-describedby applied to the native <form> (only when outsideOfForm=false).',
+    },
+
+    // NEW: optional ARIA hooks for <fieldset>
+    fieldsetAriaLabel: {
+      control: 'text',
+      name: 'fieldset-aria-label',
+      table: { category: 'Accessibility' },
+      description:
+        'Optional aria-label applied to <fieldset>. Useful when fieldset=true but legend=false so the group still has a name.',
+    },
+    fieldsetAriaLabelledby: {
+      control: 'text',
+      name: 'fieldset-aria-labelledby',
+      table: { category: 'Accessibility' },
+      description:
+        'Optional aria-labelledby applied to <fieldset>. If legend=true and these are empty, component auto-wires to legend id.',
+    },
+    fieldsetAriaDescribedby: {
+      control: 'text',
+      name: 'fieldset-aria-describedby',
+      table: { category: 'Accessibility' },
+      description: 'Optional aria-describedby applied to <fieldset>.',
+    },
+
     // Fieldset + legend
     fieldset: {
       control: 'boolean',
@@ -69,8 +111,7 @@ export default {
     formId: {
       control: 'text',
       table: { category: 'Layout' },
-      description:
-        'The id attribute for the form, useful for associating external buttons/inputs when outsideOfForm is true.',
+      description: 'The id attribute for the form, useful for associating external buttons/inputs when outsideOfForm is true.',
     },
 
     // Rendering mode
@@ -107,14 +148,33 @@ export default {
     styles: {
       control: 'text',
       table: { category: 'Styles' },
-      description:
-        'Additional CSS styles to apply to the fieldset or form wrapper. Use with caution as it may override other styles.',
+      description: 'Additional CSS styles to apply to the fieldset or form wrapper.',
     },
 
     // Story-only
     numFields: {
       control: { type: 'number', min: 1, max: 6, step: 1 },
       table: { disable: true },
+    },
+
+    // Story-only: pseudo “validation/error” state for accessibility matrix
+    showValidation: {
+      control: 'boolean',
+      name: 'show-validation',
+      table: { disable: true },
+      description: 'Story-only helper used by Accessibility matrix to render an error block.',
+    },
+    validationText: {
+      control: 'text',
+      name: 'validation-text',
+      table: { disable: true },
+      description: 'Story-only helper message used by Accessibility matrix.',
+    },
+    disabledDemo: {
+      control: 'boolean',
+      name: 'disabled-demo',
+      table: { disable: true },
+      description: 'Story-only helper to disable child fields/buttons in Accessibility matrix.',
     },
   },
   args: {
@@ -134,6 +194,19 @@ export default {
     numFields: 2,
     outsideOfForm: false,
     styles: '',
+
+    // NEW ARIA hooks
+    formAriaLabel: '',
+    formAriaLabelledby: '',
+    formAriaDescribedby: '',
+    fieldsetAriaLabel: '',
+    fieldsetAriaLabelledby: '',
+    fieldsetAriaDescribedby: '',
+
+    // Story-only helpers
+    showValidation: false,
+    validationText: 'Please fix the errors above.',
+    disabledDemo: false,
   },
 };
 
@@ -158,15 +231,30 @@ const buildDocsHtml = (args) => {
 
   // Remove story-only args from preview
   delete a.numFields;
+  delete a.showValidation;
+  delete a.validationText;
+  delete a.disabledDemo;
 
   const attrs = [
     ['action', normalize(a.action)],
     ['method', normalize(a.method)],
     ['form-layout', normalize(a.formLayout)],
     ['form-id', normalize(a.formId)],
+
+    // NEW: ARIA hooks
+    ['form-aria-label', normalize(a.formAriaLabel)],
+    ['form-aria-labelledby', normalize(a.formAriaLabelledby)],
+    ['form-aria-describedby', normalize(a.formAriaDescribedby)],
+    ['fieldset-aria-label', normalize(a.fieldsetAriaLabel)],
+    ['fieldset-aria-labelledby', normalize(a.fieldsetAriaLabelledby)],
+    ['fieldset-aria-describedby', normalize(a.fieldsetAriaDescribedby)],
+
+    // Fieldset/legend
     ['legend-position', normalize(a.legendPosition)],
     ['legend-size', normalize(a.legendSize)],
     ['legend-txt', normalize(a.legendTxt)],
+
+    // Styles
     ['bcolor', normalize(a.bcolor)],
     ['bradius', typeof a.bradius === 'number' ? a.bradius : undefined],
     ['bstyle', normalize(a.bstyle)],
@@ -195,29 +283,32 @@ const buildDocsHtml = (args) => {
 
 /** ---------------- Helpers ---------------- */
 
-function makeInput(label, id) {
+function makeInput(label, id, disabled = false) {
   const el = document.createElement('input-field-component');
   el.setAttribute('label', label);
   el.setAttribute('input-id', id);
   el.setAttribute('slot', 'formField');
   el.setAttribute('value', '');
+  if (disabled) el.setAttribute('disabled', '');
   return el;
 }
 
-function makeTextarea(label, id) {
+function makeTextarea(label, id, disabled = false) {
   const el = document.createElement('textarea-field-component');
   el.setAttribute('label', label);
   el.setAttribute('input-id', id);
   el.setAttribute('slot', 'formField');
   el.setAttribute('value', '');
+  if (disabled) el.setAttribute('disabled', '');
   return el;
 }
 
-function makeSelect(label, id) {
+function makeSelect(label, id, disabled = false) {
   const el = document.createElement('select-field-component');
   el.setAttribute('label', label);
   el.setAttribute('input-id', id);
   el.setAttribute('slot', 'formField');
+  if (disabled) el.setAttribute('disabled', '');
   return el;
 }
 
@@ -227,7 +318,6 @@ const applyHorizontalRowMargins = (formEl, leftPx = 10) => {
   const apply = () => {
     const root = formEl.shadowRoot ?? formEl;
 
-    // try a couple common patterns
     const rows = root.querySelectorAll(
       '.form-group.row, .form-group-row, .row.form-group, [data-form-group-row="true"]',
     );
@@ -237,7 +327,6 @@ const applyHorizontalRowMargins = (formEl, leftPx = 10) => {
     });
   };
 
-  // wait for render + layout
   requestAnimationFrame(() => requestAnimationFrame(apply));
 };
 
@@ -261,8 +350,31 @@ function buildForm(args, fields) {
   if (typeof args.bwidth === 'number') form.bwidth = args.bwidth;
   form.styles = args.styles || '';
 
+  // NEW ARIA hooks
+  if (args.formAriaLabel) form.formAriaLabel = args.formAriaLabel;
+  if (args.formAriaLabelledby) form.formAriaLabelledby = args.formAriaLabelledby;
+  if (args.formAriaDescribedby) form.formAriaDescribedby = args.formAriaDescribedby;
+
+  if (args.fieldsetAriaLabel) form.fieldsetAriaLabel = args.fieldsetAriaLabel;
+  if (args.fieldsetAriaLabelledby) form.fieldsetAriaLabelledby = args.fieldsetAriaLabelledby;
+  if (args.fieldsetAriaDescribedby) form.fieldsetAriaDescribedby = args.fieldsetAriaDescribedby;
+
   // Add sample fields (to the named slot="formField")
   fields.forEach((f) => form.appendChild(f));
+
+  // Optional “validation” block (Story-only helper)
+  if (args.showValidation) {
+    const msg = document.createElement('div');
+    msg.id = `${args.formId || 'demo-form'}__validation`;
+    msg.setAttribute('slot', 'formField');
+    msg.className = 'invalid-feedback validation';
+    msg.setAttribute('aria-live', 'polite');
+    msg.setAttribute('aria-atomic', 'true');
+    msg.style.display = 'block';
+    msg.style.marginTop = '10px';
+    msg.textContent = args.validationText || 'Please fix the errors above.';
+    form.appendChild(msg);
+  }
 
   // Primary submit button + spacing
   const submit = document.createElement('button-component');
@@ -275,6 +387,10 @@ function buildForm(args, fields) {
   submit.style.marginLeft = '15px';
   submit.style.marginTop = '15px';
   submit.style.marginBottom = '15px';
+
+  if (args.disabledDemo) {
+    submit.setAttribute('disabled', '');
+  }
 
   form.appendChild(submit);
 
@@ -298,12 +414,10 @@ const Template = (args) => {
   const labels = ['First Name', 'Last Name', 'Email', 'Company', 'Role', 'City'];
 
   for (let i = 0; i < n; i++) {
-    fields.push(makeInput(labels[i] || `Field ${i + 1}`, `input-${i + 1}`));
+    fields.push(makeInput(labels[i] || `Field ${i + 1}`, `input-${i + 1}`, !!args.disabledDemo));
   }
   return buildForm(args, fields);
 };
-
-
 
 export const Basic = Template.bind({});
 Basic.args = {
@@ -355,11 +469,6 @@ WithFieldset.args = {
   legendPosition: '',
   legendTxt: '',
   legendSize: '',
-  // bstyle: 'solid',
-  // bwidth: 1,
-  // bradius: 6,
-  // bcolor: '#d8dee4',
-  // styles: 'padding: 12px;',
 };
 WithFieldset.storyName = 'Using a Fieldset';
 WithFieldset.parameters = {
@@ -391,7 +500,6 @@ WithLegendCentered.parameters = {
   },
 };
 
-
 export const StyledFieldsetBorders = Template.bind({});
 StyledFieldsetBorders.args = {
   fieldset: true,
@@ -416,13 +524,20 @@ StyledFieldsetBorders.parameters = {
 
 export const OutsideOfForm = (args) => {
   const fields = [
-    makeInput('Tag', 'tag'),
-    makeSelect('Category', 'cat'),
-    makeTextarea('Notes', 'notes'),
+    makeInput('Tag', 'tag', !!args.disabledDemo),
+    makeSelect('Category', 'cat', !!args.disabledDemo),
+    makeTextarea('Notes', 'notes', !!args.disabledDemo),
   ];
 
   const el = buildForm(
-    { ...args, outsideOfForm: true, fieldset: true, legend: true, legendTxt: 'Detached Layout', styles: 'padding: 16px 16px 16px 32px !important;', },
+    {
+      ...args,
+      outsideOfForm: true,
+      fieldset: true,
+      legend: true,
+      legendTxt: 'Detached Layout',
+      styles: 'padding: 16px 16px 16px 32px !important;',
+    },
     fields,
   );
 
@@ -430,9 +545,10 @@ export const OutsideOfForm = (args) => {
   externalSubmit.textContent = 'Submit (external)';
   externalSubmit.setAttribute('variant', 'secondary');
 
-  // IMPORTANT: same display inline issue here
   externalSubmit.style.display = 'inline-block';
   externalSubmit.style.marginTop = '15px';
+
+  if (args.disabledDemo) externalSubmit.setAttribute('disabled', '');
 
   const wrapper = document.createElement('div');
   wrapper.appendChild(el);
@@ -447,7 +563,8 @@ OutsideOfForm.storyName = 'Rendering Outside of a Native Form';
 OutsideOfForm.parameters = {
   docs: {
     description: {
-      story: 'The form wrapper can render without a native `<form>` element, allowing for custom layouts or integration with frameworks that handle forms differently.',
+      story:
+        'The form wrapper can render without a native `<form>` element, allowing for custom layouts or integration with frameworks that handle forms differently.',
     },
   },
 };
@@ -486,24 +603,22 @@ const kitchenSinkDefaults = {
 
 export const KitchenSink = (args) => {
   const fields = [
-    makeInput('First Name', 'first'),
-    makeInput('Last Name', 'last'),
-    makeInput('Email', 'email'),
-    makeSelect('Role', 'role'),
-    makeTextarea('About You', 'about'),
+    makeInput('First Name', 'first', !!args.disabledDemo),
+    makeInput('Last Name', 'last', !!args.disabledDemo),
+    makeInput('Email', 'email', !!args.disabledDemo),
+    makeSelect('Role', 'role', !!args.disabledDemo),
+    makeTextarea('About You', 'about', !!args.disabledDemo),
   ];
 
-  // IMPORTANT: merge defaults first, then controls/story args override
   return buildForm(
     {
       ...kitchenSinkDefaults,
       ...args,
     },
-    fields
+    fields,
   );
 };
 
-// Make docs preview correct by putting the defaults here (NOT in render-only overrides)
 KitchenSink.args = {
   ...kitchenSinkDefaults,
 };
@@ -515,4 +630,242 @@ KitchenSink.parameters = {
       story: 'A comprehensive example showcasing all the main features and props of the form wrapper component.',
     },
   },
+};
+
+// ======================================================
+// NEW: Accessibility matrix
+//  - default / inline / horizontal
+//  - error/validation (storybook-only helper)
+//  - disabled (storybook-only helper disables children)
+//  - prints computed role + aria-* + ids
+// ======================================================
+
+function pickAttrs(el, names) {
+  const out = {};
+  if (!el) return out;
+  for (const n of names) {
+    const v = el.getAttribute(n);
+    if (v !== null && v !== '') out[n] = v;
+  }
+  return out;
+}
+
+function splitIds(v) {
+  return String(v || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function safeQueryById(root, id) {
+  const safe = String(id).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  return root.querySelector(`[id="${safe}"]`);
+}
+
+function resolveIdsWithin(root, ids) {
+  const res = {};
+  for (const id of ids) {
+    res[id] = !!safeQueryById(root, id);
+  }
+  return res;
+}
+
+function collectIds(root) {
+  const ids = Array.from(root.querySelectorAll('[id]'))
+    .map((n) => n.id)
+    .filter(Boolean);
+  const counts = new Map();
+  for (const id of ids) counts.set(id, (counts.get(id) || 0) + 1);
+  const dups = Array.from(counts.entries())
+    .filter(([, c]) => c > 1)
+    .map(([id, c]) => ({ id, count: c }));
+  return { total: ids.length, unique: counts.size, duplicates: dups };
+}
+
+function snapshotA11y(host) {
+  const form = host.querySelector('form');
+  const fieldset = host.querySelector('fieldset');
+  const legend = host.querySelector('legend');
+  const slotNodes = host.querySelectorAll('[slot="formField"]');
+  const validation = host.querySelector('.invalid-feedback.validation, .invalid-feedback.warning, [id$="__validation"]');
+
+  const labelledbyForm = form ? splitIds(form.getAttribute('aria-labelledby')) : [];
+  const describedbyForm = form ? splitIds(form.getAttribute('aria-describedby')) : [];
+  const labelledbyFs = fieldset ? splitIds(fieldset.getAttribute('aria-labelledby')) : [];
+  const describedbyFs = fieldset ? splitIds(fieldset.getAttribute('aria-describedby')) : [];
+
+  return {
+    host: {
+      tag: host.tagName.toLowerCase(),
+      id: host.id || '',
+    },
+    structure: {
+      hasForm: !!form,
+      hasFieldset: !!fieldset,
+      hasLegend: !!legend,
+      slotCount: slotNodes.length,
+    },
+    form: form
+      ? {
+          tag: form.tagName.toLowerCase(),
+          id: form.getAttribute('id') || '',
+          class: form.getAttribute('class') || '',
+          ...pickAttrs(form, ['aria-label', 'aria-labelledby', 'aria-describedby']),
+          resolves: {
+            'aria-labelledby': resolveIdsWithin(host, labelledbyForm),
+            'aria-describedby': resolveIdsWithin(host, describedbyForm),
+          },
+        }
+      : null,
+    fieldset: fieldset
+      ? {
+          tag: fieldset.tagName.toLowerCase(),
+          ...pickAttrs(fieldset, ['aria-label', 'aria-labelledby', 'aria-describedby']),
+          resolves: {
+            'aria-labelledby': resolveIdsWithin(host, labelledbyFs),
+            'aria-describedby': resolveIdsWithin(host, describedbyFs),
+          },
+        }
+      : null,
+    legend: legend
+      ? {
+          tag: legend.tagName.toLowerCase(),
+          id: legend.getAttribute('id') || '',
+          class: legend.getAttribute('class') || '',
+          text: (legend.textContent || '').trim(),
+        }
+      : null,
+    validation: validation
+      ? {
+          tag: validation.tagName.toLowerCase(),
+          id: validation.getAttribute('id') || '',
+          ...pickAttrs(validation, ['aria-live', 'aria-atomic', 'role']),
+          text: (validation.textContent || '').trim(),
+        }
+      : null,
+    ids: collectIds(host),
+  };
+}
+
+function renderMatrixRow({ title, args, idSuffix }) {
+  const wrap = document.createElement('div');
+  wrap.style.border = '1px solid #ddd';
+  wrap.style.borderRadius = '12px';
+  wrap.style.padding = '12px';
+  wrap.style.display = 'grid';
+  wrap.style.gap = '10px';
+
+  const heading = document.createElement('div');
+  heading.style.fontWeight = '700';
+  heading.textContent = title;
+
+  // Ensure unique formId per row (helps legend id uniqueness too)
+  const el = Template({
+    ...args,
+    formId: `form-matrix-${idSuffix}`,
+  });
+
+  const stage = document.createElement('div');
+  stage.style.maxWidth = '860px';
+
+  const pre = document.createElement('pre');
+  pre.style.margin = '0';
+  pre.style.padding = '10px';
+  pre.style.background = '#f6f8fa';
+  pre.style.borderRadius = '10px';
+  pre.style.overflowX = 'auto';
+  pre.style.fontSize = '12px';
+  pre.textContent = 'Collecting aria/role/id…';
+
+  stage.appendChild(el);
+  wrap.appendChild(heading);
+  wrap.appendChild(stage);
+  wrap.appendChild(pre);
+
+  const update = () => {
+    // "el" here is the form-component instance returned by Template/buildForm
+    const host = stage.querySelector('form-component') || el;
+    const snap = snapshotA11y(host);
+    pre.textContent = JSON.stringify(snap, null, 2);
+  };
+
+  requestAnimationFrame(() => requestAnimationFrame(update));
+
+  return wrap;
+}
+
+export const AccessibilityMatrix = () => {
+  const root = document.createElement('div');
+  root.style.display = 'grid';
+  root.style.gap = '16px';
+
+  const intro = document.createElement('div');
+  intro.innerHTML = `
+    <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
+    <div style="font-size:13px; color:#444;">
+      Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs.
+      Includes Storybook-only "validation" and "disabled" demos to help audit 508/WCAG behavior.
+    </div>
+  `;
+  root.appendChild(intro);
+
+  const rows = [
+    {
+      title: 'Default',
+      args: { formLayout: '', fieldset: false, legend: false, outsideOfForm: false, showValidation: false, disabledDemo: false },
+    },
+    {
+      title: 'Inline layout',
+      args: { formLayout: 'inline', fieldset: false, legend: false, outsideOfForm: false, showValidation: false, disabledDemo: false, numFields: 3 },
+    },
+    {
+      title: 'Horizontal layout (fieldset + legend)',
+      args: { formLayout: 'horizontal', fieldset: true, legend: true, legendTxt: 'Details', outsideOfForm: false, showValidation: false, disabledDemo: false, numFields: 3 },
+    },
+    {
+      title: 'Error/validation (storybook demo block)',
+      args: {
+        formLayout: '',
+        fieldset: true,
+        legend: true,
+        legendTxt: 'Validation Demo',
+        outsideOfForm: false,
+        showValidation: true,
+        validationText: 'Please fix the errors above.',
+        // example of wiring form describedby to our demo validation block (exists by id)
+        formAriaDescribedby: 'form-matrix-4__validation', // gets overridden by per-row formId in renderMatrixRow
+        disabledDemo: false,
+        numFields: 2,
+      },
+    },
+    {
+      title: 'Disabled (storybook demo disables children)',
+      args: { formLayout: '', fieldset: true, legend: true, legendTxt: 'Disabled Demo', outsideOfForm: false, showValidation: false, disabledDemo: true, numFields: 2 },
+    },
+  ];
+
+  rows.forEach((r, idx) => {
+    // Fix describedby for the validation row so it matches the per-row formId that renderMatrixRow sets
+    const idSuffix = String(idx + 1);
+    const fixedArgs =
+      r.title.startsWith('Error/validation')
+        ? { ...r.args, formAriaDescribedby: `form-matrix-${idSuffix}__validation` }
+        : r.args;
+
+    root.appendChild(renderMatrixRow({ title: r.title, args: fixedArgs, idSuffix }));
+  });
+
+  return root;
+};
+
+AccessibilityMatrix.storyName = 'Accessibility Matrix (computed)';
+AccessibilityMatrix.parameters = {
+  docs: {
+    description: {
+      story:
+        'Matrix of key states (default/inline/horizontal, error/validation demo, disabled demo). Each row prints computed role/aria/ids and whether ARIA references resolve.',
+    },
+    story: { height: '1250px' },
+  },
+  controls: { disable: true },
 };

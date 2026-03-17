@@ -13,20 +13,63 @@ export class IconComponent {
   @Prop() size: string = '';
   @Prop() tokenIcon: boolean = false;
   @Prop() iconSize?: number;
- @Prop() color?: string;
+  @Prop() color?: string;
 
-  @Prop() iconAriaLabel?: string;          // ✅ renamed
-  @Prop() iconAriaHidden: boolean = true;  // ✅ renamed
+  /**
+   * Accessibility:
+   * - Decorative by default: aria-hidden="true"
+   * - Meaningful icon: set iconAriaHidden={false} AND provide iconAriaLabel
+   */
+  @Prop() iconAriaLabel?: string;
+  @Prop() iconAriaHidden: boolean = true;
+
+  private warnedMissingLabel = false;
 
   private getDynamicStyle(): { [key: string]: string } | undefined {
     const styleObj: { [key: string]: string } = {};
-    if (this.iconSize) {
+    if (this.iconSize != null && !Number.isNaN(this.iconSize)) {
       styleObj['font-size'] = `${this.iconSize}px`;
     }
     if (this.color) {
       styleObj['color'] = this.color;
     }
     return Object.keys(styleObj).length > 0 ? styleObj : undefined;
+  }
+
+  private getA11y() {
+    const label = (this.iconAriaLabel || '').trim();
+
+    // Default: decorative
+    if (this.iconAriaHidden) {
+      return {
+        ariaHidden: 'true' as const,
+        ariaLabel: undefined as string | undefined,
+        role: undefined as string | undefined,
+      };
+    }
+
+    // Author explicitly wants an exposed (non-hidden) icon.
+    // For 508/axe: ensure it has an accessible name.
+    if (!label) {
+      if (!this.warnedMissingLabel) {
+        this.warnedMissingLabel = true;
+        // eslint-disable-next-line no-console
+        console.warn(
+          '[icon-component] iconAriaHidden=false requires a non-empty iconAriaLabel. Falling back to aria-hidden="true".',
+        );
+      }
+      return {
+        ariaHidden: 'true' as const,
+        ariaLabel: undefined as string | undefined,
+        role: undefined as string | undefined,
+      };
+    }
+
+    return {
+      ariaHidden: 'false' as const,
+      ariaLabel: label,
+      role: 'img' as const,
+    };
   }
 
   render() {
@@ -42,11 +85,17 @@ export class IconComponent {
       .filter(Boolean)
       .join(' ');
 
+    const a11y = this.getA11y();
+
     return (
       <i
         class={baseClasses}
-        aria-hidden={this.iconAriaHidden ? 'true' : 'false'}
-        aria-label={this.iconAriaLabel || undefined}
+        // Accessibility rules:
+        // - If decorative: aria-hidden="true" and no aria-label/role
+        // - If meaningful: aria-hidden="false", role="img", aria-label="..."
+        aria-hidden={a11y.ariaHidden}
+        aria-label={a11y.ariaLabel}
+        role={a11y.role}
         style={dynamicStyle}
       ></i>
     );

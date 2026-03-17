@@ -12,7 +12,25 @@ exports[`icon-component applies tokenIcon class 1`] = `
 </icon-component>
 `;
 
-exports[`icon-component renders with default props 1`] = `
+exports[`icon-component fail-safe: iconAriaHidden=false with whitespace label warns and falls back to decorative 1`] = `
+<icon-component icon="fa-info" icon-aria-hidden="false" icon-aria-label="   ">
+  <i aria-hidden="true" class="fa-info"></i>
+</icon-component>
+`;
+
+exports[`icon-component fail-safe: iconAriaHidden=false without label warns and falls back to decorative 1`] = `
+<icon-component icon="fa-info" icon-aria-hidden="false">
+  <i aria-hidden="true" class="fa-info"></i>
+</icon-component>
+`;
+
+exports[`icon-component meaningful icon: sets role="img", aria-label, and aria-hidden=false 1`] = `
+<icon-component icon="fa-info" icon-aria-hidden="false" icon-aria-label="Information">
+  <i aria-hidden="false" aria-label="Information" class="fa-info" role="img"></i>
+</icon-component>
+`;
+
+exports[`icon-component renders with default props (decorative icon) 1`] = `
 <icon-component icon="fa-check">
   <i aria-hidden="true" class="fa-check"></i>
 </icon-component>
@@ -27,11 +45,5 @@ exports[`icon-component renders with iconMargin left 1`] = `
 exports[`icon-component renders with iconMargin right 1`] = `
 <icon-component icon="fa-user" icon-margin="right">
   <i aria-hidden="true" class="fa-user me-1"></i>
-</icon-component>
-`;
-
-exports[`icon-component sets custom aria-label and aria-hidden=false 1`] = `
-<icon-component icon="fa-info" icon-aria-hidden="false" icon-aria-label="Information">
-  <i aria-hidden="false" aria-label="Information" class="fa-info"></i>
 </icon-component>
 `;

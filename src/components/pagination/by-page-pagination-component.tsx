@@ -3,7 +3,12 @@ import { Component, Prop, State, Watch, Event, EventEmitter, h, Element, Fragmen
 
 @Component({
   tag: 'by-page-pagination-component',
-  styleUrls: ['./pagination-styles.scss', '../input-field/input-field-styles.scss', '../plumage-input-field/plumage-input-field-styles.scss', '../form-styles.scss'],
+  styleUrls: [
+    './pagination-styles.scss',
+    '../input-field/input-field-styles.scss',
+    '../plumage-input-field/plumage-input-field-styles.scss',
+    '../form-styles.scss',
+  ],
   shadow: false,
 })
 export class ByPagePagination {
@@ -23,13 +28,65 @@ export class ByPagePagination {
   @Prop() size: '' | 'sm' | 'lg' = '';
   @Prop() paginationLayout: '' | 'start' | 'center' | 'end' = '';
   @Prop() plumage: boolean = false;
+
+  /**
+   * Optional external id of a region that this pagination controls.
+   * Used for aria-controls on the nav buttons when provided.
+   */
   @Prop({ attribute: 'control-id' }) controlId?: string;
+
+  /** Optional aria-label for the pagination nav landmark. */
+  @Prop() paginationAriaLabel: string = 'Pagination';
+
+  /** Label text for the page-size select (standalone) */
+  @Prop() pageSizeLabel: string = 'Items per page:';
+
+  /** SR-only helper text for the page-size select (standalone) */
+  @Prop() pageSizeHelpText: string = 'Use this control to change how many items are shown per page.';
+
+  /** SR-only helper text for the page number input */
+  @Prop() pageInputHelpText: string = 'Type a page number and press Enter, or use the navigation buttons.';
 
   /** Internal page for standalone behavior */
   @State() private page: number = 1;
 
   private get isManagedByParent() {
     return !!this.el.closest('pagination-component');
+  }
+
+  private uid = `bppc-${Math.random().toString(16).slice(2)}-${Date.now().toString(16)}`;
+
+  private get controlsId(): string | undefined {
+    const v = (this.controlId || '').trim();
+    return v ? v : undefined;
+  }
+
+  private get baseId(): string {
+    return this.controlsId || this.el.id || this.uid;
+  }
+
+  private get rangeId(): string {
+    return `bppc-range-${this.baseId}`;
+  }
+
+  private get selectId(): string {
+    return `bppc-pageSize-${this.baseId}`;
+  }
+
+  private get selectHelpId(): string {
+    return `${this.selectId}__help`;
+  }
+
+  private get pageInputId(): string {
+    return `bppc-pageInput-${this.baseId}`;
+  }
+
+  private get pageInputLabelId(): string {
+    return `${this.pageInputId}__label`;
+  }
+
+  private get pageInputHelpId(): string {
+    return `${this.pageInputId}__help`;
   }
 
   private get maxPages(): number {
@@ -97,12 +154,23 @@ export class ByPagePagination {
     return `${start}-${end} of ${rows}`;
   }
 
-  private onInputChange = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    const raw = target?.value ?? '';
-    const newPage = parseInt(raw, 10);
+  private onInputCommit = (raw: string) => {
+    const newPage = parseInt(String(raw || '').trim(), 10);
     if (Number.isNaN(newPage)) return;
     if (newPage >= 1 && newPage <= this.maxPages) this.setPageAndEmit(newPage);
+  };
+
+  private onInputChange = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    this.onInputCommit(target?.value ?? '');
+  };
+
+  private onInputKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const target = e.target as HTMLInputElement;
+      this.onInputCommit(target?.value ?? '');
+    }
   };
 
   private onItemsPerPageChange = (e: Event) => {
@@ -116,7 +184,12 @@ export class ByPagePagination {
     this.clampToBounds();
   };
 
-  /** Standalone size changer */
+  /**
+   * A11y note:
+   * - Native <select> already exposes correct semantics. Do NOT add role="listbox".
+   * - Use a real <label for="..."> association.
+   * - Keep aria-describedby resolvable via a stable help node.
+   */
   private renderSizeChanger() {
     const sizeCls = this.size === 'sm' ? 'select-sm' : this.size === 'lg' ? 'select-lg' : '';
     const wrap = 'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
@@ -125,14 +198,23 @@ export class ByPagePagination {
 
     return (
       <div class={wrap}>
-        <label>Items per page: </label>
-        <select class={`form-select form-control ${sizeCls}`} aria-label="selectField" onChange={this.onItemsPerPageChange}>
+        <label htmlFor={this.selectId}>{this.pageSizeLabel || 'Items per page:'} </label>
+
+        <div id={this.selectHelpId} class="sr-only">
+          {this.pageSizeHelpText}
+        </div>
+
+        <select
+          id={this.selectId}
+          class={`form-select form-control ${sizeCls}`}
+          aria-describedby={this.selectHelpId}
+          onChange={this.onItemsPerPageChange}
+        >
           {this.itemsPerPageOptions.map(opt => {
             const isAll = opt === 'All';
             const isNum = typeof opt === 'number';
 
             const disabled = isAll ? disableAll : isNum && this.totalRows > 0 && opt > this.totalRows;
-
             const selected = isAll ? this.totalRows > 0 && this.pageSize === this.totalRows : this.pageSize === (opt as any);
 
             return (
@@ -146,131 +228,168 @@ export class ByPagePagination {
     );
   }
 
+  private rowDisplay = (extra = '') => (
+    <div
+      id={this.rangeId}
+      class={'pagination-cell row-display' + (this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : '') + extra}
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      {this.displayRange}
+    </div>
+  );
+
+  private renderPageInput() {
+    const basicInputSize = this.size === 'sm' ? ' page-input-sm' : this.size === 'lg' ? ' page-input-lg' : '';
+    const plInputSize = basicInputSize;
+
+    const describedBy = [this.pageInputHelpId, this.rangeId].filter(Boolean).join(' ');
+
+    // IMPORTANT: no aria-hidden on a focusable subtree.
+    return (
+      <div class="pages">
+        Page{' '}
+        {this.plumage ? (
+          <div class="input-container page-input-wrapper" role="presentation">
+            <label class="sr-only" id={this.pageInputLabelId} htmlFor={this.pageInputId}>
+              Page number
+            </label>
+
+            <div id={this.pageInputHelpId} class="sr-only">
+              {this.pageInputHelpText}
+            </div>
+
+            <input
+              id={this.pageInputId}
+              type="number"
+              min="1"
+              max={String(this.maxPages)}
+              class={`form-control page-input${plInputSize}`}
+              inputMode="numeric"
+              value={String(this.page)}
+              aria-labelledby={this.pageInputLabelId}
+              aria-describedby={describedBy}
+              onChange={this.onInputChange}
+              onKeyDown={this.onInputKeyDown}
+            />
+
+            <div class="b-underline" role="presentation">
+              <div class="b-focus" role="presentation" aria-hidden="true" />
+            </div>
+          </div>
+        ) : (
+          <Fragment>
+            <label class="sr-only" id={this.pageInputLabelId} htmlFor={this.pageInputId}>
+              Page number
+            </label>
+
+            <div id={this.pageInputHelpId} class="sr-only">
+              {this.pageInputHelpText}
+            </div>
+
+            <input
+              id={this.pageInputId}
+              type="number"
+              min="1"
+              max={String(this.maxPages)}
+              inputMode="numeric"
+              class={`form-control page-input${basicInputSize}`}
+              value={String(this.page)}
+              aria-labelledby={this.pageInputLabelId}
+              aria-describedby={describedBy}
+              onChange={this.onInputChange}
+              onKeyDown={this.onInputKeyDown}
+            />
+          </Fragment>
+        )}{' '}
+        of {this.maxPages}
+      </div>
+    );
+  }
+
   private renderBar() {
     const sizeCls = this.size === 'sm' ? ' pagination-sm' : this.size === 'lg' ? ' pagination-lg' : '';
-    const layoutCls = this.paginationLayout === 'center' ? ' justify-content-center' : this.paginationLayout === 'end' ? ' justify-content-end' : '';
+    const layoutCls =
+      this.paginationLayout === 'center' ? ' justify-content-center' : this.paginationLayout === 'end' ? ' justify-content-end' : '';
     const plumageCls = this.plumage ? ' plumage' : '';
-    const controls = this.controlId ?? this.el.id;
 
     const atStart = this.page <= 1;
     const atEnd = this.page >= this.maxPages;
 
-    const basicInputSize = this.size === 'sm' ? ' page-input-sm' : this.size === 'lg' ? ' page-input-lg' : '';
-    const plInputSize = basicInputSize;
+    const ariaControls = this.controlsId; // only if provided
 
+    // ✅ Use nav landmark + standard pagination semantics (NOT menubar/menuitem)
     return (
-      <ul role="menubar" aria-disabled="false" aria-label="Pagination" class={`pagination by-page b-pagination${sizeCls}${layoutCls}${plumageCls}`}>
-        <li role="presentation" aria-hidden={atStart} class={`page-item${atStart ? ' disabled' : ''}`}>
-          <button
-            role="menuitem"
-            type="button"
-            tabIndex={atStart ? -1 : 0}
-            aria-label="Go to first page"
-            aria-controls={controls}
-            class="page-link"
-            onClick={this.firstPage}
-            disabled={atStart}
-          >
-            {this.goToButtons === 'text' ? 'First' : <i class="fa-solid fa-angles-left"></i>}
-          </button>
-        </li>
+      <nav aria-label={this.paginationAriaLabel || 'Pagination'}>
+        <ul class={`pagination by-page b-pagination${sizeCls}${layoutCls}${plumageCls}`}>
+          <li class={`page-item${atStart ? ' disabled' : ''}`}>
+            <button
+              type="button"
+              tabIndex={atStart ? -1 : 0}
+              aria-label="Go to first page"
+              aria-controls={ariaControls}
+              class="page-link"
+              onClick={this.firstPage}
+              disabled={atStart}
+              aria-disabled={atStart ? 'true' : undefined}
+            >
+              {this.goToButtons === 'text' ? 'First' : <i class="fa-solid fa-angles-left" aria-hidden="true"></i>}
+            </button>
+          </li>
 
-        <li role="presentation" aria-hidden={atStart} class={`page-item${atStart ? ' disabled' : ''}`}>
-          <button
-            role="menuitem"
-            type="button"
-            tabIndex={atStart ? -1 : 0}
-            aria-label="Go to previous page"
-            aria-controls={controls}
-            class="page-link"
-            onClick={this.prevPage}
-            disabled={atStart}
-          >
-            {this.goToButtons === 'text' ? 'Prev' : <i class="fa-solid fa-angle-left"></i>}
-          </button>
-        </li>
+          <li class={`page-item${atStart ? ' disabled' : ''}`}>
+            <button
+              type="button"
+              tabIndex={atStart ? -1 : 0}
+              aria-label="Go to previous page"
+              aria-controls={ariaControls}
+              class="page-link"
+              onClick={this.prevPage}
+              disabled={atStart}
+              aria-disabled={atStart ? 'true' : undefined}
+            >
+              {this.goToButtons === 'text' ? 'Prev' : <i class="fa-solid fa-angle-left" aria-hidden="true"></i>}
+            </button>
+          </li>
 
-        <li role="presentation" aria-hidden="true" class="page-item">
-          <div class="pages">
-            Page{' '}
-            {this.plumage ? (
-              <div class="input-container page-input-wrapper" role="presentation" aria-labelledby="pageNumberField">
-                <label class="sr-only" htmlFor="pageNumberField">
-                  Page number
-                </label>
-                <input
-                  type="text"
-                  class={`form-control page-input${plInputSize}`}
-                  aria-label="Page number"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  id="paginationInput"
-                  aria-labelledby="paginationInputLabel paginationDescription"
-                  value={String(this.page)}
-                  onChange={this.onInputChange}
-                />
-                <div class="b-underline" role="presentation">
-                  <div class="b-focus" role="presentation" aria-hidden="true" />
-                </div>
-              </div>
-            ) : (
-              <Fragment>
-                <label class="sr-only" htmlFor="pageNumberField">
-                  Page number
-                </label>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  id="paginationInput"
-                  aria-label="Page number"
-                  aria-labelledby="paginationInputLabel paginationDescription"
-                  class={`form-control page-input${basicInputSize}`}
-                  value={String(this.page)}
-                  onChange={this.onInputChange}
-                />
-              </Fragment>
-            )}{' '}
-            of {this.maxPages}
-          </div>
-        </li>
+          <li class="page-item page-input-item" role="presentation">
+            {this.renderPageInput()}
+          </li>
 
-        <li role="presentation" class={`page-item${atEnd ? ' disabled' : ''}`}>
-          <button
-            role="menuitem"
-            type="button"
-            tabIndex={atEnd ? -1 : 0}
-            aria-label="Go to next page"
-            aria-controls={controls}
-            class="page-link"
-            onClick={this.nextPage}
-            disabled={atEnd}
-          >
-            {this.goToButtons === 'text' ? 'Next' : <i class="fa-solid fa-angle-right"></i>}
-          </button>
-        </li>
+          <li class={`page-item${atEnd ? ' disabled' : ''}`}>
+            <button
+              type="button"
+              tabIndex={atEnd ? -1 : 0}
+              aria-label="Go to next page"
+              aria-controls={ariaControls}
+              class="page-link"
+              onClick={this.nextPage}
+              disabled={atEnd}
+              aria-disabled={atEnd ? 'true' : undefined}
+            >
+              {this.goToButtons === 'text' ? 'Next' : <i class="fa-solid fa-angle-right" aria-hidden="true"></i>}
+            </button>
+          </li>
 
-        <li role="presentation" class={`page-item${atEnd ? ' disabled' : ''}`}>
-          <button
-            role="menuitem"
-            type="button"
-            tabIndex={atEnd ? -1 : 0}
-            aria-label="Go to last page"
-            aria-controls={controls}
-            class="page-link"
-            onClick={this.lastPage}
-            disabled={atEnd}
-          >
-            {this.goToButtons === 'text' ? 'Last' : <i class="fa-solid fa-angles-right"></i>}
-          </button>
-        </li>
-      </ul>
+          <li class={`page-item${atEnd ? ' disabled' : ''}`}>
+            <button
+              type="button"
+              tabIndex={atEnd ? -1 : 0}
+              aria-label="Go to last page"
+              aria-controls={ariaControls}
+              class="page-link"
+              onClick={this.lastPage}
+              disabled={atEnd}
+              aria-disabled={atEnd ? 'true' : undefined}
+            >
+              {this.goToButtons === 'text' ? 'Last' : <i class="fa-solid fa-angles-right" aria-hidden="true"></i>}
+            </button>
+          </li>
+        </ul>
+      </nav>
     );
   }
-
-  private rowDisplay = (extra = '') => (
-    <div class={'pagination-cell row-display' + (this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : '') + extra}>{this.displayRange}</div>
-  );
 
   render() {
     const rootCls = 'pagination-layout' + (this.plumage ? ' plumage' : '');

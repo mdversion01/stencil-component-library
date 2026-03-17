@@ -580,7 +580,7 @@ GroupWithValidation.play = GroupBasic.play;
 GroupDisabledOptions.play = GroupBasic.play;
 
 export const AccessibilityMatrix = {
-  name: 'Accessibility matrix (computed)',
+  name: 'Accessibility Matrix (computed)',
   render: () => {
     const wrap = document.createElement('div');
     wrap.style.display = 'grid';

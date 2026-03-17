@@ -1,45 +1,50 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`by-page-pagination-component snapshot plumage + center 1`] = `
+exports[`by-page-pagination-component snapshot plumage + center (use stable control-id so IDs are predictable) 1`] = `
 <by-page-pagination-component current-page="10" page-size="10">
   <div class="pagination-layout plumage">
-    <ul aria-disabled="false" aria-label="Pagination" class="b-pagination by-page justify-content-center pagination pagination-lg plumage" role="menubar">
-      <li class="page-item" role="presentation">
-        <button aria-controls="" aria-label="Go to first page" class="page-link" role="menuitem" tabindex="0" type="button">
-          <i class="fa-angles-left fa-solid"></i>
-        </button>
-      </li>
-      <li class="page-item" role="presentation">
-        <button aria-controls="" aria-label="Go to previous page" class="page-link" role="menuitem" tabindex="0" type="button">
-          <i class="fa-angle-left fa-solid"></i>
-        </button>
-      </li>
-      <li aria-hidden="true" class="page-item" role="presentation">
-        <div class="pages">
-          Page
-          <div aria-labelledby="pageNumberField" class="input-container page-input-wrapper" role="presentation">
-            <label class="sr-only" htmlfor="pageNumberField">
-              Page number
-            </label>
-            <input aria-label="Page number" aria-labelledby="paginationInputLabel paginationDescription" class="form-control page-input page-input-lg" id="paginationInput" inputmode="numeric" pattern="[0-9]*" type="text" value="10">
-            <div class="b-underline" role="presentation">
-              <div aria-hidden="true" class="b-focus" role="presentation"></div>
+    <nav aria-label="Pagination">
+      <ul class="b-pagination by-page justify-content-center pagination pagination-lg plumage">
+        <li class="page-item">
+          <button aria-controls="byPageA11y" aria-label="Go to first page" class="page-link" tabindex="0" type="button">
+            <i aria-hidden="true" class="fa-angles-left fa-solid"></i>
+          </button>
+        </li>
+        <li class="page-item">
+          <button aria-controls="byPageA11y" aria-label="Go to previous page" class="page-link" tabindex="0" type="button">
+            <i aria-hidden="true" class="fa-angle-left fa-solid"></i>
+          </button>
+        </li>
+        <li class="page-input-item page-item" role="presentation">
+          <div class="pages">
+            Page
+            <div class="input-container page-input-wrapper" role="presentation">
+              <label class="sr-only" htmlfor="bppc-pageInput-byPageA11y" id="bppc-pageInput-byPageA11y__label">
+                Page number
+              </label>
+              <div class="sr-only" id="bppc-pageInput-byPageA11y__help">
+                Type a page number and press Enter, or use the navigation buttons.
+              </div>
+              <input aria-describedby="bppc-pageInput-byPageA11y__help bppc-range-byPageA11y" aria-labelledby="bppc-pageInput-byPageA11y__label" class="form-control page-input page-input-lg" id="bppc-pageInput-byPageA11y" inputmode="numeric" max="30" min="1" type="number" value="10">
+              <div class="b-underline" role="presentation">
+                <div aria-hidden="true" class="b-focus" role="presentation"></div>
+              </div>
             </div>
+            of 30
           </div>
-          of 30
-        </div>
-      </li>
-      <li class="page-item" role="presentation">
-        <button aria-controls="" aria-label="Go to next page" class="page-link" role="menuitem" tabindex="0" type="button">
-          <i class="fa-angle-right fa-solid"></i>
-        </button>
-      </li>
-      <li class="page-item" role="presentation">
-        <button aria-controls="" aria-label="Go to last page" class="page-link" role="menuitem" tabindex="0" type="button">
-          <i class="fa-angles-right fa-solid"></i>
-        </button>
-      </li>
-    </ul>
+        </li>
+        <li class="page-item">
+          <button aria-controls="byPageA11y" aria-label="Go to next page" class="page-link" tabindex="0" type="button">
+            <i aria-hidden="true" class="fa-angle-right fa-solid"></i>
+          </button>
+        </li>
+        <li class="page-item">
+          <button aria-controls="byPageA11y" aria-label="Go to last page" class="page-link" tabindex="0" type="button">
+            <i aria-hidden="true" class="fa-angles-right fa-solid"></i>
+          </button>
+        </li>
+      </ul>
+    </nav>
   </div>
 </by-page-pagination-component>
 `;

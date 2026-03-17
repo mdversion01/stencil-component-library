@@ -34,19 +34,36 @@ const shouldIncludeItemsPerPageOptions = a => Array.isArray(a?.itemsPerPageOptio
 
 const buildAttrsBlock = a => {
   const lines = [
+    // a11y / labeling (NEW props)
+    attrLine('control-id', a.controlId),
+    attrLine('pagination-aria-label', a.paginationAriaLabel),
+    attrLine('page-size-label', a.pageSizeLabel),
+    attrLine('page-size-help-text', a.pageSizeHelpText),
+
+    // paging state
     attrLine('current-page', a.currentPage),
-    boolLine('display-total-number-of-pages', a.displayTotalNumberOfPages),
-    attrLine('go-to-buttons', a.goToButtons),
-    boolLine('hide-ellipsis', a.hideEllipsis),
-    boolLine('hide-go-to-buttons', a.hideGoToButtons),
-    boolLine('items-per-page', a.itemsPerPage),
-    attrLine('limit', a.limit),
-    attrLine('page-size', a.pageSize),
-    attrLine('pagination-layout', a.paginationLayout),
-    attrLine('pagination-variant-color', a.paginationVariantColor),
-    boolLine('plumage', a.plumage),
-    attrLine('size', a.size),
     attrLine('total-rows', a.totalRows),
+    attrLine('page-size', a.pageSize),
+
+    // display / layout
+    attrLine('pagination-layout', a.paginationLayout),
+    attrLine('size', a.size),
+    attrLine('pagination-variant-color', a.paginationVariantColor),
+
+    // goto buttons
+    attrLine('go-to-buttons', a.goToButtons),
+    boolLine('hide-go-to-buttons', a.hideGoToButtons),
+
+    // page buttons & ellipsis
+    attrLine('limit', a.limit),
+    boolLine('hide-ellipsis', a.hideEllipsis),
+
+    // standalone features (range / sizer)
+    boolLine('display-total-number-of-pages', a.displayTotalNumberOfPages),
+    boolLine('items-per-page', a.itemsPerPage),
+
+    // styling mode
+    boolLine('plumage', a.plumage),
   ].filter(Boolean);
 
   return lines.length ? `\n${lines.join('\n')}` : '';
@@ -108,6 +125,7 @@ export default {
             case 'Layouts':
             case 'LimitAndGoTo':
             case 'VariantColors':
+            case 'AccessibilityMatrix':
               return src;
 
             default:
@@ -122,8 +140,36 @@ export default {
   },
   argTypes: {
     /* -----------------------------
+     Accessibility (NEW)
+    ------------------------------ */
+    controlId: {
+      control: 'text',
+      name: 'control-id',
+      description: 'Optional id of the region this pagination controls. Used for aria-controls on nav buttons.',
+      table: { category: 'Accessibility' },
+    },
+    paginationAriaLabel: {
+      control: 'text',
+      name: 'pagination-aria-label',
+      description: 'ARIA label for the pagination <nav> landmark.',
+      table: { category: 'Accessibility' },
+    },
+    pageSizeLabel: {
+      control: 'text',
+      name: 'page-size-label',
+      description: 'Visible label text for the standalone items-per-page select.',
+      table: { category: 'Accessibility' },
+    },
+    pageSizeHelpText: {
+      control: 'text',
+      name: 'page-size-help-text',
+      description: 'Screen-reader-only help text referenced by aria-describedby for the standalone items-per-page select.',
+      table: { category: 'Accessibility' },
+    },
+
+    /* -----------------------------
      Paging State
-  ------------------------------ */
+    ------------------------------ */
     currentPage: {
       control: { type: 'number', min: 1 },
       name: 'current-page',
@@ -145,18 +191,19 @@ export default {
 
     /* -----------------------------
      Display & Layout
-  ------------------------------ */
+    ------------------------------ */
     paginationLayout: {
       control: { type: 'select' },
       options: ['', 'start', 'center', 'end', 'fill', 'fill-left', 'fill-right'],
       name: 'pagination-layout',
-      description: 'Pagination layout/alignment by setting the `pagination-layout` attribute to "start", "center", "end", "fill", "fill-left", or "fill-right".',
+      description:
+        'Pagination layout/alignment by setting the `pagination-layout` attribute to "start", "center", "end", "fill", "fill-left", or "fill-right".',
       table: { category: 'Display & Layout' },
     },
     size: {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
-      description: 'Size of the pagination component. You can set the `size` attribute to "sm" for small or "lg" for large. Omit to use default size.',
+      description: 'Size of the pagination component. Omit to use default size.',
       name: 'size',
       table: { category: 'Display & Layout' },
     },
@@ -169,24 +216,25 @@ export default {
 
     /* -----------------------------
      Go-To Buttons
-  ------------------------------ */
+    ------------------------------ */
     goToButtons: {
       control: { type: 'select' },
       options: ['', 'icon', 'text'],
-      description: 'Go-to buttons are the First/Previous/Next/Last buttons that are displayed by setting `go-to-buttons` to "icon" or "text". Omit to use component default.',
+      description:
+        'Go-to buttons are the First/Previous/Next/Last buttons. Set `go-to-buttons` to "icon" or "text". Omit to use component default.',
       name: 'go-to-buttons',
       table: { category: 'Go-To Buttons' },
     },
     hideGoToButtons: {
       control: 'boolean',
       name: 'hide-go-to-buttons',
-      description: 'Hide the go-to first/last buttons.',
+      description: 'Hide the go-to first/prev/next/last buttons.',
       table: { category: 'Go-To Buttons', defaultValue: { summary: false } },
     },
 
     /* -----------------------------
      Page Buttons & Ellipsis
-  ------------------------------ */
+    ------------------------------ */
     limit: {
       control: { type: 'number', min: 1 },
       description: 'Limit the number of numeric page buttons displayed.',
@@ -196,13 +244,13 @@ export default {
     hideEllipsis: {
       control: 'boolean',
       name: 'hide-ellipsis',
-      description: 'Hide the ellipsis (...) when limiting numeric page buttons.',
+      description: 'Hide the ellipsis (…) when limiting numeric page buttons.',
       table: { category: 'Page Buttons & Ellipsis', defaultValue: { summary: false } },
     },
 
     /* -----------------------------
      Standalone Features (Range / Sizer)
-  ------------------------------ */
+    ------------------------------ */
     displayTotalNumberOfPages: {
       control: 'boolean',
       name: 'display-total-number-of-pages',
@@ -224,7 +272,7 @@ export default {
 
     /* -----------------------------
      Styling Mode
-  ------------------------------ */
+    ------------------------------ */
     plumage: {
       control: 'boolean',
       description: 'If true, applies plumage styling to the pagination component.',
@@ -239,7 +287,7 @@ const Template = args => {
   const hostId = `stdpg-${Math.random().toString(36).slice(2, 9)}`;
 
   const needsArray = shouldIncludeItemsPerPageOptions(args);
-  const id = needsArray ? hostId : hostId; // keep id for event wiring
+  const id = hostId; // keep id for event wiring + stable a11y baseId derivation
   const tag = buildComponentTag('standard-pagination-component', args, { id });
 
   const arrayScript = needsArray ? buildItemsPerPageOptionsScript(id, args.itemsPerPageOptions) : '';
@@ -261,20 +309,37 @@ const Template = args => {
 
 export const Standard = Template.bind({});
 Standard.args = {
+  // a11y
+  controlId: '',
+  paginationAriaLabel: 'Pagination',
+  pageSizeLabel: 'Items per page:',
+  pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+
+  // paging state
   currentPage: 1,
-  displayTotalNumberOfPages: false,
+  totalRows: 100,
+  pageSize: 10,
+
+  // display / layout
+  paginationLayout: 'center',
+  size: '',
+  paginationVariantColor: '',
+
+  // go-to buttons
   goToButtons: '',
-  hideEllipsis: false,
   hideGoToButtons: false,
+
+  // page buttons & ellipsis
+  limit: 3,
+  hideEllipsis: false,
+
+  // standalone features
+  displayTotalNumberOfPages: false,
   itemsPerPage: false,
   itemsPerPageOptions: [10, 20, 50, 100, 'All'],
-  limit: 3,
-  pageSize: 10,
-  paginationLayout: 'center',
-  paginationVariantColor: '',
+
+  // styling
   plumage: false,
-  size: '',
-  totalRows: 100,
 };
 Standard.parameters = {
   docs: {
@@ -325,7 +390,8 @@ ItemsPerPage.parameters = {
   docs: {
     source: { code: ItemsPerPage(), language: 'html' },
     description: {
-      story: 'Pagination component with an items-per-page dropdown. Adding `items-per-page` allows users to select how many rows are displayed per page.',
+      story:
+        'Pagination component with an items-per-page dropdown. Adding `items-per-page` allows users to select how many rows are displayed per page.',
     },
   },
 };
@@ -360,7 +426,8 @@ DisplayRangeOnly.parameters = {
   docs: {
     source: { code: DisplayRangeOnly(), language: 'html' },
     description: {
-      story: 'Pagination component showing the display range of items (e.g. "151-175 of 750"), useful when you want range info without enabling items-per-page.',
+      story:
+        'Pagination component showing the display range of items (e.g. "151-175 of 750"), useful when you want range info without enabling items-per-page.',
     },
   },
 };
@@ -379,7 +446,9 @@ export const Layouts = () =>
 Layouts.parameters = {
   docs: {
     source: { code: Layouts(), language: 'html' },
-    description: { story: 'Pagination component showing different layout options including start, center, end, fill-left, fill-right, and fill.' },
+    description: {
+      story: 'Pagination component showing different layout options including start, center, end, fill-left, fill-right, and fill.',
+    },
   },
 };
 
@@ -480,7 +549,8 @@ SmallAndLarge.parameters = {
   docs: {
     source: { code: SmallAndLarge(), language: 'html' },
     description: {
-      story: 'Pagination component demonstrating small (`size="sm"`) and large (`size="lg"`) sizes. If the size is not set, the default size is used.',
+      story:
+        'Pagination component demonstrating small (`size="sm"`) and large (`size="lg"`) sizes. If the size is not set, the default size is used.',
     },
   },
 };
@@ -496,7 +566,10 @@ export const VariantColors = () =>
 VariantColors.parameters = {
   docs: {
     source: { code: VariantColors(), language: 'html' },
-    description: { story: 'Pagination component demonstrating different `pagination-variant-color` options like "primary", "success", "danger", and so on.' },
+    description: {
+      story:
+        'Pagination component demonstrating different `pagination-variant-color` options like "primary", "success", "danger", and so on.',
+    },
   },
 };
 
@@ -524,4 +597,274 @@ StandaloneRangeAndSizer.parameters = {
     source: { code: StandaloneRangeAndSizer(), language: 'html' },
     description: { story: 'Pagination component demonstrating both range display and items-per-page selector.' },
   },
+};
+
+/* =============================================================================
+   Accessibility matrix
+   - Keeps the same “card rows + JSON pre” layout used in other components
+   - Renders common states and prints computed role + aria-* + ids
+   - Validates that aria-describedby references exist
+   ============================================================================= */
+
+function pickAttrs(el, names) {
+  const out = {};
+  for (const n of names) {
+    const v = el.getAttribute(n);
+    if (v !== null && v !== '') out[n] = v;
+  }
+  return out;
+}
+
+function splitIds(v) {
+  return String(v || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function resolveIdsWithin(host, ids) {
+  const res = {};
+  for (const id of ids) {
+    const safe = String(id).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    const node = host.querySelector(`[id="${safe}"]`);
+    res[id] = !!node;
+  }
+  return res;
+}
+
+function snapshotA11y(host) {
+  const nav = host.querySelector('nav');
+  const ul = host.querySelector('ul.pagination');
+  const range = host.querySelector('[id^="spc-range-"]');
+  const label = host.querySelector('.size-changer label');
+  const select = host.querySelector('.size-changer select');
+
+  const describedByIds = select ? splitIds(select.getAttribute('aria-describedby')) : [];
+  const ulDescribedByIds = ul ? splitIds(ul.getAttribute('aria-describedby')) : [];
+
+  return {
+    nav: nav
+      ? {
+          tag: nav.tagName.toLowerCase(),
+          ...pickAttrs(nav, ['aria-label']),
+        }
+      : null,
+    paginationList: ul
+      ? {
+          tag: ul.tagName.toLowerCase(),
+          ...pickAttrs(ul, ['aria-describedby']),
+          resolves: {
+            'aria-describedby': resolveIdsWithin(host, ulDescribedByIds),
+          },
+        }
+      : null,
+    range: range
+      ? {
+          id: range.getAttribute('id') || '',
+          role: range.getAttribute('role') || '',
+          ...pickAttrs(range, ['aria-live', 'aria-atomic']),
+          text: (range.textContent || '').trim(),
+        }
+      : null,
+    pageSize: select
+      ? {
+          label: label
+            ? {
+                text: (label.textContent || '').trim(),
+                for: label.getAttribute('for') || '',
+              }
+            : null,
+          select: {
+            id: select.getAttribute('id') || '',
+            tag: select.tagName.toLowerCase(),
+            ...pickAttrs(select, ['aria-describedby']),
+            resolves: {
+              'aria-describedby': resolveIdsWithin(host, describedByIds),
+            },
+          },
+        }
+      : null,
+  };
+}
+
+function buildMatrixEl(args) {
+  const el = document.createElement('standard-pagination-component');
+
+  // Assign properties (Stencil runtime behavior)
+  Object.assign(el, args);
+
+  // ItemsPerPageOptions must be set as a property
+  if (Array.isArray(args.itemsPerPageOptions)) {
+    el.itemsPerPageOptions = args.itemsPerPageOptions;
+  }
+
+  // Helpful: log events
+  el.addEventListener('change-page', e => console.log('[change-page]', e.detail));
+
+  return el;
+}
+
+function renderMatrixRow({ title, args, idSuffix }) {
+  const wrap = document.createElement('div');
+  wrap.style.border = '1px solid #ddd';
+  wrap.style.borderRadius = '12px';
+  wrap.style.padding = '12px';
+  wrap.style.display = 'grid';
+  wrap.style.gap = '10px';
+
+  const heading = document.createElement('div');
+  heading.style.fontWeight = '700';
+  heading.textContent = title;
+
+  const stage = document.createElement('div');
+  stage.style.maxWidth = '720px';
+
+  const pre = document.createElement('pre');
+  pre.style.margin = '0';
+  pre.style.padding = '10px';
+  pre.style.background = '#f6f8fa';
+  pre.style.borderRadius = '10px';
+  pre.style.overflowX = 'auto';
+  pre.style.fontSize = '12px';
+  pre.textContent = 'Collecting aria/role/id…';
+
+  // Use deterministic base id by setting host id (component derives baseId from el.id when controlId not set)
+  const el = buildMatrixEl({
+    ...args,
+  });
+  el.id = `spc-matrix-${idSuffix}`;
+
+  stage.appendChild(el);
+
+  wrap.appendChild(heading);
+  wrap.appendChild(stage);
+  wrap.appendChild(pre);
+
+  const update = () => {
+    const snap = snapshotA11y(el);
+    pre.textContent = JSON.stringify(snap, null, 2);
+  };
+
+  requestAnimationFrame(() => requestAnimationFrame(update));
+
+  return wrap;
+}
+
+export const AccessibilityMatrix = () => {
+  const root = document.createElement('div');
+  root.style.display = 'grid';
+  root.style.gap = '16px';
+
+  const intro = document.createElement('div');
+  intro.innerHTML = `
+    <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
+    <div style="font-size:13px; color:#444;">
+      Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs.
+      Also reports whether <code>aria-describedby</code> resolves to real elements (range + select help text).
+    </div>
+  `;
+  root.appendChild(intro);
+
+  const rows = [
+    {
+      title: 'Default (center)',
+      args: {
+        currentPage: 1,
+        totalRows: 100,
+        pageSize: 10,
+        paginationLayout: 'center',
+        limit: 5,
+        goToButtons: 'icon',
+        hideGoToButtons: false,
+        hideEllipsis: false,
+        displayTotalNumberOfPages: false,
+        itemsPerPage: false,
+        plumage: false,
+        paginationAriaLabel: 'Pagination',
+      },
+    },
+    {
+      title: '“Inline” (fill layout)',
+      args: {
+        currentPage: 2,
+        totalRows: 90,
+        pageSize: 10,
+        paginationLayout: 'fill',
+        limit: 5,
+        goToButtons: 'icon',
+        displayTotalNumberOfPages: false,
+        itemsPerPage: false,
+        plumage: false,
+        paginationAriaLabel: 'Pagination',
+      },
+    },
+    {
+      title: '“Horizontal” (items-per-page + range, start)',
+      args: {
+        currentPage: 1,
+        totalRows: 420,
+        pageSize: 20,
+        paginationLayout: 'start',
+        displayTotalNumberOfPages: true,
+        itemsPerPage: true,
+        itemsPerPageOptions: [10, 20, 50, 100, 'All'],
+        plumage: true,
+        pageSizeLabel: 'Items per page:',
+        pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+        paginationAriaLabel: 'Pagination',
+      },
+    },
+    {
+      title: 'Error/Validation-ish (no rows; sizer present)',
+      args: {
+        currentPage: 1,
+        totalRows: 0,
+        pageSize: 10,
+        paginationLayout: 'end',
+        displayTotalNumberOfPages: true,
+        itemsPerPage: true,
+        itemsPerPageOptions: [10, 20, 'All'],
+        plumage: false,
+        pageSizeLabel: 'Items per page:',
+        pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+        paginationAriaLabel: 'Pagination',
+      },
+    },
+    {
+      title: 'Disabled-ish (at start; first/prev disabled)',
+      args: {
+        currentPage: 1,
+        totalRows: 120,
+        pageSize: 10,
+        paginationLayout: 'center',
+        goToButtons: 'text',
+        displayTotalNumberOfPages: false,
+        itemsPerPage: false,
+        plumage: false,
+        paginationAriaLabel: 'Pagination',
+      },
+    },
+  ];
+
+  rows.forEach((r, idx) => {
+    root.appendChild(
+      renderMatrixRow({
+        ...r,
+        idSuffix: String(idx + 1),
+      }),
+    );
+  });
+
+  return root;
+};
+AccessibilityMatrix.storyName = 'Accessibility Matrix (computed)';
+AccessibilityMatrix.parameters = {
+  docs: {
+    description: {
+      story:
+        'Matrix of key states (default/inline-ish/horizontal-ish, no-rows state, start-disabled state). Each row prints computed role/aria/ids and whether aria-describedby resolves.',
+    },
+    story: { height: '1400px' },
+  },
+  controls: { disable: true },
 };

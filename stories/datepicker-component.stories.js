@@ -750,7 +750,7 @@ export const AccessibilityMatrix = () => {
 
   return root;
 };
-
+AccessibilityMatrix.storyName = 'Accessibility Matrix (computed)';
 AccessibilityMatrix.parameters = {
   docs: {
     description: {

@@ -43,6 +43,15 @@ export class InputFieldComponent {
   @State() _resolvedFormId: string = '';
   private inputEl?: HTMLInputElement;
 
+  // Stable per-instance uid (prevents duplicate IDs)
+  private uid = `ifc-${Math.random().toString(16).slice(2)}-${Date.now().toString(16)}`;
+  private ids = {
+    input: '',
+    label: '',
+    desc: '',
+    validation: '',
+  };
+
   // (Optional) let parents listen for value changes
   @Event() valueChange!: EventEmitter<string>;
 
@@ -70,9 +79,15 @@ export class InputFieldComponent {
       }
     }
 
+    // seed resolved form id early
+    this._resolvedFormId = this.formId || '';
+
     // seed state from incoming props
     this.valueState = this.value ?? '';
     this.validationState = !!this.validation;
+
+    // compute unique ids
+    this.computeIds();
   }
 
   componentDidLoad() {
@@ -85,6 +100,26 @@ export class InputFieldComponent {
     this.applyFormAttribute();
   }
 
+  @Watch('inputId')
+  onInputIdChange() {
+    this.computeIds();
+  }
+
+  private computeIds() {
+    // Prefer explicit inputId if provided; otherwise use per-instance uid.
+    const base =
+      (this.inputId && String(this.inputId).trim()) ||
+      (this.label && this.camelCase(this.label)) ||
+      this.uid;
+
+    // Ensure final base is selector/id safe enough
+    const safeBase = String(base).replace(/\s+/g, '').replace(/[^A-Za-z0-9\-_:.]/g, '');
+    this.ids.input = safeBase;
+    this.ids.label = `${safeBase}__label`;
+    this.ids.desc = `${safeBase}__desc`;
+    this.ids.validation = `${safeBase}__validation`;
+  }
+
   private applyFormAttribute() {
     if (!this.inputEl) return;
     if (this._resolvedFormId) this.inputEl.setAttribute('form', this._resolvedFormId);
@@ -93,19 +128,17 @@ export class InputFieldComponent {
 
   private camelCase(str: string) {
     if (!str) return '';
-    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase())).replace(/\s+/g, '');
+    return str
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase()))
+      .replace(/\s+/g, '');
   }
 
   /** Sanitize user-typed input: strip tags, remove control chars, trim, cap length. */
   private sanitizeInput(value: string): string {
     if (typeof value !== 'string') return '';
-    // remove HTML tags
     let v = value.replace(/<[^>]*>/g, '');
-    // remove control characters (except common whitespace)
     v = v.replace(/[\u0000-\u001F\u007F]/g, '');
-    // collapse whitespace
     v = v.replace(/\s+/g, ' ').trim();
-    // cap length
     const MAX_LEN = 512;
     if (v.length > MAX_LEN) v = v.slice(0, MAX_LEN);
     return v;
@@ -127,15 +160,12 @@ export class InputFieldComponent {
     if (this._resolvedFormId) target.setAttribute('form', this._resolvedFormId);
     else target.removeAttribute('form');
 
-    // Sanitize like autocomplete
     const clean = this.sanitizeInput(target.value);
     if (clean !== target.value) target.value = clean;
 
-    // mutate internal state (OK) instead of Prop (not OK)
     this.valueState = clean;
     this.valueChange.emit(this.valueState);
 
-    // Live validation behavior using internal state
     if (this.meetsTypingThreshold() && this.validationState) {
       this.validationState = false;
     }
@@ -150,7 +180,7 @@ export class InputFieldComponent {
     }
   };
 
-  // ----- Layout helpers (unchanged) -----
+  // ----- Layout helpers -----
   private isHorizontal() {
     return this.formLayout === 'horizontal';
   }
@@ -215,6 +245,7 @@ export class InputFieldComponent {
     const input = Number.isFinite(inp) ? Math.max(1, Math.min(11, inp)) : DEFAULT_INPUT;
 
     if (this.isHorizontal() && !this.labelCols && !this.inputCols && label + input !== 12) {
+      // eslint-disable-next-line no-console
       console.error(
         '[input-field-component] For formLayout="horizontal", labelCol + inputCol must equal 12. ' +
           `Received: ${this.labelCol} + ${this.inputCol} = ${Number(this.labelCol) + Number(this.inputCol)}. Falling back to 2/10.`,
@@ -225,8 +256,38 @@ export class InputFieldComponent {
     return { label, input };
   }
 
-  // ----- Render bits (swap value/validation usage to *_State) -----
-  private renderInputLabel(ids: string, labelColClass?: string) {
+  // ---------------------------
+  // Accessibility helpers
+  // ---------------------------
+
+  private renderHelpText() {
+    // Always present so aria-describedby always resolves.
+    const labelText = (this.label || 'this field').trim();
+    const typeText = (this.type || 'text').trim();
+    const msg = `Enter ${labelText}. Type: ${typeText}.`;
+    return (
+      <div id={this.ids.desc} class="sr-only">
+        {msg}
+      </div>
+    );
+  }
+
+  private renderValidation() {
+    if (!this.validationState || !this.validationMessage) return null;
+    return (
+      <div
+        id={this.ids.validation}
+        class="invalid-feedback form-text"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {this.validationMessage}
+      </div>
+    );
+  }
+
+  // ----- Render bits -----
+  private renderInputLabel(labelColClass?: string) {
     const classes = [
       'form-control-label',
       this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
@@ -242,72 +303,87 @@ export class InputFieldComponent {
     const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
 
     return (
-      <label class={classes} htmlFor={ids || undefined}>
+      <label
+        id={this.ids.label}
+        class={classes}
+        htmlFor={this.ids.input || undefined}
+      >
         <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
         {this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
 
-  private renderInput(ids: string, names: string) {
+  private renderInput() {
     const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
     const classes = ['form-control', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
 
     const placeholder = (this.placeholder && this.placeholder.trim().length > 0 ? this.placeholder : this.label) || 'Placeholder Text';
 
+    // aria-describedby should always include help text; include validation id when present
+    const describedBy = [
+      this.ids.desc,
+      this.validationState && this.validationMessage ? this.ids.validation : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+
     return (
       <Fragment>
+        {this.renderHelpText()}
+
         <input
-          ref={el => (this.inputEl = el as HTMLInputElement)}
-          id={ids || undefined}
-          name={names || undefined}
+          ref={(el) => {
+            this.inputEl = el as HTMLInputElement;
+            this.applyFormAttribute();
+          }}
+          id={this.ids.input || undefined}
+          name={(this.label && this.camelCase(this.label)) || undefined}
           type={this.type || 'text'}
           class={classes}
           placeholder={placeholder}
-          value={this.valueState || undefined}
-          aria-label={this.labelHidden ? names : undefined}
-          aria-labelledby={names || undefined}
-          aria-describedby={this.validationState ? 'validationMessage' : undefined}
+          value={this.valueState || ''}
+          // Label association: always via label/id
+          aria-labelledby={this.ids.label}
+          aria-describedby={describedBy || undefined}
+          aria-invalid={this.validationState ? 'true' : undefined}
           disabled={this.disabled}
           required={this.required}
           readOnly={this.readOnly}
           onInput={this.handleInput}
           onBlur={this.handleBlur}
         />
-        {this.validationState && this.validationMessage ? (
-          <div id="validationMessage" class="invalid-feedback form-text">
-            {this.validationMessage}
-          </div>
-        ) : null}
+
+        {this.renderValidation()}
       </Fragment>
     );
   }
 
   render() {
-    const ids = this.camelCase(this.inputId).replace(/ /g, '');
-    const names = this.camelCase(this.label).replace(/ /g, '');
+    // Keep numeric validation behavior if string specs not in use
+    this.getComputedCols();
 
     const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
     const groupClasses = ['form-group'];
     if (this.isHorizontal()) groupClasses.push('row');
     else if (this.isInline()) groupClasses.push('row', 'inline');
 
-    // Keep numeric validation behavior if string specs not in use
-    this.getComputedCols();
-
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
+    const inputColClass = this.isHorizontal()
+      ? this.buildColClass('input') || undefined
+      : this.isInline()
+        ? this.buildColClass('input') || undefined
+        : undefined;
 
     return (
       <div class={outerClass}>
         <div class={groupClasses.join(' ')}>
-          {this.renderInputLabel(ids, labelColClass)}
+          {this.renderInputLabel(labelColClass)}
+
           {this.isHorizontal() ? (
-            <div class={inputColClass}>{this.validationState ? <div>{this.renderInput(ids, names)}</div> : this.renderInput(ids, names)}</div>
-          ) : this.validationState ? (
-            <div>{this.renderInput(ids, names)}</div>
+            <div class={inputColClass}>{this.renderInput()}</div>
           ) : (
-            this.renderInput(ids, names)
+            this.renderInput()
           )}
         </div>
       </div>

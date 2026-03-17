@@ -817,7 +817,7 @@ export const AccessibilityMatrix = (args) => {
   return root;
 };
 
-AccessibilityMatrix.storyName = 'Accessibility matrix';
+AccessibilityMatrix.storyName = 'Accessibility Matrix (computed)';
 AccessibilityMatrix.parameters = {
   controls: { disable: true },
   docs: {

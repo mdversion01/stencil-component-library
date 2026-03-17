@@ -746,7 +746,7 @@ Disabled.parameters = {
 // ======================================================
 
 export const AccessibilityMatrix = {
-  name: 'Accessibility matrix (computed)',
+  name: 'Accessibility Matrix (computed)',
   render: (args, ctx) => {
     const wrap = document.createElement('div');
     wrap.style.display = 'grid';

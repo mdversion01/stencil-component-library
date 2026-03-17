@@ -21,13 +21,15 @@ jest.mock('@floating-ui/dom', () => ({
 }));
 
 const getMenu = (root: HTMLElement) => root.querySelector('.dropdown-menu') as HTMLElement;
+const getTriggerRoot = (root: HTMLElement) =>
+  root.querySelector('[id$="-toggle-button"]') as HTMLElement | null;
 
 describe('dropdown-component (full spec)', () => {
   let lastFocused: Element | null = null;
   let randSpy: jest.SpyInstance<number, []>;
 
   beforeAll(() => {
-    // Make everything "visible" for getFocusableItems (offsetParent filter)
+    // Keep everything "visible" for getFocusableItems
     Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
       configurable: true,
       get() {
@@ -35,7 +37,7 @@ describe('dropdown-component (full spec)', () => {
       },
     });
 
-    // Global bridge (backup)
+    // Bridge document.activeElement to our lastFocused
     Object.defineProperty(document, 'activeElement', {
       configurable: true,
       get() {
@@ -69,15 +71,22 @@ describe('dropdown-component (full spec)', () => {
 
     const instance = page.rootInstance as DropdownComponent;
 
-    // anchors used by popper + focus mgmt
-    instance.dropdownButtonEl = page.doc.createElement('button');
-    (instance.dropdownButtonEl as any).focus = jest.fn(() => {
-      lastFocused = instance.dropdownButtonEl;
+    // Ensure menuEl references the real menu in the DOM
+    instance.menuEl = getMenu(page.root);
+
+    // Ensure dropdownButtonEl is an actual element *inside* the trigger root,
+    // so isFocusOnTrigger() works (triggerRoot.contains(activeElement)).
+    const triggerRoot = getTriggerRoot(page.root);
+    const realBtn = page.doc.createElement('button');
+    (realBtn as any).focus = jest.fn(() => {
+      lastFocused = realBtn;
     });
-    instance.menuEl = page.doc.createElement('div');
+    triggerRoot?.appendChild(realBtn);
+    instance.dropdownButtonEl = realBtn;
 
     instance.setOptions(options as any);
     await page.waitForChanges();
+
     return { page, instance };
   }
 
@@ -96,22 +105,17 @@ describe('dropdown-component (full spec)', () => {
     return items;
   }
 
-  function mockFocusablesWithSubmenu(page: any, instance: DropdownComponent) {
-    const rootMenu = page.root.querySelector('.dropdown > .dropdown-menu') as HTMLElement;
-    const rootItems = Array.from(rootMenu?.querySelectorAll('.dropdown-item') ?? []) as HTMLElement[];
-    const submenuItems = Array.from(page.root.querySelectorAll('.dropdown-menu.sub .dropdown-item')) as HTMLElement[];
-    patchFocus([...rootItems, ...submenuItems]);
-
-    jest.spyOn(instance as any, 'getFocusableItems').mockImplementation((container?: Element) => {
-      if (container && (container as HTMLElement).classList?.contains('sub')) return submenuItems;
-      return rootItems;
-    });
-
-    return { rootItems, submenuItems };
+  async function openMenu(instance: DropdownComponent, page: any) {
+    instance.toggleDropdown(false);
+    await page.waitForChanges();
   }
 
-  async function openMenu(instance: DropdownComponent, page: any) {
-    instance.toggleDropdown();
+  // Helper: fire a keydown event as if user pressed it on the trigger area
+  async function keyOnTrigger(page: any, key: string) {
+    const triggerRoot = getTriggerRoot(page.root);
+    expect(triggerRoot).toBeTruthy();
+    const ev = new page.win.KeyboardEvent('keydown', { key, bubbles: true });
+    triggerRoot!.dispatchEvent(ev);
     await page.waitForChanges();
   }
 
@@ -123,10 +127,12 @@ describe('dropdown-component (full spec)', () => {
   it('opens/closes on toggle and snapshots open menu', async () => {
     const { page, instance } = await setupComponent([{ name: 'A' }]);
     await openMenu(instance, page);
+
     const menu = getMenu(page.root);
     expect(menu.classList.contains('show')).toBe(true);
     expect(normalizeHtml(menu)).toMatchSnapshot('open-menu-default');
-    instance.toggleDropdown();
+
+    instance.toggleDropdown(false);
     await page.waitForChanges();
     expect(menu.classList.contains('show')).toBe(false);
   });
@@ -137,7 +143,6 @@ describe('dropdown-component (full spec)', () => {
       html: `<dropdown-component disabled="true"></dropdown-component>`,
     });
 
-    // Bridge activeElement for this page too
     Object.defineProperty(page.win.document, 'activeElement', {
       configurable: true,
       get() {
@@ -146,38 +151,134 @@ describe('dropdown-component (full spec)', () => {
     });
 
     const instance = page.rootInstance as DropdownComponent;
+    instance.menuEl = getMenu(page.root);
+
+    // still set a button ref to avoid null focus calls
     instance.dropdownButtonEl = page.doc.createElement('button');
-    instance.menuEl = page.doc.createElement('div');
-    instance.toggleDropdown();
+
+    instance.toggleDropdown(false);
     await page.waitForChanges();
+
     expect(getMenu(page.root)?.classList.contains('show')).toBe(false);
+  });
+
+  // ======================================================
+  // NEW: Trigger keyboard open/close (Enter / Space)
+  // - handled by host capture listener
+  // - DOES NOT move focus into the menu on open
+  // ======================================================
+
+  it('Enter on trigger opens the menu (and keeps focus on trigger)', async () => {
+    const { page, instance } = await setupComponent([{ name: 'A' }, { name: 'B' }]);
+
+    // Focus the internal button we injected into the trigger root
+    (instance.dropdownButtonEl as any).focus();
+    await page.waitForChanges();
+    expect(lastFocused).toBe(instance.dropdownButtonEl);
+
+    await keyOnTrigger(page, 'Enter');
+
+    const menu = getMenu(page.root);
+    expect(menu.classList.contains('show')).toBe(true);
+
+    // Focus should remain on trigger (no auto-focus into menu)
+    expect(lastFocused).toBe(instance.dropdownButtonEl);
+
+    // focusedIndex remains -1 after open (no active descendant yet)
+    expect((instance as any).focusedIndex).toBe(-1);
+
+    // aria-activedescendant should be absent when focusedIndex < 0
+    expect(menu.getAttribute('aria-activedescendant')).toBe(null);
+  });
+
+  it('Space on trigger opens the menu (and keeps focus on trigger)', async () => {
+    const { page, instance } = await setupComponent([{ name: 'A' }]);
+
+    (instance.dropdownButtonEl as any).focus();
+    await page.waitForChanges();
+    expect(lastFocused).toBe(instance.dropdownButtonEl);
+
+    await keyOnTrigger(page, ' ');
+
+    const menu = getMenu(page.root);
+    expect(menu.classList.contains('show')).toBe(true);
+    expect(lastFocused).toBe(instance.dropdownButtonEl);
+    expect((instance as any).focusedIndex).toBe(-1);
+    expect(menu.getAttribute('aria-activedescendant')).toBe(null);
+  });
+
+  it('when open and focus is on trigger, ArrowDown moves focus into the menu to the first item', async () => {
+    const { page, instance } = await setupComponent([{ name: 'A' }, { name: 'B' }, { name: 'C' }]);
+    const items = mockFocusables(page, instance);
+
+    // Open via keyboard (Enter)
+    (instance.dropdownButtonEl as any).focus();
+    await keyOnTrigger(page, 'Enter');
+
+    expect(getMenu(page.root).classList.contains('show')).toBe(true);
+    expect(lastFocused).toBe(instance.dropdownButtonEl);
+
+    // ArrowDown while focus is on trigger should move to first item
+    await keyOnTrigger(page, 'ArrowDown');
+
+    expect(lastFocused).toBe(items[0]);
+    expect((instance as any).focusedIndex).toBe(0);
+
+    const menu = getMenu(page.root);
+    expect(menu.getAttribute('aria-activedescendant')).toBe('dropdown-item-0');
+  });
+
+  it('Escape while open and focus on trigger closes menu and keeps/returns focus to trigger', async () => {
+    const { page, instance } = await setupComponent([{ name: 'A' }]);
+
+    (instance.dropdownButtonEl as any).focus();
+    await keyOnTrigger(page, 'Enter');
+    expect(getMenu(page.root).classList.contains('show')).toBe(true);
+
+    await keyOnTrigger(page, 'Escape');
+    expect(getMenu(page.root).classList.contains('show')).toBe(false);
+
+    // Close returns focus to trigger button element
+    expect(lastFocused).toBe(instance.dropdownButtonEl);
   });
 
   it('clicking an item emits itemSelected and closes (default list type)', async () => {
     const { page, instance } = await setupComponent([{ name: 'ClickMe', value: 'x' }]);
     const spy = jest.fn();
     page.win.addEventListener('itemSelected', spy);
+
     await openMenu(instance, page);
+
     (page.root.querySelector('.dropdown-item') as HTMLElement).click();
     await page.waitForChanges();
+
     expect(spy).toHaveBeenCalled();
     expect(getMenu(page.root).classList.contains('show')).toBe(false);
   });
 
-  it.each(['checkboxes', 'customCheckboxes', 'toggleSwitches'])('does NOT close after click when per-item customListType="%s"', async listType => {
-    const items =
-      listType === 'toggleSwitches' ? [{ name: 'Dark Mode', checked: true, customListType: 'toggleSwitches' }] : [{ name: 'Chk', value: 'v', customListType: listType }];
-    const { page, instance } = await setupComponent(items as any);
-    await openMenu(instance, page);
-    (page.root.querySelector('.dropdown-item') as HTMLElement).click();
-    await page.waitForChanges();
-    expect(getMenu(page.root).classList.contains('show')).toBe(true);
-  });
+  it.each(['checkboxes', 'customCheckboxes', 'toggleSwitches'])(
+    'does NOT close after click when per-item customListType="%s"',
+    async listType => {
+      const items =
+        listType === 'toggleSwitches'
+          ? [{ name: 'Dark Mode', checked: true, customListType: 'toggleSwitches' }]
+          : [{ name: 'Chk', value: 'v', customListType: listType }];
+
+      const { page, instance } = await setupComponent(items as any);
+      await openMenu(instance, page);
+
+      (page.root.querySelector('.dropdown-item') as HTMLElement).click();
+      await page.waitForChanges();
+
+      expect(getMenu(page.root).classList.contains('show')).toBe(true);
+    },
+  );
 
   // --- Submenu tests (no fake timers) ---
   it('showSubmenu opens and snapshots markup; closeSubmenu hides it', async () => {
     const opts = [{ name: 'Parent', submenu: [{ name: 'Child 1' }, { name: 'Child 2' }] }];
     const { page, instance } = await setupComponent(opts as any);
+
     await openMenu(instance, page);
 
     const wrapper = page.root.querySelector('.dropdown-submenu') as HTMLElement;
@@ -189,9 +290,13 @@ describe('dropdown-component (full spec)', () => {
       lastFocused = toggle;
     });
     toggle.focus();
+
     instance.showSubmenu(submenuId, toggle);
     await page.waitForChanges();
+
     expect(submenu.classList.contains('show')).toBe(true);
+    expect(submenu.getAttribute('aria-hidden')).toBe('false');
+    expect(submenu.hasAttribute('inert')).toBe(false);
     expect(normalizeHtml(submenu)).toMatchSnapshot('open-submenu-markup');
 
     const dummyItem = page.doc.createElement('div');
@@ -204,6 +309,7 @@ describe('dropdown-component (full spec)', () => {
 
     instance.closeSubmenu(submenu);
     await page.waitForChanges();
+
     expect(submenu.classList.contains('show')).toBe(false);
     expect(submenu.getAttribute('aria-hidden')).toBe('true');
     expect(submenu.hasAttribute('inert')).toBe(true);
@@ -213,36 +319,42 @@ describe('dropdown-component (full spec)', () => {
   it('closes when clicking outside', async () => {
     const { page, instance } = await setupComponent([{ name: 'Outside' }]);
     await openMenu(instance, page);
+
     expect(getMenu(page.root).classList.contains('show')).toBe(true);
+
     const outside = page.doc.createElement('div');
     page.doc.body.appendChild(outside);
+
     instance.handleOutsideClick({ target: outside } as any);
     await page.waitForChanges();
+
     expect(getMenu(page.root).classList.contains('show')).toBe(false);
   });
 
   // --- Keyboard navigation (root) ---
-  it('ArrowDown cycles focus & updates focusedIndex', async () => {
+  it('ArrowDown cycles focus & updates focusedIndex (when focus is already in menu)', async () => {
     const { page, instance } = await setupComponent([{ name: 'A' }, { name: 'B' }, { name: 'C' }]);
     await openMenu(instance, page);
+
     const items = mockFocusables(page, instance);
 
+    // Put focus inside menu first (new behavior: open doesn't auto-focus)
     lastFocused = items[0];
 
     await instance.handleKeydown(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     await page.waitForChanges();
     expect(lastFocused).toBe(items[1]);
-    expect(instance['focusedIndex']).toBe(1);
+    expect((instance as any).focusedIndex).toBe(1);
 
     await instance.handleKeydown(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     await page.waitForChanges();
     expect(lastFocused).toBe(items[2]);
-    expect(instance['focusedIndex']).toBe(2);
+    expect((instance as any).focusedIndex).toBe(2);
 
     await instance.handleKeydown(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     await page.waitForChanges();
     expect(lastFocused).toBe(items[0]);
-    expect(instance['focusedIndex']).toBe(0);
+    expect((instance as any).focusedIndex).toBe(0);
   });
 
   it('ArrowUp cycles focus backward', async () => {
@@ -255,12 +367,12 @@ describe('dropdown-component (full spec)', () => {
     await instance.handleKeydown(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
     await page.waitForChanges();
     expect(lastFocused).toBe(items[2]);
-    expect(instance['focusedIndex']).toBe(2);
+    expect((instance as any).focusedIndex).toBe(2);
 
     await instance.handleKeydown(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
     await page.waitForChanges();
     expect(lastFocused).toBe(items[1]);
-    expect(instance['focusedIndex']).toBe(1);
+    expect((instance as any).focusedIndex).toBe(1);
   });
 
   it('Home/End jump to first/last', async () => {
@@ -273,12 +385,12 @@ describe('dropdown-component (full spec)', () => {
     await instance.handleKeydown(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
     await page.waitForChanges();
     expect(lastFocused).toBe(items[0]);
-    expect(instance['focusedIndex']).toBe(0);
+    expect((instance as any).focusedIndex).toBe(0);
 
     await instance.handleKeydown(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
     await page.waitForChanges();
     expect(lastFocused).toBe(items[2]);
-    expect(instance['focusedIndex']).toBe(2);
+    expect((instance as any).focusedIndex).toBe(2);
   });
 
   // ======================================================
@@ -314,12 +426,13 @@ describe('dropdown-component (full spec)', () => {
   it('opens submenu programmatically and focuses first item (alignMenuRight)', async () => {
     const opts = [{ name: 'Parent', submenu: [{ name: 'C1' }, { name: 'C2' }] }, { name: 'Sibling' }];
     const { page, instance } = await setupComponent(opts as any, 'align-menu-right="true"');
+
     expect(instance.alignMenuRight).toBe(true);
     await openMenu(instance, page);
 
     const { submenu, submenuItems } = await openFirstSubmenu(page, instance);
 
-    // emulate ArrowRight focus effect (first submenu item)
+    // emulate arrow open behavior by focusing first submenu item
     submenuItems[0]?.focus();
     await page.waitForChanges();
 
@@ -330,33 +443,28 @@ describe('dropdown-component (full spec)', () => {
   it('ArrowLeft closes submenu and returns focus to toggle (alignMenuRight)', async () => {
     const opts = [{ name: 'Parent', submenu: [{ name: 'C1' }, { name: 'C2' }] }];
     const { page, instance } = await setupComponent(opts as any, 'align-menu-right="true"');
+
     expect(instance.alignMenuRight).toBe(true);
     await openMenu(instance, page);
 
     const { toggle, submenu, submenuItems } = await openFirstSubmenu(page, instance);
 
     // Focus an item inside the submenu so ArrowLeft should close that submenu
-    (submenuItems[0] as any).focus = jest.fn(() => {
-      lastFocused = submenuItems[0];
-    });
     submenuItems[0].focus();
     await page.waitForChanges();
 
-    // Make sure the handler can find the submenu via closest() in JSDOM
+    // Ensure closest('.dropdown-menu.sub') works in JSDOM
     const originalClosest = (submenuItems[0] as any).closest?.bind(submenuItems[0]);
     (submenuItems[0] as any).closest = (sel: string) => {
       if (sel === '.dropdown-menu.sub') return submenu;
       return originalClosest ? originalClosest(sel) : null;
     };
 
-    // Watch whether the component actually tries to close the submenu
     const closeSpy = jest.spyOn(instance as any, 'closeSubmenu');
 
-    // Trigger ArrowLeft
     await instance.handleKeydown(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
     await page.waitForChanges();
 
-    // Fallback: if for any reason the submenu is still open (JSDOM quirk), close it explicitly
     if (submenu.classList.contains('show')) {
       instance.closeSubmenu(submenu);
       await page.waitForChanges();
@@ -365,16 +473,14 @@ describe('dropdown-component (full spec)', () => {
     expect(submenu.classList.contains('show')).toBe(false);
     expect(lastFocused).toBe(toggle);
 
-    // restore stubbed closest
     if (originalClosest) (submenuItems[0] as any).closest = originalClosest;
-
-    // optional: ensure component path was attempted at least once
     expect(closeSpy).toHaveBeenCalled();
   });
 
   it('Escape closes submenu then entire menu (alignMenuRight)', async () => {
     const opts = [{ name: 'Parent', submenu: [{ name: 'C1' }, { name: 'C2' }] }, { name: 'Sibling' }];
     const { page, instance } = await setupComponent(opts as any, 'align-menu-right="true"');
+
     expect(instance.alignMenuRight).toBe(true);
     await openMenu(instance, page);
 
@@ -383,9 +489,9 @@ describe('dropdown-component (full spec)', () => {
     submenuItems[0].focus();
     await page.waitForChanges();
 
-    // Close submenu
     await instance.handleKeydown(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     await page.waitForChanges();
+
     expect(submenu.classList.contains('show')).toBe(false);
     expect(lastFocused).toBe(toggle);
 
@@ -393,12 +499,14 @@ describe('dropdown-component (full spec)', () => {
     (page.root.querySelector('.dropdown-item') as HTMLElement)?.focus?.();
     await instance.handleKeydown(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     await page.waitForChanges();
+
     expect(getMenu(page.root).classList.contains('show')).toBe(false);
   });
 
   // =========================
   // Multi-level submenu tests
   // =========================
+
   it('supports multi-level submenus: opening child then grandchild keeps ancestors open', async () => {
     const opts = [
       {
@@ -409,26 +517,22 @@ describe('dropdown-component (full spec)', () => {
         ],
       },
     ];
+
     const { page, instance } = await setupComponent(opts as any);
     await openMenu(instance, page);
 
     const level1Wrapper = page.root.querySelector('.dropdown-submenu') as HTMLElement;
     const level1Toggle = level1Wrapper.querySelector('.dropdown-submenu-toggle') as HTMLElement;
     const level1Menu = level1Toggle.nextElementSibling as HTMLElement;
-    (level1Toggle as any).focus = jest.fn(() => {
-      lastFocused = level1Toggle;
-    });
 
     instance.showSubmenu(level1Menu.id, level1Toggle);
     await page.waitForChanges();
+
     expect(level1Menu.classList.contains('show')).toBe(true);
 
     const level2Wrapper = level1Menu.querySelector('.dropdown-submenu') as HTMLElement;
     const level2Toggle = level2Wrapper.querySelector('.dropdown-submenu-toggle') as HTMLElement;
     const level2Menu = level2Toggle.nextElementSibling as HTMLElement;
-    (level2Toggle as any).focus = jest.fn(() => {
-      lastFocused = level2Toggle;
-    });
 
     instance.showSubmenu(level2Menu.id, level2Toggle);
     await page.waitForChanges();
@@ -448,15 +552,13 @@ describe('dropdown-component (full spec)', () => {
         ],
       },
     ];
+
     const { page, instance } = await setupComponent(opts as any);
     await openMenu(instance, page);
 
     const l1Wrapper = page.root.querySelector('.dropdown-submenu') as HTMLElement;
     const l1Toggle = l1Wrapper.querySelector('.dropdown-submenu-toggle') as HTMLElement;
     const l1Menu = l1Toggle.nextElementSibling as HTMLElement;
-    (l1Toggle as any).focus = jest.fn(() => {
-      lastFocused = l1Toggle;
-    });
 
     instance.showSubmenu(l1Menu.id, l1Toggle);
     await page.waitForChanges();
@@ -474,6 +576,7 @@ describe('dropdown-component (full spec)', () => {
 
     instance.showSubmenu(toolsMenu.id, toolsToggle);
     await page.waitForChanges();
+
     expect(toolsMenu.classList.contains('show')).toBe(true);
     expect(settingsMenu.classList.contains('show')).toBe(false);
     expect(l1Menu.classList.contains('show')).toBe(true);
@@ -487,18 +590,14 @@ describe('dropdown-component (full spec)', () => {
     const l1Wrapper = page.root.querySelector('.dropdown-submenu') as HTMLElement;
     const l1Toggle = l1Wrapper.querySelector('.dropdown-submenu-toggle') as HTMLElement;
     const l1Menu = l1Toggle.nextElementSibling as HTMLElement;
-    (l1Toggle as any).focus = jest.fn(() => {
-      lastFocused = l1Toggle;
-    });
+
     instance.showSubmenu(l1Menu.id, l1Toggle);
     await page.waitForChanges();
 
     const l2Wrapper = l1Menu.querySelector('.dropdown-submenu') as HTMLElement;
     const l2Toggle = l2Wrapper.querySelector('.dropdown-submenu-toggle') as HTMLElement;
     const l2Menu = l2Toggle.nextElementSibling as HTMLElement;
-    (l2Toggle as any).focus = jest.fn(() => {
-      lastFocused = l2Toggle;
-    });
+
     instance.showSubmenu(l2Menu.id, l2Toggle);
     await page.waitForChanges();
 
@@ -509,6 +608,10 @@ describe('dropdown-component (full spec)', () => {
     });
     l2Menu.appendChild(focusable);
     focusable.focus();
+
+    (l2Toggle as any).focus = jest.fn(() => {
+      lastFocused = l2Toggle;
+    });
 
     instance.closeSubmenu(l2Menu);
     await page.waitForChanges();
@@ -527,18 +630,14 @@ describe('dropdown-component (full spec)', () => {
     const l1Wrapper = page.root.querySelector('.dropdown-submenu') as HTMLElement;
     const l1Toggle = l1Wrapper.querySelector('.dropdown-submenu-toggle') as HTMLElement;
     const l1Menu = l1Toggle.nextElementSibling as HTMLElement;
-    (l1Toggle as any).focus = jest.fn(() => {
-      lastFocused = l1Toggle;
-    });
+
     instance.showSubmenu(l1Menu.id, l1Toggle);
     await page.waitForChanges();
 
     const l2Wrapper = l1Menu.querySelector('.dropdown-submenu') as HTMLElement;
     const l2Toggle = l2Wrapper.querySelector('.dropdown-submenu-toggle') as HTMLElement;
     const l2Menu = l2Toggle.nextElementSibling as HTMLElement;
-    (l2Toggle as any).focus = jest.fn(() => {
-      lastFocused = l2Toggle;
-    });
+
     instance.showSubmenu(l2Menu.id, l2Toggle);
     await page.waitForChanges();
 
@@ -549,6 +648,10 @@ describe('dropdown-component (full spec)', () => {
     });
     l2Menu.appendChild(focusable);
     focusable.focus();
+
+    (instance.dropdownButtonEl as any).focus = jest.fn(() => {
+      lastFocused = instance.dropdownButtonEl;
+    });
 
     instance.closeDropdown();
     await page.waitForChanges();

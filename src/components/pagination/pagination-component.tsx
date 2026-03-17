@@ -45,10 +45,40 @@ export class PaginationComponent {
   /** @deprecated use variant="by-page" */
   @Prop() useByPagePagination: boolean = false;
 
+  // ----------------------------
+  // Accessibility / labeling
+  // ----------------------------
+
+  /** Accessible label for the pagination navigation region */
+  @Prop() paginationAriaLabel: string = 'Pagination';
+
+  /** Accessible label for the page-size selector group (visible label text) */
+  @Prop() pageSizeLabel: string = 'Items per page:';
+
+  /** Optional SR-only help text appended to the page-size selector */
+  @Prop() pageSizeHelpText: string = 'Use this control to change how many items are shown per page.';
+
   @State() private isSelectFocused = false;
 
   @Event({ eventName: 'page-changed' }) pageChanged!: EventEmitter<{ page: number; pageSize: number }>;
   @Event({ eventName: 'page-size-changed' }) pageSizeChanged!: EventEmitter<{ pageSize: number }>;
+
+  // ---- Stable per-instance ids (avoid duplicate-id violations) ----
+  private uid = `pgc-${Math.random().toString(16).slice(2)}-${Date.now().toString(16)}`;
+
+  private getSelectId(): string {
+    // Keep existing behavior (tableId + position), but ensure uniqueness if omitted.
+    if (this.tableId) return `pageSize-${this.tableId}-${this.position}`;
+    return `pageSize-${this.uid}`;
+  }
+
+  private getSelectHelpId(): string {
+    return `${this.getSelectId()}__help`;
+  }
+
+  private getRangeId(): string {
+    return `pageRange-${this.tableId || this.uid}-${this.position}`;
+  }
 
   // ---- Derived (data-driven) ----
   private get maxPages(): number {
@@ -64,6 +94,7 @@ export class PaginationComponent {
     // legacy fallback if variant left default
     const legacyCount = Number(!!this.useMinimizePagination) + Number(!!this.useByPagePagination);
     if (legacyCount > 1) {
+      // eslint-disable-next-line no-console
       console.warn('[pagination] Both legacy variants set; using minimize by precedence.');
       return 'minimize';
     }
@@ -86,17 +117,21 @@ export class PaginationComponent {
   validateVariant() {
     // Soft warnings to help catch mixed usage
     if (this.variant !== 'standard' && (this.useMinimizePagination || this.useByPagePagination)) {
+      // eslint-disable-next-line no-console
       console.warn('[pagination] Both `variant` and legacy variant booleans are set; `variant` wins.');
     }
     const legacyCount = Number(!!this.useMinimizePagination) + Number(!!this.useByPagePagination);
     if (legacyCount > 1) {
+      // eslint-disable-next-line no-console
       console.warn('[pagination] Both legacy variants set; minimize wins.');
     }
   }
 
   connectedCallback() {
     if (this.itemsPerPage) {
-      const numericOptions = this.itemsPerPageOptions.filter((s): s is number => s !== 'All').sort((a, b) => a - b);
+      const numericOptions = this.itemsPerPageOptions
+        .filter((s): s is number => s !== 'All')
+        .sort((a, b) => a - b);
       if (numericOptions.length > 0) this.pageSize = numericOptions[0];
     }
     this.clampAndSync();
@@ -179,23 +214,33 @@ export class PaginationComponent {
     this._changePage(new CustomEvent('change-page', { detail: { page: 1 } }) as any);
   };
 
+  /**
+   * A11y note:
+   * - Native <select> already exposes correct semantics. Do NOT add role="listbox".
+   * - Do NOT set aria-multiselectable/aria-invalid for a select unless needed.
+   * - Use a real <label for="..."> association.
+   */
   private renderSizeChanger() {
     const sizeCls = this.size === 'sm' ? 'select-sm' : this.size === 'lg' ? 'select-lg' : '';
-    const wrapperCls = 'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
-    const selectId = this.tableId ? `pageSize-${this.tableId}-${this.position}` : 'pageSize';
+    const wrapperCls =
+      'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
+    const selectId = this.getSelectId();
+    const helpId = this.getSelectHelpId();
 
     return (
       <div class={wrapperCls}>
-        <label htmlFor={selectId}>Items per page: </label>
+        <label htmlFor={selectId}>{this.pageSizeLabel || 'Items per page:'} </label>
+
+        {/* SR-only help to ensure aria-describedby always resolves and stays stable */}
+        <div id={helpId} class="sr-only">
+          {this.pageSizeHelpText}
+        </div>
+
         <select
           id={selectId}
           onChange={this._handlePageSizeChange}
           class={`form-select form-control ${sizeCls}`}
-          aria-label="selectField"
-          aria-labelledby="selectField"
-          aria-invalid="false"
-          aria-multiselectable="false"
-          role="listbox"
+          aria-describedby={helpId}
         >
           {this.itemsPerPageOptions.map(opt => {
             const isNum = typeof opt === 'number';
@@ -214,21 +259,24 @@ export class PaginationComponent {
 
   private renderPlumageStyleSizeChanger() {
     const sizeCls = this.size === 'sm' ? 'select-sm' : this.size === 'lg' ? 'select-lg' : '';
-    const wrapperCls = 'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
-    const selectId = this.tableId ? `pageSize-${this.tableId}-${this.position}` : 'pageSize';
+    const wrapperCls =
+      'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
+    const selectId = this.getSelectId();
+    const helpId = this.getSelectHelpId();
 
     return (
       <div class={wrapperCls}>
-        <label htmlFor={selectId}>Items per page: </label>
-        <div class="input-container" role="presentation" aria-labelledby="selectField">
+        <label htmlFor={selectId}>{this.pageSizeLabel || 'Items per page:'} </label>
+
+        <div id={helpId} class="sr-only">
+          {this.pageSizeHelpText}
+        </div>
+
+        <div class="input-container" role="presentation">
           <select
             id={selectId}
             class={`form-select form-control ${sizeCls}`}
-            aria-label="selectField"
-            aria-labelledby="selectField"
-            aria-invalid="false"
-            aria-multiselectable="false"
-            role="listbox"
+            aria-describedby={helpId}
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
             onChange={this._handlePageSizeChange}
@@ -244,6 +292,7 @@ export class PaginationComponent {
               );
             })}
           </select>
+
           <div class="b-underline" role="presentation">
             <div class="b-focus" role="presentation" aria-hidden="true" />
           </div>
@@ -276,15 +325,31 @@ export class PaginationComponent {
       limit: this.limit,
     };
 
-    return <Tag {...(props as any)} />;
+    // Wrap the actual paginator controls in a <nav> landmark for SR users.
+    // Children should still implement their own button semantics and keyboard nav.
+    return (
+      <nav aria-label={this.paginationAriaLabel || 'Pagination'}>
+        <Tag {...(props as any)} />
+      </nav>
+    );
   }
 
   render() {
-    const rootCls = 'pagination-layout' + (this.plumage ? ' plumage' : '') + (this.paginationLayout === 'fill' ? '' : ' d-flex');
+    const rootCls =
+      'pagination-layout' + (this.plumage ? ' plumage' : '') + (this.paginationLayout === 'fill' ? '' : ' d-flex');
     const splitRootCls = 'pagination-split-layout' + (this.plumage ? ' plumage' : '');
 
+    // Announce range updates politely when page/pageSize changes (helps SR users).
     const rowDisplay = (extra = '') => (
-      <div class={'pagination-cell row-display' + (this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : '') + extra}>{this.displayRange}</div>
+      <div
+        id={this.getRangeId()}
+        class={'pagination-cell row-display' + (this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : '') + extra}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {this.displayRange}
+      </div>
     );
 
     if (this.itemsPerPage && this.paginationLayout === 'start') {
@@ -380,6 +445,7 @@ export class PaginationComponent {
         <div class={cellPosCls}>{this.renderPaginatorBody()}</div>
         {this.displayTotalNumberOfPages ? (
           <div
+            id={this.getRangeId()}
             class={
               'pagination-cell row-display' +
               (this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : '') +
@@ -391,6 +457,9 @@ export class PaginationComponent {
                 ? ' justify-content-end'
                 : '')
             }
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
           >
             {this.displayRange}
           </div>

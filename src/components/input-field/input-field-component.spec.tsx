@@ -2,6 +2,18 @@
 import { newSpecPage } from '@stencil/core/testing';
 import { InputFieldComponent } from './input-field-component';
 
+// -------- small helpers --------
+const idRefs = (v: string | null) =>
+  String(v || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+const escapeAttrValue = (v: string) => v.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+
+const byId = (root: Element, id: string) =>
+  root.querySelector(`[id="${escapeAttrValue(id)}"]`);
+
 describe('<input-field-component>', () => {
   it('renders with basic props and a11y attributes', async () => {
     const page = await newSpecPage({
@@ -16,48 +28,60 @@ describe('<input-field-component>', () => {
     expect(label).toBeTruthy();
     expect(input).toBeTruthy();
 
-    // Stacked layout: label text (no colon)
-    expect(label.textContent).toBe('First Name');
-
-    // Linkage: assert the input id (stable in Stencil mock);
-    // the label's "for" attribute is inconsistently exposed in the mock DOM.
+    // Input id from input-id prop
     expect(input.id).toBe('first');
 
-    // Placeholder prefers label
+    // NOTE: In Stencil spec-page mock DOM, htmlFor may NOT appear as "for" attribute.
+    // So we assert association via aria-labelledby resolution instead of label[for].
+    const labelledBy = input.getAttribute('aria-labelledby');
+    expect(labelledBy).toBeTruthy();
+    expect(byId(root, String(labelledBy))).toBeTruthy();
+
+    // Stacked layout: label should NOT have trailing colon
+    expect(label.textContent || '').toContain('First Name');
+    expect(label.textContent || '').not.toContain('First Name:');
+
+    // Placeholder prefers label when placeholder not provided
     expect(input.placeholder).toBe('First Name');
 
-    // a11y basics (label visible => no aria-label)
+    // a11y: visible label => no aria-label
     expect(input.getAttribute('aria-label')).toBeNull();
-    // aria-labelledby uses camelCased label
-    expect(input.getAttribute('aria-labelledby')).toBe('firstName');
-    expect(input.getAttribute('aria-describedby')).toBeNull();
+
+    // aria-describedby must exist and resolve (help text always present)
+    const describedBy = input.getAttribute('aria-describedby');
+    expect(describedBy).toBeTruthy();
+    const describedIds = idRefs(describedBy);
+    expect(describedIds.length).toBeGreaterThan(0);
+    describedIds.forEach((id) => expect(byId(root, id)).toBeTruthy());
+
+    // help text id should be present
+    expect(describedIds.some((id) => id.endsWith('__desc'))).toBe(true);
   });
 
-  it('binds value and updates on input (silences Prop immutability warn)', async () => {
-    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-    try {
-      const page = await newSpecPage({
-        components: [InputFieldComponent],
-        html: `<input-field-component label="Email" input-id="email" value="new@site.com"></input-field-component>`,
-      });
+  it('binds value prop and emits valueChange on input', async () => {
+    const page = await newSpecPage({
+      components: [InputFieldComponent],
+      html: `<input-field-component label="Email" input-id="email" value="new@site.com"></input-field-component>`,
+    });
 
-      const comp = page.rootInstance as InputFieldComponent;
-      const input = page.root!.querySelector('input') as HTMLInputElement;
+    const root = page.root as HTMLElement;
+    const input = root.querySelector('input') as HTMLInputElement;
+    expect(input.value).toBe('new@site.com');
 
-      // Initial binding
-      expect(input.value).toBe('new@site.com');
+    const valueSpy = jest.fn();
+    root.addEventListener('valueChange', (e: any) => valueSpy(e?.detail));
 
-      // Simulate typing
-      input.value = 'new@site.com';
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      await page.waitForChanges();
+    // Simulate typing (includes tagy input to ensure sanitization)
+    input.value = '  <b>new@site.com</b>  ';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    await page.waitForChanges();
 
-      // Component mutates its own prop (component code does this); assert observed state
-      expect(comp.value).toBe('new@site.com');
-      expect(input.value).toBe('new@site.com');
-    } finally {
-      warnSpy.mockRestore();
-    }
+    // Input value should be sanitized
+    expect(input.value).toBe('new@site.com');
+
+    // valueChange should emit sanitized value
+    expect(valueSpy).toHaveBeenCalled();
+    expect(valueSpy.mock.calls[valueSpy.mock.calls.length - 1][0]).toBe('new@site.com');
   });
 
   it('applies and removes the form attribute when formId changes', async () => {
@@ -90,18 +114,31 @@ describe('<input-field-component>', () => {
     document.body.removeChild(form);
   });
 
-  it('renders validation message and aria-describedby when invalid', async () => {
+  it('renders help text always; adds validation message + aria-describedby when invalid', async () => {
     const page = await newSpecPage({
       components: [InputFieldComponent],
       html: `<input-field-component label="Username" input-id="user" validation validation-message="This field is required."></input-field-component>`,
     });
 
-    const input = page.root!.querySelector('input') as HTMLInputElement;
-    const msg = page.root!.querySelector('#validationMessage') as HTMLDivElement;
+    const root = page.root!;
+    const input = root.querySelector('input') as HTMLInputElement;
 
     expect(input.classList.contains('is-invalid')).toBe(true);
-    expect(input.getAttribute('aria-describedby')).toBe('validationMessage');
-    expect(msg.textContent).toContain('This field is required.');
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+
+    const describedIds = idRefs(input.getAttribute('aria-describedby'));
+    expect(describedIds.some((id) => id.endsWith('__desc'))).toBe(true);
+    expect(describedIds.some((id) => id.endsWith('__validation'))).toBe(true);
+
+    const validationId = describedIds.find((id) => id.endsWith('__validation'))!;
+    const msg = byId(root, validationId) as HTMLDivElement;
+    expect(msg).toBeTruthy();
+    expect(msg.textContent || '').toContain('This field is required.');
+    expect((msg.getAttribute('aria-live') || '').toLowerCase()).toBe('polite');
+    expect((msg.getAttribute('aria-atomic') || '').toLowerCase()).toBe('true');
+
+    // all aria-describedby references resolve
+    describedIds.forEach((id) => expect(byId(root, id)).toBeTruthy());
   });
 
   it('respects disabled and required flags', async () => {
@@ -132,27 +169,36 @@ describe('<input-field-component>', () => {
 
     const labelEl = row.querySelector('label') as HTMLLabelElement;
     expect(labelEl).toBeTruthy();
-    expect(labelEl.className).toMatch(/col-12/);
-    expect(labelEl.className).toMatch(/col-sm-4/);
+    expect(labelEl.className).toMatch(/\bcol-12\b/);
+    expect(labelEl.className).toMatch(/\bcol-sm-4\b/);
 
     const inputWrapper = labelEl.nextElementSibling as HTMLElement;
     expect(inputWrapper).toBeTruthy();
-    expect(inputWrapper.className).toMatch(/col-12/);
-    expect(inputWrapper.className).toMatch(/col-sm-8/);
+    expect(inputWrapper.className).toMatch(/\bcol-12\b/);
+    expect(inputWrapper.className).toMatch(/\bcol-sm-8\b/);
 
-    // In horizontal/inline layouts, the label ends with a colon
-    expect(labelEl.textContent).toBe('City:');
+    // In horizontal/inline layouts, label includes a colon
+    expect(labelEl.textContent || '').toContain('City');
+    expect(labelEl.textContent || '').toContain(':');
   });
 
-  it('adds aria-label when label is hidden (labelHidden=true)', async () => {
+  it('when label is hidden, it still has an accessible name (aria-labelledby resolves)', async () => {
     const page = await newSpecPage({
       components: [InputFieldComponent],
       html: `<input-field-component label="Phone" label-hidden input-id="phone"></input-field-component>`,
     });
 
-    const input = page.root!.querySelector('input') as HTMLInputElement;
-    // When labelHidden, aria-label uses camelCased label
-    expect(input.getAttribute('aria-label')).toBe('phone');
+    const root = page.root!;
+    const label = root.querySelector('label') as HTMLLabelElement;
+    const input = root.querySelector('input') as HTMLInputElement;
+
+    expect(label.className).toContain('sr-only');
+
+    // still named via aria-labelledby resolution
+    const labelledBy = input.getAttribute('aria-labelledby');
+    expect(labelledBy).toBeTruthy();
+    expect(byId(root, String(labelledBy))).toBeTruthy();
+
     expect(input.placeholder).toBe('Phone');
   });
 

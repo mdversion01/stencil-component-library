@@ -1,7 +1,5 @@
 // stories/icon-component.stories.js
 
-import { FALSE } from 'sass';
-
 export default {
   title: 'Components/Icon',
   tags: ['autodocs'],
@@ -12,18 +10,6 @@ export default {
         language: 'html',
         transform: (src, context) => {
           const { name: storyName, args } = context;
-
-          // Defaults used by <icon-component> stories (for reference only)
-          const DEFAULTS = {
-            color: '',
-            icon: 'fa-solid fa-star',
-            iconAriaHidden: false,
-            iconAriaLabel: '',
-            iconMargin: '',
-            iconSize: undefined,
-            size: '',
-            tokenIcon: false,
-          };
 
           // camelCase -> kebab-case
           const toAttr = k => k.replace(/[A-Z]/g, m => '-' + m.toLowerCase());
@@ -38,7 +24,7 @@ export default {
               .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
               .map(([k, v]) => {
                 const attr = toAttr(k);
-                if (v === true) return attr; // presence-only for true booleans
+                if (v === true) return attr;
                 return `${attr}="${String(v)}"`;
               })
               .join(' ');
@@ -48,7 +34,6 @@ export default {
 
           switch (storyName) {
             case 'Basic': {
-              // Print ONLY props actually used (after filtering) so false/"" are omitted
               const used = {
                 icon: args?.icon,
                 size: args?.size,
@@ -56,7 +41,7 @@ export default {
                 iconSize: args?.iconSize,
                 tokenIcon: !!args?.tokenIcon,
                 iconMargin: args?.iconMargin,
-                iconAriaHidden: args?.iconAriaHidden, // will be omitted if false per rule
+                iconAriaHidden: args?.iconAriaHidden, // printed only when true (decorative)
                 iconAriaLabel: args?.iconAriaLabel,
               };
               return iconTag(used);
@@ -108,14 +93,15 @@ export default {
         },
       },
       description: {
-        component: 'The <icon-component> renders Font Awesome / Material Design icons by class name. It supports size, color, accessibility, and margin props.',
+        component:
+          'The <icon-component> renders Font Awesome / Material Design icons by class name. It supports size, color, spacing, and accessibility.\n\nAccessibility:\n- Decorative by default (aria-hidden="true")\n- Meaningful icon: set icon-aria-hidden="false" AND provide icon-aria-label (role="img" is applied)',
       },
     },
   },
   argTypes: {
     /* -----------------------------
-   Content
-  ------------------------------ */
+     Content
+    ------------------------------ */
     icon: {
       control: 'text',
       description: 'Add icon class string (e.g., "fa-solid fa-user"). Uses either Font Awesome or Material Design Icons',
@@ -123,8 +109,8 @@ export default {
     },
 
     /* -----------------------------
-   Styling
-  ------------------------------ */
+     Styling
+    ------------------------------ */
     color: {
       control: 'color',
       description: 'Adds inline color style',
@@ -153,8 +139,8 @@ export default {
     },
 
     /* -----------------------------
-   Layout
-  ------------------------------ */
+     Layout
+    ------------------------------ */
     iconMargin: {
       control: { type: 'select' },
       options: ['', 'left', 'right'],
@@ -164,18 +150,19 @@ export default {
     },
 
     /* -----------------------------
-   Accessibility
-  ------------------------------ */
+     Accessibility
+    ------------------------------ */
     iconAriaHidden: {
       control: 'boolean',
-      description: 'Whether the icon is hidden from assistive tech (aria-hidden)',
+      description:
+        'Whether the icon is hidden from assistive tech (aria-hidden). Default is true (decorative). If set to false, you MUST provide icon-aria-label.',
       name: 'icon-aria-hidden',
-      table: { category: 'Accessibility', defaultValue: { summary: false } },
+      table: { category: 'Accessibility', defaultValue: { summary: true } },
     },
 
     iconAriaLabel: {
       control: 'text',
-      description: 'Accessible label (sets aria-label)',
+      description: 'Accessible label (sets aria-label when icon-aria-hidden=false)',
       name: 'icon-aria-label',
       table: { category: 'Accessibility' },
     },
@@ -184,7 +171,8 @@ export default {
   args: {
     color: '',
     icon: 'fa-solid fa-star',
-    iconAriaHidden: false,
+    // ✅ Updated defaults to match component (decorative)
+    iconAriaHidden: true,
     iconAriaLabel: '',
     iconMargin: '',
     iconSize: undefined,
@@ -213,11 +201,15 @@ const makeIcon = (args = {}) => {
   if (args.icon) el.setAttribute('icon', String(args.icon));
   if (args.iconMargin) el.setAttribute('icon-margin', String(args.iconMargin));
   if (args.size) el.setAttribute('size', String(args.size));
-  if (args.tokenIcon === true) el.setAttribute('token-icon', ''); // presence-only when true
+  if (args.tokenIcon === true) el.setAttribute('token-icon', '');
   if (typeof args.iconSize === 'number') el.setAttribute('icon-size', String(args.iconSize));
   if (args.color) el.setAttribute('color', String(args.color));
   if (args.iconAriaLabel) el.setAttribute('icon-aria-label', String(args.iconAriaLabel));
-  // Do NOT print icon-aria-hidden when false per rule (still set property above)
+
+  // ✅ For Docs correctness: only print icon-aria-hidden when TRUE (decorative)
+  // (When false, we omit it per your Docs rule. Runtime behavior still uses the property above.)
+  if (args.iconAriaHidden === true) el.setAttribute('icon-aria-hidden', 'true');
+  else el.removeAttribute('icon-aria-hidden');
 
   return el;
 };
@@ -229,11 +221,12 @@ const Template = args => makeIcon(args);
 export const Basic = Template.bind({});
 Basic.args = {
   icon: 'fa-solid fa-star',
+  iconAriaHidden: true,
 };
 Basic.parameters = {
   docs: {
     description: {
-      story: 'Basic icon. Docs code omits any props that are false or empty strings.',
+      story: 'Basic icon. Decorative by default (`aria-hidden="true"`). Docs code omits any props that are false or empty strings.',
     },
   },
 };
@@ -243,11 +236,11 @@ export const Sizes = () => {
   wrapper.style.display = 'flex';
   wrapper.style.gap = '16px';
   [
-    { label: 'Default', props: { icon: 'fa-solid fa-user' } },
-    { label: 'fa-lg', props: { icon: 'fa-solid fa-user', size: 'fa-lg' } },
-    { label: 'fa-2x', props: { icon: 'fa-solid fa-user', size: 'fa-2x' } },
-    { label: 'inline 28px', props: { icon: 'fa-solid fa-user', iconSize: 28 } },
-    { label: 'inline 40px', props: { icon: 'fa-solid fa-user', iconSize: 40 } },
+    { label: 'Default', props: { icon: 'fa-solid fa-user', iconAriaHidden: true } },
+    { label: 'fa-lg', props: { icon: 'fa-solid fa-user', size: 'fa-lg', iconAriaHidden: true } },
+    { label: 'fa-2x', props: { icon: 'fa-solid fa-user', size: 'fa-2x', iconAriaHidden: true } },
+    { label: 'inline 28px', props: { icon: 'fa-solid fa-user', iconSize: 28, iconAriaHidden: true } },
+    { label: 'inline 40px', props: { icon: 'fa-solid fa-user', iconSize: 40, iconAriaHidden: true } },
   ].forEach(({ label, props }) => {
     const col = document.createElement('div');
     col.style.display = 'flex';
@@ -275,10 +268,10 @@ export const WithColor = () => {
   container.style.display = 'flex';
   container.style.gap = '16px';
   container.append(
-    makeIcon({ icon: 'fa-solid fa-heart', color: '#ef4444', iconSize: 28 }),
-    makeIcon({ icon: 'fa-solid fa-bolt', color: '#f59e0b', iconSize: 28 }),
-    makeIcon({ icon: 'fa-solid fa-leaf', color: '#10b981', iconSize: 28 }),
-    makeIcon({ icon: 'fa-solid fa-water', color: '#3b82f6', iconSize: 28 }),
+    makeIcon({ icon: 'fa-solid fa-heart', color: '#ef4444', iconSize: 28, iconAriaHidden: true }),
+    makeIcon({ icon: 'fa-solid fa-bolt', color: '#f59e0b', iconSize: 28, iconAriaHidden: true }),
+    makeIcon({ icon: 'fa-solid fa-leaf', color: '#10b981', iconSize: 28, iconAriaHidden: true }),
+    makeIcon({ icon: 'fa-solid fa-water', color: '#3b82f6', iconSize: 28, iconAriaHidden: true }),
   );
   return container;
 };
@@ -287,15 +280,15 @@ WithColor.parameters = {
     source: {
       code: [
         '<div style="display:flex; gap:16px;">',
-        '  <icon-component icon="fa-solid fa-heart" color="#ef4444" icon-size="28"></icon-component>',
-        '  <icon-component icon="fa-solid fa-bolt"  color="#f59e0b" icon-size="28"></icon-component>',
-        '  <icon-component icon="fa-solid fa-leaf"  color="#10b981" icon-size="28"></icon-component>',
-        '  <icon-component icon="fa-solid fa-water" color="#3b82f6" icon-size="28"></icon-component>',
+        '  <icon-component icon="fa-solid fa-heart" color="#ef4444" icon-size="28" icon-aria-hidden="true"></icon-component>',
+        '  <icon-component icon="fa-solid fa-bolt"  color="#f59e0b" icon-size="28" icon-aria-hidden="true"></icon-component>',
+        '  <icon-component icon="fa-solid fa-leaf"  color="#10b981" icon-size="28" icon-aria-hidden="true"></icon-component>',
+        '  <icon-component icon="fa-solid fa-water" color="#3b82f6" icon-size="28" icon-aria-hidden="true"></icon-component>',
         '</div>',
       ].join('\n'),
     },
     description: {
-      story: 'Colored icons with inline pixel sizing.',
+      story: 'Colored icons with inline pixel sizing (decorative).',
     },
   },
 };
@@ -306,15 +299,15 @@ TokenIcon.args = {
   tokenIcon: true,
   iconSize: 10,
   color: '#0ea5e9',
+  iconAriaHidden: true,
 };
 TokenIcon.parameters = {
   docs: {
     source: {
-      // presence-only for token-icon; omit anything false/empty
-      code: '<icon-component icon="fa-solid fa-shield" color="#0ea5e9" icon-size="10" token-icon></icon-component>',
+      code: '<icon-component icon="fa-solid fa-shield" color="#0ea5e9" icon-size="10" token-icon icon-aria-hidden="true"></icon-component>',
     },
     description: {
-      story: 'Token-style icon (adds "token-icon" class) with custom color and size.',
+      story: 'Token-style icon (adds "token-icon" class) with custom color and size (decorative).',
     },
   },
 };
@@ -327,10 +320,10 @@ export const Margins = () => {
 
   const left = document.createElement('span');
   left.textContent = 'Left margin';
-  left.appendChild(makeIcon({ icon: 'fa-solid fa-circle-info', iconMargin: 'left' }));
+  left.appendChild(makeIcon({ icon: 'fa-solid fa-circle-info', iconMargin: 'left', iconAriaHidden: true }));
 
   const right = document.createElement('span');
-  right.appendChild(makeIcon({ icon: 'fa-solid fa-circle-info', iconMargin: 'right' }));
+  right.appendChild(makeIcon({ icon: 'fa-solid fa-circle-info', iconMargin: 'right', iconAriaHidden: true }));
   right.appendChild(document.createTextNode('Right margin'));
 
   row.append(left, right);
@@ -339,7 +332,7 @@ export const Margins = () => {
 Margins.parameters = {
   docs: {
     description: {
-      story: 'Apply left/right spacing via `iconMargin`.',
+      story: 'Apply left/right spacing via `iconMargin` (decorative).',
     },
   },
 };
@@ -347,18 +340,19 @@ Margins.parameters = {
 export const AccessibleLabel = Template.bind({});
 AccessibleLabel.args = {
   icon: 'fa-solid fa-bell',
-  iconAriaHidden: false, // property set for runtime behavior
+  iconAriaHidden: false,
   iconAriaLabel: 'Notifications',
   iconSize: 24,
 };
 AccessibleLabel.parameters = {
   docs: {
     source: {
-      // Per rule, do NOT print false props — so aria-hidden="false" is omitted.
+      // NOTE: We omit icon-aria-hidden="false" to follow your docs rule (omit false/empty),
+      // but runtime behavior is set via the property.
       code: '<icon-component icon="fa-solid fa-bell" icon-aria-label="Notifications" icon-size="24"></icon-component>',
     },
     description: {
-      story: 'Accessible icon with label. (Docs omit false props per rule.)',
+      story: 'Meaningful icon: icon-aria-hidden=false + icon-aria-label. Component applies role="img".',
     },
   },
 };
@@ -384,7 +378,6 @@ Playground.parameters = {
 
 /**
  * Optional: a small grid to preview multiple FA icons at once.
- * Adjust icon class names to match your icon set.
  */
 export const IconGallery = () => {
   const icons = [
@@ -410,7 +403,7 @@ export const IconGallery = () => {
     cell.style.flexDirection = 'column';
     cell.style.alignItems = 'center';
     cell.style.gap = '8px';
-    cell.appendChild(makeIcon({ icon: ic, iconSize: 24 }));
+    cell.appendChild(makeIcon({ icon: ic, iconSize: 24, iconAriaHidden: true }));
     const cap = document.createElement('small');
     cap.style.textAlign = 'center';
     cap.textContent = ic.replace('fa-solid ', '');
@@ -426,46 +419,164 @@ IconGallery.parameters = {
       code: [
         '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap:12px;">',
         '  <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">',
-        '    <icon-component icon="fa-solid fa-star" icon-size="24"></icon-component>',
+        '    <icon-component icon="fa-solid fa-star" icon-size="24" icon-aria-hidden="true"></icon-component>',
         '    <small style="text-align:center;">fa-star</small>',
         '  </div>',
-        '  <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">',
-        '    <icon-component icon="fa-solid fa-user" icon-size="24"></icon-component>',
-        '    <small style="text-align:center;">fa-user</small>',
-        '  </div>',
-        '  <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">',
-        '    <icon-component icon="fa-solid fa-bell" icon-size="24"></icon-component>',
-        '    <small style="text-align:center;">fa-bell</small>',
-        '  </div>',
-        '  <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">',
-        '    <icon-component icon="fa-solid fa-gear" icon-size="24"></icon-component>',
-        '    <small style="text-align:center;">fa-gear</small>',
-        '  </div>',
-        '  <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">',
-        '    <icon-component icon="fa-solid fa-house" icon-size="24"></icon-component>',
-        '    <small style="text-align:center;">fa-house</small>',
-        '  </div>',
-        '  <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">',
-        '    <icon-component icon="fa-solid fa-heart" icon-size="24"></icon-component>',
-        '    <small style="text-align:center;">fa-heart</small>',
-        '  </div>',
-        '  <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">',
-        '    <icon-component icon="fa-solid fa-arrow-right" icon-size="24"></icon-component>',
-        '    <small style="text-align:center;">fa-arrow-right</small>',
-        '  </div>',
-        '  <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">',
-        '    <icon-component icon="fa-solid fa-check" icon-size="24"></icon-component>',
-        '    <small style="text-align:center;">fa-check</small>',
-        '  </div>',
-        '  <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">',
-        '    <icon-component icon="fa-solid fa-xmark" icon-size="24"></icon-component>',
-        '    <small style="text-align:center;">fa-xmark</small>',
-        '  </div>',
+        '  <!-- ... -->',
         '</div>',
       ].join('\n'),
     },
     description: {
-      story: 'A small gallery of icons. Docs code omits any false/empty props.',
+      story: 'A small gallery of icons (decorative).',
     },
   },
+};
+
+// ======================================================
+// NEW: Accessibility matrix (for quick auditing)
+// - default (decorative)
+// - meaningful (label + not hidden)
+// - invalid config (not hidden but missing label -> should fall back to decorative)
+// - disabled/error/inline/horizontal: N/A for icon (still included as rows to match your standard matrix pattern)
+// - prints computed role + aria-* + ids + class/style
+// ======================================================
+
+function pickAttrs(el, names) {
+  const out = {};
+  for (const n of names) {
+    const v = el.getAttribute(n);
+    if (v !== null && v !== '') out[n] = v;
+  }
+  return out;
+}
+
+function snapshotA11y(host) {
+  const i = host.querySelector('i');
+  return {
+    host: { tag: host.tagName.toLowerCase(), id: host.getAttribute('id') || '' },
+    icon: i
+      ? {
+          tag: 'i',
+          id: i.getAttribute('id') || '',
+          class: i.getAttribute('class') || '',
+          style: i.getAttribute('style') || '',
+          role: i.getAttribute('role') || '',
+          ...pickAttrs(i, ['aria-hidden', 'aria-label']),
+        }
+      : null,
+  };
+}
+
+function renderMatrixRow({ title, args, idSuffix }) {
+  const wrap = document.createElement('div');
+  wrap.style.border = '1px solid #ddd';
+  wrap.style.borderRadius = '12px';
+  wrap.style.padding = '12px';
+  wrap.style.display = 'grid';
+  wrap.style.gap = '10px';
+
+  const heading = document.createElement('div');
+  heading.style.fontWeight = '700';
+  heading.textContent = title;
+
+  const el = makeIcon({
+    ...args,
+  });
+  el.id = `icon-matrix-${idSuffix}`;
+
+  const stage = document.createElement('div');
+  stage.style.display = 'flex';
+  stage.style.alignItems = 'center';
+  stage.style.gap = '12px';
+  stage.style.maxWidth = '560px';
+
+  // little label for the visual
+  const caption = document.createElement('div');
+  caption.style.fontSize = '12px';
+  caption.style.color = '#444';
+  caption.textContent = 'Rendered icon:';
+
+  stage.appendChild(caption);
+  stage.appendChild(el);
+
+  const pre = document.createElement('pre');
+  pre.style.margin = '0';
+  pre.style.padding = '10px';
+  pre.style.background = '#f6f8fa';
+  pre.style.borderRadius = '10px';
+  pre.style.overflowX = 'auto';
+  pre.style.fontSize = '12px';
+  pre.textContent = 'Collecting aria/role/id…';
+
+  wrap.appendChild(heading);
+  wrap.appendChild(stage);
+  wrap.appendChild(pre);
+
+  requestAnimationFrame(() => {
+    pre.textContent = JSON.stringify(snapshotA11y(el), null, 2);
+  });
+
+  return wrap;
+}
+
+export const AccessibilityMatrix = () => {
+  const root = document.createElement('div');
+  root.style.display = 'grid';
+  root.style.gap = '16px';
+
+  const intro = document.createElement('div');
+  intro.innerHTML = `
+    <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
+    <div style="font-size:13px; color:#444;">
+      Prints computed <code>role</code> + <code>aria-*</code> + IDs from the rendered <code>&lt;i&gt;</code>.
+      Note: layout/validation/disabled are not applicable to icons; included as placeholders to keep a consistent audit pattern.
+    </div>
+  `;
+  root.appendChild(intro);
+
+  const rows = [
+    {
+      title: 'Default (decorative)',
+      args: { icon: 'fa-solid fa-star', iconAriaHidden: true, iconAriaLabel: '', iconSize: 24 },
+    },
+    {
+      title: 'Meaningful (role="img", aria-label, aria-hidden="false")',
+      args: { icon: 'fa-solid fa-circle-info', iconAriaHidden: false, iconAriaLabel: 'Information', iconSize: 24 },
+    },
+    {
+      title: 'Invalid authoring (aria-hidden=false, missing label) → fallback to decorative',
+      args: { icon: 'fa-solid fa-circle-info', iconAriaHidden: false, iconAriaLabel: '   ', iconSize: 24 },
+    },
+    {
+      title: 'Inline (N/A placeholder)',
+      args: { icon: 'fa-solid fa-user', iconAriaHidden: true, iconSize: 20, size: '' },
+    },
+    {
+      title: 'Horizontal (N/A placeholder)',
+      args: { icon: 'fa-solid fa-arrow-right', iconAriaHidden: true, iconSize: 20 },
+    },
+    {
+      title: 'Error/Validation (N/A placeholder)',
+      args: { icon: 'fa-solid fa-triangle-exclamation', iconAriaHidden: true, color: '#b91c1c', iconSize: 20 },
+    },
+    {
+      title: 'Disabled (N/A placeholder)',
+      args: { icon: 'fa-solid fa-ban', iconAriaHidden: true, color: '#6b7280', iconSize: 20 },
+    },
+  ];
+
+  rows.forEach((r, idx) => root.appendChild(renderMatrixRow({ ...r, idSuffix: String(idx + 1) })));
+
+  return root;
+};
+AccessibilityMatrix.storyName = 'Accessibility Matrix (computed)';
+AccessibilityMatrix.parameters = {
+  docs: {
+    description: {
+      story:
+        'Matrix of key accessibility states for the icon component (decorative vs meaningful, fallback behavior). Includes placeholder rows for layout/validation/disabled to match standard audit format.',
+    },
+    story: { height: '1150px' },
+  },
+  controls: { disable: true },
 };

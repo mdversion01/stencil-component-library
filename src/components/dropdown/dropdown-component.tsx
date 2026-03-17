@@ -36,7 +36,6 @@ export class DropdownComponent {
   @Prop() value = '';
   @Prop({ mutable: true }) options: DropdownItem[] = [];
 
-  // @State() options: DropdownItem[] = [];
   @State() showDropdown = false;
   @State() focusedIndex = -1;
   @State() activeSubmenus = new Set<string>();
@@ -51,7 +50,9 @@ export class DropdownComponent {
   private cleanupAutoUpdate: (() => void) | null = null;
   private submenuTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  // ---- Focus helper: avoid page scroll on focus handoffs ----
+  // Prevent synthetic click after Enter/Space from re-toggling.
+  private suppressNextClick = false;
+
   private safeFocus = (el?: HTMLElement | null) => {
     if (!el) return;
     try {
@@ -65,12 +66,45 @@ export class DropdownComponent {
     return !!el && el.classList?.contains('dropdown-submenu-toggle');
   }
 
-  private focusFirstIn(container: Element | null) {
-    const first = this.getFocusableItems(container || undefined)[0];
-    this.safeFocus(first);
+  private toKey = (o: any) => (o?.key ?? o?.value ?? o?.name ?? '') as string;
+
+  private isVisible(el: HTMLElement): boolean {
+    return !!(el.getClientRects && el.getClientRects().length);
   }
 
-  private toKey = (o: any) => (o?.key ?? o?.value ?? o?.name ?? '') as string;
+  private getTriggerRoot(): HTMLElement | null {
+    return this.host.querySelector<HTMLElement>(`#${this.componentId}-toggle-button`);
+  }
+
+  private isEventFromTrigger(ev: Event): boolean {
+    const triggerRoot = this.getTriggerRoot();
+    if (!triggerRoot) return false;
+    const t = ev.target as Node | null;
+    return !!(t && triggerRoot.contains(t));
+  }
+
+  private isFocusOnTrigger(): boolean {
+    const triggerRoot = this.getTriggerRoot();
+    const a = document.activeElement as HTMLElement | null;
+    return !!(triggerRoot && a && triggerRoot.contains(a));
+  }
+
+  getFocusableItems(container: Element = this.menuEl): HTMLElement[] {
+    return Array.from(container.querySelectorAll<HTMLElement>('.dropdown-item:not(.disabled)')).filter((el) => this.isVisible(el));
+  }
+
+  private focusFirstMenuItem() {
+    const items = this.getFocusableItems(this.menuEl);
+    this.safeFocus(items[0] ?? this.menuEl);
+    this.focusedIndex = items[0] ? 0 : -1;
+  }
+
+  private focusLastMenuItem() {
+    const items = this.getFocusableItems(this.menuEl);
+    const idx = items.length ? items.length - 1 : -1;
+    this.safeFocus(items[idx] ?? this.menuEl);
+    this.focusedIndex = idx;
+  }
 
   setOptions(opts: DropdownItem[]) {
     this.options = [...opts];
@@ -82,11 +116,15 @@ export class DropdownComponent {
     if (typeof window === 'undefined') return;
 
     try {
+      // button-component likely renders a <button> inside; grab that if available
       this.dropdownButtonEl =
         this.host.querySelector<HTMLButtonElement>(`#${this.componentId}-toggle-button button`) || this.dropdownButtonEl;
+
       this.menuEl = this.host.querySelector<HTMLElement>(`#${this.componentId}-menu-root`) || this.menuEl;
+
       this.host.addEventListener('focusout', this.handleFocusOut);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.warn('dropdown-component: componentDidLoad failed in test', err);
     }
   }
@@ -108,70 +146,51 @@ export class DropdownComponent {
     if (!this.host.contains(event.target as Node)) this.closeDropdown();
   };
 
-  private handleCheckboxToggle = (item: DropdownItem, index: number) => {
-    const opts = Array.isArray(this.options) ? [...this.options] : [];
-    const i = typeof index === 'number' ? index : opts.findIndex(o => this.toKey(o) === this.toKey(item));
-    if (i < 0) return;
+  private openDropdown = () => {
+    this.showDropdown = true;
+    this.isOpen = true;
 
-    const updated = { ...opts[i], checked: !opts[i].checked };
-    opts[i] = updated;
-    this.options = opts;
+    this.createPopperInstance();
+    document.addEventListener('mousedown', this.handleOutsideClick);
 
-    this.itemSelected.emit({ item: updated, index: i });
+    // IMPORTANT: do NOT move focus on open.
+    // Keep focus on trigger until user navigates with arrow keys / mouse.
+    this.focusedIndex = -1;
 
-    const detail = { items: this.options };
-    this.host.dispatchEvent(new CustomEvent('items-changed', { detail, bubbles: true, composed: true }));
-    this.host.dispatchEvent(
-      new CustomEvent('selection-changed', {
-        detail: { items: this.options.filter(o => o?.checked) },
-        bubbles: true,
-        composed: true,
-      }),
-    );
-
-    const tableId = this.tableId || this.host.getAttribute('table-id') || '';
-    const payload = this.options.map(o => ({
-      key: this.toKey(o),
-      checked: !!o.checked,
-    }));
-
-    document.dispatchEvent(
-      new CustomEvent('filter-fields-changed', {
-        detail: { tableId, items: payload },
-        bubbles: false,
-      }),
-    );
+    // Ensure Popper positions correctly after DOM updates
+    setTimeout(() => this.popperInstance?.update(), 0);
   };
 
-  toggleDropdown = () => {
-    if (this.disabled) return;
-    this.showDropdown = !this.showDropdown;
-    this.isOpen = this.showDropdown;
-
-    if (this.showDropdown) {
-      this.createPopperInstance();
-      document.addEventListener('mousedown', this.handleOutsideClick);
-      setTimeout(() => {
-        this.safeFocus(this.menuEl);
-        this.focusedIndex = -1;
-      }, 0);
-    } else {
-      this.closeDropdown();
-    }
-  };
-
-  closeDropdown() {
-    const active = document.activeElement as HTMLElement | null;
-    if (active && (this.menuEl?.contains(active) || this.host.contains(active))) {
-      this.safeFocus(this.dropdownButtonEl);
-    }
-
+  private closeDropdownInternal = () => {
     this.showDropdown = false;
     this.isOpen = false;
 
     this.closeAllSubmenus();
     this.destroyPopper();
     document.removeEventListener('mousedown', this.handleOutsideClick);
+
+    // Return focus to trigger if focus was inside the menu/host
+    const active = document.activeElement as HTMLElement | null;
+    if (active && (this.menuEl?.contains(active) || this.host.contains(active))) {
+      this.safeFocus(this.dropdownButtonEl);
+    }
+  };
+
+  toggleDropdown = (fromKeyboard = false) => {
+    if (this.disabled) return;
+
+    // If Enter/Space generated a synthetic click, ignore that click once.
+    if (!fromKeyboard && this.suppressNextClick) {
+      this.suppressNextClick = false;
+      return;
+    }
+
+    if (!this.showDropdown) this.openDropdown();
+    else this.closeDropdownInternal();
+  };
+
+  closeDropdown() {
+    this.closeDropdownInternal();
   }
 
   createPopperInstance() {
@@ -200,16 +219,45 @@ export class DropdownComponent {
     this.cleanupAutoUpdate = null;
   }
 
-  getFocusableItems(container: Element = this.menuEl): HTMLElement[] {
-    return Array.from(container.querySelectorAll('.dropdown-item:not(.disabled)')).filter(
-      (el): el is HTMLElement => (el as HTMLElement).offsetParent !== null,
+  private handleCheckboxToggle = (item: DropdownItem, index: number) => {
+    const opts = Array.isArray(this.options) ? [...this.options] : [];
+    const i = typeof index === 'number' ? index : opts.findIndex((o) => this.toKey(o) === this.toKey(item));
+    if (i < 0) return;
+
+    const updated = { ...opts[i], checked: !opts[i].checked };
+    opts[i] = updated;
+    this.options = opts;
+
+    this.itemSelected.emit({ item: updated, index: i });
+
+    const detail = { items: this.options };
+    this.host.dispatchEvent(new CustomEvent('items-changed', { detail, bubbles: true, composed: true }));
+    this.host.dispatchEvent(
+      new CustomEvent('selection-changed', {
+        detail: { items: this.options.filter((o) => o?.checked) },
+        bubbles: true,
+        composed: true,
+      }),
     );
-  }
+
+    const tableId = this.tableId || this.host.getAttribute('table-id') || '';
+    const payload = this.options.map((o) => ({
+      key: this.toKey(o),
+      checked: !!o.checked,
+    }));
+
+    document.dispatchEvent(
+      new CustomEvent('filter-fields-changed', {
+        detail: { tableId, items: payload },
+        bubbles: false,
+      }),
+    );
+  };
 
   closeAllSubmenus() {
     const openSubs = this.host.querySelectorAll<HTMLElement>('.dropdown-menu.sub.show');
 
-    openSubs.forEach(sub => {
+    openSubs.forEach((sub) => {
       const toggle = sub.previousElementSibling as HTMLElement | null;
 
       if (sub.contains(document.activeElement)) {
@@ -229,7 +277,7 @@ export class DropdownComponent {
   }
 
   closeSubmenu(submenu: HTMLElement) {
-    submenu.querySelectorAll<HTMLElement>('.dropdown-menu.sub.show').forEach(child => {
+    submenu.querySelectorAll<HTMLElement>('.dropdown-menu.sub.show').forEach((child) => {
       const childToggle = child.previousElementSibling as HTMLElement | null;
       if (child.contains(document.activeElement)) {
         this.safeFocus(childToggle);
@@ -261,8 +309,8 @@ export class DropdownComponent {
     if (!levelMenu) return;
 
     Array.from(levelMenu.querySelectorAll<HTMLElement>('.dropdown-submenu > .dropdown-menu.sub.show'))
-      .filter(sub => sub.parentElement?.parentElement === levelMenu)
-      .forEach(sub => {
+      .filter((sub) => sub.parentElement?.parentElement === levelMenu)
+      .forEach((sub) => {
         if (sub.id !== keepId) this.closeSubmenu(sub);
       });
   }
@@ -308,45 +356,85 @@ export class DropdownComponent {
     }, 120);
   };
 
+  // ✅ Capture keydown at host level so Enter/Space works even if button-component swallows events.
+  @Listen('keydown', { capture: true })
+  handleHostKeydown(event: KeyboardEvent) {
+    if (this.disabled) return;
+
+    // Only treat Enter/Space as trigger toggle if it came from the trigger area.
+    if ((event.key === 'Enter' || event.key === ' ') && this.isEventFromTrigger(event)) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.suppressNextClick = true;
+      this.toggleDropdown(true);
+      return;
+    }
+
+    // If open and focus is still on trigger, ArrowDown/Home etc should move focus into menu
+    if (this.showDropdown && this.isFocusOnTrigger()) {
+      if (event.key === 'ArrowDown' || event.key === 'Home') {
+        event.preventDefault();
+        event.stopPropagation();
+        this.focusFirstMenuItem();
+        return;
+      }
+      if (event.key === 'ArrowUp' || event.key === 'End') {
+        event.preventDefault();
+        event.stopPropagation();
+        this.focusLastMenuItem();
+        return;
+      }
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+        this.closeDropdown();
+        return;
+      }
+    }
+  }
+
   @Listen('keydown', { target: 'window' })
   handleKeydown(event: KeyboardEvent) {
     if (!this.showDropdown || this.disabled) return;
 
     const focused = document.activeElement as HTMLElement | null;
-    const container = focused?.closest('.dropdown-menu') || this.menuEl;
+
+    // If focus is still on trigger while open, let host handler manage focus entry
+    if (this.isFocusOnTrigger()) return;
+
+    const container = (focused?.closest('.dropdown-menu') as HTMLElement | null) || this.menuEl;
     const items = this.getFocusableItems(container);
-    const currentIndex = items.findIndex(i => i === focused);
+    const currentIndex = items.findIndex((i) => i === focused);
     let nextIndex = -1;
 
     const openKey = this.alignMenuRight ? 'ArrowLeft' : 'ArrowRight';
     const closeKey = this.alignMenuRight ? 'ArrowRight' : 'ArrowLeft';
 
     switch (event.key) {
-      case ' ':
-        if (focused === this.dropdownButtonEl) {
-          event.preventDefault();
-          this.toggleDropdown();
-        } else if (this.isSubmenuToggle(focused)) {
-          event.preventDefault();
-          const submenu = focused.nextElementSibling as HTMLElement | null;
-          if (submenu) {
-            this.showSubmenu(submenu.id, focused);
-            this.focusFirstIn(submenu);
-          }
-        }
-        break;
-
       case 'Enter':
         if (this.isSubmenuToggle(focused)) {
           event.preventDefault();
           const submenu = focused!.nextElementSibling as HTMLElement | null;
           if (submenu) {
             this.showSubmenu(submenu.id, focused!);
-            this.focusFirstIn(submenu);
+            const first = this.getFocusableItems(submenu)[0];
+            this.safeFocus(first);
           }
         } else {
           event.preventDefault();
           focused?.click();
+        }
+        break;
+
+      case ' ':
+        if (this.isSubmenuToggle(focused)) {
+          event.preventDefault();
+          const submenu = focused.nextElementSibling as HTMLElement | null;
+          if (submenu) {
+            this.showSubmenu(submenu.id, focused);
+            const first = this.getFocusableItems(submenu)[0];
+            this.safeFocus(first);
+          }
         }
         break;
 
@@ -373,12 +461,14 @@ export class DropdownComponent {
       case 'ArrowRight':
       case 'ArrowLeft': {
         const key = event.key;
+
         if (key === openKey && this.isSubmenuToggle(focused)) {
           const submenu = focused!.nextElementSibling as HTMLElement | null;
           if (submenu) {
             event.preventDefault();
             this.showSubmenu(submenu.id, focused!);
-            this.focusFirstIn(submenu);
+            const first = this.getFocusableItems(submenu)[0];
+            this.safeFocus(first);
           }
           break;
         }
@@ -431,8 +521,14 @@ export class DropdownComponent {
       }
 
       if (item.submenu) {
-        const hasInputs = item.submenu.some(sub => !!sub.customListType);
-        const submenuClass = ['dropdown-menu', 'sub', 'hidden', hasInputs ? 'sub-inputs' : '', this.alignMenuRight ? 'dropdown-menu-right' : ''].join(' ');
+        const hasInputs = item.submenu.some((sub) => !!sub.customListType);
+        const submenuClass = [
+          'dropdown-menu',
+          'sub',
+          'hidden',
+          hasInputs ? 'sub-inputs' : '',
+          this.alignMenuRight ? 'dropdown-menu-right' : '',
+        ].join(' ');
 
         return (
           <div
@@ -445,19 +541,22 @@ export class DropdownComponent {
               href="javascript:void(0)"
               id={`dropdown-item-${currentId}`}
               class={`dropdown-item dropdown-submenu-toggle ${this.size}`}
-              aria-haspopup="true"
+              aria-haspopup="menu"
               aria-expanded="false"
               aria-controls={submenuId}
               tabIndex={0}
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-              onMouseEnter={(e) => this.showSubmenu(submenuId, (e.currentTarget as HTMLElement))}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onMouseEnter={(e) => this.showSubmenu(submenuId, e.currentTarget as HTMLElement)}
             >
               {this.alignMenuRight && <icon-component icon="fa-solid fa-caret-left" />}
               {item.name}
               {!this.alignMenuRight && <icon-component icon="fa-solid fa-caret-right" />}
             </a>
 
-            <div id={submenuId} class={submenuClass} role="menu" tabIndex={-1}>
+            <div id={submenuId} class={submenuClass} role="menu" tabIndex={-1} aria-hidden="true" inert>
               {this.renderNestedItems(item.submenu, currentId)}
             </div>
           </div>
@@ -512,9 +611,10 @@ export class DropdownComponent {
 
   renderDropdownMenu() {
     const submenuIds = this.options
-      .filter(i => i.submenu)
+      .filter((i) => i.submenu)
       .map((_, i) => `submenu-${i}`)
       .join(' ');
+
     const classes = ['dropdown-menu'];
     if (this.showDropdown) classes.push('show');
     if (this.alignMenuRight) classes.push('dropdown-menu-right');
@@ -526,8 +626,8 @@ export class DropdownComponent {
         class={classes.join(' ')}
         role="menu"
         id={`${this.componentId}-menu-root`}
-        aria-activedescendant={`dropdown-item-${this.focusedIndex}`}
-        aria-owns={submenuIds}
+        aria-activedescendant={this.focusedIndex >= 0 ? `dropdown-item-${this.focusedIndex}` : undefined}
+        aria-owns={submenuIds || undefined}
         aria-labelledby={`${this.componentId}-toggle-button`}
         tabIndex={-1}
       >
@@ -537,7 +637,7 @@ export class DropdownComponent {
   }
 
   async clearSelections() {
-    const opts = Array.isArray(this.options) ? this.options.map(o => ({ ...o, checked: false })) : [];
+    const opts = Array.isArray(this.options) ? this.options.map((o) => ({ ...o, checked: false })) : [];
     this.options = opts;
 
     this.host?.dispatchEvent(new CustomEvent('items-changed', { detail: { items: opts }, bubbles: true, composed: true }));
@@ -561,10 +661,10 @@ export class DropdownComponent {
           size={this.size}
           ripple={this.ripple}
           disabled={this.disabled}
-          aria-haspopup="true"
+          aria-haspopup="menu"
           aria-controls={`${this.componentId}-menu-root`}
           aria-expanded={this.showDropdown.toString()}
-          onClick={this.toggleDropdown}
+          onClick={() => this.toggleDropdown(false)}
           title={this.titleAttr}
         >
           {this.iconDropdown ? <icon-component icon={this.icon} icon-size={this.iconSize} /> : this.buttonText}
@@ -574,6 +674,7 @@ export class DropdownComponent {
             </div>
           )}
         </button-component>
+
         {this.renderDropdownMenu()}
       </div>
     );

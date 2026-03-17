@@ -6,7 +6,9 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: 'A customizable input field component with various props for label, size, validation, and layout.',
+        component:
+          'A customizable input field component with various props for label, size, validation, and layout. ' +
+          'Updated to always render help text (sr-only) and keep aria-describedby resolvable; validation is announced via aria-live.',
       },
       source: {
         language: 'html',
@@ -128,7 +130,8 @@ export default {
     wrapWithForm: {
       control: 'boolean',
       description:
-        'When enabled, the input field will be wrapped in a `<form-component>` and `slot="formField"` is added to the `<input-field-component>` in the docs preview. This allows you to test form-related props like formLayout and see how the input behaves within a form context. This is a story-only control and does not affect the actual component props.',
+        'When enabled, the input field will be wrapped in a `<form-component>` and `slot="formField"` is added to the `<input-field-component>` in the docs preview. ' +
+        'This allows you to test form-related props like formLayout and see how the input behaves within a form context. This is a story-only control and does not affect the actual component props.',
       table: { category: 'Storybook Only', defaultValue: { summary: false } },
     },
 
@@ -224,7 +227,9 @@ const buildDocsHtml = args => {
     .map(([k, v]) => (v === true ? k : `${k}="${esc(v)}"`))
     .join(' ');
 
-  const openTag = attrStr ? `<input-field-component ${attrStr}></input-field-component>` : '<input-field-component></input-field-component>';
+  const openTag = attrStr
+    ? `<input-field-component ${attrStr}></input-field-component>`
+    : '<input-field-component></input-field-component>';
 
   // If the story is wrapped in a form (story-only behavior), reflect that in docs
   if (args.wrapWithForm) {
@@ -233,9 +238,15 @@ const buildDocsHtml = args => {
       .map(([k, v]) => `${k}="${esc(v)}"`)
       .join(' ');
 
-    const formOpen = formAttrs ? `<form-component form-id="${esc(args.formId || 'demo-form')}" ${formAttrs}>` : `<form-component form-id="${esc(args.formId || 'demo-form')}">`;
+    const formOpen = formAttrs
+      ? `<form-component form-id="${esc(args.formId || 'demo-form')}" ${formAttrs}>`
+      : `<form-component form-id="${esc(args.formId || 'demo-form')}">`;
 
-    return [formOpen, `  ${openTag.replace('<input-field-component', '<input-field-component slot="formField"')}`, '</form-component>'].join('\n');
+    return [
+      formOpen,
+      `  ${openTag.replace('<input-field-component', '<input-field-component slot="formField"')}`,
+      '</form-component>',
+    ].join('\n');
   }
 
   return openTag;
@@ -276,7 +287,7 @@ const buildDocsHtmlInlineLayout = () => {
   ].join('\n');
 };
 
-// ✅ NEW: build docs HTML for ReadOnly + Disabled from the SAME args we render with
+// ✅ build docs HTML for ReadOnly + Disabled from the SAME args we render with
 const buildDocsHtmlReadOnlyAndDisabled = () => {
   const roArgs = {
     label: 'Read-only',
@@ -300,7 +311,12 @@ const buildDocsHtmlReadOnlyAndDisabled = () => {
     wrapWithForm: false,
   };
 
-  return ['<div>', `  ${buildDocsHtml(roArgs).replace(/\n/g, '\n  ')}`, `  ${buildDocsHtml(disArgs).replace(/\n/g, '\n  ')}`, '</div>'].join('\n');
+  return [
+    '<div>',
+    `  ${buildDocsHtml(roArgs).replace(/\n/g, '\n  ')}`,
+    `  ${buildDocsHtml(disArgs).replace(/\n/g, '\n  ')}`,
+    '</div>',
+  ].join('\n');
 };
 
 /* ----------------------- Helpers ----------------------- */
@@ -401,7 +417,6 @@ Sizes.parameters = {
   },
 };
 
-// ✅ FIXED: Make HorizontalLayout args-driven so Docs "Code" matches Canvas.
 export const HorizontalLayout = {
   args: {
     formLayout: 'horizontal',
@@ -508,7 +523,6 @@ LabelHidden.parameters = {
   },
 };
 
-// ✅ FIXED: Keep multi-render story, but make Docs "Code" derive from the SAME rendered values.
 export const ReadOnlyAndDisabled = {
   render: () => {
     const stack = document.createElement('div');
@@ -553,14 +567,12 @@ export const ReadOnlyAndDisabled = {
 };
 ReadOnlyAndDisabled.storyName = 'Read-Only and Disabled';
 
-// ✅ FIXED: Make ResponsiveCols args-driven so Docs "Code" matches Canvas.
 export const ResponsiveCols = {
   args: {
     wrapWithForm: true,
     formLayout: 'horizontal',
     label: 'Company',
     inputId: 'company',
-    // Use responsive string specs instead of numeric 2/10
     labelCols: 'sm-3 md-4',
     inputCols: 'sm-9 md-8',
     validationMessage: '',
@@ -574,7 +586,235 @@ ResponsiveCols.parameters = {
   docs: {
     description: {
       story:
-        'An input field demonstrating responsive column sizing using `labelCols` and `inputCols` or `labelCol` and `inputCol` within a horizontal form layout. The label and input adjust their widths based on the screen size, ensuring a consistent and accessible layout across devices. Displayed using the `form-component` wrapper.',
+        'An input field demonstrating responsive column sizing using `labelCols` and `inputCols` within a horizontal form layout. Displayed using the `form-component` wrapper.',
     },
   },
+};
+
+// ======================================================
+// Accessibility matrix (default/inline/horizontal, error/validation, disabled)
+// Prints computed role + aria-* + ids AND validates aria-describedby/labelledby resolve
+// ======================================================
+
+function pickAttrs(el, names) {
+  const out = {};
+  for (const n of names) {
+    const v = el.getAttribute(n);
+    if (v !== null && v !== '') out[n] = v;
+  }
+  return out;
+}
+
+function splitIds(v) {
+  return String(v || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function resolveIdsWithin(host, ids) {
+  const res = {};
+  for (const id of ids) {
+    const node = host.querySelector(`[id="${String(id).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"]`);
+    res[id] = !!node;
+  }
+  return res;
+}
+
+function snapshotA11y(host) {
+  const label = host.querySelector('label.form-control-label');
+  const input = host.querySelector('input.form-control');
+  const help = host.querySelector('[id$="__desc"]');
+  const validation = host.querySelector('[id$="__validation"]');
+
+  const describedByIds = input ? splitIds(input.getAttribute('aria-describedby')) : [];
+  const labelledByIds = input ? splitIds(input.getAttribute('aria-labelledby')) : [];
+
+  return {
+    label: label
+      ? {
+          tag: label.tagName.toLowerCase(),
+          id: label.getAttribute('id') || '',
+          for: label.getAttribute('for') || '', // may be empty in light DOM; we still print it
+          class: label.className || '',
+        }
+      : null,
+    input: input
+      ? {
+          tag: input.tagName.toLowerCase(),
+          id: input.getAttribute('id') || '',
+          role: input.getAttribute('role') || '',
+          class: input.className || '',
+          ...pickAttrs(input, [
+            'aria-label',
+            'aria-labelledby',
+            'aria-describedby',
+            'aria-invalid',
+            'required',
+            'readonly',
+            'disabled',
+            'type',
+            'name',
+            'placeholder',
+            'form',
+          ]),
+          resolves: {
+            'aria-labelledby': resolveIdsWithin(host, labelledByIds),
+            'aria-describedby': resolveIdsWithin(host, describedByIds),
+          },
+        }
+      : null,
+    helpText: help
+      ? {
+          id: help.getAttribute('id') || '',
+          class: help.className || '',
+        }
+      : null,
+    validation: validation
+      ? {
+          id: validation.getAttribute('id') || '',
+          class: validation.className || '',
+          ...pickAttrs(validation, ['aria-live', 'aria-atomic']),
+        }
+      : null,
+  };
+}
+
+function renderMatrixRow({ title, args, idSuffix, forceInvalid = false }) {
+  const wrap = document.createElement('div');
+  wrap.style.border = '1px solid #ddd';
+  wrap.style.borderRadius = '12px';
+  wrap.style.padding = '12px';
+  wrap.style.display = 'grid';
+  wrap.style.gap = '10px';
+
+  const heading = document.createElement('div');
+  heading.style.fontWeight = '700';
+  heading.textContent = title;
+
+  // Ensure stable, unique id base so the component’s __desc/__validation are deterministic per row
+  const el = makeInput({
+    ...args,
+    inputId: `ifc-matrix-${idSuffix}`,
+  });
+
+  const stage = document.createElement('div');
+  stage.style.maxWidth = '560px';
+
+  const pre = document.createElement('pre');
+  pre.style.margin = '0';
+  pre.style.padding = '10px';
+  pre.style.background = '#f6f8fa';
+  pre.style.borderRadius = '10px';
+  pre.style.overflowX = 'auto';
+  pre.style.fontSize = '12px';
+  pre.textContent = 'Collecting aria/role/id…';
+
+  stage.appendChild(el);
+  wrap.appendChild(heading);
+  wrap.appendChild(stage);
+  wrap.appendChild(pre);
+
+  const update = () => {
+    const snap = snapshotA11y(el);
+    pre.textContent = JSON.stringify(snap, null, 2);
+  };
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      if (forceInvalid) {
+        const input = el.querySelector('input.form-control');
+        if (input) {
+          input.value = '';
+          input.dispatchEvent(new Event('blur', { bubbles: true }));
+        }
+      }
+      requestAnimationFrame(update);
+    });
+  });
+
+  return wrap;
+}
+
+export const AccessibilityMatrix = () => {
+  const root = document.createElement('div');
+  root.style.display = 'grid';
+  root.style.gap = '16px';
+
+  const intro = document.createElement('div');
+  intro.innerHTML = `
+    <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
+    <div style="font-size:13px; color:#444;">
+      Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs.
+      Also reports whether <code>aria-labelledby</code> / <code>aria-describedby</code> resolve to real elements.
+      Help text (<code>__desc</code>) is expected to always exist; validation (<code>__validation</code>) is expected only when invalid.
+    </div>
+  `;
+  root.appendChild(intro);
+
+  const rows = [
+    {
+      title: 'Default (stacked)',
+      args: { label: 'First Name', formLayout: '', disabled: false, required: false, validation: false, validationMessage: '' },
+      forceInvalid: false,
+    },
+    {
+      title: 'Inline',
+      args: { label: 'City', formLayout: 'inline', disabled: false, required: false, validation: false, validationMessage: '' },
+      forceInvalid: false,
+    },
+    {
+      title: 'Horizontal (responsive cols)',
+      args: {
+        label: 'Email',
+        formLayout: 'horizontal',
+        labelCols: 'xs-12 sm-3',
+        inputCols: 'xs-12 sm-9',
+        disabled: false,
+        required: false,
+        validation: false,
+        validationMessage: '',
+      },
+      forceInvalid: false,
+    },
+    {
+      title: 'Error / Validation (required + validation=true)',
+      args: {
+        label: 'Username',
+        formLayout: '',
+        required: true,
+        validation: true,
+        validationMessage: 'Please enter at least 3 characters.',
+        value: '',
+      },
+      forceInvalid: true,
+    },
+    {
+      title: 'Disabled',
+      args: { label: 'Company', formLayout: '', disabled: true, required: false, validation: false, validationMessage: '', value: 'Disabled value' },
+      forceInvalid: false,
+    },
+  ];
+
+  rows.forEach((r, idx) =>
+    root.appendChild(
+      renderMatrixRow({
+        ...r,
+        idSuffix: String(idx + 1),
+      }),
+    ),
+  );
+
+  return root;
+};
+AccessibilityMatrix.storyName = 'Accessibility Matrix (computed)';
+AccessibilityMatrix.parameters = {
+  docs: {
+    description: {
+      story:
+        'Matrix of key states (default/inline/horizontal, validation/error, disabled). Each row prints computed role/aria/ids and whether ARIA references resolve.',
+    },
+    story: { height: '1100px' },
+  },
+  controls: { disable: true },
 };

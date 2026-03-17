@@ -659,7 +659,7 @@ StandalonePickerOnly.parameters = {
 // ======================================================
 
 export const AccessibilityMatrix = {
-  name: 'Accessibility matrix (computed)',
+  name: 'Accessibility Matrix (computed)',
   render: (args) => {
     const root = document.createElement('div');
     root.style.display = 'grid';
