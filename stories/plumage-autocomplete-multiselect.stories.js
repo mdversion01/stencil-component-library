@@ -1,3 +1,5 @@
+// stories/plumage-autocomplete-multiselect.stories.js
+
 /* ------------------------------------------------------------------
  * Storybook: Plumage Autocomplete – Multiselect
  * Component tag: <plumage-autocomplete-multiselect-component>
@@ -24,11 +26,11 @@ const DocsWrapStyles = () => {
 };
 
 /** Collapse extra blank lines + trim edges (keeps intentional line breaks) */
-const normalize = txt => {
+const normalize = (txt) => {
   const lines = String(txt)
     .replace(/\r\n/g, '\n')
     .split('\n')
-    .map(l => l.replace(/[ \t]+$/g, ''));
+    .map((l) => l.replace(/[ \t]+$/g, ''));
 
   const out = [];
   let prevBlank = false;
@@ -52,14 +54,14 @@ const normalize = txt => {
 };
 
 /** Put each attribute on its own line (for Docs code previews) */
-const attrLines = pairs =>
+const attrLines = (pairs) =>
   pairs
     .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
     .map(([k, v]) => (v === true ? `${k}` : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
     .join('\n  ');
 
 /** Docs wrapper */
-const wrapDocsHtml = innerHtml =>
+const wrapDocsHtml = (innerHtml) =>
   normalize(`
 <div style="max-width:680px;">
   ${String(innerHtml).replace(/\n/g, '\n  ')}
@@ -67,7 +69,7 @@ const wrapDocsHtml = innerHtml =>
 `);
 
 /** HTML shown in Docs "Code" panel (always HTML + line-broken attrs) */
-const buildDocsHtml = args =>
+const buildDocsHtml = (args) =>
   normalize(`
 <${TAG}
   ${attrLines([
@@ -110,7 +112,6 @@ const buildDocsHtml = args =>
     ['editable', args.editable],
     ['add-icon', args.addIcon],
     ['remove-clear-btn', args.removeClearBtn],
-    ['remove-btn-border', args.removeBtnBorder],
     ['clear-icon', args.clearIcon],
     ['clear-input-on-blur-outside', args.clearInputOnBlurOutside],
 
@@ -137,10 +138,10 @@ const buildDocsHtml = args =>
 `);
 
 /** For multi-instance stories (like Sizes) */
-const buildDocsHtmlMany = blocks =>
+const buildDocsHtmlMany = (blocks) =>
   normalize(`
 <div style="display:grid; gap:14px; max-width:760px;">
-${blocks.map(b => `  ${b.replace(/\n/g, '\n  ')}`).join('\n')}
+${blocks.map((b) => `  ${b.replace(/\n/g, '\n  ')}`).join('\n')}
 </div>
 `);
 
@@ -179,18 +180,18 @@ const setValueWhenReady = async (el, value) => {
   el.value = safe;
 };
 
-const wrapEl = childEl => {
+const wrapEl = (childEl) => {
   const wrap = document.createElement('div');
   wrap.style.maxWidth = '680px';
   wrap.appendChild(childEl);
   return wrap;
 };
 
-const wireLogsOnce = el => {
+const wireLogsOnce = (el) => {
   if (!el || el._wired) return;
-  el.addEventListener('multiSelectChange', e => console.log('[multiSelectChange]', e.detail));
-  el.addEventListener('valueChange', e => console.log('[valueChange]', e.detail));
-  el.addEventListener('itemSelect', e => console.log('[itemSelect]', e.detail));
+  el.addEventListener('multiSelectChange', (e) => console.log('[multiSelectChange]', e.detail));
+  el.addEventListener('valueChange', (e) => console.log('[valueChange]', e.detail));
+  el.addEventListener('itemSelect', (e) => console.log('[itemSelect]', e.detail));
   el.addEventListener('clear', () => console.log('[clear]'));
   el._wired = true;
 };
@@ -198,7 +199,7 @@ const wireLogsOnce = el => {
 const renderOne = (args, { idOverride } = {}) => {
   const el = document.createElement(TAG);
 
-  const id = idOverride || args.inputId || args.id || 'plumage-ac-multi-selections';
+  const id = idOverride || args.inputId || args.id || 'plumage-ac-multiselect';
   setAttr(el, 'id', id);
 
   // core
@@ -231,9 +232,8 @@ const renderOne = (args, { idOverride } = {}) => {
   // controls
   args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
   setAttr(el, 'clear-icon', args.clearIcon);
-  args.removeBtnBorder ? el.setAttribute('remove-btn-border', '') : el.removeAttribute('remove-btn-border');
 
-  // add/keep-open
+  // add/behavior
   args.addBtn ? el.setAttribute('add-btn', '') : el.removeAttribute('add-btn');
   setAttr(el, 'add-icon', args.addIcon);
   args.editable ? el.setAttribute('editable', '') : el.removeAttribute('editable');
@@ -259,10 +259,8 @@ const renderOne = (args, { idOverride } = {}) => {
 
   wireLogsOnce(el);
 
-  // options prop assignment after hydration
+  // options + controlled value after hydration
   setOptionsWhenReady(el, Array.isArray(args.options) ? args.options : []);
-
-  // ✅ value prop assignment after hydration
   setValueWhenReady(el, Array.isArray(args.value) ? args.value : []);
 
   return wrapEl(el);
@@ -301,6 +299,146 @@ const FRUIT = [
 ];
 
 /* ======================================================
+ * Accessibility matrix helpers (unique names; no redeclare)
+ * ====================================================== */
+
+const escapeHtmlA11y = (s) =>
+  String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+const whenReadyA11y = (el) => {
+  if (!el) return Promise.resolve();
+  if (typeof el.componentOnReady === 'function') return el.componentOnReady();
+  if (window.customElements?.whenDefined) return customElements.whenDefined(TAG);
+  return Promise.resolve();
+};
+
+const readA11ySnapshotA11y = (el) => {
+  const input = el?.querySelector?.('input') || null;
+
+  const keys = [
+    'role',
+    'id',
+    'name',
+    'type',
+    'placeholder',
+    'aria-autocomplete',
+    'aria-expanded',
+    'aria-controls',
+    'aria-activedescendant',
+    'aria-haspopup',
+    'aria-required',
+    'aria-invalid',
+    'aria-disabled',
+    'aria-describedby',
+    'aria-labelledby',
+    'aria-label',
+  ];
+
+  const inputAttrs = {};
+  for (const k of keys) inputAttrs[k] = input ? input.getAttribute(k) : null;
+
+  const listboxId = inputAttrs['aria-controls'] || null;
+  const listbox = listboxId ? el.querySelector(`#${listboxId}`) : null;
+
+  const listboxAttrs = {};
+  if (listbox) {
+    for (const k of ['id', 'role', 'aria-multiselectable']) listboxAttrs[k] = listbox.getAttribute(k);
+  }
+
+  const live = input?.id ? el.querySelector(`#${input.id}-live`) : el.querySelector('.sr-only[aria-live]');
+  const messages = el.querySelectorAll('[role="alert"], .invalid-feedback, .error-message');
+  const msgTexts = Array.from(messages)
+    .map((n) => (n.textContent || '').trim())
+    .filter(Boolean);
+
+  return {
+    ids: {
+      inputId: input?.id || null,
+      listboxId,
+      liveId: live?.getAttribute?.('id') || null,
+    },
+    input: inputAttrs,
+    listbox: listboxAttrs,
+    liveRegion: live
+      ? {
+          id: live.getAttribute('id'),
+          'aria-live': live.getAttribute('aria-live'),
+          'aria-atomic': live.getAttribute('aria-atomic'),
+          text: (live.textContent || '').trim(),
+        }
+      : null,
+    messages: msgTexts,
+  };
+};
+
+const mkMatrixCellA11y = (args, { idOverride } = {}) => {
+  const wrap = document.createElement('div');
+  wrap.style.border = '1px solid #ddd';
+  wrap.style.borderRadius = '10px';
+  wrap.style.padding = '12px';
+  wrap.style.background = 'white';
+
+  const title = document.createElement('div');
+  title.style.fontWeight = '700';
+  title.style.marginBottom = '8px';
+  title.textContent = args.__title || 'Variant';
+
+  const compWrap = renderOne(args, { idOverride });
+  compWrap.style.maxWidth = '100%';
+
+  const status = document.createElement('div');
+  status.style.fontSize = '12px';
+  status.style.color = '#666';
+  status.style.marginTop = '8px';
+  status.textContent = 'Computing ARIA snapshot…';
+
+  const pre = document.createElement('pre');
+  pre.style.marginTop = '10px';
+  pre.style.background = '#f8f9fa';
+  pre.style.borderRadius = '8px';
+  pre.style.padding = '10px';
+  pre.style.fontSize = '12px';
+  pre.style.lineHeight = '1.35';
+  pre.style.whiteSpace = 'pre-wrap';
+  pre.textContent = '';
+
+  wrap.appendChild(title);
+  wrap.appendChild(compWrap);
+  wrap.appendChild(status);
+  wrap.appendChild(pre);
+
+  const el = compWrap.querySelector(TAG);
+
+  whenReadyA11y(el)
+    .then(() => {
+      // Force validation state when required (so aria-invalid + message IDs render)
+      if (el && args.required && typeof el.validate === 'function') {
+        try {
+          el.validate();
+        } catch (_) {
+          // ignore
+        }
+      }
+      return new Promise((r) => setTimeout(r, 0));
+    })
+    .then(() => {
+      const snap = el ? readA11ySnapshotA11y(el) : null;
+      pre.innerHTML = escapeHtmlA11y(JSON.stringify(snap, null, 2));
+      status.textContent = 'Snapshot ready.';
+    })
+    .catch((err) => {
+      status.textContent = 'Snapshot error.';
+      pre.innerHTML = escapeHtmlA11y(String(err?.stack || err));
+    });
+
+  return wrap;
+};
+
+/* ======================================================
  * Default export
  * ====================================================== */
 
@@ -309,7 +447,7 @@ export default {
   tags: ['autodocs'],
 
   decorators: [
-    Story => {
+    (Story) => {
       const wrap = document.createElement('div');
       wrap.appendChild(DocsWrapStyles());
       wrap.appendChild(Story());
@@ -331,8 +469,7 @@ export default {
     },
   },
 
-  render: args => renderOne(args),
-
+  render: (args) => renderOne(args),
 
   argTypes: {
     /* =========================
@@ -343,13 +480,14 @@ export default {
       control: 'boolean',
       name: 'add-new-on-enter',
       table: { category: 'Attributes', defaultValue: { summary: true } },
-      description: 'Adds a new option when the Enter key is pressed (editable mode).',
+      description:
+        'When pressing Enter with typed text: always selects it as a badge; if `editable=true` and `add-new-on-enter=true`, also persists it into the options list.',
     },
     autoSort: {
       control: 'boolean',
       name: 'auto-sort',
       table: { category: 'Attributes', defaultValue: { summary: true } },
-      description: 'Automatically sorts the options array when inserting new values.',
+      description: 'Automatically sorts the options array when inserting new values (editable mode).',
     },
     clearInputOnBlurOutside: {
       control: 'boolean',
@@ -361,14 +499,13 @@ export default {
       control: 'boolean',
       name: 'editable',
       table: { category: 'Attributes', defaultValue: { summary: false } },
-      description: 'Allows adding/removing options at runtime.',
+      description: 'Allows adding/removing options at runtime (enables delete buttons for user-added options).',
     },
     id: {
       control: 'text',
       name: 'id',
       table: { category: 'Attributes' },
-      description:
-        'The unique identifier for the component instance. This is used to associate the component with the javascript API and for accessibility purposes.',
+      description: 'The unique identifier for the component instance (host element id).',
     },
     preserveInputOnSelect: {
       control: 'boolean',
@@ -383,7 +520,7 @@ export default {
       description: 'The name attribute for the raw input hidden field.',
     },
 
-    /* ✅ NEW: Controlled value (selected items) */
+    /* Controlled value (selected items) */
     value: {
       control: 'object',
       name: 'value',
@@ -422,7 +559,7 @@ export default {
       control: 'boolean',
       name: 'add-btn',
       table: { category: 'Button Attributes', defaultValue: { summary: false } },
-      description: 'Displays the add button for adding new items.',
+      description: 'Displays the add button for adding new items (editable mode).',
     },
     addIcon: {
       control: 'text',
@@ -435,12 +572,6 @@ export default {
       name: 'clear-icon',
       table: { category: 'Button Attributes' },
       description: 'The icon to use for the clear button.',
-    },
-    removeBtnBorder: {
-      control: 'boolean',
-      name: 'remove-btn-border',
-      table: { category: 'Button Attributes', defaultValue: { summary: false } },
-      description: 'Removes the border from the action button(s).',
     },
     removeClearBtn: {
       control: 'boolean',
@@ -488,13 +619,13 @@ export default {
       control: 'text',
       name: 'input-id',
       table: { category: 'Input Attributes' },
-      description: 'The unique identifier for the input element within the component. This is used for accessibility and form association.',
+      description: 'The unique identifier for the input element within the component (also used to derive ARIA ids).',
     },
     label: {
       control: 'text',
       name: 'label',
       table: { category: 'Input Attributes' },
-      description: 'The text label for the component. This is used for accessibility and user guidance.',
+      description: 'The text label for the component.',
     },
     name: {
       control: 'text',
@@ -506,12 +637,12 @@ export default {
       control: 'text',
       name: 'placeholder',
       table: { category: 'Input Attributes' },
-      description: 'The placeholder text for the input element. This provides a hint to the user about what to enter.',
+      description: 'The placeholder text for the input element.',
     },
     type: {
       control: 'text',
       table: { category: 'Input Attributes' },
-      description: 'The type attribute for the input element. This can be used to specify the type of data expected (e.g., "text", "email", "number").',
+      description: 'The type attribute for the input element.',
     },
 
     /* =========================
@@ -521,47 +652,45 @@ export default {
     formId: {
       control: 'text',
       table: { category: 'Layout' },
-      description:
-        'The id of the parent form element to associate with when using form layouts. This is necessary when the component is not a direct child of the form element.',
+      description: 'The id of the parent form element to associate with when the component is not a direct child.',
     },
     formLayout: {
       control: { type: 'select' },
       options: ['', 'horizontal', 'inline'],
       name: 'form-layout',
       table: { category: 'Layout' },
-      description:
-        'Sets the form layout style. "horizontal" applies a two-column grid layout, while "inline" arranges elements in a single row.',
+      description: 'Sets the form layout style.',
     },
     inputCol: {
       control: 'text',
       name: 'input-col',
       table: { category: 'Layout', defaultValue: { summary: 10 } },
-      description: 'Used with horizontal form layouts. Single numeric column for the input in a grid. Default is 10 (col-10).',
+      description: 'Used with horizontal form layouts. Single numeric column for the input in a grid.',
     },
     inputCols: {
       control: 'text',
       name: 'input-cols',
       table: { category: 'Layout' },
-      description: 'Used with horizontal form layouts. Responsive input column classes, e.g. "col", "col-sm-9 col-md-8".',
+      description: 'Used with horizontal form layouts. Responsive input column classes.',
     },
     labelAlign: {
       control: { type: 'select' },
       options: ['', 'right'],
       name: 'label-align',
       table: { category: 'Layout' },
-      description: 'Aligns the label text. "right" aligns the label to the right, which is typically used in horizontal form layouts.',
+      description: 'Aligns the label text.',
     },
     labelCol: {
       control: 'text',
       name: 'label-col',
       table: { category: 'Layout', defaultValue: { summary: 2 } },
-      description: 'Used with horizontal form layouts. Single numeric column for the label in a grid. Default is 2 (col-2).',
+      description: 'Used with horizontal form layouts. Single numeric column for the label in a grid.',
     },
     labelCols: {
       control: 'text',
       name: 'label-cols',
       table: { category: 'Layout' },
-      description: 'Used with horizontal form layouts. Responsive label column classes, e.g. "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4".',
+      description: 'Used with horizontal form layouts. Responsive label column classes.',
     },
     labelHidden: {
       control: 'boolean',
@@ -574,14 +703,14 @@ export default {
       options: ['xs', 'sm', 'base', 'lg'],
       name: 'label-size',
       table: { category: 'Layout' },
-      description: 'Sets the size of the label text. Options include "xs" (extra small), "sm" (small), "base" (default), and "lg" (large).',
+      description: 'Sets the size of the label text.',
     },
     size: {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
       name: 'size',
       table: { category: 'Layout' },
-      description: 'Sets the size of the input field. Options include "sm" (small) and "lg" (large). Not adding any size will use the default.',
+      description: 'Sets the size of the input field.',
     },
 
     /* =========================
@@ -590,7 +719,7 @@ export default {
     error: {
       control: 'boolean',
       table: { category: 'Validation', defaultValue: { summary: false } },
-      description: 'Marks the input as having an error state, which will typically apply error styling to the component.',
+      description: 'Marks the input as having an error state.',
     },
     errorMessage: {
       control: 'text',
@@ -601,13 +730,13 @@ export default {
       control: 'boolean',
       name: 'required',
       table: { category: 'Validation', defaultValue: { summary: false } },
-      description: 'Marks the input as required, which will trigger validation if the field is left empty.',
+      description: 'Marks the input as required.',
     },
     validation: {
       control: 'boolean',
       name: 'validation',
       table: { category: 'Validation', defaultValue: { summary: false } },
-      description: 'Enables validation for the input field.',
+      description: 'Enables validation styling for the input field.',
     },
     validationMessage: {
       control: 'text',
@@ -635,7 +764,7 @@ export default {
     errorMessage: '',
     formId: '',
     formLayout: '',
-    id: 'aci4',
+    id: 'amsi4',
     inputCol: '',
     inputCols: '',
     inputId: 'ams-basic',
@@ -650,15 +779,12 @@ export default {
     placeholder: '',
     preserveInputOnSelect: false,
     rawInputName: '',
-    removeBtnBorder: false,
     removeClearBtn: false,
     required: false,
     size: '',
     type: 'text',
     validation: false,
     validationMessage: 'Pick at least one item or type 3+ characters.',
-
-    // ✅ NEW default controlled selections (none)
     value: [],
   },
 };
@@ -687,7 +813,6 @@ export const Basic = {
     labelHidden: false,
     labelSize: '',
     preserveInputOnSelect: false,
-    removeBtnBorder: false,
     removeClearBtn: false,
     required: false,
     size: '',
@@ -700,8 +825,7 @@ Basic.storyName = 'Basic Setup';
 Basic.parameters = {
   docs: {
     description: {
-      story:
-        'The default configuration of the component with no specific layout applied. Note: options are set via the `options` property after hydration.',
+      story: 'The default configuration of the component with no specific layout applied. Options are set via the `options` property after hydration.',
     },
     story: { height: '300px' },
   },
@@ -732,8 +856,7 @@ HorizontalLayout.storyName = 'Horizontal Layout';
 HorizontalLayout.parameters = {
   docs: {
     description: {
-      story:
-        'Applies a horizontal Bootstrap layout with the label aligned to the right. This layout is suitable for forms where labels and inputs are arranged in a two-column format.',
+      story: 'Applies a horizontal Bootstrap layout with the label aligned to the right.',
     },
     story: { height: '300px' },
   },
@@ -755,7 +878,7 @@ export const InlineLayout = {
     value: [],
   },
 
-  render: args => renderOne(args, { idOverride: 'ams_inline1' }),
+  render: (args) => renderOne(args, { idOverride: 'ams_inline1' }),
 
   parameters: {
     docs: {
@@ -790,7 +913,7 @@ export const EditableKeepOpenRapidPick = {
     value: ['Frontend', 'DevOps'],
   },
 
-  render: args => renderOne(args, { idOverride: 'ams_edit' }),
+  render: (args) => renderOne(args, { idOverride: 'ams_edit' }),
 
   parameters: {
     docs: {
@@ -800,14 +923,14 @@ export const EditableKeepOpenRapidPick = {
       },
       description: {
         story:
-          'When "editable" is enabled, users can type new items/options into the field and those items will appear in the dropdown list if removed from the input. This also allows users to delete the added item by clicking the "x" from the dropdown list.',
+          'When "editable" is enabled, users can type new items/options into the field and those items will appear in the dropdown list if removed from the input. This also allows deleting the added item from the dropdown list.',
       },
       story: { height: '300px' },
     },
   },
 };
 
-/* ✅ NEW: Controlled Value (array) story */
+/* Controlled Value (array) story */
 export const ControlledValue = {
   name: 'Controlled Value (array)',
   args: {
@@ -821,7 +944,7 @@ export const ControlledValue = {
     value: ['Apple', 'Mango'],
     validationMessage: '',
   },
-  render: args => {
+  render: (args) => {
     const wrap = document.createElement('div');
     wrap.style.maxWidth = '760px';
 
@@ -856,7 +979,6 @@ export const ControlledValue = {
       if (!el) return;
       await (typeof el.componentOnReady === 'function' ? el.componentOnReady() : customElements.whenDefined(TAG));
       el.value = Array.isArray(next) ? next : [];
-      // also update Storybook controls so Docs code reflects the new value
       args.value = Array.isArray(next) ? next : [];
     };
 
@@ -888,58 +1010,22 @@ ${buildDocsHtml(ctx.args)}
       },
       description: {
         story:
-          'Demonstrates the controlled `value` prop (string[]). Buttons set `el.value` as a property to update selected items programmatically (and shows sanitization behavior).',
+          'Demonstrates the controlled `value` prop (string[]). Buttons set `el.value` as a property to update selected items programmatically.',
       },
       story: { height: '380px' },
     },
   },
 };
 
-// ✅ helper: one source of truth for the Sizes story
+// helper: Sizes story variants
 const SIZES_VARIANTS = [
-  {
-    idOverride: 'ams_sm',
-    inputId: 'ams-sm',
-    size: 'sm',
-    label: 'Small',
-    editable: false,
-    addBtn: false,
-    validationMessage: '',
-    autoSort: false,
-    addNewOnEnter: false,
-    addIcon: '',
-    value: [],
-  },
-  {
-    idOverride: 'ams_md',
-    inputId: 'ams-md',
-    size: '',
-    label: 'Default',
-    editable: false,
-    addBtn: false,
-    validationMessage: '',
-    autoSort: false,
-    addNewOnEnter: false,
-    addIcon: '',
-    value: [],
-  },
-  {
-    idOverride: 'ams_lg',
-    inputId: 'ams-lg',
-    size: 'lg',
-    label: 'Large',
-    editable: false,
-    addBtn: false,
-    validationMessage: '',
-    autoSort: false,
-    addNewOnEnter: false,
-    addIcon: '',
-    value: [],
-  },
+  { idOverride: 'ams_sm', inputId: 'ams-sm', size: 'sm', label: 'Small', editable: false, addBtn: false, validationMessage: '', autoSort: false, addNewOnEnter: false, addIcon: '', value: [] },
+  { idOverride: 'ams_md', inputId: 'ams-md', size: '', label: 'Default', editable: false, addBtn: false, validationMessage: '', autoSort: false, addNewOnEnter: false, addIcon: '', value: [] },
+  { idOverride: 'ams_lg', inputId: 'ams-lg', size: 'lg', label: 'Large', editable: false, addBtn: false, validationMessage: '', autoSort: false, addNewOnEnter: false, addIcon: '', value: [] },
 ];
 
 export const Sizes = {
-  render: args => {
+  render: (args) => {
     const container = document.createElement('div');
     container.style.display = 'grid';
     container.style.gap = '14px';
@@ -948,6 +1034,7 @@ export const Sizes = {
     for (const v of SIZES_VARIANTS) {
       const elWrap = renderOne({ ...args, ...v }, { idOverride: v.idOverride });
       container.appendChild(elWrap);
+
       const el = elWrap.querySelector(TAG);
       if (el) {
         setOptionsWhenReady(el, FRUIT);
@@ -964,18 +1051,17 @@ export const Sizes = {
         language: 'html',
         transform: (_src, ctx) =>
           buildDocsHtmlMany(
-            SIZES_VARIANTS.map(v =>
+            SIZES_VARIANTS.map((v) =>
               buildDocsHtml({
                 ...ctx.args,
                 ...v,
-                options: undefined, // never show options as attribute in docs
+                options: undefined,
               }),
             ),
           ),
       },
       description: {
-        story:
-          'Shows the three supported sizes by setting the `size` arg to `sm`, empty string (default), and `lg`. Options/value are applied at runtime as properties.',
+        story: 'Shows the three supported sizes. Options/value are applied at runtime as properties.',
       },
       story: { height: '480px' },
     },
@@ -1052,9 +1138,125 @@ BadgeStyling.parameters = {
   docs: {
     description: {
       story:
-        'Use the "Badge Variant" control to apply Bootstrap text-bg color classes (e.g. "primary", "success", "danger") or your own CSS class for custom colors. The "Badge Shape" control can be used to apply a custom class for pill/rounded styling. For full control, use the "Badge Inline Styles" to add any CSS properties you want directly to each badge (e.g. "border-radius:12px; font-weight:600;").',
+        'Use "Badge Variant" to apply Bootstrap text-bg color classes (e.g. "primary", "success") or your own CSS class. Use "Badge Shape" for pill/rounded styling. Use "Badge Inline Styles" for inline CSS.',
     },
     story: { height: '300px' },
   },
 };
 
+/* ======================================================
+ * ✅ NEW: Accessibility matrix
+ * ====================================================== */
+
+export const AccessibilityMatrix = {
+  name: 'Accessibility matrix',
+  args: {
+    options: FRUIT,
+    value: [],
+    editable: false,
+    addBtn: false,
+    addIcon: '',
+    clearIcon: 'fa-solid fa-xmark',
+    removeClearBtn: false,
+    preserveInputOnSelect: false,
+    clearInputOnBlurOutside: false,
+    autoSort: true,
+    addNewOnEnter: true,
+    devMode: false,
+    labelHidden: false,
+    labelAlign: '',
+    labelSize: 'sm',
+    size: '',
+    formId: '',
+    name: '',
+    rawInputName: '',
+    type: 'text',
+    arialabelledBy: '',
+    placeholder: 'Type to search...',
+  },
+
+  render: (args) => {
+    const outer = document.createElement('div');
+
+    const note = document.createElement('div');
+    note.style.maxWidth = '1100px';
+    note.style.marginBottom = '10px';
+    note.style.color = '#444';
+    note.innerHTML = `
+      <div style="font-weight:700; margin-bottom:4px;">What this shows</div>
+      <div style="font-size:13px; line-height:1.4;">
+        Each variant prints a JSON snapshot of the computed <code>role</code>, <code>aria-*</code> attributes, and key ids
+        (<code>inputId</code> / <code>-listbox</code> / <code>-live</code>).
+        For required+validation states, the story calls <code>el.validate()</code> to force <code>aria-invalid</code> + message wiring.
+      </div>
+    `;
+    outer.appendChild(note);
+
+    const container = document.createElement('div');
+    container.style.display = 'grid';
+    container.style.gridTemplateColumns = 'repeat(auto-fit, minmax(360px, 1fr))';
+    container.style.gap = '14px';
+    container.style.maxWidth = '1100px';
+    outer.appendChild(container);
+
+    const variants = [
+      // Default
+      { __title: 'Default / normal', inputId: 'ams-a11y-default', label: 'Default', formLayout: '', disabled: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
+      { __title: 'Default / validation (required)', inputId: 'ams-a11y-default-validation', label: 'Default + validation', formLayout: '', disabled: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
+      { __title: 'Default / error', inputId: 'ams-a11y-default-error', label: 'Default + error', formLayout: '', disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
+      { __title: 'Default / disabled', inputId: 'ams-a11y-default-disabled', label: 'Default disabled', formLayout: '', disabled: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Apple', 'Mango'] },
+
+      // Inline
+      { __title: 'Inline / normal', inputId: 'ams-a11y-inline', label: 'Inline', formLayout: 'inline', disabled: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
+      { __title: 'Inline / validation (required)', inputId: 'ams-a11y-inline-validation', label: 'Inline + validation', formLayout: 'inline', disabled: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
+      { __title: 'Inline / error', inputId: 'ams-a11y-inline-error', label: 'Inline + error', formLayout: 'inline', disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
+      { __title: 'Inline / disabled', inputId: 'ams-a11y-inline-disabled', label: 'Inline disabled', formLayout: 'inline', disabled: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Banana', 'Orange'] },
+
+      // Horizontal
+      { __title: 'Horizontal / normal', inputId: 'ams-a11y-horizontal', label: 'Horizontal', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
+      { __title: 'Horizontal / validation (required)', inputId: 'ams-a11y-horizontal-validation', label: 'Horizontal + validation', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
+      { __title: 'Horizontal / error', inputId: 'ams-a11y-horizontal-error', label: 'Horizontal + error', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
+      { __title: 'Horizontal / disabled', inputId: 'ams-a11y-horizontal-disabled', label: 'Horizontal disabled', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Strawberry'] },
+    ];
+
+    for (let i = 0; i < variants.length; i++) {
+      const v = variants[i];
+      const cell = mkMatrixCellA11y(
+        {
+          ...args,
+          ...v,
+          options: Array.isArray(v.options) ? v.options : args.options,
+        },
+        { idOverride: `ams_a11y_${i}` },
+      );
+      container.appendChild(cell);
+    }
+
+    return outer;
+  },
+
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Renders a matrix of layout + state combinations (default/inline/horizontal × error/validation/disabled). Each cell prints computed role/ARIA attributes/ids to support accessibility reviews and 508 checks.',
+      },
+      story: { height: '1400px' },
+      source: {
+        language: 'html',
+        transform: (_src, ctx) =>
+          wrapDocsHtml(
+            normalize(`
+<!-- Accessibility Matrix renders multiple instances; see Canvas for printed computed role + aria-* + ids. -->
+
+${buildDocsHtml({
+  ...ctx.args,
+  inputId: 'ams-a11y-default',
+  label: 'Default',
+})}
+`),
+          ),
+      },
+    },
+  },
+};

@@ -3,6 +3,9 @@
 exports[`plumage-autocomplete-multiselect-component filters, navigates, selects via keyboard; badges render; dropdown closes 1`] = `
 <plumage-autocomplete-multiselect-component input-id="Fruit" label="Fruit">
   <div class="plumage">
+    <div aria-atomic="true" aria-live="polite" class="sr-only" id="fruit-live">
+      Added Grape.
+    </div>
     <div class="autocomplete-container form-group">
       <div>
         <label class="form-control-label label-sm" htmlfor="fruit">
@@ -12,28 +15,28 @@ exports[`plumage-autocomplete-multiselect-component filters, navigates, selects 
         </label>
         <div>
           <div class="ac-multi-select-container">
-            <div class="ac-selected-items">
-              <div class="badge">
+            <div aria-label="Selected items" class="ac-selected-items" id="fruit-selected" role="list">
+              <div class="badge" role="listitem">
                 <span>
                   Apple
                 </span>
-                <button aria-label="Remove Apple" class="remove-btn" data-tag="Apple" role="button" title="Remove Tag" type="button">
+                <button aria-label="Remove Apple" class="remove-btn" data-tag="Apple" title="Remove Tag" type="button">
                   <i class="fa-solid fa-xmark"></i>
                 </button>
               </div>
-              <div class="badge">
+              <div class="badge" role="listitem">
                 <span>
                   Grape
                 </span>
-                <button aria-label="Remove Grape" class="remove-btn" data-tag="Grape" role="button" title="Remove Tag" type="button">
+                <button aria-label="Remove Grape" class="remove-btn" data-tag="Grape" title="Remove Tag" type="button">
                   <i class="fa-solid fa-xmark"></i>
                 </button>
               </div>
             </div>
             <div class="ac-input-container-multi">
               <div class="input-group">
-                <input aria-autocomplete="list" aria-controls="fruit-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="fruit" inputmode="text" placeholder="Type to search/filter..." role="combobox" type="text" value="">
-                <button aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
+                <input aria-autocomplete="list" aria-controls="fruit-listbox" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="false" aria-required="false" autocomplete="off" class="form-control" id="fruit" inputmode="text" placeholder="Type to search/filter..." role="combobox" type="text" value="">
+                <button aria-disabled="false" aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
                   <i class="fa-times fas"></i>
                 </button>
               </div>
@@ -52,6 +55,7 @@ exports[`plumage-autocomplete-multiselect-component filters, navigates, selects 
 exports[`plumage-autocomplete-multiselect-component renders (stacked) and matches snapshot 1`] = `
 <plumage-autocomplete-multiselect-component input-id="Fruits" label="Fruits">
   <div class="plumage">
+    <div aria-atomic="true" aria-live="polite" class="sr-only" id="fruits-live"></div>
     <div class="autocomplete-container form-group">
       <div>
         <label class="form-control-label label-sm" htmlfor="fruits">
@@ -61,10 +65,10 @@ exports[`plumage-autocomplete-multiselect-component renders (stacked) and matche
         </label>
         <div>
           <div class="ac-multi-select-container">
-            <div class="ac-selected-items"></div>
+            <div aria-label="Selected items" class="ac-selected-items" id="fruits-selected" role="list"></div>
             <div class="ac-input-container-multi">
               <div class="input-group">
-                <input aria-autocomplete="list" aria-controls="fruits-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="fruits" inputmode="text" placeholder="Type to search/filter..." role="combobox" type="text" value="">
+                <input aria-autocomplete="list" aria-controls="fruits-listbox" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="false" aria-required="false" autocomplete="off" class="form-control" id="fruits" inputmode="text" placeholder="Type to search/filter..." role="combobox" type="text" value="">
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 // src/components/plumage-autocomplete-single/plumage-autocomplete-single-component.tsx
-import { Component, h, Prop, State, Element, EventEmitter, Event, Watch, Fragment } from '@stencil/core';
+import { Component, h, Prop, State, Element, EventEmitter, Event, Watch, Fragment, Method } from '@stencil/core';
 import { logInfo, logWarn, logError } from '../../utils/log-debug';
 
 @Component({
@@ -74,8 +74,14 @@ export class PlumageAutocompleteSingle {
   @State() private valueState: string = '';
   @State() private _resolvedFormId: string = '';
 
+  // a11y announcements
+  @State() private liveMessage: string = '';
+
   private inputEl?: HTMLInputElement;
   private suppressBlur = false;
+
+  // Stable fallback id for ARIA wiring
+  private _fallbackId: string = `plumage-acs-${Math.random().toString(36).slice(2, 10)}`;
 
   // ---------------- Events ----------------
   @Event({ eventName: 'itemSelect' }) itemSelect!: EventEmitter<string>;
@@ -87,13 +93,16 @@ export class PlumageAutocompleteSingle {
   @Watch('value')
   onValuePropChange(v: string) {
     this.valueState = v ?? '';
-    // Keep input visual in sync if external code drives value
     this.inputValue = this.sanitizeInput(this.valueState);
     if (this.inputEl) this.inputEl.value = this.inputValue;
-    // Clear dropdown on programmatic value changes
+
     this.filteredOptions = [];
     this.focusedOptionIndex = -1;
     this.dropdownOpen = false;
+
+    // best-effort selected index sync if the value matches an option
+    const idx = (this.options || []).findIndex((o) => (o || '').trim().toLowerCase() === this.inputValue.trim().toLowerCase());
+    this.selectedOptionIndex = idx >= 0 ? idx : -1;
   }
 
   @Watch('validation')
@@ -121,7 +130,6 @@ export class PlumageAutocompleteSingle {
       const sorted = [...newVal].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
       const changed = sorted.length !== newVal.length || sorted.some((v, i) => v !== newVal[i]);
       if (changed) {
-        // Mutate (prop is mutable) to keep future diffs stable
         this.options = sorted;
         return;
       }
@@ -131,7 +139,6 @@ export class PlumageAutocompleteSingle {
 
   // ---------------- Lifecycle -------------
   connectedCallback() {
-    // Inherit from nearest <form-component> if present and not already set
     const formComponent = this.el.closest('form-component') as any;
     const fcFormId = formComponent?.formId;
     const fcLayout = formComponent?.formLayout;
@@ -144,12 +151,13 @@ export class PlumageAutocompleteSingle {
       }
     }
 
-    // Seed mirrors
     this.valueState = this.value ?? '';
     this.inputValue = this.sanitizeInput(this.valueState);
     this.validationState = !!this.validation;
 
-    // Outside click collapses underline — bubble phase (matches input-group)
+    const idx = (this.options || []).findIndex((o) => (o || '').trim().toLowerCase() === this.inputValue.trim().toLowerCase());
+    this.selectedOptionIndex = idx >= 0 ? idx : -1;
+
     document.addEventListener('click', this.handleDocumentClick);
   }
 
@@ -163,16 +171,53 @@ export class PlumageAutocompleteSingle {
   }
 
   componentDidLoad() {
-    // Also watch capture to close dropdown when clicking outside fast
     document.addEventListener('click', this.handleClickOutside, true);
     this.hasBeenInteractedWith = false;
-
     this.applyFormAttribute();
   }
 
   disconnectedCallback() {
     document.removeEventListener('click', this.handleClickOutside, true);
     document.removeEventListener('click', this.handleDocumentClick);
+  }
+
+  // ---------------- IDs / ARIA helpers ----
+  private camelCase(str: string): string {
+    return (str || '')
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase()))
+      .replace(/[\s-]+/g, '');
+  }
+
+  private resolveIds(): {
+    inputId: string;
+    labelId: string;
+    listboxId: string;
+    liveId: string;
+    validationId: string;
+    errorId: string;
+  } {
+    const raw = (this.inputId || '').trim();
+    const base = this.camelCase(raw).replace(/ /g, '') || this._fallbackId;
+
+    return {
+      inputId: base,
+      labelId: `${base}-label`,
+      listboxId: `${base}-listbox`,
+      liveId: `${base}-live`,
+      validationId: `${base}-validation`,
+      errorId: `${base}-error`,
+    };
+  }
+
+  private buildDescribedBy(ids: ReturnType<typeof this.resolveIds>): string | undefined {
+    const parts: string[] = [];
+    if (this.validationState && this.validationMessage) parts.push(ids.validationId);
+    if (this.error && this.errorMessage) parts.push(ids.errorId);
+    return parts.length ? parts.join(' ') : undefined;
+  }
+
+  private announce(message: string) {
+    this.liveMessage = message;
   }
 
   // ---------------- Form attribute --------
@@ -184,7 +229,6 @@ export class PlumageAutocompleteSingle {
 
   // ---------------- Focus underline -------
   private handleInteraction = (event: Event) => {
-    // prevent outside-click handler from running
     event.stopPropagation();
 
     const bFocusDiv = this.el.querySelector<HTMLDivElement>('.b-focus');
@@ -203,7 +247,6 @@ export class PlumageAutocompleteSingle {
   };
 
   private handleDocumentClick = (ev: Event) => {
-    // If the click occurred inside this component, ignore it
     const path = (ev as any).composedPath ? (ev as any).composedPath() : [];
     if (path && path.includes(this.el)) return;
 
@@ -215,20 +258,12 @@ export class PlumageAutocompleteSingle {
   };
 
   // ---------------- Utils -----------------
-  private camelCase(str: string): string {
-    return (str || '').replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase())).replace(/\s+/g, '');
-  }
-
   /** Sanitize user-typed input: strip tags, remove control chars, trim, cap length. */
   private sanitizeInput(value: string): string {
     if (typeof value !== 'string') return '';
-    // remove HTML tags
     let v = value.replace(/<[^>]*>/g, '');
-    // remove control characters (except common whitespace)
     v = v.replace(/[\u0000-\u001F\u007F]/g, '');
-    // collapse whitespace
     v = v.replace(/\s+/g, ' ').trim();
-    // cap length
     const MAX_LEN = 512;
     if (v.length > MAX_LEN) v = v.slice(0, MAX_LEN);
     return v;
@@ -291,26 +326,6 @@ export class PlumageAutocompleteSingle {
     return this.isHorizontal() || this.isInline();
   }
 
-  private getComputedCols() {
-    const DEFAULT_LABEL = 2;
-    const DEFAULT_INPUT = 10;
-    if (this.isHorizontal() && this.labelHidden) return { label: 0, input: 12 };
-
-    const lbl = Number(this.labelCol);
-    const inp = Number(this.inputCol);
-    const label = Number.isFinite(lbl) ? Math.max(1, Math.min(11, lbl)) : DEFAULT_LABEL;
-    const input = Number.isFinite(inp) ? Math.max(1, Math.min(11, inp)) : DEFAULT_INPUT;
-
-    if (this.isHorizontal() && !this.labelCols && !this.inputCols && label + input !== 12) {
-      console.error(
-        '[plumage-autocomplete-single] For formLayout="horizontal", labelCol + inputCol must equal 12. ' +
-          `Received: ${this.labelCol} + ${this.inputCol} = ${Number(this.labelCol) + Number(this.inputCol)}. Falling back to 2/10.`,
-      );
-      return { label: DEFAULT_LABEL, input: DEFAULT_INPUT };
-    }
-    return { label, input };
-  }
-
   private meetsTypingThreshold() {
     return this.inputValue.trim().length >= 3;
   }
@@ -338,7 +353,6 @@ export class PlumageAutocompleteSingle {
       this.validation = invalidNow;
     }
 
-    // Collapse underline on blur
     const bFocusDiv = this.el.querySelector<HTMLDivElement>('.b-focus');
     if (bFocusDiv) {
       bFocusDiv.style.width = '0';
@@ -349,7 +363,6 @@ export class PlumageAutocompleteSingle {
   private handleInput = (event: InputEvent | KeyboardEvent) => {
     const input = event.target as HTMLInputElement;
 
-    // Sync form attribute
     if (this._resolvedFormId) input.setAttribute('form', this._resolvedFormId);
     else input.removeAttribute('form');
 
@@ -415,12 +428,11 @@ export class PlumageAutocompleteSingle {
         return;
       }
     } else {
-      // Input event: sanitize + filter + emit
       const next = this.sanitizeInput(input.value);
       if (next !== input.value) input.value = next;
 
       this.inputValue = next;
-      this.valueState = next; // keep mirror in sync for consumers
+      this.valueState = next;
       this.valueChange.emit(this.valueState);
       this.el.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true, detail: { value: this.valueState } }));
 
@@ -475,7 +487,7 @@ export class PlumageAutocompleteSingle {
       return;
     }
 
-    const nextFiltered = this.options.filter(opt => (opt || '').toLowerCase().includes(v));
+    const nextFiltered = this.options.filter((opt) => (opt || '').toLowerCase().includes(v));
     const opening = !this.dropdownOpen && nextFiltered.length > 0;
 
     this.filteredOptions = nextFiltered;
@@ -519,7 +531,7 @@ export class PlumageAutocompleteSingle {
       idx = direction > 0 ? 0 : len - 1;
     } else {
       const delta = direction > 0 ? page : -page;
-      idx = (((idx + delta) % len) + len) % len; // wrap
+      idx = (((idx + delta) % len) + len) % len;
     }
     this.setFocusIndex(idx);
   }
@@ -545,28 +557,32 @@ export class PlumageAutocompleteSingle {
       return;
     }
 
-    // Assign sanitized text; never HTML
-    this.inputValue = this.sanitizeInput(option);
-    this.valueState = this.inputValue; // keep mirror in sync for consumers
-    if (this.inputEl) this.inputEl.value = this.inputValue;
+    const cleaned = this.sanitizeInput(option);
+    this.inputValue = cleaned;
+    this.valueState = cleaned;
+    if (this.inputEl) this.inputEl.value = cleaned;
 
     this.filteredOptions = [];
     this.focusedOptionIndex = -1;
-    this.selectedOptionIndex = this.options.indexOf(option);
+
+    const idx = (this.options || []).findIndex((o) => (o || '').trim().toLowerCase() === cleaned.trim().toLowerCase());
+    this.selectedOptionIndex = idx >= 0 ? idx : -1;
+
     this.validationState = false;
     this.validation = false;
 
-    // Emit selection (sanitized)
-    this.itemSelect.emit(this.inputValue);
-    this.valueChange.emit(this.inputValue);
-    this.el.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true, detail: { value: this.inputValue } }));
+    this.itemSelect.emit(cleaned);
+    this.valueChange.emit(cleaned);
+    this.el.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true, detail: { value: cleaned } }));
 
     this.dropdownOpen = false;
     this.suppressBlur = false;
 
+    this.announce(`Selected ${cleaned}.`);
+
     setTimeout(() => this.el.querySelector('input')?.focus(), 0);
 
-    logInfo(this.devMode, 'PlumageAutocompleteSingle', 'Item selected', { selected: this.inputValue });
+    logInfo(this.devMode, 'PlumageAutocompleteSingle', 'Item selected', { selected: cleaned });
   }
 
   private closeDropdown() {
@@ -595,10 +611,13 @@ export class PlumageAutocompleteSingle {
     this.valueChange.emit('');
     this.el.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true, detail: { value: '' } }));
 
+    this.announce('Cleared input.');
+
     logInfo(this.devMode, 'PlumageAutocompleteSingle', 'Input cleared');
   };
 
-  public validate(): boolean {
+  @Method()
+  public async validate(): Promise<boolean> {
     const invalid = this.required && this.inputValue.trim() === '';
     this.validationState = invalid;
     this.validation = invalid;
@@ -620,8 +639,6 @@ export class PlumageAutocompleteSingle {
   }
 
   private inputClasses() {
-
-    // Match input-group: reflect validationState for visual invalid
     return ['form-control', this.validationState || this.error ? 'is-invalid' : ''].filter(Boolean).join(' ');
   }
 
@@ -630,37 +647,45 @@ export class PlumageAutocompleteSingle {
     return ['input-group', 'autocomplete-single-select', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
   }
 
-  private renderInputLabel(ids: string, labelColClass?: string) {
-    if (this.labelHidden) return null;
+  private renderInputLabel(ids: ReturnType<typeof this.resolveIds>, labelColClass?: string) {
     const text = this.isRowLayout() ? `${this.label}:` : this.label;
     return (
-      <label class={this.labelClasses(labelColClass)} htmlFor={ids || undefined}>
+      <label class={this.labelClasses(labelColClass)} id={ids.labelId} htmlFor={ids.inputId || undefined}>
         <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
         {this.required ? <span class="required">*</span> : ''}
       </label>
     );
   }
 
-  private renderInputField(ids: string, names: string) {
-    const placeholder = (this.placeholder && this.placeholder.trim().length > 0 ? this.placeholder : this.label) || 'Placeholder Text';
+  private renderInputField(ids: ReturnType<typeof this.resolveIds>) {
+    const placeholder = (this.placeholder && this.placeholder.trim().length > 0 ? this.placeholder : this.label) || 'Type to search';
+    const describedBy = this.buildDescribedBy(ids);
+
+    const hasVisibleLabel = !this.labelHidden && !!this.label;
+    const fallbackAriaLabel = (this.label || placeholder || 'Autocomplete').trim();
+
+    const invalid = !!(this.validationState || this.error);
+    const activeOptionId = this.dropdownOpen && this.focusedOptionIndex >= 0 ? `${ids.inputId}-opt-${this.focusedOptionIndex}` : undefined;
+
     return (
       <input
-        ref={el => (this.inputEl = el as HTMLInputElement)}
-        id={ids || null}
-        name={names || null}
+        ref={(el) => (this.inputEl = el as HTMLInputElement)}
+        id={ids.inputId}
         role="combobox"
-        aria-label={this.labelHidden ? names : null}
-        aria-labelledby={this.arialabelledBy || undefined}
-        aria-describedby={this.validationState ? `${ids}-validation` : this.error ? `${ids}-error` : null}
         aria-autocomplete="list"
         aria-expanded={this.dropdownOpen ? 'true' : 'false'}
-        aria-controls={`${ids}-listbox`}
-        aria-activedescendant={this.focusedOptionIndex >= 0 ? `${ids}-option-${this.focusedOptionIndex}` : undefined}
-        aria-required={this.required ? 'true' : 'false'}
+        aria-controls={ids.listboxId}
+        aria-activedescendant={activeOptionId}
         aria-haspopup="listbox"
+        aria-required={this.required ? 'true' : 'false'}
+        aria-invalid={invalid ? 'true' : 'false'}
+        aria-disabled={this.disabled ? 'true' : 'false'}
+        aria-describedby={describedBy}
+        aria-labelledby={this.arialabelledBy ? this.arialabelledBy : hasVisibleLabel ? ids.labelId : undefined}
+        aria-label={!hasVisibleLabel && !this.arialabelledBy ? fallbackAriaLabel : undefined}
         class={this.inputClasses()}
-        type={this.type}
-        placeholder={this.labelHidden ? placeholder : placeholder}
+        type={this.type || 'text'}
+        placeholder={placeholder}
         value={this.inputValue}
         disabled={this.disabled}
         onInput={this.handleInput}
@@ -680,38 +705,56 @@ export class PlumageAutocompleteSingle {
   private renderClearButton() {
     if (this.removeClearBtn || this.disabled || !this.inputValue) return null;
     return (
-      <button class="input-group-btn clear clear-btn" role="button" onClick={this.clearInput} aria-label="Clear input" title="Clear input" disabled={this.disabled}>
-        <i class={this.clearIcon || 'fas fa-times'} />
+      <button
+        type="button"
+        class="input-group-btn clear clear-btn"
+        onClick={this.clearInput}
+        aria-label="Clear input"
+        title="Clear input"
+        disabled={this.disabled}
+        aria-disabled={this.disabled ? 'true' : 'false'}
+      >
+        <i class={this.clearIcon || 'fas fa-times'} aria-hidden="true" />
       </button>
     );
   }
 
-  private renderDropdownList(ids: string) {
+  private renderDropdownList(ids: ReturnType<typeof this.resolveIds>) {
     return (
-      <ul role="listbox" id={`${ids}-listbox`} tabIndex={-1}>
-        {this.filteredOptions.map((option, index) => (
-          <li
-            id={`${ids}-option-${index}`}
-            role="option"
-            aria-selected={this.focusedOptionIndex === index ? 'true' : 'false'}
-            class={{
-              'autocomplete-dropdown-item': true,
-              'focused': this.focusedOptionIndex === index,
-              'virtually-focused': this.focusedOptionIndex === index,
-              [`${this.size}`]: !!this.size,
-            }}
-            onMouseDown={this.onDropdownMouseDown}
-            onClick={() => this.selectOption(option)}
-            tabIndex={-1}
-          >
-            <span>{option}</span>
-          </li>
-        ))}
+      <ul role="listbox" id={ids.listboxId} tabIndex={-1}>
+        {this.filteredOptions.map((option, index) => {
+          const optId = `${ids.inputId}-opt-${index}`;
+          const isFocused = this.focusedOptionIndex === index;
+
+          // aria-selected should indicate the selected option, not the focused option
+          const isSelected =
+            this.selectedOptionIndex >= 0 &&
+            (this.options?.[this.selectedOptionIndex] || '').trim().toLowerCase() === (option || '').trim().toLowerCase();
+
+          return (
+            <li
+              id={optId}
+              role="option"
+              aria-selected={isSelected ? 'true' : 'false'}
+              class={{
+                'autocomplete-dropdown-item': true,
+                focused: isFocused,
+                'virtually-focused': isFocused,
+                [`${this.size}`]: !!this.size,
+              }}
+              onMouseDown={this.onDropdownMouseDown}
+              onClick={() => this.selectOption(option)}
+              tabIndex={-1}
+            >
+              <span>{option}</span>
+            </li>
+          );
+        })}
       </ul>
     );
   }
 
-  private renderDropdown(ids: string) {
+  private renderDropdown(ids: ReturnType<typeof this.resolveIds>) {
     if (!this.dropdownOpen) return null;
     return (
       <div class="autocomplete-dropdown single" aria-live="polite" onMouseDown={this.onDropdownMouseDown}>
@@ -720,45 +763,34 @@ export class PlumageAutocompleteSingle {
     );
   }
 
-  private renderMessage(kind: 'validation' | 'error', ids: string) {
-    // Keep stacked/row messages; drive visibility from state for validation
+  private renderMessage(kind: 'validation' | 'error', ids: ReturnType<typeof this.resolveIds>) {
     const active = kind === 'validation' ? this.validationState && !!this.validationMessage : this.error && !!this.errorMessage;
-    if (!active) return '';
+    if (!active) return null;
+
     const message = kind === 'validation' ? this.validationMessage : this.errorMessage;
-    const baseId = kind === 'validation' ? `${ids}-validation` : `${ids}-error`;
+    const baseId = kind === 'validation' ? ids.validationId : ids.errorId;
     const baseClass = kind === 'validation' ? 'invalid-feedback' : 'error-message';
 
-    if (this.isHorizontal()) {
-      return (
-        <div id={baseId} class={baseClass} aria-live="polite">
-          {message}
-        </div>
-      );
-    }
-
-    if (this.isInline()) {
-      return (
-        <div id={baseId} class={baseClass} aria-live="polite">
-          {message}
-        </div>
-      );
-    }
+    const liveProps =
+      kind === 'error'
+        ? { 'aria-live': 'assertive' as const, role: 'alert' as const }
+        : { 'aria-live': 'polite' as const, role: undefined as any };
 
     return (
-      <div id={baseId} class={baseClass} aria-live="polite">
+      <div id={baseId} class={baseClass} {...liveProps}>
         {message}
       </div>
     );
   }
 
-  private renderFieldArea(ids: string, names: string) {
+  private renderFieldArea(ids: ReturnType<typeof this.resolveIds>) {
     return (
       <Fragment>
         <div class={this.groupClasses()} onClick={this.handleInteraction}>
-          {this.renderInputField(ids, names)}
+          {this.renderInputField(ids)}
           {this.renderClearButton()}
         </div>
-        {/* Underline/focus bar (exactly the same as input-group) */}
+
         <div class={`b-underline${this.validationState ? ' invalid' : ''}`} role="presentation">
           <div
             class={`b-focus${this.disabled ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`}
@@ -767,29 +799,31 @@ export class PlumageAutocompleteSingle {
             style={{ width: '0', left: '50%' } as any}
           />
         </div>
-
-        {/* Inline validation inside group (parity with input-group) */}
-        {/* {this.validationState && this.validationMessage ? (
-          <div id="validationMessage" class="invalid-feedback form-text">
-            {this.validationMessage}
-          </div>
-        ) : null} */}
       </Fragment>
     );
   }
 
-  private renderLayout(ids: string, names: string) {
+  private renderLayout(ids: ReturnType<typeof this.resolveIds>) {
     const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
+    const inputColClass = this.isHorizontal()
+      ? this.buildColClass('input') || undefined
+      : this.isInline()
+        ? this.buildColClass('input') || undefined
+        : undefined;
 
     if (this.isRowLayout()) {
       return (
         <div class={outerClass}>
           <div class={`row form-group ${this.isInline() ? 'inline' : this.isHorizontal() ? 'horizontal' : ''}`}>
-            {this.renderInputLabel(ids, labelColClass)}
+            {!this.labelHidden ? this.renderInputLabel(ids, labelColClass) : (
+              // Still render SR-only label for 508 if labelHidden=true
+              <label class={this.labelClasses(labelColClass)} id={ids.labelId} htmlFor={ids.inputId || undefined}>
+                <span class="sr-only">{this.label || this.placeholder || 'Autocomplete'}</span>
+              </label>
+            )}
             <div class={inputColClass}>
-              {this.renderFieldArea(ids, names)}
+              {this.renderFieldArea(ids)}
               {this.renderDropdown(ids)}
               {this.isInline() ? this.renderMessage('validation', ids) : null}
               {this.isInline() ? this.renderMessage('error', ids) : null}
@@ -801,12 +835,15 @@ export class PlumageAutocompleteSingle {
       );
     }
 
-    // Stacked
     return (
       <div class={outerClass}>
-        {this.renderInputLabel(ids)}
+        {!this.labelHidden ? this.renderInputLabel(ids) : (
+          <label class={this.labelClasses()} id={ids.labelId} htmlFor={ids.inputId || undefined}>
+            <span class="sr-only">{this.label || this.placeholder || 'Autocomplete'}</span>
+          </label>
+        )}
         <div>
-          {this.renderFieldArea(ids, names)}
+          {this.renderFieldArea(ids)}
           {this.renderDropdown(ids)}
           {this.renderMessage('validation', ids)}
           {this.renderMessage('error', ids)}
@@ -817,15 +854,16 @@ export class PlumageAutocompleteSingle {
 
   // ---------------- Render root -----------
   render() {
-    const ids = this.camelCase(this.inputId).replace(/ /g, '');
-    const names = this.camelCase(this.label).replace(/ /g, '');
-
-    // numeric fallback validation (parity with input-group)
-    this.getComputedCols();
+    const ids = this.resolveIds();
 
     return (
       <div class="plumage">
-        <div class={{ 'autocomplete-container': true, 'form-group': true }}>{this.renderLayout(ids, names)}</div>
+        {/* SR announcements */}
+        <div id={ids.liveId} class="sr-only" aria-live="polite" aria-atomic="true">
+          {this.liveMessage}
+        </div>
+
+        <div class={{ 'autocomplete-container': true, 'form-group': true }}>{this.renderLayout(ids)}</div>
       </div>
     );
   }

@@ -961,8 +961,8 @@ export const AccessibilityMatrix = {
     const card = (labelText, build) => {
       const c = document.createElement('div');
       c.style.display = 'grid';
-      c.style.gridTemplateColumns = '300px 1fr';
-      c.style.gap = '12px';
+      // c.style.gridTemplateColumns = '300px 1fr';
+      // c.style.gap = '12px';
       c.style.alignItems = 'start';
       c.style.border = '1px solid #ddd';
       c.style.borderRadius = '8px';

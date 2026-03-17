@@ -48,6 +48,19 @@
 | `valueChange`    |             | `CustomEvent<string>`                               |
 
 
+## Methods
+
+### `validate() => Promise<boolean>`
+
+
+
+#### Returns
+
+Type: `Promise<boolean>`
+
+
+
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

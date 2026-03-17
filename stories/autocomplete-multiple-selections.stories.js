@@ -963,12 +963,13 @@ export const AccessibilityMatrix = {
     const row = (labelText, build) => {
       const card = document.createElement('div');
       card.style.display = 'grid';
-      card.style.gridTemplateColumns = '280px 1fr';
-      card.style.gap = '12px';
+      // card.style.gridTemplateColumns = 'repeat(auto-fit, minmax(360px, 1fr))';
+      // card.style.gap = '14px';
       card.style.alignItems = 'start';
       card.style.border = '1px solid #ddd';
       card.style.borderRadius = '8px';
       card.style.padding = '12px';
+      // card.style.maxWidth = '1100px';
 
       const left = document.createElement('div');
       left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
@@ -1106,8 +1107,8 @@ export const AccessibilityMatrix = {
 
         const card = document.createElement('div');
         card.style.display = 'grid';
-        card.style.gridTemplateColumns = '280px 1fr';
-        card.style.gap = '12px';
+        // card.style.gridTemplateColumns = '280px 1fr';
+        // card.style.gap = '12px';
         card.style.alignItems = 'start';
         card.style.border = '1px solid #ddd';
         card.style.borderRadius = '8px';

@@ -1,21 +1,91 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`plumage-autocomplete-single filters on input and selects an option; dropdown closes and value is set 1`] = `
-<plumage-autocomplete-single input-id="acs">
+exports[`plumage-autocomplete-single error state sets aria-invalid and error message uses role=alert 1`] = `
+<plumage-autocomplete-single error-message="Bad value" input-id="acs">
   <div class="plumage">
+    <div aria-atomic="true" aria-live="polite" class="sr-only" id="acs-live"></div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label label-sm" htmlfor="acs">
+        <label class="form-control-label label-sm" htmlfor="acs" id="acs-label">
           <span>
             City
           </span>
         </label>
         <div>
           <div class="autocomplete-single-select input-group">
-            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="acs" inputmode="text" name="city" placeholder="City" role="combobox" type="text" value="Apple">
-            <button aria-label="Clear input" class="clear clear-btn input-group-btn" role="button" title="Clear input">
-              <i class="fa-times fas"></i>
+            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-describedby="acs-error" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="true" aria-labelledby="acs-label" aria-required="false" autocomplete="off" class="form-control is-invalid" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="">
+          </div>
+          <div class="b-underline" role="presentation">
+            <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
+          </div>
+          <div aria-live="assertive" class="error-message" id="acs-error" role="alert">
+            Bad value
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-autocomplete-single>
+`;
+
+exports[`plumage-autocomplete-single filters on input and selects an option; dropdown closes and value is set; aria-selected reflects selected option; aria-activedescendant references option id 1`] = `
+<plumage-autocomplete-single input-id="acs">
+  <div class="plumage">
+    <div aria-atomic="true" aria-live="polite" class="sr-only" id="acs-live">
+      Selected Apple.
+    </div>
+    <div class="autocomplete-container form-group">
+      <div>
+        <label class="form-control-label label-sm" htmlfor="acs" id="acs-label">
+          <span>
+            City
+          </span>
+        </label>
+        <div>
+          <div class="autocomplete-single-select input-group">
+            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-disabled="false" aria-expanded="true" aria-haspopup="listbox" aria-invalid="false" aria-labelledby="acs-label" aria-required="false" autocomplete="off" class="form-control" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="a">
+            <button aria-disabled="false" aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
+              <i aria-hidden="true" class="fa-times fas"></i>
             </button>
+          </div>
+          <div class="b-underline" role="presentation">
+            <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
+          </div>
+          <div aria-live="polite" class="autocomplete-dropdown single">
+            <ul id="acs-listbox" role="listbox" tabindex="-1">
+              <li aria-selected="true" class="autocomplete-dropdown-item" id="acs-opt-0" role="option" tabindex="-1">
+                <span>
+                  Apple
+                </span>
+              </li>
+              <li aria-selected="false" class="autocomplete-dropdown-item" id="acs-opt-1" role="option" tabindex="-1">
+                <span>
+                  Banana
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-autocomplete-single>
+`;
+
+exports[`plumage-autocomplete-single label-hidden uses aria-label fallback when no aria-labelledby provided 1`] = `
+<plumage-autocomplete-single input-id="acs" label-hidden="">
+  <div class="plumage">
+    <div aria-atomic="true" aria-live="polite" class="sr-only" id="acs-live"></div>
+    <div class="autocomplete-container form-group">
+      <div>
+        <label class="form-control-label label-sm sr-only" htmlfor="acs" id="acs-label">
+          <span class="sr-only">
+            City
+          </span>
+        </label>
+        <div>
+          <div class="autocomplete-single-select input-group">
+            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="false" aria-label="City" aria-required="false" autocomplete="off" class="form-control" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="">
           </div>
           <div class="b-underline" role="presentation">
             <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
@@ -30,16 +100,17 @@ exports[`plumage-autocomplete-single filters on input and selects an option; dro
 exports[`plumage-autocomplete-single renders stacked layout with underline present (not invalid by default) 1`] = `
 <plumage-autocomplete-single input-id="acs">
   <div class="plumage">
+    <div aria-atomic="true" aria-live="polite" class="sr-only" id="acs-live"></div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label label-sm" htmlfor="acs">
+        <label class="form-control-label label-sm" htmlfor="acs" id="acs-label">
           <span>
             City
           </span>
         </label>
         <div>
           <div class="autocomplete-single-select input-group">
-            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-expanded="false" aria-haspopup="listbox" aria-required="false" autocomplete="off" class="form-control" id="acs" inputmode="text" name="city" placeholder="City" role="combobox" type="text" value="">
+            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="false" aria-labelledby="acs-label" aria-required="false" autocomplete="off" class="form-control" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="">
           </div>
           <div class="b-underline" role="presentation">
             <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
@@ -51,12 +122,13 @@ exports[`plumage-autocomplete-single renders stacked layout with underline prese
 </plumage-autocomplete-single>
 `;
 
-exports[`plumage-autocomplete-single required + blur marks invalid and shows validation message; underline reflects invalid state 1`] = `
+exports[`plumage-autocomplete-single required + blur marks invalid and shows validation message; underline reflects invalid state; aria-describedby wired to validation id 1`] = `
 <plumage-autocomplete-single input-id="acs" validation-message="Please fill in">
   <div class="plumage">
+    <div aria-atomic="true" aria-live="polite" class="sr-only" id="acs-live"></div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label invalid label-sm" htmlfor="acs">
+        <label class="form-control-label invalid label-sm" htmlfor="acs" id="acs-label">
           <span class="required">
             City
           </span>
@@ -66,7 +138,7 @@ exports[`plumage-autocomplete-single required + blur marks invalid and shows val
         </label>
         <div>
           <div class="autocomplete-single-select input-group is-invalid">
-            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-describedby="acs-validation" aria-expanded="false" aria-haspopup="listbox" aria-required="true" autocomplete="off" class="form-control is-invalid" id="acs" inputmode="text" name="city" placeholder="City" role="combobox" type="text" value="">
+            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-describedby="acs-validation" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="true" aria-labelledby="acs-label" aria-required="true" autocomplete="off" class="form-control is-invalid" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="">
           </div>
           <div class="b-underline invalid" role="presentation">
             <div aria-hidden="true" class="b-focus invalid" role="presentation" style="width: 0; left: 50%;"></div>

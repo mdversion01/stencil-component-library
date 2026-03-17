@@ -193,15 +193,56 @@ const updateArgsBestEffort = (ctx, updatedArgs) => {
 const DEFAULT_OPTIONS = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
 
 // ======================================================
+// ✅ Unique-per-mount ids (Docs mounts stories multiple times)
+// ======================================================
+
+const __renderSeqByStory = Object.create(null);
+
+const safeStoryKey = (ctx) => String(ctx?.id || 'story').replace(/[^a-z0-9_-]/gi, '_');
+
+const nextMountSuffix = (ctx) => {
+  const k = safeStoryKey(ctx);
+  __renderSeqByStory[k] = (__renderSeqByStory[k] || 0) + 1;
+  return `${k}_${__renderSeqByStory[k]}`;
+};
+
+const withUniqueId = (base, suffix) => {
+  const b = String(base || '').trim() || 'acSingle';
+  return `${b}__${suffix}`;
+};
+
+const getMountSuffix = (ctx) => {
+  // One suffix per story mount (not per component call)
+  if (!ctx) return 'mount';
+  if (!ctx.__acSingleMountSuffix) ctx.__acSingleMountSuffix = nextMountSuffix(ctx);
+  if (!ctx.__acSingleLocalSeq) ctx.__acSingleLocalSeq = 0;
+  return ctx.__acSingleMountSuffix;
+};
+
+const nextLocalSeq = (ctx) => {
+  if (!ctx) return 1;
+  ctx.__acSingleLocalSeq = (ctx.__acSingleLocalSeq || 0) + 1;
+  return ctx.__acSingleLocalSeq;
+};
+
+// ======================================================
 // Reusable renderer (used by stories + a11y matrix)
 // ======================================================
 
 const renderComponent = (args, ctx) => {
   const el = document.createElement('autocomplete-single');
 
+  // ✅ ensure unique ids even if the same story is mounted twice (Docs)
+  const mountSuffix = getMountSuffix(ctx);
+  const local = nextLocalSeq(ctx);
+  const uniq = `${mountSuffix}_${local}`;
+
+  const hostId = withUniqueId(args.id, uniq);
+  const inputId = withUniqueId(args.inputId, uniq);
+
   // string attrs
-  setAttr(el, 'id', args.id);
-  setAttr(el, 'input-id', args.inputId);
+  setAttr(el, 'id', hostId);
+  setAttr(el, 'input-id', inputId);
   setAttr(el, 'label', args.label);
   setAttr(el, 'placeholder', args.placeholder);
   setAttr(el, 'form-id', args.formId);
@@ -249,14 +290,14 @@ const renderComponent = (args, ctx) => {
   el.addEventListener('valueChange', (e) => console.log('[autocomplete-single] valueChange', e.detail));
   el.addEventListener('clear', () => console.log('[autocomplete-single] clear'));
 
-  // reflect emitted changes back into args (Canvas)
-  el.addEventListener('valueChange', (e) => {
-    const next = e?.detail ?? '';
-    updateArgsBestEffort(ctx, { value: String(next) });
+  // ✅ FIX: DO NOT sync args on every keystroke.
+  // Only sync on discrete actions (select/clear) to prevent remount flicker and cross-instance mirroring.
+  el.addEventListener('itemSelect', (e) => {
+    const next = String(e?.detail ?? '');
+    updateArgsBestEffort(ctx, { value: next });
   });
-  el.addEventListener('change', (e) => {
-    const next = e?.detail?.value;
-    if (next !== undefined) updateArgsBestEffort(ctx, { value: String(next) });
+  el.addEventListener('clear', () => {
+    updateArgsBestEffort(ctx, { value: '' });
   });
 
   return el;
@@ -323,7 +364,8 @@ export default {
       control: 'text',
       name: 'id',
       table: { category: 'Attributes' },
-      description: 'The unique identifier for the component instance.',
+      description:
+        'Base id for the host element. Storybook will suffix it per-mount to prevent duplicate ids when Docs mounts stories multiple times.',
     },
     labelHidden: {
       control: 'boolean',
@@ -395,7 +437,8 @@ export default {
       control: 'text',
       name: 'input-id',
       table: { category: 'Input Attributes' },
-      description: 'The unique identifier for the input element within the component.',
+      description:
+        'Base input-id used to derive internal ARIA ids. Storybook will suffix it per-mount to prevent collisions when Docs mounts twice.',
     },
     label: {
       control: 'text',
@@ -530,10 +573,10 @@ export default {
     errorMessage: '',
     formId: '',
     formLayout: '',
-    id: 'aci-story',
+    id: 'acSingle_story',
     inputCol: 10,
     inputCols: '',
-    inputId: 'ac-single',
+    inputId: 'acSingle',
     label: 'Autocomplete Single',
     labelAlign: '',
     labelCol: 2,
@@ -558,6 +601,9 @@ export default {
 
 export const Basic = {
   args: {
+    // ✅ different base ids (still suffixed per mount)
+    id: 'acSingle_basic',
+    inputId: 'acSingle_basic',
     value: '',
   },
 };
@@ -568,6 +614,8 @@ Basic.parameters = {
 
 export const HorizontalLayout = {
   args: {
+    id: 'acSingle_horizontal',
+    inputId: 'acSingle_horizontal',
     formLayout: 'horizontal',
     labelAlign: 'right',
     labelCol: 4,
@@ -581,6 +629,8 @@ HorizontalLayout.parameters = {
 
 export const InlineLayout = {
   args: {
+    id: 'acSingle_inline',
+    inputId: 'acSingle_inline',
     formLayout: 'inline',
     labelAlign: '',
     size: 'sm',
@@ -593,9 +643,9 @@ InlineLayout.parameters = {
 
 // Sizes (sm, default "", lg)
 const SIZE_VARIANTS = [
-  { key: 'sm', label: 'Small', size: 'sm', inputId: 'ac-single-sm', id: 'ac_single_sm' },
-  { key: 'default', label: 'Default', size: '', inputId: 'ac-single-md', id: 'ac_single_md' },
-  { key: 'lg', label: 'Large', size: 'lg', inputId: 'ac-single-lg', id: 'ac_single_lg' },
+  { key: 'sm', label: 'Small', size: 'sm', inputId: 'acSingle_sm', id: 'acSingle_sm' },
+  { key: 'default', label: 'Default', size: '', inputId: 'acSingle_md', id: 'acSingle_md' },
+  { key: 'lg', label: 'Large', size: 'lg', inputId: 'acSingle_lg', id: 'acSingle_lg' },
 ];
 
 export const Sizes = {
@@ -646,9 +696,11 @@ export const Sizes = {
 };
 Sizes.storyName = 'Sizes';
 
-// Controlled Value (buttons always work; args sync when possible)
+// Controlled Value (buttons always work; ✅ no keystroke syncing)
 export const ControlledValue = {
   args: {
+    id: 'acSingle_controlled',
+    inputId: 'acSingle_controlled',
     placeholder: 'Type to search/filter...',
     value: 'Apple',
   },
@@ -691,12 +743,9 @@ export const ControlledValue = {
     btnMango.addEventListener('click', () => applyValue('Mango'));
     btnClear.addEventListener('click', () => applyValue(''));
 
-    // reflect emitted changes back into args (Canvas)
-    el.addEventListener('valueChange', (e) => applyValue(String(e?.detail ?? '')));
-    el.addEventListener('change', (e) => {
-      const next = e?.detail?.value;
-      if (next !== undefined) applyValue(String(next));
-    });
+    // sync on select/clear only (discrete)
+    el.addEventListener('itemSelect', (e) => applyValue(String(e?.detail ?? '')));
+    el.addEventListener('clear', () => applyValue(''));
 
     wrap.appendChild(el);
     wrap.appendChild(buttons);
@@ -715,6 +764,8 @@ ControlledValue.parameters = {
 
 export const FieldValidation = {
   args: {
+    id: 'acSingle_validation',
+    inputId: 'acSingle_validation',
     validation: true,
     validationMessage: 'This field is required.',
     required: true,
@@ -730,6 +781,8 @@ FieldValidation.parameters = {
 
 export const Disabled = {
   args: {
+    id: 'acSingle_disabled',
+    inputId: 'acSingle_disabled',
     disabled: true,
     value: 'Banana',
     placeholder: '',
@@ -742,7 +795,7 @@ Disabled.parameters = {
 };
 
 // ======================================================
-// NEW: Accessibility matrix story
+// NEW: Accessibility matrix story (unchanged)
 // ======================================================
 
 export const AccessibilityMatrix = {
@@ -761,8 +814,6 @@ export const AccessibilityMatrix = {
     const cardRow = (labelText, buildEl) => {
       const card = document.createElement('div');
       card.style.display = 'grid';
-      card.style.gridTemplateColumns = '280px 1fr';
-      card.style.gap = '12px';
       card.style.alignItems = 'start';
       card.style.border = '1px solid #ddd';
       card.style.borderRadius = '8px';
@@ -831,7 +882,6 @@ export const AccessibilityMatrix = {
       return card;
     };
 
-    // Default
     wrap.appendChild(
       cardRow('Default (stacked)', () =>
         renderComponent(
@@ -850,7 +900,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Inline
     wrap.appendChild(
       cardRow('Inline layout', () =>
         renderComponent(
@@ -870,7 +919,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Horizontal
     wrap.appendChild(
       cardRow('Horizontal layout', () =>
         renderComponent(
@@ -892,7 +940,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Validation + Error
     wrap.appendChild(
       cardRow('Validation + Error (aria-invalid + describedby)', () =>
         renderComponent(
@@ -912,7 +959,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Disabled
     wrap.appendChild(
       cardRow('Disabled (aria-disabled)', () =>
         renderComponent(
@@ -937,7 +983,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Prints computed accessibility wiring for the combobox + listbox: `role`, `aria-labelledby`, `aria-describedby` (including validation/error ids), `aria-controls`, `aria-expanded`, `aria-activedescendant`, plus id/label info across default/inline/horizontal, validation+error, and disabled.',
+          'Prints computed accessibility wiring for the combobox + listbox: role/aria-labelledby/aria-describedby/aria-controls/aria-expanded/aria-activedescendant plus ids across layouts and states.',
       },
       source: {
         language: 'html',

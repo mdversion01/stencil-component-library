@@ -2690,7 +2690,7 @@ export namespace Components {
          */
         "type": string;
         /**
-          * Validation controlled externally; we mirror to state for visuals (don’t mutate prop in user-land).
+          * Validation controlled externally; mirrored to state for visuals.
           * @default false
          */
         "validation": boolean;
@@ -2801,6 +2801,7 @@ export namespace Components {
           * @default 'text'
          */
         "type": string;
+        "validate": () => Promise<boolean>;
         /**
           * Validation controlled externally (prop remains source of truth)
           * @default false
@@ -4963,11 +4964,7 @@ declare global {
         "componentError": { message: string; stack?: string };
         "multiSelectChange": string[];
         "valueChange": string[];
-        "optionsChange": {
-    options: string[];
-    reason: 'add' | 'delete' | 'replace';
-    value?: string;
-  };
+        "optionsChange": { options: string[]; reason: 'add' | 'delete' | 'replace'; value?: string };
         "optionDelete": string;
     }
     interface HTMLPlumageAutocompleteMultiselectComponentElement extends Components.PlumageAutocompleteMultiselectComponent, HTMLStencilElement {
@@ -7929,11 +7926,7 @@ declare namespace LocalJSX {
         "onItemSelect"?: (event: PlumageAutocompleteMultiselectComponentCustomEvent<string>) => void;
         "onMultiSelectChange"?: (event: PlumageAutocompleteMultiselectComponentCustomEvent<string[]>) => void;
         "onOptionDelete"?: (event: PlumageAutocompleteMultiselectComponentCustomEvent<string>) => void;
-        "onOptionsChange"?: (event: PlumageAutocompleteMultiselectComponentCustomEvent<{
-    options: string[];
-    reason: 'add' | 'delete' | 'replace';
-    value?: string;
-  }>) => void;
+        "onOptionsChange"?: (event: PlumageAutocompleteMultiselectComponentCustomEvent<{ options: string[]; reason: 'add' | 'delete' | 'replace'; value?: string }>) => void;
         "onValueChange"?: (event: PlumageAutocompleteMultiselectComponentCustomEvent<string[]>) => void;
         /**
           * @default []
@@ -7965,7 +7958,7 @@ declare namespace LocalJSX {
          */
         "type"?: string;
         /**
-          * Validation controlled externally; we mirror to state for visuals (don’t mutate prop in user-land).
+          * Validation controlled externally; mirrored to state for visuals.
           * @default false
          */
         "validation"?: boolean;

@@ -303,6 +303,141 @@ const FRUIT = [
 ];
 
 /* ======================================================
+ * Accessibility matrix helpers (no async/await)
+ * - NOTE: unique helper names to avoid redeclaration issues
+ * ====================================================== */
+
+const escapeHtmlA11y = s =>
+  String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+const whenReadyA11y = el => {
+  if (!el) return Promise.resolve();
+  if (typeof el.componentOnReady === 'function') return el.componentOnReady();
+  if (window.customElements?.whenDefined) return customElements.whenDefined(TAG);
+  return Promise.resolve();
+};
+
+const readA11ySnapshotA11y = el => {
+  const input = (el && el.querySelector && el.querySelector('input')) || null;
+
+  const keys = [
+    'role',
+    'id',
+    'name',
+    'type',
+    'placeholder',
+    'aria-autocomplete',
+    'aria-expanded',
+    'aria-controls',
+    'aria-activedescendant',
+    'aria-haspopup',
+    'aria-required',
+    'aria-invalid',
+    'aria-disabled',
+    'aria-describedby',
+    'aria-labelledby',
+    'aria-label',
+  ];
+
+  const inputAttrs = {};
+  for (const k of keys) inputAttrs[k] = input ? input.getAttribute(k) : null;
+
+  const listboxId = inputAttrs['aria-controls'] || null;
+  const listbox = listboxId ? el.querySelector(`#${listboxId}`) : null;
+
+  const listboxAttrs = {};
+  if (listbox) {
+    for (const k of ['id', 'role', 'aria-multiselectable']) listboxAttrs[k] = listbox.getAttribute(k);
+  }
+
+  const live = input && input.id ? el.querySelector(`#${input.id}-live`) : el.querySelector('.sr-only[aria-live]');
+  const messages = el.querySelectorAll('[role="alert"], .invalid-feedback, .error-message');
+  const msgTexts = Array.from(messages)
+    .map(n => (n.textContent || '').trim())
+    .filter(Boolean);
+
+  return {
+    input: inputAttrs,
+    listbox: listboxAttrs,
+    liveRegion: live
+      ? {
+          id: live.getAttribute('id'),
+          'aria-live': live.getAttribute('aria-live'),
+          'aria-atomic': live.getAttribute('aria-atomic'),
+          text: (live.textContent || '').trim(),
+        }
+      : null,
+    messages: msgTexts,
+  };
+};
+
+const mkMatrixCellA11y = (args, { idOverride } = {}) => {
+  const wrap = document.createElement('div');
+  wrap.style.border = '1px solid #ddd';
+  wrap.style.borderRadius = '10px';
+  wrap.style.padding = '12px';
+  wrap.style.background = 'white';
+
+  const title = document.createElement('div');
+  title.style.fontWeight = '700';
+  title.style.marginBottom = '8px';
+  title.textContent = args.__title || 'Variant';
+
+  const compWrap = renderOne(args, { idOverride });
+  compWrap.style.maxWidth = '100%';
+
+  const status = document.createElement('div');
+  status.style.fontSize = '12px';
+  status.style.color = '#666';
+  status.style.marginTop = '8px';
+  status.textContent = 'Computing ARIA snapshot…';
+
+  const pre = document.createElement('pre');
+  pre.style.marginTop = '10px';
+  pre.style.background = '#f8f9fa';
+  pre.style.borderRadius = '8px';
+  pre.style.padding = '10px';
+  pre.style.fontSize = '12px';
+  pre.style.lineHeight = '1.35';
+  pre.style.whiteSpace = 'pre-wrap';
+  pre.textContent = '';
+
+  wrap.appendChild(title);
+  wrap.appendChild(compWrap);
+  wrap.appendChild(status);
+  wrap.appendChild(pre);
+
+  const el = compWrap.querySelector(TAG);
+
+  whenReadyA11y(el)
+    .then(() => {
+      if (el && args.required && typeof el.validate === 'function') {
+        try {
+          el.validate();
+        } catch (_) {
+          // ignore
+        }
+      }
+      return new Promise(r => setTimeout(r, 0));
+    })
+    .then(() => {
+      const snap = el ? readA11ySnapshotA11y(el) : null;
+      pre.innerHTML = escapeHtmlA11y(JSON.stringify(snap, null, 2));
+      status.textContent = 'Snapshot ready.';
+    })
+    .catch(err => {
+      status.textContent = 'Snapshot error.';
+      pre.innerHTML = escapeHtmlA11y(String((err && err.stack) || err));
+    });
+
+  return wrap;
+};
+
+/* ======================================================
  * Default export
  * ====================================================== */
 
@@ -384,7 +519,7 @@ export default {
       description: 'The name attribute for the raw input hidden field.',
     },
 
-    /* ✅ NEW: Controlled value (selected items) */
+    /* ✅ Controlled value (selected items) */
     value: {
       control: 'object',
       name: 'value',
@@ -659,7 +794,7 @@ export default {
     validation: false,
     validationMessage: 'Pick at least one item or type 3+ characters.',
 
-    // ✅ NEW default controlled selections (none)
+    // ✅ controlled selections
     value: [],
   },
 };
@@ -808,7 +943,7 @@ export const EditableKeepOpenRapidPick = {
   },
 };
 
-/* ✅ NEW: Controlled Value (array) story */
+/* ✅ Controlled Value (array) story */
 export const ControlledValue = {
   name: 'Controlled Value (array)',
   args: {
@@ -835,7 +970,7 @@ export const ControlledValue = {
     buttons.style.gap = '8px';
     buttons.style.flexWrap = 'wrap';
 
-    const mkBtn = (label) => {
+    const mkBtn = label => {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'btn btn-sm btn-secondary';
@@ -853,11 +988,10 @@ export const ControlledValue = {
     buttons.appendChild(btnClear);
     buttons.appendChild(btnWeird);
 
-    const setVal = async (next) => {
+    const setVal = async next => {
       if (!el) return;
       await (typeof el.componentOnReady === 'function' ? el.componentOnReady() : customElements.whenDefined(TAG));
       el.value = Array.isArray(next) ? next : [];
-      // also update Storybook controls so Docs code reflects the new value
       args.value = Array.isArray(next) ? next : [];
     };
 
@@ -1056,5 +1190,123 @@ BadgeStyling.parameters = {
         'Use the "Badge Variant" control to apply Bootstrap text-bg color classes (e.g. "primary", "success", "danger") or your own CSS class for custom colors. The "Badge Shape" control can be used to apply a custom class for pill/rounded styling. For full control, use the "Badge Inline Styles" to add any CSS properties you want directly to each badge (e.g. "border-radius:12px; font-weight:600;").',
     },
     story: { height: '300px' },
+  },
+};
+
+/* ======================================================
+ * ✅ NEW STORY: Accessibility matrix
+ * ====================================================== */
+
+export const AccessibilityMatrix = {
+  name: 'Accessibility matrix',
+  args: {
+    options: FRUIT,
+    value: [],
+    editable: false,
+    addBtn: false,
+    addIcon: '',
+    clearIcon: 'fa-solid fa-xmark',
+    removeClearBtn: false,
+    removeBtnBorder: false,
+    preserveInputOnSelect: false,
+    clearInputOnBlurOutside: false,
+    autoSort: true,
+    addNewOnEnter: true,
+    devMode: false,
+    labelHidden: false,
+    labelAlign: '',
+    labelSize: 'sm',
+    size: '',
+    formId: '',
+    name: '',
+    rawInputName: '',
+    type: 'text',
+    arialabelledBy: '',
+    placeholder: 'Type to search...',
+  },
+
+  render: args => {
+    const outer = document.createElement('div');
+
+    const note = document.createElement('div');
+    note.style.maxWidth = '1100px';
+    note.style.marginBottom = '10px';
+    note.style.color = '#444';
+    note.innerHTML = `
+      <div style="font-weight:700; margin-bottom:4px;">What this shows</div>
+      <div style="font-size:13px; line-height:1.4;">
+        Each variant prints a JSON snapshot of the computed <code>role</code>, <code>aria-*</code> attributes, and key ids
+        (<code>inputId</code> / <code>-listbox</code> / <code>-live</code>).
+        For required+validation states, the story calls <code>el.validate()</code> to force <code>aria-invalid</code> + message wiring.
+      </div>
+    `;
+    outer.appendChild(note);
+
+    const container = document.createElement('div');
+    container.style.display = 'grid';
+    container.style.gridTemplateColumns = 'repeat(auto-fit, minmax(360px, 1fr))';
+    container.style.gap = '14px';
+    container.style.maxWidth = '1100px';
+    outer.appendChild(container);
+
+    const variants = [
+      // Default
+      { __title: 'Default / normal', inputId: 'acms-a11y-default', label: 'Default', formLayout: '', disabled: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
+      { __title: 'Default / validation (required)', inputId: 'acms-a11y-default-validation', label: 'Default + validation', formLayout: '', disabled: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
+      { __title: 'Default / error', inputId: 'acms-a11y-default-error', label: 'Default + error', formLayout: '', disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
+      { __title: 'Default / disabled', inputId: 'acms-a11y-default-disabled', label: 'Default disabled', formLayout: '', disabled: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Apple', 'Mango'] },
+
+      // Inline
+      { __title: 'Inline / normal', inputId: 'acms-a11y-inline', label: 'Inline', formLayout: 'inline', disabled: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
+      { __title: 'Inline / validation (required)', inputId: 'acms-a11y-inline-validation', label: 'Inline + validation', formLayout: 'inline', disabled: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
+      { __title: 'Inline / error', inputId: 'acms-a11y-inline-error', label: 'Inline + error', formLayout: 'inline', disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
+      { __title: 'Inline / disabled', inputId: 'acms-a11y-inline-disabled', label: 'Inline disabled', formLayout: 'inline', disabled: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Banana', 'Orange'] },
+
+      // Horizontal
+      { __title: 'Horizontal / normal', inputId: 'acms-a11y-horizontal', label: 'Horizontal', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
+      { __title: 'Horizontal / validation (required)', inputId: 'acms-a11y-horizontal-validation', label: 'Horizontal + validation', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
+      { __title: 'Horizontal / error', inputId: 'acms-a11y-horizontal-error', label: 'Horizontal + error', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
+      { __title: 'Horizontal / disabled', inputId: 'acms-a11y-horizontal-disabled', label: 'Horizontal disabled', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Strawberry'] },
+    ];
+
+    for (let i = 0; i < variants.length; i++) {
+      const v = variants[i];
+      const cell = mkMatrixCellA11y(
+        {
+          ...args,
+          ...v,
+          options: Array.isArray(v.options) ? v.options : args.options,
+        },
+        { idOverride: `acms_a11y_${i}` },
+      );
+      container.appendChild(cell);
+    }
+
+    return outer;
+  },
+
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Renders a matrix of layout + state combinations (default/inline/horizontal × error/validation/disabled). Each cell prints computed role/ARIA attributes/ids to support accessibility reviews and 508 checks.',
+      },
+      story: { height: '1400px' },
+      source: {
+        language: 'html',
+        transform: (_src, ctx) =>
+          wrapDocsHtml(
+            normalize(`
+<!-- Accessibility Matrix renders multiple instances; see Canvas for printed computed role + aria-* + ids. -->
+
+${buildDocsHtml({
+  ...ctx.args,
+  inputId: 'acms-a11y-default',
+  label: 'Default',
+})}
+`),
+          ),
+      },
+    },
   },
 };
