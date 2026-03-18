@@ -22,10 +22,16 @@ export class DiscreteSliderComponent {
   @Prop() unit: string = '';
   @Prop() variant: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark' = '';
 
+  // ----------------- a11y override props -----------------
+  @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
+  @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
+  @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
+
   @State() private _values: string[] = [];
 
   private containerEl?: HTMLDivElement;
   private dragging = false;
+  private a11yBaseId = `dslider_${Math.random().toString(36).slice(2, 11)}`;
 
   @Event() indexChange: EventEmitter<{ index: number }>;
   @Event() valueChange: EventEmitter<{ value: string }>;
@@ -53,6 +59,7 @@ export class DiscreteSliderComponent {
         const parsed = JSON.parse(input);
         return Array.isArray(parsed) ? parsed.map(String) : [];
       } catch {
+        // eslint-disable-next-line no-console
         console.warn('[discrete-slider-component] Invalid JSON for stringValues');
       }
     }
@@ -97,8 +104,6 @@ export class DiscreteSliderComponent {
   /**
    * Format tick/value display with unit.
    * If unit is "$", prefix it (e.g. $M). Otherwise suffix (e.g. M°F).
-   *
-   * Note: Discrete values are strings; we don't round here.
    */
   private formatWithUnit(v: string): string {
     const unit = String(this.unit ?? '').trim();
@@ -106,11 +111,41 @@ export class DiscreteSliderComponent {
 
     if (!unit) return s;
     if (unit === '$') return `${unit}${s}`;
-
     return `${s}${unit}`;
   }
 
-  // Keyboard
+  private normalizeIdList(value?: string): string | undefined {
+    const trimmed = (value ?? '').trim();
+    if (!trimmed) return undefined;
+    const tokens = trimmed.split(/\s+/).filter(Boolean);
+    return tokens.length ? tokens.join(' ') : undefined;
+  }
+
+  private getA11yLabelId(): string {
+    const base = (this.host?.id || '').trim() || this.a11yBaseId;
+    return `${base}-label`;
+  }
+
+  private getA11yValueId(): string {
+    const base = (this.host?.id || '').trim() || this.a11yBaseId;
+    return `${base}-value`;
+  }
+
+  private computeA11y(hasVisibleLabel: boolean) {
+    const userLabel = (this.ariaLabel ?? '').trim() || undefined;
+    const userLabelledBy = this.normalizeIdList(this.ariaLabelledby);
+    const userDescribedBy = this.normalizeIdList(this.ariaDescribedby);
+
+    const autoLabelId = hasVisibleLabel ? this.getA11yLabelId() : undefined;
+    const ariaLabelledBy = userLabelledBy ?? autoLabelId;
+
+    const ariaLabel =
+      ariaLabelledBy ? undefined : userLabel ?? ((this.label ?? '').trim() ? (this.label ?? '').trim() : 'Slider');
+
+    return { ariaLabel, ariaLabelledBy, ariaDescribedBy: userDescribedBy };
+  }
+
+  // Keyboard (on the element with role="slider")
   private onKeyDown = (event: KeyboardEvent) => {
     if (this.disabled || this._values.length === 0) return;
     let idx = this.selectedIndex;
@@ -177,51 +212,68 @@ export class DiscreteSliderComponent {
   render() {
     const color = this.getColor(this.variant);
     const pct = this.pct();
+
     const rawVal = this._values[this.selectedIndex] ?? '';
     const val = this.formatWithUnit(rawVal);
 
-    // ✅ Keep positioning class even when disabled (so left:% still works)
-    const thumbContainerClass = ['slider-thumb-container', color, this.disabled ? 'slider-thumb-container-disabled' : '']
+    const hasValues = this._values.length > 0;
+    const minIndex = 0;
+    const maxIndex = Math.max(0, this._values.length - 1);
+
+    const hasVisibleLabel = !!(this.label ?? '').trim();
+    const labelId = this.getA11yLabelId();
+    const valueId = this.getA11yValueId();
+
+    const { ariaLabel, ariaLabelledBy, ariaDescribedBy } = this.computeA11y(hasVisibleLabel);
+
+    const isEffectivelyDisabled = this.disabled || !hasValues;
+
+    const thumbContainerClass = ['slider-thumb-container', color, isEffectivelyDisabled ? 'slider-thumb-container-disabled' : '']
       .filter(Boolean)
       .join(' ');
 
     return (
       <div class="slider-wrapper">
-        <div
-          dir="ltr"
-          class="slider"
-          role="slider"
-          aria-label={this.label || undefined}
-          aria-orientation="horizontal"
-          aria-disabled={this.disabled ? 'true' : 'false'}
-          {...(this.disabled && { disabled: true })}
-        >
-          {this.label ? (
-            <label id="slider-input-label" class="form-control-label">
-              {this.label} {val}
+        <div dir="ltr" class="slider" role="presentation">
+          {hasVisibleLabel ? (
+            <label id={labelId} class="form-control-label">
+              {this.label} <span id={valueId}>{val}</span>
             </label>
           ) : null}
 
           <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
-            <div class="slider-controls" onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}>
-              <div class="slider-background-track" style={{ width: '100%' }} />
-              <div class={`slider-moving-track ${color}`} style={{ width: `${pct}%` }} />
+            <div class="slider-controls" role="presentation">
+              <div class="slider-background-track" style={{ width: '100%' }} aria-hidden="true" />
+              <div class={`slider-moving-track ${color}`} style={{ width: `${pct}%` }} aria-hidden="true" />
 
+              {/* ✅ single focusable slider element */}
               <div
                 class={thumbContainerClass}
                 style={{ left: `${pct}%`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
-                onMouseDown={this.disabled ? undefined : this.onDragStart}
-                role="presentation"
-                tabIndex={this.disabled ? -1 : 0}
+                onMouseDown={isEffectivelyDisabled ? undefined : this.onDragStart}
+                onKeyDown={this.onKeyDown}
+                onKeyUp={this.onKeyUp}
+                role="slider"
+                tabIndex={isEffectivelyDisabled ? -1 : 0}
+                aria-label={ariaLabel}
+                aria-labelledby={ariaLabelledBy}
+                aria-describedby={ariaDescribedBy}
+                aria-orientation="horizontal"
+                aria-disabled={isEffectivelyDisabled ? 'true' : undefined}
+                aria-valuemin={String(minIndex)}
+                aria-valuemax={String(maxIndex)}
+                aria-valuenow={String(this.selectedIndex)}
+                aria-valuetext={val}
               >
                 {this.plumage ? (
-                  <div class={`slider-handle ${color}`} role="slider" aria-label="Slider thumb" tabIndex={-1} />
+                  <div class={`slider-handle ${color}`} role="presentation" aria-hidden="true" />
                 ) : (
-                  <div class={`slider-thumb ${color}`} role="slider" aria-label="Slider thumb" tabIndex={-1} />
+                  <div class={`slider-thumb ${color}`} role="presentation" aria-hidden="true" />
                 )}
               </div>
 
-              <div class="slider-ticks">
+              {/* ticks are visual; keep out of AT focus order */}
+              <div class="slider-ticks" aria-hidden="true">
                 {this._values.map((tick, index) => {
                   const pos = (index / Math.max(1, this._values.length - 1)) * 100;
                   return (
@@ -229,7 +281,7 @@ export class DiscreteSliderComponent {
                       <div
                         class="slider-tick"
                         style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }}
-                        onClick={this.disabled ? undefined : () => this.setIndex(index)}
+                        onClick={isEffectivelyDisabled ? undefined : () => this.setIndex(index)}
                       />
                       {this.tickLabels ? (
                         <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
@@ -243,7 +295,7 @@ export class DiscreteSliderComponent {
             </div>
 
             {!this.hideRightTextBox && (
-              <div role="textbox" aria-readonly="true" aria-labelledby="slider-input-label" class="slider-value-right">
+              <div role="textbox" aria-readonly="true" aria-labelledby={hasVisibleLabel ? labelId : undefined} class="slider-value-right">
                 {val}
               </div>
             )}

@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`radio-input-component a11y overrides: aria-label used when no labelTxt and aria-labelledby not provided (single) 1`] = `
+<radio-input-component aria-label="Accept terms" bs-radio="" input-id="single-a11y" name="singleA11y">
+  <div class="form-group radios">
+    <div class="form-check">
+      <input aria-label="Accept terms" class="form-check-input" id="single-a11y" name="singleA11y" type="radio" value="">
+      <label class="form-check-label" htmlfor="single-a11y" id="radio-single-label-singleA11y"></label>
+    </div>
+  </div>
+</radio-input-component>
+`;
+
 exports[`radio-input-component removes validation message when an option is selected (group) 1`] = `
 <radio-input-component bs-radio-group="" group-options="[{&quot;value&quot;:&quot;x&quot;,&quot;labelTxt&quot;:&quot;X&quot;,&quot;inputId&quot;:&quot;radio-x&quot;,&quot;checked&quot;:false,&quot;disabled&quot;:false},{&quot;value&quot;:&quot;y&quot;,&quot;labelTxt&quot;:&quot;Y&quot;,&quot;inputId&quot;:&quot;radio-y&quot;,&quot;checked&quot;:false,&quot;disabled&quot;:false}]" group-title="Validation Clear" name="group2" required="" validation="" validation-msg="Please select one">
   <div class="radio-group radios">

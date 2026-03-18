@@ -9,6 +9,9 @@
 
 | Property            | Attribute            | Description | Type                                           | Default              |
 | ------------------- | -------------------- | ----------- | ---------------------------------------------- | -------------------- |
+| `ariaDescribedby`   | `aria-describedby`   |             | `string`                                       | `undefined`          |
+| `ariaLabel`         | `aria-label`         |             | `string`                                       | `undefined`          |
+| `ariaLabelledby`    | `aria-labelledby`    |             | `string`                                       | `undefined`          |
 | `classes`           | `classes`            |             | `string`                                       | `''`                 |
 | `custom`            | `custom`             |             | `boolean`                                      | `false`              |
 | `defaultOptionTxt`  | `default-option-txt` |             | `string`                                       | `'Select an option'` |

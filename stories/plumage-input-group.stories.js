@@ -7,9 +7,180 @@
  * Component tag: <plumage-input-group-component>
  * ------------------------------------------------------------------ */
 
+// ======================================================
+// Docs helpers
+// ======================================================
+
+// Inject CSS so Docs code blocks wrap instead of one long line.
+const DocsWrapStyles = () => {
+  const style = document.createElement('style');
+  style.innerHTML = `
+    .sbdocs pre,
+    .sbdocs pre code {
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: auto !important;
+    }
+  `;
+  return style;
+};
+
+const normalize = value => {
+  if (value === '' || value == null) return undefined;
+  if (value === true) return true;
+  if (value === false) return false;
+  return value;
+};
+
+const esc = s =>
+  String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+const buildDocsHtml = args => {
+  const a = { ...args };
+
+  const attrs = [
+    ['append', !!a.append],
+    ['append-icon', normalize(a.appendIcon)],
+    ['append-id', normalize(a.appendId)],
+    ['disabled', !!a.disabled],
+    ['form-id', normalize(a.formId)],
+    ['form-layout', normalize(a.formLayout)],
+    ['icon', normalize(a.icon)],
+    ['input-col', Number.isFinite(a.inputCol) ? a.inputCol : undefined],
+    ['input-cols', normalize(a.inputCols)],
+    ['input-id', normalize(a.inputId)],
+    ['label', normalize(a.label)],
+    ['label-align', normalize(a.labelAlign)],
+    ['label-col', Number.isFinite(a.labelCol) ? a.labelCol : undefined],
+    ['label-cols', normalize(a.labelCols)],
+    ['label-hidden', !!a.labelHidden],
+    ['other-content', !!a.otherContent],
+    ['placeholder', normalize(a.placeholder)],
+    ['plumage-search', !!a.plumageSearch],
+    ['prepend', !!a.prepend],
+    ['prepend-icon', normalize(a.prependIcon)],
+    ['prepend-id', normalize(a.prependId)],
+    ['required', !!a.required],
+    ['size', normalize(a.size)],
+    ['type', normalize(a.type)],
+
+    // ✅ a11y (new)
+    ['aria-label', normalize(a.ariaLabel)],
+    ['aria-labelledby', normalize(a.ariaLabelledby)],
+    ['aria-describedby', normalize(a.ariaDescribedby)],
+
+    ['validation', !!a.validation],
+    ['validation-message', normalize(a.validationMessage)],
+    ['value', normalize(a.value)],
+  ];
+
+  const attrStr = attrs
+    .filter(([_, v]) => v !== undefined && v !== false)
+    .map(([k, v]) => (v === true ? k : `${k}="${esc(v)}"`))
+    .join(' ');
+
+  const openTag = attrStr ? `<plumage-input-group-component ${attrStr}>` : '<plumage-input-group-component>';
+
+  const slotLines = [];
+  if (a.otherContent && a.prepend) {
+    slotLines.push(`  <button-component slot="prepend" type="button" variant="secondary">Go</button-component>`);
+  }
+  if (a.otherContent && a.append) {
+    slotLines.push(`  <button-component slot="append" type="button" variant="secondary">Go</button-component>`);
+  }
+
+  return [openTag, ...slotLines, '</plumage-input-group-component>'].join('\n');
+};
+
+// ======================================================
+// Render helpers (string markup so slots render correctly)
+// ======================================================
+
+const boolAttr = (name, on) => (on ? ` ${name}` : '');
+const attr = (name, val) => {
+  const v = normalize(val);
+  return v === undefined || v === false ? '' : v === true ? ` ${name}` : ` ${name}="${esc(v)}"`;
+};
+
+const Template = args => {
+  const usePrependSlot = !!args.otherContent && !!args.prepend;
+  const useAppendSlot = !!args.otherContent && !!args.append;
+
+  return `
+<plumage-input-group-component
+${boolAttr('append', !!args.append)}
+${useAppendSlot ? '' : attr('append-icon', args.appendIcon)}
+${attr('append-id', args.appendId)}
+${boolAttr('disabled', !!args.disabled)}
+${attr('form-id', args.formId)}
+${attr('form-layout', args.formLayout)}
+${attr('icon', args.icon)}
+${attr('input-col', args.inputCol)}
+${attr('input-cols', args.inputCols)}
+${attr('input-id', args.inputId)}
+${attr('label', args.label)}
+${attr('label-align', args.labelAlign)}
+${attr('label-col', args.labelCol)}
+${attr('label-cols', args.labelCols)}
+${boolAttr('label-hidden', !!args.labelHidden)}
+${boolAttr('other-content', !!args.otherContent)}
+${attr('placeholder', args.placeholder)}
+${boolAttr('plumage-search', !!args.plumageSearch)}
+${boolAttr('prepend', !!args.prepend)}
+${usePrependSlot ? '' : attr('prepend-icon', args.prependIcon)}
+${attr('prepend-id', args.prependId)}
+${boolAttr('required', !!args.required)}
+${attr('size', args.size)}
+${attr('type', args.type)}
+${attr('aria-label', args.ariaLabel)}
+${attr('aria-labelledby', args.ariaLabelledby)}
+${attr('aria-describedby', args.ariaDescribedby)}
+${boolAttr('validation', !!args.validation)}
+${attr('validation-message', args.validationMessage)}
+${attr('value', args.value)}
+>
+${usePrependSlot ? `<button-component slot="prepend" type="button" text styles="margin-right: 10px;" variant="secondary">Go</button-component>` : ''}
+${useAppendSlot ? `<button-component slot="append" type="button" text styles="margin-left: 10px;" variant="secondary">Go</button-component>` : ''}
+</plumage-input-group-component>
+`;
+};
+
+// ======================================================
+// Default export
+// ======================================================
+
 export default {
   title: 'Form/Plumage Input Group',
   tags: ['autodocs'],
+
+  // ✅ FIX: decorator supports Story() returning Node OR string markup
+  decorators: [
+    Story => {
+      const wrap = document.createElement('div');
+      wrap.appendChild(DocsWrapStyles());
+
+      const out = Story();
+
+      if (typeof out === 'string') {
+        const mount = document.createElement('div');
+        mount.innerHTML = out;
+        wrap.appendChild(mount);
+      } else if (out instanceof Node) {
+        wrap.appendChild(out);
+      } else {
+        const mount = document.createElement('div');
+        mount.textContent = String(out ?? '');
+        wrap.appendChild(mount);
+      }
+
+      return wrap;
+    },
+  ],
+
   parameters: {
     layout: 'padded',
     docs: {
@@ -19,11 +190,11 @@ export default {
       },
       source: {
         language: 'html',
-        // IMPORTANT: docs preview must reflect CURRENT args (including Controls changes)
         transform: (_src, ctx) => buildDocsHtml(ctx.args),
       },
     },
   },
+
   argTypes: {
     // =========================
     // Input Attributes (A–Z)
@@ -31,13 +202,15 @@ export default {
     disabled: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Input Attributes' },
-      description: 'When enabled, the input group and its child input field will be disabled, preventing user interaction and applying appropriate disabled styles.',
+      description:
+        'When enabled, the input group and its child input field will be disabled, preventing user interaction and applying appropriate disabled styles.',
     },
     inputId: {
       control: 'text',
       name: 'input-id',
       table: { category: 'Input Attributes', defaultValue: { summary: 'amount-play' } },
-      description: 'ID for the input field, used to associate the label with the input for accessibility. This should be unique on the page.',
+      description:
+        'ID for the input field, used to associate the label with the input for accessibility. This should be unique on the page.',
     },
     placeholder: {
       control: 'text',
@@ -53,6 +226,29 @@ export default {
       control: 'text',
       description: 'The value of the input field',
       table: { category: 'Input Attributes' },
+    },
+
+    // =========================
+    // Accessibility (NEW)
+    // =========================
+    ariaLabel: {
+      control: 'text',
+      name: 'aria-label',
+      table: { category: 'Accessibility' },
+      description: 'Optional accessible name (used only when aria-labelledby is not set).',
+    },
+    ariaLabelledby: {
+      control: 'text',
+      name: 'aria-labelledby',
+      table: { category: 'Accessibility' },
+      description: 'Optional external labelling idref(s). If absent, component uses its internal label id.',
+    },
+    ariaDescribedby: {
+      control: 'text',
+      name: 'aria-describedby',
+      table: { category: 'Accessibility' },
+      description:
+        'Optional external description idref(s). Component appends prepend/append ids (when used) and validation id (when invalid).',
     },
 
     // =========================
@@ -76,6 +272,12 @@ export default {
       name: 'append-id',
       table: { category: 'Layout' },
       description: 'ID for the append element, used for accessibility or targeting with JavaScript.',
+    },
+    formId: {
+      control: 'text',
+      name: 'form-id',
+      table: { category: 'Layout' },
+      description: 'Associates the underlying input with a form by id.',
     },
     formLayout: {
       control: { type: 'select' },
@@ -139,7 +341,8 @@ export default {
       control: 'boolean',
       name: 'other-content',
       table: { category: 'Layout', defaultValue: { summary: false } },
-      description: 'When enabled, the story will include example content in the prepend and append slots to demonstrate how they work.',
+      description:
+        'When enabled, the story will include example content in the prepend and append slots to demonstrate how they work.',
     },
     prepend: {
       control: 'boolean',
@@ -193,113 +396,9 @@ export default {
   },
 };
 
-/** ---------------- Docs helpers ---------------- */
-
-const normalize = value => {
-  if (value === '' || value == null) return undefined;
-  if (value === true) return true;
-  if (value === false) return false;
-  return value;
-};
-
-const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
-const buildDocsHtml = args => {
-  const a = { ...args };
-
-  const attrs = [
-    ['append', !!a.append],
-    ['append-icon', normalize(a.appendIcon)],
-    ['append-id', normalize(a.appendId)],
-    ['disabled', !!a.disabled],
-    ['form-layout', normalize(a.formLayout)],
-    ['icon', normalize(a.icon)],
-    ['input-col', Number.isFinite(a.inputCol) ? a.inputCol : undefined],
-    ['input-cols', normalize(a.inputCols)],
-    ['input-id', normalize(a.inputId)],
-    ['label', normalize(a.label)],
-    ['label-align', normalize(a.labelAlign)],
-    ['label-col', Number.isFinite(a.labelCol) ? a.labelCol : undefined],
-    ['label-cols', normalize(a.labelCols)],
-    ['label-hidden', !!a.labelHidden],
-    ['other-content', !!a.otherContent],
-    ['placeholder', normalize(a.placeholder)],
-    ['plumage-search', !!a.plumageSearch],
-    ['prepend', !!a.prepend],
-    ['prepend-icon', normalize(a.prependIcon)],
-    ['prepend-id', normalize(a.prependId)],
-    ['required', !!a.required],
-    ['size', normalize(a.size)],
-    ['validation', !!a.validation],
-    ['validation-message', normalize(a.validationMessage)],
-    ['value', normalize(a.value)],
-  ];
-
-  const attrStr = attrs
-    .filter(([_, v]) => v !== undefined && v !== false)
-    .map(([k, v]) => (v === true ? k : `${k}="${esc(v)}"`))
-    .join(' ');
-
-  const openTag = attrStr ? `<plumage-input-group-component ${attrStr}>` : '<plumage-input-group-component>';
-
-  const slotLines = [];
-  if (a.otherContent && a.prepend) {
-    slotLines.push(`  <button-component slot="prepend" type="button" variant="secondary">Go</button-component>`);
-  }
-  if (a.otherContent && a.append) {
-    slotLines.push(`  <button-component slot="append" type="button" variant="secondary">Go</button-component>`);
-  }
-
-  return [openTag, ...slotLines, '</plumage-input-group-component>'].join('\n');
-};
-
-/** ---------------- Render (string markup so slots render correctly) ---------------- */
-
-const boolAttr = (name, on) => (on ? ` ${name}` : '');
-const attr = (name, val) => {
-  const v = normalize(val);
-  return v === undefined || v === false ? '' : v === true ? ` ${name}` : ` ${name}="${esc(v)}"`;
-};
-
-const Template = args => {
-  const usePrependSlot = !!args.otherContent && !!args.prepend;
-  const useAppendSlot = !!args.otherContent && !!args.append;
-
-  return `
-<plumage-input-group-component
- ${boolAttr('append', !!args.append)}
- ${useAppendSlot ? '' : attr('append-icon', args.appendIcon)}
- ${attr('append-id', args.appendId)}
- ${boolAttr('disabled', !!args.disabled)}
- ${attr('form-layout', args.formLayout)}
- ${attr('icon', args.icon)}
- ${attr('input-col', args.inputCol)}
- ${attr('input-cols', args.inputCols)}
- ${attr('input-id', args.inputId)}
- ${attr('label', args.label)}
- ${attr('label-align', args.labelAlign)}
- ${attr('label-col', args.labelCol)}
- ${attr('label-cols', args.labelCols)}
- ${boolAttr('label-hidden', !!args.labelHidden)}
- ${boolAttr('other-content', !!args.otherContent)}
- ${attr('placeholder', args.placeholder)}
- ${boolAttr('plumage-search', !!args.plumageSearch)}
- ${boolAttr('prepend', !!args.prepend)}
- ${usePrependSlot ? '' : attr('prepend-icon', args.prependIcon)}
- ${attr('prepend-id', args.prependId)}
- ${boolAttr('required', !!args.required)}
- ${attr('size', args.size)}
- ${boolAttr('validation', !!args.validation)}
- ${attr('validation-message', args.validationMessage)}
- ${attr('value', args.value)}
->
- ${usePrependSlot ? `<button-component slot="prepend" type="button" text styles="margin-right: 10px;" variant="secondary">Go</button-component>` : ''}
- ${useAppendSlot ? `<button-component slot="append" type="button" text styles="margin-left: 10px;" variant="secondary">Go</button-component>` : ''}
-</plumage-input-group-component>
-`;
-};
-
-/** ---------------- Stories (MATCH input-group story set) ---------------- */
+// ======================================================
+// Stories (kept; none removed)
+// ======================================================
 
 export const Basic = Template.bind({});
 Basic.args = {
@@ -307,6 +406,7 @@ Basic.args = {
   inputId: 'amount-play',
   placeholder: 'Enter amount',
   size: '',
+  formId: '',
   formLayout: '',
   labelHidden: false,
   labelAlign: '',
@@ -315,12 +415,17 @@ Basic.args = {
 
   prepend: false,
   append: true,
-   otherContent: false,
+  otherContent: false,
   icon: '',
   prependIcon: '',
   appendIcon: 'fa-solid fa-dollar-sign',
   appendId: '',
   prependId: '',
+
+  // a11y (new)
+  ariaLabel: '',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
 
   validation: false,
   validationMessage: '',
@@ -330,6 +435,7 @@ Basic.args = {
   inputCols: '',
   labelCol: '',
   inputCol: '',
+  type: 'text',
 };
 Basic.storyName = 'Basic Usage';
 Basic.parameters = {
@@ -487,6 +593,206 @@ PlumageSearchField.parameters = {
     description: {
       story:
         'This example demonstrates the "plumage-search" variant of the input group. When the "plumage-search" attribute is set to true, the component applies specific styles to create a search field appearance, which may include rounded edges and a different background color. This variant is ideal for search inputs.',
+    },
+  },
+};
+
+// ======================================================
+// ✅ NEW: Accessibility matrix story (computed)
+// ======================================================
+
+const getSnapshot = (host) => {
+  const input =
+    host?.querySelector('input.form-control') ||
+    host?.querySelector('input.search-bar') ||
+    host?.querySelector('input');
+
+  const label = host?.querySelector('label');
+  const describedby = (input?.getAttribute('aria-describedby') || '').trim();
+  const describedIds = describedby ? describedby.split(/\s+/).filter(Boolean) : [];
+
+  const resolve = (id) => {
+    if (!id) return false;
+    // ids generated here are safe tokens, so direct selector is ok
+    return !!host?.querySelector(`#${id}`);
+  };
+
+  return {
+    host: host?.tagName?.toLowerCase() ?? null,
+    inputId: input?.getAttribute('id') ?? null,
+    labelId: label?.getAttribute('id') ?? null,
+    labelFor: label?.getAttribute('for') ?? label?.getAttribute('htmlfor') ?? null,
+    role: input?.getAttribute('role') ?? null,
+    type: input?.getAttribute('type') ?? null,
+    'aria-label': input?.getAttribute('aria-label') ?? null,
+    'aria-labelledby': input?.getAttribute('aria-labelledby') ?? null,
+    'aria-describedby': describedby || null,
+    'aria-required': input?.getAttribute('aria-required') ?? null,
+    'aria-invalid': input?.getAttribute('aria-invalid') ?? null,
+    'aria-disabled': input?.getAttribute('aria-disabled') ?? null,
+    describedbyIds: describedIds,
+    describedbyAllResolve: describedIds.every(resolve),
+    hasValidationMessage: !!host?.querySelector('.invalid-feedback'),
+    prependElId: host?.querySelector('[id$="-prepend"]')?.getAttribute('id') ?? null,
+    appendElId: host?.querySelector('[id$="-append"]')?.getAttribute('id') ?? null,
+    isSearchVariant: !!host?.querySelector('input.search-bar'),
+  };
+};
+
+export const AccessibilityMatrix = {
+  name: 'Accessibility Matrix (computed)',
+  render: (args) => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '16px';
+    wrap.style.maxWidth = '980px';
+
+    const header = document.createElement('div');
+    header.innerHTML = `
+      <strong>Accessibility matrix</strong>
+      <div style="opacity:.8">
+        Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal, validation, and disabled.
+      </div>
+    `;
+    wrap.appendChild(header);
+
+    const card = (title, storyArgs) => {
+      const box = document.createElement('div');
+      box.style.border = '1px solid #ddd';
+      box.style.borderRadius = '10px';
+      box.style.padding = '12px';
+      box.style.display = 'grid';
+      box.style.gap = '10px';
+
+      const t = document.createElement('div');
+      t.style.fontWeight = '600';
+      t.textContent = title;
+
+      const demo = document.createElement('div');
+      const pre = document.createElement('pre');
+      pre.style.margin = '0';
+      pre.style.padding = '10px';
+      pre.style.borderRadius = '8px';
+      pre.style.overflow = 'auto';
+      pre.style.border = '1px solid #eee';
+      pre.style.background = '#fafafa';
+      pre.textContent = 'Loading…';
+
+      // Render as actual DOM node so we can query it
+      const mount = document.createElement('div');
+      mount.innerHTML = Template({ ...Basic.args, ...args, ...storyArgs });
+      const host = mount.querySelector('plumage-input-group-component');
+
+      demo.appendChild(mount);
+
+      const update = async () => {
+        // wait for web component to define/hydrate
+        if (host?.componentOnReady) {
+          try { await host.componentOnReady(); } catch (_e) {}
+        } else if (window.customElements?.whenDefined) {
+          try { await customElements.whenDefined('plumage-input-group-component'); } catch (_e) {}
+        }
+
+        pre.textContent = JSON.stringify(getSnapshot(host), null, 2);
+      };
+
+      queueMicrotask(() => requestAnimationFrame(update));
+
+      box.appendChild(t);
+      box.appendChild(demo);
+      box.appendChild(pre);
+      return box;
+    };
+
+    wrap.appendChild(
+      card('Default (stacked)', {
+        inputId: 'mx-ig-default',
+        label: 'Default A11y',
+        formLayout: '',
+        prepend: false,
+        append: true,
+        otherContent: false,
+        validation: false,
+        disabled: false,
+        value: '',
+      }),
+    );
+
+    wrap.appendChild(
+      card('Inline layout', {
+        inputId: 'mx-ig-inline',
+        label: 'Inline A11y',
+        formLayout: 'inline',
+        prepend: false,
+        append: true,
+        otherContent: false,
+        validation: false,
+        disabled: false,
+        value: '',
+      }),
+    );
+
+    wrap.appendChild(
+      card('Horizontal layout', {
+        inputId: 'mx-ig-horizontal',
+        label: 'Horizontal A11y',
+        formLayout: 'horizontal',
+        labelAlign: 'right',
+        labelCols: 'xs-12 sm-4',
+        inputCols: 'xs-12 sm-8',
+        prepend: true,
+        otherContent: false,
+        prependIcon: 'fa-solid fa-dollar-sign',
+        append: true,
+        appendIcon: 'fa-solid fa-dollar-sign',
+        validation: false,
+        disabled: false,
+        value: '',
+      }),
+    );
+
+    wrap.appendChild(
+      card('Validation (aria-invalid + describedby)', {
+        inputId: 'mx-ig-validation',
+        label: 'Validation',
+        required: true,
+        validation: true,
+        validationMessage: 'This is required.',
+        prepend: true,
+        prependIcon: 'fa-solid fa-dollar-sign',
+        append: true,
+        appendIcon: 'fa-solid fa-dollar-sign',
+        value: '',
+      }),
+    );
+
+    wrap.appendChild(
+      card('Disabled (aria-disabled)', {
+        inputId: 'mx-ig-disabled',
+        label: 'Disabled',
+        disabled: true,
+        prepend: true,
+        prependIcon: 'fa-solid fa-dollar-sign',
+        append: true,
+        appendIcon: 'fa-solid fa-dollar-sign',
+        value: '123',
+        validation: false,
+      }),
+    );
+
+    return wrap;
+  },
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Prints computed accessibility wiring for the input: `role` (when present), `aria-labelledby`, `aria-describedby` (including prepend/append ids and validation id), `aria-required`, `aria-invalid`, and `aria-disabled` across default / inline / horizontal, validation, and disabled.',
+      },
+      source: {
+        language: 'html',
+        transform: (_src, ctx) => buildDocsHtml(ctx.args),
+      },
     },
   },
 };

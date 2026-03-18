@@ -7,6 +7,9 @@ import { SliderManagerComponent } from './slider-manager-component';
  * Lightweight stubs for child components. They expose the same props
  * the manager forwards, and render a <pre.props> JSON so tests can assert.
  */
+
+type Variant = '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+
 @Component({ tag: 'basic-slider-component', shadow: false })
 class BasicStub {
   @Prop() label: string;
@@ -19,11 +22,16 @@ class BasicStub {
   @Prop() snapToTicks: boolean;
   @Prop() tickLabels: boolean;
   @Prop() tickValues: number[] = [];
-  @Prop() variant: ''|'primary'|'secondary'|'success'|'danger'|'info'|'warning'|'dark' = '';
+  @Prop() variant: Variant = '';
   @Prop() hideTextBoxes: boolean;
   @Prop() hideLeftTextBox: boolean;
   @Prop() hideRightTextBox: boolean;
   @Prop() disabled: boolean;
+
+  // a11y forwarded
+  @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
+  @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
+  @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
 
   render() {
     const props = {
@@ -43,6 +51,9 @@ class BasicStub {
       hideLeftTextBox: this.hideLeftTextBox,
       hideRightTextBox: this.hideRightTextBox,
       disabled: this.disabled,
+      'aria-label': this.ariaLabel ?? null,
+      'aria-labelledby': this.ariaLabelledby ?? null,
+      'aria-describedby': this.ariaDescribedby ?? null,
     };
     return (
       <div class="stub basic">
@@ -65,11 +76,16 @@ class MultiStub {
   @Prop() snapToTicks: boolean;
   @Prop() tickLabels: boolean;
   @Prop() tickValues: number[] = [];
-  @Prop() variant: ''|'primary'|'secondary'|'success'|'danger'|'info'|'warning'|'dark' = '';
+  @Prop() variant: Variant = '';
   @Prop() hideTextBoxes: boolean;
   @Prop() hideLeftTextBox: boolean;
   @Prop() hideRightTextBox: boolean;
   @Prop() disabled: boolean;
+
+  // a11y forwarded
+  @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
+  @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
+  @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
 
   render() {
     const props = {
@@ -90,6 +106,9 @@ class MultiStub {
       hideLeftTextBox: this.hideLeftTextBox,
       hideRightTextBox: this.hideRightTextBox,
       disabled: this.disabled,
+      'aria-label': this.ariaLabel ?? null,
+      'aria-labelledby': this.ariaLabelledby ?? null,
+      'aria-describedby': this.ariaDescribedby ?? null,
     };
     return (
       <div class="stub multi">
@@ -106,9 +125,15 @@ class DiscreteStub {
   @Prop() stringValues: string[] = [];
   @Prop() plumage: boolean;
   @Prop() tickLabels: boolean;
-  @Prop() variant: ''|'primary'|'secondary'|'success'|'danger'|'info'|'warning'|'dark' = '';
+  @Prop() unit: string;
+  @Prop() variant: Variant = '';
   @Prop() disabled: boolean;
   @Prop() hideRightTextBox: boolean;
+
+  // a11y forwarded
+  @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
+  @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
+  @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
 
   render() {
     const props = {
@@ -118,9 +143,13 @@ class DiscreteStub {
       stringValues: this.stringValues,
       plumage: this.plumage,
       tickLabels: this.tickLabels,
+      unit: this.unit,
       variant: this.variant,
       disabled: this.disabled,
       hideRightTextBox: this.hideRightTextBox,
+      'aria-label': this.ariaLabel ?? null,
+      'aria-labelledby': this.ariaLabelledby ?? null,
+      'aria-describedby': this.ariaDescribedby ?? null,
     };
     return (
       <div class="stub discrete">
@@ -142,7 +171,7 @@ function readPropsJSON(root: HTMLElement) {
 }
 
 describe('slider-manager-component', () => {
-  test('renders BASIC by default and forwards props', async () => {
+  test('renders BASIC by default and forwards props + aria-*', async () => {
     const page = await newSpecPage({
       components: [SliderManagerComponent, BasicStub, MultiStub, DiscreteStub],
       template: () => (
@@ -163,14 +192,15 @@ describe('slider-manager-component', () => {
           hideLeftTextBox={false}
           hideRightTextBox={true}
           disabled={false}
+          aria-label="Speed slider"
+          aria-labelledby="speed-label"
+          aria-describedby="speed-help"
         />
       ),
     });
 
-    // snapshot entire host
     expect(page.root).toMatchSnapshot('basic/default-snapshot');
 
-    // ensure it rendered the basic stub and props were forwarded
     const json = readPropsJSON(page.root as any);
     expect(json).toBeTruthy();
     expect(json.kind).toBe('basic');
@@ -185,9 +215,14 @@ describe('slider-manager-component', () => {
     expect(json.tickLabels).toBe(true);
     expect(json.tickValues).toEqual([0, 20, 40, 60, 80, 100, 120]);
     expect(json.hideRightTextBox).toBe(true);
+
+    // a11y forwarded
+    expect(json['aria-label']).toBe('Speed slider');
+    expect(json['aria-labelledby']).toBe('speed-label');
+    expect(json['aria-describedby']).toBe('speed-help');
   });
 
-  test('switches to MULTI and forwards props', async () => {
+  test('switches to MULTI and forwards props + aria-*', async () => {
     const page = await newSpecPage({
       components: [SliderManagerComponent, BasicStub, MultiStub, DiscreteStub],
       template: () => (
@@ -209,6 +244,8 @@ describe('slider-manager-component', () => {
           hideLeftTextBox={false}
           hideRightTextBox={false}
           disabled={false}
+          aria-label="Range slider"
+          aria-describedby="range-help"
         />
       ),
     });
@@ -224,9 +261,13 @@ describe('slider-manager-component', () => {
     expect(json.snapToTicks).toBe(true);
     expect(json.tickValues).toEqual([0, 25, 50, 75, 100]);
     expect(json.hideTextBoxes).toBe(true);
+
+    // a11y forwarded
+    expect(json['aria-label']).toBe('Range slider');
+    expect(json['aria-describedby']).toBe('range-help');
   });
 
-  test('renders DISCRETE and forwards props', async () => {
+  test('renders DISCRETE and forwards props + unit + aria-*', async () => {
     const page = await newSpecPage({
       components: [SliderManagerComponent, BasicStub, MultiStub, DiscreteStub],
       template: () => (
@@ -236,10 +277,12 @@ describe('slider-manager-component', () => {
           selectedIndex={2}
           stringValues={['Low', 'Med', 'High', 'Ultra']}
           tickLabels={true}
+          unit="lvl"
           variant="success"
           plumage={true}
           disabled={true}
           hideRightTextBox={true}
+          aria-labelledby="quality-label"
         />
       ),
     });
@@ -253,13 +296,17 @@ describe('slider-manager-component', () => {
     expect(json.selectedIndex).toBe(2);
     expect(json.stringValues).toEqual(['Low', 'Med', 'High', 'Ultra']);
     expect(json.tickLabels).toBe(true);
+    expect(json.unit).toBe('lvl');
     expect(json.variant).toBe('success');
     expect(json.plumage).toBe(true);
     expect(json.disabled).toBe(true);
     expect(json.hideRightTextBox).toBe(true);
+
+    // a11y forwarded
+    expect(json['aria-labelledby']).toBe('quality-label');
   });
 
-  test('reacts to type changes at runtime', async () => {
+  test('reacts to type changes at runtime and keeps aria-* forwarding', async () => {
     const page = await newSpecPage({
       components: [SliderManagerComponent, BasicStub, MultiStub, DiscreteStub],
       template: () => (
@@ -269,6 +316,7 @@ describe('slider-manager-component', () => {
           min={0}
           max={10}
           tickValues={[0, 5, 10]}
+          aria-describedby="dyn-help"
         />
       ),
     });
@@ -276,19 +324,43 @@ describe('slider-manager-component', () => {
     // Starts basic
     let json = readPropsJSON(page.root as any);
     expect(json.kind).toBe('basic');
+    expect(json['aria-describedby']).toBe('dyn-help');
 
     // Change to multi
     page.root!.setAttribute('type', 'multi');
     await page.waitForChanges();
     json = readPropsJSON(page.root as any);
     expect(json.kind).toBe('multi');
+    expect(json['aria-describedby']).toBe('dyn-help');
 
     // Change to discrete
     page.root!.setAttribute('type', 'discrete');
     await page.waitForChanges();
     json = readPropsJSON(page.root as any);
     expect(json.kind).toBe('discrete');
+    expect(json['aria-describedby']).toBe('dyn-help');
 
     expect(page.root).toMatchSnapshot('runtime-switch/snapshot');
+  });
+
+  test('normalizes tickValues/stringValues when provided as JSON strings', async () => {
+    const page = await newSpecPage({
+      components: [SliderManagerComponent, BasicStub, MultiStub, DiscreteStub],
+      template: () => (
+        <slider-manager-component
+          type="discrete"
+          label="JSON"
+          selectedIndex={1}
+          stringValues={'["One","Two","Three"]'}
+          tickValues={'[0,10,20]'}
+          tickLabels={true}
+        />
+      ),
+    });
+
+    const json = readPropsJSON(page.root as any);
+    expect(json).toBeTruthy();
+    expect(json.kind).toBe('discrete');
+    expect(json.stringValues).toEqual(['One', 'Two', 'Three']);
   });
 });

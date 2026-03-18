@@ -7,11 +7,34 @@ export default {
     layout: 'padded',
     docs: {
       description: {
-        component: 'A versatile progress display component supporting linear and circular styles, with options for single or multiple bars, animations, and custom labels.',
+        component:
+          'A versatile progress display component supporting linear and circular styles, with options for single or multiple bars, animations, custom labels, and accessibility overrides.',
       },
     },
   },
   argTypes: {
+    /* -----------------------------
+     Accessibility
+  ------------------------------ */
+    ariaLabel: {
+      control: 'text',
+      name: 'aria-label',
+      description: 'ARIA override for the progressbar/group accessible name. Ignored if aria-labelledby is provided.',
+      table: { category: 'Accessibility' },
+    },
+    ariaLabelledby: {
+      control: 'text',
+      name: 'aria-labelledby',
+      description: 'ARIA override for the progressbar/group accessible name (space-separated ids).',
+      table: { category: 'Accessibility' },
+    },
+    ariaDescribedby: {
+      control: 'text',
+      name: 'aria-describedby',
+      description: 'ARIA override for additional description ids (space-separated).',
+      table: { category: 'Accessibility' },
+    },
+
     /* -----------------------------
      Mode & Structure
   ------------------------------ */
@@ -61,7 +84,8 @@ export default {
     useNamedBar0: {
       control: 'boolean',
       name: 'use-named-bar-0',
-      description: 'When used with `label`, wraps the label as an internal `<span slot="bar-0">...` (single-bar compatibility with multi-bar markup).',
+      description:
+        'When used with `label`, wraps the label as an internal `<span slot="bar-0">...` (single-bar compatibility with multi-bar markup).',
       table: { category: 'Labels & Slot Demo', defaultValue: { summary: false } },
     },
     slotText: {
@@ -160,7 +184,7 @@ export default {
       table: { category: 'Circular Options', defaultValue: { summary: false } },
     },
 
-    /** Storybook only  **/
+    /** Storybook only **/
     children: {
       control: false,
       table: { disable: true },
@@ -168,7 +192,7 @@ export default {
     },
   },
   controls: {
-    exclude: ['children'], // and any other SB-only fields you don’t want in Controls
+    exclude: ['children'],
   },
 };
 
@@ -195,11 +219,14 @@ const LinearTemplate = args => {
   const labelText = String(args.label ?? '').trim();
   const useNamed = !!labelText && !!args.useNamedBar0;
 
-  // Storybook-only helper to demonstrate default slot content from Controls
-  // (real usage: consumers put content between tags).
   const slotText = String(args.slotText ?? '').trim();
 
   const attrs = [
+    // a11y overrides
+    attrLine('aria-label', args.ariaLabel),
+    attrLine('aria-labelledby', args.ariaLabelledby),
+    attrLine('aria-describedby', args.ariaDescribedby),
+
     boolLine('animated', args.animated),
     attrLine('height', args.height),
     attrLine('label', labelText),
@@ -217,7 +244,6 @@ const LinearTemplate = args => {
     .filter(Boolean)
     .join('\n  ');
 
-  // Only include children if user provided slotText
   if (slotText) {
     return `<progress-display-component
   ${attrs}
@@ -230,8 +256,16 @@ const LinearTemplate = args => {
 };
 
 const CircularTemplate = args => {
+  const labelText = String(args.label ?? '').trim();
+
   const attrs = [
+    // a11y overrides
+    attrLine('aria-label', args.ariaLabel),
+    attrLine('aria-labelledby', args.ariaLabelledby),
+    attrLine('aria-describedby', args.ariaDescribedby),
+
     'circular',
+    attrLine('label', labelText),
     attrLine('value', args.value),
     attrLine('max', args.max),
     attrLine('size', args.size),
@@ -253,7 +287,21 @@ const CircularTemplate = args => {
 };
 
 const MultiTemplate = args => {
-  const attrs = ['multi', attrLine('height', args.height), attrLine('bars', serializeBars(args.bars))].filter(Boolean).join('\n  ');
+  const labelText = String(args.label ?? '').trim();
+
+  const attrs = [
+    // a11y overrides (apply to group)
+    attrLine('aria-label', args.ariaLabel),
+    attrLine('aria-labelledby', args.ariaLabelledby),
+    attrLine('aria-describedby', args.ariaDescribedby),
+
+    'multi',
+    attrLine('label', labelText),
+    attrLine('height', args.height),
+    attrLine('bars', serializeBars(args.bars)),
+  ]
+    .filter(Boolean)
+    .join('\n  ');
 
   const children = (args.children || '').trim();
   if (children) {
@@ -273,7 +321,6 @@ const MultiTemplate = args => {
    Stories
    =========================== */
 
-// ✅ Controls-driven story (reacts to arg table AND updates docs snippet)
 export const LinearBasic = {
   name: 'Linear Basic',
   render: LinearTemplate,
@@ -281,6 +328,11 @@ export const LinearBasic = {
     // mode toggles
     circular: false,
     multi: false,
+
+    // a11y overrides
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
 
     // linear
     animated: false,
@@ -315,7 +367,6 @@ export const LinearBasic = {
     docs: {
       source: {
         language: 'html',
-        // ✅ keeps the code panel synced with controls changes
         transform: (_code, storyContext) => LinearTemplate(storyContext.args),
       },
       description: {
@@ -326,7 +377,6 @@ export const LinearBasic = {
   },
 };
 
-/** ✅ Named-slot compatibility for single bar via use-named-bar-0 + label */
 export const LinearSingleNamedSlotBar0 = () => `
 <progress-display-component use-named-bar-0 label="Uploading" show-progress value="75" variant="primary">
 </progress-display-component>
@@ -337,12 +387,12 @@ LinearSingleNamedSlotBar0.parameters = {
   docs: {
     source: { code: LinearSingleNamedSlotBar0(), language: 'html' },
     description: {
-      story: 'Uses `label` plus `use-named-bar-0` to wrap the label as an internal `<span slot="bar-0">…</span>` for single-bar compatibility with multi-bar markup.',
+      story:
+        'Uses `label` plus `use-named-bar-0` to wrap the label as an internal `<span slot="bar-0">…</span>` for single-bar compatibility with multi-bar markup.',
     },
   },
 };
 
-/** ✅ Label attribute only */
 export const LinearLabelAttr = () => `
 <progress-display-component label="Progress" show-progress value="50" variant="primary">
 </progress-display-component>
@@ -352,27 +402,15 @@ LinearLabelAttr.parameters = {
   controls: { disable: true },
   docs: {
     source: { code: LinearLabelAttr(), language: 'html' },
-    description: { story: 'Using the `label` attribute renders a label inside the bar without needing any slot markup.' },
+    description: { story: 'Using the `label` attribute wires aria-labelledby to a real label id and renders a visible label.' },
   },
 };
 
-/** ✅ Default slot text example (real-world style) */
-// export const LinearDefaultSlotText = () => `
-// <progress-display-component show-progress value="45" variant="primary">
-//   Loading
-// </progress-display-component>
-// `;
-// LinearDefaultSlotText.storyName = 'Linear (Single) — default slot text';
-// LinearDefaultSlotText.parameters = {
-//   controls: { disable: true },
-//   docs: {
-//     source: { code: LinearDefaultSlotText(), language: 'html' },
-//     description: { story: 'Default slot text works without `label` or `use-named-bar-0`.' },
-//   },
-// };
-
 export const LinearStripedAnimated = LinearTemplate.bind({});
 LinearStripedAnimated.args = {
+  ariaLabel: '',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
   animated: true,
   height: 18,
   label: '',
@@ -398,6 +436,9 @@ LinearStripedAnimated.parameters = {
 
 export const LinearWithCustomStyles = LinearTemplate.bind({});
 LinearWithCustomStyles.args = {
+  ariaLabel: '',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
   animated: false,
   height: 12,
   label: '',
@@ -421,7 +462,6 @@ LinearWithCustomStyles.parameters = {
   },
 };
 
-/** Animate bar via JS (attribute updates) */
 export const AnimatedValueViaJS = () => {
   const id = `progressBarComp-${Math.random().toString(36).slice(2, 9)}`;
 
@@ -429,7 +469,6 @@ export const AnimatedValueViaJS = () => {
     const el = document.getElementById(id);
     if (!el) return;
 
-    // cleanup if hot reloaded
     if (el.__progressInterval) clearInterval(el.__progressInterval);
 
     let value1 = 0;
@@ -463,7 +502,11 @@ AnimatedValueViaJS.parameters = {
 
 export const MultiStacked = MultiTemplate.bind({});
 MultiStacked.args = {
+  ariaLabel: '',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
   height: 18,
+  label: '',
   bars: [
     { value: 20, variant: 'primary', striped: false, animated: false, showProgress: true, precision: 0, progressAlign: '' },
     { value: 35, variant: 'success', striped: true, animated: true, showProgress: true, precision: 0, progressAlign: '' },
@@ -481,7 +524,11 @@ MultiStacked.parameters = {
 
 export const MultiWithLeftRightText = MultiTemplate.bind({});
 MultiWithLeftRightText.args = {
+  ariaLabel: '',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
   height: 20,
+  label: '',
   bars: [
     { value: 40, variant: 'info', showProgress: true, progressAlign: 'left', precision: 0 },
     { value: 25, variant: 'warning', showProgress: true, progressAlign: 'right', precision: 0 },
@@ -501,6 +548,10 @@ MultiWithLeftRightText.parameters = {
 
 export const CircularBasic = CircularTemplate.bind({});
 CircularBasic.args = {
+  ariaLabel: '',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
+  label: '',
   value: 64,
   max: 100,
   size: 96,
@@ -523,6 +574,10 @@ CircularBasic.parameters = {
 
 export const CircularRotatedWide = CircularTemplate.bind({});
 CircularRotatedWide.args = {
+  ariaLabel: '',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
+  label: '',
   value: 80,
   max: 100,
   size: 120,
@@ -545,6 +600,10 @@ CircularRotatedWide.parameters = {
 
 export const CircularIndeterminate = CircularTemplate.bind({});
 CircularIndeterminate.args = {
+  ariaLabel: '',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
+  label: '',
   value: 0,
   max: 100,
   size: 80,
@@ -562,5 +621,202 @@ CircularIndeterminate.parameters = {
   docs: {
     source: { code: CircularTemplate(CircularIndeterminate.args), language: 'html' },
     description: { story: 'A circular progress bar in indeterminate state.' },
+  },
+};
+
+/* ============================== Accessibility Matrix (computed) ============================== */
+
+const getSnapshot = host => {
+  const root = host;
+  const group = root?.querySelector?.('[role="group"]');
+  const bars = Array.from(root?.querySelectorAll?.('[role="progressbar"]') || []);
+
+  const resolveIn = (scope, id) => {
+    if (!id) return false;
+    return !!scope?.querySelector?.(`#${CSS.escape(id)}`);
+  };
+
+  const snapEl = el => {
+    if (!el) return null;
+    const describedby = (el.getAttribute('aria-describedby') || '').trim();
+    const describedIds = describedby ? describedby.split(/\s+/).filter(Boolean) : [];
+
+    const labelledby = (el.getAttribute('aria-labelledby') || '').trim();
+    const labelledIds = labelledby ? labelledby.split(/\s+/).filter(Boolean) : [];
+
+    return {
+      tag: el.tagName.toLowerCase(),
+      role: el.getAttribute('role'),
+      id: el.getAttribute('id'),
+      class: el.getAttribute('class'),
+      'aria-label': el.getAttribute('aria-label'),
+      'aria-labelledby': labelledby || null,
+      'aria-describedby': describedby || null,
+      'aria-valuemin': el.getAttribute('aria-valuemin'),
+      'aria-valuemax': el.getAttribute('aria-valuemax'),
+      'aria-valuenow': el.getAttribute('aria-valuenow'),
+      'aria-valuetext': el.getAttribute('aria-valuetext'),
+      'aria-busy': el.getAttribute('aria-busy'),
+      labelledbyIds: labelledIds,
+      labelledbyAllResolve: labelledIds.every(id => resolveIn(root, id)),
+      describedbyIds: describedIds,
+      describedbyAllResolve: describedIds.every(id => resolveIn(root, id)),
+    };
+  };
+
+  return {
+    host: host?.tagName?.toLowerCase() ?? null,
+    mode: group ? 'multi' : 'single',
+    group: snapEl(group),
+    bars: bars.map(snapEl),
+    labelElId: root?.querySelector?.('[id$="-label"]')?.getAttribute?.('id') ?? null,
+  };
+};
+
+export const AccessibilityMatrix = {
+  name: 'Accessibility Matrix (computed)',
+  render: args => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '16px';
+    wrap.style.maxWidth = '980px';
+
+    const header = document.createElement('div');
+    header.innerHTML = `
+      <strong>Accessibility matrix</strong>
+      <div style="opacity:.8">
+        Prints computed <code>role</code> + <code>aria-*</code> + ids for representative configurations.
+      </div>
+    `;
+    wrap.appendChild(header);
+
+    const card = (title, html) => {
+      const box = document.createElement('div');
+      box.style.border = '1px solid #ddd';
+      box.style.borderRadius = '10px';
+      box.style.padding = '12px';
+      box.style.display = 'grid';
+      box.style.gap = '10px';
+
+      const t = document.createElement('div');
+      t.style.fontWeight = '600';
+      t.textContent = title;
+
+      const demo = document.createElement('div');
+      const pre = document.createElement('pre');
+      pre.style.margin = '0';
+      pre.style.padding = '10px';
+      pre.style.borderRadius = '8px';
+      pre.style.overflow = 'auto';
+      pre.style.border = '1px solid #eee';
+      pre.style.background = '#fafafa';
+      pre.textContent = 'Loading…';
+
+      const mount = document.createElement('div');
+      mount.innerHTML = html.trim();
+      const host = mount.querySelector('progress-display-component');
+
+      demo.appendChild(mount);
+
+      const update = async () => {
+        if (host?.componentOnReady) {
+          try {
+            await host.componentOnReady();
+          } catch (_e) {}
+        } else if (window.customElements?.whenDefined) {
+          try {
+            await customElements.whenDefined('progress-display-component');
+          } catch (_e) {}
+        }
+
+        pre.textContent = JSON.stringify(getSnapshot(host), null, 2);
+      };
+
+      queueMicrotask(() => requestAnimationFrame(update));
+
+      box.appendChild(t);
+      box.appendChild(demo);
+      box.appendChild(pre);
+      return box;
+    };
+
+    // NOTE: "default/inline/horizontal, error/validation, disabled" are not native concepts for progress.
+    // We map them to representative states:
+    // - default: linear determinate
+    // - inline: small height + inline label/progress text
+    // - horizontal: multi stacked (horizontal segments)
+    // - error/validation: danger variant + describedby
+    // - disabled: indeterminate/busy
+
+    const helpId = `mx-help-${Math.random().toString(36).slice(2, 7)}`;
+    const helpText = `<div id="${helpId}" style="font-size:12px; opacity:.85;">Help text describing this progress indicator.</div>`;
+
+    wrap.appendChild(
+      card(
+        'Default (linear determinate)',
+        `
+        ${helpText}
+        ${LinearTemplate({ ...LinearBasic.args, ...args, ariaDescribedby: helpId, value: 35, showProgress: true, slotText: '' })}
+      `,
+      ),
+    );
+
+    wrap.appendChild(
+      card(
+        'Inline (compact)',
+        `
+        ${LinearTemplate({ ...LinearBasic.args, ...args, height: 10, value: 60, showProgress: true, progressAlign: 'right', slotText: 'Loading' })}
+      `,
+      ),
+    );
+
+    wrap.appendChild(
+      card(
+        'Horizontal (multi stacked)',
+        `
+        ${MultiTemplate({
+          ...MultiStacked.args,
+          ...args,
+          label: 'Stacked segments',
+          bars: [
+            { value: 20, variant: 'primary', showProgress: true },
+            { value: 35, variant: 'success', showProgress: true },
+            { value: 15, variant: 'warning', showProgress: true },
+          ],
+        })}
+      `,
+      ),
+    );
+
+    wrap.appendChild(
+      card(
+        'Error / validation (danger + describedby)',
+        `
+        ${helpText}
+        ${LinearTemplate({ ...LinearBasic.args, ...args, ariaDescribedby: helpId, variant: 'danger', value: 15, showProgress: true, slotText: '' })}
+      `,
+      ),
+    );
+
+    wrap.appendChild(
+      card(
+        'Disabled / busy (indeterminate)',
+        `
+        ${CircularTemplate({ ...CircularIndeterminate.args, ...args, indeterminate: true, variant: 'secondary', label: 'Loading', showProgress: false })}
+      `,
+      ),
+    );
+
+    return wrap;
+  },
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Prints computed accessibility wiring for progress. Shows `role="progressbar"` (and `role="group"` for multi) plus `aria-valuenow/max/min` or indeterminate `aria-busy`, and validates that `aria-labelledby` / `aria-describedby` ids resolve.',
+      },
+      source: { language: 'html', type: 'dynamic' },
+    },
   },
 };

@@ -314,7 +314,8 @@ label {
     transform: scale(1.5) !important;
   }
 
-  .slider-thumb-container:hover .slider-thumb::before {
+  .slider-thumb-container:hover .slider-thumb::before,
+  .slider-thumb-container:focus .slider-thumb::before {
     transform: scale(1);
   }
 

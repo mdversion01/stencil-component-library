@@ -1,3 +1,4 @@
+// src/components/plumage-select-field/plumage-select-field-component.spec.tsx
 import { newSpecPage } from '@stencil/core/testing';
 import { h } from '@stencil/core';
 import { PlumageSelectFieldComponent } from './plumage-select-field-component';
@@ -54,18 +55,17 @@ describe('plumage-select-field-component', () => {
 
     const first = options[0];
     expect(first.getAttribute('value')).toBe('');
-    // angle brackets stripped by sanitizer
     expect(first.textContent).toBe('Pick one');
 
     expect(page.root).toMatchInlineSnapshot(`
 <plumage-select-field-component default-option-txt="<Pick one>">
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label label-sm">
+      <label class="form-control-label label-sm" id="plumageSelect-label">
         <span></span>
       </label>
       <div class="input-container" role="presentation">
-        <select class="form-select is-invalid" role="listbox">
+        <select aria-labelledby="plumageSelect-label" class="form-select is-invalid">
           <option selected="" value="">
             Pick one
           </option>
@@ -112,11 +112,11 @@ describe('plumage-select-field-component', () => {
 <plumage-select-field-component>
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label label-sm">
+      <label class="form-control-label label-sm" id="plumageSelect-label">
         <span></span>
       </label>
       <div class="input-container" role="presentation">
-        <select class="form-select is-invalid" role="listbox">
+        <select aria-labelledby="plumageSelect-label" class="form-select is-invalid">
           <option value="">
             Select an option
           </option>
@@ -171,11 +171,11 @@ describe('plumage-select-field-component', () => {
 <plumage-select-field-component default-option-txt="Choose…" id="some-sortField">
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label label-sm">
+      <label class="form-control-label label-sm" id="some-sortField-label">
         <span></span>
       </label>
       <div class="input-container" role="presentation">
-        <select class="form-select is-invalid" role="listbox">
+        <select aria-labelledby="some-sortField-label" class="form-select is-invalid">
           <option aria-label="none" value="none">
             --none--
           </option>
@@ -226,11 +226,11 @@ describe('plumage-select-field-component', () => {
 <plumage-select-field-component default-option-txt="Choose…" id="some-sortField">
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label label-sm">
+      <label class="form-control-label label-sm" id="some-sortField-label">
         <span></span>
       </label>
       <div class="input-container" role="presentation">
-        <select class="form-select is-invalid" role="listbox">
+        <select aria-labelledby="some-sortField-label" class="form-select is-invalid">
           <option aria-label="none" selected="" value="none">
             --none--
           </option>
@@ -286,7 +286,7 @@ describe('plumage-select-field-component', () => {
 <plumage-select-field-component default-option-txt="Pick one" select-field-id="fruit">
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label label-sm" htmlfor="fruit">
+      <label class="form-control-label label-sm" htmlfor="fruit" id="fruit-label">
         <span>
           Favorite Fruit
         </span>
@@ -294,8 +294,8 @@ describe('plumage-select-field-component', () => {
           *
         </span>
       </label>
-      <div aria-labelledby="favoriteFruit" class="input-container" role="presentation">
-        <select aria-label="favoriteFruit" aria-labelledby="favoriteFruit" class="form-select" id="fruit" required="" role="listbox">
+      <div class="input-container" role="presentation">
+        <select aria-labelledby="fruit-label" aria-required="true" class="form-select" id="fruit" required="">
           <option value="">
             Pick one
           </option>
@@ -338,36 +338,30 @@ describe('plumage-select-field-component', () => {
     const sel = getSelect(page);
     const opts = getAllOptions(page);
 
-    // Ensure default exists (non-sortField)
     const blank = opts.find(o => o.getAttribute('value') === '');
     expect(blank).toBeTruthy();
 
-    // --- Select ONLY the blank default in multiple mode
-    setMultiple(sel, ['']); // helper ensures events + select.value sync
+    setMultiple(sel, ['']);
     await page.waitForChanges();
 
-    // Should be invalid
     expect(page.root!.querySelector('select')!.classList.contains('is-invalid')).toBe(true);
-    const msg = page.root!.querySelector('#validationMessage');
+    const msg = page.root!.querySelector('#plumageSelect-validation');
     expect(msg?.textContent).toBe('Please choose at least one');
 
-    // --- Now select a real option (e.g., "b"); blank should be ignored by component
     setMultiple(sel, ['b']);
     await page.waitForChanges();
 
-    // Invalid should clear
     expect(page.root!.querySelector('select')!.classList.contains('is-invalid')).toBe(false);
 
-    // Snapshot after valid selection
     expect(page.root).toMatchInlineSnapshot(`
 <plumage-select-field-component default-option-txt="Pick one" validation-message="Please choose at least one">
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label invalid label-sm">
+      <label class="form-control-label invalid label-sm" id="plumageSelect-label">
         <span></span>
       </label>
       <div class="input-container" role="presentation">
-        <select aria-describedby="validationMessage" aria-invalid="true" aria-multiselectable="true" class="form-select" multiple="" role="combobox">
+        <select aria-describedby="plumageSelect-validation" aria-invalid="true" aria-labelledby="plumageSelect-label" class="form-select" multiple="">
           <option value="">
             Pick one
           </option>
@@ -381,7 +375,7 @@ describe('plumage-select-field-component', () => {
         <div class="b-underline invalid" role="presentation">
           <div aria-hidden="true" class="b-focus invalid" role="presentation"></div>
         </div>
-        <div class="form-text invalid-feedback" id="validationMessage">
+        <div class="form-text invalid-feedback" id="plumageSelect-validation">
           Please choose at least one
         </div>
       </div>

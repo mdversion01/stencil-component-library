@@ -27,15 +27,20 @@ function getPopover(): HTMLElement | null {
 function normalize(html: string) {
   return html
     .replace(/id="popover_[^"]+"/g, 'id="popover_TEST"')
+    .replace(/aria-controls="popover_[^"]+"/g, 'aria-controls="popover_TEST"')
     .replace(/aria-describedby="popover_[^"]+"/g, 'aria-describedby="popover_TEST"')
-    .replace(/\sstyle="[^"]*"/g, ''); // optional: strip inline styles for stable snaps
+    .replace(/aria-labelledby="popover_[^"]+-title"/g, 'aria-labelledby="popover_TEST-title"')
+    .replace(/id="popover_[^"]+-title"/g, 'id="popover_TEST-title"')
+    .replace(/id="popover_[^"]+-body"/g, 'id="popover_TEST-body"')
+    .replace(/aria-describedby="popover_[^"]+-body"/g, 'aria-describedby="popover_TEST-body"')
+    .replace(/\sstyle="[^"]*"/g, '');
 }
 
 describe('popover-component', () => {
   let restoreRects: () => void;
 
   beforeAll(() => {
-    jest.spyOn(Math, 'random').mockReturnValue(0.123456789); // stable but we don't assert exact id
+    jest.spyOn(Math, 'random').mockReturnValue(0.123456789);
   });
 
   afterAll(() => {
@@ -51,7 +56,7 @@ describe('popover-component', () => {
     document.body.querySelectorAll('.popover').forEach(n => n.remove());
   });
 
-  test('renders with light-DOM trigger and maps title attribute', async () => {
+  test('renders with light-DOM trigger and maps title attribute (click default => aria-controls/expanded)', async () => {
     const page = await newSpecPage({
       components: [PopoverComponent],
       template: () => (
@@ -63,19 +68,22 @@ describe('popover-component', () => {
 
     const btn = page.root!.querySelector('#t') as HTMLButtonElement;
     expect(btn).toBeTruthy();
-    const ad = btn.getAttribute('aria-describedby')!;
-    expect(ad).toMatch(/^popover_/);
+
+    const ac = btn.getAttribute('aria-controls')!;
+    expect(ac).toMatch(/^popover_/);
+    expect(btn.getAttribute('aria-expanded')).toBe('false');
+    expect(btn.getAttribute('aria-haspopup')).toBe('dialog');
+    expect(btn.getAttribute('aria-describedby')).toBeNull();
 
     const cmp = page.rootInstance as PopoverComponent;
     expect(cmp.popoverTitle).toBe('Hello');
 
-    // lightweight structural snapshot
     expect(normalize(page.root!.outerHTML)).toMatchInlineSnapshot(
-      `"<popover-component title="Hello"><button id="t" tabindex="0" aria-describedby="popover_TEST">Trigger</button></popover-component>"`,
+      `"<popover-component title="Hello"><button id="t" tabindex="0" aria-haspopup="dialog" aria-controls="popover_TEST" aria-expanded="false">Trigger</button></popover-component>"`,
     );
   });
 
-  test('click trigger shows popover with header/body, positions it', async () => {
+  test('click trigger shows popover as dialog with labelledby/descrby ids; trigger reflects expanded', async () => {
     const page = await newSpecPage({
       components: [PopoverComponent],
       template: () => (
@@ -89,12 +97,27 @@ describe('popover-component', () => {
     btn.click();
     await page.waitForChanges();
 
+    expect(btn.getAttribute('aria-expanded')).toBe('true');
+    expect(btn.getAttribute('aria-controls')).toMatch(/^popover_/);
+
     const pop = getPopover();
     expect(pop).toBeTruthy();
-    expect(normalize(pop!.outerHTML)).toMatchInlineSnapshot(`"<div id="popover_TEST" class="popover fade show plumage super-tooltip primary" role="tooltip" tabindex="-1"><div class="popover-arrow" data-popper-arrow></div> <h3 class="popover-header">Header</h3> <div class="popover-body" tabindex="0">Body text</div></div>"`);
+
+    expect(pop!.getAttribute('role')).toBe('dialog');
+    expect(pop!.getAttribute('aria-modal')).toBe('false');
+
+    expect(pop!.getAttribute('aria-labelledby')).toMatch(/^popover_.*-title$/);
+    expect(pop!.getAttribute('aria-describedby')).toMatch(/^popover_.*-body$/);
+
+    const titleEl = pop!.querySelector('.popover-header') as HTMLElement | null;
+    const bodyEl = pop!.querySelector('.popover-body') as HTMLElement | null;
+    expect(titleEl?.id).toMatch(/^popover_.*-title$/);
+    expect(bodyEl?.id).toMatch(/^popover_.*-body$/);
+
+    expect(normalize(pop!.outerHTML)).toMatchInlineSnapshot(`"<div id="popover_TEST" class="popover fade show plumage super-tooltip primary" tabindex="-1" role="dialog" aria-modal="false" aria-labelledby="popover_TEST-title" aria-describedby="popover_TEST"><div class="popover-arrow" data-popper-arrow></div> <h3 class="popover-header" id="popover_TEST">Header</h3> <div class="popover-body" tabindex="0" id="popover_TEST">Body text</div></div>"`);
   });
 
-  test('outside click hides popover', async () => {
+  test('outside click hides popover and updates aria-expanded', async () => {
     const page = await newSpecPage({
       components: [PopoverComponent],
       template: () => (
@@ -108,11 +131,13 @@ describe('popover-component', () => {
     btn.click();
     await page.waitForChanges();
     expect(getPopover()).toBeTruthy();
+    expect(btn.getAttribute('aria-expanded')).toBe('true');
 
     document.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await page.waitForChanges();
 
     expect(getPopover()).toBeNull();
+    expect(btn.getAttribute('aria-expanded')).toBe('false');
   });
 
   test('Escape hides popover and returns focus to trigger', async () => {
@@ -128,6 +153,7 @@ describe('popover-component', () => {
     const btn = page.root!.querySelector('#t') as HTMLButtonElement;
     btn.click();
     await page.waitForChanges();
+
     const pop = getPopover()!;
     expect(pop).toBeTruthy();
 
@@ -135,9 +161,10 @@ describe('popover-component', () => {
     await page.waitForChanges();
 
     expect(getPopover()).toBeNull();
+    expect(btn.getAttribute('aria-expanded')).toBe('false');
   });
 
-  test('hover trigger shows/hides on mouseenter/mouseleave', async () => {
+  test('hover trigger shows/hides on mouseenter/mouseleave (tooltip semantics + describedby)', async () => {
     const page = await newSpecPage({
       components: [PopoverComponent],
       template: () => (
@@ -148,9 +175,19 @@ describe('popover-component', () => {
     });
 
     const btn = page.root!.querySelector('#t') as HTMLButtonElement;
+
+    const ad = btn.getAttribute('aria-describedby')!;
+    expect(ad).toMatch(/^popover_/);
+    expect(btn.getAttribute('aria-controls')).toBeNull();
+    expect(btn.getAttribute('aria-expanded')).toBeNull();
+
     btn.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
     await page.waitForChanges();
-    expect(getPopover()).toBeTruthy();
+
+    const pop = getPopover();
+    expect(pop).toBeTruthy();
+    expect(pop!.getAttribute('role')).toBe('tooltip');
+    expect(pop!.getAttribute('aria-hidden')).toBe('false');
 
     btn.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
     await page.waitForChanges();
@@ -175,7 +212,7 @@ describe('popover-component', () => {
     expect(pop.querySelector('.popover-arrow')).toBeNull();
   });
 
-  test('variant + plumage + super classes applied', async () => {
+  test('variant + plumage + super classes applied (click mode snapshot)', async () => {
     const page = await newSpecPage({
       components: [PopoverComponent],
       template: () => (
@@ -192,6 +229,36 @@ describe('popover-component', () => {
     const pop = getPopover()!;
     expect(pop.className).toContain('plumage');
     expect(pop.className).toContain('super-tooltip');
-    expect(normalize(pop.outerHTML)).toMatchSnapshot();
+    expect(pop.className).toContain('danger');
+
+    expect(normalize(pop.outerHTML)).toMatchInlineSnapshot(`"<div id="popover_TEST" class="popover fade show plumage super-tooltip danger" tabindex="-1" role="dialog" aria-modal="false" aria-labelledby="popover_TEST-title" aria-describedby="popover_TEST"><div class="popover-arrow" data-popper-arrow></div> <h3 class="popover-header" id="popover_TEST">V</h3> <div class="popover-body" tabindex="0" id="popover_TEST">C</div></div>"`);
+  });
+
+  test('a11y override props apply on dialog (aria-label used when no header => no aria-labelledby)', async () => {
+    const page = await newSpecPage({
+      components: [PopoverComponent],
+      template: () => (
+        // No title => no header => component won't set aria-labelledby automatically.
+        <popover-component content="Body" aria-label="Custom label">
+          <button id="t">T</button>
+        </popover-component>
+      ),
+    });
+
+    const btn = page.root!.querySelector('#t') as HTMLButtonElement;
+    btn.click();
+    await page.waitForChanges();
+
+    const pop = getPopover()!;
+    expect(pop.getAttribute('role')).toBe('dialog');
+
+    // ✅ now this is expected to exist
+    expect(pop.getAttribute('aria-label')).toBe('Custom label');
+
+    // still describes by body
+    expect(pop.getAttribute('aria-describedby')).toMatch(/^popover_.*-body$/);
+
+    // and should NOT have aria-labelledby since no header
+    expect(pop.getAttribute('aria-labelledby')).toBeNull();
   });
 });

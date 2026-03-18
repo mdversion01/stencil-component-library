@@ -14,6 +14,29 @@ export default {
   },
   argTypes: {
     /* -----------------------------
+     Accessibility
+  ------------------------------ */
+    ariaLabel: {
+      control: 'text',
+      name: 'aria-label',
+      description:
+        'ARIA override for the popover in click (dialog) mode. Ignored when aria-labelledby is provided or a title header is present.',
+      table: { category: 'Accessibility' },
+    },
+    ariaLabelledby: {
+      control: 'text',
+      name: 'aria-labelledby',
+      description: 'ARIA override for the popover in click (dialog) mode. Space-separated ids.',
+      table: { category: 'Accessibility' },
+    },
+    ariaDescribedby: {
+      control: 'text',
+      name: 'aria-describedby',
+      description: 'ARIA override for the popover in click (dialog) mode. Merged with the body id.',
+      table: { category: 'Accessibility' },
+    },
+
+    /* -----------------------------
      Content
   ------------------------------ */
     popoverTitle: {
@@ -154,6 +177,11 @@ const buildPopoverAttrsBlock = a => {
   const fallback = normalizeFallback(a.fallbackPlacement);
 
   const lines = [
+    // a11y overrides
+    attrLine('aria-label', a.ariaLabel),
+    attrLine('aria-labelledby', a.ariaLabelledby),
+    attrLine('aria-describedby', a.ariaDescribedby),
+
     boolLine('arrow-off', a.arrowOff),
     attrLine('content', a.content),
     attrLine('custom-class', a.customClass),
@@ -228,6 +256,10 @@ BasicPopover.args = {
   variant: 'primary',
   visible: false,
   yOffset: 0,
+
+  ariaLabel: '',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
 };
 BasicPopover.storyName = 'Basic Popover';
 BasicPopover.parameters = {
@@ -340,7 +372,7 @@ SuperTooltipMode.parameters = {
   },
 };
 
-/* ============================== NEW: Slot Content Example ============================== */
+/* ============================== Slot Content Example ============================== */
 
 export const SlotContent = () =>
   normalizeHtml(`
@@ -422,5 +454,233 @@ ExternalTarget.parameters = {
   docs: {
     source: { code: ExternalTarget(), language: 'html' },
     description: { story: 'Attach the popover to an external trigger element via `target`.' },
+  },
+};
+
+/* ============================== Accessibility Matrix (computed) ============================== */
+
+const getSnapshot = host => {
+  const trigger =
+    host?.querySelector('button') ||
+    host?.querySelector('button-component') ||
+    host?.querySelector('[role="button"]') ||
+    host?.querySelector('[tabindex]');
+
+  const describedby = (trigger?.getAttribute?.('aria-describedby') || '').trim();
+  const describedIds = describedby ? describedby.split(/\s+/).filter(Boolean) : [];
+
+  const resolve = id => {
+    if (!id) return false;
+    return !!document.querySelector(`#${CSS.escape(id)}`);
+  };
+
+  // Popover is appended to body
+  const popoverId = trigger?.getAttribute?.('aria-controls') || describedIds[0] || null;
+  const pop = popoverId ? document.getElementById(popoverId) : document.body.querySelector('.popover');
+
+  const popLabelledby = (pop?.getAttribute?.('aria-labelledby') || '').trim();
+  const popLabelledbyIds = popLabelledby ? popLabelledby.split(/\s+/).filter(Boolean) : [];
+
+  const popDescribedby = (pop?.getAttribute?.('aria-describedby') || '').trim();
+  const popDescribedbyIds = popDescribedby ? popDescribedby.split(/\s+/).filter(Boolean) : [];
+
+  return {
+    host: host?.tagName?.toLowerCase() ?? null,
+    triggerTag: trigger?.tagName?.toLowerCase() ?? null,
+    triggerTabindex: trigger?.getAttribute?.('tabindex') ?? null,
+
+    'trigger aria-haspopup': trigger?.getAttribute?.('aria-haspopup') ?? null,
+    'trigger aria-expanded': trigger?.getAttribute?.('aria-expanded') ?? null,
+    'trigger aria-controls': trigger?.getAttribute?.('aria-controls') ?? null,
+    'trigger aria-describedby': describedby || null,
+
+    triggerDescribedbyIds: describedIds,
+    triggerDescribedbyAllResolve: describedIds.every(resolve),
+
+    popoverFound: !!pop,
+    popoverId: pop?.getAttribute?.('id') ?? null,
+    popoverRole: pop?.getAttribute?.('role') ?? null,
+    popoverTabindex: pop?.getAttribute?.('tabindex') ?? null,
+    'popover aria-hidden': pop?.getAttribute?.('aria-hidden') ?? null,
+    'popover aria-modal': pop?.getAttribute?.('aria-modal') ?? null,
+    'popover aria-label': pop?.getAttribute?.('aria-label') ?? null,
+    'popover aria-labelledby': popLabelledby || null,
+    'popover aria-describedby': popDescribedby || null,
+
+    popoverLabelledbyIds: popLabelledbyIds,
+    popoverLabelledbyAllResolve: popLabelledbyIds.every(resolve),
+
+    popoverDescribedbyIds: popDescribedbyIds,
+    popoverDescribedbyAllResolve: popDescribedbyIds.every(resolve),
+
+    hasHeader: !!pop?.querySelector?.('.popover-header'),
+    headerId: pop?.querySelector?.('.popover-header')?.getAttribute?.('id') ?? null,
+    hasBody: !!pop?.querySelector?.('.popover-body'),
+    bodyId: pop?.querySelector?.('.popover-body')?.getAttribute?.('id') ?? null,
+  };
+};
+
+export const AccessibilityMatrix = {
+  name: 'Accessibility Matrix (computed)',
+  render: args => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '16px';
+    wrap.style.maxWidth = '980px';
+
+    const header = document.createElement('div');
+    header.innerHTML = `
+      <strong>Accessibility matrix</strong>
+      <div style="opacity:.8">
+        Prints computed <code>role</code> + <code>aria-*</code> + generated ids.
+        For popover: <em>click</em> behaves as a non-modal <code>dialog</code>; <em>hover/focus</em> behaves as a <code>tooltip</code>.
+      </div>
+    `;
+    wrap.appendChild(header);
+
+    const card = (title, storyArgs, openAction) => {
+      const box = document.createElement('div');
+      box.style.border = '1px solid #ddd';
+      box.style.borderRadius = '10px';
+      box.style.padding = '12px';
+      box.style.display = 'grid';
+      box.style.gap = '10px';
+
+      const t = document.createElement('div');
+      t.style.fontWeight = '600';
+      t.textContent = title;
+
+      const demo = document.createElement('div');
+      const pre = document.createElement('pre');
+      pre.style.margin = '0';
+      pre.style.padding = '10px';
+      pre.style.borderRadius = '8px';
+      pre.style.overflow = 'auto';
+      pre.style.border = '1px solid #eee';
+      pre.style.background = '#fafafa';
+      pre.textContent = 'Loading…';
+
+      const mount = document.createElement('div');
+      mount.innerHTML = Template({ ...BasicPopover.args, ...args, ...storyArgs });
+      const host = mount.querySelector('popover-component');
+
+      demo.appendChild(mount);
+
+      const update = async () => {
+        if (host?.componentOnReady) {
+          try {
+            await host.componentOnReady();
+          } catch (_e) {}
+        } else if (window.customElements?.whenDefined) {
+          try {
+            await customElements.whenDefined('popover-component');
+          } catch (_e) {}
+        }
+
+        if (typeof openAction === 'function') {
+          try {
+            await openAction(host);
+          } catch (_e) {}
+        }
+
+        pre.textContent = JSON.stringify(getSnapshot(host), null, 2);
+      };
+
+      queueMicrotask(() => requestAnimationFrame(update));
+
+      box.appendChild(t);
+      box.appendChild(demo);
+      box.appendChild(pre);
+      return box;
+    };
+
+    const openClick = async host => {
+      const trigger =
+        host?.querySelector('button') ||
+        host?.querySelector('button-component') ||
+        host?.querySelector('[role="button"]') ||
+        host?.querySelector('[tabindex]');
+
+      trigger?.dispatchEvent?.(new MouseEvent('click', { bubbles: true }));
+      await new Promise(r => requestAnimationFrame(r));
+    };
+
+    const openHover = async host => {
+      const trigger =
+        host?.querySelector('button') ||
+        host?.querySelector('button-component') ||
+        host?.querySelector('[role="button"]') ||
+        host?.querySelector('[tabindex]');
+
+      trigger?.dispatchEvent?.(new MouseEvent('mouseenter', { bubbles: true }));
+      await new Promise(r => requestAnimationFrame(r));
+    };
+
+    wrap.appendChild(
+      card(
+        'Default (click → dialog)',
+        {
+          trigger: 'click',
+          popoverTitle: 'Default dialog',
+          content: 'Click-triggered popover.',
+          placement: 'auto',
+        },
+        openClick,
+      ),
+    );
+
+    wrap.appendChild(
+      card(
+        'Tooltip mode (hover → tooltip)',
+        {
+          trigger: 'hover',
+          popoverTitle: 'Tooltip title',
+          content: 'Hover-triggered tooltip popover.',
+          placement: 'top',
+        },
+        openHover,
+      ),
+    );
+
+    wrap.appendChild(
+      card(
+        'Validation / error style (danger variant)',
+        {
+          trigger: 'click',
+          variant: 'danger',
+          popoverTitle: 'Error',
+          content: 'Example error/help message content.',
+        },
+        openClick,
+      ),
+    );
+
+    wrap.appendChild(
+      card(
+        'Disabled trigger (button disabled)',
+        {
+          trigger: 'click',
+          popoverTitle: 'Disabled',
+          content: 'If the trigger is disabled, click will not open in most browsers.',
+        },
+        async host => {
+          const btn = host?.querySelector('button');
+          if (btn) btn.setAttribute('disabled', '');
+          await new Promise(r => requestAnimationFrame(r));
+        },
+      ),
+    );
+
+    return wrap;
+  },
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Prints computed accessibility wiring for popover triggers and the rendered popover element. Click-triggered popovers behave as non-modal dialogs (`aria-controls`, `aria-expanded`, `role="dialog"`). Hover/focus behaves as a tooltip (`aria-describedby`, `role="tooltip"`).',
+      },
+      source: { language: 'html', type: 'dynamic' },
+    },
   },
 };

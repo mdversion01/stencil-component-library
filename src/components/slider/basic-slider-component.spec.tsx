@@ -1,9 +1,15 @@
 // src/components/slider/basic-slider-component.spec.tsx
 import { newSpecPage } from '@stencil/core/testing';
-import { h } from '@stencil/core'; // <-- needed when using JSX in template
+import { h } from '@stencil/core';
 import { BasicSliderComponent } from './basic-slider-component';
 
 // helpers
+function getSliderEl(root: HTMLElement) {
+  return root.querySelector('[role="slider"]') as HTMLElement | null;
+}
+function getAllSliders(root: HTMLElement) {
+  return Array.from(root.querySelectorAll('[role="slider"]')) as HTMLElement[];
+}
 function getThumbContainer(root: HTMLElement) {
   return root.querySelector('.slider-thumb-container') as HTMLElement | null;
 }
@@ -24,6 +30,12 @@ function getTickLabels(root: HTMLElement) {
 }
 function getContainer(root: HTMLElement) {
   return root.querySelector('.slider-container') as HTMLDivElement | null;
+}
+function splitIds(v: string | null): string[] {
+  return String(v || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
 }
 
 // crude bbox mock for slider container
@@ -49,17 +61,29 @@ function mockContainerRects(page: any, { left = 0, width = 200 }: { left?: numbe
 }
 
 describe('basic-slider-component', () => {
-  test('renders with defaults (snapshot)', async () => {
+  test('renders with defaults (snapshot) + a11y slider element', async () => {
     const page = await newSpecPage({
       components: [BasicSliderComponent],
       template: () => <basic-slider-component />,
     });
 
-    expect(getThumbContainer(page.root as any)).toBeTruthy();
-    expect(getMovingTrack(page.root as any)).toBeTruthy();
+    const root = page.root as HTMLElement;
 
-    expect(getLeftTextbox(page.root as any)).toBeTruthy();
-    expect(getRightTextbox(page.root as any)).toBeTruthy();
+    expect(getThumbContainer(root)).toBeTruthy();
+    expect(getMovingTrack(root)).toBeTruthy();
+    expect(getLeftTextbox(root)).toBeTruthy();
+    expect(getRightTextbox(root)).toBeTruthy();
+
+    const sliders = getAllSliders(root);
+    expect(sliders.length).toBe(1);
+
+    const slider = getSliderEl(root)!;
+    expect(slider.getAttribute('aria-valuemin')).toBe('0');
+    expect(slider.getAttribute('aria-valuemax')).toBe('100');
+    expect(slider.getAttribute('aria-valuenow')).toBe('0');
+    expect(slider.getAttribute('aria-valuetext')).toBe('0');
+
+    expect(slider.getAttribute('aria-label') || slider.getAttribute('aria-labelledby')).toBeTruthy();
 
     expect(page.root).toMatchSnapshot('default-render');
   });
@@ -67,15 +91,23 @@ describe('basic-slider-component', () => {
   test('parses tickValues from JSON attribute and shows tick labels', async () => {
     const page = await newSpecPage({
       components: [BasicSliderComponent],
-      template: () => <basic-slider-component min={0} max={100} value={50} unit="%" tick-values="[0,25,50,75,100]" tick-labels={true} ticks={5} />,
+      template: () => (
+        <basic-slider-component min={0} max={100} value={50} unit="%" tick-values="[0,25,50,75,100]" tick-labels={true} ticks={5} />
+      ),
     });
 
-    const ticks = getTicks(page.root as any);
+    const root = page.root as HTMLElement;
+
+    const ticks = getTicks(root);
     expect(ticks.length).toBe(5);
 
-    const labels = getTickLabels(page.root as any);
+    const labels = getTickLabels(root);
     expect(labels.length).toBe(5);
     expect(labels.map(el => el.textContent?.trim())).toEqual(['0%', '25%', '50%', '75%', '100%']);
+
+    const slider = getSliderEl(root)!;
+    expect(slider.getAttribute('aria-valuenow')).toBe('50');
+    expect(slider.getAttribute('aria-valuetext')).toBe('50%');
 
     expect(page.root).toMatchSnapshot('ticks-with-labels');
   });
@@ -87,16 +119,16 @@ describe('basic-slider-component', () => {
     });
 
     const host = page.root as HTMLElement;
-    const controls = host.querySelector('.slider-controls') as HTMLElement;
+    const slider = getSliderEl(host)!;
 
     const spy = jest.fn();
     host.addEventListener('valueChange', (e: any) => spy(e.detail?.value));
 
-    controls.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    slider.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
     await page.waitForChanges();
     expect(spy).toHaveBeenLastCalledWith(6);
 
-    controls.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+    slider.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
     await page.waitForChanges();
     expect(spy).toHaveBeenLastCalledWith(5);
 
@@ -110,15 +142,16 @@ describe('basic-slider-component', () => {
     });
 
     const host = page.root as HTMLElement;
-    const controls = host.querySelector('.slider-controls') as HTMLElement;
+    const slider = getSliderEl(host)!;
+
     const spy = jest.fn();
     host.addEventListener('valueChange', (e: any) => spy(e.detail?.value));
 
-    controls.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    slider.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
     await page.waitForChanges();
     expect(spy).toHaveBeenLastCalledWith(40);
 
-    controls.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+    slider.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
     await page.waitForChanges();
     expect(spy).toHaveBeenLastCalledWith(20);
 
@@ -133,9 +166,9 @@ describe('basic-slider-component', () => {
 
     const teardown = mockContainerRects(page, { left: 0, width: 200 });
     const host = page.root as HTMLElement;
-    const thumb = getThumbContainer(host)!;
+    const slider = getSliderEl(host)!;
 
-    thumb.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 0 }));
+    slider.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 0 }));
     window.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: 100 }));
     window.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
     await page.waitForChanges();
@@ -152,10 +185,10 @@ describe('basic-slider-component', () => {
 
     const teardown2 = mockContainerRects(page2, { left: 0, width: 200 });
     const host2 = page2.root as HTMLElement;
-    const thumb2 = getThumbContainer(host2)!;
+    const slider2 = getSliderEl(host2)!;
 
-    thumb2.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 0 }));
-    window.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: 90 })); // ~45% -> 50 tick
+    slider2.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 0 }));
+    window.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: 90 }));
     window.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
     await page2.waitForChanges();
 
@@ -198,8 +231,9 @@ describe('basic-slider-component', () => {
       template: () => <basic-slider-component value={20} variant="danger" />,
     });
 
-    const track = getMovingTrack(page.root as any)!;
-    const thumb = getThumbContainer(page.root as any)!;
+    const root = page.root as HTMLElement;
+    const track = getMovingTrack(root)!;
+    const thumb = getThumbContainer(root)!;
 
     expect(track.className).toContain('danger');
     expect(thumb.className).toContain('danger');
@@ -207,21 +241,77 @@ describe('basic-slider-component', () => {
     expect(page.root).toMatchSnapshot('variant-danger');
   });
 
-  test('renders label and sliderThumbLabel modes', async () => {
+  test('renders label and sliderThumbLabel modes (label id changed)', async () => {
     const pageA = await newSpecPage({
       components: [BasicSliderComponent],
       template: () => <basic-slider-component label="Volume" value={7} unit="%" />,
     });
-    expect(pageA.root?.querySelector('#slider-input-label')?.textContent).toContain('Volume');
-    expect(pageA.root?.querySelector('.slider-thumb-label')).toBeNull();
+
+    const rootA = pageA.root as HTMLElement;
+    const labelEl = rootA.querySelector('label.form-control-label') as HTMLElement | null;
+    expect(labelEl).toBeTruthy();
+    expect(labelEl!.textContent).toContain('Volume');
+
+    expect(rootA.querySelector('.slider-thumb-label')).toBeNull();
+
+    const sliderA = getSliderEl(rootA)!;
+    const labelledby = sliderA.getAttribute('aria-labelledby');
+    expect(labelledby).toBeTruthy();
+    expect(labelledby && !!rootA.querySelector(`#${labelledby}`)).toBe(true);
+
     expect(pageA.root).toMatchSnapshot('label-no-thumb');
 
     const pageB = await newSpecPage({
       components: [BasicSliderComponent],
       template: () => <basic-slider-component value={7} unit="%" slider-thumb-label={true} />,
     });
-    expect(pageB.root?.querySelector('#slider-input-label')).toBeNull();
-    expect(pageB.root?.querySelector('.slider-thumb-label')).toBeTruthy();
+
+    const rootB = pageB.root as HTMLElement;
+    expect(rootB.querySelector('label.form-control-label')).toBeNull();
+    expect(rootB.querySelector('.slider-thumb-label')).toBeTruthy();
+
+    const sliderB = getSliderEl(rootB)!;
+    expect(sliderB.getAttribute('aria-label')).toBeTruthy();
+
     expect(pageB.root).toMatchSnapshot('thumb-label');
+  });
+
+  test('a11y overrides: aria-labelledby wins over aria-label; describedby is forwarded', async () => {
+    const page = await newSpecPage({
+      components: [BasicSliderComponent],
+      template: () => (
+        <div>
+          <div id="ext-label">External label</div>
+          <div id="ext-help">External help</div>
+          <basic-slider-component value={10} min={0} max={20} aria-label="Ignored" aria-labelledby="ext-label" aria-describedby="ext-help" />
+        </div>
+      ),
+    });
+
+    // The first root can be the wrapper; safest is to resolve slider from page.body.
+    const slider = page.body.querySelector('basic-slider-component')!.querySelector('[role="slider"]') as HTMLElement;
+
+    expect(slider.getAttribute('aria-labelledby')).toBe('ext-label');
+    expect(slider.getAttribute('aria-label')).toBeNull();
+
+    const described = splitIds(slider.getAttribute('aria-describedby'));
+    expect(described).toContain('ext-help');
+
+    // ✅ external ids are siblings in page.body
+    expect(!!page.body.querySelector('#ext-label')).toBe(true);
+    expect(!!page.body.querySelector('#ext-help')).toBe(true);
+  });
+
+  test('disabled: slider is not focusable and sets aria-disabled', async () => {
+    const page = await newSpecPage({
+      components: [BasicSliderComponent],
+      template: () => <basic-slider-component disabled={true} value={5} />,
+    });
+
+    const slider = getSliderEl(page.root as HTMLElement)!;
+    expect(slider.getAttribute('aria-disabled')).toBe('true');
+    expect(slider.getAttribute('tabindex')).toBe('-1');
+
+    expect(page.root).toMatchSnapshot('disabled');
   });
 });

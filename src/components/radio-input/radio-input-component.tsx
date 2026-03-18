@@ -34,8 +34,10 @@ export class RadioComponent {
   @Prop() validationMsg = '';
   @Prop() value = '';
 
-  /** Optional: external description element id (help text) */
-  @Prop() ariaDescribedby?: string;
+  // ----------------- a11y override props -----------------
+  @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
+  @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
+  @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
 
   @State() parsedOptions: Array<RadioOption> = [];
   @State() selectedValue = '';
@@ -44,7 +46,6 @@ export class RadioComponent {
   @Event() groupChange: EventEmitter<string>;
 
   private safeId(prefix: string) {
-    // stable IDs for SSR/testing: prefer name/inputId; fall back to prefix.
     const base = (this.name || this.inputId || '').trim();
     return base ? `${prefix}-${base}` : `${prefix}-radios`;
   }
@@ -63,9 +64,7 @@ export class RadioComponent {
     }
 
     const preSelected = this.parsedOptions.find(opt => opt.checked);
-    if (preSelected) {
-      this.selectedValue = preSelected.value;
-    }
+    if (preSelected) this.selectedValue = preSelected.value;
   }
 
   private handleGroupChange(event: Event, value: string) {
@@ -89,11 +88,18 @@ export class RadioComponent {
     this.singleChecked = target.checked;
   }
 
+  private normalizeIdList(value?: string): string | undefined {
+    const trimmed = (value ?? '').trim();
+    if (!trimmed) return undefined;
+    const tokens = trimmed.split(/\s+/).filter(Boolean);
+    return tokens.length ? tokens.join(' ') : undefined;
+  }
+
   private joinIds(...ids: Array<string | undefined>) {
     const cleaned = ids
       .map(s => (s || '').trim())
       .filter(Boolean);
-    return cleaned.length ? cleaned.join(' ') : undefined;
+    return cleaned.length ? Array.from(new Set(cleaned.join(' ').split(/\s+/))).join(' ') : undefined;
   }
 
   render() {
@@ -110,14 +116,23 @@ export class RadioComponent {
       const titleId = this.safeId('radio-group-title');
       const errorId = this.safeId('radio-group-error');
 
-      const describedBy = this.joinIds(this.ariaDescribedby, showValidation && this.validationMsg ? errorId : undefined);
+      const userLabel = (this.ariaLabel ?? '').trim() || undefined;
+      const userLabelledBy = this.normalizeIdList(this.ariaLabelledby);
+      const userDescribedBy = this.normalizeIdList(this.ariaDescribedby);
+
+      const autoLabelledBy = (this.groupTitle || '').trim() ? titleId : undefined;
+
+      const ariaLabelledBy = userLabelledBy ?? autoLabelledBy;
+      const ariaLabel = ariaLabelledBy ? undefined : userLabel;
+
+      const describedBy = this.joinIds(userDescribedBy, showValidation && this.validationMsg ? errorId : undefined);
 
       return (
         <div class={`radios radio-group ${showValidation ? 'was-validated' : ''}`}>
-          {/* Radiogroup wrapper for AT */}
           <div
             role="radiogroup"
-            aria-labelledby={this.groupTitle ? titleId : undefined}
+            aria-labelledby={ariaLabelledBy}
+            aria-label={ariaLabel}
             aria-required={this.required ? 'true' : undefined}
             aria-invalid={showValidation ? 'true' : undefined}
             aria-describedby={describedBy}
@@ -141,7 +156,6 @@ export class RadioComponent {
                     checked={!!option.checked}
                     disabled={!!option.disabled}
                     required={this.required}
-                    // Native radios already expose checked/disabled; keep ARIA clean.
                     aria-invalid={showValidation ? 'true' : undefined}
                     aria-describedby={describedBy}
                     onChange={e => this.handleGroupChange(e, option.value)}
@@ -154,13 +168,7 @@ export class RadioComponent {
             </div>
 
             {showValidation && this.validationMsg ? (
-              <div
-                id={errorId}
-                class="invalid-feedback form-text"
-                role="alert"
-                aria-live="polite"
-                style={{ display: showValidation ? 'block' : '' }}
-              >
+              <div id={errorId} class="invalid-feedback form-text" role="alert" aria-live="polite" style={{ display: 'block' }}>
                 {this.validationMsg}
               </div>
             ) : null}
@@ -178,7 +186,17 @@ export class RadioComponent {
 
     const labelId = this.safeId('radio-single-label');
     const errorId = this.safeId('radio-single-error');
-    const describedBy = this.joinIds(this.ariaDescribedby, showSingleValidation && this.validationMsg ? errorId : undefined);
+
+    const userLabel = (this.ariaLabel ?? '').trim() || undefined;
+    const userLabelledBy = this.normalizeIdList(this.ariaLabelledby);
+    const userDescribedBy = this.normalizeIdList(this.ariaDescribedby);
+
+    const autoLabelledBy = (this.labelTxt || '').trim() ? labelId : undefined;
+
+    const ariaLabelledBy = userLabelledBy ?? autoLabelledBy;
+    const ariaLabel = ariaLabelledBy ? undefined : userLabel;
+
+    const describedBy = this.joinIds(userDescribedBy, showSingleValidation && this.validationMsg ? errorId : undefined);
 
     return (
       <div class={`radios form-group ${showSingleValidation ? 'was-validated' : ''}`}>
@@ -191,7 +209,8 @@ export class RadioComponent {
             value={this.value}
             disabled={this.disabled}
             required={this.required}
-            aria-labelledby={this.labelTxt ? labelId : undefined}
+            aria-labelledby={ariaLabelledBy}
+            aria-label={ariaLabel}
             aria-describedby={describedBy}
             aria-invalid={showSingleValidation ? 'true' : undefined}
             onChange={e => this.handleSingleChange(e)}
@@ -203,13 +222,7 @@ export class RadioComponent {
         </div>
 
         {showSingleValidation && this.validationMsg ? (
-          <div
-            id={errorId}
-            class="invalid-feedback form-text"
-            role="alert"
-            aria-live="polite"
-            style={{ display: showSingleValidation ? 'block' : '' }}
-          >
+          <div id={errorId} class="invalid-feedback form-text" role="alert" aria-live="polite" style={{ display: 'block' }}>
             {this.validationMsg}
           </div>
         ) : null}

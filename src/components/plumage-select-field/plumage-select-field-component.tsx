@@ -39,6 +39,11 @@ export class PlumageSelectFieldComponent {
   @Prop() labelCols: string = '';
   @Prop() inputCols: string = '';
 
+  // ----------------- a11y override props -----------------
+  @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
+  @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
+  @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
+
   // ----------------- state -----------------
   @State() private valueState: string | string[] = '';
   @State() private validationState: boolean = false;
@@ -50,7 +55,7 @@ export class PlumageSelectFieldComponent {
 
   @Event() valueChange!: EventEmitter<string | string[]>;
 
-  // ----------------- watchers (unchanged except reflectInvalidClass uses state-only) -----------------
+  // ----------------- watchers -----------------
   @Watch('value')
   onValuePropChange(v: string | string[]) {
     this.valueState = v ?? (this.multiple ? [] : '');
@@ -65,7 +70,6 @@ export class PlumageSelectFieldComponent {
       this.selectEl.selectedIndex = this.selectEl.selectedIndex;
     }
 
-    // recompute validation from state only
     const satisfied = this.isSatisfiedByState(this.valueState);
     this.validationState = !satisfied;
     if (satisfied && this.validation) this.validation = false;
@@ -95,7 +99,7 @@ export class PlumageSelectFieldComponent {
     this._safeDefaultOptionTxt = this.sanitizeText(trimmed || 'Select an option');
   }
 
-  // ----------------- lifecycle (unchanged except reflectInvalidClass uses state-only) -----------------
+  // ----------------- lifecycle -----------------
   connectedCallback() {
     const formComponent = this.host.closest('form-component') as any;
     const fcFormId = formComponent?.formId;
@@ -134,7 +138,7 @@ export class PlumageSelectFieldComponent {
       } else if (!this.multiple && typeof this.valueState === 'string') {
         this.selectEl.value = this.valueState;
       }
-      this.reflectInvalidClass(); // state-only
+      this.reflectInvalidClass();
     }
   }
 
@@ -146,7 +150,7 @@ export class PlumageSelectFieldComponent {
     }
   }
 
-  // ----------------- table interop (unchanged except state-only reflect) -----------------
+  // ----------------- table interop -----------------
   private updateSortField = (event: any) => {
     if ((this.host.id || '').includes('sortField')) {
       this.valueState = event?.detail?.value || 'none';
@@ -171,7 +175,7 @@ export class PlumageSelectFieldComponent {
     }
   };
 
-  // ----------------- interactions (unchanged) -----------------
+  // ----------------- interactions -----------------
   private expandUnderline = () => {
     const bFocusDiv = this.host.querySelector<HTMLDivElement>('.b-focus');
     if (bFocusDiv) {
@@ -196,7 +200,7 @@ export class PlumageSelectFieldComponent {
     if (!this.host.contains(e.target as Node)) this.collapseUnderline();
   };
 
-  // ----------------- form attribute (unchanged) -----------------
+  // ----------------- form attribute -----------------
   private applyFormAttribute() {
     if (!this.selectEl) return;
     if (this._resolvedFormId) this.selectEl.setAttribute('form', this._resolvedFormId);
@@ -208,19 +212,15 @@ export class PlumageSelectFieldComponent {
     else target.removeAttribute('form');
   };
 
-  // ----------------- state-only validation helpers -----------------
-
-  /** Should the label show as required right now? (state-only; no DOM reads) */
+  // ----------------- validation helpers -----------------
   private showAsRequired(): boolean {
     return !!this.required && this.isEmptySelection();
   }
 
-  /** Is default-only ([""]) in array form? */
   private isDefaultOnlyInArray(arr: string[]): boolean {
     return Array.isArray(arr) && arr.length === 1 && arr[0] === '';
   }
 
-  /** Pure state checker (no DOM). */
   private isSatisfiedByState(value: string | string[]): boolean {
     if (this.multiple) {
       if (!Array.isArray(value)) return false;
@@ -231,7 +231,6 @@ export class PlumageSelectFieldComponent {
     return typeof value === 'string' && value !== '' && value !== 'none';
   }
 
-  /** DOM-aware (used during change to read current selection), falls back to state if el missing. */
   private isRequirementSatisfied(value: string | string[], el?: HTMLSelectElement): boolean {
     if (!el) return this.isSatisfiedByState(value);
 
@@ -262,20 +261,15 @@ export class PlumageSelectFieldComponent {
     return typeof this.valueState === 'string' && (this.valueState === '' || this.valueState === 'none');
   }
 
-  /** Toggle `is-invalid` using the *current DOM selection* as the source of truth. */
   private reflectInvalidClass() {
     if (!this.selectEl) return;
 
-    // Read truth from the DOM (works in JSDOM and browsers)
     const satisfied = this.isRequirementSatisfied(this.valueState as any, this.selectEl);
-
-    // Only show invalid UI if validation is active AND requirement not met
     const invalid = (this.validationState || this.validation) && !satisfied;
 
     this.selectEl.classList.toggle('is-invalid', invalid);
   }
 
-  /** In multiple mode, if blank is selected with any other value, drop blank. */
   private stripDefaultIfOthersSelected(sel: HTMLSelectElement, current: string[] | string) {
     if (!this.multiple || !Array.isArray(current)) return current;
     const hasBlank = current.includes('');
@@ -287,7 +281,6 @@ export class PlumageSelectFieldComponent {
     return current;
   }
 
-  // ----------------- change handler -----------------
   private handleChange = (ev: Event) => {
     const sel = ev.target as HTMLSelectElement;
 
@@ -308,13 +301,13 @@ export class PlumageSelectFieldComponent {
     const satisfied = this.isRequirementSatisfied(this.valueState as any, sel);
     if (this.validation || this.required || this.validationState) {
       this.validationState = !satisfied;
-      this.validation = !satisfied; // keep prop and state aligned
+      this.validation = !satisfied;
     }
 
     this.reflectInvalidClass();
   };
 
-  // ----------------- utils & layout helpers (unchanged) -----------------
+  // ----------------- utils & layout helpers -----------------
   private camelCase(str: string) {
     if (!str) return '';
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase())).replace(/\s+/g, '');
@@ -400,8 +393,39 @@ export class PlumageSelectFieldComponent {
     return { label, input };
   }
 
+  // ----------------- accessibility id helpers -----------------
+  private buildA11yBaseId(selectId: string, nameId: string): string {
+    const fallback = this.host?.id || 'plumageSelect';
+    return selectId || nameId || fallback;
+  }
+
+  private buildLabelId(selectId: string, nameId: string): string {
+    return `${this.buildA11yBaseId(selectId, nameId)}-label`;
+  }
+
+  private buildValidationId(selectId: string, nameId: string): string {
+    return `${this.buildA11yBaseId(selectId, nameId)}-validation`;
+  }
+
+  private normalizeIdList(value?: string): string | undefined {
+    const trimmed = (value ?? '').trim();
+    if (!trimmed) return undefined;
+    const tokens = trimmed.split(/\s+/).filter(Boolean);
+    return tokens.length ? tokens.join(' ') : undefined;
+  }
+
+  private mergeDescribedBy(existing?: string, extra?: string): string | undefined {
+    const a = this.normalizeIdList(existing);
+    const b = this.normalizeIdList(extra);
+    if (!a && !b) return undefined;
+    if (a && !b) return a;
+    if (!a && b) return b;
+    const merged = `${a} ${b}`.trim().split(/\s+/);
+    return Array.from(new Set(merged)).join(' ');
+  }
+
   // ----------------- render -----------------
-  private renderSelectLabel(ids: string, labelColClass?: string) {
+  private renderSelectLabel(selectId: string, nameId: string, labelColClass?: string) {
     if (this.labelHidden) return null;
 
     const isInvalidNow = (this.validationState || this.validation) && !this.isSatisfiedByState(this.valueState as any);
@@ -417,19 +441,19 @@ export class PlumageSelectFieldComponent {
       .join(' ');
 
     const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
+    const labelId = this.buildLabelId(selectId, nameId);
 
     return (
-      <label class={classes} htmlFor={ids || undefined}>
+      <label id={labelId} class={classes} htmlFor={selectId || undefined}>
         <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
         {this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
 
-  private renderSelectField(ids: string, names: string) {
+  private renderSelectField(selectId: string, nameId: string) {
     const sizeClass = this.size === 'sm' ? 'form-select-sm' : this.size === 'lg' ? 'form-select-lg' : '';
     const baseClass = this.custom ? 'custom-select' : 'form-select';
-    const role = this.multiple ? 'combobox' : 'listbox';
 
     const hasPlaceholder = (this.defaultOptionTxt ?? '').trim().length > 0;
     const defaultLabel = hasPlaceholder ? this._safeDefaultOptionTxt : '';
@@ -438,21 +462,36 @@ export class PlumageSelectFieldComponent {
     const isInvalidNow = (this.validationState || this.validation) && !this.isSatisfiedByState(this.valueState as any);
     const invalidClass = isInvalidNow ? ' is-invalid' : '';
 
+    const labelId = this.buildLabelId(selectId, nameId);
+    const validationId = this.buildValidationId(selectId, nameId);
+
+    const userLabel = (this.ariaLabel ?? '').trim() || undefined;
+    const userLabelledBy = this.normalizeIdList(this.ariaLabelledby);
+    const userDescribedBy = this.normalizeIdList(this.ariaDescribedby);
+
+    const defaultAriaLabel = this.labelHidden ? (this.label || this.defaultOptionTxt || 'Select') : undefined;
+    const defaultAriaLabelledBy = this.labelHidden ? undefined : labelId;
+
+    const ariaLabel = userLabelledBy ? undefined : userLabel ?? defaultAriaLabel;
+    const ariaLabelledBy = userLabelledBy ?? (ariaLabel ? undefined : defaultAriaLabelledBy);
+
+    const describedByWithValidation =
+      isInvalidNow && this.validationMessage ? this.mergeDescribedBy(userDescribedBy, validationId) : userDescribedBy;
+
     return (
-      <div class="input-container" role="presentation" aria-labelledby={names || undefined} onClick={this.handleInteraction}>
+      <div class="input-container" role="presentation" onClick={this.handleInteraction}>
         <select
           ref={el => (this.selectEl = el as HTMLSelectElement)}
-          id={ids || undefined}
+          id={selectId || undefined}
           class={`${baseClass}${invalidClass}${sizeClass ? ` ${sizeClass}` : ''}${this.classes ? ` ${this.classes}` : ''}`}
           multiple={this.multiple}
           disabled={this.disabled}
-          aria-label={names || undefined}
-          aria-labelledby={names || undefined}
-          aria-describedby={isInvalidNow ? 'validationMessage' : undefined}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
+          aria-describedby={describedByWithValidation}
+          aria-required={this.required ? 'true' : null}
           required={this.required}
           aria-invalid={isInvalidNow ? 'true' : null}
-          aria-multiselectable={this.multiple ? 'true' : null}
-          role={role}
           size={this.fieldHeight || undefined}
           onMouseDown={e => e.stopPropagation()}
           onFocus={this.handleFocus}
@@ -491,7 +530,7 @@ export class PlumageSelectFieldComponent {
         </div>
 
         {isInvalidNow && this.validationMessage ? (
-          <div id="validationMessage" class="invalid-feedback form-text">
+          <div id={validationId} class="invalid-feedback form-text">
             {this.validationMessage}
           </div>
         ) : null}
@@ -500,8 +539,8 @@ export class PlumageSelectFieldComponent {
   }
 
   render() {
-    const ids = this.camelCase(this.selectFieldId).replace(/ /g, '');
-    const names = this.camelCase(this.label).replace(/ /g, '');
+    const selectId = this.camelCase(this.selectFieldId).replace(/ /g, '');
+    const nameId = this.camelCase(this.label).replace(/ /g, '');
 
     const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
     const groupClasses = ['form-group'];
@@ -516,8 +555,8 @@ export class PlumageSelectFieldComponent {
     return (
       <div class={`plumage${outerClass}`}>
         <div class={groupClasses.join(' ')}>
-          {this.renderSelectLabel(ids, labelColClass)}
-          {this.isHorizontal() ? <div class={inputColClass}>{this.renderSelectField(ids, names)}</div> : this.renderSelectField(ids, names)}
+          {this.renderSelectLabel(selectId, nameId, labelColClass)}
+          {this.isHorizontal() ? <div class={inputColClass}>{this.renderSelectField(selectId, nameId)}</div> : this.renderSelectField(selectId, nameId)}
         </div>
       </div>
     );

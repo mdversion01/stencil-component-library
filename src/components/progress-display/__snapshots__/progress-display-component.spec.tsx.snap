@@ -3,66 +3,105 @@
 exports[`progress-display-component bars watcher: update via attribute re-renders 1`] = `
 <progress-display-component bars="[{&quot;value&quot;:40,&quot;variant&quot;:&quot;warning&quot;,&quot;showProgress&quot;:true},{&quot;value&quot;:10,&quot;variant&quot;:&quot;dark&quot;,&quot;progressAlign&quot;:&quot;right&quot;}]">
   <!---->
-  <div class="linear-progress" style="height: 20px;">
-    <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="40" class="bg-warning progress-bar" role="progressbar" style="width: 40%;">
-      <span class="progress-text">
-        40%
-      </span>
-    </div>
-    <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="10" class="bg-dark progress-bar" role="progressbar" style="width: 10%;">
+  <div aria-label="Progress" class="progress-root" id="progress_rinefp7c2-group" role="group">
+    <div class="linear-progress" style="height: 20px;">
+      <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="40" aria-valuetext="40%" class="bg-warning progress-bar" role="progressbar" style="width: 40.0000%;">
+        <span aria-hidden="true" class="progress-text">
+          40%
+        </span>
+      </div>
+      <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="10" class="bg-dark progress-bar" role="progressbar" style="width: 10.0000%;">
+      </div>
     </div>
   </div>
 </progress-display-component>
 `;
 
-exports[`progress-display-component circular snapshot (showProgress) 1`] = `
+exports[`progress-display-component circular snapshot (showProgress) + a11y basics 1`] = `
 <progress-display-component width="6">
   <!---->
-  <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="primary-text progress-circular" role="progressbar" style="height: 60px; width: 60px;">
-    <svg viewBox="0 0 46 46" style="transform: rotate(0deg);">
-      <circle class="progress-circular-underlay" cx="23" cy="23" fill="transparent" r="20" stroke-dasharray="125.66370614359172" stroke-dashoffset="0" stroke-width="6"></circle>
-      <circle class="progress-circular-overlay" cx="23" cy="23" r="20" stroke-dasharray="125.66370614359172" stroke-dashoffset="94.24777960769379" stroke-width="6" style="stroke-linecap: round;"></circle>
-    </svg>
-    <div class="progress-circular-info">
-      25%
-    </div>
-  </div>
-</progress-display-component>
-`;
-
-exports[`progress-display-component linear (default) snapshot 1`] = `
-<progress-display-component>
-  <!---->
-  <div class="linear-progress" style="height: 20px;">
-    <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="35" class="bg-primary progress-bar" role="progressbar" style="width: 35%;"></div>
-  </div>
-</progress-display-component>
-`;
-
-exports[`progress-display-component linear with showProgress + striped + animated + variant 1`] = `
-<progress-display-component>
-  <!---->
-  <div class="linear-progress" style="height: 16px;">
-    <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="50" class="bg-success progress-bar progress-bar-animated progress-bar-striped" role="progressbar" style="width: 50%;">
-      <span class="progress-text">
-        50.0%
-      </span>
-    </div>
-  </div>
-</progress-display-component>
-`;
-
-exports[`progress-display-component multi bars from JSON attribute snapshot 1`] = `
-<progress-display-component>
-  <!---->
-  <div class="linear-progress" style="height: 22px;">
-    <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="bg-primary progress-bar" role="progressbar" style="width: 25%;">
-      <span class="progress-text">
+  <div class="progress-root">
+    <div aria-label="Progress" aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" aria-valuetext="25%" class="primary-text progress-circular" role="progressbar" style="height: 60px; width: 60px;">
+      <svg viewBox="0 0 46 46" style="transform: rotate(0deg);">
+        <circle class="progress-circular-underlay" cx="23" cy="23" fill="transparent" r="20" stroke-dasharray="125.66370614359172" stroke-dashoffset="0" stroke-width="6"></circle>
+        <circle class="progress-circular-overlay" cx="23" cy="23" r="20" stroke-dasharray="125.66370614359172" stroke-dashoffset="94.24777960769379" stroke-width="6" style="stroke-linecap: round;"></circle>
+      </svg>
+      <div aria-hidden="true" class="progress-circular-info">
         25%
-      </span>
+      </div>
     </div>
-    <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="15" class="bg-success progress-bar progress-bar-striped" role="progressbar" style="width: 15%;"></div>
-    <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="10" class="bg-danger progress-bar progress-bar-animated" role="progressbar" style="width: 10%;">
+  </div>
+</progress-display-component>
+`;
+
+exports[`progress-display-component indeterminate progress omits aria-valuenow/max and sets aria-busy 1`] = `
+<progress-display-component>
+  <!---->
+  <div class="progress-root">
+    <div class="linear-progress" style="height: 20px;">
+      <div aria-busy="true" aria-label="Progress" class="bg-primary progress-bar" role="progressbar" style="width: 50.0000%;"></div>
+    </div>
+  </div>
+</progress-display-component>
+`;
+
+exports[`progress-display-component label prop wires aria-labelledby to a real label id (single) 1`] = `
+<progress-display-component>
+  <!---->
+  <div class="progress-root">
+    <span class="progress-a11y-label" id="progress_76d51vts1-label">
+      Loading widgets
+    </span>
+    <div class="linear-progress" style="height: 20px;">
+      <div aria-labelledby="progress_76d51vts1-label" aria-valuemax="100" aria-valuemin="0" aria-valuenow="10" class="bg-primary progress-bar" role="progressbar" style="width: 10.0000%;">
+        <span class="progress-label">
+          Loading widgets
+        </span>
+      </div>
+    </div>
+  </div>
+</progress-display-component>
+`;
+
+exports[`progress-display-component linear (default) snapshot + a11y basics 1`] = `
+<progress-display-component>
+  <!---->
+  <div class="progress-root">
+    <div class="linear-progress" style="height: 20px;">
+      <div aria-label="Progress" aria-valuemax="100" aria-valuemin="0" aria-valuenow="35" class="bg-primary progress-bar" role="progressbar" style="width: 35.0000%;"></div>
+    </div>
+  </div>
+</progress-display-component>
+`;
+
+exports[`progress-display-component linear with showProgress + striped + animated + variant (adds aria-valuetext) 1`] = `
+<progress-display-component>
+  <!---->
+  <div class="progress-root">
+    <div class="linear-progress" style="height: 16px;">
+      <div aria-label="Progress" aria-valuemax="100" aria-valuemin="0" aria-valuenow="50" aria-valuetext="50.0%" class="bg-success progress-bar progress-bar-animated progress-bar-striped" role="progressbar" style="width: 50.0000%;">
+        <span aria-hidden="true" class="progress-text">
+          50.0%
+        </span>
+      </div>
+    </div>
+  </div>
+</progress-display-component>
+`;
+
+exports[`progress-display-component multi bars from JSON attribute snapshot + a11y group 1`] = `
+<progress-display-component>
+  <!---->
+  <div aria-label="Progress" class="progress-root" id="progress_6bzkwd6to-group" role="group">
+    <div class="linear-progress" style="height: 22px;">
+      <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" aria-valuetext="25%" class="bg-primary progress-bar" role="progressbar" style="width: 25.0000%;">
+        <span aria-hidden="true" class="progress-text">
+          25%
+        </span>
+      </div>
+      <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="15" class="bg-success progress-bar progress-bar-striped" role="progressbar" style="width: 15.0000%;"></div>
+      <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="10" class="bg-danger progress-bar progress-bar-animated" role="progressbar" style="width: 10.0000%;">
+      </div>
     </div>
   </div>
 </progress-display-component>

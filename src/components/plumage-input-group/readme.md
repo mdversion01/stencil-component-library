@@ -12,6 +12,9 @@
 | `appendField`       | `append`             |                                                                                | `boolean`                        | `false`     |
 | `appendIcon`        | `append-icon`        |                                                                                | `string`                         | `undefined` |
 | `appendId`          | `append-id`          |                                                                                | `string`                         | `''`        |
+| `ariaDescribedby`   | `aria-describedby`   |                                                                                | `string`                         | `undefined` |
+| `ariaLabel`         | `aria-label`         | ✅ Standard ARIA naming hooks (recommended)                                     | `string`                         | `undefined` |
+| `ariaLabelledby`    | `aria-labelledby`    |                                                                                | `string`                         | `undefined` |
 | `disabled`          | `disabled`           |                                                                                | `boolean`                        | `false`     |
 | `formId`            | `form-id`            |                                                                                | `string`                         | `''`        |
 | `formLayout`        | `form-layout`        |                                                                                | `"" \| "horizontal" \| "inline"` | `''`        |

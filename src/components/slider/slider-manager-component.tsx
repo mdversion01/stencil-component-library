@@ -36,6 +36,11 @@ export class SliderManagerComponent {
   // ✅ allow JSON string OR array
   @Prop() stringValues: string[] | string = [];
 
+  // ----------------- a11y override props -----------------
+  @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
+  @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
+  @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
+
   private normalizeNumberArray(input: number[] | string): number[] {
     if (Array.isArray(input)) return input.map(n => Number(n)).filter(n => Number.isFinite(n));
     if (typeof input === 'string' && input.trim()) {
@@ -62,9 +67,21 @@ export class SliderManagerComponent {
     return [];
   }
 
+  private normalizeIdList(value?: string): string | undefined {
+    const trimmed = (value ?? '').trim();
+    if (!trimmed) return undefined;
+    const tokens = trimmed.split(/\s+/).filter(Boolean);
+    return tokens.length ? tokens.join(' ') : undefined;
+  }
+
   render() {
     const tickValues = this.normalizeNumberArray(this.tickValues);
     const stringValues = this.normalizeStringArray(this.stringValues);
+
+    // forward only if set (avoid stamping empty attrs)
+    const ariaLabel = (this.ariaLabel ?? '').trim() || undefined;
+    const ariaLabelledby = this.normalizeIdList(this.ariaLabelledby);
+    const ariaDescribedby = this.normalizeIdList(this.ariaDescribedby);
 
     return (
       <Host>
@@ -85,6 +102,9 @@ export class SliderManagerComponent {
             hideLeftTextBox={this.hideLeftTextBox}
             hideRightTextBox={this.hideRightTextBox}
             disabled={this.disabled}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledby}
+            aria-describedby={ariaDescribedby}
           />
         )}
 
@@ -106,6 +126,9 @@ export class SliderManagerComponent {
             hideLeftTextBox={this.hideLeftTextBox}
             hideRightTextBox={this.hideRightTextBox}
             disabled={this.disabled}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledby}
+            aria-describedby={ariaDescribedby}
           />
         )}
 
@@ -113,13 +136,16 @@ export class SliderManagerComponent {
           <discrete-slider-component
             label={this.label}
             selectedIndex={this.selectedIndex}
-            stringValues={stringValues}   // ✅ now guaranteed array
+            stringValues={stringValues}
             plumage={this.plumage}
             tickLabels={this.tickLabels}
-            unit={this.unit}              // ✅ forward if you want it
+            unit={this.unit}
             variant={this.variant}
             disabled={this.disabled}
             hideRightTextBox={this.hideRightTextBox}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledby}
+            aria-describedby={ariaDescribedby}
           />
         )}
       </Host>

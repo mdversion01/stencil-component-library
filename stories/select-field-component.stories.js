@@ -6,7 +6,7 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: 'A customizable select field component with various props for label, size, validation, and layout.',
+        component: 'A customizable select field component with various props for label, size, validation, layout, and accessibility overrides.',
       },
       source: {
         language: 'html',
@@ -18,6 +18,30 @@ export default {
 
   // ✅ alphabetized (within category) + grouped by category
   argTypes: {
+    /* =========================
+     * Accessibility
+     * ========================= */
+    ariaDescribedby: {
+      control: 'text',
+      name: 'aria-describedby',
+      table: { category: 'Accessibility' },
+      description:
+        'ARIA override: additional element id(s) describing the select (space-separated). When validation is shown, the component merges this with its validation message id.',
+    },
+    ariaLabel: {
+      control: 'text',
+      name: 'aria-label',
+      table: { category: 'Accessibility' },
+      description: 'ARIA override: label for the select. Ignored if aria-labelledby is provided. Recommended when label is hidden.',
+    },
+    ariaLabelledby: {
+      control: 'text',
+      name: 'aria-labelledby',
+      table: { category: 'Accessibility' },
+      description:
+        'ARIA override: element id(s) that label the select (space-separated). Takes precedence over aria-label and component-generated label id.',
+    },
+
     /* =========================
      * Layout
      * ========================= */
@@ -207,6 +231,11 @@ const buildDocsHtml = args => {
   const valueAttr = !a.multiple ? normalizeAttrValue(a.value) : undefined;
 
   const attrs = [
+    // Accessibility overrides
+    ['aria-label', normalizeAttrValue(a.ariaLabel)],
+    ['aria-labelledby', normalizeAttrValue(a.ariaLabelledby)],
+    ['aria-describedby', normalizeAttrValue(a.ariaDescribedby)],
+
     // Layout / label
     ['classes', normalizeAttrValue(a.classes)],
     ['form-id', normalizeAttrValue(a.formId)],
@@ -293,6 +322,10 @@ const Template = args => `
   ${attr('label-align', args.labelAlign)}
   ${boolAttr('label-hidden', args.labelHidden)}
 
+  ${attr('aria-label', args.ariaLabel)}
+  ${attr('aria-labelledby', args.ariaLabelledby)}
+  ${attr('aria-describedby', args.ariaDescribedby)}
+
   ${attr('size', args.size)}
   ${boolAttr('custom', args.custom)}
   ${attr('classes', args.classes)}
@@ -332,6 +365,10 @@ BasicSingle.args = {
   labelSize: 'sm',
   labelAlign: '',
   labelHidden: false,
+
+  ariaLabel: '',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
 
   size: '',
   custom: false,
@@ -393,7 +430,6 @@ MultipleSelection.args = {
   ...BasicSingle.args,
   label: 'Tags',
   multiple: true,
-  // For multiple, leave `value` empty and use UI to select; you can also set via property in a play() if needed.
   defaultOptionTxt: 'Choose tags',
   options: [
     { value: 'ux', name: 'UX' },
@@ -401,7 +437,7 @@ MultipleSelection.args = {
     { value: 'mobile', name: 'Mobile' },
     { value: 'data', name: 'Data' },
   ],
-  fieldHeight: 6, // show more rows
+  fieldHeight: 6,
 };
 MultipleSelection.storyName = 'Multiple Selections';
 MultipleSelection.parameters = {
@@ -478,19 +514,19 @@ Disabled.parameters = {
 
 // ✅ helper used only by the Sizes story
 const SIZE_VARIANTS = [
-  { key: 'sm', labelSize: 'xs', size: 'sm', selectFieldId: 'fruit-size-sm', label: 'Small field with x-small label', },
+  { key: 'sm', labelSize: 'xs', size: 'sm', selectFieldId: 'fruit-size-sm', label: 'Small field with x-small label' },
   { key: 'default', labelSize: 'sm', size: '', selectFieldId: 'fruit-size-default', label: 'Default field with sm label' },
   { key: 'lg', labelSize: 'lg', size: 'lg', selectFieldId: 'fruit-size-lg', label: 'Large field with lg label' },
 ];
 
 export const SizeVariants = {
-  render: (args) => {
+  render: args => {
     const container = document.createElement('div');
     container.style.display = 'grid';
     container.style.gap = '12px';
     container.style.maxWidth = '680px';
 
-    SIZE_VARIANTS.forEach((v) => {
+    SIZE_VARIANTS.forEach(v => {
       const block = document.createElement('div');
       block.style.display = 'grid';
       block.style.gap = '6px';
@@ -507,7 +543,6 @@ export const SizeVariants = {
       mount.innerHTML = markup.trim();
 
       block.appendChild(mount.firstElementChild);
-
       container.appendChild(block);
     });
 
@@ -516,7 +551,6 @@ export const SizeVariants = {
 
   args: {
     ...BasicSingle.args,
-    // keep the base args consistent; each variant overrides `size`
   },
 
   storyName: 'Size Variants',
@@ -531,7 +565,7 @@ export const SizeVariants = {
         transform: (_src, ctx) =>
           [
             '<div style="display:grid; gap:12px; max-width:680px;">',
-            ...SIZE_VARIANTS.map((v) =>
+            ...SIZE_VARIANTS.map(v =>
               [
                 `  <!-- ${v.label} -->`,
                 `  ${Template({
@@ -584,7 +618,6 @@ export const OptionsViaJSONAttribute = () => {
   `;
 
   const el = wrap.querySelector('select-field-component');
-  // ensure placeholder is the selected option
   if (el) el.value = '';
 
   return wrap;
@@ -612,6 +645,192 @@ OptionsViaJSONAttribute.parameters = {
     },
     description: {
       story: 'An example of passing options as a JSON string via the `options` attribute.',
+    },
+  },
+};
+
+/* ======================================================
+ * Accessibility Matrix (computed)
+ * ====================================================== */
+
+const getSnapshot = host => {
+  const select = host?.querySelector('select');
+  const label = host?.querySelector('label');
+
+  const describedby = (select?.getAttribute('aria-describedby') || '').trim();
+  const describedIds = describedby ? describedby.split(/\s+/).filter(Boolean) : [];
+
+  const labelledby = (select?.getAttribute('aria-labelledby') || '').trim();
+  const labelledIds = labelledby ? labelledby.split(/\s+/).filter(Boolean) : [];
+
+  const resolve = id => {
+    if (!id) return false;
+    return !!host?.querySelector(`#${id}`);
+  };
+
+  return {
+    host: host?.tagName?.toLowerCase() ?? null,
+    selectId: select?.getAttribute('id') ?? null,
+    labelId: label?.getAttribute('id') ?? null,
+    labelFor: label?.getAttribute('for') ?? label?.getAttribute('htmlfor') ?? null,
+    role: select?.getAttribute('role') ?? null, // should be null (native select)
+    sizeAttr: select?.getAttribute('size') ?? null,
+    multiple: select?.hasAttribute('multiple') ?? false,
+    disabled: select?.hasAttribute('disabled') ?? false,
+    required: select?.hasAttribute('required') ?? false,
+    className: select?.getAttribute('class') ?? null,
+    'aria-label': select?.getAttribute('aria-label') ?? null,
+    'aria-labelledby': labelledby || null,
+    'aria-describedby': describedby || null,
+    'aria-required': select?.getAttribute('aria-required') ?? null,
+    'aria-invalid': select?.getAttribute('aria-invalid') ?? null,
+    'aria-disabled': select?.getAttribute('aria-disabled') ?? null,
+    labelledbyIds: labelledIds,
+    labelledbyAllResolve: labelledIds.every(resolve),
+    describedbyIds: describedIds,
+    describedbyAllResolve: describedIds.every(resolve),
+    hasValidationMessage: !!host?.querySelector('.invalid-feedback'),
+    validationId: host?.querySelector('.invalid-feedback')?.getAttribute('id') ?? null,
+  };
+};
+
+export const AccessibilityMatrix = {
+  name: 'Accessibility Matrix (computed)',
+  render: args => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '16px';
+    wrap.style.maxWidth = '980px';
+
+    const header = document.createElement('div');
+    header.innerHTML = `
+      <strong>Accessibility matrix</strong>
+      <div style="opacity:.8">
+        Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal, validation, and disabled.
+      </div>
+    `;
+    wrap.appendChild(header);
+
+    const card = (title, storyArgs) => {
+      const box = document.createElement('div');
+      box.style.border = '1px solid #ddd';
+      box.style.borderRadius = '10px';
+      box.style.padding = '12px';
+      box.style.display = 'grid';
+      box.style.gap = '10px';
+
+      const t = document.createElement('div');
+      t.style.fontWeight = '600';
+      t.textContent = title;
+
+      const demo = document.createElement('div');
+      const pre = document.createElement('pre');
+      pre.style.margin = '0';
+      pre.style.padding = '10px';
+      pre.style.borderRadius = '8px';
+      pre.style.overflow = 'auto';
+      pre.style.border = '1px solid #eee';
+      pre.style.background = '#fafafa';
+      pre.textContent = 'Loading…';
+
+      const mount = document.createElement('div');
+      mount.innerHTML = Template({ ...BasicSingle.args, ...args, ...storyArgs });
+
+      const host = mount.querySelector('select-field-component');
+      demo.appendChild(mount);
+
+      const update = async () => {
+        if (host?.componentOnReady) {
+          try {
+            await host.componentOnReady();
+          } catch (_e) {}
+        } else if (window.customElements?.whenDefined) {
+          try {
+            await customElements.whenDefined('select-field-component');
+          } catch (_e) {}
+        }
+
+        pre.textContent = JSON.stringify(getSnapshot(host), null, 2);
+      };
+
+      queueMicrotask(() => requestAnimationFrame(update));
+
+      box.appendChild(t);
+      box.appendChild(demo);
+      box.appendChild(pre);
+      return box;
+    };
+
+    wrap.appendChild(
+      card('Default (stacked)', {
+        selectFieldId: 'mx-select-default',
+        label: 'Default A11y',
+        formLayout: '',
+        validation: false,
+        disabled: false,
+        value: '',
+      }),
+    );
+
+    wrap.appendChild(
+      card('Inline layout', {
+        selectFieldId: 'mx-select-inline',
+        label: 'Inline A11y',
+        formLayout: 'inline',
+        validation: false,
+        disabled: false,
+        value: '',
+      }),
+    );
+
+    wrap.appendChild(
+      card('Horizontal layout', {
+        selectFieldId: 'mx-select-horizontal',
+        label: 'Horizontal A11y',
+        formLayout: 'horizontal',
+        labelAlign: 'right',
+        labelCols: 'xs-12 sm-4',
+        inputCols: 'xs-12 sm-8',
+        validation: false,
+        disabled: false,
+        value: '',
+      }),
+    );
+
+    wrap.appendChild(
+      card('Validation (aria-invalid + describedby)', {
+        selectFieldId: 'mx-select-validation',
+        label: 'Validation',
+        required: true,
+        validation: true,
+        validationMessage: 'This is required.',
+        value: '',
+      }),
+    );
+
+    wrap.appendChild(
+      card('Disabled', {
+        selectFieldId: 'mx-select-disabled',
+        label: 'Disabled',
+        disabled: true,
+        value: 'banana',
+        validation: false,
+      }),
+    );
+
+    return wrap;
+  },
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Prints computed accessibility wiring for the select: `aria-labelledby`, `aria-describedby` (including validation id when present), `aria-required`, `aria-invalid` across default / inline / horizontal, validation, and disabled.',
+      },
+      source: {
+        language: 'html',
+        transform: (_src, ctx) => buildDocsHtml(ctx.args),
+      },
     },
   },
 };

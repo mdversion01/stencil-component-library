@@ -19,6 +19,18 @@ function q(root: ParentNode, selectors: string[]) {
   return null;
 }
 
+function getLabelFor(label: HTMLLabelElement) {
+  // Stencil snapshots can serialize htmlFor as htmlfor
+  return label.getAttribute('for') || (label as any).htmlFor || label.getAttribute('htmlfor') || '';
+}
+
+function idRefs(v: string | null | undefined): string[] {
+  return String(v || '')
+    .split(/\s+/)
+    .map((t) => t.trim())
+    .filter(Boolean);
+}
+
 describe('<plumage-input-group-component>', () => {
   it('renders (stacked) with defaults and matches snapshot', async () => {
     const page = await newSpecPage({
@@ -35,26 +47,29 @@ describe('<plumage-input-group-component>', () => {
     expect(label).toBeTruthy();
     expect(input).toBeTruthy();
 
-    expect(label.textContent || '').toContain('Username');
+    // visible text / base wiring
+    expect((label.textContent || '').trim()).toContain('Username');
     expect(input.id).toBe('user');
     expect(input.placeholder).toBe('Username');
 
-    // Stencil may serialize htmlFor as "htmlfor" attribute in snapshots.
-    const labelFor = label.getAttribute('for') || (label as any).htmlFor || label.getAttribute('htmlfor');
-    if (labelFor != null && labelFor !== '') {
-      expect(labelFor).toBe('user');
-    }
+    // label association (native)
+    expect(label.id).toBe('user-label');
+    expect(getLabelFor(label)).toBe('user');
 
-    // a11y wiring
-    expect(input.getAttribute('aria-label')).toBe('Username');
-    expect(input.getAttribute('aria-labelledby')).toBe('username');
+    // a11y wiring (new)
+    expect(input.getAttribute('aria-labelledby')).toBe('user-label');
+    // aria-label should be absent because aria-labelledby exists (spec)
+    expect(input.getAttribute('aria-label')).toBeNull();
+
+    // state wiring defaults
+    expect(input.getAttribute('aria-invalid')).toBe('false');
+    expect(input.getAttribute('aria-required')).toBeNull();
+    expect(input.getAttribute('aria-disabled')).toBeNull();
 
     expect(normalize(root.outerHTML)).toMatchSnapshot('stacked-default');
   });
 
-  it('renders horizontal layout with label/input cols, prepend slot and append icon (snapshot)', async () => {
-    // IMPORTANT: component uses attribute names `prepend` and `append`
-    // (not prepend-field/append-field).
+  it('renders horizontal layout with responsive cols, prepend slot + append icon (snapshot) and describes prepend/append', async () => {
     const page = await newSpecPage({
       components: [PlumageInputGroupComponent],
       html: `
@@ -85,11 +100,17 @@ describe('<plumage-input-group-component>', () => {
     expect(label).toBeTruthy();
     expect((label.textContent || '').trim()).toContain('Amount:');
 
-    // prepend slot should render somewhere inside input-group
+    // responsive cols converted to bootstrap-like cols
+    const horizontalLabel = root.querySelector('label.col-12.col-sm-4') as HTMLElement | null;
+    const horizontalInputWrap = root.querySelector('.col-12.col-sm-8') as HTMLElement | null;
+    expect(horizontalLabel).toBeTruthy();
+    expect(horizontalInputWrap).toBeTruthy();
+
+    // prepend slot should render
     const prepend = q(root, [
-      '.input-group .input-group-text [slot="prepend"]',
       '.input-group [slot="prepend"]',
       '.input-group .input-group-text',
+      '.input-group-text',
     ]);
     expect(prepend).toBeTruthy();
 
@@ -97,11 +118,13 @@ describe('<plumage-input-group-component>', () => {
     const dollarIcon = q(root, ['.fa-dollar-sign', '.fa-solid.fa-dollar-sign', 'i[class*="fa-dollar-sign"]']);
     expect(dollarIcon).toBeTruthy();
 
-    // responsive cols converted to bootstrap-like cols
-    const horizontalLabel = root.querySelector('label.col-12.col-sm-4') as HTMLElement | null;
-    const horizontalInputWrap = root.querySelector('.col-12.col-sm-8') as HTMLElement | null;
-    expect(horizontalLabel).toBeTruthy();
-    expect(horizontalInputWrap).toBeTruthy();
+    // a11y describedby should include prepend + append ids when those regions exist
+    const described = idRefs(input.getAttribute('aria-describedby'));
+    expect(described).toEqual(expect.arrayContaining(['amount-prepend', 'amount-append']));
+
+    // ids exist
+    expect(root.querySelector('#amount-prepend')).toBeTruthy();
+    expect(root.querySelector('#amount-append')).toBeTruthy();
 
     expect(normalize(root.outerHTML)).toMatchSnapshot('horizontal-prepend-append-icon');
   });
@@ -116,7 +139,7 @@ describe('<plumage-input-group-component>', () => {
     expect(grp.className).toContain('input-group-lg');
   });
 
-  it('shows validation UI and message when validation=true', async () => {
+  it('shows validation UI and message when validation=true; wires aria-describedby + aria-invalid', async () => {
     const page = await newSpecPage({
       components: [PlumageInputGroupComponent],
       html: `
@@ -131,12 +154,24 @@ describe('<plumage-input-group-component>', () => {
 
     await page.waitForChanges();
 
-    const input = page.root!.querySelector('input.form-control')!;
-    expect(input.classList.contains('is-invalid')).toBe(true);
+    const root = page.root!;
+    const input = root.querySelector('input.form-control') as HTMLInputElement;
+    expect(input).toBeTruthy();
 
-    const feedback = page.root!.querySelector('.invalid-feedback')!;
+    expect(input.classList.contains('is-invalid')).toBe(true);
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+
+    // validation id is computed off input-id now
+    const described = idRefs(input.getAttribute('aria-describedby'));
+    expect(described).toContain('email-validation');
+
+    const feedback = root.querySelector('#email-validation') as HTMLElement | null;
     expect(feedback).toBeTruthy();
-    expect(feedback.textContent).toContain('Required field.');
+    expect(feedback!.className).toContain('invalid-feedback');
+    expect(feedback!.textContent).toContain('Required field.');
+
+    // polite live region for validation
+    expect((feedback!.getAttribute('aria-live') || '').toLowerCase()).toBe('polite');
   });
 
   it('underline expands on focus/click and collapses on outside click', async () => {
@@ -145,8 +180,9 @@ describe('<plumage-input-group-component>', () => {
       html: `<plumage-input-group-component label="Phone" input-id="phone" prepend><span slot="prepend">+1</span></plumage-input-group-component>`,
     });
 
-    const input = page.root!.querySelector('input.form-control') as HTMLInputElement;
-    const focusBar = page.root!.querySelector('.b-focus') as HTMLDivElement;
+    const root = page.root!;
+    const input = root.querySelector('input.form-control') as HTMLInputElement;
+    const focusBar = root.querySelector('.b-focus') as HTMLDivElement;
     expect(focusBar).toBeTruthy();
 
     // expand
@@ -172,20 +208,24 @@ describe('<plumage-input-group-component>', () => {
     });
 
     const root = page.root!;
-    const input = root.querySelector('input.form-control') as HTMLInputElement;
+    let input = root.querySelector('input.form-control') as HTMLInputElement;
+    expect(input).toBeTruthy();
 
     expect(input.getAttribute('form')).toBeNull();
 
     root.setAttribute('form-id', 'formA');
     await page.waitForChanges();
+    // Stencil may re-render; re-query
+    input = root.querySelector('input.form-control') as HTMLInputElement;
     expect(input.getAttribute('form')).toBe('formA');
 
     root.setAttribute('form-id', 'formB');
     await page.waitForChanges();
+    input = root.querySelector('input.form-control') as HTMLInputElement;
     expect(input.getAttribute('form')).toBe('formB');
   });
 
-  it('emits valueChange and DOM "change" on input', async () => {
+  it('emits valueChange and DOM "change" on input; sanitizes angle brackets', async () => {
     const page = await newSpecPage({
       components: [PlumageInputGroupComponent],
       html: `<plumage-input-group-component label="Country" input-id="country"></plumage-input-group-component>`,
@@ -200,35 +240,40 @@ describe('<plumage-input-group-component>', () => {
     root.addEventListener('valueChange', stencilSpy as any);
     root.addEventListener('change', domSpy as any);
 
-    input.value = 'USA';
+    input.value = 'U<S>A';
     input.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
     await page.waitForChanges();
 
     expect(stencilSpy).toHaveBeenCalled();
     expect(domSpy).toHaveBeenCalled();
+
+    // sanitized
+    expect((root.querySelector('input.form-control') as HTMLInputElement).value).toBe('USA');
   });
 
   it('search variant renders and clear button clears value + emits change', async () => {
     const page = await newSpecPage({
       components: [PlumageInputGroupComponent],
-      html: `<plumage-input-group-component plumage-search placeholder="Search users" value="ann"></plumage-input-group-component>`,
+      html: `<plumage-input-group-component plumage-search input-id="search" label="Search" placeholder="Search users" value="ann"></plumage-input-group-component>`,
     });
 
     const root = page.root!;
-    const input = root.querySelector('input.search-bar') as HTMLInputElement;
+    let input = root.querySelector('input.search-bar') as HTMLInputElement;
     expect(input).toBeTruthy();
     expect(input.value).toBe('ann');
 
     const domSpy = jest.fn();
     root.addEventListener('change', domSpy as any);
 
-    const clearIcon = root.querySelector('.clear-icon') as HTMLElement;
-    expect(clearIcon).toBeTruthy();
+    // clear icon is now a button.clear-icon
+    const clearBtn = root.querySelector('button.clear-icon') as HTMLButtonElement | null;
+    expect(clearBtn).toBeTruthy();
 
-    clearIcon.click();
+    clearBtn!.click();
     await page.waitForChanges();
 
-    expect((root.querySelector('input.search-bar') as HTMLInputElement).value).toBe('');
+    input = root.querySelector('input.search-bar') as HTMLInputElement;
+    expect(input.value).toBe('');
     expect(domSpy).toHaveBeenCalled();
   });
 });

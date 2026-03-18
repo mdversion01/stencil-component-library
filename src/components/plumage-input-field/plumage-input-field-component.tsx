@@ -27,27 +27,45 @@ export class PlumageInputFieldComponent {
   @Prop() value: string = '';
   @Prop() placeholder?: string;
 
+  /** Standard ARIA naming hooks (recommended) */
+  @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
+  @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
+  @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
+
+  /**
+   * Legacy: matches other components in this library.
+   * @deprecated Prefer `ariaLabelledby` (mapped to aria-labelledby).
+   */
+  @Prop() arialabelledBy: string = '';
+
   /** Legacy numeric cols (fallback) */
   @Prop() labelCol: number = 2;
   @Prop() inputCol: number = 10;
 
-  /** NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") */
+  /** Responsive column class specs */
   @Prop() labelCols: string = '';
   @Prop() inputCols: string = '';
 
   // ----- Internal state -----
   @State() private validationState: boolean = false;
   @State() private valueState: string = '';
-  @State() _resolvedFormId: string = '';
+  @State() private _resolvedFormId: string = '';
+
   private inputEl?: HTMLInputElement;
 
-  // Let parents observe user edits (optional but handy)
+  // Stable fallback id for ARIA wiring (prevents collisions)
+  private _fallbackId: string = `plumage-if-${Math.random().toString(36).slice(2, 10)}`;
+
+  // Let parents observe user edits
   @Event() valueChange!: EventEmitter<string>;
 
   // ---------- watchers ----------
   @Watch('value')
   syncValue(v: string) {
     this.valueState = v ?? '';
+    if (this.inputEl && this.inputEl.value !== this.valueState) {
+      this.inputEl.value = this.valueState;
+    }
   }
 
   @Watch('validation')
@@ -55,9 +73,14 @@ export class PlumageInputFieldComponent {
     this.validationState = !!newVal;
   }
 
+  @Watch('formId')
+  onFormIdChange(newVal: string) {
+    this._resolvedFormId = newVal || '';
+    this.applyFormAttribute();
+  }
+
   // ---------- lifecycle ----------
   connectedCallback() {
-    // Inherit from nearest <form-component> once (if not already set)
     const formComponent = this.host.closest('form-component') as any;
     const fcFormId = formComponent?.formId;
     const fcLayout = formComponent?.formLayout;
@@ -71,11 +94,11 @@ export class PlumageInputFieldComponent {
       }
     }
 
-    // Seed internal mirrors from incoming props
+    // Seed mirrors
     this.valueState = this.value ?? '';
     this.validationState = !!this.validation;
 
-    // Restore underline behavior: collapse on outside click
+    // collapse underline on outside click (capture)
     document.addEventListener('click', this.handleDocumentClick, true);
   }
 
@@ -84,74 +107,94 @@ export class PlumageInputFieldComponent {
   }
 
   componentDidLoad() {
+    this._resolvedFormId = this.formId || '';
     this.applyFormAttribute();
   }
 
-  @Watch('formId')
-  onFormIdChange(newVal: string) {
-    this._resolvedFormId = newVal || '';
-    this.applyFormAttribute();
-  }
-
+  // ---------- Form attribute ----------
   private applyFormAttribute() {
     if (!this.inputEl) return;
     if (this._resolvedFormId) this.inputEl.setAttribute('form', this._resolvedFormId);
     else this.inputEl.removeAttribute('form');
   }
 
-  // ---------- underline/focus interactions ----------
-  private handleInteraction = (event: Event) => {
-    // avoid bubbling to the document’s outside-click handler
-    event.stopPropagation();
-
+  // ---------- underline helpers ----------
+  private expandUnderline() {
     const bFocusDiv = this.host.querySelector<HTMLDivElement>('.b-focus');
-    const input = this.host.querySelector<HTMLInputElement>('input.form-control');
-    const isInputFocused = event.target === input;
+    if (!bFocusDiv) return;
+    bFocusDiv.style.width = '100%';
+    bFocusDiv.style.left = '0';
+  }
 
-    if (bFocusDiv) {
-      if (isInputFocused) {
-        // focused: expand underline from left
-        bFocusDiv.style.width = '100%';
-        bFocusDiv.style.left = '0';
-      } else {
-        // any other interaction inside container: still show focus bar
-        bFocusDiv.style.width = '100%';
-        bFocusDiv.style.left = '0';
-      }
-    }
+  private collapseUnderline() {
+    const bFocusDiv = this.host.querySelector<HTMLDivElement>('.b-focus');
+    if (!bFocusDiv) return;
+    bFocusDiv.style.width = '0';
+    bFocusDiv.style.left = '50%';
+  }
+
+  private handleInteraction = (event: Event) => {
+    event.stopPropagation();
+    this.expandUnderline();
   };
 
-  private handleDocumentClick = () => {
-    // clicked outside: collapse underline to center
-    const bFocusDiv = this.host.querySelector<HTMLDivElement>('.b-focus');
-    if (bFocusDiv) {
-      bFocusDiv.style.width = '0';
-      bFocusDiv.style.left = '50%';
-    }
+  private handleDocumentClick = (ev: Event) => {
+    const path = (ev as any)?.composedPath?.() ?? [];
+    if (path.includes(this.host)) return;
+    this.collapseUnderline();
   };
 
   // ---------- utils ----------
   private camelCase(str: string) {
     if (!str) return '';
-    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase())).replace(/\s+/g, '');
+    return str
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase()))
+      .replace(/\s+/g, '');
   }
 
-  /** Sanitize user-typed input: strip tags, remove control chars, trim, cap length. */
+  private resolveIds() {
+    const raw = (this.inputId || '').trim();
+    const base = this.camelCase(raw).replace(/ /g, '') || this._fallbackId;
+
+    return {
+      base,
+      inputId: base,
+      labelId: `${base}-label`,
+      validationId: `${base}-validation`,
+      helpId: `${base}-help`,
+    };
+  }
+
   private sanitizeInput(value: string): string {
     if (typeof value !== 'string') return '';
-    // keep inner text, remove only angle brackets (so "Ber<lin>" → "Berlin")
     let v = value.replace(/[<>]/g, '');
-    // remove control characters (except common whitespace)
     v = v.replace(/[\u0000-\u001F\u007F]/g, '');
-    // collapse whitespace
     v = v.replace(/\s+/g, ' ').trim();
-    // cap length
     const MAX_LEN = 512;
     if (v.length > MAX_LEN) v = v.slice(0, MAX_LEN);
     return v;
   }
 
-  // ---------- input/validation ----------
+  private sanitizeIdRefList(v?: string | null): string | undefined {
+    const raw = String(v ?? '').trim();
+    if (!raw) return undefined;
+    const tokens = raw.split(/\s+/).map((t) => t.trim()).filter(Boolean);
+    const valid = tokens.filter((t) => /^[A-Za-z_][\w:\-\.]*$/.test(t));
+    return valid.length ? valid.join(' ') : undefined;
+  }
+
+  private joinIdRefLists(...vals: Array<string | undefined | null>) {
+    const tokens: string[] = [];
+    for (const v of vals) {
+      const cleaned = this.sanitizeIdRefList(v);
+      if (cleaned) tokens.push(...cleaned.split(/\s+/));
+    }
+    const seen = new Set<string>();
+    const out = tokens.filter((t) => (seen.has(t) ? false : (seen.add(t), true)));
+    return out.length ? out.join(' ') : undefined;
+  }
+
+  // ---------- validation ----------
   private meetsTypingThreshold() {
     return (this.valueState || '').trim().length >= 3;
   }
@@ -160,33 +203,27 @@ export class PlumageInputFieldComponent {
     return this.required && !this.meetsTypingThreshold();
   }
 
-  // Update *state* not the @Prop()s
+  // ---------- input handlers ----------
   private handleInput = (ev: Event) => {
     const target = ev.target as HTMLInputElement;
 
-    // Keep the form linkage via attribute (the DOM property is not meant to be assigned directly)
     if (this._resolvedFormId) target.setAttribute('form', this._resolvedFormId);
     else target.removeAttribute('form');
 
-    // Sanitize and reflect sanitized text in UI
     const clean = this.sanitizeInput(target.value);
     if (clean !== target.value) target.value = clean;
 
-    // Update internal value mirror (NOT the @Prop())
     this.valueState = clean;
     this.valueChange.emit(this.valueState);
 
-    // Live validation behavior
-    if (this.meetsTypingThreshold() && this.validationState) {
-      this.validationState = false;
-    }
-    if (this.required && this.valueState.trim() === '') {
-      this.validationState = true;
-    }
+    if (this.meetsTypingThreshold() && this.validationState) this.validationState = false;
+    if (this.required && this.valueState.trim() === '') this.validationState = true;
   };
 
   private handleBlur = () => {
-    this.handleDocumentClick(); // collapse underline
+    // ✅ fixed: don't synthesize Event; just collapse underline directly
+    this.collapseUnderline();
+
     if (this.required) {
       this.validationState = !this.meetsTypingThreshold();
     }
@@ -225,6 +262,7 @@ export class PlumageInputFieldComponent {
       }
       if (t === 'col') out.push('col');
     }
+
     return Array.from(new Set(out)).join(' ');
   }
 
@@ -233,9 +271,8 @@ export class PlumageInputFieldComponent {
 
     if (this.isHorizontal()) {
       if (spec) return this.parseColsSpec(spec);
-      if (kind === 'input' && this.labelHidden) {
-        return this.inputCols ? this.parseColsSpec(this.inputCols) : 'col-12';
-      }
+      if (kind === 'input' && this.labelHidden) return this.inputCols ? this.parseColsSpec(this.inputCols) : 'col-12';
+
       const num = kind === 'label' ? this.labelCol : this.inputCol;
       if (Number.isFinite(num)) {
         const n = Math.max(0, Math.min(12, Number(num)));
@@ -245,10 +282,7 @@ export class PlumageInputFieldComponent {
       return '';
     }
 
-    if (this.isInline()) {
-      return spec ? this.parseColsSpec(spec) : '';
-    }
-
+    if (this.isInline()) return spec ? this.parseColsSpec(spec) : '';
     return '';
   }
 
@@ -275,7 +309,9 @@ export class PlumageInputFieldComponent {
   }
 
   // ---------- render bits ----------
-  private renderInputLabel(ids: string, labelColClass?: string) {
+  private renderInputLabel(ids: ReturnType<typeof this.resolveIds>, labelColClass?: string) {
+    const labelText = (this.label || '').trim() || 'Input';
+
     const classes = [
       'form-control-label',
       this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
@@ -287,49 +323,81 @@ export class PlumageInputFieldComponent {
       .filter(Boolean)
       .join(' ');
 
-    const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
+    const text = this.isHorizontal() || this.isInline() ? `${labelText}:` : labelText;
 
     return (
-      <label class={classes} htmlFor={ids || undefined}>
+      <label class={classes} id={ids.labelId} htmlFor={ids.inputId || undefined}>
         <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
         {this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
 
-  private renderInput(ids: string, names: string) {
+  private buildDescribedBy(ids: ReturnType<typeof this.resolveIds>) {
+    const external = this.sanitizeIdRefList(this.ariaDescribedby);
+    const validation = this.validationState && this.validationMessage ? ids.validationId : undefined;
+    return this.joinIdRefLists(external, validation);
+  }
+
+  private renderInput(ids: ReturnType<typeof this.resolveIds>) {
     const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
     const classes = ['form-control', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
 
-    const placeholder = this.labelHidden ? this.placeholder || this.label || 'Placeholder Text' : this.placeholder || this.label || 'Placeholder Text';
+    const labelText = (this.label || '').trim();
+    const placeholder = (this.placeholder || '').trim() || labelText || 'Enter text';
+
+    const describedBy = this.buildDescribedBy(ids);
+
+    // ✅ fixed: support both ariaLabelledby + legacy arialabelledBy
+    const externalLabelledby =
+      this.sanitizeIdRefList(this.ariaLabelledby) ||
+      this.sanitizeIdRefList(this.arialabelledBy);
+
+    const computedLabelledby = externalLabelledby || ids.labelId;
+
+    // aria-label only when aria-labelledby absent
+    const computedAriaLabel = computedLabelledby ? undefined : (this.ariaLabel || placeholder || 'Input').trim();
 
     return (
-      <div class="input-container" role="presentation" aria-labelledby={names || undefined} onClick={this.handleInteraction}>
+      <div class="input-container" role="presentation" onClick={this.handleInteraction} onMouseDown={this.handleInteraction}>
         <input
-          ref={el => (this.inputEl = el as HTMLInputElement)}
-          id={ids || undefined}
-          name={names || undefined}
+          ref={(el) => (this.inputEl = el as HTMLInputElement)}
+          id={ids.inputId || undefined}
+          name={ids.inputId || undefined}
           type={this.type || 'text'}
           class={classes}
           placeholder={placeholder}
-          value={this.valueState || undefined}
-          aria-label={this.labelHidden ? names : undefined}
-          aria-labelledby={names || undefined}
-          aria-describedby={this.validationState ? 'validationMessage' : undefined}
+          value={this.valueState || ''}
+          aria-labelledby={computedLabelledby}
+          aria-label={computedAriaLabel}
+          aria-describedby={describedBy}
+          aria-required={this.required ? 'true' : undefined}
+          aria-invalid={this.validationState ? 'true' : 'false'}
+          aria-disabled={this.disabled ? 'true' : undefined}
+          aria-readonly={this.readOnly ? 'true' : undefined}
           disabled={this.disabled}
           readOnly={this.readOnly}
           required={this.required}
           onInput={this.handleInput}
           onFocus={this.handleInteraction}
           onBlur={this.handleBlur}
+          form={this._resolvedFormId || undefined}
+          autoComplete="off"
+          spellcheck={false}
+          inputMode="text"
         />
-        {/* Underline/focus bar */}
-        <div class={`b-underline${this.validationState ? ' invalid' : ''}`} role="presentation">
-          <div class={`b-focus${this.disabled ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`} role="presentation" aria-hidden="true" />
+
+        <div class={`b-underline${this.validationState ? ' invalid' : ''}`} role="presentation" aria-hidden="true">
+          <div
+            class={`b-focus${this.disabled ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`}
+            role="presentation"
+            aria-hidden="true"
+            style={{ width: '0', left: '50%' } as any}
+          />
         </div>
 
         {this.validationState && this.validationMessage ? (
-          <div id="validationMessage" class="invalid-feedback form-text">
+          <div id={ids.validationId} class="invalid-feedback form-text" aria-live="polite">
             {this.validationMessage}
           </div>
         ) : null}
@@ -338,25 +406,26 @@ export class PlumageInputFieldComponent {
   }
 
   render() {
-    const ids = this.camelCase(this.inputId).replace(/ /g, '');
-    const names = this.camelCase(this.label).replace(/ /g, '');
-
+    const ids = this.resolveIds();
     const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
     const groupClasses = ['form-group'];
     if (this.isHorizontal()) groupClasses.push('row');
     else if (this.isInline()) groupClasses.push('row', 'inline');
 
-    // keep numeric validation behavior if string specs not in use
     this.getComputedCols();
 
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
+    const inputColClass = this.isHorizontal()
+      ? this.buildColClass('input') || undefined
+      : this.isInline()
+        ? this.buildColClass('input') || undefined
+        : undefined;
 
     return (
       <div class={`plumage${outerClass}`}>
         <div class={groupClasses.join(' ')}>
           {this.renderInputLabel(ids, labelColClass)}
-          {this.isHorizontal() ? <div class={inputColClass}>{this.renderInput(ids, names)}</div> : this.renderInput(ids, names)}
+          {this.isHorizontal() ? <div class={inputColClass}>{this.renderInput(ids)}</div> : this.renderInput(ids)}
         </div>
       </div>
     );

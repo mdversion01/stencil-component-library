@@ -1,5 +1,6 @@
 // src/stories/radio-input-component.stories.js
-// UPDATED: include aria-describedby support (ariaDescribedby prop) in single + group templates + docs
+// UPDATED: include aria-label / aria-labelledby / aria-describedby support in single + group templates + docs,
+// and add Accessibility Matrix (computed) with default / inline / horizontal / validation / disabled.
 
 const normalize = (txt) => {
   const lines = String(txt || '')
@@ -64,7 +65,11 @@ const buildDocsHtml = (args) => {
   ${attrLines([
     ['basic-radio', !!args.basicRadio],
     ['bs-radio', !!args.bsRadio && !args.basicRadio],
+
+    ['aria-label', args.ariaLabel],
+    ['aria-labelledby', args.ariaLabelledby],
     ['aria-describedby', args.ariaDescribedby],
+
     ['disabled', !!args.disabled],
     ['input-id', args.inputId],
     ['label-txt', args.labelTxt],
@@ -84,7 +89,11 @@ const buildDocsHtml = (args) => {
   ${attrLines([
     ['basic-radio-group', !!args.basicRadioGroup],
     ['bs-radio-group', !!args.bsRadioGroup && !args.basicRadioGroup],
+
+    ['aria-label', args.ariaLabel],
+    ['aria-labelledby', args.ariaLabelledby],
     ['aria-describedby', args.ariaDescribedby],
+
     ['group-title', args.groupTitle],
     ['group-title-size', args.groupTitleSize],
     ['inline', !!args.inline],
@@ -104,7 +113,11 @@ const SingleTemplate = (args) =>
   ${attrLines([
     ['basic-radio', !!args.basicRadio],
     ['bs-radio', !!args.bsRadio && !args.basicRadio],
+
+    ['aria-label', args.ariaLabel],
+    ['aria-labelledby', args.ariaLabelledby],
     ['aria-describedby', args.ariaDescribedby],
+
     ['disabled', !!args.disabled],
     ['input-id', args.inputId],
     ['label-txt', args.labelTxt],
@@ -124,7 +137,11 @@ const GroupTemplate = (args) =>
   ${attrLines([
     ['basic-radio-group', !!args.basicRadioGroup],
     ['bs-radio-group', !!args.bsRadioGroup && !args.basicRadioGroup],
+
+    ['aria-label', args.ariaLabel],
+    ['aria-labelledby', args.ariaLabelledby],
     ['aria-describedby', args.ariaDescribedby],
+
     ['group-title', args.groupTitle],
     ['group-title-size', args.groupTitleSize],
     ['inline', !!args.inline],
@@ -178,10 +195,30 @@ export default {
     },
 
     /* Input Attributes */
-    basicRadio: { control: 'boolean', name: 'basic-radio', table: { category: 'Input Attributes', defaultValue: { summary: false } }, description: 'Single radio input with basic styling.' },
-    basicRadioGroup: { control: 'boolean', name: 'basic-radio-group', table: { category: 'Input Attributes', defaultValue: { summary: false } }, description: 'Group of radio inputs with basic styling.' },
-    bsRadio: { control: 'boolean', name: 'bs-radio', table: { category: 'Input Attributes', defaultValue: { summary: false } }, description: 'Single Bootstrap radio input.' },
-    bsRadioGroup: { control: 'boolean', name: 'bs-radio-group', table: { category: 'Input Attributes', defaultValue: { summary: false } }, description: 'Group of Bootstrap radios.' },
+    basicRadio: {
+      control: 'boolean',
+      name: 'basic-radio',
+      table: { category: 'Input Attributes', defaultValue: { summary: false } },
+      description: 'Single radio input with basic styling.',
+    },
+    basicRadioGroup: {
+      control: 'boolean',
+      name: 'basic-radio-group',
+      table: { category: 'Input Attributes', defaultValue: { summary: false } },
+      description: 'Group of radio inputs with basic styling.',
+    },
+    bsRadio: {
+      control: 'boolean',
+      name: 'bs-radio',
+      table: { category: 'Input Attributes', defaultValue: { summary: false } },
+      description: 'Single Bootstrap radio input.',
+    },
+    bsRadioGroup: {
+      control: 'boolean',
+      name: 'bs-radio-group',
+      table: { category: 'Input Attributes', defaultValue: { summary: false } },
+      description: 'Group of Bootstrap radios.',
+    },
     disabled: { control: 'boolean', table: { category: 'Input Attributes', defaultValue: { summary: false } }, description: 'Disables the input element.' },
     inputId: { control: 'text', name: 'input-id', table: { category: 'Input Attributes' }, description: 'ID for the input element (single radio).' },
     labelTxt: { control: 'text', name: 'label-txt', table: { category: 'Input Attributes' }, description: 'Label text for the input element.' },
@@ -190,6 +227,18 @@ export default {
     value: { control: 'text', table: { category: 'Input Attributes' }, description: 'Value attribute for the input element.' },
 
     /* Accessibility */
+    ariaLabel: {
+      control: 'text',
+      name: 'aria-label',
+      table: { category: 'Accessibility' },
+      description: 'Optional ARIA label override (used when aria-labelledby is not provided / auto-wired).',
+    },
+    ariaLabelledby: {
+      control: 'text',
+      name: 'aria-labelledby',
+      table: { category: 'Accessibility' },
+      description: 'Optional ARIA labelledby override (space-separated ids). Takes precedence over aria-label.',
+    },
     ariaDescribedby: {
       control: 'text',
       name: 'aria-describedby',
@@ -207,12 +256,16 @@ export default {
   },
 };
 
-/* Stories (unchanged except templates now include aria-describedby) */
+/* Stories (unchanged except templates now include aria-label/labelledby/describedby) */
 export const SingleBasic = SingleTemplate.bind({});
 SingleBasic.args = {
   bsRadio: true,
   basicRadio: false,
+
+  ariaLabel: '',
+  ariaLabelledby: '',
   ariaDescribedby: '',
+
   inputId: 'r-basic',
   name: 'newsletter',
   labelTxt: 'Subscribe to newsletter',
@@ -225,18 +278,18 @@ SingleBasic.args = {
 };
 SingleBasic.storyName = 'Single (Bootstrap styling)';
 SingleBasic.parameters = {
-  docs: {
-    description: {
-      story: 'A single radio input with Bootstrap styling.',
-    },
-  },
+  docs: { description: { story: 'A single radio input with Bootstrap styling.' } },
 };
 
 export const SingleRequiredInvalid = SingleTemplate.bind({});
 SingleRequiredInvalid.args = {
   bsRadio: true,
   basicRadio: false,
+
+  ariaLabel: '',
+  ariaLabelledby: '',
   ariaDescribedby: '',
+
   inputId: 'r-required',
   name: 'tos',
   labelTxt: 'I agree to Terms',
@@ -249,11 +302,7 @@ SingleRequiredInvalid.args = {
 };
 SingleRequiredInvalid.storyName = 'Single Required with Validation (Bootstrap styling)';
 SingleRequiredInvalid.parameters = {
-  docs: {
-    description: {
-      story: 'A single required radio input with validation enabled.',
-    },
-  },
+  docs: { description: { story: 'A single required radio input with validation enabled.' } },
 };
 
 // SINGLE — Basic style
@@ -261,7 +310,11 @@ export const SingleBasicStyled = SingleTemplate.bind({});
 SingleBasicStyled.args = {
   basicRadio: true,
   bsRadio: false,
+
+  ariaLabel: '',
+  ariaLabelledby: '',
   ariaDescribedby: '',
+
   inputId: 'r-basic-basic',
   name: 'marketing',
   labelTxt: 'Email me product updates',
@@ -274,11 +327,7 @@ SingleBasicStyled.args = {
 };
 SingleBasicStyled.storyName = 'Single (Basic styling)';
 SingleBasicStyled.parameters = {
-  docs: {
-    description: {
-      story: 'A single radio input with basic styling.',
-    },
-  },
+  docs: { description: { story: 'A single radio input with basic styling.' } },
 };
 
 const LABEL_SIZE_VARIANTS = [
@@ -289,13 +338,13 @@ const LABEL_SIZE_VARIANTS = [
 
 export const LabelSizes = {
   name: 'Label Sizes (Basic + Bootstrap)',
-  render: args => {
+  render: (args) => {
     const container = document.createElement('div');
     container.style.display = 'grid';
     container.style.gap = '16px';
     container.style.maxWidth = '760px';
 
-    const section = title => {
+    const section = (title) => {
       const wrap = document.createElement('div');
       const h = document.createElement('div');
       h.textContent = title;
@@ -305,7 +354,7 @@ export const LabelSizes = {
       return wrap;
     };
 
-    const mk = storyArgs => {
+    const mk = (storyArgs) => {
       const host = document.createElement('div');
       host.innerHTML = SingleTemplate(storyArgs);
       return host.firstElementChild;
@@ -361,7 +410,11 @@ export const LabelSizes = {
   args: {
     basicRadio: false,
     bsRadio: false,
+
+    ariaLabel: '',
+    ariaLabelledby: '',
     ariaDescribedby: '',
+
     disabled: false,
     required: false,
     validation: false,
@@ -387,7 +440,7 @@ export const LabelSizes = {
   <div>
     <div style="font-weight:600; margin:0 0 6px;">Basic radio (basic-radio)</div>
     <div style="display:grid; gap:10px;">
-${LABEL_SIZE_VARIANTS.map(v =>
+${LABEL_SIZE_VARIANTS.map((v) =>
   normalize(
     SingleTemplate({
       ...ctx.args,
@@ -401,7 +454,7 @@ ${LABEL_SIZE_VARIANTS.map(v =>
     }),
   )
     .split('\n')
-    .map(line => `      ${line}`)
+    .map((line) => `      ${line}`)
     .join('\n'),
 ).join('\n')}
     </div>
@@ -410,7 +463,7 @@ ${LABEL_SIZE_VARIANTS.map(v =>
   <div>
     <div style="font-weight:600; margin:0 0 6px;">Bootstrap radio (bs-radio)</div>
     <div style="display:grid; gap:10px;">
-${LABEL_SIZE_VARIANTS.map(v =>
+${LABEL_SIZE_VARIANTS.map((v) =>
   normalize(
     SingleTemplate({
       ...ctx.args,
@@ -424,7 +477,7 @@ ${LABEL_SIZE_VARIANTS.map(v =>
     }),
   )
     .split('\n')
-    .map(line => `      ${line}`)
+    .map((line) => `      ${line}`)
     .join('\n'),
 ).join('\n')}
     </div>
@@ -441,7 +494,11 @@ export const GroupBasic = GroupTemplate.bind({});
 GroupBasic.args = {
   bsRadioGroup: true,
   basicRadioGroup: false,
+
+  ariaLabel: '',
+  ariaLabelledby: '',
   ariaDescribedby: '',
+
   name: 'color',
   groupTitle: 'Favorite Color',
   groupTitleSize: 'h6',
@@ -457,18 +514,18 @@ GroupBasic.args = {
 };
 GroupBasic.storyName = 'Group (Bootstrap styling)';
 GroupBasic.parameters = {
-  docs: {
-    description: {
-      story: 'A group of radio inputs with Bootstrap styling.',
-    },
-  },
+  docs: { description: { story: 'A group of radio inputs with Bootstrap styling.' } },
 };
 
 export const GroupInline = GroupTemplate.bind({});
 GroupInline.args = {
   bsRadioGroup: true,
   basicRadioGroup: false,
+
+  ariaLabel: '',
+  ariaLabelledby: '',
   ariaDescribedby: '',
+
   name: 'size',
   groupTitle: 'T-Shirt Size',
   groupTitleSize: '',
@@ -484,11 +541,7 @@ GroupInline.args = {
 };
 GroupInline.storyName = 'Group Inline (Bootstrap styling)';
 GroupInline.parameters = {
-  docs: {
-    description: {
-      story: 'A group of inline radio inputs with Bootstrap styling.',
-    },
-  },
+  docs: { description: { story: 'A group of inline radio inputs with Bootstrap styling.' } },
 };
 
 // GROUP — Basic style
@@ -496,7 +549,11 @@ export const GroupBasicStyled = GroupTemplate.bind({});
 GroupBasicStyled.args = {
   basicRadioGroup: true,
   bsRadioGroup: false,
+
+  ariaLabel: '',
+  ariaLabelledby: '',
   ariaDescribedby: '',
+
   name: 'delivery',
   groupTitle: 'Delivery Method',
   groupTitleSize: 'h6',
@@ -508,18 +565,18 @@ GroupBasicStyled.args = {
 };
 GroupBasicStyled.storyName = 'Group (Basic styling)';
 GroupBasicStyled.parameters = {
-  docs: {
-    description: {
-      story: 'A group of radio inputs with Basic styling.',
-    },
-  },
+  docs: { description: { story: 'A group of radio inputs with Basic styling.' } },
 };
 
 export const GroupWithValidation = GroupTemplate.bind({});
 GroupWithValidation.args = {
   bsRadioGroup: true,
   basicRadioGroup: false,
+
+  ariaLabel: '',
+  ariaLabelledby: '',
   ariaDescribedby: '',
+
   name: 'contact',
   groupTitle: 'Preferred Contact',
   groupTitleSize: '',
@@ -535,18 +592,18 @@ GroupWithValidation.args = {
 };
 GroupWithValidation.storyName = 'Group with Validation (Bootstrap styling)';
 GroupWithValidation.parameters = {
-  docs: {
-    description: {
-      story: 'A group of radio inputs with validation (Bootstrap styling).',
-    },
-  },
+  docs: { description: { story: 'A group of radio inputs with validation (Bootstrap styling).' } },
 };
 
 export const GroupDisabledOptions = GroupTemplate.bind({});
 GroupDisabledOptions.args = {
   bsRadioGroup: true,
   basicRadioGroup: false,
+
+  ariaLabel: '',
+  ariaLabelledby: '',
   ariaDescribedby: '',
+
   name: 'seat',
   groupTitle: 'Seat Preference',
   groupTitleSize: '',
@@ -562,11 +619,7 @@ GroupDisabledOptions.args = {
 };
 GroupDisabledOptions.storyName = 'Group with Disabled Options (Bootstrap styling)';
 GroupDisabledOptions.parameters = {
-  docs: {
-    description: {
-      story: 'A group of radio inputs with some options disabled (Bootstrap styling).',
-    },
-  },
+  docs: { description: { story: 'A group of radio inputs with some options disabled (Bootstrap styling).' } },
 };
 
 /* Optional: wire Storybook action to the custom event for docs demo */
@@ -579,6 +632,95 @@ GroupBasicStyled.play = GroupBasic.play;
 GroupWithValidation.play = GroupBasic.play;
 GroupDisabledOptions.play = GroupBasic.play;
 
+/* ============================== Accessibility Matrix (computed) ============================== */
+
+const splitIds = (v) => String(v || '').trim().split(/\s+/).filter(Boolean);
+
+const getSnapshot = (hostOrOuter) => {
+  const host = hostOrOuter?.querySelector?.('radio-input-component') || hostOrOuter;
+  const group = host?.querySelector?.('[role="radiogroup"]') || null;
+  const isGroup = !!group;
+
+  const resolveInOuter = (id) => {
+    if (!id) return false;
+    // ids generated here are safe tokens, but external ids may include hyphens etc.
+    try {
+      return !!hostOrOuter?.querySelector?.(`#${CSS.escape(id)}`);
+    } catch {
+      return false;
+    }
+  };
+
+  if (!isGroup) {
+    const input = host?.querySelector?.('input[type="radio"]') || null;
+    const label = host?.querySelector?.('label') || null;
+    const error = host?.querySelector?.('.invalid-feedback') || null;
+
+    const describedby = (input?.getAttribute?.('aria-describedby') || '').trim();
+    const describedIds = splitIds(describedby);
+    const labelledby = (input?.getAttribute?.('aria-labelledby') || '').trim();
+    const labelledIds = splitIds(labelledby);
+
+    return {
+      mode: 'single',
+      host: host?.tagName?.toLowerCase?.() ?? null,
+      inputId: input?.getAttribute?.('id') ?? null,
+      name: input?.getAttribute?.('name') ?? null,
+      required: input?.hasAttribute?.('required') ?? null,
+      disabled: input?.hasAttribute?.('disabled') ?? null,
+      'aria-label': input?.getAttribute?.('aria-label') ?? null,
+      'aria-labelledby': labelledby || null,
+      'aria-describedby': describedby || null,
+      'aria-invalid': input?.getAttribute?.('aria-invalid') ?? null,
+      labelId: label?.getAttribute?.('id') ?? null,
+      labelFor: label?.getAttribute?.('for') ?? label?.getAttribute?.('htmlfor') ?? null,
+      errorId: error?.getAttribute?.('id') ?? null,
+      errorRole: error?.getAttribute?.('role') ?? null,
+      errorLive: error?.getAttribute?.('aria-live') ?? null,
+      labelledbyIds: labelledIds,
+      labelledbyAllResolve: labelledIds.every(resolveInOuter),
+      describedbyIds: describedIds,
+      describedbyAllResolve: describedIds.every(resolveInOuter),
+    };
+  }
+
+  const titleEl = host?.querySelector?.('.group-title[id]') || null;
+  const error = host?.querySelector?.('.invalid-feedback') || null;
+  const radios = Array.from(host?.querySelectorAll?.('input[type="radio"]') || []);
+
+  const describedby = (group?.getAttribute?.('aria-describedby') || '').trim();
+  const describedIds = splitIds(describedby);
+  const labelledby = (group?.getAttribute?.('aria-labelledby') || '').trim();
+  const labelledIds = splitIds(labelledby);
+
+  return {
+    mode: 'group',
+    host: host?.tagName?.toLowerCase?.() ?? null,
+    role: group?.getAttribute?.('role') ?? null,
+    'aria-label': group?.getAttribute?.('aria-label') ?? null,
+    'aria-labelledby': labelledby || null,
+    'aria-describedby': describedby || null,
+    'aria-required': group?.getAttribute?.('aria-required') ?? null,
+    'aria-invalid': group?.getAttribute?.('aria-invalid') ?? null,
+    titleId: titleEl?.getAttribute?.('id') ?? null,
+    errorId: error?.getAttribute?.('id') ?? null,
+    errorRole: error?.getAttribute?.('role') ?? null,
+    errorLive: error?.getAttribute?.('aria-live') ?? null,
+    labelledbyIds: labelledIds,
+    labelledbyAllResolve: labelledIds.every(resolveInOuter),
+    describedbyIds: describedIds,
+    describedbyAllResolve: describedIds.every(resolveInOuter),
+    radios: radios.map((i) => ({
+      id: i.getAttribute('id'),
+      name: i.getAttribute('name'),
+      checked: i.checked,
+      disabled: i.disabled,
+      'aria-invalid': i.getAttribute('aria-invalid'),
+      'aria-describedby': i.getAttribute('aria-describedby'),
+    })),
+  };
+};
+
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: () => {
@@ -587,36 +729,28 @@ export const AccessibilityMatrix = {
     wrap.style.gap = '16px';
     wrap.style.maxWidth = '980px';
 
-    const title = document.createElement('div');
-    title.innerHTML = `<strong>Accessibility matrix</strong><div style="opacity:.8">Shows computed <code>role</code>, <code>aria-*</code>, and generated ids (title/error) for single + group modes.</div>`;
-    wrap.appendChild(title);
+    const header = document.createElement('div');
+    header.innerHTML = `
+      <strong>Accessibility matrix</strong>
+      <div style="opacity:.8">
+        Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal, validation, and disabled.
+      </div>
+    `;
+    wrap.appendChild(header);
 
-    const mkRow = (labelText, makeHost, pickAttrs) => {
-      const row = document.createElement('div');
-      row.style.display = 'grid';
-      row.style.gridTemplateColumns = '260px 1fr';
-      row.style.gap = '12px';
-      row.style.alignItems = 'start';
-      row.style.border = '1px solid #ddd';
-      row.style.borderRadius = '8px';
-      row.style.padding = '12px';
+    const card = (title, makeOuter) => {
+      const box = document.createElement('div');
+      box.style.border = '1px solid #ddd';
+      box.style.borderRadius = '10px';
+      box.style.padding = '12px';
+      box.style.display = 'grid';
+      box.style.gap = '10px';
 
-      const left = document.createElement('div');
-      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
-
-      const right = document.createElement('div');
-      right.style.display = 'grid';
-      right.style.gap = '8px';
+      const t = document.createElement('div');
+      t.style.fontWeight = '600';
+      t.textContent = title;
 
       const demo = document.createElement('div');
-      demo.style.display = 'inline-flex';
-      demo.style.alignItems = 'center';
-      demo.style.gap = '12px';
-      demo.style.flexWrap = 'wrap';
-
-      const host = makeHost();
-      demo.appendChild(host);
-
       const pre = document.createElement('pre');
       pre.style.margin = '0';
       pre.style.padding = '10px';
@@ -624,192 +758,132 @@ export const AccessibilityMatrix = {
       pre.style.overflow = 'auto';
       pre.style.border = '1px solid #eee';
       pre.style.background = '#fafafa';
-      pre.textContent = 'Loading computed attributes…';
+      pre.textContent = 'Loading…';
 
-      right.appendChild(demo);
-      right.appendChild(pre);
+      const outer = makeOuter();
+      demo.appendChild(outer);
 
-      row.appendChild(left);
-      row.appendChild(right);
-
-      const update = () => {
-        const attrs = pickAttrs(host);
-        pre.textContent = JSON.stringify(attrs, null, 2);
+      const update = async () => {
+        const host = outer.querySelector?.('radio-input-component') || outer;
+        if (host?.componentOnReady) {
+          try { await host.componentOnReady(); } catch (_e) {}
+        } else if (window.customElements?.whenDefined) {
+          try { await customElements.whenDefined('radio-input-component'); } catch (_e) {}
+        }
+        pre.textContent = JSON.stringify(getSnapshot(outer), null, 2);
       };
 
       queueMicrotask(() => requestAnimationFrame(update));
-      return row;
+
+      box.appendChild(t);
+      box.appendChild(demo);
+      box.appendChild(pre);
+      return box;
     };
 
-    // Helpers to extract computed a11y
-    const pickSingle = (host) => {
-      const input = host.querySelector('input[type="radio"]');
-      const label = host.querySelector('label');
-      const error = host.querySelector('.invalid-feedback');
-      return {
-        mode: 'single',
-        inputId: input?.getAttribute('id') ?? null,
-        name: input?.getAttribute('name') ?? null,
-        required: input?.hasAttribute('required') ?? null,
-        disabled: input?.hasAttribute('disabled') ?? null,
-        'aria-labelledby': input?.getAttribute('aria-labelledby') ?? null,
-        'aria-describedby': input?.getAttribute('aria-describedby') ?? null,
-        'aria-invalid': input?.getAttribute('aria-invalid') ?? null,
-        labelId: label?.getAttribute('id') ?? null,
-        errorId: error?.getAttribute('id') ?? null,
-        errorRole: error?.getAttribute('role') ?? null,
-        errorLive: error?.getAttribute('aria-live') ?? null,
-      };
-    };
-
-    const pickGroup = (host) => {
-      const group = host.querySelector('[role="radiogroup"]');
-      const titleEl = host.querySelector('.group-title[id]');
-      const error = host.querySelector('.invalid-feedback');
-      const inputs = Array.from(host.querySelectorAll('input[type="radio"]'));
-      return {
-        mode: 'group',
-        role: group?.getAttribute('role') ?? null,
-        'aria-labelledby': group?.getAttribute('aria-labelledby') ?? null,
-        'aria-describedby': group?.getAttribute('aria-describedby') ?? null,
-        'aria-required': group?.getAttribute('aria-required') ?? null,
-        'aria-invalid': group?.getAttribute('aria-invalid') ?? null,
-        titleId: titleEl?.getAttribute('id') ?? null,
-        errorId: error?.getAttribute('id') ?? null,
-        errorRole: error?.getAttribute('role') ?? null,
-        errorLive: error?.getAttribute('aria-live') ?? null,
-        radios: inputs.map((i) => ({
-          id: i.getAttribute('id'),
-          name: i.getAttribute('name'),
-          checked: i.checked,
-          disabled: i.disabled,
-          'aria-invalid': i.getAttribute('aria-invalid'),
-          'aria-describedby': i.getAttribute('aria-describedby'),
-        })),
-      };
-    };
-
-    // Row 1: Single (text label -> aria-labelledby, not invalid)
+    // Default (stacked group)
     wrap.appendChild(
-      mkRow(
-        'Single (named, valid)',
-        () => {
-          const el = document.createElement('radio-input-component');
-          el.setAttribute('bs-radio', '');
-          el.setAttribute('input-id', 'r-matrix-single');
-          el.setAttribute('name', 'matrixSingle');
-          el.setAttribute('label-txt', 'Single option');
-          el.setAttribute('value', 'yes');
-          return el;
-        },
-        pickSingle,
-      ),
+      card('Default (group stacked)', () => {
+        const el = document.createElement('radio-input-component');
+        el.setAttribute('bs-radio-group', '');
+        el.setAttribute('name', 'mxDefault');
+        el.setAttribute('group-title', 'Default group');
+        el.setAttribute(
+          'group-options',
+          JSON.stringify([
+            { inputId: 'mx-d-a', value: 'a', labelTxt: 'Alpha', checked: true },
+            { inputId: 'mx-d-b', value: 'b', labelTxt: 'Beta' },
+          ]),
+        );
+        return el;
+      }),
     );
 
-    // Row 2: Single required + validation -> invalid + error describedby
+    // Inline layout
     wrap.appendChild(
-      mkRow(
-        'Single (required + invalid)',
-        () => {
-          const el = document.createElement('radio-input-component');
-          el.setAttribute('bs-radio', '');
-          el.setAttribute('input-id', 'r-matrix-single-req');
-          el.setAttribute('name', 'matrixSingleReq');
-          el.setAttribute('label-txt', 'Agree');
-          el.setAttribute('required', '');
-          el.setAttribute('validation', '');
-          el.setAttribute('validation-msg', 'Required');
-          return el;
-        },
-        pickSingle,
-      ),
+      card('Inline layout', () => {
+        const el = document.createElement('radio-input-component');
+        el.setAttribute('bs-radio-group', '');
+        el.setAttribute('inline', '');
+        el.setAttribute('name', 'mxInline');
+        el.setAttribute('group-title', 'Inline group');
+        el.setAttribute(
+          'group-options',
+          JSON.stringify([
+            { inputId: 'mx-i-s', value: 'S', labelTxt: 'Small' },
+            { inputId: 'mx-i-m', value: 'M', labelTxt: 'Medium', checked: true },
+            { inputId: 'mx-i-l', value: 'L', labelTxt: 'Large' },
+          ]),
+        );
+        return el;
+      }),
     );
 
-    // Row 3: Group valid (has title, selected option)
+    // Horizontal (simulated): grid layout wrapper around a group
     wrap.appendChild(
-      mkRow(
-        'Group (valid selection)',
-        () => {
-          const el = document.createElement('radio-input-component');
-          el.setAttribute('bs-radio-group', '');
-          el.setAttribute('name', 'matrixGroup');
-          el.setAttribute('group-title', 'Choose one');
-          el.setAttribute(
-            'group-options',
-            JSON.stringify([
-              { inputId: 'mg-a', value: 'a', labelTxt: 'Alpha', checked: true },
-              { inputId: 'mg-b', value: 'b', labelTxt: 'Beta' },
-            ]),
-          );
-          return el;
-        },
-        pickGroup,
-      ),
+      card('Horizontal layout (simulated)', () => {
+        const outer = document.createElement('div');
+        outer.style.display = 'grid';
+        outer.style.gridTemplateColumns = '220px 1fr';
+        outer.style.gap = '12px';
+        outer.style.alignItems = 'start';
+        outer.style.maxWidth = '780px';
+
+        const left = document.createElement('div');
+        left.id = 'mx-horizontal-label';
+        left.innerHTML = `<div style="font-weight:600">Horizontal label area</div><div style="opacity:.8; font-size:12px;">Simulates a horizontal form row.</div>`;
+
+        const el = document.createElement('radio-input-component');
+        el.setAttribute('bs-radio-group', '');
+        el.setAttribute('name', 'mxHorizontal');
+        el.setAttribute('aria-labelledby', 'mx-horizontal-label');
+        el.setAttribute(
+          'group-options',
+          JSON.stringify([
+            { inputId: 'mx-h-1', value: '1', labelTxt: 'One', checked: true },
+            { inputId: 'mx-h-2', value: '2', labelTxt: 'Two' },
+          ]),
+        );
+
+        outer.appendChild(left);
+        outer.appendChild(el);
+        return outer;
+      }),
     );
 
-    // Row 4: Group required + validation invalid (no selection)
+    // Error / validation
     wrap.appendChild(
-      mkRow(
-        'Group (required + invalid)',
-        () => {
-          const el = document.createElement('radio-input-component');
-          el.setAttribute('bs-radio-group', '');
-          el.setAttribute('name', 'matrixGroupReq');
-          el.setAttribute('group-title', 'Pick a value');
-          el.setAttribute('required', '');
-          el.setAttribute('validation', '');
-          el.setAttribute('validation-msg', 'Please select one');
-          el.setAttribute(
-            'group-options',
-            JSON.stringify([
-              { inputId: 'mgr-x', value: 'x', labelTxt: 'X' },
-              { inputId: 'mgr-y', value: 'y', labelTxt: 'Y' },
-            ]),
-          );
-          return el;
-        },
-        pickGroup,
-      ),
+      card('Error / validation (required + invalid)', () => {
+        const el = document.createElement('radio-input-component');
+        el.setAttribute('bs-radio-group', '');
+        el.setAttribute('name', 'mxValidation');
+        el.setAttribute('group-title', 'Validation');
+        el.setAttribute('required', '');
+        el.setAttribute('validation', '');
+        el.setAttribute('validation-msg', 'Select one');
+        el.setAttribute(
+          'group-options',
+          JSON.stringify([
+            { inputId: 'mx-v-a', value: 'a', labelTxt: 'Alpha' },
+            { inputId: 'mx-v-b', value: 'b', labelTxt: 'Beta' },
+          ]),
+        );
+        return el;
+      }),
     );
 
-    // Row 5: Group with external describedby + invalid (should include both ids)
+    // Disabled
     wrap.appendChild(
-      mkRow(
-        'Group (external describedby + invalid)',
-        () => {
-          const outer = document.createElement('div');
-          outer.style.display = 'grid';
-          outer.style.gap = '8px';
-
-          const help = document.createElement('div');
-          help.id = 'matrix-help';
-          help.textContent = 'Help text: choose the best option.';
-          outer.appendChild(help);
-
-          const el = document.createElement('radio-input-component');
-          el.setAttribute('bs-radio-group', '');
-          el.setAttribute('name', 'matrixGroupHelp');
-          el.setAttribute('group-title', 'With help text');
-          el.setAttribute('aria-describedby', 'matrix-help');
-          el.setAttribute('required', '');
-          el.setAttribute('validation', '');
-          el.setAttribute('validation-msg', 'Select one');
-          el.setAttribute(
-            'group-options',
-            JSON.stringify([
-              { inputId: 'mgh-1', value: '1', labelTxt: 'One' },
-              { inputId: 'mgh-2', value: '2', labelTxt: 'Two' },
-            ]),
-          );
-          outer.appendChild(el);
-
-          return outer;
-        },
-        (outerHost) => {
-          const innerHost = outerHost.querySelector('radio-input-component');
-          return pickGroup(innerHost);
-        },
-      ),
+      card('Disabled (single disabled)', () => {
+        const el = document.createElement('radio-input-component');
+        el.setAttribute('bs-radio', '');
+        el.setAttribute('input-id', 'mx-disabled');
+        el.setAttribute('name', 'mxDisabled');
+        el.setAttribute('label-txt', 'Disabled option');
+        el.setAttribute('disabled', '');
+        el.setAttribute('value', 'x');
+        return el;
+      }),
     );
 
     return wrap;
@@ -819,7 +893,15 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Renders multiple configurations and prints computed accessibility attributes for single + group radios: `role="radiogroup"`, `aria-labelledby`, `aria-describedby`, `aria-invalid`, and generated title/error ids.',
+          'Prints computed accessibility wiring for radios. Covers group default/inline/horizontal (simulated), validation, and disabled states: `role="radiogroup"`, `aria-labelledby`, `aria-describedby`, `aria-required`, `aria-invalid`, and generated title/error ids.',
+      },
+      source: {
+        language: 'html',
+        transform: () =>
+          normalize(`
+<!-- Accessibility Matrix renders multiple live variants and prints computed aria-* in a JSON block. -->
+<!-- Use the story to inspect output. -->
+          `),
       },
     },
   },

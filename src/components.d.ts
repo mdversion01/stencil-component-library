@@ -737,6 +737,9 @@ export namespace Components {
         "zIndex": string;
     }
     interface BasicSliderComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -1642,6 +1645,9 @@ export namespace Components {
         "warningMessage": string;
     }
     interface DiscreteSliderComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -2221,6 +2227,9 @@ export namespace Components {
         "verticallyCentered": boolean;
     }
     interface MultiRangeSliderComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -2818,6 +2827,18 @@ export namespace Components {
         "value": string;
     }
     interface PlumageInputFieldComponent {
+        "ariaDescribedby"?: string;
+        /**
+          * Standard ARIA naming hooks (recommended)
+         */
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
+        /**
+          * Legacy: matches other components in this library.
+          * @deprecated Prefer `ariaLabelledby` (mapped to aria-labelledby).
+          * @default ''
+         */
+        "arialabelledBy": string;
         /**
           * @default false
          */
@@ -2856,7 +2877,7 @@ export namespace Components {
          */
         "labelCol": number;
         /**
-          * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+          * Responsive column class specs
           * @default ''
          */
         "labelCols": string;
@@ -2908,6 +2929,12 @@ export namespace Components {
           * @default ''
          */
         "appendId": string;
+        "ariaDescribedby"?: string;
+        /**
+          * ✅ Standard ARIA naming hooks (recommended)
+         */
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -3010,6 +3037,9 @@ export namespace Components {
         "value": string;
     }
     interface PlumageSelectFieldComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default ''
          */
@@ -3205,6 +3235,9 @@ export namespace Components {
         "validationMessage": string;
     }
     interface PopoverComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -3304,7 +3337,7 @@ export namespace Components {
          */
         "visible": boolean;
         /**
-          * Cross-axis nudge. Note: Popper uses "skidding" (cross-axis). This is not strictly "Y" for top/bottom.
+          * Cross-axis nudge (Popper skidding).
           * @default 0
          */
         "yOffset": number;
@@ -3315,6 +3348,9 @@ export namespace Components {
           * @default false
          */
         "animated": boolean;
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * Accepts JSON string (HTML attr) or array (JS)
           * @default []
@@ -3344,7 +3380,7 @@ export namespace Components {
          */
         "indeterminate": boolean;
         /**
-          * NEW: optional label text (single bar primarily)
+          * Optional visible label text
           * @default ''
          */
         "label": string;
@@ -3408,10 +3444,9 @@ export namespace Components {
         "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface RadioInputComponent {
-        /**
-          * Optional: external description element id (help text)
-         */
         "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -3482,6 +3517,9 @@ export namespace Components {
         "value": string;
     }
     interface SelectFieldComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default ''
          */
@@ -3594,6 +3632,9 @@ export namespace Components {
         "withTable": boolean;
     }
     interface SliderManagerComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -5973,6 +6014,9 @@ declare namespace LocalJSX {
         "zIndex"?: string;
     }
     interface BasicSliderComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -6901,6 +6945,9 @@ declare namespace LocalJSX {
         "warningMessage"?: string;
     }
     interface DiscreteSliderComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -7478,6 +7525,9 @@ declare namespace LocalJSX {
         "verticallyCentered"?: boolean;
     }
     interface MultiRangeSliderComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -8089,6 +8139,18 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     interface PlumageInputFieldComponent {
+        "ariaDescribedby"?: string;
+        /**
+          * Standard ARIA naming hooks (recommended)
+         */
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
+        /**
+          * Legacy: matches other components in this library.
+          * @deprecated Prefer `ariaLabelledby` (mapped to aria-labelledby).
+          * @default ''
+         */
+        "arialabelledBy"?: string;
         /**
           * @default false
          */
@@ -8127,7 +8189,7 @@ declare namespace LocalJSX {
          */
         "labelCol"?: number;
         /**
-          * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
+          * Responsive column class specs
           * @default ''
          */
         "labelCols"?: string;
@@ -8180,6 +8242,12 @@ declare namespace LocalJSX {
           * @default ''
          */
         "appendId"?: string;
+        "ariaDescribedby"?: string;
+        /**
+          * ✅ Standard ARIA naming hooks (recommended)
+         */
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -8283,6 +8351,9 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     interface PlumageSelectFieldComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default ''
          */
@@ -8475,6 +8546,9 @@ declare namespace LocalJSX {
         "validationMessage"?: string;
     }
     interface PopoverComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -8574,7 +8648,7 @@ declare namespace LocalJSX {
          */
         "visible"?: boolean;
         /**
-          * Cross-axis nudge. Note: Popper uses "skidding" (cross-axis). This is not strictly "Y" for top/bottom.
+          * Cross-axis nudge (Popper skidding).
           * @default 0
          */
         "yOffset"?: number;
@@ -8585,6 +8659,9 @@ declare namespace LocalJSX {
           * @default false
          */
         "animated"?: boolean;
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * Accepts JSON string (HTML attr) or array (JS)
           * @default []
@@ -8614,7 +8691,7 @@ declare namespace LocalJSX {
          */
         "indeterminate"?: boolean;
         /**
-          * NEW: optional label text (single bar primarily)
+          * Optional visible label text
           * @default ''
          */
         "label"?: string;
@@ -8678,10 +8755,9 @@ declare namespace LocalJSX {
         "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface RadioInputComponent {
-        /**
-          * Optional: external description element id (help text)
-         */
         "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -8753,6 +8829,9 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     interface SelectFieldComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default ''
          */
@@ -8866,6 +8945,9 @@ declare namespace LocalJSX {
         "withTable"?: boolean;
     }
     interface SliderManagerComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
