@@ -1,3 +1,4 @@
+// src/components/table/table-component.spec.tsx
 import { newSpecPage } from '@stencil/core/testing';
 import { TableComponent } from './table-component';
 
@@ -23,21 +24,21 @@ describe('table-component', () => {
 <table-component table-id="t1">
   <!---->
   <div>
-    <table aria-colcount="2" aria-multiselectable="true" class="table" id="t1" role="table">
+    <table class="table" id="t1">
       <thead role="rowgroup">
         <tr role="row">
-          <th aria-colindex="1" aria-sort="none" data-field="first_name" role="columnheader" scope="col" tabindex="0" style="cursor: pointer;">
+          <th aria-colindex="1" aria-label="Sort by First Name" aria-sort="none" data-field="first_name" role="columnheader" scope="col" tabindex="0" style="cursor: pointer;">
             First Name
-            <i class="none sort-icon"></i>
+            <i aria-hidden="true" class="none sort-icon"></i>
           </th>
-          <th aria-colindex="2" aria-sort="none" data-field="age" role="columnheader" scope="col" tabindex="0" style="cursor: pointer;">
+          <th aria-colindex="2" aria-label="Sort by Age" aria-sort="none" data-field="age" role="columnheader" scope="col" tabindex="0" style="cursor: pointer;">
             Age
-            <i class="none sort-icon"></i>
+            <i aria-hidden="true" class="none sort-icon"></i>
           </th>
         </tr>
       </thead>
       <tbody role="rowgroup">
-        <tr aria-selected="false" class="striped-row" role="row" tabindex="0">
+        <tr aria-selected="false" class="striped-row" id="t1-row-0" role="row" tabindex="0">
           <td aria-colindex="1" role="cell">
             Anna
           </td>
@@ -68,10 +69,11 @@ describe('table-component', () => {
     page.root.fields = ['name', 'age'];
 
     // turn on pagination and show at both positions
-    page.root.usePagination = true;
+    page.root.usePagination = true; // legacy still enables
     page.root.paginationPosition = 'both';
     page.root.rowsPerPage = 2;
     page.root.paginationSize = 'sm'; // <- should flow to <pagination-component size="sm">
+
     await page.waitForChanges();
 
     const pagers = page.root.querySelectorAll('pagination-component');
@@ -80,9 +82,12 @@ describe('table-component', () => {
     // top pager
     expect(pagers[0].getAttribute('position')).toBe('top');
     expect(pagers[0].getAttribute('size')).toBe('sm');
+    // new unified variant prop is always present
+    expect(pagers[0].getAttribute('variant')).toBe('standard');
 
     // bottom pager
     expect(pagers[1].getAttribute('position')).toBe('bottom');
     expect(pagers[1].getAttribute('size')).toBe('sm');
+    expect(pagers[1].getAttribute('variant')).toBe('standard');
   });
 });

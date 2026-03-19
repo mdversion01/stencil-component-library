@@ -1,4 +1,16 @@
 // src/stories/table-component.stories.js
+//
+// ✅ UPDATED (no story removals):
+// - Keeps your new pagination API controls (paginationEnabled + paginationVariant)
+// - Ensures legacy pagination props are still available
+// - Adds an "Accessibility Matrix (computed)" story:
+//   default / inline / horizontal / error+validation / disabled
+//   and prints computed role + aria-* + ids (table + headers + first row)
+//
+// NOTE: Table component itself doesn't have "disabled" or "validation" props.
+// Those matrix rows are "simulated" patterns using:
+// - aria-describedby to point at an external error/help element
+// - CSS to visually indicate disabled (pointer-events / opacity) and aria-disabled on wrapper
 
 export default {
   title: 'Components/Table',
@@ -67,7 +79,8 @@ export default {
         transform: (_code, ctx) => normalizeHtml(toHtml(ctx.originalStoryFn(ctx.args))),
       },
       description: {
-        component: 'A flexible and customizable table component with support for sorting, filtering, selection, pagination, and various styling options.',
+        component:
+          'A flexible and customizable table component with support for sorting, filtering, selection, pagination, and various styling options.',
       },
     },
   },
@@ -232,7 +245,8 @@ export default {
       control: { type: 'select' },
       options: ['', 'single', 'multi', 'range'],
       name: 'select-mode',
-      description: 'For selection mode of rows with checkboxes. single = only one row can be selected at a time, multi = multiple rows can be selected independently, range = allows shift-click to select a range of rows.',
+      description:
+        'For selection mode of rows with checkboxes. single = only one row can be selected at a time, multi = multiple rows can be selected independently, range = allows shift-click to select a range of rows.',
       table: { category: 'Selection' },
     },
 
@@ -433,14 +447,12 @@ const tableFields = [
 function toHtml(out) {
   if (typeof out === 'string') return out;
   if (out && typeof out === 'object' && 'outerHTML' in out) {
-    // If we return a wrapper div, prefer its innerHTML so preview isn't wrapped.
     if (out instanceof HTMLElement && out.tagName.toLowerCase() === 'div') return out.innerHTML;
     return out.outerHTML;
   }
   return String(out ?? '');
 }
 
-// Collapses multiple blank lines + trims leading/trailing blanks
 function normalizeHtml(html) {
   const lines = String(html ?? '')
     .replace(/\r\n/g, '\n')
@@ -475,14 +487,9 @@ function normalizeJs(js) {
     .trim();
 }
 
-/**
- * ✅ Docs-only helper: emit a single HTML preview including minimal JS wiring.
- * Use ONLY for stories whose behavior depends on external wiring.
- */
 function buildDocsHtmlJsSource({ html, js }) {
   const cleanHtml = normalizeHtml(html);
   const cleanJs = normalizeJs(js);
-
   if (!cleanJs) return cleanHtml;
 
   return normalizeHtml(`
@@ -564,10 +571,6 @@ function ensureGlobalHelpers() {
   };
 }
 
-/**
- * ✅ Only wire controls once the returned wrapper is actually connected to the DOM.
- * Storybook calls the story function for Docs "Source" too, where it may never connect.
- */
 function runWhenConnected(rootEl, fn, timeoutMs = 1500) {
   const start = performance.now();
   const tick = () => {
@@ -588,6 +591,8 @@ function runWhenConnected(rootEl, fn, timeoutMs = 1500) {
 function buildTableAttrs(args, id, extraAttrs = '') {
   const attrs = [
     id ? `id="${id}"` : null,
+    `table-id="${id || args.tableId || 'table'}"`,
+
     args.addBorder ? 'add-border' : null,
     args.removeBorder ? 'remove-border' : null,
     args.darkTableTheme ? 'dark-table-theme' : null,
@@ -599,12 +604,14 @@ function buildTableAttrs(args, id, extraAttrs = '') {
     args.size ? `size="${args.size}"` : null,
     args.striped ? 'striped' : null,
     args.tableVariant ? `table-variant="${args.tableVariant}"` : null,
+
     args.caption ? `caption="${args.caption}"` : null,
     args.cloneFooter ? 'clone-footer' : null,
     args.fixedTableHeader ? 'fixed-table-header' : null,
     args.responsive ? 'responsive' : null,
     args.stacked ? 'stacked' : null,
     args.sticky ? 'sticky' : null,
+
     args.sortable ? 'sortable' : null,
     args.selectMode ? `select-mode="${args.selectMode}"` : null,
 
@@ -618,14 +625,17 @@ function buildTableAttrs(args, id, extraAttrs = '') {
     args.paginationPosition ? `pagination-position="${args.paginationPosition}"` : null,
     args.paginationLayout ? `pagination-layout="${args.paginationLayout}"` : null,
     args.paginationSize ? `pagination-size="${args.paginationSize}"` : null,
-    args.paginationLimit ? `pagination-limit="${args.paginationLimit}"` : null,
-    args.rowsPerPage ? `rows-per-page="${args.rowsPerPage}"` : null,
+    args.paginationLimit != null ? `pagination-limit="${args.paginationLimit}"` : null,
+    args.rowsPerPage != null ? `rows-per-page="${args.rowsPerPage}"` : null,
+
     args.showDisplayRange ? 'show-display-range' : null,
     args.showSizeChanger ? 'show-size-changer' : null,
+
     args.hideGotoEndButtons ? 'hide-goto-end-buttons' : null,
     args.hideEllipsis ? 'hide-ellipsis' : null,
     args.goToButtons ? `go-to-buttons="${args.goToButtons}"` : null,
     args.paginationVariantColor ? `pagination-variant-color="${args.paginationVariantColor}"` : null,
+
     extraAttrs ? extraAttrs.trim() : null,
   ]
     .filter(Boolean)
@@ -634,16 +644,13 @@ function buildTableAttrs(args, id, extraAttrs = '') {
   return attrs;
 }
 
-/**
- * ✅ Renders DOM + sets items/fields via properties (no <script> tags).
- * Works in Canvas + Docs.
- */
 function renderTableStory(args, { id, items, fields, extraAttrs = '' } = {}) {
   const wrapper = document.createElement('div');
   wrapper.style.margin = '24px 0';
 
   const attrs = buildTableAttrs(args, id, extraAttrs);
-  const captionSlot = args.caption === 'top' || args.caption === 'bottom' ? `<span slot="caption">This is an Example Caption</span>` : '';
+  const captionSlot =
+    args.caption === 'top' || args.caption === 'bottom' ? `<span slot="caption">This is an Example Caption</span>` : '';
 
   wrapper.innerHTML = normalizeHtml(`
 <table-component ${attrs}>
@@ -657,12 +664,21 @@ function renderTableStory(args, { id, items, fields, extraAttrs = '' } = {}) {
     table.items = [...data];
     table.originalItems = [...data];
     table.fields = Array.isArray(fields) && fields.length ? fields : deriveFieldsFromFirstItem(data);
+
+    // allow Controls to set initial sort/filter values (purely for story UX)
+    if (!isNone(args.sortField)) {
+      table.sortable = !!args.sortable;
+      table.dispatchEvent(new CustomEvent('sort-field-changed', { detail: { value: args.sortField } }));
+      table.dispatchEvent(new CustomEvent('sort-order-changed', { detail: { value: args.sortOrder || 'asc' } }));
+    }
+    if ((args.filterText || '').trim()) {
+      table.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: args.filterText } }));
+    }
   }
 
   return wrapper;
 }
 
-/** Like renderTableStory, but allows injecting complex markup around the table. */
 function renderSectionStory(args, { html, tableId, items, fields } = {}) {
   const wrapper = document.createElement('div');
   wrapper.style.margin = '24px 0';
@@ -679,7 +695,7 @@ function renderSectionStory(args, { html, tableId, items, fields } = {}) {
   return wrapper;
 }
 
-/* --------------------------------------------- Wiring helpers (UPDATED) ---------------------------------------------- */
+/* --------------------------------------------- Wiring helpers (kept) ---------------------------------------------- */
 
 async function wireSortControls({ root, tableId, sortFieldId, sortOrderId }) {
   ensureGlobalHelpers();
@@ -771,9 +787,7 @@ async function wireFilterControls({ root, tableId, inputId, dropdownId }) {
   });
 }
 
-/* -------------------------------------------------------------------
-✅ Hoisted wired story templates (Docs + story stay in sync)
--------------------------------------------------------------------- */
+/* ------------------------------------------------------------------- Hoisted wired story templates (kept) -------------------------- */
 
 const SORT_RESET_STORY = {
   tableId: 'table16',
@@ -813,10 +827,6 @@ const SORT_RESET_STORY = {
     { key: 'first_name', label: 'First Name', sortable: true },
     { key: 'age', label: 'Age', sortable: true },
   ];
-
-  // Outside Storybook, wire your selects to dispatch these events:
-  // table.dispatchEvent(new CustomEvent('sort-field-changed', { detail: { value: 'age' } }));
-  // table.dispatchEvent(new CustomEvent('sort-order-changed', { detail: { value: 'asc' } }));
 })();
 `;
   },
@@ -881,11 +891,6 @@ const FILTER_RESET_STORY = {
     { key: 'first_name', label: 'First Name', sortable: true },
     { key: 'age', label: 'Age', sortable: true },
   ];
-
-  // Outside Storybook, drive filtering by dispatching:
-  // table.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: 'mac' } }));
-  // And optionally the selected filter fields via:
-  // document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId: '${tableId}', items: [...] } }));
 })();
 `;
   },
@@ -987,11 +992,6 @@ const PLAYGROUND_STORY = {
     { key: 'first_name', label: 'First Name', sortable: true },
     { key: 'age', label: 'Age', sortable: true },
   ];
-
-  // Outside Storybook, drive behavior with events like:
-  // table.dispatchEvent(new CustomEvent('sort-field-changed', { detail: { value: 'age' } }));
-  // table.dispatchEvent(new CustomEvent('sort-order-changed', { detail: { value: 'asc' } }));
-  // table.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: 'mac' } }));
 })();
 `;
   },
@@ -1112,10 +1112,6 @@ StackedCaptionBottom.parameters = {
   docs: { description: { story: 'A stacked table with the caption at the bottom.' } },
 };
 
-/**
- * ✅ Renamed from "WithDetailsAndVariants"
- * This story only demonstrates row + cell variant colors (no detail rows).
- */
 export const UsingVariantColorsInRowsAndCells = args =>
   renderTableStory(args, {
     id: 'table-variant-colors',
@@ -1130,9 +1126,6 @@ UsingVariantColorsInRowsAndCells.parameters = {
   docs: { description: { story: 'A table showcasing variant colors in rows and individual cells.' } },
 };
 
-/**
- * ✅ Detail rows only (explicit _showDetails + _additionalInfo data).
- */
 export const DetailRowsOnly = args =>
   renderTableStory(args, {
     id: 'table-detail-rows',
@@ -1364,6 +1357,261 @@ This combines **Sort + Filter + Selection + Pagination**.
           html: PLAYGROUND_STORY.html(PLAYGROUND_STORY),
           js: PLAYGROUND_STORY.docsJs(PLAYGROUND_STORY),
         }),
+    },
+  },
+};
+
+/* ============================== Accessibility Matrix (computed) ============================== */
+
+const splitIds = v => String(v || '').trim().split(/\s+/).filter(Boolean);
+
+const pickTableA11y = (host, scopeRoot) => {
+  const table = host?.querySelector('table') || null;
+  const thead = table?.querySelector('thead') || null;
+  const headers = Array.from(table?.querySelectorAll('th[role="columnheader"]') || []);
+  const firstRow = table?.querySelector('tbody tr[role="row"]') || null;
+
+  const labelledby = (table?.getAttribute('aria-labelledby') || '').trim();
+  const describedby = (table?.getAttribute('aria-describedby') || '').trim();
+
+  const resolve = id => {
+    if (!id) return false;
+    try {
+      return !!scopeRoot.querySelector(`#${CSS.escape(id)}`);
+    } catch {
+      return false;
+    }
+  };
+
+  const labelledIds = splitIds(labelledby);
+  const describedIds = splitIds(describedby);
+
+  return {
+    host: host?.tagName?.toLowerCase?.() ?? null,
+    tableId: table?.getAttribute('id') ?? null,
+    role: table?.getAttribute('role') ?? '(native)',
+    'aria-colcount': table?.getAttribute('aria-colcount') ?? null,
+    'aria-rowcount': table?.getAttribute('aria-rowcount') ?? null,
+    'aria-multiselectable': table?.getAttribute('aria-multiselectable') ?? null,
+    'aria-labelledby': labelledby || null,
+    'aria-describedby': describedby || null,
+    labelledbyIds: labelledIds,
+    labelledbyAllResolve: labelledIds.every(resolve),
+    describedbyIds: describedIds,
+    describedbyAllResolve: describedIds.every(resolve),
+    headerThemeClass: thead?.getAttribute('class') ?? null,
+    headers: headers.slice(0, 6).map(h => ({
+      text: (h.textContent || '').trim().replace(/\s+/g, ' '),
+      tabIndex: h.getAttribute('tabindex'),
+      'aria-sort': h.getAttribute('aria-sort'),
+      'aria-colindex': h.getAttribute('aria-colindex'),
+      'aria-label': h.getAttribute('aria-label'),
+    })),
+    firstRow: firstRow
+      ? {
+          id: firstRow.getAttribute('id'),
+          tabIndex: firstRow.getAttribute('tabindex'),
+          'aria-selected': firstRow.getAttribute('aria-selected'),
+        }
+      : null,
+  };
+};
+
+export const AccessibilityMatrix = {
+  name: 'Accessibility Matrix (computed)',
+  render: () => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '16px';
+    wrap.style.maxWidth = '1100px';
+
+    const header = document.createElement('div');
+    header.innerHTML = `
+      <strong>Accessibility matrix</strong>
+      <div style="opacity:.8">
+        Prints computed <code>role</code>, <code>aria-*</code>, and key ids for default / inline / horizontal, simulated error/validation, and simulated disabled.
+      </div>
+    `;
+    wrap.appendChild(header);
+
+    const card = (title, storyArgs, { extraHtml = '', decorateHost } = {}) => {
+      const box = document.createElement('div');
+      box.style.border = '1px solid #ddd';
+      box.style.borderRadius = '10px';
+      box.style.padding = '12px';
+      box.style.display = 'grid';
+      box.style.gap = '10px';
+
+      const t = document.createElement('div');
+      t.style.fontWeight = '600';
+      t.textContent = title;
+
+      const demo = document.createElement('div');
+      const pre = document.createElement('pre');
+      pre.style.margin = '0';
+      pre.style.padding = '10px';
+      pre.style.borderRadius = '8px';
+      pre.style.overflow = 'auto';
+      pre.style.border = '1px solid #eee';
+      pre.style.background = '#fafafa';
+      pre.textContent = 'Loading…';
+
+      const mount = document.createElement('div');
+      mount.innerHTML = normalizeHtml(`
+        ${extraHtml}
+      `);
+
+      const storyNode = renderTableStory(
+        { ...Basic.args, ...storyArgs },
+        { id: storyArgs.__id || `mx-${Math.random().toString(36).slice(2, 7)}`, items: basicItems, fields: deriveFieldsFromFirstItem(basicItems) },
+      );
+
+      if (decorateHost) {
+        decorateHost(storyNode);
+      }
+
+      mount.appendChild(storyNode);
+      demo.appendChild(mount);
+
+      const update = async () => {
+        const host = mount.querySelector('table-component');
+        if (host?.componentOnReady) {
+          try {
+            await host.componentOnReady();
+          } catch (_e) {}
+        } else if (window.customElements?.whenDefined) {
+          try {
+            await customElements.whenDefined('table-component');
+          } catch (_e) {}
+        }
+
+        // optional: set table aria-describedby/labelledby via DOM attrs for simulation rows
+        if (typeof storyArgs.__tableAriaDescribedby === 'string') {
+          const tEl = host?.querySelector('table');
+          if (tEl) tEl.setAttribute('aria-describedby', storyArgs.__tableAriaDescribedby);
+        }
+        if (typeof storyArgs.__tableAriaLabelledby === 'string') {
+          const tEl = host?.querySelector('table');
+          if (tEl) tEl.setAttribute('aria-labelledby', storyArgs.__tableAriaLabelledby);
+        }
+
+        pre.textContent = JSON.stringify(pickTableA11y(host, mount), null, 2);
+      };
+
+      queueMicrotask(() => requestAnimationFrame(update));
+
+      box.appendChild(t);
+      box.appendChild(demo);
+      box.appendChild(pre);
+      return box;
+    };
+
+    // Default
+    wrap.appendChild(
+      card('Default', {
+        __id: 'mx-default',
+        striped: true,
+        rowHover: true,
+        sortable: true,
+        responsive: true,
+        size: 'sm',
+      }),
+    );
+
+    // Inline (simulated): external label + describedby
+    wrap.appendChild(
+      card(
+        'Inline (simulated external label + help)',
+        {
+          __id: 'mx-inline',
+          striped: true,
+          responsive: true,
+          size: 'sm',
+          __tableAriaLabelledby: 'mx-inline-label',
+          __tableAriaDescribedby: 'mx-inline-help',
+        },
+        {
+          extraHtml: `
+            <div id="mx-inline-label" style="font-weight:600; margin-bottom:6px;">Inline label (external)</div>
+            <div id="mx-inline-help" style="opacity:.8; margin-bottom:10px;">Help: Use header cells to sort, rows can be selected if enabled.</div>
+          `,
+        },
+      ),
+    );
+
+    // Horizontal (simulated): label column + table column
+    wrap.appendChild(
+      card(
+        'Horizontal (simulated layout)',
+        {
+          __id: 'mx-horizontal',
+          striped: true,
+          responsive: true,
+          size: 'sm',
+          __tableAriaLabelledby: 'mx-horizontal-label',
+        },
+        {
+          extraHtml: `
+            <div style="display:grid; grid-template-columns:220px 1fr; gap:12px; align-items:start; max-width:980px;">
+              <div id="mx-horizontal-label" style="font-weight:600;">Horizontal label area</div>
+              <div></div>
+            </div>
+          `,
+        },
+      ),
+    );
+
+    // Error/validation (simulated): describedby points to error
+    wrap.appendChild(
+      card(
+        'Error / validation (simulated via aria-describedby)',
+        {
+          __id: 'mx-error',
+          striped: true,
+          responsive: true,
+          size: 'sm',
+          __tableAriaDescribedby: 'mx-error-text',
+        },
+        {
+          extraHtml: `
+            <div id="mx-error-text" style="color:#a00; font-size:12px; margin-bottom:10px;">
+              Error: One or more rows are invalid. Review highlighted rows.
+            </div>
+          `,
+        },
+      ),
+    );
+
+    // Disabled (simulated): wrapper aria-disabled + CSS + remove rowHover for clarity
+    wrap.appendChild(
+      card(
+        'Disabled (simulated, non-interactive)',
+        {
+          __id: 'mx-disabled',
+          striped: true,
+          responsive: true,
+          rowHover: false,
+          size: 'sm',
+        },
+        {
+          decorateHost: storyNode => {
+            storyNode.setAttribute('aria-disabled', 'true');
+            storyNode.style.opacity = '0.6';
+            storyNode.style.pointerEvents = 'none';
+          },
+        },
+      ),
+    );
+
+    return wrap;
+  },
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Shows multiple configurations and prints computed accessibility attributes for the rendered native `<table>` element and key descendants. “Inline/horizontal/error/disabled” are simulated patterns using external labels/description elements and wrapper attributes.',
+      },
     },
   },
 };

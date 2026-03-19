@@ -1,41 +1,41 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`plumage-timepicker-component hides the label (sr-only) when "show-label" is omitted 1`] = `
-<plumage-timepicker-component input-id="a1" label-text="Hidden label test">
+exports[`plumage-timepicker-component disabled: disables input/buttons and dropdown stays hidden/inert 1`] = `
+<plumage-timepicker-component disabled="" input-id="tp5">
   <div class="plumage">
     <div class="time-picker-container">
       <div class="mr-2 time-picker">
-        <label class="sr-only" htmlfor="a1" id="time-label">
-          Hidden label test
+        <label class="sr-only" htmlfor="tp5">
+          Enter Time
         </label>
         <div class="timepicker-group">
           <div class="dd-position">
             <div class="input-group">
-              <input aria-controls="time-dropdown" aria-describedby="validation-message" aria-invalid="false" aria-label="Time Picker" aria-labelledby="time-label" class="form-control time-input" id="a1" maxlength="8" name="time" placeholder="Enter Time" role="textbox" type="text" value="00:00:00">
-              <button aria-label="Clear Time" class="clear-button" role="button">
+              <input aria-controls="tp5-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Time Picker" class="form-control time-input" disabled="" id="tp5" maxlength="8" name="time" placeholder="Enter Time" type="text" value="00:00:00">
+              <button aria-label="Clear time" class="clear-button" disabled="" type="button">
                 <i class="fa-times-circle fas"></i>
               </button>
-              <button aria-label="Open Timepicker" class="btn input-group-text time-icon time-icon-btn" role="button" tabindex="0">
+              <button aria-controls="tp5-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Open time picker" class="btn input-group-text time-icon time-icon-btn" disabled="disabled" tabindex="0" type="button">
                 <i class="fa fa-clock"></i>
               </button>
             </div>
             <div class="b-underline" role="presentation">
-              <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
+              <div aria-hidden="true" class="b-focus disabled" role="presentation" style="width: 0; left: 50%;"></div>
             </div>
-            <div aria-labelledby="time-label" class="hidden time-dropdown" role="listbox" tabindex="0">
+            <div aria-modal="false" class="hidden time-dropdown" id="tp5-dropdown" inert="" role="dialog" tabindex="-1" style="pointer-events: none;">
               <div class="time-spinner-wrapper">
                 <div class="time-spinner">
-                  <button aria-label="Increment Hour" class="arrow up" data-type="hour" role="button">
+                  <button aria-label="Increment hour" class="arrow up" data-type="hour" disabled="" type="button">
                     <i class="fa-chevron-up fas"></i>
                   </button>
-                  <span aria-activedescendant="active-hour" aria-selected="false" class="hour-display" id="active-hour" role="option" tabindex="0">
+                  <span aria-label="Hour" aria-valuemax="23" aria-valuemin="0" aria-valuenow="0" aria-valuetext="00" class="hour-display" role="spinbutton" tabindex="-1">
                     00
                   </span>
-                  <button aria-label="Decrement Hour" class="arrow down" data-type="hour" role="button">
+                  <button aria-label="Decrement hour" class="arrow down" data-type="hour" disabled="" type="button">
                     <i class="fa-chevron-down fas"></i>
                   </button>
                 </div>
-                <div class="time-spinner-colon">
+                <div aria-hidden="true" class="time-spinner-colon">
                   <div class="dot">
                     <i class="fa fa-circle"></i>
                   </div>
@@ -44,17 +44,17 @@ exports[`plumage-timepicker-component hides the label (sr-only) when "show-label
                   </div>
                 </div>
                 <div class="time-spinner">
-                  <button aria-label="Increment Minute" class="arrow up" data-type="minute" role="button">
+                  <button aria-label="Increment minute" class="arrow up" data-type="minute" disabled="" type="button">
                     <i class="fa-chevron-up fas"></i>
                   </button>
-                  <span aria-activedescendant="active-minute" aria-selected="false" class="minute-display" id="active-minute" role="option" tabindex="0">
+                  <span aria-label="Minute" aria-valuemax="59" aria-valuemin="0" aria-valuenow="0" aria-valuetext="00" class="minute-display" role="spinbutton" tabindex="-1">
                     00
                   </span>
-                  <button aria-label="Decrement Minute" class="arrow down" data-type="minute" role="button">
+                  <button aria-label="Decrement minute" class="arrow down" data-type="minute" disabled="" type="button">
                     <i class="fa-chevron-down fas"></i>
                   </button>
                 </div>
-                <div class="time-spinner-colon">
+                <div aria-hidden="true" class="time-spinner-colon">
                   <div class="dot">
                     <i class="fa fa-circle"></i>
                   </div>
@@ -63,35 +63,35 @@ exports[`plumage-timepicker-component hides the label (sr-only) when "show-label
                   </div>
                 </div>
                 <div class="time-spinner">
-                  <button aria-label="Increment Second" class="arrow up" data-type="second" role="button">
+                  <button aria-label="Increment second" class="arrow up" data-type="second" disabled="" type="button">
                     <i class="fa-chevron-up fas"></i>
                   </button>
-                  <span aria-activedescendant="active-second" aria-selected="false" class="second-display" id="active-second" role="option" tabindex="0">
+                  <span aria-label="Second" aria-valuemax="59" aria-valuemin="0" aria-valuenow="0" aria-valuetext="00" class="second-display" role="spinbutton" tabindex="-1">
                     00
                   </span>
-                  <button aria-label="Decrement Second" class="arrow down" data-type="second" role="button">
+                  <button aria-label="Decrement second" class="arrow down" data-type="second" disabled="" type="button">
                     <i class="fa-chevron-down fas"></i>
                   </button>
                 </div>
                 <div aria-hidden="true" class="am-pm-spinner hidden time-spinner">
-                  <button aria-label="Increment AM/PM" class="arrow up" data-type="ampm" role="button">
+                  <button aria-label="Toggle AM/PM" class="arrow up" data-type="ampm" disabled="" type="button">
                     <i class="fa-chevron-up fas"></i>
                   </button>
-                  <span aria-activedescendant="active-ampm" aria-selected="false" class="ampm-display" id="active-ampm" role="option" tabindex="0"></span>
-                  <button aria-label="Decrement AM/PM" class="arrow down" data-type="ampm" role="button">
+                  <span aria-label="AM/PM" aria-valuemax="1" aria-valuemin="0" aria-valuenow="0" aria-valuetext="AM" class="ampm-display" role="spinbutton" tabindex="-1"></span>
+                  <button aria-label="Toggle AM/PM" class="arrow down" data-type="ampm" disabled="" type="button">
                     <i class="fa-chevron-down fas"></i>
                   </button>
                 </div>
               </div>
               <div class="time-spinner-close">
-                <button aria-label="Close" class="btn btn-outline-primary btn-sm btntext close-button">
+                <button aria-label="Close" class="btn btn-outline-primary btn-sm btntext close-button" disabled="" type="button">
                   Close
                 </button>
               </div>
             </div>
           </div>
-          <button aria-label="Switch to 12 Hour Format" class="btn btn--outlined toggle-format-btn" role="button">
-            <svg class="format-btn" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <button aria-label="Switch to 12 hour format" class="btn btn--outlined toggle-format-btn" disabled="disabled" type="button">
+            <svg aria-hidden="true" class="format-btn" focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <title>
                 Switch to 12 Hour Format
               </title>
@@ -99,9 +99,9 @@ exports[`plumage-timepicker-component hides the label (sr-only) when "show-label
             </svg>
           </button>
         </div>
-        <div class="hidden validation-message" id="validation-message" role="alert"></div>
-        <div class="hidden warning-message" id="warning-message" role="alert">
-          <i class="fa fa-exclamation-triangle"></i>
+        <div aria-live="polite" class="hidden validation-message" id="tp5-validation" role="alert"></div>
+        <div aria-live="polite" class="hidden warning-message" id="tp5-warning" role="alert">
+          <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>
           Time values cannot exceed the limits.
         </div>
       </div>
@@ -110,42 +110,42 @@ exports[`plumage-timepicker-component hides the label (sr-only) when "show-label
 </plumage-timepicker-component>
 `;
 
-exports[`plumage-timepicker-component shows the label when "show-label" is present and respects label text/id 1`] = `
-<plumage-timepicker-component input-id="my-time" label-text="Pick a time" show-label="">
+exports[`plumage-timepicker-component hides the label (sr-only) when "show-label" is omitted, and uses aria-label (no aria-labelledby) 1`] = `
+<plumage-timepicker-component input-id="a1" label-text="Hidden label test">
   <div class="plumage">
     <div class="time-picker-container">
       <div class="mr-2 time-picker">
-        <label htmlfor="my-time" id="time-label">
-          Pick a time
+        <label class="sr-only" htmlfor="a1">
+          Hidden label test
         </label>
         <div class="timepicker-group">
           <div class="dd-position">
             <div class="input-group">
-              <input aria-controls="time-dropdown" aria-describedby="validation-message" aria-invalid="false" aria-label="Time Picker" aria-labelledby="time-label" class="form-control time-input" id="my-time" maxlength="8" name="time" placeholder="Enter Time" role="textbox" type="text" value="00:00:00">
-              <button aria-label="Clear Time" class="clear-button" role="button">
+              <input aria-controls="a1-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Time Picker" class="form-control time-input" id="a1" maxlength="8" name="time" placeholder="Enter Time" type="text" value="00:00:00">
+              <button aria-label="Clear time" class="clear-button" type="button">
                 <i class="fa-times-circle fas"></i>
               </button>
-              <button aria-label="Open Timepicker" class="btn input-group-text time-icon time-icon-btn" role="button" tabindex="0">
+              <button aria-controls="a1-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Open time picker" class="btn input-group-text time-icon time-icon-btn" tabindex="0" type="button">
                 <i class="fa fa-clock"></i>
               </button>
             </div>
             <div class="b-underline" role="presentation">
               <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
             </div>
-            <div aria-labelledby="time-label" class="hidden time-dropdown" role="listbox" tabindex="0">
+            <div aria-modal="false" class="hidden time-dropdown" id="a1-dropdown" inert="" role="dialog" tabindex="-1" style="pointer-events: none;">
               <div class="time-spinner-wrapper">
                 <div class="time-spinner">
-                  <button aria-label="Increment Hour" class="arrow up" data-type="hour" role="button">
+                  <button aria-label="Increment hour" class="arrow up" data-type="hour" type="button">
                     <i class="fa-chevron-up fas"></i>
                   </button>
-                  <span aria-activedescendant="active-hour" aria-selected="false" class="hour-display" id="active-hour" role="option" tabindex="0">
+                  <span aria-label="Hour" aria-valuemax="23" aria-valuemin="0" aria-valuenow="0" aria-valuetext="00" class="hour-display" role="spinbutton" tabindex="-1">
                     00
                   </span>
-                  <button aria-label="Decrement Hour" class="arrow down" data-type="hour" role="button">
+                  <button aria-label="Decrement hour" class="arrow down" data-type="hour" type="button">
                     <i class="fa-chevron-down fas"></i>
                   </button>
                 </div>
-                <div class="time-spinner-colon">
+                <div aria-hidden="true" class="time-spinner-colon">
                   <div class="dot">
                     <i class="fa fa-circle"></i>
                   </div>
@@ -154,17 +154,17 @@ exports[`plumage-timepicker-component shows the label when "show-label" is prese
                   </div>
                 </div>
                 <div class="time-spinner">
-                  <button aria-label="Increment Minute" class="arrow up" data-type="minute" role="button">
+                  <button aria-label="Increment minute" class="arrow up" data-type="minute" type="button">
                     <i class="fa-chevron-up fas"></i>
                   </button>
-                  <span aria-activedescendant="active-minute" aria-selected="false" class="minute-display" id="active-minute" role="option" tabindex="0">
+                  <span aria-label="Minute" aria-valuemax="59" aria-valuemin="0" aria-valuenow="0" aria-valuetext="00" class="minute-display" role="spinbutton" tabindex="-1">
                     00
                   </span>
-                  <button aria-label="Decrement Minute" class="arrow down" data-type="minute" role="button">
+                  <button aria-label="Decrement minute" class="arrow down" data-type="minute" type="button">
                     <i class="fa-chevron-down fas"></i>
                   </button>
                 </div>
-                <div class="time-spinner-colon">
+                <div aria-hidden="true" class="time-spinner-colon">
                   <div class="dot">
                     <i class="fa fa-circle"></i>
                   </div>
@@ -173,35 +173,35 @@ exports[`plumage-timepicker-component shows the label when "show-label" is prese
                   </div>
                 </div>
                 <div class="time-spinner">
-                  <button aria-label="Increment Second" class="arrow up" data-type="second" role="button">
+                  <button aria-label="Increment second" class="arrow up" data-type="second" type="button">
                     <i class="fa-chevron-up fas"></i>
                   </button>
-                  <span aria-activedescendant="active-second" aria-selected="false" class="second-display" id="active-second" role="option" tabindex="0">
+                  <span aria-label="Second" aria-valuemax="59" aria-valuemin="0" aria-valuenow="0" aria-valuetext="00" class="second-display" role="spinbutton" tabindex="-1">
                     00
                   </span>
-                  <button aria-label="Decrement Second" class="arrow down" data-type="second" role="button">
+                  <button aria-label="Decrement second" class="arrow down" data-type="second" type="button">
                     <i class="fa-chevron-down fas"></i>
                   </button>
                 </div>
                 <div aria-hidden="true" class="am-pm-spinner hidden time-spinner">
-                  <button aria-label="Increment AM/PM" class="arrow up" data-type="ampm" role="button">
+                  <button aria-label="Toggle AM/PM" class="arrow up" data-type="ampm" type="button">
                     <i class="fa-chevron-up fas"></i>
                   </button>
-                  <span aria-activedescendant="active-ampm" aria-selected="false" class="ampm-display" id="active-ampm" role="option" tabindex="0"></span>
-                  <button aria-label="Decrement AM/PM" class="arrow down" data-type="ampm" role="button">
+                  <span aria-label="AM/PM" aria-valuemax="1" aria-valuemin="0" aria-valuenow="0" aria-valuetext="AM" class="ampm-display" role="spinbutton" tabindex="-1"></span>
+                  <button aria-label="Toggle AM/PM" class="arrow down" data-type="ampm" type="button">
                     <i class="fa-chevron-down fas"></i>
                   </button>
                 </div>
               </div>
               <div class="time-spinner-close">
-                <button aria-label="Close" class="btn btn-outline-primary btn-sm btntext close-button">
+                <button aria-label="Close" class="btn btn-outline-primary btn-sm btntext close-button" type="button">
                   Close
                 </button>
               </div>
             </div>
           </div>
-          <button aria-label="Switch to 12 Hour Format" class="btn btn--outlined toggle-format-btn" role="button">
-            <svg class="format-btn" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <button aria-label="Switch to 12 hour format" class="btn btn--outlined toggle-format-btn" type="button">
+            <svg aria-hidden="true" class="format-btn" focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <title>
                 Switch to 12 Hour Format
               </title>
@@ -209,9 +209,234 @@ exports[`plumage-timepicker-component shows the label when "show-label" is prese
             </svg>
           </button>
         </div>
-        <div class="hidden validation-message" id="validation-message" role="alert"></div>
-        <div class="hidden warning-message" id="warning-message" role="alert">
-          <i class="fa fa-exclamation-triangle"></i>
+        <div aria-live="polite" class="hidden validation-message" id="a1-validation" role="alert"></div>
+        <div aria-live="polite" class="hidden warning-message" id="a1-warning" role="alert">
+          <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>
+          Time values cannot exceed the limits.
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-timepicker-component>
+`;
+
+exports[`plumage-timepicker-component required + invalid: sets aria-required + required, sets aria-invalid only when invalid, and wires validation message id 1`] = `
+<plumage-timepicker-component input-id="tp4" is-valid="false" required="" validation="" validation-message="Bad time">
+  <div class="plumage">
+    <div class="time-picker-container">
+      <div class="mr-2 time-picker">
+        <label class="invalid sr-only" htmlfor="tp4">
+          Enter Time
+          <span class="required">
+            *
+          </span>
+        </label>
+        <div class="timepicker-group">
+          <div class="dd-position">
+            <div class="input-group">
+              <input aria-controls="tp4-dropdown" aria-describedby="tp4-validation" aria-expanded="false" aria-haspopup="dialog" aria-invalid="true" aria-label="Time Picker" aria-required="true" class="form-control is-invalid time-input" id="tp4" maxlength="8" name="time" placeholder="Enter Time" required="" type="text" value="00:00:00">
+              <button aria-label="Clear time" class="clear-button invalid" type="button">
+                <i class="fa-times-circle fas"></i>
+              </button>
+              <button aria-controls="tp4-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Open time picker" class="btn input-group-text invalid time-icon time-icon-btn" disabled="disabled" tabindex="0" type="button">
+                <i class="fa fa-clock"></i>
+              </button>
+            </div>
+            <div class="b-underline invalid" role="presentation">
+              <div aria-hidden="true" class="b-focus invalid" role="presentation" style="width: 0; left: 50%;"></div>
+            </div>
+            <div aria-describedby="tp4-validation" aria-modal="false" class="hidden time-dropdown" id="tp4-dropdown" inert="" role="dialog" tabindex="-1" style="pointer-events: none;">
+              <div class="time-spinner-wrapper">
+                <div class="time-spinner">
+                  <button aria-label="Increment hour" class="arrow up" data-type="hour" type="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-label="Hour" aria-valuemax="23" aria-valuemin="0" aria-valuenow="0" aria-valuetext="00" class="hour-display" role="spinbutton" tabindex="-1">
+                    00
+                  </span>
+                  <button aria-label="Decrement hour" class="arrow down" data-type="hour" type="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+                <div aria-hidden="true" class="time-spinner-colon">
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                </div>
+                <div class="time-spinner">
+                  <button aria-label="Increment minute" class="arrow up" data-type="minute" type="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-label="Minute" aria-valuemax="59" aria-valuemin="0" aria-valuenow="0" aria-valuetext="00" class="minute-display" role="spinbutton" tabindex="-1">
+                    00
+                  </span>
+                  <button aria-label="Decrement minute" class="arrow down" data-type="minute" type="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+                <div aria-hidden="true" class="time-spinner-colon">
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                </div>
+                <div class="time-spinner">
+                  <button aria-label="Increment second" class="arrow up" data-type="second" type="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-label="Second" aria-valuemax="59" aria-valuemin="0" aria-valuenow="0" aria-valuetext="00" class="second-display" role="spinbutton" tabindex="-1">
+                    00
+                  </span>
+                  <button aria-label="Decrement second" class="arrow down" data-type="second" type="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+                <div aria-hidden="true" class="am-pm-spinner hidden time-spinner">
+                  <button aria-label="Toggle AM/PM" class="arrow up" data-type="ampm" type="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-label="AM/PM" aria-valuemax="1" aria-valuemin="0" aria-valuenow="0" aria-valuetext="AM" class="ampm-display" role="spinbutton" tabindex="-1"></span>
+                  <button aria-label="Toggle AM/PM" class="arrow down" data-type="ampm" type="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="time-spinner-close">
+                <button aria-label="Close" class="btn btn-outline-primary btn-sm btntext close-button" type="button">
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+          <button aria-label="Switch to 12 hour format" class="btn btn--outlined toggle-format-btn" disabled="disabled" type="button">
+            <svg aria-hidden="true" class="format-btn" focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>
+                Switch to 12 Hour Format
+              </title>
+              <path d="M13 2V4C17 4.5 20 7.8 20 11.9C20 15.1 18.1 17.9 15.3 19.2L13 17V22H18L16.8 20.8C19.9 19.1 22 15.8 22 12C22 6.8 18 2.5 13 2M11 2C9.1 2.2 7.2 3 5.7 4.2L7.1 5.6C8.2 4.8 9.6 4.2 11 4V2M4.2 5.7C3 7.2 2.2 9.1 2 11H4C4.2 9.6 4.8 8.2 5.6 7.1L4.2 5.7M2 13C2.2 14.9 3 16.8 4.2 18.3L5.6 16.9C4.8 15.8 4.2 14.4 4 13H2M7.1 18.4L5.7 19.8C7.2 21 9.1 21.8 11 22V20C9.6 19.8 8.2 19.2 7.1 18.4M12 8V10H15V11H14C12.9 11 12 11.9 12 13V16H17V14H14V13H15C16.1 13 17 12.1 17 11V10C17 8.9 16.1 8 15 8H12M7 8V10H8V16H10V8H7Z"></path>
+            </svg>
+          </button>
+        </div>
+        <div aria-live="polite" class="validation-message" id="tp4-validation" role="alert">
+          Bad time
+        </div>
+        <div aria-live="polite" class="hidden warning-message" id="tp4-warning" role="alert">
+          <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>
+          Time values cannot exceed the limits.
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-timepicker-component>
+`;
+
+exports[`plumage-timepicker-component shows the label when "show-label" is present and wires label/id a11y (auto label id + dropdown id) 1`] = `
+<plumage-timepicker-component input-id="my-time" label-text="Pick a time" show-label="">
+  <div class="plumage">
+    <div class="time-picker-container">
+      <div class="mr-2 time-picker">
+        <label htmlfor="my-time" id="my-time-label">
+          Pick a time
+        </label>
+        <div class="timepicker-group">
+          <div class="dd-position">
+            <div class="input-group">
+              <input aria-controls="my-time-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-labelledby="my-time-label" class="form-control time-input" id="my-time" maxlength="8" name="time" placeholder="Enter Time" type="text" value="00:00:00">
+              <button aria-label="Clear time" class="clear-button" type="button">
+                <i class="fa-times-circle fas"></i>
+              </button>
+              <button aria-controls="my-time-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Open time picker" class="btn input-group-text time-icon time-icon-btn" tabindex="0" type="button">
+                <i class="fa fa-clock"></i>
+              </button>
+            </div>
+            <div class="b-underline" role="presentation">
+              <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
+            </div>
+            <div aria-labelledby="my-time-label" aria-modal="false" class="hidden time-dropdown" id="my-time-dropdown" inert="" role="dialog" tabindex="-1" style="pointer-events: none;">
+              <div class="time-spinner-wrapper">
+                <div class="time-spinner">
+                  <button aria-label="Increment hour" class="arrow up" data-type="hour" type="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-label="Hour" aria-valuemax="23" aria-valuemin="0" aria-valuenow="0" aria-valuetext="00" class="hour-display" role="spinbutton" tabindex="-1">
+                    00
+                  </span>
+                  <button aria-label="Decrement hour" class="arrow down" data-type="hour" type="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+                <div aria-hidden="true" class="time-spinner-colon">
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                </div>
+                <div class="time-spinner">
+                  <button aria-label="Increment minute" class="arrow up" data-type="minute" type="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-label="Minute" aria-valuemax="59" aria-valuemin="0" aria-valuenow="0" aria-valuetext="00" class="minute-display" role="spinbutton" tabindex="-1">
+                    00
+                  </span>
+                  <button aria-label="Decrement minute" class="arrow down" data-type="minute" type="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+                <div aria-hidden="true" class="time-spinner-colon">
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                  <div class="dot">
+                    <i class="fa fa-circle"></i>
+                  </div>
+                </div>
+                <div class="time-spinner">
+                  <button aria-label="Increment second" class="arrow up" data-type="second" type="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-label="Second" aria-valuemax="59" aria-valuemin="0" aria-valuenow="0" aria-valuetext="00" class="second-display" role="spinbutton" tabindex="-1">
+                    00
+                  </span>
+                  <button aria-label="Decrement second" class="arrow down" data-type="second" type="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+                <div aria-hidden="true" class="am-pm-spinner hidden time-spinner">
+                  <button aria-label="Toggle AM/PM" class="arrow up" data-type="ampm" type="button">
+                    <i class="fa-chevron-up fas"></i>
+                  </button>
+                  <span aria-label="AM/PM" aria-valuemax="1" aria-valuemin="0" aria-valuenow="0" aria-valuetext="AM" class="ampm-display" role="spinbutton" tabindex="-1"></span>
+                  <button aria-label="Toggle AM/PM" class="arrow down" data-type="ampm" type="button">
+                    <i class="fa-chevron-down fas"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="time-spinner-close">
+                <button aria-label="Close" class="btn btn-outline-primary btn-sm btntext close-button" type="button">
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+          <button aria-label="Switch to 12 hour format" class="btn btn--outlined toggle-format-btn" type="button">
+            <svg aria-hidden="true" class="format-btn" focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>
+                Switch to 12 Hour Format
+              </title>
+              <path d="M13 2V4C17 4.5 20 7.8 20 11.9C20 15.1 18.1 17.9 15.3 19.2L13 17V22H18L16.8 20.8C19.9 19.1 22 15.8 22 12C22 6.8 18 2.5 13 2M11 2C9.1 2.2 7.2 3 5.7 4.2L7.1 5.6C8.2 4.8 9.6 4.2 11 4V2M4.2 5.7C3 7.2 2.2 9.1 2 11H4C4.2 9.6 4.8 8.2 5.6 7.1L4.2 5.7M2 13C2.2 14.9 3 16.8 4.2 18.3L5.6 16.9C4.8 15.8 4.2 14.4 4 13H2M7.1 18.4L5.7 19.8C7.2 21 9.1 21.8 11 22V20C9.6 19.8 8.2 19.2 7.1 18.4M12 8V10H15V11H14C12.9 11 12 11.9 12 13V16H17V14H14V13H15C16.1 13 17 12.1 17 11V10C17 8.9 16.1 8 15 8H12M7 8V10H8V16H10V8H7Z"></path>
+            </svg>
+          </button>
+        </div>
+        <div aria-live="polite" class="hidden validation-message" id="my-time-validation" role="alert"></div>
+        <div aria-live="polite" class="hidden warning-message" id="my-time-warning" role="alert">
+          <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>
           Time values cannot exceed the limits.
         </div>
       </div>

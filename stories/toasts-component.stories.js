@@ -72,6 +72,21 @@ const safeShowToast = async (el, opts) => {
   }
 };
 
+// Clear existing toasts in a host (best-effort; uses public API removeToast)
+const safeClearToasts = async (el) => {
+  if (!el) return;
+  await whenReady(el);
+
+  try {
+    const ids = Array.from(el.querySelectorAll('[data-toast-id]'))
+      .map((n) => Number(n.getAttribute('data-toast-id')))
+      .filter((n) => Number.isFinite(n));
+    await Promise.all(ids.map((id) => el.removeToast?.(id)));
+  } catch (_e) {
+    // no-op
+  }
+};
+
 /* -----------------------------
  Docs helpers (DISPLAY code only)
 ------------------------------ */
@@ -145,6 +160,14 @@ const buildToastOptions = (args) => {
   };
 };
 
+// ✅ Storybook preview MUST NOT auto-dismiss.
+// We force persistence and an effectively-infinite duration for autoplay-rendered toasts.
+const buildPreviewToastOptions = (args) => ({
+  ...buildToastOptions(args),
+  persistent: true,
+  duration: 2147483647, // ~24.8 days; effectively "never" for Storybook sessions
+});
+
 const applyHostProps = (host, args, overrides = {}) => {
   const a = { ...args, ...overrides };
 
@@ -155,6 +178,13 @@ const applyHostProps = (host, args, overrides = {}) => {
   setAttr(host, 'append-toast', !!a.appendToast);
   setAttr(host, 'no-animation', !!a.noAnimation);
   setAttr(host, 'no-hover-pause', !!a.noHoverPause);
+
+  // ✅ NEW component props
+  setAttr(host, 'aria-label', a.ariaLabel || 'Notifications');
+  setAttr(host, 'focus-on-show', !!a.focusOnShow);
+
+  // ✅ Ensure host default toasts never auto-dismiss (even if opts omit persistent)
+  setAttr(host, 'persistent', true);
 
   return a;
 };
@@ -172,12 +202,28 @@ export default {
       page: DocsPage,
       description: {
         component:
-          'Visual styling previews for `<toasts-component>`. Stories are controls-driven. A small autoplay runs to render example toasts so you can see styles; it re-runs when controls change.',
+          'Visual styling previews for `<toasts-component>`. Stories are controls-driven. A small autoplay runs to render example toasts so you can see styles; it re-runs when controls change. Previews are configured to keep toasts visible (no auto-dismiss) in both Canvas and Docs.',
       },
     },
   },
 
   argTypes: {
+    /* -----------------------------
+     Accessibility
+    ------------------------------ */
+    ariaLabel: {
+      control: 'text',
+      name: 'aria-label',
+      table: { category: 'Accessibility' },
+      description: 'Accessible label for the toaster region (role="region"). Example: "Notifications".',
+    },
+    focusOnShow: {
+      control: 'boolean',
+      name: 'focus-on-show',
+      table: { category: 'Accessibility', defaultValue: { summary: false } },
+      description: 'If true, newly shown toast content receives focus (use sparingly; may steal focus).',
+    },
+
     additionalHeaderContent: {
       control: 'text',
       name: 'additional-header-content',
@@ -200,7 +246,7 @@ export default {
     duration: {
       control: 'number',
       table: { category: 'Toast Options', defaultValue: { summary: 5000 } },
-      description: 'Duration in milliseconds before the toast automatically dismisses. Default is 5000.',
+      description: 'Duration in milliseconds before the toast automatically dismisses. (Preview forces persistence.)',
     },
     headerClass: {
       control: 'text',
@@ -218,7 +264,7 @@ export default {
       control: 'boolean',
       name: 'is-status',
       table: { category: 'Toast Options', defaultValue: { summary: false } },
-      description: 'When true, the toast is announced as a status update (aria-live="polite").',
+      description: 'When true, the toast is announced as a status update (polite). When false, as an alert (assertive).',
     },
     position: {
       control: 'select',
@@ -261,7 +307,8 @@ export default {
       control: 'boolean',
       name: 'persistent',
       table: { category: 'Toast Options', defaultValue: { summary: false } },
-      description: 'When true, the toast will not auto-dismiss and requires user interaction to close.',
+      description:
+        'When true, the toast will not auto-dismiss and requires user interaction to close. (Preview forces persistence.)',
     },
     plumageToast: {
       control: 'boolean',
@@ -283,10 +330,20 @@ export default {
     },
     svgIcon: {
       control: 'select',
-      options: ['', 'exclamation-triangle-outline', 'exclamation-circle-fill', 'exclamation-circle-outline', 'exclamation-triangle-fill', 'check-circle-fill', 'check-circle-outline', 'info-fill', 'info-outline'],
+      options: [
+        '',
+        'exclamation-triangle-outline',
+        'exclamation-circle-fill',
+        'exclamation-circle-outline',
+        'exclamation-triangle-fill',
+        'check-circle-fill',
+        'check-circle-outline',
+        'info-fill',
+        'info-outlined',
+      ],
       name: 'svg-icon',
       table: { category: 'Toast Options' },
-      description: 'Name of the SVG icon to display (e.g., "exclamation-triangle-outline").',
+      description: 'Name of the SVG icon to display (must be in the component icon registry).',
     },
     time: {
       control: 'text',
@@ -298,7 +355,7 @@ export default {
       control: 'text',
       name: 'toast-id',
       table: { category: 'Toast Options' },
-      description: 'Optional ID for the toast, useful for programmatic control (e.g., dismissal).',
+      description: 'Optional ID prefix used to generate stable element ids for each toast instance.',
     },
     toastTitle: {
       control: 'text',
@@ -308,14 +365,17 @@ export default {
     },
     variant: {
       control: 'select',
-      options: ['', 'primary', 'secondary', 'success', 'danger', 'warning', 'info'],
+      options: ['', 'primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark', 'light'],
       table: { category: 'Toast Options' },
       description:
-        "Visual variant of the toast, mapped to the toast option `variantClass` ('primary', 'secondary', 'success', 'danger', 'warning', 'info').",
+        "Visual variant of the toast, mapped to the toast option `variantClass` ('primary', 'secondary', 'success', 'danger', 'warning', 'info', ...).",
     },
   },
 
   args: {
+    ariaLabel: 'Notifications',
+    focusOnShow: false,
+
     additionalHeaderContent: '43 seconds ago',
     bodyClass: '',
     customContent: '',
@@ -327,7 +387,7 @@ export default {
     noAnimation: false,
     noCloseButton: false,
     noHoverPause: false,
-    persistent: true,
+    persistent: true, // ✅ default true, and preview is forced true anyway
 
     position: 'top-right',
     solidToast: false,
@@ -371,9 +431,10 @@ export const DefaultToast = {
     section.append(label, host);
     wrap.append(section);
 
-    runOnArgsChange(`${context.id}::DefaultToast`, args, async () => {
+    runOnArgsChange(`${context.id}::DefaultToast`, { ...args, __viewMode: context.viewMode }, async () => {
       const t = document.getElementById(ids.host);
-      await safeShowToast(t, buildToastOptions(args));
+      await safeClearToasts(t);
+      await safeShowToast(t, buildPreviewToastOptions(args));
     });
 
     return wrap;
@@ -386,7 +447,7 @@ export const DefaultToast = {
         transform: (_code, ctx) => {
           const ids = makeIds({ host: 'defaultToastHost' }, ctx);
           const a = ctx?.args || {};
-          const opts = buildToastOptions(a);
+          const opts = buildPreviewToastOptions(a);
 
           const html = normalize(`
 <div class="cwrapper">
@@ -394,6 +455,9 @@ export const DefaultToast = {
     <div style="margin-bottom: 8px; font-size: 0.75rem">Default toast styling preview:</div>
     <toasts-component
       id="${ids.host}"
+      ${valueAttr('aria-label', a.ariaLabel || 'Notifications')}
+      ${truthyAttr('focus-on-show', !!a.focusOnShow)}
+      ${truthyAttr('persistent', true)}
       ${valueAttr('position', a.position || '')}
       ${truthyAttr('solid-toast', !!a.solidToast)}
       ${truthyAttr('plumage-toast', !!a.plumageToast)}
@@ -449,20 +513,19 @@ export const DefaultVariantColors = {
     const host = document.createElement(TAG);
     host.id = ids.host;
 
-    // Force appendToast on for stacking preview
     applyHostProps(host, args, { appendToast: true });
 
     section.append(label, host);
     wrap.append(section);
 
-    runOnArgsChange(`${context.id}::DefaultVariantColors`, args, async () => {
+    runOnArgsChange(`${context.id}::DefaultVariantColors`, { ...args, __viewMode: context.viewMode }, async () => {
       const t = document.getElementById(ids.host);
+      await safeClearToasts(t);
 
       const base = {
-        ...buildToastOptions(args),
+        ...buildPreviewToastOptions(args),
         toastTitle: args.toastTitle || 'Title Text',
         additionalHdrContent: args.additionalHeaderContent || '43 seconds ago',
-        persistent: true,
       };
 
       await safeShowToast(t, { ...base, content: 'Primary variant', variantClass: 'primary' });
@@ -478,45 +541,6 @@ export const DefaultVariantColors = {
 
   parameters: {
     docs: {
-      source: {
-        language: 'html',
-        transform: (_code, ctx) => {
-          const ids = makeIds({ host: 'defaultVariantsHost' }, ctx);
-          const a = { ...(ctx?.args || {}), appendToast: true };
-
-          const base = {
-            ...buildToastOptions(a),
-            toastTitle: a.toastTitle || 'Title Text',
-            additionalHdrContent: a.additionalHeaderContent || '43 seconds ago',
-            persistent: true,
-          };
-
-          const html = normalize(`
-<div class="cwrapper">
-  <section class="display-box-demo">
-    <div style="margin-bottom: 8px; font-size: 0.75rem">Default variants stacked into one host:</div>
-    <toasts-component
-      id="${ids.host}"
-      ${valueAttr('position', a.position || '')}
-      append-toast
-    ></toasts-component>
-  </section>
-</div>
-          `);
-
-          const js = jsPreviewBlock([
-            `const t = document.getElementById('${ids.host}');`,
-            `t && t.showToast(${JSON.stringify({ ...base, content: 'Primary variant', variantClass: 'primary' }, null, 2)});`,
-            `t && t.showToast(${JSON.stringify({ ...base, content: 'Secondary variant', variantClass: 'secondary' }, null, 2)});`,
-            `t && t.showToast(${JSON.stringify({ ...base, content: 'Danger variant', variantClass: 'danger' }, null, 2)});`,
-            `t && t.showToast(${JSON.stringify({ ...base, content: 'Warning variant', variantClass: 'warning' }, null, 2)});`,
-            `t && t.showToast(${JSON.stringify({ ...base, content: 'Success variant', variantClass: 'success' }, null, 2)});`,
-            `t && t.showToast(${JSON.stringify({ ...base, content: 'Info variant', variantClass: 'info' }, null, 2)});`,
-          ]);
-
-          return docsCode(html, js);
-        },
-      },
       story: { height: '380px' },
       description: {
         story:
@@ -537,7 +561,8 @@ export const SolidToast = {
     plumageToast: false,
     plumageToastMax: false,
     appendToast: true,
-    position: 'bottom-right',
+    variant: 'info',
+    position: 'top-right',
   },
   render: (args, context) => {
     const ids = makeIds({ host: 'solidToastHost' }, context);
@@ -561,11 +586,12 @@ export const SolidToast = {
     section.append(label, host);
     wrap.append(section);
 
-    runOnArgsChange(`${context.id}::SolidToast`, args, async () => {
+    runOnArgsChange(`${context.id}::SolidToast`, { ...args, __viewMode: context.viewMode }, async () => {
       const t = document.getElementById(ids.host);
+      await safeClearToasts(t);
 
       const opts = {
-        ...buildToastOptions(args),
+        ...buildPreviewToastOptions(args),
         toastTitle: args.toastTitle || 'Solid Toast',
         content: args.message || 'This is a solid toast example!',
         variantClass: args.variant || '',
@@ -623,14 +649,13 @@ export const SolidVariantColors = {
     section.append(label, host);
     wrap.append(section);
 
-    runOnArgsChange(`${context.id}::SolidVariantColors`, args, async () => {
+    runOnArgsChange(`${context.id}::SolidVariantColors`, { ...args, __viewMode: context.viewMode }, async () => {
       const t = document.getElementById(ids.host);
+      await safeClearToasts(t);
 
       const base = {
-        ...buildToastOptions(args),
+        ...buildPreviewToastOptions(args),
         toastTitle: args.toastTitle || 'Solid Toast',
-        duration: Number.isFinite(args.duration) ? args.duration : 7000,
-        persistent: true,
       };
 
       await safeShowToast(t, { ...base, content: 'Primary solid variant', variantClass: 'primary' });
@@ -646,50 +671,9 @@ export const SolidVariantColors = {
 
   parameters: {
     docs: {
-      source: {
-        language: 'html',
-        transform: (_code, ctx) => {
-          const ids = makeIds({ host: 'solidVariantsHost' }, ctx);
-          const a = { ...(ctx?.args || {}), solidToast: true, appendToast: true };
-
-          const base = {
-            ...buildToastOptions(a),
-            toastTitle: a.toastTitle || 'Solid Toast',
-            duration: Number.isFinite(a.duration) ? a.duration : 7000,
-            persistent: true,
-          };
-
-          const html = normalize(`
-<div class="cwrapper">
-  <section class="display-box-demo">
-    <div style="margin-bottom: 8px; font-size: 0.75rem">Solid variants stacked into one host:</div>
-    <toasts-component
-      id="${ids.host}"
-      solid-toast
-      ${valueAttr('position', a.position || '')}
-      append-toast
-    ></toasts-component>
-  </section>
-</div>
-          `);
-
-          const js = jsPreviewBlock([
-            `const t = document.getElementById('${ids.host}');`,
-            `t && t.showToast(${JSON.stringify({ ...base, content: 'Primary solid variant', variantClass: 'primary' }, null, 2)});`,
-            `t && t.showToast(${JSON.stringify({ ...base, content: 'Secondary solid variant', variantClass: 'secondary' }, null, 2)});`,
-            `t && t.showToast(${JSON.stringify({ ...base, content: 'Danger solid variant', variantClass: 'danger' }, null, 2)});`,
-            `t && t.showToast(${JSON.stringify({ ...base, content: 'Warning solid variant', variantClass: 'warning' }, null, 2)});`,
-            `t && t.showToast(${JSON.stringify({ ...base, content: 'Success solid variant', variantClass: 'success' }, null, 2)});`,
-            `t && t.showToast(${JSON.stringify({ ...base, content: 'Info solid variant', variantClass: 'info' }, null, 2)});`,
-          ]);
-
-          return docsCode(html, js);
-        },
-      },
       story: { height: '380px' },
       description: {
-        story:
-          'Solid variants stacked into a single host so you can compare solid styling across all variants.',
+        story: 'Solid variants stacked into a single host so you can compare solid styling across all variants.',
       },
     },
   },
@@ -734,11 +718,12 @@ export const PlumageToast = {
     section.append(label, host);
     wrap.append(section);
 
-    runOnArgsChange(`${context.id}::PlumageToast`, args, async () => {
+    runOnArgsChange(`${context.id}::PlumageToast`, { ...args, __viewMode: context.viewMode }, async () => {
       const t = document.getElementById(ids.host);
+      await safeClearToasts(t);
 
       const opts = {
-        ...buildToastOptions(args),
+        ...buildPreviewToastOptions(args),
         toastTitle: args.toastTitle || 'Plumage Toast',
         content: args.message || 'This is a Plumage styled toast example!',
         variantClass: args.variant || 'info',
@@ -754,8 +739,7 @@ export const PlumageToast = {
     docs: {
       story: { height: '220px' },
       description: {
-        story:
-          'The "Plumage" variant offers a modern and clean design using Plumage-specific styling.',
+        story: 'The "Plumage" variant offers a modern and clean design using Plumage-specific styling.',
       },
     },
   },
@@ -800,13 +784,13 @@ export const PlumageToastMax = {
     section.append(label, host);
     wrap.append(section);
 
-    runOnArgsChange(`${context.id}::PlumageToastMax`, args, async () => {
+    runOnArgsChange(`${context.id}::PlumageToastMax`, { ...args, __viewMode: context.viewMode }, async () => {
       const t = document.getElementById(ids.host);
+      await safeClearToasts(t);
 
       const opts = {
-        ...buildToastOptions(args),
+        ...buildPreviewToastOptions(args),
         toastTitle: args.toastTitle || 'Plumage Toast Max',
-        // prefer customContent for max
         ...buildToastContent(args),
         variantClass: args.variant || 'danger',
       };
@@ -823,6 +807,229 @@ export const PlumageToastMax = {
       description: {
         story:
           'The "Plumage Max" variant is designed for more prominent notifications, featuring larger content and a more prominent layout.',
+      },
+    },
+  },
+};
+
+/* =========================================================
+   7) Accessibility Matrix (computed) — PRINT ONLY (NO TOASTS)
+   ========================================================= */
+
+export const AccessibilityMatrix = {
+  name: 'Accessibility Matrix (computed)',
+  render: (_args, context) => {
+    const ids = makeIds(
+      {
+        s_default: 'mxDefault',
+        s_inline: 'mxInline',
+        s_horizontal: 'mxHorizontal',
+        s_error: 'mxError',
+        s_disabled: 'mxDisabled',
+      },
+      context,
+    );
+
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '16px';
+    wrap.style.maxWidth = '980px';
+
+    const header = document.createElement('div');
+    header.innerHTML = `
+      <strong>Accessibility matrix</strong>
+      <div style="opacity:.8">
+        Prints computed a11y wiring for the toaster region and the toast template (derived ids, roles, aria-*),
+        without rendering any actual toast UI.
+      </div>
+    `;
+    wrap.appendChild(header);
+
+    const makeCard = (title) => {
+      const box = document.createElement('div');
+      box.style.border = '1px solid #ddd';
+      box.style.borderRadius = '10px';
+      box.style.padding = '12px';
+      box.style.display = 'grid';
+      box.style.gap = '10px';
+
+      const t = document.createElement('div');
+      t.style.fontWeight = '600';
+      t.textContent = title;
+
+      const pre = document.createElement('pre');
+      pre.style.margin = '0';
+      pre.style.padding = '10px';
+      pre.style.borderRadius = '8px';
+      pre.style.overflow = 'auto';
+      pre.style.border = '1px solid #eee';
+      pre.style.background = '#fafafa';
+      pre.textContent = 'Loading…';
+
+      box.appendChild(t);
+      box.appendChild(pre);
+      return { box, pre };
+    };
+
+    const compute = (cfg) => {
+      const toastId = cfg.toastId || 'mx';
+
+      // This mirrors the component’s id derivation helpers:
+      // outer/title/body/content/close
+      const outerId = `${toastId}__toast_${cfg.exampleToastNumericId}__outer`;
+      const contentId = `${toastId}__toast_${cfg.exampleToastNumericId}__content`;
+      const titleId = `${toastId}__toast_${cfg.exampleToastNumericId}__title`;
+      const bodyId = `${toastId}__toast_${cfg.exampleToastNumericId}__body`;
+      const closeId = `${toastId}__toast_${cfg.exampleToastNumericId}__close`;
+
+      const role = cfg.isStatus ? 'status' : 'alert';
+
+      return {
+        scenario: cfg.scenario,
+        region: {
+          role: 'region',
+          ariaLabel: cfg.ariaLabel || 'Notifications',
+          ariaRelevant: 'additions text',
+          ariaAtomic: 'false',
+          id: `toaster-${cfg.position}`,
+          class: `${cfg.plumageToast ? 'pl-toaster' : 'toaster'} toaster-${cfg.position}`,
+        },
+        exampleToast: {
+          dataToastId: String(cfg.exampleToastNumericId),
+          outerId,
+          role,
+          ariaAtomic: 'true',
+          ariaLabelledby: cfg.toastTitle ? titleId : undefined,
+          ariaDescribedby: bodyId,
+          focusTargetId: contentId,
+          closeButton: cfg.noCloseButton
+            ? null
+            : {
+                id: closeId,
+                ariaLabel: cfg.toastTitle ? `Close ${cfg.toastTitle}` : 'Close notification',
+                ariaControls: outerId,
+              },
+          derivedIds: { outerId, contentId, titleId, bodyId, closeId },
+        },
+        props: {
+          position: cfg.position,
+          solidToast: !!cfg.solidToast,
+          plumageToast: !!cfg.plumageToast,
+          plumageToastMax: !!cfg.plumageToastMax,
+          appendToast: !!cfg.appendToast,
+          noAnimation: !!cfg.noAnimation,
+          noHoverPause: !!cfg.noHoverPause,
+          focusOnShow: !!cfg.focusOnShow,
+        },
+        notes: [
+          'No live-region aria-live on the region itself; each toast uses role=status/alert which implies polite/assertive announcements.',
+          'Toast outer uses aria-labelledby (title) + aria-describedby (body) for an explicit accessible name/description.',
+          'Escape closes a toast when focus is within the toast (component-level keydown handler).',
+        ],
+      };
+    };
+
+    const c1 = makeCard('Default (standard toast)');
+    const c2 = makeCard('Inline (external label/help scenario)');
+    const c3 = makeCard('Horizontal (simulated layout)');
+    const c4 = makeCard('Error/validation (danger alert)');
+    const c5 = makeCard('Disabled (simulated: no close button)');
+
+    wrap.appendChild(c1.box);
+    wrap.appendChild(c2.box);
+    wrap.appendChild(c3.box);
+    wrap.appendChild(c4.box);
+    wrap.appendChild(c5.box);
+
+    queueMicrotask(() => {
+      const base = {
+        ariaLabel: 'Notifications',
+        toastId: 'mx',
+        exampleToastNumericId: 12345, // stable sample id for the matrix
+        toastTitle: 'Notice',
+        isStatus: false,
+        noCloseButton: false,
+        position: 'top-right',
+        solidToast: false,
+        plumageToast: false,
+        plumageToastMax: false,
+        appendToast: true,
+        noAnimation: true,
+        noHoverPause: false,
+        focusOnShow: false,
+      };
+
+      c1.pre.textContent = JSON.stringify(
+        compute({
+          ...base,
+          scenario: 'default',
+        }),
+        null,
+        2,
+      );
+
+      c2.pre.textContent = JSON.stringify(
+        compute({
+          ...base,
+          scenario: 'inline',
+          position: 'top-left',
+          toastId: 'mx-inline',
+          toastTitle: 'Inline notice',
+          notes: [
+            ...compute(base).notes,
+            'In an "inline" layout, the visual label/help are outside the component, but the region still uses aria-label and each toast still uses labelledby/describedby.',
+          ],
+        }),
+        null,
+        2,
+      );
+
+      c3.pre.textContent = JSON.stringify(
+        compute({
+          ...base,
+          scenario: 'horizontal',
+          position: 'bottom-left',
+          toastId: 'mx-horizontal',
+          toastTitle: 'Horizontal notice',
+        }),
+        null,
+        2,
+      );
+
+      c4.pre.textContent = JSON.stringify(
+        compute({
+          ...base,
+          scenario: 'error/validation',
+          position: 'bottom-right',
+          toastId: 'mx-error',
+          toastTitle: 'Error',
+          isStatus: false,
+        }),
+        null,
+        2,
+      );
+
+      c5.pre.textContent = JSON.stringify(
+        compute({
+          ...base,
+          scenario: 'disabled (simulated)',
+          toastId: 'mx-disabled',
+          solidToast: true,
+          noCloseButton: true,
+        }),
+        null,
+        2,
+      );
+    });
+
+    return wrap;
+  },
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Print-only accessibility matrix (no toast UI is rendered). It mirrors the component’s derived ids and aria/role model so you can verify wiring without overlays.',
       },
     },
   },

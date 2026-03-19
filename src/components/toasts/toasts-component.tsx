@@ -1,5 +1,5 @@
 // src/components/toasts/toasts-component.tsx
-import { Component, h, Prop, State, Method, Element } from '@stencil/core';
+import { Component, h, Prop, State, Method, Element, Listen, Fragment } from '@stencil/core';
 
 export type ToastVariant = '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark' | 'light';
 export type ToastPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
@@ -90,7 +90,13 @@ export class ToastsComponent {
 
   @Prop() headerClass?: string;
   @Prop() bodyClass?: string;
+
+  /**
+   * When true, toasts announce politely as “status” by default.
+   * When false, toasts announce assertively as “alert” by default.
+   */
   @Prop() isStatus: boolean = false;
+
   @Prop() noCloseButton: boolean = false;
   @Prop() iconPlumageStyle: boolean = false;
   @Prop() toastTitle?: string;
@@ -98,6 +104,18 @@ export class ToastsComponent {
   @Prop() additionalHeaderContent?: any;
   @Prop() customContent?: any;
   @Prop() time: string = ToastsComponent.getCurrentZuluTime();
+
+  /**
+   * Accessible label for the toaster region (screen readers).
+   * Keep short and meaningful (“Notifications”, “Messages”, etc.)
+   */
+  @Prop({ attribute: 'aria-label' }) ariaLabel: string = 'Notifications';
+
+  /**
+   * If true, when a toast is shown it will be focused (useful for critical messaging).
+   * Defaults to false to avoid stealing focus.
+   */
+  @Prop() focusOnShow: boolean = false;
 
   @State() private toasts: ToastItem[] = [];
 
@@ -138,6 +156,14 @@ export class ToastsComponent {
       () => {
         toast.state = 'show';
         this.toasts = [...this.toasts];
+
+        // optional focus for critical toasts
+        if (this.focusOnShow) {
+          requestAnimationFrame(() => {
+            const el = this.host.querySelector<HTMLElement>(`#${CSS.escape(this.getToastContentId(toast.id))}`);
+            el?.focus();
+          });
+        }
       },
       this.noAnimation ? 0 : 10,
     );
@@ -166,6 +192,25 @@ export class ToastsComponent {
   @Method()
   async removeToast(id: number): Promise<void> {
     this.toasts = this.toasts.filter((t) => t.id !== id);
+  }
+
+  // ---------- Keyboard: ESC closes the focused toast ----------
+  @Listen('keydown')
+  onKeyDown(ev: KeyboardEvent) {
+    if (ev.key !== 'Escape') return;
+
+    const target = ev.target as HTMLElement | null;
+    if (!target) return;
+
+    const toastEl = target.closest?.('[data-toast-id]') as HTMLElement | null;
+    if (!toastEl) return;
+
+    const idStr = toastEl.getAttribute('data-toast-id');
+    const id = idStr ? Number(idStr) : NaN;
+    if (!Number.isFinite(id)) return;
+
+    ev.preventDefault();
+    this.startRemoveToast(id);
   }
 
   // ---------- Internals ----------
@@ -211,18 +256,30 @@ export class ToastsComponent {
     }
   }
 
+  private getToastOuterId(id: number) {
+    return `${this.toastId}__toast_${id}__outer`;
+  }
+  private getToastContentId(id: number) {
+    return `${this.toastId}__toast_${id}__content`;
+  }
+  private getToastTitleId(id: number) {
+    return `${this.toastId}__toast_${id}__title`;
+  }
+  private getToastBodyId(id: number) {
+    return `${this.toastId}__toast_${id}__body`;
+  }
+  private getToastCloseId(id: number) {
+    return `${this.toastId}__toast_${id}__close`;
+  }
+
   /** Collect only icons actually being used right now. */
   private getUsedIconIds(): string[] {
     const ids = new Set<string>();
 
-    // Include default prop icon only if it exists (so a “default” preview can still work),
-    // but don’t render anything if it’s empty.
     if (this.svgIcon && ICONS[this.svgIcon]) ids.add(this.svgIcon);
-
     for (const t of this.toasts) {
       if (t.svgIcon && ICONS[t.svgIcon]) ids.add(t.svgIcon);
     }
-
     return [...ids];
   }
 
@@ -243,6 +300,36 @@ export class ToastsComponent {
 
   // ---------- Renderers ----------
 
+  private renderCloseButton(toast: ToastItem) {
+    if (toast.noCloseButton) return null;
+
+    const label = toast.toastTitle ? `Close ${toast.toastTitle}` : 'Close notification';
+
+    return (
+      <button
+        id={this.getToastCloseId(toast.id)}
+        type="button"
+        class="close ml-auto m1"
+        aria-label={label}
+        aria-controls={this.getToastOuterId(toast.id)}
+        onClick={() => this.startRemoveToast(toast.id)}
+      >
+        ×
+      </button>
+    );
+  }
+
+  private renderIcon(toast: ToastItem, color: string = 'currentColor') {
+    // Icons are decorative here (the toast title/body are the announcement)
+    if (!toast.svgIcon || !ICONS[toast.svgIcon]) return null;
+
+    return (
+      <svg class="toast-svg flex-shrink-0 me-2" aria-hidden="true" focusable="false" style={{ fill: color }}>
+        <use href={`#${toast.svgIcon}`}></use>
+      </svg>
+    );
+  }
+
   private renderStandardToast(toast: ToastItem) {
     const classes = [
       'toast',
@@ -257,40 +344,51 @@ export class ToastsComponent {
 
     const style = this.noAnimation ? undefined : ({ '--toast-duration': `${toast.duration / 1000}s` } as any);
 
+    // role="alert" (assertive) / role="status" (polite) already provide live semantics;
+    // avoid adding aria-live redundantly.
+    const role = toast.isStatus ? 'status' : 'alert';
+
+    const outerId = this.getToastOuterId(toast.id);
+    const contentId = this.getToastContentId(toast.id);
+    const titleId = this.getToastTitleId(toast.id);
+    const bodyId = this.getToastBodyId(toast.id);
+
     return (
       <div
-        id={`${this.toastId}__toast_outer`}
-        role={toast.isStatus ? 'status' : 'alert'}
-        aria-live={toast.isStatus ? 'polite' : 'assertive'}
+        id={outerId}
+        data-toast-id={String(toast.id)}
+        role={role}
         aria-atomic="true"
+        aria-labelledby={toast.toastTitle ? titleId : undefined}
+        aria-describedby={bodyId}
         class={classes}
         style={style}
         onMouseEnter={() => this.handleMouseEnter(toast)}
         onMouseLeave={() => this.handleMouseLeave(toast)}
       >
-        <div id={this.toastId} tabIndex={0}>
+        {/* Focus target for keyboard users; Escape closes toast */}
+        <div id={contentId} tabIndex={0}>
           <header class={`toast-header ${toast.headerClass || ''}`}>
             <div class="d-flex flex-grow-1 align-items-center">
-              {toast.svgIcon && ICONS[toast.svgIcon] ? (
-                <svg class="toast-svg flex-shrink-0 me-2" role="img" aria-label="Icon" style={{ fill: 'currentColor' }}>
-                  <use href={`#${toast.svgIcon}`}></use>
-                </svg>
-              ) : null}
-              <strong class="mr-auto">{toast.toastTitle}</strong>
+              {this.renderIcon(toast)}
+              {toast.toastTitle ? (
+                <strong id={titleId} class="mr-auto">
+                  {toast.toastTitle}
+                </strong>
+              ) : (
+                <span id={titleId} class="sr-only">
+                  Notification
+                </span>
+              )}
               <small class="text-muted mr-2">{toast.additionalHdrContent}</small>
             </div>
-
-            {toast.noCloseButton ? null : (
-              <button type="button" aria-label="Close" class="close ml-auto m1" onClick={() => this.startRemoveToast(toast.id)}>
-                ×
-              </button>
-            )}
+            {this.renderCloseButton(toast)}
           </header>
 
           {toast.contentHtml ? (
-            <div class={`toast-body ${toast.bodyClass || ''}`} innerHTML={toast.contentHtml}></div>
+            <div id={bodyId} class={`toast-body ${toast.bodyClass || ''}`} innerHTML={toast.contentHtml}></div>
           ) : (
-            <div class={`toast-body ${toast.bodyClass || ''}`}>{toast.content}</div>
+            <div id={bodyId} class={`toast-body ${toast.bodyClass || ''}`}>{toast.content}</div>
           )}
         </div>
       </div>
@@ -312,32 +410,56 @@ export class ToastsComponent {
 
     const style = { '--toast-duration': `${toast.duration / 1000}s` } as any;
 
+    const role = toast.isStatus ? 'status' : 'alert';
+
+    const outerId = this.getToastOuterId(toast.id);
+    const contentId = this.getToastContentId(toast.id);
+    const titleId = this.getToastTitleId(toast.id);
+    const bodyId = this.getToastBodyId(toast.id);
+
     return (
       <div
+        id={outerId}
+        data-toast-id={String(toast.id)}
         class={classes}
         style={style}
-        role={toast.isStatus ? 'status' : 'alert'}
-        aria-live={toast.isStatus ? 'polite' : 'assertive'}
+        role={role}
         aria-atomic="true"
+        aria-labelledby={toast.toastTitle ? titleId : undefined}
+        aria-describedby={bodyId}
         onMouseEnter={() => this.handleMouseEnter(toast)}
         onMouseLeave={() => this.handleMouseLeave(toast)}
       >
-        <div class="d-flex">
-          {toast.contentHtml ? (
-            <div class={`toast-body d-flex align-items-center ${toast.bodyClass || ''}`} innerHTML={toast.contentHtml}></div>
+        <div id={contentId} class="d-flex" tabIndex={0}>
+          {/* Provide a labelled-by target even for the solid layout */}
+          {toast.toastTitle ? (
+            <span id={titleId} class="sr-only">
+              {toast.toastTitle}
+            </span>
           ) : (
-            <div class={`toast-body d-flex align-items-center ${toast.bodyClass || ''}`}>
-              {toast.svgIcon && ICONS[toast.svgIcon] ? (
-                <svg class="toast-svg flex-shrink-0 me-2" role="img" aria-label="Icon" style={{ fill: 'currentColor' }}>
-                  <use href={`#${toast.svgIcon}`}></use>
-                </svg>
-              ) : null}
+            <span id={titleId} class="sr-only">
+              Notification
+            </span>
+          )}
+
+          {toast.contentHtml ? (
+            <div id={bodyId} class={`toast-body d-flex align-items-center ${toast.bodyClass || ''}`} innerHTML={toast.contentHtml}></div>
+          ) : (
+            <div id={bodyId} class={`toast-body d-flex align-items-center ${toast.bodyClass || ''}`}>
+              {this.renderIcon(toast)}
               {toast.content}
             </div>
           )}
 
           {toast.noCloseButton ? null : (
-            <button type="button" aria-label="Close" class="close mr-2 ml-auto" onClick={() => this.startRemoveToast(toast.id)}>
+            <button
+              id={this.getToastCloseId(toast.id)}
+              type="button"
+              aria-label={toast.toastTitle ? `Close ${toast.toastTitle}` : 'Close notification'}
+              aria-controls={outerId}
+              class="close mr-2 ml-auto"
+              onClick={() => this.startRemoveToast(toast.id)}
+            >
               ×
             </button>
           )}
@@ -359,42 +481,59 @@ export class ToastsComponent {
 
     const style = { '--toast-duration': `${toast.duration / 1000}s` } as any;
 
+    const role = toast.isStatus ? 'status' : 'alert';
+
+    const outerId = this.getToastOuterId(toast.id);
+    const contentId = this.getToastContentId(toast.id);
+    const titleId = this.getToastTitleId(toast.id);
+    const bodyId = this.getToastBodyId(toast.id);
+
+    const icon = toast.iconPlumageStyle ? this.renderIcon(toast, this.getIconColor(toast.variantClass)) : null;
+
     if (this.plumageToastMax) {
       return (
         <div
-          id={`${this.toastId}__toast_outer`}
-          role={toast.isStatus ? 'status' : 'alert'}
-          aria-live={toast.isStatus ? 'polite' : 'assertive'}
+          id={outerId}
+          data-toast-id={String(toast.id)}
+          role={role}
           aria-atomic="true"
+          aria-labelledby={toast.toastTitle ? titleId : undefined}
+          aria-describedby={bodyId}
           class={classes}
           style={style}
           onMouseEnter={() => this.handleMouseEnter(toast)}
           onMouseLeave={() => this.handleMouseLeave(toast)}
         >
-          <div class="pl-toast-2" id={this.toastId} tabIndex={0}>
+          <div class="pl-toast-2" id={contentId} tabIndex={0}>
             <div class="pl-toast-body">
               <div title="" class="pl-toast-content d-flex">
                 <div class="align-self-center">
-                  <div class="pl-toast-icon">
-                    {toast.svgIcon && ICONS[toast.svgIcon] ? (
-                      <svg class="toast-svg flex-shrink-0 me-2" role="img" aria-label="Icon" style={{ fill: this.getIconColor(toast.variantClass) }}>
-                        <use href={`#${toast.svgIcon}`}></use>
-                      </svg>
-                    ) : null}
-                  </div>
+                  <div class="pl-toast-icon">{icon}</div>
                 </div>
+
                 <div class="toast-title w-100">
                   <div class="d-flex justify-content-between">
-                    <div class={`header ${toast.headerClass || ''}`}>{toast.toastTitle}</div>
+                    <div id={titleId} class={`header ${toast.headerClass || ''}`}>
+                      {toast.toastTitle || 'Notification'}
+                    </div>
+
                     <div class="toast-buttons d-flex">
                       {toast.noCloseButton ? null : (
-                        <button type="button" aria-label="Close" class="close ml-3" onClick={() => this.startRemoveToast(toast.id)}>
+                        <button
+                          id={this.getToastCloseId(toast.id)}
+                          type="button"
+                          aria-label={toast.toastTitle ? `Close ${toast.toastTitle}` : 'Close notification'}
+                          aria-controls={outerId}
+                          class="close ml-3"
+                          onClick={() => this.startRemoveToast(toast.id)}
+                        >
                           ×
                         </button>
                       )}
                     </div>
                   </div>
-                  <div class={`d-flex flex-column toast-data ${toast.bodyClass || ''}`}>
+
+                  <div id={bodyId} class={`d-flex flex-column toast-data ${toast.bodyClass || ''}`}>
                     {toast.contentHtml ? <div innerHTML={toast.contentHtml}></div> : <slot name="custom-content">{toast.content}</slot>}
                   </div>
                 </div>
@@ -407,66 +546,63 @@ export class ToastsComponent {
 
     return (
       <div
-        id={`${this.toastId}__toast_outer`}
-        role={toast.isStatus ? 'status' : 'alert'}
-        aria-live={toast.isStatus ? 'polite' : 'assertive'}
+        id={outerId}
+        data-toast-id={String(toast.id)}
+        role={role}
         aria-atomic="true"
+        aria-labelledby={toast.toastTitle ? titleId : undefined}
+        aria-describedby={bodyId}
         class={classes}
         style={style}
         onMouseEnter={() => this.handleMouseEnter(toast)}
         onMouseLeave={() => this.handleMouseLeave(toast)}
       >
-        <div id={this.toastId} tabIndex={0} class={toast.iconPlumageStyle ? 'pl-toast-display' : ''}>
-          {toast.iconPlumageStyle
-            ? [
-                <div class="pl-toast-icon">
-                  {toast.svgIcon && ICONS[toast.svgIcon] ? (
-                    <svg class="toast-svg flex-shrink-0 me-2" role="img" aria-label="Icon" style={{ fill: this.getIconColor(toast.variantClass) }}>
-                      <use href={`#${toast.svgIcon}`}></use>
-                    </svg>
-                  ) : null}
-                </div>,
-                <div class="pl-toast-content">
-                  <header class={`pl-toast-header ${toast.headerClass || ''}`}>
-                    <div class="d-flex flex-grow-1 align-items-center">
-                      <div class="mr-auto mb-0">{toast.toastTitle}</div>
-                      <div>{toast.time}</div>
-                    </div>
-                    {toast.noCloseButton ? null : (
-                      <button type="button" aria-label="Close" class="close ml-3" onClick={() => this.startRemoveToast(toast.id)}>
-                        ×
-                      </button>
-                    )}
-                  </header>
-                  {toast.contentHtml ? (
-                    <div class={`pl-toast-body ${toast.bodyClass || ''}`} innerHTML={toast.contentHtml}></div>
-                  ) : (
-                    <div class={`pl-toast-body ${toast.bodyClass || ''}`}>
-                      <em>{toast.content}</em>
-                    </div>
-                  )}
-                </div>,
-              ]
-            : [
+        <div id={contentId} tabIndex={0} class={toast.iconPlumageStyle ? 'pl-toast-display' : ''}>
+          {toast.iconPlumageStyle ? (
+            <Fragment>
+              <div class="pl-toast-icon">{icon}</div>
+
+              <div class="pl-toast-content">
                 <header class={`pl-toast-header ${toast.headerClass || ''}`}>
                   <div class="d-flex flex-grow-1 align-items-center">
-                    <div class="mr-auto mb-0">{toast.toastTitle}</div>
+                    <div id={titleId} class="mr-auto mb-0">
+                      {toast.toastTitle || 'Notification'}
+                    </div>
                     <div>{toast.time}</div>
                   </div>
-                  {toast.noCloseButton ? null : (
-                    <button type="button" aria-label="Close" class="close ml-3" onClick={() => this.startRemoveToast(toast.id)}>
-                      ×
-                    </button>
-                  )}
-                </header>,
-                toast.contentHtml ? (
-                  <div class={`pl-toast-body ${toast.bodyClass || ''}`} innerHTML={toast.contentHtml}></div>
+                  {this.renderCloseButton(toast)}
+                </header>
+
+                {toast.contentHtml ? (
+                  <div id={bodyId} class={`pl-toast-body ${toast.bodyClass || ''}`} innerHTML={toast.contentHtml}></div>
                 ) : (
-                  <div class={`pl-toast-body ${toast.bodyClass || ''}`}>
+                  <div id={bodyId} class={`pl-toast-body ${toast.bodyClass || ''}`}>
                     <em>{toast.content}</em>
                   </div>
-                ),
-              ]}
+                )}
+              </div>
+            </Fragment>
+          ) : (
+            <Fragment>
+              <header class={`pl-toast-header ${toast.headerClass || ''}`}>
+                <div class="d-flex flex-grow-1 align-items-center">
+                  <div id={titleId} class="mr-auto mb-0">
+                    {toast.toastTitle || 'Notification'}
+                  </div>
+                  <div>{toast.time}</div>
+                </div>
+                {this.renderCloseButton(toast)}
+              </header>
+
+              {toast.contentHtml ? (
+                <div id={bodyId} class={`pl-toast-body ${toast.bodyClass || ''}`} innerHTML={toast.contentHtml}></div>
+              ) : (
+                <div id={bodyId} class={`pl-toast-body ${toast.bodyClass || ''}`}>
+                  <em>{toast.content}</em>
+                </div>
+              )}
+            </Fragment>
+          )}
         </div>
       </div>
     );
@@ -474,8 +610,18 @@ export class ToastsComponent {
 
   private renderBody() {
     const trayClass = (this.plumageToast ? 'pl-toaster' : 'toaster') + ` toaster-${this.position}`;
+
+    // Region container for assistive tech. We do NOT set aria-live here because each toast
+    // uses role=status/alert which already provides live-region semantics.
     return (
-      <div id={`toaster-${this.position}`} class={trayClass}>
+      <div
+        id={`toaster-${this.position}`}
+        class={trayClass}
+        role="region"
+        aria-label={this.ariaLabel}
+        aria-relevant="additions text"
+        aria-atomic="false"
+      >
         <div class="toaster-slot">
           {this.toasts.map((t) =>
             this.solidToast ? this.renderSolidToast(t) : this.plumageToast ? this.renderPlumageToast(t) : this.renderStandardToast(t),

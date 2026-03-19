@@ -3147,55 +3147,57 @@ export namespace Components {
     }
     interface PlumageTimepickerComponent {
         /**
-          * Accessible label for the input
+          * Optional: external description/help ids (space-separated).
+          * @default ''
+         */
+        "ariaDescribedby": string;
+        /**
+          * Accessible label for the input (used when no aria-labelledby is provided and no visible label).
           * @default 'Time Picker'
          */
         "ariaLabel": string;
         /**
-          * ID of the external label element (for aria-labelledby)
-          * @default 'time-label'
+          * ID(s) of the element(s) that label the timepicker input (space-separated). If showLabel=true, the component will prefer its own generated label id (`${inputId}-label`).
+          * @default ''
          */
         "ariaLabelledby": string;
         /**
-          * (Used in Lit markup for underline states)
+          * Disable the component (input + buttons + popover).
           * @default false
          */
         "disabled"?: boolean;
-        /**
-          * Force-validate and sync input -> dropdown
-         */
         "forceTimeUpdate": () => Promise<void>;
         /**
-          * Hide seconds UI / value
+          * Hide seconds UI / value.
           * @default false
          */
         "hideSeconds": boolean;
         /**
-          * Hide the toggle/launch button for the timepicker popover
+          * Hide the toggle/launch button for the timepicker popover.
           * @default false
          */
         "hideTimepickerBtn": boolean;
         /**
-          * (Renamed from reserved `id`) ID passed to the internal input
+          * ID passed to the internal input (should be unique per instance).
           * @default 'time-input'
          */
         "inputId": string;
         /**
-          * Name attribute for the inner input
+          * Name attribute for the inner input.
           * @default 'time'
          */
         "inputName": string;
         /**
-          * Width (px) for the input element
+          * Width (px) for the input element.
          */
         "inputWidth"?: number | string;
         /**
-          * Use 24-hour format by default (mutable: toggled by the component)
+          * Use 24-hour format by default (mutable: toggled by the component).
           * @default true
          */
         "isTwentyFourHourFormat": boolean;
         /**
-          * Whether the current value is considered valid (mutable: set by validation)
+          * Whether the current value is considered valid (mutable: set by validation).
           * @default true
          */
         "isValid": boolean;
@@ -3207,29 +3209,32 @@ export namespace Components {
           * @default false
          */
         "required": boolean;
+        /**
+          * If true, label is visible; otherwise it's sr-only (still present for AT).
+         */
         "showLabel"?: boolean;
         /**
-          * Optional size variant: '', 'sm', 'lg'
+          * Optional size variant: '', 'sm', 'lg'.
           * @default ''
          */
         "size": string;
         /**
-          * Force show only 12-hour controls/options
+          * Force show only 12-hour controls/options.
           * @default false
          */
         "twelveHourOnly": boolean;
         /**
-          * Force show only 24-hour controls/options
+          * Force show only 24-hour controls/options.
           * @default false
          */
         "twentyFourHourOnly": boolean;
         /**
-          * (Used in Lit markup for underline states)
+          * Styling flag (kept for compatibility).
           * @default false
          */
         "validation"?: boolean;
         /**
-          * Validation message to show (mutable: set/cleared by the component)
+          * Validation message to show (mutable: set/cleared by the component).
           * @default ''
          */
         "validationMessage": string;
@@ -3795,10 +3800,18 @@ export namespace Components {
     }
     interface SvgComponent {
         /**
+          * When true, forces decorative behavior: aria-hidden="true" and removes accessible name wiring. If not set, component defaults to decorative when no accessible name is provided.
+         */
+        "decorative"?: boolean;
+        /**
           * Fill color applied to the rendered <svg>. Defaults to 'currentColor'.
           * @default 'currentColor'
          */
         "fill": string;
+        /**
+          * Optional focus override. - When true: sets tabindex="0" (keyboard focusable) - When false: sets tabindex="-1" - When omitted: decorative => -1, meaningful => no tabindex
+         */
+        "focusable"?: boolean;
         /**
           * Height in px. Default 24.
           * @default 24
@@ -3810,18 +3823,34 @@ export namespace Components {
          */
         "path": string;
         /**
-          * Forwarded as aria-hidden on the <svg>. Use: svg-aria-hidden="true" | "false" If omitted, aria-hidden is not set.
+          * Optional description: aria-describedby on the <svg> (space-separated ids).
+         */
+        "svgAriaDescribedby"?: string;
+        /**
+          * Optional explicit aria-hidden forwarded to <svg>. Use: svg-aria-hidden="true" | "false" If omitted, component computes aria-hidden based on `decorative` + labeling.
          */
         "svgAriaHidden"?: 'true' | 'false';
         /**
-          * Forwarded as aria-label on the <svg>. If omitted/empty, not set.
+          * Optional accessible name: aria-label on the <svg>.
          */
         "svgAriaLabel"?: string;
+        /**
+          * Optional accessible name: aria-labelledby on the <svg> (space-separated ids). Takes precedence over aria-label.
+         */
+        "svgAriaLabelledby"?: string;
+        /**
+          * Optional <desc> element content for the SVG. Use attribute: svg-desc="Opens settings"
+         */
+        "svgDesc"?: string;
         /**
           * Optional margin applied inline to the <svg>. - 'left'  => margin-left: 10px; - 'right' => margin-right: 10px; - 'both'  => both left and right 10px
           * @default ''
          */
         "svgMargin": '' | 'left' | 'right' | 'both';
+        /**
+          * Optional <title> element content for the SVG. Use attribute: svg-title="Settings"
+         */
+        "svgTitle"?: string;
         /**
           * SVG viewBox. MUST match the coordinate system of `path`.
           * @default '0 0 640 640'
@@ -3838,6 +3867,9 @@ export namespace Components {
           * @default false
          */
         "addBorder": boolean;
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default ''
          */
@@ -4052,13 +4084,18 @@ export namespace Components {
     }
     interface TimepickerComponent {
         /**
-          * Accessible label for the input
+          * Optional: external description/help ids (space-separated).
+          * @default ''
+         */
+        "ariaDescribedby": string;
+        /**
+          * Accessible label for the input (used when no aria-labelledby is provided and no visible label).
           * @default 'Time Picker'
          */
         "ariaLabel": string;
         /**
-          * ID of the external label element (for aria-labelledby)
-          * @default 'time-label'
+          * ID(s) of the element(s) that label the timepicker input (space-separated). If omitted, component will auto-generate an internal label id when showLabel=true.
+          * @default ''
          */
         "ariaLabelledby": string;
         /**
@@ -4066,9 +4103,6 @@ export namespace Components {
           * @default false
          */
         "disableTimepicker": boolean;
-        /**
-          * Force-validate and sync input -> dropdown
-         */
         "forceTimeUpdate": () => Promise<void>;
         /**
           * Hide seconds UI / value
@@ -4081,7 +4115,7 @@ export namespace Components {
          */
         "hideTimepickerBtn": boolean;
         /**
-          * (Renamed from reserved `id`) ID passed to the internal input
+          * ID passed to the internal input
           * @default 'time-input'
          */
         "inputId": string;
@@ -4139,34 +4173,42 @@ export namespace Components {
          */
         "validationMessage": string;
     }
+    /**
+     * Timepicker Manager
+     * - Forwards props to either <timepicker-component> or <plumage-timepicker-component>
+     * - a11y precedence: aria-labelledby (if provided) > aria-label
+     * - Forwards aria-describedby to child; optionally merges in the child's validation message id
+     * NOTE:
+     * 508 compliance depends primarily on the child component’s semantics/keyboard behavior.
+     */
     interface TimepickerManager {
         /**
-          * Accessible label for the input
-          * @default 'Time Picker'
+          * Optional description ids (space-separated).
          */
-        "ariaLabel": string;
+        "ariaDescribedby"?: string;
         /**
-          * ID of the external label element (for aria-labelledby)
-          * @default 'time-label'
+          * Accessible name override via aria-label (used only when ariaLabelledby is NOT provided).
          */
-        "ariaLabelledby": string;
+        "ariaLabel"?: string;
+        /**
+          * Accessible name override via aria-labelledby (space-separated ids). Takes precedence over aria-label.
+         */
+        "ariaLabelledby"?: string;
         /**
           * Disable the timepicker. - For <timepicker-component>: passed as `disableTimepicker` - For <plumage-timepicker-component>: passed as `disabled`
           * @default false
          */
         "disableTimepicker": boolean;
         /**
-          * Hide seconds UI / value
           * @default false
          */
         "hideSeconds": boolean;
         /**
-          * Hide the toggle/launch button for the timepicker popover
           * @default false
          */
         "hideTimepickerBtn": boolean;
         /**
-          * ID to pass to inner input(s)
+          * ID to pass to inner input(s). Should be unique per instance.
           * @default 'time-input'
          */
         "inputId": string;
@@ -4181,12 +4223,10 @@ export namespace Components {
          */
         "inputWidth": number | string;
         /**
-          * Use 24-hour format by default
           * @default true
          */
         "isTwentyFourHourFormat": boolean;
         /**
-          * Whether the current value is considered valid
           * @default true
          */
         "isValid": boolean;
@@ -4195,38 +4235,33 @@ export namespace Components {
          */
         "labelText": string;
         /**
-          * Required indicator (Plumage label asterisk, etc.)
+          * Required indicator
           * @default false
          */
         "required": boolean;
         "showLabel"?: boolean;
         /**
-          * Optional size variant (e.g., 'sm', 'lg')
           * @default ''
          */
         "size": string;
         /**
-          * Force show only 12-hour controls/options
           * @default false
          */
         "twelveHourOnly": boolean;
         /**
-          * Force show only 24-hour controls/options
           * @default false
          */
         "twentyFourHourOnly": boolean;
         /**
-          * Choose which implementation to render: false = <timepicker-component>, true = <plumage-timepicker-component>
+          * Choose which implementation to render
           * @default false
          */
         "usePlTimepicker": boolean;
         /**
-          * External invalid/validation styling flag (drives `invalid` / `is-invalid` styling in children). NOTE: children now clear this internally on clear/typing/spinner interaction.
           * @default false
          */
         "validation"?: boolean;
         /**
-          * Validation message to show (if any). NOTE: children now clear this internally on clear/typing/spinner interaction.
           * @default ''
          */
         "validationMessage": string;
@@ -4237,18 +4272,29 @@ export namespace Components {
           * @default false
          */
         "appendToast": boolean;
+        /**
+          * Accessible label for the toaster region (screen readers). Keep short and meaningful (“Notifications”, “Messages”, etc.)
+          * @default 'Notifications'
+         */
+        "ariaLabel": string;
         "bodyClass"?: string;
         "customContent"?: any;
         /**
           * @default 5000
          */
         "duration": number;
+        /**
+          * If true, when a toast is shown it will be focused (useful for critical messaging). Defaults to false to avoid stealing focus.
+          * @default false
+         */
+        "focusOnShow": boolean;
         "headerClass"?: string;
         /**
           * @default false
          */
         "iconPlumageStyle": boolean;
         /**
+          * When true, toasts announce politely as “status” by default. When false, toasts announce assertively as “alert” by default.
           * @default false
          */
         "isStatus": boolean;
@@ -5200,6 +5246,14 @@ declare global {
         prototype: HTMLTimepickerComponentElement;
         new (): HTMLTimepickerComponentElement;
     };
+    /**
+     * Timepicker Manager
+     * - Forwards props to either <timepicker-component> or <plumage-timepicker-component>
+     * - a11y precedence: aria-labelledby (if provided) > aria-label
+     * - Forwards aria-describedby to child; optionally merges in the child's validation message id
+     * NOTE:
+     * 508 compliance depends primarily on the child component’s semantics/keyboard behavior.
+     */
     interface HTMLTimepickerManagerElement extends Components.TimepickerManager, HTMLStencilElement {
     }
     var HTMLTimepickerManagerElement: {
@@ -8462,51 +8516,56 @@ declare namespace LocalJSX {
     }
     interface PlumageTimepickerComponent {
         /**
-          * Accessible label for the input
+          * Optional: external description/help ids (space-separated).
+          * @default ''
+         */
+        "ariaDescribedby"?: string;
+        /**
+          * Accessible label for the input (used when no aria-labelledby is provided and no visible label).
           * @default 'Time Picker'
          */
         "ariaLabel"?: string;
         /**
-          * ID of the external label element (for aria-labelledby)
-          * @default 'time-label'
+          * ID(s) of the element(s) that label the timepicker input (space-separated). If showLabel=true, the component will prefer its own generated label id (`${inputId}-label`).
+          * @default ''
          */
         "ariaLabelledby"?: string;
         /**
-          * (Used in Lit markup for underline states)
+          * Disable the component (input + buttons + popover).
           * @default false
          */
         "disabled"?: boolean;
         /**
-          * Hide seconds UI / value
+          * Hide seconds UI / value.
           * @default false
          */
         "hideSeconds"?: boolean;
         /**
-          * Hide the toggle/launch button for the timepicker popover
+          * Hide the toggle/launch button for the timepicker popover.
           * @default false
          */
         "hideTimepickerBtn"?: boolean;
         /**
-          * (Renamed from reserved `id`) ID passed to the internal input
+          * ID passed to the internal input (should be unique per instance).
           * @default 'time-input'
          */
         "inputId"?: string;
         /**
-          * Name attribute for the inner input
+          * Name attribute for the inner input.
           * @default 'time'
          */
         "inputName"?: string;
         /**
-          * Width (px) for the input element
+          * Width (px) for the input element.
          */
         "inputWidth"?: number | string;
         /**
-          * Use 24-hour format by default (mutable: toggled by the component)
+          * Use 24-hour format by default (mutable: toggled by the component).
           * @default true
          */
         "isTwentyFourHourFormat"?: boolean;
         /**
-          * Whether the current value is considered valid (mutable: set by validation)
+          * Whether the current value is considered valid (mutable: set by validation).
           * @default true
          */
         "isValid"?: boolean;
@@ -8518,29 +8577,32 @@ declare namespace LocalJSX {
           * @default false
          */
         "required"?: boolean;
+        /**
+          * If true, label is visible; otherwise it's sr-only (still present for AT).
+         */
         "showLabel"?: boolean;
         /**
-          * Optional size variant: '', 'sm', 'lg'
+          * Optional size variant: '', 'sm', 'lg'.
           * @default ''
          */
         "size"?: string;
         /**
-          * Force show only 12-hour controls/options
+          * Force show only 12-hour controls/options.
           * @default false
          */
         "twelveHourOnly"?: boolean;
         /**
-          * Force show only 24-hour controls/options
+          * Force show only 24-hour controls/options.
           * @default false
          */
         "twentyFourHourOnly"?: boolean;
         /**
-          * (Used in Lit markup for underline states)
+          * Styling flag (kept for compatibility).
           * @default false
          */
         "validation"?: boolean;
         /**
-          * Validation message to show (mutable: set/cleared by the component)
+          * Validation message to show (mutable: set/cleared by the component).
           * @default ''
          */
         "validationMessage"?: string;
@@ -9109,10 +9171,18 @@ declare namespace LocalJSX {
     }
     interface SvgComponent {
         /**
+          * When true, forces decorative behavior: aria-hidden="true" and removes accessible name wiring. If not set, component defaults to decorative when no accessible name is provided.
+         */
+        "decorative"?: boolean;
+        /**
           * Fill color applied to the rendered <svg>. Defaults to 'currentColor'.
           * @default 'currentColor'
          */
         "fill"?: string;
+        /**
+          * Optional focus override. - When true: sets tabindex="0" (keyboard focusable) - When false: sets tabindex="-1" - When omitted: decorative => -1, meaningful => no tabindex
+         */
+        "focusable"?: boolean;
         /**
           * Height in px. Default 24.
           * @default 24
@@ -9124,18 +9194,34 @@ declare namespace LocalJSX {
          */
         "path"?: string;
         /**
-          * Forwarded as aria-hidden on the <svg>. Use: svg-aria-hidden="true" | "false" If omitted, aria-hidden is not set.
+          * Optional description: aria-describedby on the <svg> (space-separated ids).
+         */
+        "svgAriaDescribedby"?: string;
+        /**
+          * Optional explicit aria-hidden forwarded to <svg>. Use: svg-aria-hidden="true" | "false" If omitted, component computes aria-hidden based on `decorative` + labeling.
          */
         "svgAriaHidden"?: 'true' | 'false';
         /**
-          * Forwarded as aria-label on the <svg>. If omitted/empty, not set.
+          * Optional accessible name: aria-label on the <svg>.
          */
         "svgAriaLabel"?: string;
+        /**
+          * Optional accessible name: aria-labelledby on the <svg> (space-separated ids). Takes precedence over aria-label.
+         */
+        "svgAriaLabelledby"?: string;
+        /**
+          * Optional <desc> element content for the SVG. Use attribute: svg-desc="Opens settings"
+         */
+        "svgDesc"?: string;
         /**
           * Optional margin applied inline to the <svg>. - 'left'  => margin-left: 10px; - 'right' => margin-right: 10px; - 'both'  => both left and right 10px
           * @default ''
          */
         "svgMargin"?: '' | 'left' | 'right' | 'both';
+        /**
+          * Optional <title> element content for the SVG. Use attribute: svg-title="Settings"
+         */
+        "svgTitle"?: string;
         /**
           * SVG viewBox. MUST match the coordinate system of `path`.
           * @default '0 0 640 640'
@@ -9152,6 +9238,9 @@ declare namespace LocalJSX {
           * @default false
          */
         "addBorder"?: boolean;
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
         /**
           * @default ''
          */
@@ -9369,13 +9458,18 @@ declare namespace LocalJSX {
     }
     interface TimepickerComponent {
         /**
-          * Accessible label for the input
+          * Optional: external description/help ids (space-separated).
+          * @default ''
+         */
+        "ariaDescribedby"?: string;
+        /**
+          * Accessible label for the input (used when no aria-labelledby is provided and no visible label).
           * @default 'Time Picker'
          */
         "ariaLabel"?: string;
         /**
-          * ID of the external label element (for aria-labelledby)
-          * @default 'time-label'
+          * ID(s) of the element(s) that label the timepicker input (space-separated). If omitted, component will auto-generate an internal label id when showLabel=true.
+          * @default ''
          */
         "ariaLabelledby"?: string;
         /**
@@ -9394,7 +9488,7 @@ declare namespace LocalJSX {
          */
         "hideTimepickerBtn"?: boolean;
         /**
-          * (Renamed from reserved `id`) ID passed to the internal input
+          * ID passed to the internal input
           * @default 'time-input'
          */
         "inputId"?: string;
@@ -9452,15 +9546,25 @@ declare namespace LocalJSX {
          */
         "validationMessage"?: string;
     }
+    /**
+     * Timepicker Manager
+     * - Forwards props to either <timepicker-component> or <plumage-timepicker-component>
+     * - a11y precedence: aria-labelledby (if provided) > aria-label
+     * - Forwards aria-describedby to child; optionally merges in the child's validation message id
+     * NOTE:
+     * 508 compliance depends primarily on the child component’s semantics/keyboard behavior.
+     */
     interface TimepickerManager {
         /**
-          * Accessible label for the input
-          * @default 'Time Picker'
+          * Optional description ids (space-separated).
+         */
+        "ariaDescribedby"?: string;
+        /**
+          * Accessible name override via aria-label (used only when ariaLabelledby is NOT provided).
          */
         "ariaLabel"?: string;
         /**
-          * ID of the external label element (for aria-labelledby)
-          * @default 'time-label'
+          * Accessible name override via aria-labelledby (space-separated ids). Takes precedence over aria-label.
          */
         "ariaLabelledby"?: string;
         /**
@@ -9469,17 +9573,15 @@ declare namespace LocalJSX {
          */
         "disableTimepicker"?: boolean;
         /**
-          * Hide seconds UI / value
           * @default false
          */
         "hideSeconds"?: boolean;
         /**
-          * Hide the toggle/launch button for the timepicker popover
           * @default false
          */
         "hideTimepickerBtn"?: boolean;
         /**
-          * ID to pass to inner input(s)
+          * ID to pass to inner input(s). Should be unique per instance.
           * @default 'time-input'
          */
         "inputId"?: string;
@@ -9494,12 +9596,10 @@ declare namespace LocalJSX {
          */
         "inputWidth"?: number | string;
         /**
-          * Use 24-hour format by default
           * @default true
          */
         "isTwentyFourHourFormat"?: boolean;
         /**
-          * Whether the current value is considered valid
           * @default true
          */
         "isValid"?: boolean;
@@ -9508,38 +9608,33 @@ declare namespace LocalJSX {
          */
         "labelText"?: string;
         /**
-          * Required indicator (Plumage label asterisk, etc.)
+          * Required indicator
           * @default false
          */
         "required"?: boolean;
         "showLabel"?: boolean;
         /**
-          * Optional size variant (e.g., 'sm', 'lg')
           * @default ''
          */
         "size"?: string;
         /**
-          * Force show only 12-hour controls/options
           * @default false
          */
         "twelveHourOnly"?: boolean;
         /**
-          * Force show only 24-hour controls/options
           * @default false
          */
         "twentyFourHourOnly"?: boolean;
         /**
-          * Choose which implementation to render: false = <timepicker-component>, true = <plumage-timepicker-component>
+          * Choose which implementation to render
           * @default false
          */
         "usePlTimepicker"?: boolean;
         /**
-          * External invalid/validation styling flag (drives `invalid` / `is-invalid` styling in children). NOTE: children now clear this internally on clear/typing/spinner interaction.
           * @default false
          */
         "validation"?: boolean;
         /**
-          * Validation message to show (if any). NOTE: children now clear this internally on clear/typing/spinner interaction.
           * @default ''
          */
         "validationMessage"?: string;
@@ -9550,18 +9645,29 @@ declare namespace LocalJSX {
           * @default false
          */
         "appendToast"?: boolean;
+        /**
+          * Accessible label for the toaster region (screen readers). Keep short and meaningful (“Notifications”, “Messages”, etc.)
+          * @default 'Notifications'
+         */
+        "ariaLabel"?: string;
         "bodyClass"?: string;
         "customContent"?: any;
         /**
           * @default 5000
          */
         "duration"?: number;
+        /**
+          * If true, when a toast is shown it will be focused (useful for critical messaging). Defaults to false to avoid stealing focus.
+          * @default false
+         */
+        "focusOnShow"?: boolean;
         "headerClass"?: string;
         /**
           * @default false
          */
         "iconPlumageStyle"?: boolean;
         /**
+          * When true, toasts announce politely as “status” by default. When false, toasts announce assertively as “alert” by default.
           * @default false
          */
         "isStatus"?: boolean;
@@ -9837,6 +9943,14 @@ declare module "@stencil/core" {
             "svg-component": LocalJSX.SvgComponent & JSXBase.HTMLAttributes<HTMLSvgComponentElement>;
             "table-component": LocalJSX.TableComponent & JSXBase.HTMLAttributes<HTMLTableComponentElement>;
             "timepicker-component": LocalJSX.TimepickerComponent & JSXBase.HTMLAttributes<HTMLTimepickerComponentElement>;
+            /**
+             * Timepicker Manager
+             * - Forwards props to either <timepicker-component> or <plumage-timepicker-component>
+             * - a11y precedence: aria-labelledby (if provided) > aria-label
+             * - Forwards aria-describedby to child; optionally merges in the child's validation message id
+             * NOTE:
+             * 508 compliance depends primarily on the child component’s semantics/keyboard behavior.
+             */
             "timepicker-manager": LocalJSX.TimepickerManager & JSXBase.HTMLAttributes<HTMLTimepickerManagerElement>;
             "toasts-component": LocalJSX.ToastsComponent & JSXBase.HTMLAttributes<HTMLToastsComponentElement>;
             "toggle-switch-component": LocalJSX.ToggleSwitchComponent & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;

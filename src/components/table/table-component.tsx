@@ -104,6 +104,11 @@ export class TableComponent {
   /** @deprecated */
   @Prop() useMinimizePagination: boolean = false;
 
+  // ----- A11y (NEW) -----
+  @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
+  @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
+  @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
+
   // ----- Events -----
   @Event({ eventName: 'sort-field-updated' }) sortFieldUpdated!: EventEmitter<{ value: string }>;
   @Event({ eventName: 'sort-order-updated' }) sortOrderUpdated!: EventEmitter<{ value: string }>;
@@ -275,7 +280,7 @@ export class TableComponent {
   }
 
   private headerTheme(): string {
-    return this.darkHeader ? 'thead-dark' : this.lightHeader ? 'thead-light' : '';
+    return this.darkHeader ? 'table-dark' : this.lightHeader ? 'table-light' : '';
   }
 
   private formatHeader(key: string): string {
@@ -315,6 +320,55 @@ export class TableComponent {
     // Parity with Lit version. Be cautious with untrusted templates.
     return new Function('return `' + template + '`;').call(data);
   }
+
+  // ======= A11Y HELPERS (NEW) =======
+
+  private normalizeIdList(value?: string): string | undefined {
+    const trimmed = (value ?? '').trim();
+    if (!trimmed) return undefined;
+    const tokens = trimmed.split(/\s+/).filter(Boolean);
+    return tokens.length ? tokens.join(' ') : undefined;
+  }
+
+  private getTableA11y() {
+    const labelledby = this.normalizeIdList(this.ariaLabelledby);
+    const label = (this.ariaLabel ?? '').trim() || undefined;
+    const describedby = this.normalizeIdList(this.ariaDescribedby);
+
+    return {
+      'aria-labelledby': labelledby || undefined,
+      'aria-label': labelledby ? undefined : label,
+      'aria-describedby': describedby || undefined,
+    };
+  }
+
+  private rowId(pageIndex: number) {
+    const base = (this.tableId || 'table').trim() || 'table';
+    const globalIndex = (this.currentPage - 1) * this.rowsPerPage + pageIndex;
+    return `${base}-row-${globalIndex}`;
+  }
+
+  private detailsId(pageIndex: number) {
+    return `${this.rowId(pageIndex)}-details`;
+  }
+
+  private onRowKeyDown = (ev: KeyboardEvent, pageIndex: number, hasDetails: boolean) => {
+    const key = ev.key;
+
+    // Toggle selection via keyboard (Space/Enter)
+    if ((key === ' ' || key === 'Enter' || key === 'Spacebar') && ['single', 'multi', 'range'].includes(this.selectMode)) {
+      ev.preventDefault();
+      const faux = { shiftKey: ev.shiftKey, ctrlKey: ev.ctrlKey, metaKey: ev.metaKey } as any;
+      this.selectRow(faux, pageIndex);
+      return;
+    }
+
+    // Optional: details expand/collapse on ArrowRight/ArrowLeft
+    if (hasDetails && (key === 'ArrowRight' || key === 'ArrowLeft')) {
+      ev.preventDefault();
+      this.toggleDetails(pageIndex);
+    }
+  };
 
   // ======= SORT / FILTER =======
 
@@ -445,12 +499,12 @@ export class TableComponent {
       const indexSup = this.sortCriteria.length > 1 ? <sup>{this.sortCriteria.indexOf(c) + 1}</sup> : null;
       return (
         <Fragment>
-          <i class={`sort-icon ${orderClass}`} />
+          <i class={`sort-icon ${orderClass}`} aria-hidden="true" />
           {indexSup}
         </Fragment>
       );
     }
-    return <i class="sort-icon none" />;
+    return <i class="sort-icon none" aria-hidden="true" />;
   }
 
   /** Normalize a value for comparison. Numbers stay numbers; strings compare case-insensitively; null/undefined sort last. */
@@ -565,7 +619,8 @@ export class TableComponent {
     else this.expandedRows = this.expandedRows.filter(i => i !== rowIndex);
   }
 
-  private selectRow = (ev: MouseEvent, pageIndex: number) => {
+  // NOTE: accept MouseEvent-like OR keyboard faux object with shift/ctrl/meta
+  private selectRow = (ev: any, pageIndex: number) => {
     const globalIndex = (this.currentPage - 1) * this.rowsPerPage + pageIndex;
     const row = this.filteredItems[globalIndex];
 
@@ -574,13 +629,13 @@ export class TableComponent {
     } else if (this.selectMode === 'multi') {
       this.selectedRows = this.selectedRows.includes(row) ? this.selectedRows.filter(r => r !== row) : [...this.selectedRows, row];
     } else if (this.selectMode === 'range') {
-      if ((ev as MouseEvent).shiftKey) {
+      if (!!ev?.shiftKey) {
         const lastIdx = this.filteredItems.indexOf(this.selectedRows[this.selectedRows.length - 1]);
         const start = Math.min(lastIdx, globalIndex);
         const end = Math.max(lastIdx, globalIndex);
         const rangeRows = this.filteredItems.slice(start, end + 1);
         this.selectedRows = Array.from(new Set([...this.selectedRows, ...rangeRows]));
-      } else if (ev.ctrlKey || (ev as any).metaKey) {
+      } else if (!!ev?.ctrlKey || !!ev?.metaKey) {
         this.selectedRows = this.selectedRows.includes(row) ? this.selectedRows.filter(r => r !== row) : [...this.selectedRows, row];
       } else {
         this.selectedRows = [row];
@@ -604,11 +659,23 @@ export class TableComponent {
     if (this.selectedRows.length === this.items.length && this.items.length > 0) headerIconClass = 'check-icon';
     else if (this.selectedRows.length > 0) headerIconClass = 'partial-icon';
 
+    const headerAriaChecked =
+      this.selectedRows.length === 0 ? 'false' : this.selectedRows.length === this.items.length ? 'true' : 'mixed';
+
     return (
       <tr role="row">
         {['single', 'multi', 'range'].includes(this.selectMode) ? (
-          <th class="select-col" onClick={this.selectAllRows}>
-            {this.items.length === 0 ? null : <button class={`${headerIconClass} select-row-btns`} />}
+          <th class="select-col">
+            {this.items.length === 0 ? null : (
+              <button
+                type="button"
+                class={`${headerIconClass} select-row-btns`}
+                role="checkbox"
+                aria-label="Select all rows"
+                aria-checked={headerAriaChecked}
+                onClick={this.selectAllRows}
+              />
+            )}
           </th>
         ) : null}
 
@@ -622,6 +689,7 @@ export class TableComponent {
               tabIndex={0}
               aria-colindex={index + 1}
               aria-sort={this.getAriaSort(key)}
+              aria-label={`Sort by ${label}`}
               class={this.tableVariantColor(variant)}
               data-field={key}
               onClick={ev => this.sortItems(ev as any, key)}
@@ -702,13 +770,14 @@ export class TableComponent {
 
     let logicalRowIndex = 0;
 
+    const tableA11y = this.getTableA11y();
+
     return (
       <table
-        role="table"
         id={this.tableId}
-        aria-colcount={this.normalizedFields.length + (hasDetailsRows ? 1 : 0) + (['single', 'multi', 'range'].includes(this.selectMode) ? 1 : 0)}
-        aria-multiselectable={String(this.selectMode !== 'single')}
         class={className}
+        // ✅ Let native <table> semantics stand; only add name/description wiring.
+        {...tableA11y}
       >
         {this.caption === 'top' ? (
           <caption>
@@ -730,23 +799,44 @@ export class TableComponent {
             const stripeClass = this.darkTableTheme ? 'striped-row-dark' : 'striped-row';
             const mainRowClass = isStriped ? '' : stripeClass;
 
+            const canSelect = ['single', 'multi', 'range'].includes(this.selectMode);
+            const hasDetails = !!row._showDetails;
+
+            const selectButtonRole = this.selectMode === 'single' ? 'radio' : 'checkbox';
+
             const mainRow = (
               <tr
                 role="row"
+                id={this.rowId(pageIndex)}
                 class={`${mainRowClass} ${rowVariantClass} ${isSelected ? `table-row-selected ${this.selectedVariant}` : ''}`}
                 tabIndex={0}
                 aria-selected={isSelected ? 'true' : 'false'}
+                onKeyDown={(ev) => this.onRowKeyDown(ev, pageIndex, hasDetails)}
               >
-                {['single', 'multi', 'range'].includes(this.selectMode) ? (
-                  <td class="select-col" onClick={ev => this.selectRow(ev, pageIndex)}>
-                    {isSelected ? <button class="check-icon select-row-btns" /> : <button class="square-outline-icon select-row-btns" />}
+                {canSelect ? (
+                  <td class="select-col">
+                    <button
+                      type="button"
+                      class={`${isSelected ? 'check-icon' : 'square-outline-icon'} select-row-btns`}
+                      role={selectButtonRole}
+                      aria-checked={isSelected ? 'true' : 'false'}
+                      aria-label={`Select row ${pageIndex + 1}`}
+                      onClick={ev => this.selectRow(ev, pageIndex)}
+                    />
                   </td>
                 ) : null}
 
-                {row._showDetails ? (
-                  <td onClick={() => this.toggleDetails(pageIndex)} style={{ cursor: 'pointer', verticalAlign: 'middle' }}>
-                    <button class="btn-stripped">
-                      <i class={`caret-icon ${isExpanded ? 'rotate-down' : 'rotate-up'}`} />
+                {hasDetails ? (
+                  <td style={{ cursor: 'pointer', verticalAlign: 'middle' }}>
+                    <button
+                      type="button"
+                      class="btn-stripped"
+                      aria-label={`${isExpanded ? 'Collapse' : 'Expand'} details for row ${pageIndex + 1}`}
+                      aria-expanded={isExpanded ? 'true' : 'false'}
+                      aria-controls={this.detailsId(pageIndex)}
+                      onClick={() => this.toggleDetails(pageIndex)}
+                    >
+                      <i class={`caret-icon ${isExpanded ? 'rotate-down' : 'rotate-up'}`} aria-hidden="true" />
                     </button>
                   </td>
                 ) : hasDetailsRows ? (
@@ -768,8 +858,14 @@ export class TableComponent {
             logicalRowIndex++;
 
             const detailRow = row._showDetails ? (
-              <tr role="row" class="details-row" data-expanded={isExpanded ? 'true' : 'false'}>
-                <td colSpan={this.normalizedFields.length + 1 + (['single', 'multi', 'range'].includes(this.selectMode) ? 1 : 0)}>
+              <tr
+                id={this.detailsId(pageIndex)}
+                role="row"
+                class="details-row"
+                data-expanded={isExpanded ? 'true' : 'false'}
+                hidden={!isExpanded}
+              >
+                <td colSpan={this.normalizedFields.length + 1 + (canSelect ? 1 : 0)}>
                   <div>{this.renderDetails(row)}</div>
                 </td>
               </tr>
@@ -779,8 +875,10 @@ export class TableComponent {
           })}
 
           {this.paginatedItems.length === 0 ? (
-            <tr>
-              <td colSpan={this.normalizedFields.length + 1}>There are no records matching your request</td>
+            <tr role="row">
+              <td role="cell" colSpan={this.normalizedFields.length + 1}>
+                There are no records matching your request
+              </td>
             </tr>
           ) : null}
         </tbody>
