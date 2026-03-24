@@ -11,25 +11,25 @@ exports[`toasts-component renders HTML content via contentHtml and matches snaps
     </svg>
     <div aria-atomic="false" aria-label="Notifications" aria-relevant="additions text" class="toaster toaster-bottom-right" id="toaster-bottom-right" role="region">
       <div class="toaster-slot">
-        <div aria-atomic="true" aria-describedby="toast-component__toast_1773953299836__body" aria-labelledby="toast-component__toast_1773953299836__title" class="persistent show toast toast-danger toast-solid" data-toast-id="1773953299836" id="toast-component__toast_1773953299836__outer" role="alert">
-          <div id="toast-component__toast_1773953299836__content" tabindex="0">
+        <div aria-atomic="true" aria-describedby="toast-component__toast_1774296630249__body" aria-labelledby="toast-component__toast_1774296630249__title" class="persistent show toast toast-danger toast-solid" data-toast-id="1774296630249" id="toast-component__toast_1774296630249__outer" role="alert">
+          <div id="toast-component__toast_1774296630249__content" tabindex="0">
             <header class="toast-header">
               <div class="align-items-center d-flex flex-grow-1">
                 <svg aria-hidden="true" class="flex-shrink-0 me-2 toast-svg" focusable="false" style="fill: currentColor;">
                   <use href="#exclamation-triangle-outline"></use>
                 </svg>
-                <strong class="mr-auto" id="toast-component__toast_1773953299836__title">
+                <strong class="mr-auto" id="toast-component__toast_1774296630249__title">
                   HTML Toast
                 </strong>
                 <small class="mr-2 text-muted">
                   1m ago
                 </small>
               </div>
-              <button aria-controls="toast-component__toast_1773953299836__outer" aria-label="Close HTML Toast" class="close m1 ml-auto" id="toast-component__toast_1773953299836__close" type="button">
+              <button aria-controls="toast-component__toast_1774296630249__outer" aria-label="Close HTML Toast" class="close m1 ml-auto" id="toast-component__toast_1774296630249__close" type="button">
                 ×
               </button>
             </header>
-            <div class="toast-body" id="toast-component__toast_1773953299836__body">
+            <div class="toast-body" id="toast-component__toast_1774296630249__body">
               <div class="inner">
                 <b>
                   Bold
@@ -59,18 +59,18 @@ exports[`toasts-component renders a solid toast variant and matches snapshot: so
     </svg>
     <div aria-atomic="false" aria-label="Notifications" aria-relevant="additions text" class="toaster toaster-bottom-left" id="toaster-bottom-left" role="region">
       <div class="toaster-slot">
-        <div aria-atomic="true" aria-describedby="toast-component__toast_1773953299659__body" aria-labelledby="toast-component__toast_1773953299659__title" class="align-items-center border-0 fade persistent show text-bg-success toast" data-toast-id="1773953299659" id="toast-component__toast_1773953299659__outer" role="status" style="--toast-duration: 5s;">
-          <div class="d-flex" id="toast-component__toast_1773953299659__content" tabindex="0">
-            <span class="sr-only" id="toast-component__toast_1773953299659__title">
+        <div aria-atomic="true" aria-describedby="toast-component__toast_1774296630855__body" aria-labelledby="toast-component__toast_1774296630855__title" class="align-items-center border-0 fade persistent show text-bg-success toast" data-toast-id="1774296630855" id="toast-component__toast_1774296630855__outer" role="status" style="--toast-duration: 5s;">
+          <div class="d-flex" id="toast-component__toast_1774296630855__content" tabindex="0">
+            <span class="sr-only" id="toast-component__toast_1774296630855__title">
               Solid
             </span>
-            <div class="align-items-center d-flex toast-body" id="toast-component__toast_1773953299659__body">
+            <div class="align-items-center d-flex toast-body" id="toast-component__toast_1774296630855__body">
               <svg aria-hidden="true" class="flex-shrink-0 me-2 toast-svg" focusable="false" style="fill: currentColor;">
                 <use href="#check-circle-fill"></use>
               </svg>
               Solid body
             </div>
-            <button aria-controls="toast-component__toast_1773953299659__outer" aria-label="Close Solid" class="close ml-auto mr-2" id="toast-component__toast_1773953299659__close" type="button">
+            <button aria-controls="toast-component__toast_1774296630855__outer" aria-label="Close Solid" class="close ml-auto mr-2" id="toast-component__toast_1774296630855__close" type="button">
               ×
             </button>
           </div>
@@ -92,25 +92,25 @@ exports[`toasts-component renders a standard toast (string content) and matches 
     </svg>
     <div aria-atomic="false" aria-label="Notifications" aria-relevant="additions text" class="toaster toaster-top-left" id="toaster-top-left" role="region">
       <div class="toaster-slot">
-        <div aria-atomic="true" aria-describedby="toast-component__toast_1773953299131__body" aria-labelledby="toast-component__toast_1773953299131__title" class="persistent show toast toast-primary toast-solid" data-toast-id="1773953299131" id="toast-component__toast_1773953299131__outer" role="alert">
-          <div id="toast-component__toast_1773953299131__content" tabindex="0">
+        <div aria-atomic="true" aria-describedby="toast-component__toast_1774296630896__body" aria-labelledby="toast-component__toast_1774296630896__title" class="persistent show toast toast-primary toast-solid" data-toast-id="1774296630896" id="toast-component__toast_1774296630896__outer" role="alert">
+          <div id="toast-component__toast_1774296630896__content" tabindex="0">
             <header class="toast-header">
               <div class="align-items-center d-flex flex-grow-1">
                 <svg aria-hidden="true" class="flex-shrink-0 me-2 toast-svg" focusable="false" style="fill: currentColor;">
                   <use href="#info-fill"></use>
                 </svg>
-                <strong class="mr-auto" id="toast-component__toast_1773953299131__title">
+                <strong class="mr-auto" id="toast-component__toast_1774296630896__title">
                   Hello
                 </strong>
                 <small class="mr-2 text-muted">
                   just now
                 </small>
               </div>
-              <button aria-controls="toast-component__toast_1773953299131__outer" aria-label="Close Hello" class="close m1 ml-auto" id="toast-component__toast_1773953299131__close" type="button">
+              <button aria-controls="toast-component__toast_1774296630896__outer" aria-label="Close Hello" class="close m1 ml-auto" id="toast-component__toast_1774296630896__close" type="button">
                 ×
               </button>
             </header>
-            <div class="toast-body" id="toast-component__toast_1773953299131__body">
+            <div class="toast-body" id="toast-component__toast_1774296630896__body">
               This is a toast
             </div>
           </div>
@@ -132,8 +132,8 @@ exports[`toasts-component renders plumage toast (max) with HTML content and matc
     </svg>
     <div aria-atomic="false" aria-label="Notifications" aria-relevant="additions text" class="pl-toaster toaster-top-right" id="toaster-top-right" role="region">
       <div class="toaster-slot">
-        <div aria-atomic="true" aria-describedby="toast-component__toast_1773953299178__body" aria-labelledby="toast-component__toast_1773953299178__title" class="fade persistent pl-toast show toast-info" data-toast-id="1773953299178" id="toast-component__toast_1773953299178__outer" role="alert" style="--toast-duration: 5s;">
-          <div class="pl-toast-2" id="toast-component__toast_1773953299178__content" tabindex="0">
+        <div aria-atomic="true" aria-describedby="toast-component__toast_1774296630259__body" aria-labelledby="toast-component__toast_1774296630259__title" class="fade persistent pl-toast show toast-info" data-toast-id="1774296630259" id="toast-component__toast_1774296630259__outer" role="alert" style="--toast-duration: 5s;">
+          <div class="pl-toast-2" id="toast-component__toast_1774296630259__content" tabindex="0">
             <div class="pl-toast-body">
               <div class="d-flex pl-toast-content">
                 <div class="align-self-center">
@@ -141,16 +141,16 @@ exports[`toasts-component renders plumage toast (max) with HTML content and matc
                 </div>
                 <div class="toast-title w-100">
                   <div class="d-flex justify-content-between">
-                    <div class="hdr-x header" id="toast-component__toast_1773953299178__title">
+                    <div class="hdr-x header" id="toast-component__toast_1774296630259__title">
                       Plumage Max
                     </div>
                     <div class="d-flex toast-buttons">
-                      <button aria-controls="toast-component__toast_1773953299178__outer" aria-label="Close Plumage Max" class="close ml-3" id="toast-component__toast_1773953299178__close" type="button">
+                      <button aria-controls="toast-component__toast_1774296630259__outer" aria-label="Close Plumage Max" class="close ml-3" id="toast-component__toast_1774296630259__close" type="button">
                         ×
                       </button>
                     </div>
                   </div>
-                  <div class="body-y d-flex flex-column toast-data" id="toast-component__toast_1773953299178__body">
+                  <div class="body-y d-flex flex-column toast-data" id="toast-component__toast_1774296630259__body">
                     <div>
                       <div class="data">
                         <div>

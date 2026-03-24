@@ -1,45 +1,45 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`tooltip-component applies right placement class and renders on click: host__click_right 1`] = `
+exports[`tooltip-component applies right placement class and renders on click; outside click closes: host__click_right 1`] = `
 <tooltip-component data-original-title="On the right" data-placement="right" data-trigger="click" id="tip3" visible="">
   <!---->
-  <button aria-describedby="tooltip_2pofjdjui" data-placement="right" data-toggle="tooltip" id="t3" tabindex="0">
+  <button aria-describedby="tip3__tip_3" aria-expanded="true" aria-haspopup="true" data-placement="right" data-toggle="tooltip" id="t3">
     Click me
   </button>
 </tooltip-component>
 `;
 
-exports[`tooltip-component applies right placement class and renders on click: tooltip__click_right 1`] = `"<div id="tooltip_2pofjdjui" class="tooltip tooltip-right fade show animated" role="tooltip" aria-live="assertive" style="position: absolute; top: 0px; left: 0px;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 0; pointer-events: none;"></div><div id="tooltip_2pofjdjui-content" class="tooltip-inner" style="position: relative;">On the right</div></div>"`;
+exports[`tooltip-component applies right placement class and renders on click; outside click closes: tooltip__click_right 1`] = `"<div id="tip3__tip_3" class="tooltip fade show animated tooltip-right" role="tooltip" aria-hidden="false" style="position: absolute; top: 420px; left: 1368px; pointer-events: none;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 1; pointer-events: none; display: block; top: 6px; left: -5px;"></div><div id="tip3__tip_3-content" class="tooltip-inner" style="position: relative;">On the right</div></div>"`;
 
 exports[`tooltip-component manual mode: show()/hide() only when trigger includes "manual": host__manual_show 1`] = `
 <tooltip-component data-original-title="Manual tip" data-trigger="manual" id="tip4" visible="">
   <!---->
-  <button aria-describedby="tooltip_jfuo2av51" data-placement="top" data-toggle="tooltip" id="t4" tabindex="0">
+  <button aria-describedby="tip4__tip_4" aria-expanded="true" aria-haspopup="true" data-placement="top" data-toggle="tooltip" id="t4">
     Manual
   </button>
 </tooltip-component>
 `;
 
-exports[`tooltip-component manual mode: show()/hide() only when trigger includes "manual": tooltip__manual_show 1`] = `"<div id="tooltip_jfuo2av51" class="tooltip tooltip-top fade show animated" role="tooltip" aria-live="assertive" style="position: absolute; top: 0px; left: 0px;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 0; pointer-events: none;"></div><div id="tooltip_jfuo2av51-content" class="tooltip-inner" style="position: relative;">Manual tip</div></div>"`;
+exports[`tooltip-component manual mode: show()/hide() only when trigger includes "manual": tooltip__manual_show 1`] = `"<div id="tip4__tip_4" class="tooltip fade show animated tooltip-top" role="tooltip" aria-hidden="false" style="position: absolute; top: 40px; left: 90px; pointer-events: none;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 1; pointer-events: none; display: block; left: 6px; top: -5px;"></div><div id="tip4__tip_4-content" class="tooltip-inner" style="position: relative;">Manual tip</div></div>"`;
 
 exports[`tooltip-component renders HTML content when provided and matches snapshot: host__hover_html 1`] = `
 <tooltip-component data-html data-original-title="<span><strong>Hi</strong> <em>there</em></span>" data-trigger="hover focus" id="tip2" visible="">
   <!---->
-  <button aria-describedby="tooltip_nh06ilyk1" data-placement="top" data-toggle="tooltip" id="t2" tabindex="0">
+  <button aria-describedby="tip2__tip_2" aria-expanded="true" data-placement="top" data-toggle="tooltip" id="t2">
     Hover me
   </button>
 </tooltip-component>
 `;
 
-exports[`tooltip-component renders HTML content when provided and matches snapshot: tooltip__hover_html 1`] = `"<div id="tooltip_nh06ilyk1" class="tooltip tooltip-top fade show animated" role="tooltip" aria-live="assertive" style="position: absolute; top: 0px; left: 0px;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 0; pointer-events: none;"></div><div id="tooltip_nh06ilyk1-content" class="tooltip-inner" style="position: relative;"><span><strong>Hi</strong> <em>there</em></span></div></div>"`;
+exports[`tooltip-component renders HTML content when provided and matches snapshot: tooltip__hover_html 1`] = `"<div id="tip2__tip_2" class="tooltip fade show animated tooltip-top" role="tooltip" aria-hidden="false" style="position: absolute; top: 90px; left: 140px; pointer-events: none;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 1; pointer-events: none; display: block; left: 6px; top: -5px;"></div><div id="tip2__tip_2-content" class="tooltip-inner" style="position: relative;"><span><strong>Hi</strong> <em>there</em></span></div></div>"`;
 
-exports[`tooltip-component renders on hover with plain text and matches snapshot: host__hover_plain 1`] = `
+exports[`tooltip-component wires trigger a11y attributes and shows on hover (plain text): host__hover_plain 1`] = `
 <tooltip-component data-original-title="Plain tooltip" data-trigger="hover focus" id="tip1" visible="">
   <!---->
-  <button aria-describedby="tooltip_n9l8cvr7k" data-placement="top" data-toggle="tooltip" id="t1" tabindex="0">
+  <button aria-describedby="tip1__tip_1" aria-expanded="true" data-placement="top" data-toggle="tooltip" id="t1">
     Hover me
   </button>
 </tooltip-component>
 `;
 
-exports[`tooltip-component renders on hover with plain text and matches snapshot: tooltip__hover_plain 1`] = `"<div id="tooltip_n9l8cvr7k" class="tooltip tooltip-top fade show animated" role="tooltip" aria-live="assertive" style="position: absolute; top: 0px; left: 0px;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 0; pointer-events: none;"></div><div id="tooltip_n9l8cvr7k-content" class="tooltip-inner" style="position: relative;">Plain tooltip</div></div>"`;
+exports[`tooltip-component wires trigger a11y attributes and shows on hover (plain text): tooltip__hover_plain 1`] = `"<div id="tip1__tip_1" class="tooltip fade show animated tooltip-top" role="tooltip" aria-hidden="false" style="position: absolute; top: 290px; left: 240px; pointer-events: none;"><div class="tooltip-arrow" style="position: absolute; width: 10px; height: 10px; transform: rotate(45deg); background: currentColor; opacity: 1; pointer-events: none; display: block; left: 6px; top: -5px;"></div><div id="tip1__tip_1-content" class="tooltip-inner" style="position: relative;">Plain tooltip</div></div>"`;

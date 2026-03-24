@@ -5,10 +5,27 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+Accessibility / 508 notes (high level):
+- Single switch:
+  - native <input type="checkbox"> with role="switch"
+  - label is associated via htmlFor/id
+  - invalid state uses aria-invalid + aria-describedby -> validation message id
+  - when label text is empty, provide an aria-label fallback
+
+- Switch group (multiple switches):
+  - group wrapper uses role="group"
+  - group invalid state uses aria-invalid + aria-describedby -> group validation id (inline mode)
+  - each invalid item input also uses aria-invalid + aria-describedby -> its own validation message id
+  - all ids are derived from inputId/item.id (no random ids needed for wiring)
+
 ## Properties
 
 | Property            | Attribute            | Description                                                                                                                               | Type                           | Default                    |
 | ------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | -------------------------- |
+| `ariaLabel`         | `aria-label`         | A11y fallback name for single-switch usage when labelTxt is empty. (If labelTxt exists, label association is preferred.)                  | `string`                       | `'Toggle'`                 |
+| `ariaLabelledby`    | `aria-labelledby`    | Optional: label the group wrapper (multiple switches) when you have a visible label elsewhere. Example: ariaLabelledby="someLabelId"      | `string`                       | `''`                       |
 | `checked`           | `checked`            |                                                                                                                                           | `boolean`                      | `false`                    |
 | `customSwitch`      | `custom-switch`      |                                                                                                                                           | `boolean`                      | `false`                    |
 | `disabled`          | `disabled`           |                                                                                                                                           | `boolean`                      | `false`                    |

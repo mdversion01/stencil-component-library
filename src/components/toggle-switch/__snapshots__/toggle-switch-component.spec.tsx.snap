@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`toggle-switch-component renders a toggle with toggleTxt and newToggleTxt 1`] = `
+exports[`toggle-switch-component renders a single toggle with toggleTxt and newToggleTxt attribute JSON (attribute wins) 1`] = `
 <toggle-switch-component checked="true" input-id="txt-toggle" label-txt="Power" new-toggle-txt="{ &quot;on&quot;: &quot;Enabled&quot;, &quot;off&quot;: &quot;Disabled&quot; }" toggle-txt="true">
   <div class="form-group toggle-switch">
     <div class="form-check form-switch">

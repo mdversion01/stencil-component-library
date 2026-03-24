@@ -1,5 +1,5 @@
 // src/components/tooltip/tooltip-component.tsx
-import { Component, h, Prop, Element, Method } from '@stencil/core';
+import { Component, h, Prop, Element, Method, Listen } from '@stencil/core';
 
 export type TooltipPosition = 'auto' | 'top' | 'bottom' | 'left' | 'right';
 export type TooltipVariant = '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
@@ -36,36 +36,56 @@ export class TooltipComponent {
   /** Optional CSS selector to append tooltip into (defaults to body) */
   @Prop() container?: string | null;
 
-  /** Additional classes to apply to tooltip; can be a string */
+  /** Additional classes to apply to tooltip */
   @Prop() customClass: string = '';
 
   /** Contextual color variant */
   @Prop() variant: TooltipVariant = '';
 
+  /**
+   * Optional stable id for the tooltip element (recommended for tests/SSR).
+   * If omitted, a deterministic-ish id is generated.
+   */
+  @Prop() tooltipId?: string;
+
   // ------- internals -------
-  private tooltipId = `tooltip_${Math.random().toString(36).substr(2, 9)}`;
+  private static _uid = 0;
+
+  private _tooltipId!: string;
   private tooltipEl: HTMLDivElement | null = null;
   private arrowEl: HTMLDivElement | null = null;
 
   private outsideClickHandler = (ev: Event) => this.handleOutsideClick(ev);
   private scrollHandler = () => this.handleScroll();
-  private mo?: MutationObserver;
 
-  // ---------- resolver helpers (Option A) ----------
+  private mo?: MutationObserver;
+  private ro?: ResizeObserver;
+
+  // ---------- resolver helpers ----------
   private resolvePosition(): TooltipPosition {
+    // allow data-placement on host OR trigger element; prefer host attribute if set
     return (this.host.getAttribute('data-placement') as TooltipPosition) || this.position;
   }
   private resolveHtml(): boolean {
     return this.host.hasAttribute('data-html') || this.htmlContent;
   }
   private resolveTitle(): string {
-    return this.host.getAttribute('title') || this.host.getAttribute('data-original-title') || this.tooltipTitle || this.message || '';
+    // Prefer data-original-title if present (since we may move `title` into it)
+    return (
+      this.host.getAttribute('data-original-title') ||
+      this.host.getAttribute('title') ||
+      this.tooltipTitle ||
+      this.message ||
+      ''
+    );
   }
   private resolveTrigger(): string {
     return this.host.getAttribute('data-trigger') || this.trigger;
   }
   private resolveAnimation(): boolean {
-    return this.host.hasAttribute('data-animation') ? this.host.getAttribute('data-animation') !== 'false' : this.animation;
+    return this.host.hasAttribute('data-animation')
+      ? this.host.getAttribute('data-animation') !== 'false'
+      : this.animation;
   }
   private resolveContainer(): string | null | undefined {
     const v = this.host.getAttribute('data-container');
@@ -79,33 +99,121 @@ export class TooltipComponent {
   }
 
   connectedCallback() {
+    // generate a stable-ish id once per instance
+    const base = (this.tooltipId || '').trim() || (this.host.id || '').trim() || 'tooltip';
+    TooltipComponent._uid += 1;
+    this._tooltipId = `${base}__tip_${TooltipComponent._uid}`;
+
     window.addEventListener('scroll', this.scrollHandler, true);
+
+    // Observe size changes while visible (keeps position correct on responsive layout)
+    if (typeof ResizeObserver !== 'undefined') {
+      this.ro = new ResizeObserver(() => {
+        if (this.visible) requestAnimationFrame(() => this.adjustTooltipPosition());
+      });
+    }
   }
 
   componentDidLoad() {
-  this.applyTriggers();
-  if (typeof MutationObserver !== 'undefined') {
-    this.mo = new MutationObserver(() => this.applyTriggers());
-    this.mo.observe(this.host, { childList: true, subtree: false });
+    this.applyTriggers();
+
+    // If slot content changes (new trigger element), rebind
+    if (typeof MutationObserver !== 'undefined') {
+      this.mo = new MutationObserver(() => this.applyTriggers());
+      this.mo.observe(this.host, { childList: true, subtree: false });
+    }
+
+    // If initially visible (manual), render immediately
+    if (this.visible) {
+      this.createTooltipElement();
+      requestAnimationFrame(() => this.adjustTooltipPosition());
+    }
   }
-}
 
   disconnectedCallback() {
     window.removeEventListener('scroll', this.scrollHandler, true);
     document.removeEventListener('click', this.outsideClickHandler, true);
     this.removeTooltipElement();
     this.mo?.disconnect();
+    this.ro?.disconnect();
   }
 
   // ---------- public (manual) ----------
-  @Method() async show(): Promise<void> {
+  @Method()
+  async show(): Promise<void> {
     if (this.resolveTrigger().includes('manual')) this.showTooltip();
   }
-  @Method() async hide(): Promise<void> {
+
+  @Method()
+  async hide(): Promise<void> {
     if (this.resolveTrigger().includes('manual')) this.hideTooltip();
   }
 
-  // ---------- helpers ----------
+  // ---------- accessibility helpers ----------
+  private isNaturallyFocusable(el: HTMLElement): boolean {
+    const tag = el.tagName.toLowerCase();
+    if (tag === 'button' || tag === 'input' || tag === 'select' || tag === 'textarea') return true;
+    if (tag === 'a' && (el as HTMLAnchorElement).hasAttribute('href')) return true;
+    return false;
+  }
+
+  private normalizeIdList(value?: string | null): string | undefined {
+    const trimmed = String(value ?? '').trim();
+    if (!trimmed) return undefined;
+    const tokens = trimmed.split(/\s+/).filter(Boolean);
+    return tokens.length ? tokens.join(' ') : undefined;
+  }
+
+  private joinIds(...ids: Array<string | undefined>): string | undefined {
+    const tokens = ids
+      .map(v => this.normalizeIdList(v))
+      .filter(Boolean)
+      .join(' ')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+
+    if (!tokens.length) return undefined;
+
+    // de-dupe, preserve order
+    const out: string[] = [];
+    for (const t of tokens) if (!out.includes(t)) out.push(t);
+    return out.join(' ');
+  }
+
+  private syncTriggerA11y(triggerEl: HTMLElement) {
+    // Prevent native browser tooltip from competing with our custom tooltip.
+    // Move title -> data-original-title once.
+    const title = triggerEl.getAttribute('title');
+    if (title && !triggerEl.getAttribute('data-original-title')) {
+      triggerEl.setAttribute('data-original-title', title);
+      triggerEl.removeAttribute('title');
+    }
+
+    // Ensure focusable for keyboard if not naturally focusable
+    if (!this.isNaturallyFocusable(triggerEl) && !triggerEl.hasAttribute('tabindex')) {
+      triggerEl.setAttribute('tabindex', '0');
+    }
+
+    // role tooltip relationship: aria-describedby should include our tooltip id
+    const existing = triggerEl.getAttribute('aria-describedby');
+    const merged = this.joinIds(existing || undefined, this._tooltipId);
+    if (merged) triggerEl.setAttribute('aria-describedby', merged);
+
+    // Some AT benefit from aria-haspopup for click-triggered tips
+    const triggers = this.resolveTrigger().split(/\s+/).filter(Boolean);
+    const isClickLike = triggers.includes('click') || triggers.includes('manual');
+    if (isClickLike) triggerEl.setAttribute('aria-haspopup', 'true');
+    else triggerEl.removeAttribute('aria-haspopup');
+
+    // aria-expanded tracks visibility when click/manual is possible (harmless otherwise)
+    triggerEl.setAttribute('aria-expanded', this.visible ? 'true' : 'false');
+
+    // data-* for debugging/compat
+    triggerEl.setAttribute('data-toggle', 'tooltip');
+    triggerEl.setAttribute('data-placement', this.resolvePosition());
+  }
+
   private getColor(variant: TooltipVariant): string {
     switch (variant) {
       case 'primary':
@@ -140,10 +248,7 @@ export class TooltipComponent {
     this.unbind(triggerEl);
     if (!triggerEl) return;
 
-    if (!triggerEl.hasAttribute('tabindex')) triggerEl.setAttribute('tabindex', '0');
-    triggerEl.setAttribute('data-toggle', 'tooltip');
-    triggerEl.setAttribute('data-placement', this.resolvePosition());
-    triggerEl.setAttribute('aria-describedby', this.tooltipId);
+    this.syncTriggerA11y(triggerEl);
 
     const triggers = this.resolveTrigger().split(/\s+/).filter(Boolean);
 
@@ -159,6 +264,15 @@ export class TooltipComponent {
       triggerEl.addEventListener('focus', this.onFocus);
       triggerEl.addEventListener('blur', this.onBlur);
     }
+
+    // Keep RO observing both trigger and tooltip when visible
+    this.ro?.disconnect();
+    this.ro?.observe(triggerEl);
+
+    if (this.visible) {
+      this.createTooltipElement();
+      requestAnimationFrame(() => this.adjustTooltipPosition());
+    }
   }
 
   private onClick = (ev: Event) => {
@@ -167,29 +281,57 @@ export class TooltipComponent {
     if (ev.currentTarget !== target) return;
     this.visible ? this.hideTooltip() : this.showTooltip();
   };
+
   private onMouseEnter = (ev: Event) => {
     if (this.resolveTrigger().includes('manual')) return;
     const target = this.getTriggerEl();
     if (ev.currentTarget !== target) return;
     this.showTooltip();
   };
+
   private onMouseLeave = () => {
     if (this.resolveTrigger().includes('manual')) return;
     this.hideTooltip();
   };
+
   private onFocus = (ev: Event) => {
     if (this.resolveTrigger().includes('manual')) return;
     const target = this.getTriggerEl();
     if (ev.currentTarget !== target) return;
     this.showTooltip();
   };
+
   private onBlur = () => {
     if (this.resolveTrigger().includes('manual')) return;
     this.hideTooltip();
   };
 
+  @Listen('keydown', { target: 'document' })
+  onDocumentKeydown(ev: KeyboardEvent) {
+    if (!this.visible) return;
+    if (ev.key !== 'Escape') return;
+
+    // Only close if focus/click originated within this tooltip/trigger
+    const trigger = this.getTriggerEl();
+    const tip = this.tooltipEl;
+    const path = (ev.composedPath?.() as any[]) || [];
+    const within =
+      (trigger && path.includes(trigger)) ||
+      (tip && path.includes(tip)) ||
+      (trigger && document.activeElement && trigger.contains(document.activeElement)) ||
+      (tip && document.activeElement && tip.contains(document.activeElement));
+
+    if (!within) return;
+
+    ev.preventDefault();
+    this.hideTooltip();
+  }
+
   private handleScroll() {
+    // If click-triggered, scrolling should close (matches common UX)
     if (this.resolveTrigger().includes('click') && this.visible) this.hideTooltip();
+    // For hover/focus, keep it positioned if still visible
+    if (this.visible) requestAnimationFrame(() => this.adjustTooltipPosition());
   }
 
   private handleOutsideClick(event: Event) {
@@ -204,11 +346,19 @@ export class TooltipComponent {
   private showTooltip() {
     this.visible = true;
     this.createTooltipElement();
+
+    const trigger = this.getTriggerEl();
+    if (trigger) trigger.setAttribute('aria-expanded', 'true');
+
     requestAnimationFrame(() => this.adjustTooltipPosition());
   }
 
   private hideTooltip() {
     this.visible = false;
+
+    const trigger = this.getTriggerEl();
+    if (trigger) trigger.setAttribute('aria-expanded', 'false');
+
     this.removeTooltipElement();
   }
 
@@ -234,13 +384,12 @@ export class TooltipComponent {
     const custom = this.resolveCustomClass();
     const variantCls = this.getColor(this.resolveVariant());
 
-    // Heuristic: auto-enable HTML if the content looks like markup
+    // Best practice: do NOT auto-enable HTML by heuristics. Only enable if explicitly requested.
     const rawContent = this.getTooltipContent();
-    const looksLikeHtml = /<[^>]+>/.test(rawContent.trim());
-    const useHtml = this.resolveHtml() || looksLikeHtml;
+    const useHtml = this.resolveHtml();
 
     const tooltip = document.createElement('div');
-    tooltip.id = this.tooltipId;
+    tooltip.id = this._tooltipId;
     tooltip.classList.add('tooltip', `tooltip-${position}`, 'fade', 'show');
     if (animate) tooltip.classList.add('animated');
 
@@ -248,9 +397,11 @@ export class TooltipComponent {
     tooltip.style.position = 'absolute';
     tooltip.style.top = '0px';
     tooltip.style.left = '0px';
+    tooltip.style.pointerEvents = 'none'; // tooltips should not steal mouse/focus
 
+    // A11y: tooltip role. Do not use aria-live on tooltips (they aren't announcements).
     tooltip.setAttribute('role', 'tooltip');
-    tooltip.setAttribute('aria-live', 'assertive');
+    tooltip.setAttribute('aria-hidden', 'false');
 
     // arrow
     const arrow = document.createElement('div');
@@ -267,7 +418,7 @@ export class TooltipComponent {
 
     // inner
     const inner = document.createElement('div');
-    inner.id = `${this.tooltipId}-content`;
+    inner.id = `${this._tooltipId}-content`;
     inner.className = `tooltip-inner ${variantCls} ${custom}`.trim();
     inner.style.position = 'relative';
 
@@ -284,12 +435,13 @@ export class TooltipComponent {
     this.tooltipEl = tooltip;
     this.arrowEl = arrow;
 
+    // Observe tooltip size for repositioning
+    if (this.ro) this.ro.observe(tooltip);
+
     // Match arrow color to inner background (if any)
     try {
       const bg = getComputedStyle(inner).backgroundColor || getComputedStyle(inner).color;
-      if (bg) {
-        arrow.style.backgroundColor = bg;
-      }
+      if (bg) arrow.style.backgroundColor = bg;
     } catch {
       // ignore
     }
@@ -297,8 +449,16 @@ export class TooltipComponent {
 
   private removeTooltipElement() {
     if (!this.tooltipEl) return;
+
+    try {
+      this.tooltipEl.setAttribute('aria-hidden', 'true');
+    } catch {
+      // ignore
+    }
+
     const parent = this.tooltipEl.parentElement;
     if (parent) parent.removeChild(this.tooltipEl);
+
     this.tooltipEl = null;
     this.arrowEl = null;
   }
@@ -312,7 +472,9 @@ export class TooltipComponent {
 
     const tRect = trigger.getBoundingClientRect();
     const tipRect = this.tooltipEl.getBoundingClientRect();
-    const cRect = isBody ? ({ top: 0, left: 0, width: window.innerWidth, height: window.innerHeight } as DOMRect) : container.getBoundingClientRect();
+    const cRect = isBody
+      ? ({ top: 0, left: 0, width: window.innerWidth, height: window.innerHeight } as DOMRect)
+      : container.getBoundingClientRect();
 
     const scrollTop = isBody ? window.pageYOffset : container.scrollTop;
     const scrollLeft = isBody ? window.pageXOffset : container.scrollLeft;
@@ -321,7 +483,7 @@ export class TooltipComponent {
     const baseLeft = tRect.left - cRect.left + scrollLeft;
 
     const OFFSET_TB = 10; // vertical gap for top/bottom
-    const TARGET_SIDE_GAP = 8; // exact desired gap for left/right
+    const TARGET_SIDE_GAP = 8; // desired gap for left/right
 
     const spaceAbove = tRect.top;
     const spaceBelow = window.innerHeight - tRect.bottom;
@@ -365,7 +527,6 @@ export class TooltipComponent {
       top = baseTop + tRect.height + OFFSET_TB;
       left = baseLeft + tRect.width / 2 - tipRect.width / 2;
     } else if (pos === 'left') {
-      // Place flush (no gap), then normalize to TARGET_SIDE_GAP
       top = baseTop + tRect.height / 2 - tipRect.height / 2;
       left = baseLeft - tipRect.width;
     } else {
@@ -410,13 +571,11 @@ export class TooltipComponent {
       this.arrowEl.style.display = 'block';
 
       if (pos === 'top' || pos === 'bottom') {
-        // center arrow horizontally
         const desiredLeft = tRect.left + tRect.width / 2 - tipNow.left - ARROW_HALF;
         const clamped = Math.max(6, Math.min(desiredLeft, tipNow.width - 6 - ARROW_HALF * 2));
         this.arrowEl.style.left = `${clamped}px`;
         this.arrowEl.style.top = pos === 'top' ? `${tipNow.height - ARROW_HALF}px` : `${-ARROW_HALF}px`;
       } else {
-        // center arrow vertically
         const desiredTop = tRect.top + tRect.height / 2 - tipNow.top - ARROW_HALF;
         const clamped = Math.max(6, Math.min(desiredTop, tipNow.height - 6 - ARROW_HALF * 2));
         this.arrowEl.style.top = `${clamped}px`;

@@ -3,7 +3,7 @@
 exports[`progress-display-component bars watcher: update via attribute re-renders 1`] = `
 <progress-display-component bars="[{&quot;value&quot;:40,&quot;variant&quot;:&quot;warning&quot;,&quot;showProgress&quot;:true},{&quot;value&quot;:10,&quot;variant&quot;:&quot;dark&quot;,&quot;progressAlign&quot;:&quot;right&quot;}]">
   <!---->
-  <div aria-label="Progress" class="progress-root" id="progress_it9le312x-group" role="group">
+  <div aria-label="Progress" class="progress-root" id="progress_a76m3c67w-group" role="group">
     <div class="linear-progress" style="height: 20px;">
       <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="40" aria-valuetext="40%" class="bg-warning progress-bar" role="progressbar" style="width: 40.0000%;">
         <span aria-hidden="true" class="progress-text">
@@ -49,11 +49,11 @@ exports[`progress-display-component label prop wires aria-labelledby to a real l
 <progress-display-component>
   <!---->
   <div class="progress-root">
-    <span class="progress-a11y-label" id="progress_l3buti7f0-label">
+    <span class="progress-a11y-label" id="progress_oyeeuzf7x-label">
       Loading widgets
     </span>
     <div class="linear-progress" style="height: 20px;">
-      <div aria-labelledby="progress_l3buti7f0-label" aria-valuemax="100" aria-valuemin="0" aria-valuenow="10" class="bg-primary progress-bar" role="progressbar" style="width: 10.0000%;">
+      <div aria-labelledby="progress_oyeeuzf7x-label" aria-valuemax="100" aria-valuemin="0" aria-valuenow="10" class="bg-primary progress-bar" role="progressbar" style="width: 10.0000%;">
         <span class="progress-label">
           Loading widgets
         </span>
@@ -92,7 +92,7 @@ exports[`progress-display-component linear with showProgress + striped + animate
 exports[`progress-display-component multi bars from JSON attribute snapshot + a11y group 1`] = `
 <progress-display-component>
   <!---->
-  <div aria-label="Progress" class="progress-root" id="progress_cgm7cincb-group" role="group">
+  <div aria-label="Progress" class="progress-root" id="progress_dk6rowe0x-group" role="group">
     <div class="linear-progress" style="height: 22px;">
       <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" aria-valuetext="25%" class="bg-primary progress-bar" role="progressbar" style="width: 25.0000%;">
         <span aria-hidden="true" class="progress-text">

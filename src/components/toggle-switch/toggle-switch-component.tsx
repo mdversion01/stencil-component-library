@@ -1,13 +1,29 @@
 // src/components/toggle-switch/toggle-switch-component.tsx
-import { Component, Prop, State, Event, EventEmitter, h, Watch } from '@stencil/core';
+import { Component, Prop, State, Event, EventEmitter, h, Watch, Element } from '@stencil/core';
 import type { ToggleItem } from './toggle-switch-types';
 
+/**
+ * Accessibility / 508 notes (high level):
+ * - Single switch:
+ *   - native <input type="checkbox"> with role="switch"
+ *   - label is associated via htmlFor/id
+ *   - invalid state uses aria-invalid + aria-describedby -> validation message id
+ *   - when label text is empty, provide an aria-label fallback
+ *
+ * - Switch group (multiple switches):
+ *   - group wrapper uses role="group"
+ *   - group invalid state uses aria-invalid + aria-describedby -> group validation id (inline mode)
+ *   - each invalid item input also uses aria-invalid + aria-describedby -> its own validation message id
+ *   - all ids are derived from inputId/item.id (no random ids needed for wiring)
+ */
 @Component({
   tag: 'toggle-switch-component',
   styleUrls: ['../form-styles.scss', 'toggle-switch.scss'],
   shadow: false,
 })
 export class ToggleSwitchComponent {
+  @Element() host!: HTMLElement;
+
   @Prop() inputId: string = '';
   @Prop() checked: boolean = false;
   @Prop() disabled: boolean = false;
@@ -38,6 +54,18 @@ export class ToggleSwitchComponent {
 
   // choose custom vs bootstrap
   @Prop() customSwitch: boolean = false;
+
+  /**
+   * A11y fallback name for single-switch usage when labelTxt is empty.
+   * (If labelTxt exists, label association is preferred.)
+   */
+  @Prop() ariaLabel: string = 'Toggle';
+
+  /**
+   * Optional: label the group wrapper (multiple switches) when you have a visible label elsewhere.
+   * Example: ariaLabelledby="someLabelId"
+   */
+  @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby: string = '';
 
   @State() keyboardFocused: boolean = false;
   @State() isChecked: boolean = false;
@@ -147,10 +175,21 @@ export class ToggleSwitchComponent {
     this.checkedChanged.emit({ id: this.inputId || 'toggle', checked: !!this.isChecked });
   };
 
+  private getGroupId(): string {
+    // Prefer deterministic id derived from inputId. If missing, derive from host (still stable in DOM).
+    const base = (this.inputId || '').trim();
+    if (base) return base;
+    // deterministic-ish fallback (not random): use tag + incremental index if needed.
+    // If a consumer doesn't pass inputId, the input itself will still be correctly labelled,
+    // but group id is best-effort.
+    return this.host.id?.trim() || 'toggle-group';
+  }
+
   // ---------- RENDER HELPERS (MULTI) ----------
   private renderBootstrapSwitch(item: ToggleItem, parentId: string, index: number) {
     const switchId = `${parentId}_option_${item.id}`;
     const invalid = !!(item.required && item.validation && !item.checked);
+    const msgId = `${switchId}-validation`;
 
     const showToggleTxt = (item.toggleTxt ?? this.toggleTxt) === true;
     const base = this.resolvedToggleTxt;
@@ -182,21 +221,32 @@ export class ToggleSwitchComponent {
           required={!!(this.required || item.required)}
           aria-checked={String(!!item.checked)}
           aria-disabled={String(!!(this.disabled || item.disabled))}
+          aria-required={item.required || this.required ? 'true' : undefined}
+          aria-invalid={invalid ? 'true' : undefined}
+          aria-describedby={invalid && item.validationMessage ? msgId : undefined}
           onChange={() => this.toggleSwitch(index)}
           value={item.value}
         />
+
         <label class="form-check-label" htmlFor={switchId} onClick={onLabelClick}>
           {item.label}
           {showToggleTxt && <span class="toggleTxt-bold"> {toggleText}</span>}
-          {item.required && <span class="required">*</span>}
+          {(item.required || this.required) && <span class="required">*</span>}
         </label>
-        {!this.inline && invalid && item.validationMessage && <div class="invalid-feedback">{item.validationMessage}</div>}
+
+        {/* Per-item message (non-inline OR inline—this message is for the input itself) */}
+        {invalid && item.validationMessage && (
+          <div id={msgId} class="invalid-feedback" role="alert" aria-live="polite">
+            {item.validationMessage}
+          </div>
+        )}
       </div>
     );
   }
 
   private renderCustomSwitch(item: ToggleItem, parentId: string, index: number) {
     const switchId = `${parentId}_option_${item.id}`;
+    const msgId = `${switchId}-validation`;
 
     const base = this.resolvedToggleTxt;
     const toggleText = item.checked ? item.newToggleTxt?.on || base.on : item.newToggleTxt?.off || base.off;
@@ -216,16 +266,20 @@ export class ToggleSwitchComponent {
         <input
           id={switchId}
           type="checkbox"
-          class="custom-control-input"
+          class={`custom-control-input ${invalid ? 'is-invalid' : ''}`}
           role="switch"
           checked={!!item.checked}
           disabled={!!(this.disabled || item.disabled)}
           required={!!(this.required || item.required)}
           aria-checked={String(!!item.checked)}
           aria-disabled={String(!!(this.disabled || item.disabled))}
+          aria-required={item.required || this.required ? 'true' : undefined}
+          aria-invalid={invalid ? 'true' : undefined}
+          aria-describedby={invalid && item.validationMessage ? msgId : undefined}
           onChange={() => this.toggleSwitch(index)}
           value={item.value}
         />
+
         <label
           htmlFor={switchId}
           onClick={onLabelClick}
@@ -233,9 +287,14 @@ export class ToggleSwitchComponent {
         >
           {item.label}
           {showToggleTxt && <span class="toggleTxt-bold"> {toggleText}</span>}
-          {item.required && <span class="required">*</span>}
+          {(item.required || this.required) && <span class="required">*</span>}
         </label>
-        {!this.inline && invalid && item.validationMessage && <div class="invalid-feedback">{item.validationMessage}</div>}
+
+        {invalid && item.validationMessage && (
+          <div id={msgId} class="invalid-feedback" role="alert" aria-live="polite">
+            {item.validationMessage}
+          </div>
+        )}
       </div>
     );
   }
@@ -246,7 +305,9 @@ export class ToggleSwitchComponent {
 
   // ---------- RENDER (SINGLE) ----------
   private renderSingleBootstrap() {
-    const switchId = this.inputId || `toggle-switch-${Math.random().toString(36).slice(2, 7)}`;
+    const switchId = (this.inputId || '').trim() || `toggle-switch`;
+    const msgId = `${switchId}-validation`;
+
     const base = this.resolvedToggleTxt;
     const toggleText = this.isChecked ? base.on : base.off;
     const invalid = !!(this.required && this.validation && !this.isChecked);
@@ -260,6 +321,9 @@ export class ToggleSwitchComponent {
       this.toggleSingle();
     };
 
+    const hasLabel = !!String(this.labelTxt || '').trim();
+    const ariaLabel = hasLabel ? undefined : (this.ariaLabel || 'Toggle');
+
     return (
       <div class="form-group toggle-switch">
         <div class={wrapperCls}>
@@ -271,24 +335,36 @@ export class ToggleSwitchComponent {
             checked={!!this.isChecked}
             disabled={!!this.disabled}
             required={!!this.required}
+            aria-label={ariaLabel}
             aria-checked={String(!!this.isChecked)}
             aria-disabled={String(!!this.disabled)}
+            aria-required={this.required ? 'true' : undefined}
+            aria-invalid={invalid ? 'true' : undefined}
+            aria-describedby={invalid && this.validationMessage ? msgId : undefined}
             onChange={this.toggleSingle}
             value={this.value}
           />
+
           <label class="form-check-label" htmlFor={switchId} onClick={onLabelClick}>
             {this.labelTxt}
             {this.toggleTxt && <span class="toggleTxt-bold"> {toggleText}</span>}
             {this.required && <span class="required">*</span>}
           </label>
-          {invalid && this.validationMessage && <div class="invalid-feedback">{this.validationMessage}</div>}
+
+          {invalid && this.validationMessage && (
+            <div id={msgId} class="invalid-feedback" role="alert" aria-live="polite">
+              {this.validationMessage}
+            </div>
+          )}
         </div>
       </div>
     );
   }
 
   private renderSingleCustom() {
-    const switchId = this.inputId || `toggle-switch-${Math.random().toString(36).slice(2, 7)}`;
+    const switchId = (this.inputId || '').trim() || `toggle-switch`;
+    const msgId = `${switchId}-validation`;
+
     const base = this.resolvedToggleTxt;
     const toggleText = this.isChecked ? base.on : base.off;
     const invalid = !!(this.required && this.validation && !this.isChecked);
@@ -302,22 +378,30 @@ export class ToggleSwitchComponent {
       this.toggleSingle();
     };
 
+    const hasLabel = !!String(this.labelTxt || '').trim();
+    const ariaLabel = hasLabel ? undefined : (this.ariaLabel || 'Toggle');
+
     return (
       <div class="form-group toggle-switch">
         <div class={wrapperCls}>
           <input
             id={switchId}
-            class="custom-control-input"
+            class={`custom-control-input ${invalid ? 'is-invalid' : ''}`}
             type="checkbox"
             role="switch"
             checked={!!this.isChecked}
             disabled={!!this.disabled}
             required={!!this.required}
+            aria-label={ariaLabel}
             aria-checked={String(!!this.isChecked)}
             aria-disabled={String(!!this.disabled)}
+            aria-required={this.required ? 'true' : undefined}
+            aria-invalid={invalid ? 'true' : undefined}
+            aria-describedby={invalid && this.validationMessage ? msgId : undefined}
             onChange={this.toggleSingle}
             value={this.value}
           />
+
           <label
             htmlFor={switchId}
             onClick={onLabelClick}
@@ -327,19 +411,29 @@ export class ToggleSwitchComponent {
             {this.toggleTxt && <span class="toggleTxt-bold"> {toggleText}</span>}
             {this.required && <span class="required">*</span>}
           </label>
-          {invalid && this.validationMessage && <div class="invalid-feedback">{this.validationMessage}</div>}
+
+          {invalid && this.validationMessage && (
+            <div id={msgId} class="invalid-feedback" role="alert" aria-live="polite">
+              {this.validationMessage}
+            </div>
+          )}
         </div>
       </div>
     );
   }
 
   render() {
-    const parentId = this.inputId || 'toggle-group';
+    const parentId = this.getGroupId();
 
     if (this.switches) {
       const invalidItems = this.internalSwitchesArray.filter((i) => i.required && i.validation && !i.checked);
       const invalidMessages = invalidItems.map((i) => i.validationMessage?.trim()).filter(Boolean) as string[];
       const hasAnyInvalid = invalidMessages.length > 0;
+
+      // Only render group-level message in inline mode (existing behavior),
+      // but keep group aria-invalid correct in all cases.
+      const groupMsgId = `${parentId}-validation`;
+      const groupLabelledby = this.normalizeIdList(this.ariaLabelledby);
 
       return (
         <div class="form-group ts-group">
@@ -347,14 +441,15 @@ export class ToggleSwitchComponent {
             id={parentId}
             role="group"
             class={this.inline ? (this.customSwitch ? '' : 'form-toggle-inline') : ''}
+            aria-labelledby={groupLabelledby || undefined}
             aria-invalid={hasAnyInvalid ? 'true' : undefined}
-            aria-describedby={hasAnyInvalid ? `${parentId}-validation` : undefined}
+            aria-describedby={this.inline && hasAnyInvalid ? groupMsgId : undefined}
           >
             {this.internalSwitchesArray.map((item, i) => this.renderSwitch(item, this.inputId || parentId, i))}
           </div>
 
           {this.inline && hasAnyInvalid && (
-            <div id={`${parentId}-validation`} class="ts-inline invalid-feedback">
+            <div id={groupMsgId} class="ts-inline invalid-feedback" role="alert" aria-live="polite">
               {invalidMessages.map((msg, idx) => (
                 <div key={idx}>{msg}</div>
               ))}
@@ -365,5 +460,13 @@ export class ToggleSwitchComponent {
     }
 
     return this.customSwitch ? this.renderSingleCustom() : this.renderSingleBootstrap();
+  }
+
+  // tiny helper to normalize id lists
+  private normalizeIdList(value?: string): string | undefined {
+    const trimmed = (value ?? '').trim();
+    if (!trimmed) return undefined;
+    const tokens = trimmed.split(/\s+/).filter(Boolean);
+    return tokens.length ? tokens.join(' ') : undefined;
   }
 }

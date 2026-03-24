@@ -13,22 +13,46 @@ if (typeof (global as any).MutationObserver === 'undefined') {
     }
   } as any;
 }
+
+if (typeof (global as any).ResizeObserver === 'undefined') {
+  (global as any).ResizeObserver = class {
+    constructor(_cb: ResizeObserverCallback) {}
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as any;
+}
+
 if (typeof (global as any).requestAnimationFrame === 'undefined') {
   (global as any).requestAnimationFrame = (cb: FrameRequestCallback) => {
-    return setTimeout(() => cb(performance.now() as any), 0) as any;
+    return setTimeout(() => cb(Date.now() as any), 0) as any;
   };
 }
 // -----------------------------------
 
+const flush = async (page: any) => {
+  // Stencil often needs a microtask + waitForChanges to flush lifecycle/DOM updates
+  await Promise.resolve();
+  await page.waitForChanges();
+};
+
+// helper: split aria-describedby tokens
+const splitIds = (v: string | null) =>
+  String(v || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
 describe('tooltip-component', () => {
-  let rafSpy: jest.SpyInstance<number, [callback: FrameRequestCallback]>;
+  let rafSpy: jest.SpyInstance<any, any>;
 
   beforeEach(() => {
     // Make rAF immediate for deterministic positioning
-    rafSpy = jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
-      cb(performance.now());
+    rafSpy = jest.spyOn(globalThis as any, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
+      cb(Date.now() as any);
       return 1 as any;
     });
+
     Object.defineProperty(window, 'innerWidth', { value: 1200, configurable: true });
     Object.defineProperty(window, 'innerHeight', { value: 800, configurable: true });
   });
@@ -38,7 +62,7 @@ describe('tooltip-component', () => {
     document.body.querySelectorAll('.tooltip').forEach(el => el.remove());
   });
 
-  it('renders on hover with plain text and matches snapshot', async () => {
+  it('wires trigger a11y attributes and shows on hover (plain text)', async () => {
     const page = await newSpecPage({
       components: [TooltipComponent],
       html: `
@@ -48,9 +72,32 @@ describe('tooltip-component', () => {
       `,
     });
 
+    // Ensure componentDidLoad ran and applyTriggers executed
+    await flush(page);
+
     const host = page.doc.getElementById('tip1') as HTMLElement;
     const trigger = host.querySelector('#t1') as HTMLElement;
+    expect(host).toBeTruthy();
+    expect(trigger).toBeTruthy();
 
+    // Trigger wiring (applied in applyTriggers)
+    // NOTE: buttons are naturally focusable, so tabindex may be absent (null).
+    const tabindex = trigger.getAttribute('tabindex');
+    expect(tabindex === null || tabindex === '0').toBe(true);
+
+    expect(trigger.getAttribute('data-toggle')).toBe('tooltip');
+    expect(trigger.getAttribute('data-placement')).toBe('top'); // default prop
+    expect(trigger.getAttribute('aria-expanded')).toBe('false'); // initial state
+    expect(trigger.getAttribute('aria-haspopup')).toBeNull(); // hover/focus only => no haspopup
+
+    const describedby = trigger.getAttribute('aria-describedby');
+    expect(describedby).toBeTruthy();
+
+    // The tooltip id is generated; describedby must include it as a token.
+    const describedIds = splitIds(describedby);
+    expect(describedIds.length).toBeGreaterThan(0);
+
+    // Stable id wiring: aria-describedby points at the tooltip id (among tokens)
     jest.spyOn(trigger, 'getBoundingClientRect').mockReturnValue({
       x: 200,
       y: 300,
@@ -64,10 +111,17 @@ describe('tooltip-component', () => {
     } as any);
 
     trigger.dispatchEvent(new Event('mouseenter', { bubbles: true }));
-    await page.waitForChanges();
+    await flush(page);
 
     const tip = document.body.querySelector('.tooltip') as HTMLElement;
     expect(tip).toBeTruthy();
+    expect(tip.getAttribute('role')).toBe('tooltip');
+
+    // describedby must include the created tooltip's id
+    expect(describedIds).toContain(tip.id);
+
+    // expanded should now be true
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
 
     expect(host).toMatchSnapshot('host__hover_plain');
     expect(tip.outerHTML).toMatchSnapshot('tooltip__hover_plain');
@@ -86,6 +140,8 @@ describe('tooltip-component', () => {
       `,
     });
 
+    await flush(page);
+
     const host = page.doc.getElementById('tip2') as HTMLElement;
     const trigger = host.querySelector('#t2') as HTMLElement;
 
@@ -102,7 +158,7 @@ describe('tooltip-component', () => {
     } as any);
 
     trigger.dispatchEvent(new Event('mouseenter', { bubbles: true }));
-    await page.waitForChanges();
+    await flush(page);
 
     const tip = document.body.querySelector('.tooltip') as HTMLElement;
     expect(tip).toBeTruthy();
@@ -115,7 +171,7 @@ describe('tooltip-component', () => {
     expect(tip.outerHTML).toMatchSnapshot('tooltip__hover_html');
   });
 
-  it('applies right placement class and renders on click', async () => {
+  it('applies right placement class and renders on click; outside click closes', async () => {
     const page = await newSpecPage({
       components: [TooltipComponent],
       html: `
@@ -125,8 +181,14 @@ describe('tooltip-component', () => {
       `,
     });
 
+    await flush(page);
+
     const host = page.doc.getElementById('tip3') as HTMLElement;
     const trigger = host.querySelector('#t3') as HTMLElement;
+
+    // click/manual => aria-haspopup should be present
+    expect(trigger.getAttribute('aria-haspopup')).toBe('true');
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
 
     jest.spyOn(trigger, 'getBoundingClientRect').mockReturnValue({
       x: 600,
@@ -141,21 +203,21 @@ describe('tooltip-component', () => {
     } as any);
 
     trigger.dispatchEvent(new Event('click', { bubbles: true }));
-    await page.waitForChanges();
+    await flush(page);
 
     const tip = document.body.querySelector('.tooltip') as HTMLElement;
     expect(tip).toBeTruthy();
-
-    // Use className string instead of classList array to avoid JSDOM quirks
     expect(tip.className.split(/\s+/)).toContain('tooltip-right');
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
 
     expect(host).toMatchSnapshot('host__click_right');
     expect(tip.outerHTML).toMatchSnapshot('tooltip__click_right');
 
     // Outside click should close
     document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    await page.waitForChanges();
+    await flush(page);
     expect(document.body.querySelector('.tooltip')).toBeNull();
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
   });
 
   it('manual mode: show()/hide() only when trigger includes "manual"', async () => {
@@ -168,8 +230,14 @@ describe('tooltip-component', () => {
       `,
     });
 
+    await flush(page);
+
     const host = page.doc.getElementById('tip4') as HTMLElement;
     const trigger = host.querySelector('#t4') as HTMLElement;
+
+    // manual => aria-haspopup present, expanded false initially
+    expect(trigger.getAttribute('aria-haspopup')).toBe('true');
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
 
     jest.spyOn(trigger, 'getBoundingClientRect').mockReturnValue({
       x: 50,
@@ -185,21 +253,24 @@ describe('tooltip-component', () => {
 
     // Hover should NOT show in manual mode
     trigger.dispatchEvent(new Event('mouseenter', { bubbles: true }));
-    await page.waitForChanges();
+    await flush(page);
     expect(document.body.querySelector('.tooltip')).toBeNull();
 
     // Public show()
     await (host as any).show();
-    await page.waitForChanges();
+    await flush(page);
+
     const tip = document.body.querySelector('.tooltip') as HTMLElement;
     expect(tip).toBeTruthy();
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
 
     expect(host).toMatchSnapshot('host__manual_show');
     expect(tip.outerHTML).toMatchSnapshot('tooltip__manual_show');
 
     // And hide()
     await (host as any).hide();
-    await page.waitForChanges();
+    await flush(page);
     expect(document.body.querySelector('.tooltip')).toBeNull();
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
   });
 });

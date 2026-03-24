@@ -4352,7 +4352,30 @@ export namespace Components {
          */
         "variant": ToastVariant;
     }
+    /**
+     * Accessibility / 508 notes (high level):
+     * - Single switch:
+     *   - native <input type="checkbox"> with role="switch"
+     *   - label is associated via htmlFor/id
+     *   - invalid state uses aria-invalid + aria-describedby -> validation message id
+     *   - when label text is empty, provide an aria-label fallback
+     * - Switch group (multiple switches):
+     *   - group wrapper uses role="group"
+     *   - group invalid state uses aria-invalid + aria-describedby -> group validation id (inline mode)
+     *   - each invalid item input also uses aria-invalid + aria-describedby -> its own validation message id
+     *   - all ids are derived from inputId/item.id (no random ids needed for wiring)
+     */
     interface ToggleSwitchComponent {
+        /**
+          * A11y fallback name for single-switch usage when labelTxt is empty. (If labelTxt exists, label association is preferred.)
+          * @default 'Toggle'
+         */
+        "ariaLabel": string;
+        /**
+          * Optional: label the group wrapper (multiple switches) when you have a visible label elsewhere. Example: ariaLabelledby="someLabelId"
+          * @default ''
+         */
+        "ariaLabelledby": string;
         /**
           * @default false
          */
@@ -4431,7 +4454,7 @@ export namespace Components {
          */
         "container"?: string | null;
         /**
-          * Additional classes to apply to tooltip; can be a string
+          * Additional classes to apply to tooltip
           * @default ''
          */
         "customClass": string;
@@ -4452,6 +4475,10 @@ export namespace Components {
          */
         "position": TooltipPosition;
         "show": () => Promise<void>;
+        /**
+          * Optional stable id for the tooltip element (recommended for tests/SSR). If omitted, a deterministic-ish id is generated.
+         */
+        "tooltipId"?: string;
         /**
           * Title/content string; if empty, falls back to `title`/`data-original-title` attributes or `message`
          */
@@ -5269,6 +5296,19 @@ declare global {
     interface HTMLToggleSwitchComponentElementEventMap {
         "checkedChanged": { id: string; checked: boolean };
     }
+    /**
+     * Accessibility / 508 notes (high level):
+     * - Single switch:
+     *   - native <input type="checkbox"> with role="switch"
+     *   - label is associated via htmlFor/id
+     *   - invalid state uses aria-invalid + aria-describedby -> validation message id
+     *   - when label text is empty, provide an aria-label fallback
+     * - Switch group (multiple switches):
+     *   - group wrapper uses role="group"
+     *   - group invalid state uses aria-invalid + aria-describedby -> group validation id (inline mode)
+     *   - each invalid item input also uses aria-invalid + aria-describedby -> its own validation message id
+     *   - all ids are derived from inputId/item.id (no random ids needed for wiring)
+     */
     interface HTMLToggleSwitchComponentElement extends Components.ToggleSwitchComponent, HTMLStencilElement {
         addEventListener<K extends keyof HTMLToggleSwitchComponentElementEventMap>(type: K, listener: (this: HTMLToggleSwitchComponentElement, ev: ToggleSwitchComponentCustomEvent<HTMLToggleSwitchComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -9722,7 +9762,30 @@ declare namespace LocalJSX {
          */
         "variant"?: ToastVariant;
     }
+    /**
+     * Accessibility / 508 notes (high level):
+     * - Single switch:
+     *   - native <input type="checkbox"> with role="switch"
+     *   - label is associated via htmlFor/id
+     *   - invalid state uses aria-invalid + aria-describedby -> validation message id
+     *   - when label text is empty, provide an aria-label fallback
+     * - Switch group (multiple switches):
+     *   - group wrapper uses role="group"
+     *   - group invalid state uses aria-invalid + aria-describedby -> group validation id (inline mode)
+     *   - each invalid item input also uses aria-invalid + aria-describedby -> its own validation message id
+     *   - all ids are derived from inputId/item.id (no random ids needed for wiring)
+     */
     interface ToggleSwitchComponent {
+        /**
+          * A11y fallback name for single-switch usage when labelTxt is empty. (If labelTxt exists, label association is preferred.)
+          * @default 'Toggle'
+         */
+        "ariaLabel"?: string;
+        /**
+          * Optional: label the group wrapper (multiple switches) when you have a visible label elsewhere. Example: ariaLabelledby="someLabelId"
+          * @default ''
+         */
+        "ariaLabelledby"?: string;
         /**
           * @default false
          */
@@ -9802,7 +9865,7 @@ declare namespace LocalJSX {
          */
         "container"?: string | null;
         /**
-          * Additional classes to apply to tooltip; can be a string
+          * Additional classes to apply to tooltip
           * @default ''
          */
         "customClass"?: string;
@@ -9821,6 +9884,10 @@ declare namespace LocalJSX {
           * @default 'top'
          */
         "position"?: TooltipPosition;
+        /**
+          * Optional stable id for the tooltip element (recommended for tests/SSR). If omitted, a deterministic-ish id is generated.
+         */
+        "tooltipId"?: string;
         /**
           * Title/content string; if empty, falls back to `title`/`data-original-title` attributes or `message`
          */
@@ -9953,6 +10020,19 @@ declare module "@stencil/core" {
              */
             "timepicker-manager": LocalJSX.TimepickerManager & JSXBase.HTMLAttributes<HTMLTimepickerManagerElement>;
             "toasts-component": LocalJSX.ToastsComponent & JSXBase.HTMLAttributes<HTMLToastsComponentElement>;
+            /**
+             * Accessibility / 508 notes (high level):
+             * - Single switch:
+             *   - native <input type="checkbox"> with role="switch"
+             *   - label is associated via htmlFor/id
+             *   - invalid state uses aria-invalid + aria-describedby -> validation message id
+             *   - when label text is empty, provide an aria-label fallback
+             * - Switch group (multiple switches):
+             *   - group wrapper uses role="group"
+             *   - group invalid state uses aria-invalid + aria-describedby -> group validation id (inline mode)
+             *   - each invalid item input also uses aria-invalid + aria-describedby -> its own validation message id
+             *   - all ids are derived from inputId/item.id (no random ids needed for wiring)
+             */
             "toggle-switch-component": LocalJSX.ToggleSwitchComponent & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;
             "tooltip-component": LocalJSX.TooltipComponent & JSXBase.HTMLAttributes<HTMLTooltipComponentElement>;
         }
