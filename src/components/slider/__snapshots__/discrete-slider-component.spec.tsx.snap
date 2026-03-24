@@ -135,9 +135,9 @@ exports[`discrete-slider-component parses stringValues from JSON attribute and r
 <discrete-slider-component selected-index="2" string-values="[&quot;Low&quot;,&quot;Med&quot;,&quot;High&quot;,&quot;Ultra&quot;]" tick-labels="">
   <div class="slider-wrapper">
     <div class="slider" dir="ltr" role="presentation">
-      <label class="form-control-label" id="dslider_j7ssir4yp-label">
+      <label class="form-control-label" id="dslider_j7sdbxc2y-label">
         Quality
-        <span id="dslider_j7ssir4yp-value">
+        <span id="dslider_j7sdbxc2y-value">
           High
         </span>
       </label>
@@ -145,7 +145,7 @@ exports[`discrete-slider-component parses stringValues from JSON attribute and r
         <div class="slider-controls" role="presentation">
           <div aria-hidden="true" class="slider-background-track" style="width: 100%;"></div>
           <div aria-hidden="true" class="slider-moving-track" style="width: 67%;"></div>
-          <div aria-labelledby="dslider_j7ssir4yp-label" aria-orientation="horizontal" aria-valuemax="3" aria-valuemin="0" aria-valuenow="2" aria-valuetext="High" class="slider-thumb-container" role="slider" tabindex="0" style="left: 67%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-labelledby="dslider_j7sdbxc2y-label" aria-orientation="horizontal" aria-valuemax="3" aria-valuemin="0" aria-valuenow="2" aria-valuetext="High" class="slider-thumb-container" role="slider" tabindex="0" style="left: 67%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
             <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
           </div>
           <div aria-hidden="true" class="slider-ticks">
@@ -175,7 +175,7 @@ exports[`discrete-slider-component parses stringValues from JSON attribute and r
             </div>
           </div>
         </div>
-        <div aria-labelledby="dslider_j7ssir4yp-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        <div aria-labelledby="dslider_j7sdbxc2y-label" aria-readonly="true" class="slider-value-right" role="textbox">
           High
         </div>
       </div>

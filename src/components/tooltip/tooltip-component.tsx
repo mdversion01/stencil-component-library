@@ -6,7 +6,7 @@ export type TooltipVariant = '' | 'primary' | 'secondary' | 'success' | 'danger'
 
 @Component({
   tag: 'tooltip-component',
-  styleUrls: ['./tooltip-styles.scss', '../utilities-styles.scss'],
+  styleUrls: ['./tooltip-styles.scss'],
   shadow: false, // light DOM
 })
 export class TooltipComponent {
@@ -71,25 +71,17 @@ export class TooltipComponent {
   }
   private resolveTitle(): string {
     // Prefer data-original-title if present (since we may move `title` into it)
-    return (
-      this.host.getAttribute('data-original-title') ||
-      this.host.getAttribute('title') ||
-      this.tooltipTitle ||
-      this.message ||
-      ''
-    );
+    return this.host.getAttribute('data-original-title') || this.host.getAttribute('title') || this.tooltipTitle || this.message || '';
   }
   private resolveTrigger(): string {
     return this.host.getAttribute('data-trigger') || this.trigger;
   }
   private resolveAnimation(): boolean {
-    return this.host.hasAttribute('data-animation')
-      ? this.host.getAttribute('data-animation') !== 'false'
-      : this.animation;
+    return this.host.hasAttribute('data-animation') ? this.host.getAttribute('data-animation') !== 'false' : this.animation;
   }
   private resolveContainer(): string | null | undefined {
     const v = this.host.getAttribute('data-container');
-    return v !== null ? v : this.container ?? null;
+    return v !== null ? v : (this.container ?? null);
   }
   private resolveCustomClass(): string {
     return this.host.getAttribute('data-custom-class') || this.customClass || '';
@@ -472,9 +464,7 @@ export class TooltipComponent {
 
     const tRect = trigger.getBoundingClientRect();
     const tipRect = this.tooltipEl.getBoundingClientRect();
-    const cRect = isBody
-      ? ({ top: 0, left: 0, width: window.innerWidth, height: window.innerHeight } as DOMRect)
-      : container.getBoundingClientRect();
+    const cRect = isBody ? ({ top: 0, left: 0, width: window.innerWidth, height: window.innerHeight } as DOMRect) : container.getBoundingClientRect();
 
     const scrollTop = isBody ? window.pageYOffset : container.scrollTop;
     const scrollLeft = isBody ? window.pageXOffset : container.scrollLeft;

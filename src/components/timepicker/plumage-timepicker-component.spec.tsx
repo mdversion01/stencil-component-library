@@ -1,3 +1,4 @@
+// src/components/timepicker/plumage-timepicker-component.spec.tsx
 import { newSpecPage } from '@stencil/core/testing';
 import { PlumageTimepickerComponent } from './plumage-timepicker-component';
 
@@ -32,23 +33,27 @@ describe('plumage-timepicker-component', () => {
     expect(label.classList.contains('sr-only')).toBe(false);
     expect(label.textContent).toContain('Pick a time');
 
-    // ✅ updated plumage behavior (match timepicker-component):
-    // label id derived from inputId
+    // label id derived from inputId and aria-labelledby points to it when showLabel=true
     expect(label.id).toBe('my-time-label');
     expect(input.id).toBe('my-time');
     expect(input.getAttribute('aria-labelledby')).toBe('my-time-label');
 
-    // ✅ dropdown id derived from inputId and aria-controls points to it
+    // dropdown id derived from inputId and input/icon button aria-controls points to it
     expect(dropdown.getAttribute('id')).toBe('my-time-dropdown');
     expect(input.getAttribute('aria-controls')).toBe('my-time-dropdown');
     expect(iconBtn.getAttribute('aria-controls')).toBe('my-time-dropdown');
 
-    // Popup semantics
+    // Trigger should expose popover semantics
     expect(iconBtn.getAttribute('aria-haspopup')).toBe('dialog');
     expect(iconBtn.getAttribute('aria-expanded')).toBe('false');
 
+    // Input also has popover semantics
     expect(input.getAttribute('aria-haspopup')).toBe('dialog');
     expect(input.getAttribute('aria-expanded')).toBe('false');
+
+    // Closed by default => hidden + inert
+    expect(dropdown.classList.contains('hidden')).toBe(true);
+    expect(dropdown.hasAttribute('inert')).toBe(true);
 
     expect(root).toMatchSnapshot();
   });
@@ -72,7 +77,6 @@ describe('plumage-timepicker-component', () => {
     expect(label.classList.contains('sr-only')).toBe(true);
     expect(label.textContent).toContain('Hidden label test');
 
-    // ✅ updated behavior:
     // no auto aria-labelledby when showLabel is omitted
     expect(input.id).toBe('a1');
     expect(input.getAttribute('aria-labelledby')).toBeNull();
@@ -81,7 +85,7 @@ describe('plumage-timepicker-component', () => {
     expect(root).toMatchSnapshot();
   });
 
-  it('a11y overrides: uses consumer aria-labelledby when provided (even if showLabel omitted), and merges aria-describedby with validation/warning ids', async () => {
+  it('a11y overrides: uses consumer aria-labelledby when provided (even if showLabel omitted), and keeps aria-describedby external-only when no validation/warning shown', async () => {
     const page = await newSpecPage({
       components: [PlumageTimepickerComponent],
       html: `
@@ -112,19 +116,27 @@ describe('plumage-timepicker-component', () => {
     // and aria-label should be omitted when aria-labelledby is present
     expect(input.getAttribute('aria-label')).toBeNull();
 
+    // describedby includes ext-help, and should NOT include validation/warning ids when not shown
     const described = splitIds(input.getAttribute('aria-describedby'));
     expect(described).toContain('ext-help');
-
-    // not shown by default => not included
     expect(described).not.toContain('tp3-validation');
     expect(described).not.toContain('tp3-warning');
   });
 
   it('required + invalid: sets aria-required + required, sets aria-invalid only when invalid, and wires validation message id', async () => {
+    // IMPORTANT: boolean attributes like is-valid="false" are unreliable in string HTML.
+    // We set props on the instance to ensure correct boolean values.
     const page = await newSpecPage({
       components: [PlumageTimepickerComponent],
-      html: `<plumage-timepicker-component input-id="tp4" required validation validation-message="Bad time" is-valid="false"></plumage-timepicker-component>`,
+      html: `<plumage-timepicker-component input-id="tp4"></plumage-timepicker-component>`,
     });
+
+    const inst = page.rootInstance as PlumageTimepickerComponent;
+
+    inst.required = true;
+    inst.validation = true;
+    inst.validationMessage = 'Bad time';
+    inst.isValid = false;
 
     await page.waitForChanges();
 
@@ -160,8 +172,8 @@ describe('plumage-timepicker-component', () => {
     const root = page.root!;
     const input = root.querySelector('input.time-input') as HTMLInputElement;
 
-    const clearBtn = root.querySelector('button.clear-button') as HTMLElement | null;
-    const iconBtn = root.querySelector('button.time-icon-btn') as HTMLElement | null;
+    const clearBtn = root.querySelector('button.clear-button') as HTMLButtonElement | null;
+    const iconBtn = root.querySelector('button.time-icon-btn') as HTMLButtonElement | null;
     const dropdown = root.querySelector('.time-dropdown') as HTMLElement | null;
 
     expect(input).toBeTruthy();

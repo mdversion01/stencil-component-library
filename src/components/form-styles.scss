@@ -29,16 +29,6 @@
   clip-path: none;
 }
 
-// .required::after {
-//   content: '*';
-//   color: #b30009;
-//   margin-left: 5px;
-//   margin-left: 2px;
-//   margin-top: -2px;
-//   margin-right: 5px;
-
-// }
-
 .required {
   color: #b30009;
 }
@@ -145,16 +135,6 @@ input[type='radio'] {
 .no-pad {
   padding: 0 !important;
 }
-
-// .form-toggle-inline {
-//   display: inline-flex;
-//   align-items: center;
-//   padding-left: 0px;
-//   margin-right: 0.75rem;
-//   height: 100%;
-//   padding-top: 6px;
-//   padding-bottom: 0;
-// }
 
 .inline.row > * {
   width: auto !important;

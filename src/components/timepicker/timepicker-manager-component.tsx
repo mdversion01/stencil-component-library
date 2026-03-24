@@ -1,15 +1,21 @@
 // src/components/timepicker/timepicker-manager-component.tsx
-import { Component, h, Prop, Element } from '@stencil/core';
+import { Component, h, Prop, Element, Event, EventEmitter, Watch, Method } from '@stencil/core';
+import type { TimeChangeDetail, TimeInputDetail } from './timepicker-component';
 
-/**
- * Timepicker Manager
- * - Forwards props to either <timepicker-component> or <plumage-timepicker-component>
- * - a11y precedence: aria-labelledby (if provided) > aria-label
- * - Forwards aria-describedby to child; optionally merges in the child's validation message id
- *
- * NOTE:
- * 508 compliance depends primarily on the child component’s semantics/keyboard behavior.
- */
+export type ManagerTimeChangeDetail = TimeChangeDetail & {
+  managerInputId: string;
+  impl: 'timepicker-component' | 'plumage-timepicker-component';
+};
+
+export type ManagerTimeInputDetail = TimeInputDetail & {
+  managerInputId: string;
+  impl: 'timepicker-component' | 'plumage-timepicker-component';
+};
+
+export type FocusOptions = {
+  open?: boolean;
+};
+
 @Component({
   tag: 'timepicker-manager',
   shadow: false,
@@ -18,70 +24,94 @@ export class TimepickerManagerComponent {
   @Element() host!: HTMLElement;
 
   /* -----------------------------
+   Events (re-emitted)
+  ------------------------------ */
+  @Event({ eventName: 'timeChange' }) timeChange!: EventEmitter<TimeChangeDetail>;
+  @Event({ eventName: 'timeInput' }) timeInput!: EventEmitter<TimeInputDetail>;
+
+  /** Namespaced events to avoid collisions */
+  @Event({ eventName: 'managerTimeChange' }) managerTimeChange!: EventEmitter<ManagerTimeChangeDetail>;
+  @Event({ eventName: 'managerTimeInput' }) managerTimeInput!: EventEmitter<ManagerTimeInputDetail>;
+
+  /* -----------------------------
    Accessibility (Overrides)
   ------------------------------ */
-
-  /** Accessible name override via aria-label (used only when ariaLabelledby is NOT provided). */
   @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
-
-  /** Accessible name override via aria-labelledby (space-separated ids). Takes precedence over aria-label. */
   @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
-
-  /** Optional description ids (space-separated). */
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
 
   /* -----------------------------
    Label UI (delegated to children)
   ------------------------------ */
-
   @Prop() showLabel?: boolean;
   @Prop() labelText: string = 'Enter Time';
 
-  /** ID to pass to inner input(s). Should be unique per instance. */
   @Prop() inputId: string = 'time-input';
-
-  /** Name attribute for the inner input */
   @Prop() inputName: string = 'time';
 
   /* -----------------------------
-   Behavior / Display
+   Controlled Value
   ------------------------------ */
+  @Prop({ mutable: true }) value: string = '';
 
-  @Prop() isTwentyFourHourFormat: boolean = true;
+  /* -----------------------------
+   Behavior / Display
+ ------------------------------ */
+  @Prop({ mutable: true }) isTwentyFourHourFormat: boolean = true;
+
   @Prop() size: string = '';
 
-  @Prop() twentyFourHourOnly: boolean = false;
-  @Prop() twelveHourOnly: boolean = false;
+  @Prop({ mutable: true }) twentyFourHourOnly: boolean = false;
+  @Prop({ mutable: true }) twelveHourOnly: boolean = false;
   @Prop() hideTimepickerBtn: boolean = false;
-  @Prop() hideSeconds: boolean = false;
 
-  /** Choose which implementation to render */
+  @Prop({ mutable: true }) hideSeconds: boolean = false;
+
   @Prop() usePlTimepicker: boolean = false;
 
-  /** Width (px) for the input element */
   @Prop() inputWidth: number | string = null;
-
-  /** Required indicator */
   @Prop() required: boolean = false;
 
-  /**
-   * Disable the timepicker.
-   * - For <timepicker-component>: passed as `disableTimepicker`
-   * - For <plumage-timepicker-component>: passed as `disabled`
-   */
   @Prop() disableTimepicker: boolean = false;
+
+  @Prop() timeInputThrottleMs: number = 50;
 
   /* -----------------------------
    Validation
-  ------------------------------ */
-
-  @Prop() validationMessage: string = '';
-  @Prop() validation?: boolean = false;
-  @Prop() isValid: boolean = true;
+ ------------------------------ */
+  @Prop({ mutable: true }) validationMessage: string = '';
+  @Prop({ mutable: true }) validation?: boolean = false;
+  @Prop({ mutable: true }) isValid: boolean = true;
 
   /* -----------------------------
-   Internal helpers
-  ------------------------------ */
+   Internal
+ ------------------------------ */
+  private _syncingFromChild = false;
+  private _syncingFromChildProps = false;
+
+  private _childEl: HTMLElement | null = null;
+
+  @Watch('value')
+  onValueChange(next: string, prev: string) {
+    if (this._syncingFromChild) return;
+    if ((next ?? '') === (prev ?? '')) return;
+  }
+
+  @Watch('isTwentyFourHourFormat')
+  onFormatChange(next: boolean, prev: boolean) {
+    if (this._syncingFromChildProps) return;
+    if (next === prev) return;
+  }
+
+  @Watch('hideSeconds')
+  onHideSecondsChange(next: boolean, prev: boolean) {
+    if (this._syncingFromChildProps) return;
+    if (next === prev) return;
+  }
+
+  private _impl(): 'timepicker-component' | 'plumage-timepicker-component' {
+    return this.usePlTimepicker ? 'plumage-timepicker-component' : 'timepicker-component';
+  }
 
   private normalizeIdList(value?: string): string | undefined {
     const trimmed = (value ?? '').trim();
@@ -106,7 +136,6 @@ export class TimepickerManagerComponent {
     return out.join(' ');
   }
 
-  /** Child component uses `${inputId}-validation` for its validation message container. */
   private getChildValidationId(): string {
     const base = (this.inputId || '').trim() || 'time-input';
     return `${base}-validation`;
@@ -116,7 +145,6 @@ export class TimepickerManagerComponent {
     const labelledBy = this.normalizeIdList(this.ariaLabelledby);
     const label = (this.ariaLabel ?? '').trim() || undefined;
 
-    // Only add the child's validation id to describedby when we actually have a message to announce.
     const hasMsg = !!(this.validationMessage ?? '').trim();
     const validationId = hasMsg ? this.getChildValidationId() : undefined;
 
@@ -133,45 +161,219 @@ export class TimepickerManagerComponent {
     const a11y = this.computeA11y();
 
     return {
-      // a11y (forwarded to child props)
       ariaLabel: a11y.ariaLabel,
       ariaLabelledby: a11y.ariaLabelledby,
       ariaDescribedby: a11y.ariaDescribedby,
 
-      // label+input identity
       showLabel: this.showLabel,
       labelText: this.labelText,
       inputId: this.inputId,
       inputName: this.inputName,
 
-      // format/layout
+      value: this.value,
+
       isTwentyFourHourFormat: this.isTwentyFourHourFormat,
       size: this.size,
       inputWidth: this.inputWidth,
 
-      // validation flags
       validationMessage: this.validationMessage,
       validation: this.validation,
       isValid: this.isValid,
 
-      // mode toggles
       twentyFourHourOnly: this.twentyFourHourOnly,
       twelveHourOnly: this.twelveHourOnly,
       hideTimepickerBtn: this.hideTimepickerBtn,
       hideSeconds: this.hideSeconds,
 
+      timeInputThrottleMs: this.timeInputThrottleMs,
+
       required: this.required,
     };
   }
+
+  /* -----------------------------
+   Public method: focusInput({open})
+   - Focus input
+   - Optionally open popover
+   - If opened, focus hour spinbutton so arrows work immediately
+ ------------------------------ */
+  @Method()
+  async focusInput(options?: FocusOptions): Promise<void> {
+    const child =
+      this._childEl ??
+      (this.host.querySelector('timepicker-component, plumage-timepicker-component') as HTMLElement | null);
+
+    if (!child) return;
+
+    // 1) Focus input
+    const maybeFocus = (child as any).focusInput;
+    if (typeof maybeFocus === 'function') {
+      try {
+        await maybeFocus.call(child, options);
+        return;
+      } catch {
+        // fall through
+      }
+    }
+
+    const input = child.querySelector('input.time-input') as HTMLInputElement | null;
+    input?.focus();
+
+    // 2) Optionally open popover
+    if (!options?.open) return;
+
+    const maybeOpen = (child as any).open;
+    if (typeof maybeOpen === 'function') {
+      try {
+        await maybeOpen.call(child);
+      } catch {
+        // fall through
+      }
+    } else {
+      const iconBtn = child.querySelector('.time-icon-btn') as HTMLButtonElement | null;
+      if (iconBtn && !iconBtn.disabled) iconBtn.click();
+    }
+
+    // 3) Focus hour spinbutton after open
+    requestAnimationFrame(() => {
+      const hour = child.querySelector('.hour-display') as HTMLElement | null;
+      hour?.focus();
+    });
+  }
+
+  /* -----------------------------
+   Public method: close()
+   - Closes popover if open (both implementations)
+ ------------------------------ */
+  @Method()
+  async close(): Promise<void> {
+    const child =
+      this._childEl ??
+      (this.host.querySelector('timepicker-component, plumage-timepicker-component') as HTMLElement | null);
+
+    if (!child) return;
+
+    const maybeClose = (child as any).close ?? (child as any).hide ?? (child as any)._hideDropdown;
+    if (typeof maybeClose === 'function') {
+      try {
+        await maybeClose.call(child);
+        return;
+      } catch {
+        // fall through
+      }
+    }
+
+    const btn =
+      (child.querySelector('button.close-button') as HTMLButtonElement | null) ??
+      (child.querySelector('.time-spinner-close button') as HTMLButtonElement | null);
+    if (btn && !btn.disabled) {
+      btn.click();
+      return;
+    }
+
+    const ev = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, composed: true });
+    child.dispatchEvent(ev);
+  }
+
+  /* -----------------------------
+   Mirroring child mutable props up to manager
+ ------------------------------ */
+  private _mirrorFromChild() {
+    const child = this._childEl;
+    if (!child) return;
+
+    const childFormat = (child as any).isTwentyFourHourFormat as boolean | undefined;
+    const childHideSeconds = (child as any).hideSeconds as boolean | undefined;
+    const childIsValid = (child as any).isValid as boolean | undefined;
+    const childValidationMessage = (child as any).validationMessage as string | undefined;
+
+    this._syncingFromChildProps = true;
+    try {
+      if (typeof childFormat === 'boolean' && childFormat !== this.isTwentyFourHourFormat) {
+        this.isTwentyFourHourFormat = childFormat;
+      }
+      if (typeof childHideSeconds === 'boolean' && childHideSeconds !== this.hideSeconds) {
+        this.hideSeconds = childHideSeconds;
+      }
+      if (typeof childIsValid === 'boolean' && childIsValid !== this.isValid) {
+        this.isValid = childIsValid;
+      }
+      if (typeof childValidationMessage === 'string' && childValidationMessage !== this.validationMessage) {
+        this.validationMessage = childValidationMessage;
+      }
+    } finally {
+      this._syncingFromChildProps = false;
+    }
+  }
+
+  /* -----------------------------
+   Event handlers (child -> manager)
+ ------------------------------ */
+  private _onChildTimeChange = (ev: CustomEvent<TimeChangeDetail>) => {
+    const detail = ev.detail;
+
+    const next = detail?.value ?? '';
+    if (next !== (this.value ?? '')) {
+      this._syncingFromChild = true;
+      try {
+        this.value = next;
+      } finally {
+        this._syncingFromChild = false;
+      }
+    }
+
+    this._mirrorFromChild();
+
+    this.timeChange.emit(detail);
+
+    this.managerTimeChange.emit({
+      ...detail,
+      managerInputId: (this.inputId || '').trim() || 'time-input',
+      impl: this._impl(),
+    });
+  };
+
+  private _onChildTimeInput = (ev: CustomEvent<TimeInputDetail>) => {
+    const detail = ev.detail;
+
+    this._mirrorFromChild();
+
+    this.timeInput.emit(detail);
+
+    this.managerTimeInput.emit({
+      ...detail,
+      managerInputId: (this.inputId || '').trim() || 'time-input',
+      impl: this._impl(),
+    });
+  };
 
   render() {
     const props = this.commonProps();
 
     if (this.usePlTimepicker) {
-      // Plumage component uses `disabled` (not `disableTimepicker`)
-      return <plumage-timepicker-component {...({ ...(props as any), disabled: this.disableTimepicker } as any)} />;
+      return (
+        <plumage-timepicker-component
+          ref={el => (this._childEl = el as any)}
+          {...({
+            ...(props as any),
+            disabled: this.disableTimepicker,
+            onTimeChange: this._onChildTimeChange,
+            onTimeInput: this._onChildTimeInput,
+          } as any)}
+        />
+      );
     }
 
-    return <timepicker-component {...({ ...(props as any), disableTimepicker: this.disableTimepicker } as any)} />;
+    return (
+      <timepicker-component
+        ref={el => (this._childEl = el as any)}
+        {...({
+          ...(props as any),
+          disableTimepicker: this.disableTimepicker,
+          onTimeChange: this._onChildTimeChange,
+          onTimeInput: this._onChildTimeInput,
+        } as any)}
+      />
+    );
   }
 }

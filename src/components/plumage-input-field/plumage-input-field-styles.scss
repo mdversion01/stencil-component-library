@@ -216,7 +216,7 @@ $input-wrappers: (
     transition: 0.4s;
 
     &.invalid {
-      background-color: #b30009;
+      background-color: #b30009 !important;
       height: 1px;
     }
   }

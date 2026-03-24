@@ -61,7 +61,7 @@ Type: `Promise<void>`
 
 | Name   | Type                                                                                                                                                                                                                                                                                                                                                             | Description |
 | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `opts` | `{ duration?: number; noHoverPause?: boolean; persistent?: boolean; svgIcon?: string; headerClass?: string; bodyClass?: string; isStatus?: boolean; noCloseButton?: boolean; iconPlumageStyle?: boolean; toastTitle?: string; time?: string; content?: any; contentHtml?: string; additionalHdrContent?: any; variantClass?: ToastVariant; hideTimeout?: any; }` |             |
+| `opts` | `{ time?: string; duration?: number; noHoverPause?: boolean; persistent?: boolean; svgIcon?: string; headerClass?: string; bodyClass?: string; isStatus?: boolean; noCloseButton?: boolean; iconPlumageStyle?: boolean; toastTitle?: string; content?: any; contentHtml?: string; additionalHdrContent?: any; variantClass?: ToastVariant; hideTimeout?: any; }` |             |
 
 #### Returns
 

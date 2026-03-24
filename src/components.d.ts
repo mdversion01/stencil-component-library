@@ -6,12 +6,20 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DropdownItem } from "./components/dropdown/dropdown-types";
+import { TimeChangeDetail, TimeInputDetail } from "./components/timepicker/plumage-timepicker-component";
 import { Field, SelectMode, SortOrder, Variant } from "./components/table/table-component";
+import { TimeChangeDetail as TimeChangeDetail1, TimeInputDetail as TimeInputDetail1 } from "./components/timepicker/timepicker-component";
+import { TimeChangeDetail as TimeChangeDetail2, TimeInputDetail as TimeInputDetail2 } from "./components/timepicker/timepicker-component";
+import { FocusOptions, ManagerTimeChangeDetail, ManagerTimeInputDetail } from "./components/timepicker/timepicker-manager-component";
 import { ToastItem, ToastPosition, ToastVariant } from "./components/toasts/toasts-component";
 import { ToggleItem } from "./components/toggle-switch/toggle-switch-types";
 import { TooltipPosition, TooltipVariant } from "./components/tooltip/tooltip-component";
 export { DropdownItem } from "./components/dropdown/dropdown-types";
+export { TimeChangeDetail, TimeInputDetail } from "./components/timepicker/plumage-timepicker-component";
 export { Field, SelectMode, SortOrder, Variant } from "./components/table/table-component";
+export { TimeChangeDetail as TimeChangeDetail1, TimeInputDetail as TimeInputDetail1 } from "./components/timepicker/timepicker-component";
+export { TimeChangeDetail as TimeChangeDetail2, TimeInputDetail as TimeInputDetail2 } from "./components/timepicker/timepicker-component";
+export { FocusOptions, ManagerTimeChangeDetail, ManagerTimeInputDetail } from "./components/timepicker/timepicker-manager-component";
 export { ToastItem, ToastPosition, ToastVariant } from "./components/toasts/toasts-component";
 export { ToggleItem } from "./components/toggle-switch/toggle-switch-types";
 export { TooltipPosition, TooltipVariant } from "./components/tooltip/tooltip-component";
@@ -3147,17 +3155,14 @@ export namespace Components {
     }
     interface PlumageTimepickerComponent {
         /**
-          * Optional: external description/help ids (space-separated).
           * @default ''
          */
         "ariaDescribedby": string;
         /**
-          * Accessible label for the input (used when no aria-labelledby is provided and no visible label).
           * @default 'Time Picker'
          */
         "ariaLabel": string;
         /**
-          * ID(s) of the element(s) that label the timepicker input (space-separated). If showLabel=true, the component will prefer its own generated label id (`${inputId}-label`).
           * @default ''
          */
         "ariaLabelledby": string;
@@ -3168,36 +3173,27 @@ export namespace Components {
         "disabled"?: boolean;
         "forceTimeUpdate": () => Promise<void>;
         /**
-          * Hide seconds UI / value.
           * @default false
          */
         "hideSeconds": boolean;
         /**
-          * Hide the toggle/launch button for the timepicker popover.
           * @default false
          */
         "hideTimepickerBtn": boolean;
         /**
-          * ID passed to the internal input (should be unique per instance).
           * @default 'time-input'
          */
         "inputId": string;
         /**
-          * Name attribute for the inner input.
           * @default 'time'
          */
         "inputName": string;
-        /**
-          * Width (px) for the input element.
-         */
         "inputWidth"?: number | string;
         /**
-          * Use 24-hour format by default (mutable: toggled by the component).
           * @default true
          */
         "isTwentyFourHourFormat": boolean;
         /**
-          * Whether the current value is considered valid (mutable: set by validation).
           * @default true
          */
         "isValid": boolean;
@@ -3209,35 +3205,37 @@ export namespace Components {
           * @default false
          */
         "required": boolean;
-        /**
-          * If true, label is visible; otherwise it's sr-only (still present for AT).
-         */
         "showLabel"?: boolean;
         /**
-          * Optional size variant: '', 'sm', 'lg'.
           * @default ''
          */
         "size": string;
         /**
-          * Force show only 12-hour controls/options.
+          * Throttle window for timeInput events (ms). Set 0 to disable throttling.
+          * @default 50
+         */
+        "timeInputThrottleMs": number;
+        /**
           * @default false
          */
         "twelveHourOnly": boolean;
         /**
-          * Force show only 24-hour controls/options.
           * @default false
          */
         "twentyFourHourOnly": boolean;
         /**
-          * Styling flag (kept for compatibility).
           * @default false
          */
         "validation"?: boolean;
         /**
-          * Validation message to show (mutable: set/cleared by the component).
           * @default ''
          */
         "validationMessage": string;
+        /**
+          * Controlled value (optional). - If non-empty, component parses/displays it. - On commit/spinner/clear, component updates this (mutable) and emits `timeChange`.
+          * @default ''
+         */
+        "value": string;
     }
     interface PopoverComponent {
         "ariaDescribedby"?: string;
@@ -4084,57 +4082,44 @@ export namespace Components {
     }
     interface TimepickerComponent {
         /**
-          * Optional: external description/help ids (space-separated).
           * @default ''
          */
         "ariaDescribedby": string;
         /**
-          * Accessible label for the input (used when no aria-labelledby is provided and no visible label).
           * @default 'Time Picker'
          */
         "ariaLabel": string;
         /**
-          * ID(s) of the element(s) that label the timepicker input (space-separated). If omitted, component will auto-generate an internal label id when showLabel=true.
           * @default ''
          */
         "ariaLabelledby": string;
         /**
-          * ✅ Disable the entire timepicker (input + buttons + dropdown)
           * @default false
          */
         "disableTimepicker": boolean;
         "forceTimeUpdate": () => Promise<void>;
         /**
-          * Hide seconds UI / value
           * @default false
          */
         "hideSeconds": boolean;
         /**
-          * Hide the toggle/launch button for the timepicker popover
           * @default false
          */
         "hideTimepickerBtn": boolean;
         /**
-          * ID passed to the internal input
           * @default 'time-input'
          */
         "inputId": string;
         /**
-          * Name attribute for the inner input
           * @default 'time'
          */
         "inputName": string;
-        /**
-          * Width (px) for the input element
-         */
         "inputWidth"?: number | string;
         /**
-          * Use 24-hour format by default (mutable: toggled by the component)
           * @default true
          */
         "isTwentyFourHourFormat": boolean;
         /**
-          * Whether the current value is considered valid (mutable: set by validation)
           * @default true
          */
         "isValid": boolean;
@@ -4148,57 +4133,46 @@ export namespace Components {
         "required": boolean;
         "showLabel"?: boolean;
         /**
-          * Optional size variant: '', 'sm', 'lg'
           * @default ''
          */
         "size": string;
         /**
-          * Force show only 12-hour controls/options
+          * Throttle window for timeInput events (ms). Set 0 to disable throttling.
+          * @default 50
+         */
+        "timeInputThrottleMs": number;
+        /**
           * @default false
          */
         "twelveHourOnly": boolean;
         /**
-          * Force show only 24-hour controls/options
           * @default false
          */
         "twentyFourHourOnly": boolean;
         /**
-          * External invalid styling hook (kept for compatibility)
           * @default false
          */
         "validation"?: boolean;
         /**
-          * Validation message to show (mutable: set/cleared by the component)
           * @default ''
          */
         "validationMessage": string;
+        /**
+          * Controlled value (optional). - If non-empty, component parses/displays it. - On commit/spinner/clear, component updates this (mutable) and emits `timeChange`.
+          * @default ''
+         */
+        "value": string;
     }
-    /**
-     * Timepicker Manager
-     * - Forwards props to either <timepicker-component> or <plumage-timepicker-component>
-     * - a11y precedence: aria-labelledby (if provided) > aria-label
-     * - Forwards aria-describedby to child; optionally merges in the child's validation message id
-     * NOTE:
-     * 508 compliance depends primarily on the child component’s semantics/keyboard behavior.
-     */
     interface TimepickerManager {
-        /**
-          * Optional description ids (space-separated).
-         */
         "ariaDescribedby"?: string;
-        /**
-          * Accessible name override via aria-label (used only when ariaLabelledby is NOT provided).
-         */
         "ariaLabel"?: string;
-        /**
-          * Accessible name override via aria-labelledby (space-separated ids). Takes precedence over aria-label.
-         */
         "ariaLabelledby"?: string;
+        "close": () => Promise<void>;
         /**
-          * Disable the timepicker. - For <timepicker-component>: passed as `disableTimepicker` - For <plumage-timepicker-component>: passed as `disabled`
           * @default false
          */
         "disableTimepicker": boolean;
+        "focusInput": (options?: FocusOptions) => Promise<void>;
         /**
           * @default false
          */
@@ -4208,17 +4182,14 @@ export namespace Components {
          */
         "hideTimepickerBtn": boolean;
         /**
-          * ID to pass to inner input(s). Should be unique per instance.
           * @default 'time-input'
          */
         "inputId": string;
         /**
-          * Name attribute for the inner input
           * @default 'time'
          */
         "inputName": string;
         /**
-          * Width (px) for the input element
           * @default null
          */
         "inputWidth": number | string;
@@ -4235,7 +4206,6 @@ export namespace Components {
          */
         "labelText": string;
         /**
-          * Required indicator
           * @default false
          */
         "required": boolean;
@@ -4245,6 +4215,10 @@ export namespace Components {
          */
         "size": string;
         /**
+          * @default 50
+         */
+        "timeInputThrottleMs": number;
+        /**
           * @default false
          */
         "twelveHourOnly": boolean;
@@ -4253,7 +4227,6 @@ export namespace Components {
          */
         "twentyFourHourOnly": boolean;
         /**
-          * Choose which implementation to render
           * @default false
          */
         "usePlTimepicker": boolean;
@@ -4265,6 +4238,10 @@ export namespace Components {
           * @default ''
          */
         "validationMessage": string;
+        /**
+          * @default ''
+         */
+        "value": string;
     }
     interface ToastsComponent {
         "additionalHeaderContent"?: any;
@@ -4604,6 +4581,10 @@ export interface PlumageSelectFieldComponentCustomEvent<T> extends CustomEvent<T
     detail: T;
     target: HTMLPlumageSelectFieldComponentElement;
 }
+export interface PlumageTimepickerComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPlumageTimepickerComponentElement;
+}
 export interface RadioInputComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLRadioInputComponentElement;
@@ -4619,6 +4600,14 @@ export interface StandardPaginationComponentCustomEvent<T> extends CustomEvent<T
 export interface TableComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLTableComponentElement;
+}
+export interface TimepickerComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLTimepickerComponentElement;
+}
+export interface TimepickerManagerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLTimepickerManagerElement;
 }
 export interface ToggleSwitchComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -5166,7 +5155,19 @@ declare global {
         prototype: HTMLPlumageSelectFieldComponentElement;
         new (): HTMLPlumageSelectFieldComponentElement;
     };
+    interface HTMLPlumageTimepickerComponentElementEventMap {
+        "timeChange": TimeChangeDetail;
+        "timeInput": TimeInputDetail;
+    }
     interface HTMLPlumageTimepickerComponentElement extends Components.PlumageTimepickerComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLPlumageTimepickerComponentElementEventMap>(type: K, listener: (this: HTMLPlumageTimepickerComponentElement, ev: PlumageTimepickerComponentCustomEvent<HTMLPlumageTimepickerComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLPlumageTimepickerComponentElementEventMap>(type: K, listener: (this: HTMLPlumageTimepickerComponentElement, ev: PlumageTimepickerComponentCustomEvent<HTMLPlumageTimepickerComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLPlumageTimepickerComponentElement: {
         prototype: HTMLPlumageTimepickerComponentElement;
@@ -5267,21 +5268,39 @@ declare global {
         prototype: HTMLTableComponentElement;
         new (): HTMLTableComponentElement;
     };
+    interface HTMLTimepickerComponentElementEventMap {
+        "timeChange": TimeChangeDetail1;
+        "timeInput": TimeInputDetail1;
+    }
     interface HTMLTimepickerComponentElement extends Components.TimepickerComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLTimepickerComponentElementEventMap>(type: K, listener: (this: HTMLTimepickerComponentElement, ev: TimepickerComponentCustomEvent<HTMLTimepickerComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLTimepickerComponentElementEventMap>(type: K, listener: (this: HTMLTimepickerComponentElement, ev: TimepickerComponentCustomEvent<HTMLTimepickerComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLTimepickerComponentElement: {
         prototype: HTMLTimepickerComponentElement;
         new (): HTMLTimepickerComponentElement;
     };
-    /**
-     * Timepicker Manager
-     * - Forwards props to either <timepicker-component> or <plumage-timepicker-component>
-     * - a11y precedence: aria-labelledby (if provided) > aria-label
-     * - Forwards aria-describedby to child; optionally merges in the child's validation message id
-     * NOTE:
-     * 508 compliance depends primarily on the child component’s semantics/keyboard behavior.
-     */
+    interface HTMLTimepickerManagerElementEventMap {
+        "timeChange": TimeChangeDetail2;
+        "timeInput": TimeInputDetail2;
+        "managerTimeChange": ManagerTimeChangeDetail;
+        "managerTimeInput": ManagerTimeInputDetail;
+    }
     interface HTMLTimepickerManagerElement extends Components.TimepickerManager, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLTimepickerManagerElementEventMap>(type: K, listener: (this: HTMLTimepickerManagerElement, ev: TimepickerManagerCustomEvent<HTMLTimepickerManagerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLTimepickerManagerElementEventMap>(type: K, listener: (this: HTMLTimepickerManagerElement, ev: TimepickerManagerCustomEvent<HTMLTimepickerManagerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLTimepickerManagerElement: {
         prototype: HTMLTimepickerManagerElement;
@@ -8556,17 +8575,14 @@ declare namespace LocalJSX {
     }
     interface PlumageTimepickerComponent {
         /**
-          * Optional: external description/help ids (space-separated).
           * @default ''
          */
         "ariaDescribedby"?: string;
         /**
-          * Accessible label for the input (used when no aria-labelledby is provided and no visible label).
           * @default 'Time Picker'
          */
         "ariaLabel"?: string;
         /**
-          * ID(s) of the element(s) that label the timepicker input (space-separated). If showLabel=true, the component will prefer its own generated label id (`${inputId}-label`).
           * @default ''
          */
         "ariaLabelledby"?: string;
@@ -8576,36 +8592,27 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
-          * Hide seconds UI / value.
           * @default false
          */
         "hideSeconds"?: boolean;
         /**
-          * Hide the toggle/launch button for the timepicker popover.
           * @default false
          */
         "hideTimepickerBtn"?: boolean;
         /**
-          * ID passed to the internal input (should be unique per instance).
           * @default 'time-input'
          */
         "inputId"?: string;
         /**
-          * Name attribute for the inner input.
           * @default 'time'
          */
         "inputName"?: string;
-        /**
-          * Width (px) for the input element.
-         */
         "inputWidth"?: number | string;
         /**
-          * Use 24-hour format by default (mutable: toggled by the component).
           * @default true
          */
         "isTwentyFourHourFormat"?: boolean;
         /**
-          * Whether the current value is considered valid (mutable: set by validation).
           * @default true
          */
         "isValid"?: boolean;
@@ -8613,39 +8620,43 @@ declare namespace LocalJSX {
           * @default 'Enter Time'
          */
         "labelText"?: string;
+        "onTimeChange"?: (event: PlumageTimepickerComponentCustomEvent<TimeChangeDetail>) => void;
+        "onTimeInput"?: (event: PlumageTimepickerComponentCustomEvent<TimeInputDetail>) => void;
         /**
           * @default false
          */
         "required"?: boolean;
-        /**
-          * If true, label is visible; otherwise it's sr-only (still present for AT).
-         */
         "showLabel"?: boolean;
         /**
-          * Optional size variant: '', 'sm', 'lg'.
           * @default ''
          */
         "size"?: string;
         /**
-          * Force show only 12-hour controls/options.
+          * Throttle window for timeInput events (ms). Set 0 to disable throttling.
+          * @default 50
+         */
+        "timeInputThrottleMs"?: number;
+        /**
           * @default false
          */
         "twelveHourOnly"?: boolean;
         /**
-          * Force show only 24-hour controls/options.
           * @default false
          */
         "twentyFourHourOnly"?: boolean;
         /**
-          * Styling flag (kept for compatibility).
           * @default false
          */
         "validation"?: boolean;
         /**
-          * Validation message to show (mutable: set/cleared by the component).
           * @default ''
          */
         "validationMessage"?: string;
+        /**
+          * Controlled value (optional). - If non-empty, component parses/displays it. - On commit/spinner/clear, component updates this (mutable) and emits `timeChange`.
+          * @default ''
+         */
+        "value"?: string;
     }
     interface PopoverComponent {
         "ariaDescribedby"?: string;
@@ -9498,56 +9509,43 @@ declare namespace LocalJSX {
     }
     interface TimepickerComponent {
         /**
-          * Optional: external description/help ids (space-separated).
           * @default ''
          */
         "ariaDescribedby"?: string;
         /**
-          * Accessible label for the input (used when no aria-labelledby is provided and no visible label).
           * @default 'Time Picker'
          */
         "ariaLabel"?: string;
         /**
-          * ID(s) of the element(s) that label the timepicker input (space-separated). If omitted, component will auto-generate an internal label id when showLabel=true.
           * @default ''
          */
         "ariaLabelledby"?: string;
         /**
-          * ✅ Disable the entire timepicker (input + buttons + dropdown)
           * @default false
          */
         "disableTimepicker"?: boolean;
         /**
-          * Hide seconds UI / value
           * @default false
          */
         "hideSeconds"?: boolean;
         /**
-          * Hide the toggle/launch button for the timepicker popover
           * @default false
          */
         "hideTimepickerBtn"?: boolean;
         /**
-          * ID passed to the internal input
           * @default 'time-input'
          */
         "inputId"?: string;
         /**
-          * Name attribute for the inner input
           * @default 'time'
          */
         "inputName"?: string;
-        /**
-          * Width (px) for the input element
-         */
         "inputWidth"?: number | string;
         /**
-          * Use 24-hour format by default (mutable: toggled by the component)
           * @default true
          */
         "isTwentyFourHourFormat"?: boolean;
         /**
-          * Whether the current value is considered valid (mutable: set by validation)
           * @default true
          */
         "isValid"?: boolean;
@@ -9555,60 +9553,49 @@ declare namespace LocalJSX {
           * @default 'Enter Time'
          */
         "labelText"?: string;
+        "onTimeChange"?: (event: TimepickerComponentCustomEvent<TimeChangeDetail1>) => void;
+        "onTimeInput"?: (event: TimepickerComponentCustomEvent<TimeInputDetail1>) => void;
         /**
           * @default false
          */
         "required"?: boolean;
         "showLabel"?: boolean;
         /**
-          * Optional size variant: '', 'sm', 'lg'
           * @default ''
          */
         "size"?: string;
         /**
-          * Force show only 12-hour controls/options
+          * Throttle window for timeInput events (ms). Set 0 to disable throttling.
+          * @default 50
+         */
+        "timeInputThrottleMs"?: number;
+        /**
           * @default false
          */
         "twelveHourOnly"?: boolean;
         /**
-          * Force show only 24-hour controls/options
           * @default false
          */
         "twentyFourHourOnly"?: boolean;
         /**
-          * External invalid styling hook (kept for compatibility)
           * @default false
          */
         "validation"?: boolean;
         /**
-          * Validation message to show (mutable: set/cleared by the component)
           * @default ''
          */
         "validationMessage"?: string;
+        /**
+          * Controlled value (optional). - If non-empty, component parses/displays it. - On commit/spinner/clear, component updates this (mutable) and emits `timeChange`.
+          * @default ''
+         */
+        "value"?: string;
     }
-    /**
-     * Timepicker Manager
-     * - Forwards props to either <timepicker-component> or <plumage-timepicker-component>
-     * - a11y precedence: aria-labelledby (if provided) > aria-label
-     * - Forwards aria-describedby to child; optionally merges in the child's validation message id
-     * NOTE:
-     * 508 compliance depends primarily on the child component’s semantics/keyboard behavior.
-     */
     interface TimepickerManager {
-        /**
-          * Optional description ids (space-separated).
-         */
         "ariaDescribedby"?: string;
-        /**
-          * Accessible name override via aria-label (used only when ariaLabelledby is NOT provided).
-         */
         "ariaLabel"?: string;
-        /**
-          * Accessible name override via aria-labelledby (space-separated ids). Takes precedence over aria-label.
-         */
         "ariaLabelledby"?: string;
         /**
-          * Disable the timepicker. - For <timepicker-component>: passed as `disableTimepicker` - For <plumage-timepicker-component>: passed as `disabled`
           * @default false
          */
         "disableTimepicker"?: boolean;
@@ -9621,17 +9608,14 @@ declare namespace LocalJSX {
          */
         "hideTimepickerBtn"?: boolean;
         /**
-          * ID to pass to inner input(s). Should be unique per instance.
           * @default 'time-input'
          */
         "inputId"?: string;
         /**
-          * Name attribute for the inner input
           * @default 'time'
          */
         "inputName"?: string;
         /**
-          * Width (px) for the input element
           * @default null
          */
         "inputWidth"?: number | string;
@@ -9648,7 +9632,13 @@ declare namespace LocalJSX {
          */
         "labelText"?: string;
         /**
-          * Required indicator
+          * Namespaced events to avoid collisions
+         */
+        "onManagerTimeChange"?: (event: TimepickerManagerCustomEvent<ManagerTimeChangeDetail>) => void;
+        "onManagerTimeInput"?: (event: TimepickerManagerCustomEvent<ManagerTimeInputDetail>) => void;
+        "onTimeChange"?: (event: TimepickerManagerCustomEvent<TimeChangeDetail2>) => void;
+        "onTimeInput"?: (event: TimepickerManagerCustomEvent<TimeInputDetail2>) => void;
+        /**
           * @default false
          */
         "required"?: boolean;
@@ -9658,6 +9648,10 @@ declare namespace LocalJSX {
          */
         "size"?: string;
         /**
+          * @default 50
+         */
+        "timeInputThrottleMs"?: number;
+        /**
           * @default false
          */
         "twelveHourOnly"?: boolean;
@@ -9666,7 +9660,6 @@ declare namespace LocalJSX {
          */
         "twentyFourHourOnly"?: boolean;
         /**
-          * Choose which implementation to render
           * @default false
          */
         "usePlTimepicker"?: boolean;
@@ -9678,6 +9671,10 @@ declare namespace LocalJSX {
           * @default ''
          */
         "validationMessage"?: string;
+        /**
+          * @default ''
+         */
+        "value"?: string;
     }
     interface ToastsComponent {
         "additionalHeaderContent"?: any;
@@ -10010,14 +10007,6 @@ declare module "@stencil/core" {
             "svg-component": LocalJSX.SvgComponent & JSXBase.HTMLAttributes<HTMLSvgComponentElement>;
             "table-component": LocalJSX.TableComponent & JSXBase.HTMLAttributes<HTMLTableComponentElement>;
             "timepicker-component": LocalJSX.TimepickerComponent & JSXBase.HTMLAttributes<HTMLTimepickerComponentElement>;
-            /**
-             * Timepicker Manager
-             * - Forwards props to either <timepicker-component> or <plumage-timepicker-component>
-             * - a11y precedence: aria-labelledby (if provided) > aria-label
-             * - Forwards aria-describedby to child; optionally merges in the child's validation message id
-             * NOTE:
-             * 508 compliance depends primarily on the child component’s semantics/keyboard behavior.
-             */
             "timepicker-manager": LocalJSX.TimepickerManager & JSXBase.HTMLAttributes<HTMLTimepickerManagerElement>;
             "toasts-component": LocalJSX.ToastsComponent & JSXBase.HTMLAttributes<HTMLToastsComponentElement>;
             /**

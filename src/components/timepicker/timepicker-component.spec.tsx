@@ -51,6 +51,10 @@ describe('timepicker-component', () => {
     expect(input.getAttribute('aria-haspopup')).toBe('dialog');
     expect(input.getAttribute('aria-expanded')).toBe('false');
 
+    // New behavior: dropdown is rendered inert while closed
+    expect(dropdown.classList.contains('hidden')).toBe(true);
+    expect(dropdown.hasAttribute('inert')).toBe(true);
+
     expect(root).toMatchSnapshot();
   });
 
@@ -120,10 +124,19 @@ describe('timepicker-component', () => {
   });
 
   it('required + invalid: sets aria-required + required, sets aria-invalid only when invalid, and wires validation message id', async () => {
+    // IMPORTANT: boolean attributes like is-valid="false" are unreliable in string HTML.
+    // We set props on the instance to ensure correct boolean values.
     const page = await newSpecPage({
       components: [TimepickerComponent],
-      html: `<timepicker-component input-id="tp4" required validation validation-message="Bad time" is-valid="false"></timepicker-component>`,
+      html: `<timepicker-component input-id="tp4"></timepicker-component>`,
     });
+
+    const inst = page.rootInstance as TimepickerComponent;
+
+    inst.required = true;
+    inst.validation = true;
+    inst.validationMessage = 'Bad time';
+    inst.isValid = false;
 
     await page.waitForChanges();
 

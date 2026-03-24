@@ -196,14 +196,14 @@ exports[`multi-range-slider-component label vs sliderThumbLabel rendering (label
 <multi-range-slider-component lower-value="10" upper-value="20">
   <div class="slider-wrapper">
     <div class="slider" dir="ltr" role="presentation">
-      <label class="form-control-label" id="mslider_447dkez4k-label">
+      <label class="form-control-label" id="mslider_auataqd69-label">
         Range
-        <span id="mslider_447dkez4k-value">
+        <span id="mslider_auataqd69-value">
           10 – 20
         </span>
       </label>
       <div class="slider-container">
-        <div aria-labelledby="mslider_447dkez4k-label" aria-readonly="true" class="slider-value-left" role="textbox">
+        <div aria-labelledby="mslider_auataqd69-label" aria-readonly="true" class="slider-value-left" role="textbox">
           10
         </div>
         <div aria-hidden="true" class="slider-min-value">
@@ -213,17 +213,17 @@ exports[`multi-range-slider-component label vs sliderThumbLabel rendering (label
           <div aria-hidden="true" class="multi slider-track" style="width: 10%;"></div>
           <div aria-hidden="true" class="multi slider-track" style="left: 10%; right: 80%;"></div>
           <div aria-hidden="true" class="multi slider-track" style="width: 80%;"></div>
-          <div aria-labelledby="mslider_447dkez4k-label" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="10" aria-valuetext="10" class="lower-thumb slider-thumb-container" role="slider" tabindex="0" style="left: calc(10% - 5px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-labelledby="mslider_auataqd69-label" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="10" aria-valuetext="10" class="lower-thumb slider-thumb-container" role="slider" tabindex="0" style="left: calc(10% - 5px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
             <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
           </div>
-          <div aria-labelledby="mslider_447dkez4k-label" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="20" aria-valuetext="20" class="slider-thumb-container upper-thumb" role="slider" tabindex="0" style="left: calc(20% - 8px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div aria-labelledby="mslider_auataqd69-label" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="20" aria-valuetext="20" class="slider-thumb-container upper-thumb" role="slider" tabindex="0" style="left: calc(20% - 8px); transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
             <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
           </div>
         </div>
         <div aria-hidden="true" class="slider-max-value">
           100
         </div>
-        <div aria-labelledby="mslider_447dkez4k-label" aria-readonly="true" class="slider-value-right" role="textbox">
+        <div aria-labelledby="mslider_auataqd69-label" aria-readonly="true" class="slider-value-right" role="textbox">
           20
         </div>
       </div>

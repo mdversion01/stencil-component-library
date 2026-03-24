@@ -1,15 +1,66 @@
 // src/components/timepicker/timepicker-component.tsx
-import { Component, h, Prop, Element, State, Method, Fragment, Listen } from '@stencil/core';
+import {
+  Component,
+  h,
+  Prop,
+  Element,
+  State,
+  Method,
+  Fragment,
+  Listen,
+  Watch,
+  Event,
+  EventEmitter,
+} from '@stencil/core';
 
 type TimePart = 'hour' | 'minute' | 'second' | 'ampm';
+type AmPm = 'AM' | 'PM';
+
+type TimeParts = {
+  hour: number;
+  minute: number;
+  second: number; // preserved even when hideSeconds=true
+  ampm: AmPm;
+};
+
+type NormalizeOk = { ok: true; normalized: string; parts: TimeParts };
+type NormalizeErr = { ok: false; normalized: string; reason: 'pattern' | 'range' };
+type NormalizeResult = NormalizeOk | NormalizeErr;
+
+const isNormalizeErr = (r: NormalizeResult): r is NormalizeErr => r.ok === false;
+
+export type TimeChangeDetail = {
+  value: string;
+  parts: TimeParts;
+  isValid: boolean;
+  source:
+    | 'commit'
+    | 'spinner'
+    | 'clear'
+    | 'format'
+    | 'external'
+    | 'inputName'
+    | 'inputId'
+    | 'constraints'
+    | 'hideSeconds';
+};
+
+export type TimeInputDetail = {
+  raw: string;
+  normalized: string;
+  isValid: boolean;
+  parts?: TimeParts;
+  reason?: 'pattern' | 'range';
+  caretStart: number | null;
+  caretEnd: number | null;
+  inputType: string | null;
+};
 
 @Component({
   tag: 'timepicker-component',
   styleUrls: [
     './timepicker-styles.scss',
-    '../utilities-styles.scss',
     '../button/button.scss',
-    '../input-group/input-group-styles.scss',
     '../input-group/input-group-styles.scss',
     '../input-field/input-field-styles.scss',
   ],
@@ -18,101 +69,373 @@ type TimePart = 'hour' | 'minute' | 'second' | 'ampm';
 export class TimePickerComponent {
   @Element() host!: HTMLElement;
 
-  /** Accessible label for the input (used when no aria-labelledby is provided and no visible label). */
+  @Event({ eventName: 'timeChange' }) timeChange!: EventEmitter<TimeChangeDetail>;
+  @Event({ eventName: 'timeInput' }) timeInput!: EventEmitter<TimeInputDetail>;
+
   @Prop() ariaLabel: string = 'Time Picker';
-
-  /**
-   * ID(s) of the element(s) that label the timepicker input (space-separated).
-   * If omitted, component will auto-generate an internal label id when showLabel=true.
-   */
   @Prop() ariaLabelledby: string = '';
-
-  /** Optional: external description/help ids (space-separated). */
   @Prop() ariaDescribedby: string = '';
 
   @Prop() showLabel?: boolean;
   @Prop() labelText: string = 'Enter Time';
 
-  /** ID passed to the internal input */
   @Prop() inputId: string = 'time-input';
-
-  /** Name attribute for the inner input */
   @Prop() inputName: string = 'time';
 
-  /** Use 24-hour format by default (mutable: toggled by the component) */
+  /**
+   * Controlled value (optional).
+   * - If non-empty, component parses/displays it.
+   * - On commit/spinner/clear, component updates this (mutable) and emits `timeChange`.
+   */
+  @Prop({ mutable: true }) value: string = '';
+
   @Prop({ mutable: true }) isTwentyFourHourFormat: boolean = true;
 
-  /** Optional size variant: '', 'sm', 'lg' */
   @Prop() size: string = '';
-
-  /** External invalid styling hook (kept for compatibility) */
   @Prop() validation?: boolean = false;
-
-  /** Validation message to show (mutable: set/cleared by the component) */
   @Prop({ mutable: true }) validationMessage: string = '';
 
-  /** Force show only 24-hour controls/options */
   @Prop() twentyFourHourOnly: boolean = false;
-
-  /** Force show only 12-hour controls/options */
   @Prop() twelveHourOnly: boolean = false;
 
-  /** Hide the toggle/launch button for the timepicker popover */
   @Prop() hideTimepickerBtn: boolean = false;
-
-  /** Whether the current value is considered valid (mutable: set by validation) */
   @Prop({ mutable: true }) isValid: boolean = true;
 
-  /** Hide seconds UI / value */
   @Prop() hideSeconds: boolean = false;
 
-  /** Width (px) for the input element */
   @Prop() inputWidth?: number | string;
-
   @Prop() required: boolean = false;
 
-  /** ✅ Disable the entire timepicker (input + buttons + dropdown) */
   @Prop() disableTimepicker: boolean = false;
 
-  // Internal state trigger (used only to re-render when needed)
-  @State() _tick: number = 0;
+  /** Throttle window for timeInput events (ms). Set 0 to disable throttling. */
+  @Prop() timeInputThrottleMs: number = 50;
 
-  // Tracks whether the user actually changed the time (typing / clear / spinner)
-  private _didUserChangeTime: boolean = false;
-
-  // Popover state + focus management (best-practice improvements)
+  // ---------- internal state ----------
   @State() private _open: boolean = false;
   @State() private _activePart: TimePart = 'hour';
+  @State() private _parts: TimeParts = { hour: 0, minute: 0, second: 0, ampm: 'AM' };
+  @State() private _warningShown: boolean = false;
+
   private _returnFocusEl?: HTMLElement | null;
+
+  // IMPORTANT: input is UNCONTROLLED while typing
+  private _inputEl?: HTMLInputElement;
+  private _inputValue: string = '';
+  private _isInputFocused: boolean = false;
+
+  private _didUserChangeTime: boolean = false;
+  private _emitSuppressionDepth = 0;
+
+  // ---- timeInput throttling ----
+  private _timeInputLastEmitTs = 0;
+  private _timeInputTimer: number | undefined;
+  private _timeInputPending: TimeInputDetail | null = null;
 
   // ---------- lifecycle ----------
   connectedCallback() {
-    if (this.twentyFourHourOnly) {
-      this.isTwentyFourHourFormat = true;
-    } else if (this.twelveHourOnly) {
-      this.isTwentyFourHourFormat = false;
+    this._withEmitSuppressed(() => this._applyFormatConstraints());
+  }
+
+  disconnectedCallback() {
+    if (this._timeInputTimer !== undefined) {
+      clearTimeout(this._timeInputTimer);
+      this._timeInputTimer = undefined;
+    }
+    this._timeInputPending = null;
+  }
+
+  componentWillLoad() {
+    const initial = (this.value ?? '').trim();
+    if (initial) {
+      this._withEmitSuppressed(() => {
+        const ok = this._applyExternalValue(initial);
+        if (!ok) this._resetToDefault();
+      });
+      return;
+    }
+    this._resetToDefault();
+  }
+
+  // ---------- public API ----------
+  @Method()
+  async forceTimeUpdate(): Promise<void> {
+    if (this._isDisabled) return;
+    this._commitFromInput();
+  }
+
+  // ---------- watchers ----------
+  @Watch('disableTimepicker')
+  onDisableTimepickerChange(next: boolean, prev: boolean) {
+    if (next === prev) return;
+    if (next && this._open) this._setDropdownVisibility(false);
+    if (!next && !this._isPartEnabled(this._activePart)) this._activePart = 'hour';
+  }
+
+  @Watch('value')
+  onValueChange(next: string, prev: string) {
+    const n = (next ?? '').trim();
+    const p = (prev ?? '').trim();
+    if (n === p) return;
+
+    this._withEmitSuppressed(() => {
+      if (!n) {
+        this._resetToDefault();
+        return;
+      }
+      const ok = this._applyExternalValue(n);
+      if (!ok) this.isValid = false;
+    });
+  }
+
+  @Watch('isTwentyFourHourFormat')
+  onFormatChange(next: boolean, prev: boolean) {
+    if (next === prev) return;
+
+    if (!this._formatAllowed(next)) {
+      this.isTwentyFourHourFormat = this._coerceAllowedFormat();
+      return;
+    }
+
+    this._withEmitSuppressed(() => {
+      this._convertTimeFormatInState();
+      if (!this._isPartEnabled(this._activePart)) this._activePart = 'hour';
+
+      if (!this._isInputFocused) this._setInputValue(this._partsToInput(this._parts), { writeToDom: true });
+
+      this._recomputeValidityFromState();
+      this._syncValuePropFromState();
+    });
+
+    this._emitTimeChange('external');
+  }
+
+  @Watch('hideSeconds')
+  onHideSecondsChange(next: boolean, prev: boolean) {
+    if (next === prev) return;
+
+    this._withEmitSuppressed(() => {
+      if (next && this._activePart === 'second') this._activePart = 'minute';
+
+      if (!this._isInputFocused) this._setInputValue(this._partsToInput(this._parts), { writeToDom: true });
+
+      this._recomputeValidityFromState();
+      this._syncValuePropFromState();
+    });
+
+    this._emitTimeChange('hideSeconds');
+  }
+
+  @Watch('twentyFourHourOnly')
+  onTwentyFourOnlyChange(next: boolean, prev: boolean) {
+    if (next === prev) return;
+    this._withEmitSuppressed(() => {
+      this._applyFormatConstraints();
+      if (!this._isInputFocused) this._setInputValue(this._partsToInput(this._parts), { writeToDom: true });
+      this._syncValuePropFromState();
+    });
+    this._emitTimeChange('constraints');
+  }
+
+  @Watch('twelveHourOnly')
+  onTwelveOnlyChange(next: boolean, prev: boolean) {
+    if (next === prev) return;
+    this._withEmitSuppressed(() => {
+      this._applyFormatConstraints();
+      if (!this._isInputFocused) this._setInputValue(this._partsToInput(this._parts), { writeToDom: true });
+      this._syncValuePropFromState();
+    });
+    this._emitTimeChange('constraints');
+  }
+
+  @Watch('inputId')
+  onInputIdChange(next: string, prev: string) {
+    const n = (next ?? '').trim();
+    const p = (prev ?? '').trim();
+    if (n === p) return;
+
+    if (this._open) this._setDropdownVisibility(false);
+    if (!n) this.inputId = 'time-input';
+
+    this._returnFocusEl = null;
+    this._emitTimeChange('inputId');
+  }
+
+  @Watch('inputName')
+  onInputNameChange(next: string, prev: string) {
+    const n = (next ?? '').trim();
+    const p = (prev ?? '').trim();
+    if (n === p) return;
+    this._emitTimeChange('inputName');
+  }
+
+  // ---------- global listeners ----------
+  @Listen('keydown', { target: 'document' })
+  onDocKeydown(ev: KeyboardEvent) {
+    if (this._isDisabled) return;
+    if (!this._open) return;
+
+    const path = (ev.composedPath?.() as any[]) || [];
+    if (!path.includes(this.host)) return;
+
+    if (ev.key === 'Escape') {
+      ev.preventDefault();
+      this._setDropdownVisibility(false);
+      return;
+    }
+
+    // ✅ match plumage-timepicker: trap Tab inside popover when open
+    if (ev.key === 'Tab') {
+      this._trapTab(ev);
     }
   }
 
-  componentDidLoad() {
-    this._setDefaultTime();
-    const dd = this.qs<HTMLDivElement>(`.time-dropdown`);
-    if (dd) this._disablePanel(dd);
+  @Listen('mousedown', { target: 'document' })
+  onDocMouseDown(ev: MouseEvent) {
+    if (this._isDisabled) return;
+    if (!this._open) return;
+
+    const path = (ev.composedPath?.() as any[]) || [];
+    if (path.includes(this.host)) return;
+
+    this._setDropdownVisibility(false);
   }
 
-  // ---------- utilities ----------
+  // ---------- DOM helpers ----------
   private qs<T extends Element = Element>(sel: string): T | null {
     return (this.host.querySelector(sel) as T) || null;
-  }
-
-  private forceUpdate() {
-    this._tick++;
   }
 
   private get _isDisabled(): boolean {
     return !!this.disableTimepicker;
   }
 
+  // ---------- input helpers (UNCONTROLLED) ----------
+  private _setInputValue(next: string, opts?: { writeToDom?: boolean }) {
+    this._inputValue = next;
+    if (opts?.writeToDom !== false) {
+      if (this._inputEl && this._inputEl.value !== next) {
+        this._inputEl.value = next;
+      }
+    }
+  }
+
+  private _readInputValue(): string {
+    return this._inputEl?.value ?? this._inputValue ?? '';
+  }
+
+  // ---------- emit helpers ----------
+  private _withEmitSuppressed(fn: () => void) {
+    this._emitSuppressionDepth++;
+    try {
+      fn();
+    } finally {
+      this._emitSuppressionDepth--;
+    }
+  }
+
+  private _emitTimeChange(source: TimeChangeDetail['source']) {
+    if (this._emitSuppressionDepth > 0) return;
+    this.timeChange.emit({
+      value: this._partsToInput(this._parts),
+      parts: { ...this._parts },
+      isValid: this.isValid,
+      source,
+    });
+  }
+
+  private _emitTimeInputNow(detail: TimeInputDetail) {
+    if (this._emitSuppressionDepth > 0) return;
+    this.timeInput.emit(detail);
+  }
+
+  private _scheduleTimeInput(detail: TimeInputDetail) {
+    if (this._emitSuppressionDepth > 0) return;
+
+    const throttle = Math.max(0, Number(this.timeInputThrottleMs) || 0);
+    if (throttle === 0) {
+      this._emitTimeInputNow(detail);
+      return;
+    }
+
+    const now = Date.now();
+    const elapsed = now - this._timeInputLastEmitTs;
+
+    if (elapsed >= throttle && this._timeInputTimer === undefined) {
+      this._timeInputLastEmitTs = now;
+      this._emitTimeInputNow(detail);
+      return;
+    }
+
+    this._timeInputPending = detail;
+
+    if (this._timeInputTimer !== undefined) return;
+
+    const wait = Math.max(0, throttle - elapsed);
+    this._timeInputTimer = window.setTimeout(() => {
+      this._timeInputTimer = undefined;
+      if (!this._timeInputPending) return;
+
+      const payload = this._timeInputPending;
+      this._timeInputPending = null;
+      this._timeInputLastEmitTs = Date.now();
+      this._emitTimeInputNow(payload);
+    }, wait);
+  }
+
+  private _flushTimeInput() {
+    if (this._emitSuppressionDepth > 0) return;
+
+    if (this._timeInputTimer !== undefined) {
+      clearTimeout(this._timeInputTimer);
+      this._timeInputTimer = undefined;
+    }
+    if (!this._timeInputPending) return;
+
+    const payload = this._timeInputPending;
+    this._timeInputPending = null;
+    this._timeInputLastEmitTs = Date.now();
+    this._emitTimeInputNow(payload);
+  }
+
+  private _syncValuePropFromState() {
+    const next = this._partsToInput(this._parts);
+    if ((this.value ?? '') !== next) {
+      this._withEmitSuppressed(() => {
+        this.value = next;
+      });
+    }
+  }
+
+  // ---------- constraints ----------
+  private _formatAllowed(nextIs24: boolean): boolean {
+    if (this.twentyFourHourOnly && !nextIs24) return false;
+    if (this.twelveHourOnly && nextIs24) return false;
+    return true;
+  }
+
+  private _coerceAllowedFormat(): boolean {
+    if (this.twentyFourHourOnly) return true;
+    if (this.twelveHourOnly) return false;
+    return this.isTwentyFourHourFormat;
+  }
+
+  private _applyFormatConstraints() {
+    const coerced = this._coerceAllowedFormat();
+    if (this.isTwentyFourHourFormat !== coerced) {
+      this.isTwentyFourHourFormat = coerced;
+      return;
+    }
+
+    if (this.isTwentyFourHourFormat || this.twentyFourHourOnly) {
+      if (this._parts.ampm !== 'AM') this._parts = { ...this._parts, ampm: 'AM' };
+      if (this._activePart === 'ampm') this._activePart = 'hour';
+    }
+
+    this._recomputeValidityFromState();
+  }
+
+  // ---------- ids / a11y ----------
   private normalizeIdList(value?: string): string | undefined {
     const trimmed = (value ?? '').trim();
     if (!trimmed) return undefined;
@@ -133,31 +456,21 @@ export class TimePickerComponent {
   private getLabelId(): string {
     return `${this.inputId}-label`;
   }
-
   private getDropdownId(): string {
     return `${this.inputId}-dropdown`;
   }
-
   private getValidationId(): string {
     return `${this.inputId}-validation`;
   }
-
   private getWarningId(): string {
     return `${this.inputId}-warning`;
   }
 
-  /**
-   * Compute accessible name wiring:
-   * - If showLabel=true, prefer aria-labelledby to the visible label
-   * - Otherwise prefer user-provided aria-labelledby
-   * - Otherwise fall back to aria-label
-   */
   private computeNameAttrs() {
     const hasVisibleLabel = !!this.showLabel;
     const userLabelledby = this.normalizeIdList(this.ariaLabelledby);
 
     const autoLabelId = hasVisibleLabel ? this.getLabelId() : undefined;
-    // visible label should win; otherwise use provided ids
     const ariaLabelledby = autoLabelId ?? userLabelledby;
 
     const ariaLabel = ariaLabelledby
@@ -167,182 +480,223 @@ export class TimePickerComponent {
     return { hasVisibleLabel, ariaLabelledby, ariaLabel };
   }
 
-  /**
-   * Compute aria-describedby:
-   * - external ariaDescribedby (help text) +
-   * - validation message id (only when visible) +
-   * - warning message id (only when visible)
-   */
   private computeDescribedByAttrs() {
     const external = this.normalizeIdList(this.ariaDescribedby);
-    const validationId = this.validationMessage ? this.getValidationId() : undefined;
-
-    const warningEl = this.qs<HTMLDivElement>('.warning-message');
-    const warningShown = !!warningEl && !warningEl.classList.contains('hidden');
-    const warningId = warningShown ? this.getWarningId() : undefined;
-
+    const validationId = (this.validationMessage ?? '').trim() ? this.getValidationId() : undefined;
+    const warningId = this._warningShown ? this.getWarningId() : undefined;
     return this.mergeIdLists(external, this.mergeIdLists(validationId, warningId));
   }
 
-  private _clearExternalInvalidUI() {
+  // ---------- defaults ----------
+  private _defaultTimeForFormat(): { parts: TimeParts; inputValue: string } {
+    if (this.isTwentyFourHourFormat) {
+      return this.hideSeconds
+        ? { parts: { hour: 0, minute: 0, second: 0, ampm: 'AM' }, inputValue: '00:00' }
+        : { parts: { hour: 0, minute: 0, second: 0, ampm: 'AM' }, inputValue: '00:00:00' };
+    }
+    return this.hideSeconds
+      ? { parts: { hour: 12, minute: 0, second: 0, ampm: 'AM' }, inputValue: '12:00 AM' }
+      : { parts: { hour: 12, minute: 0, second: 0, ampm: 'AM' }, inputValue: '12:00:00 AM' };
+  }
+
+  private _resetToDefault() {
+    const { parts, inputValue } = this._defaultTimeForFormat();
+    this._parts = parts;
+
+    this._setInputValue(inputValue, { writeToDom: true });
+
+    if (this.isTwentyFourHourFormat || this.twentyFourHourOnly) {
+      this._parts = { ...this._parts, ampm: 'AM' };
+      this._setInputValue(this._partsToInput(this._parts), { writeToDom: true });
+    }
+
+    this.isValid = true;
+    this._warningShown = false;
     if (this.validationMessage) this.validationMessage = '';
-    if (this.validation) this.validation = false;
 
-    const input = this.qs<HTMLInputElement>('.time-input');
-    input?.classList.remove('invalid', 'is-invalid');
-
-    const clearBtn = this.qs<HTMLButtonElement>('.clear-button');
-    clearBtn?.classList.remove('invalid', 'is-invalid');
-
-    const iconBtn = this.qs<HTMLButtonElement>('.time-icon-btn');
-    iconBtn?.classList.remove('invalid', 'is-invalid');
-
-    const underline = this.qs<HTMLElement>('.b-underline');
-    underline?.classList.remove('invalid', 'is-invalid');
-
-    const focusBar = this.qs<HTMLElement>('.b-focus');
-    focusBar?.classList.remove('invalid', 'is-invalid');
-
-    const label = this.qs<HTMLElement>('label');
-    label?.classList.remove('invalid', 'is-invalid');
-
-    this.forceUpdate();
+    this._syncValuePropFromState();
+    this._recomputeValidityFromState();
   }
 
-  // ---------- public API ----------
-  @Method()
-  async forceTimeUpdate(): Promise<void> {
-    if (this._isDisabled) return;
-    this._updateTimeFromInput();
+  // ---------- parsing ----------
+  private _pad2(n: number): string {
+    return String(n).padStart(2, '0');
   }
 
-  // ---------- dropdown visibility helpers ----------
-  private _enablePanel(dd: HTMLElement) {
-    dd.classList.remove('hidden');
-    dd.removeAttribute('inert');
-    dd.removeAttribute('aria-hidden');
-    dd.style.pointerEvents = 'auto';
+  private _pattern(): RegExp {
+    return this.isTwentyFourHourFormat
+      ? this.hideSeconds
+        ? /^(\d{1,2}):(\d{2})$/
+        : /^(\d{1,2}):(\d{2}):(\d{2})$/
+      : this.hideSeconds
+        ? /^(\d{1,2}):(\d{2})\s(AM|PM)$/
+        : /^(\d{1,2}):(\d{2}):(\d{2})\s(AM|PM)$/;
   }
 
-  private _disablePanel(dd: HTMLElement) {
-    dd.classList.add('hidden');
-    dd.setAttribute('inert', '');
-    dd.removeAttribute('aria-hidden');
-    dd.style.pointerEvents = 'none';
+  private _validationMessageForPattern(): string {
+    if (this.isTwentyFourHourFormat) {
+      return this.hideSeconds
+        ? 'Invalid time format. Correct format is 00:00.'
+        : 'Invalid time format. Correct format is 00:00:00.';
+    }
+    return this.hideSeconds
+      ? 'Invalid time format. Correct format is 00:00 AM(or PM).'
+      : 'Invalid time format. Correct format is 00:00:00 AM(or PM).';
   }
 
+  private _partsToInput(parts: TimeParts): string {
+    const hh = this._pad2(parts.hour);
+    const mm = this._pad2(parts.minute);
+    const ss = this._pad2(parts.second);
+
+    if (this.isTwentyFourHourFormat || this.twentyFourHourOnly) {
+      return this.hideSeconds ? `${hh}:${mm}` : `${hh}:${mm}:${ss}`;
+    }
+    return this.hideSeconds ? `${hh}:${mm} ${parts.ampm}` : `${hh}:${mm}:${ss} ${parts.ampm}`;
+  }
+
+  private _isValidParts(parts: TimeParts): boolean {
+    const h = parts.hour;
+    const m = parts.minute;
+    const s = parts.second;
+
+    if (this.isTwentyFourHourFormat || this.twentyFourHourOnly) {
+      if (h < 0 || h > 23) return false;
+    } else {
+      if (h < 1 || h > 12) return false;
+      if (parts.ampm !== 'AM' && parts.ampm !== 'PM') return false;
+    }
+
+    if (m < 0 || m > 59) return false;
+    if (!this.hideSeconds && (s < 0 || s > 59)) return false;
+
+    return true;
+  }
+
+  private _normalizeAndParse(raw: string): NormalizeResult {
+    const normalized = (raw ?? '')
+      .trim()
+      .toUpperCase()
+      .split(':')
+      .map(part => part.trim().padStart(2, '0'))
+      .join(':')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    const m = normalized.match(this._pattern());
+    if (!m) return { ok: false as const, normalized, reason: 'pattern' as const };
+
+    const hour = Number.parseInt(m[1], 10);
+    const minute = Number.parseInt(m[2], 10);
+    const second = this.hideSeconds ? this._parts.second : Number.parseInt(m[3], 10);
+
+    const ampm =
+      this.isTwentyFourHourFormat || this.twentyFourHourOnly ? 'AM' : ((this.hideSeconds ? m[3] : m[4]) as AmPm);
+
+    const parts: TimeParts = { hour, minute, second, ampm: (ampm || 'AM') as AmPm };
+    if (!this._isValidParts(parts)) return { ok: false as const, normalized, reason: 'range' as const };
+
+    return { ok: true as const, normalized, parts };
+  }
+
+  private _normalizeForTyping(raw: string): string {
+    return (raw ?? '').toUpperCase().replace(/\s+/g, ' ').trim();
+  }
+
+  private _tryParseComplete(raw: string): NormalizeResult {
+    const typed = this._normalizeForTyping(raw);
+    if (!typed.match(this._pattern())) {
+      return { ok: false as const, normalized: typed, reason: 'pattern' as const };
+    }
+    return this._normalizeAndParse(typed);
+  }
+
+  private _applyExternalValue(raw: string): boolean {
+    const res = this._normalizeAndParse(raw);
+
+    if (isNormalizeErr(res)) {
+      this.isValid = false;
+      if (res.reason === 'pattern') {
+        this.validationMessage = this._validationMessageForPattern();
+        this._warningShown = false;
+      } else {
+        this._warningShown = true;
+      }
+      return false;
+    }
+
+    this._parts = res.parts;
+    this._setInputValue(res.normalized, { writeToDom: true });
+
+    this.isValid = true;
+    this._warningShown = false;
+    if (this.validationMessage) this.validationMessage = '';
+    return true;
+  }
+
+  private _recomputeValidityFromState() {
+    const res = this._normalizeAndParse(this._partsToInput(this._parts));
+    this.isValid = res.ok;
+    if (res.ok) {
+      this._warningShown = false;
+      if (this.validationMessage) this.validationMessage = '';
+    }
+  }
+
+  // ---------- dropdown ----------
   private _setDropdownVisibility(show: boolean) {
     if (this._isDisabled) return;
 
-    const dd = this.qs<HTMLDivElement>('.time-dropdown');
-    if (!dd) return;
-
     const trigger = this.qs<HTMLButtonElement>('.time-icon-btn');
-    const input = this.qs<HTMLInputElement>('.time-input');
+    const input = this._inputEl;
 
     if (show) {
-      this._returnFocusEl = trigger || input || (this.host as unknown as HTMLElement);
-
+      this._returnFocusEl = trigger || input || this.host;
       this._open = true;
-      this._enablePanel(dd);
-
-      // establish roving tabindex start
       this._activePart = 'hour';
-      this.forceUpdate();
-
-      requestAnimationFrame(() => {
-        this._focusActivePart();
-      });
+      requestAnimationFrame(() => this._focusActivePart());
     } else {
       this._open = false;
-      const toFocus = this._returnFocusEl || input || trigger || (this.host as unknown as HTMLElement);
+      const toFocus = this._returnFocusEl || input || trigger || this.host;
       toFocus?.focus();
-
-      requestAnimationFrame(() => this._disablePanel(dd));
     }
-
-    if (trigger) trigger.setAttribute('aria-expanded', show ? 'true' : 'false');
-    if (input) input.setAttribute('aria-expanded', show ? 'true' : 'false');
   }
 
   private _toggleDropdown = () => {
     if (this._isDisabled) return;
 
-    this._formatTime();
-    const dd = this.qs<HTMLDivElement>('.time-dropdown');
-    if (!dd) return;
+    // keep panel values synced to latest typed value (matches plumage behavior)
+    if (!this._isInputFocused) this._commitFromInput();
 
-    const willShow = dd.classList.contains('hidden');
-    this._setDropdownVisibility(willShow);
+    this._setDropdownVisibility(!this._open);
   };
 
   private _hideDropdown = (ev?: Event) => {
     if (this._isDisabled) return;
-
     ev?.preventDefault();
     ev?.stopPropagation();
     this._setDropdownVisibility(false);
   };
 
-  // Close on Escape when open and event came from this component
-  @Listen('keydown', { target: 'document' })
-  onDocKeydown(ev: KeyboardEvent) {
-    if (this._isDisabled) return;
-    if (!this._open) return;
-
-    const path = (ev.composedPath?.() as any[]) || [];
-    const within = path.includes(this.host);
-    if (!within) return;
-
-    if (ev.key === 'Escape') {
-      ev.preventDefault();
-      this._setDropdownVisibility(false);
-      return;
-    }
-
-    // Focus trap for the open popover
-    if (ev.key === 'Tab') {
-      this._trapTab(ev);
-      return;
-    }
-  }
-
-  // Close on outside click when open
-  @Listen('mousedown', { target: 'document' })
-  onDocMouseDown(ev: MouseEvent) {
-    if (this._isDisabled) return;
-    if (!this._open) return;
-
-    const path = (ev.composedPath?.() as any[]) || [];
-    const within = path.includes(this.host);
-    if (within) return;
-
-    this._setDropdownVisibility(false);
-  }
-
+  // ---------- focus trap (match plumage) ----------
   private _getFocusableInDropdown(): HTMLElement[] {
     const dd = this.qs<HTMLDivElement>('.time-dropdown');
-    if (!dd || dd.classList.contains('hidden')) return [];
-    // Keep it simple: include our spinbuttons (active tabindex) + all enabled buttons
+    if (!dd || !this._open) return [];
+
     const nodes = Array.from(
       dd.querySelectorAll<HTMLElement>(
         '[role="spinbutton"][tabindex], button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
       ),
     );
-    // Filter out inert/hidden etc.
+
     return nodes.filter(el => {
-      const style = (el as any).style;
       if (el.closest('.hidden')) return false;
       if ((el as any).disabled) return false;
-      if (style && style.pointerEvents === 'none') return false;
       return true;
     });
   }
 
   private _trapTab(ev: KeyboardEvent) {
-    const dd = this.qs<HTMLDivElement>('.time-dropdown');
-    if (!dd || dd.classList.contains('hidden')) return;
-
     const focusables = this._getFocusableInDropdown();
     if (focusables.length === 0) return;
 
@@ -362,9 +716,21 @@ export class TimePickerComponent {
     focusables[next]?.focus();
   }
 
-  private _focusActivePart() {
-    const el = this._getPartEl(this._activePart);
-    el?.focus();
+  // ---------- roving tabindex + spin key handling (match plumage) ----------
+  private _orderedParts(): TimePart[] {
+    const parts: TimePart[] = ['hour', 'minute'];
+    if (!this.hideSeconds) parts.push('second');
+    if (!(this.isTwentyFourHourFormat || this.twentyFourHourOnly)) parts.push('ampm');
+    return parts;
+  }
+
+  private _moveActivePart(dir: -1 | 1) {
+    const parts = this._orderedParts();
+    const idx = parts.indexOf(this._activePart);
+    if (idx < 0) this._activePart = parts[0] || 'hour';
+    else this._activePart = parts[(idx + dir + parts.length) % parts.length];
+
+    requestAnimationFrame(() => this._focusActivePart());
   }
 
   private _getPartEl(part: TimePart): HTMLElement | null {
@@ -379,224 +745,13 @@ export class TimePickerComponent {
     return this.qs<HTMLElement>(sel);
   }
 
-  private _isPartEnabled(part: TimePart): boolean {
-    if (part === 'second') return !this.hideSeconds;
-    if (part === 'ampm') return !(this.isTwentyFourHourFormat || this.twentyFourHourOnly);
-    return true;
+  private _focusActivePart() {
+    this._getPartEl(this._activePart)?.focus();
   }
 
-  private _orderedParts(): TimePart[] {
-    const parts: TimePart[] = ['hour', 'minute'];
-    if (!this.hideSeconds) parts.push('second');
-    if (!(this.isTwentyFourHourFormat || this.twentyFourHourOnly)) parts.push('ampm');
-    return parts;
-  }
-
-  private _moveActivePart(dir: -1 | 1) {
-    const parts = this._orderedParts();
-    const idx = parts.indexOf(this._activePart);
-    if (idx < 0) {
-      this._activePart = parts[0] || 'hour';
-    } else {
-      const next = (idx + dir + parts.length) % parts.length;
-      this._activePart = parts[next];
-    }
-    this.forceUpdate();
-    requestAnimationFrame(() => this._focusActivePart());
-  }
-
-  // ---------- format toggle ----------
-  private _toggleFormat = () => {
-    if (this.twentyFourHourOnly || this.twelveHourOnly) return;
-
-    // IMPORTANT: toggling format must NOT clear validation
-    this.isTwentyFourHourFormat = !this.isTwentyFourHourFormat;
-    this._convertTimeFormat();
-    this._toggleAMPMSpinner();
-
-    // keep roving part valid
-    if (!this._isPartEnabled(this._activePart)) {
-      this._activePart = 'hour';
-    }
-
-    this._updateInput();
-    this.forceUpdate();
-  };
-
-  private _convertTimeFormat() {
-    const timeInputEl = this.qs<HTMLInputElement>('.time-input');
-    if (!timeInputEl) return;
-
-    const timeInput = timeInputEl.value;
-    let [hoursStr, minutesStr, secondsOrAm] = timeInput.split(/[: ]/);
-    const isPM = /PM$/.test(timeInput);
-
-    let hours = parseInt(hoursStr || '0', 10);
-    const minutes = parseInt(minutesStr || '0', 10);
-    const seconds = this.hideSeconds ? 0 : parseInt((secondsOrAm as string) || '0', 10);
-    let ampm = '';
-
-    if (this.isTwentyFourHourFormat) {
-      if (isPM && hours < 12) hours += 12;
-      else if (!isPM && hours === 12) hours = 0;
-      ampm = '';
-    } else {
-      if (hours === 0) {
-        hours = 12;
-        ampm = 'AM';
-      } else if (hours === 12) {
-        ampm = 'PM';
-      } else if (hours > 12) {
-        hours -= 12;
-        ampm = 'PM';
-      } else {
-        ampm = 'AM';
-      }
-    }
-
-    const hourDisp = this.qs<HTMLElement>('.hour-display');
-    const minDisp = this.qs<HTMLElement>('.minute-display');
-    const secDisp = this.qs<HTMLElement>('.second-display');
-    const ampmDisp = this.qs<HTMLElement>('.ampm-display');
-
-    if (hourDisp) hourDisp.textContent = String(hours).padStart(2, '0');
-    if (minDisp) minDisp.textContent = String(minutes).padStart(2, '0');
-    if (!this.hideSeconds && secDisp) secDisp.textContent = String(seconds).padStart(2, '0');
-    if (ampmDisp) ampmDisp.textContent = ampm;
-
-    this._updateInput();
-  }
-
-  private _toggleAMPMSpinner() {
-    const ampmSpinner = this.qs<HTMLDivElement>('.am-pm-spinner');
-    if (!ampmSpinner) return;
-
-    if (this.isTwentyFourHourFormat || this.twentyFourHourOnly) {
-      ampmSpinner.classList.add('hidden');
-      ampmSpinner.setAttribute('aria-hidden', 'true');
-    } else {
-      ampmSpinner.classList.remove('hidden');
-      ampmSpinner.setAttribute('aria-hidden', 'false');
-    }
-  }
-
-  // ---------- parsing/format ----------
-  private _formatTime() {
-    const inputEl = this.qs<HTMLInputElement>('.time-input');
-    if (!inputEl) return;
-
-    const timePattern = this.isTwentyFourHourFormat
-      ? this.hideSeconds
-        ? /^(\d{1,2}):(\d{2})$/
-        : /^(\d{1,2}):(\d{2}):(\d{2})$/
-      : this.hideSeconds
-        ? /^(\d{1,2}):(\d{2}) (AM|PM)$/
-        : /^(\d{1,2}):(\d{2}):(\d{2}) (AM|PM)$/;
-
-    const matches = inputEl.value.match(timePattern);
-    if (!matches) return;
-
-    const hours = parseInt(matches[1], 10);
-    const minutes = parseInt(matches[2], 10);
-    const seconds = this.hideSeconds ? 0 : parseInt(matches[3], 10);
-
-    const hourDisp = this.qs<HTMLElement>('.hour-display');
-    const minDisp = this.qs<HTMLElement>('.minute-display');
-    const secDisp = this.qs<HTMLElement>('.second-display');
-
-    if (hourDisp) hourDisp.textContent = String(hours).padStart(2, '0');
-    if (minDisp) minDisp.textContent = String(minutes).padStart(2, '0');
-    if (!this.hideSeconds && secDisp) secDisp.textContent = String(seconds).padStart(2, '0');
-
-    this._updateInput();
-  }
-
-  // ---------- spinbutton semantics + roving tabindex ----------
-  private _getSpinMeta(part: TimePart) {
-    if (part === 'hour') {
-      const min = this.isTwentyFourHourFormat ? 0 : 1;
-      const max = this.isTwentyFourHourFormat ? 23 : 12;
-      const now = this._readPartNumber('hour');
-      return { min, max, now, text: String(now).padStart(2, '0'), label: 'Hour' };
-    }
-    if (part === 'minute') {
-      const now = this._readPartNumber('minute');
-      return { min: 0, max: 59, now, text: String(now).padStart(2, '0'), label: 'Minute' };
-    }
-    if (part === 'second') {
-      const now = this._readPartNumber('second');
-      return { min: 0, max: 59, now, text: String(now).padStart(2, '0'), label: 'Second' };
-    }
-    // ampm
-    const now = this._readAmPmNow();
-    const text = now === 0 ? 'AM' : 'PM';
-    return { min: 0, max: 1, now, text, label: 'AM/PM' };
-  }
-
-  private _readPartNumber(part: Exclude<TimePart, 'ampm'>): number {
-    const el =
-      part === 'hour'
-        ? this.qs<HTMLElement>('.hour-display')
-        : part === 'minute'
-          ? this.qs<HTMLElement>('.minute-display')
-          : this.qs<HTMLElement>('.second-display');
-    const n = Number.parseInt((el?.textContent || '0').trim(), 10);
-    return Number.isFinite(n) ? n : 0;
-  }
-
-  private _readAmPmNow(): 0 | 1 {
-    const el = this.qs<HTMLElement>('.ampm-display');
-    const s = (el?.textContent || 'AM').trim().toUpperCase();
-    return s === 'PM' ? 1 : 0;
-  }
-
-  private _setPartValue(part: TimePart, next: number | 0 | 1) {
-    const hourDisp = this.qs<HTMLElement>('.hour-display');
-    const minDisp = this.qs<HTMLElement>('.minute-display');
-    const secDisp = this.qs<HTMLElement>('.second-display');
-    const ampmDisp = this.qs<HTMLElement>('.ampm-display');
-
-    if (part === 'hour' && hourDisp) hourDisp.textContent = String(next).padStart(2, '0');
-    if (part === 'minute' && minDisp) minDisp.textContent = String(next).padStart(2, '0');
-    if (part === 'second' && secDisp) secDisp.textContent = String(next).padStart(2, '0');
-    if (part === 'ampm' && ampmDisp) ampmDisp.textContent = (next as any) === 1 ? 'PM' : 'AM';
-
-    this._updateInput();
-    this.forceUpdate();
-  }
-
-  private _applySpinDelta(part: TimePart, delta: number) {
-    if (this._isDisabled) return;
-
-    // spinner change counts as user change
-    this._didUserChangeTime = true;
-    this._clearExternalInvalidUI();
-
-    const meta = this._getSpinMeta(part);
-
-    if (part === 'ampm') {
-      const next = meta.now === 0 ? 1 : 0;
-      this._setPartValue('ampm', next);
-      return;
-    }
-
-    let next = meta.now + delta;
-
-    // wrap behavior (matches your existing increment/decrement UX)
-    if (part === 'hour') {
-      if (this.isTwentyFourHourFormat) {
-        if (next > meta.max) next = meta.min;
-        if (next < meta.min) next = meta.max;
-      } else {
-        if (next > meta.max) next = meta.min;
-        if (next < meta.min) next = meta.max;
-      }
-    } else {
-      if (next > meta.max) next = meta.min;
-      if (next < meta.min) next = meta.max;
-    }
-
-    this._setPartValue(part, next);
+  private _setActivePart(part: TimePart) {
+    if (!this._isPartEnabled(part)) return;
+    this._activePart = part;
   }
 
   private _onSpinKeyDown = (part: TimePart, ev: KeyboardEvent) => {
@@ -605,7 +760,6 @@ export class TimePickerComponent {
 
     const key = ev.key;
 
-    // Roving focus between parts
     if (key === 'ArrowLeft') {
       ev.preventDefault();
       this._moveActivePart(-1);
@@ -617,7 +771,6 @@ export class TimePickerComponent {
       return;
     }
 
-    // Spin semantics
     if (key === 'ArrowUp') {
       ev.preventDefault();
       this._applySpinDelta(part, +1);
@@ -641,326 +794,228 @@ export class TimePickerComponent {
     if (key === 'Home') {
       ev.preventDefault();
       const meta = this._getSpinMeta(part);
-      this._setPartValue(part, meta.min as any);
+      this._applySpinDelta(part, meta.min - meta.now);
       return;
     }
     if (key === 'End') {
       ev.preventDefault();
       const meta = this._getSpinMeta(part);
-      this._setPartValue(part, meta.max as any);
+      this._applySpinDelta(part, meta.max - meta.now);
       return;
     }
     if (key === 'Enter') {
       ev.preventDefault();
-      // commit + keep open (or close if you prefer)
-      this._updateTimeFromInput();
-      return;
+      this._commitFromInput();
     }
   };
 
-  private _setActivePart(part: TimePart) {
-    if (!this._isPartEnabled(part)) return;
-    this._activePart = part;
-    this.forceUpdate();
+  // ---------- spin ----------
+  private _getSpinMeta(part: TimePart) {
+    const p = this._parts;
+
+    if (part === 'hour') {
+      const min = this.isTwentyFourHourFormat ? 0 : 1;
+      const max = this.isTwentyFourHourFormat ? 23 : 12;
+      const now = p.hour;
+      return { min, max, now, text: this._pad2(now), label: 'Hour' };
+    }
+    if (part === 'minute') {
+      const now = p.minute;
+      return { min: 0, max: 59, now, text: this._pad2(now), label: 'Minute' };
+    }
+    if (part === 'second') {
+      const now = p.second;
+      return { min: 0, max: 59, now, text: this._pad2(now), label: 'Second' };
+    }
+    const now = p.ampm === 'PM' ? 1 : 0;
+    return { min: 0, max: 1, now, text: now === 0 ? 'AM' : 'PM', label: 'AM/PM' };
   }
 
-  // ---------- legacy arrow button handlers (still supported) ----------
-  private _increment = (ev: Event) => this._incrementDecrement(ev, true);
-  private _decrement = (ev: Event) => this._incrementDecrement(ev, false);
-
-  private _incrementDecrement(ev: Event, increment: boolean) {
+  private _applySpinDelta(part: TimePart, delta: number) {
     if (this._isDisabled) return;
 
     this._didUserChangeTime = true;
-    this._clearExternalInvalidUI();
 
-    const arrow = (ev.currentTarget as HTMLElement) || (ev.target as HTMLElement);
-    if (!arrow) return;
+    const meta = this._getSpinMeta(part);
 
-    const wrapper = arrow.closest('.time-spinner') as HTMLElement | null;
-    const arrowBtn = arrow.closest('.arrow') as HTMLElement | null;
-    const type = (arrowBtn?.dataset.type || '') as TimePart;
-    if (!wrapper || !type) return;
+    if (part === 'ampm') {
+      this._parts = { ...this._parts, ampm: meta.now === 0 ? 'PM' : 'AM' };
+    } else {
+      let next = meta.now + delta;
+      if (next > meta.max) next = meta.min;
+      if (next < meta.min) next = meta.max;
 
-    // Keep roving focus consistent with mouse usage
-    this._setActivePart(type);
+      this._parts =
+        part === 'hour'
+          ? { ...this._parts, hour: next }
+          : part === 'minute'
+            ? { ...this._parts, minute: next }
+            : { ...this._parts, second: next };
+    }
 
-    if (type === 'ampm') {
-      this._applySpinDelta('ampm', 1);
+    const formatted = this._partsToInput(this._parts);
+    this._setInputValue(formatted, { writeToDom: true });
+
+    this._recomputeValidityFromState();
+    this._syncValuePropFromState();
+    this._emitTimeChange('spinner');
+  }
+
+  private _isPartEnabled(part: TimePart): boolean {
+    if (part === 'second') return !this.hideSeconds;
+    if (part === 'ampm') return !(this.isTwentyFourHourFormat || this.twentyFourHourOnly);
+    return true;
+  }
+
+  // ---------- format conversion ----------
+  private _convertTimeFormatInState() {
+    const p = this._parts;
+
+    if (this.isTwentyFourHourFormat) {
+      let h = Math.min(12, Math.max(1, p.hour));
+      if (p.ampm === 'PM' && h < 12) h += 12;
+      if (p.ampm === 'AM' && h === 12) h = 0;
+      this._parts = { ...p, hour: h, ampm: 'AM' };
       return;
     }
-    this._applySpinDelta(type, increment ? +1 : -1);
-  }
 
-  // ---------- input -> dropdown sync ----------
-  private _updateInput() {
-    const hourDisp = this.qs<HTMLElement>('.hour-display');
-    const minDisp = this.qs<HTMLElement>('.minute-display');
-    const secDisp = this.qs<HTMLElement>('.second-display');
-    const ampmDisp = this.qs<HTMLElement>('.ampm-display');
-    const input = this.qs<HTMLInputElement>('.time-input');
-    if (!hourDisp || !minDisp || !input) return;
+    let h = Math.min(23, Math.max(0, p.hour));
+    let ampm: AmPm = 'AM';
 
-    const hours = parseInt(hourDisp.textContent || '0', 10);
-    const minutes = (minDisp.textContent || '00').padStart(2, '0');
-    const seconds = this.hideSeconds ? '00' : (secDisp?.textContent || '00').padStart(2, '0');
-    const ampm = this.isTwentyFourHourFormat ? '' : ampmDisp?.textContent || 'AM';
-
-    const formattedHours = this.isTwentyFourHourFormat
-      ? String(hours).padStart(2, '0')
-      : String(hours % 12 || 12).padStart(2, '0');
-
-    const selectedTime = this.isTwentyFourHourFormat
-      ? this.hideSeconds
-        ? `${formattedHours}:${minutes}`
-        : `${formattedHours}:${minutes}:${seconds}`
-      : this.hideSeconds
-        ? `${formattedHours}:${minutes} ${ampm}`
-        : `${formattedHours}:${minutes}:${seconds} ${ampm}`;
-
-    input.value = selectedTime;
-  }
-
-  private _updateDropdown() {
-    const input = this.qs<HTMLInputElement>('.time-input');
-    if (!input) return;
-
-    const timePattern = this.isTwentyFourHourFormat
-      ? this.hideSeconds
-        ? /^(\d{2}):(\d{2})$/
-        : /^(\d{2}):(\d{2}):(\d{2})$/
-      : this.hideSeconds
-        ? /^(\d{2}):(\d{2}) (AM|PM)$/
-        : /^(\d{2}):(\d{2}):(\d{2}) (AM|PM)$/;
-
-    const matches = input.value.match(timePattern);
-    if (!matches) return;
-
-    let hours = parseInt(matches[1], 10);
-    const minutes = parseInt(matches[2], 10);
-    const seconds = this.hideSeconds ? 0 : parseInt(matches[3], 10);
-    let ampm = this.isTwentyFourHourFormat ? '' : matches[4];
-
-    if (!this.isTwentyFourHourFormat) {
-      if (hours === 0) {
-        hours = 12;
-        ampm = 'AM';
-      } else if (hours === 12) {
-        // keep ampm
-      } else if (hours > 12) {
-        hours -= 12;
-        ampm = 'PM';
-      } else {
-        ampm = 'AM';
-      }
+    if (h === 0) {
+      h = 12;
+      ampm = 'AM';
+    } else if (h === 12) {
+      ampm = 'PM';
+    } else if (h > 12) {
+      h -= 12;
+      ampm = 'PM';
+    } else {
+      ampm = 'AM';
     }
 
-    const hourDisp = this.qs<HTMLElement>('.hour-display');
-    const minDisp = this.qs<HTMLElement>('.minute-display');
-    const secDisp = this.qs<HTMLElement>('.second-display');
-    const ampmDisp = this.qs<HTMLElement>('.ampm-display');
-
-    if (hourDisp) hourDisp.textContent = String(hours).padStart(2, '0');
-    if (minDisp) minDisp.textContent = String(minutes).padStart(2, '0');
-    if (!this.hideSeconds && secDisp) secDisp.textContent = String(seconds).padStart(2, '0');
-    if (ampmDisp) ampmDisp.textContent = ampm as any;
-
-    this._toggleAMPMSpinner();
-
-    // keep active part valid after updating
-    if (!this._isPartEnabled(this._activePart)) {
-      this._activePart = 'hour';
-    }
-
-    this.forceUpdate();
+    this._parts = { ...p, hour: h, ampm };
   }
 
-  private _updateTimeFromInput() {
+  // ---------- commit vs typing ----------
+  private _commitFromInput() {
     if (this._isDisabled) return;
 
-    const input = this.qs<HTMLInputElement>('.time-input');
-    if (!input) return;
+    this._flushTimeInput();
 
-    let value = input.value.trim();
-    value = value
-      .split(':')
-      .map(part => part.padStart(2, '0'))
-      .join(':');
+    const raw = this._readInputValue();
+    const res = this._normalizeAndParse(raw);
 
-    if (!this._isValidInput(value)) {
+    if (isNormalizeErr(res)) {
       this.isValid = false;
-      this._toggleButtons();
+      if (res.reason === 'pattern') {
+        this.validationMessage = this._validationMessageForPattern();
+        this._warningShown = false;
+      } else {
+        this._warningShown = true;
+      }
       return;
     }
 
-    input.value = value;
-    this.isValid = true;
-    this._toggleButtons();
-    this._hideWarningMessage();
+    this._parts = res.parts;
+    this._setInputValue(res.normalized, { writeToDom: true });
 
-    if (this.isValid && this._didUserChangeTime) {
-      this._clearExternalInvalidUI();
+    this.isValid = true;
+    this._warningShown = false;
+    if (this.validationMessage) this.validationMessage = '';
+
+    this._syncValuePropFromState();
+
+    if (this._didUserChangeTime) {
+      this._emitTimeChange('commit');
       this._didUserChangeTime = false;
     }
-
-    this._updateDropdown();
-    this._updateInput();
   }
 
-  private _validateTimeInput = () => {
+  private _validateTimeInput = (ev: Event) => {
     if (this._isDisabled) return;
 
     this._didUserChangeTime = true;
-    this._clearExternalInvalidUI();
 
-    const input = this.qs<HTMLInputElement>('.time-input');
-    const raw = (input?.value || '').trim();
+    const input = ev.target as HTMLInputElement | null;
+    const raw = input?.value ?? this._readInputValue();
 
-    this.isValid = this._isValidInput(raw);
-    this._toggleButtons();
+    this._setInputValue(raw, { writeToDom: false });
 
-    if (this.isValid) this._updateDropdown();
-  };
+    const caretStart = input?.selectionStart ?? null;
+    const caretEnd = input?.selectionEnd ?? null;
 
-  private _handleEnterKey = (event: KeyboardEvent) => {
-    if (this._isDisabled) return;
-    if (event.key === 'Enter' && this.isValid) this._updateTimeFromInput();
+    const ie = ev as InputEvent;
+    const inputType = typeof ie?.inputType === 'string' ? ie.inputType : null;
+
+    const normalizedForTyping = this._normalizeForTyping(raw);
+    const parsed = this._tryParseComplete(raw);
+
+    if (isNormalizeErr(parsed)) {
+      this.isValid = false;
+
+      this._scheduleTimeInput({
+        raw,
+        normalized: normalizedForTyping,
+        isValid: false,
+        reason: parsed.reason,
+        caretStart,
+        caretEnd,
+        inputType,
+      });
+
+      return;
+    }
+
+    this.isValid = true;
+    this._warningShown = false;
+    if (this.validationMessage) this.validationMessage = '';
+
+    this._parts = parsed.parts;
+
+    this._scheduleTimeInput({
+      raw,
+      normalized: normalizedForTyping,
+      isValid: true,
+      parts: parsed.parts,
+      caretStart,
+      caretEnd,
+      inputType,
+    });
   };
 
   private _handleEnterKeyOnly = (e: KeyboardEvent) => {
     if (this._isDisabled) return;
-    if (e.key === 'Enter' && this.isValid) this._updateTimeFromInput();
-  };
-
-  private _preventInvalidPaste = (_ev: ClipboardEvent) => {
-    return;
+    if (e.key === 'Enter') this._commitFromInput();
   };
 
   private _clearTime = () => {
     if (this._isDisabled) return;
 
+    this._flushTimeInput();
     this._didUserChangeTime = true;
 
-    const input = this.qs<HTMLInputElement>('.time-input');
-    if (!input) return;
+    this._resetToDefault();
+    this._emitTimeChange('clear');
+    this._didUserChangeTime = false;
 
-    input.value = this.isTwentyFourHourFormat
-      ? this.hideSeconds
-        ? '00:00'
-        : '00:00:00'
-      : this.hideSeconds
-        ? '12:00 AM'
-        : '12:00:00 AM';
-
-    this._clearExternalInvalidUI();
-
-    this._updateDropdown();
-    this._hideWarningMessage();
-    this.isValid = true;
-    this._toggleButtons();
-
-    // keep active part sane
-    this._activePart = 'hour';
-    this.forceUpdate();
+    this._scheduleTimeInput({
+      raw: '',
+      normalized: this._normalizeForTyping(this._readInputValue()),
+      isValid: true,
+      parts: { ...this._parts },
+      caretStart: null,
+      caretEnd: null,
+      inputType: 'deleteContentBackward',
+    });
   };
-
-  private _showValidationMessage(message: string) {
-    this.validationMessage = message;
-    this.forceUpdate();
-  }
-
-  private _isValidInput(input: string): boolean {
-    const timePattern = this.isTwentyFourHourFormat
-      ? this.hideSeconds
-        ? /^(\d{1,2}):(\d{2})$/
-        : /^(\d{1,2}):(\d{2}):(\d{2})$/
-      : this.hideSeconds
-        ? /^(\d{1,2}):(\d{2}) (AM|PM)$/
-        : /^(\d{1,2}):(\d{2}):(\d{2}) (AM|PM)$/;
-
-    const matches = input.match(timePattern);
-    if (!matches) {
-      this._showValidationMessage(
-        this.isTwentyFourHourFormat
-          ? this.hideSeconds
-            ? 'Invalid time format. Correct format is 00:00.'
-            : 'Invalid time format. Correct format is 00:00:00.'
-          : this.hideSeconds
-            ? 'Invalid time format. Correct format is 00:00 AM(or PM).'
-            : 'Invalid time format. Correct format is 00:00:00 AM(or PM).',
-      );
-      return false;
-    }
-
-    const hours = parseInt(matches[1], 10);
-    const minutes = parseInt(matches[2], 10);
-    const seconds = this.hideSeconds ? 0 : parseInt(matches[3], 10);
-
-    if ((this.isTwentyFourHourFormat && hours > 23) || (!this.isTwentyFourHourFormat && (hours > 12 || hours < 1))) {
-      this._showWarningMessage();
-      return false;
-    }
-
-    if (minutes > 59 || (!this.hideSeconds && seconds > 59)) {
-      this._showWarningMessage();
-      return false;
-    }
-
-    return true;
-  }
-
-  private _showWarningMessage() {
-    const el = this.qs<HTMLDivElement>('.warning-message');
-    if (!el) return;
-    el.classList.remove('hidden');
-    this.forceUpdate();
-  }
-
-  private _hideWarningMessage() {
-    const el = this.qs<HTMLDivElement>('.warning-message');
-    if (!el) return;
-    el.classList.add('hidden');
-    this.forceUpdate();
-  }
-
-  private _setDefaultTime() {
-    const input = this.qs<HTMLInputElement>('.time-input');
-    if (!input) return;
-
-    input.value = this.isTwentyFourHourFormat
-      ? this.hideSeconds
-        ? '00:00'
-        : '00:00:00'
-      : this.hideSeconds
-        ? '12:00 AM'
-        : '12:00:00 AM';
-
-    this._updateDropdown();
-    this._toggleButtons();
-  }
-
-  private _toggleButtons() {
-    const toggleButton = this.qs<HTMLButtonElement>('.toggle-format-btn');
-    const timeIconBtn = this.qs<HTMLButtonElement>('.time-icon-btn');
-
-    const shouldDisable = this._isDisabled || !this.isValid;
-
-    if (toggleButton) {
-      if (!shouldDisable) toggleButton.removeAttribute('disabled');
-      else toggleButton.setAttribute('disabled', 'disabled');
-    }
-
-    if (timeIconBtn) {
-      if (!shouldDisable) timeIconBtn.removeAttribute('disabled');
-      else timeIconBtn.setAttribute('disabled', 'disabled');
-    }
-  }
 
   // ---------- render ----------
   render() {
     const disabledAll = this._isDisabled;
 
-    const groupSize = this.size === 'sm' ? ' input-group-sm' : this.size === 'lg' ? ' input-group-lg' : '';
+    const groupSize =
+      this.size === 'sm' ? ' input-group-sm' : this.size === 'lg' ? ' input-group-lg' : '';
     const ddSize = this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : '';
     const maxLength = this.isTwentyFourHourFormat ? (this.hideSeconds ? 5 : 8) : this.hideSeconds ? 8 : 11;
 
@@ -978,17 +1033,17 @@ export class TimePickerComponent {
     const { hasVisibleLabel, ariaLabelledby, ariaLabel } = this.computeNameAttrs();
     const describedBy = this.computeDescribedByAttrs();
 
-    const dropdownClass = `time-dropdown${ddSize} hidden`;
     const isInvalid = !this.isValid;
 
-    // spinbutton meta (render-time)
+    const isPopoverOpen = this._open && !disabledAll;
+    const dropdownClass = `time-dropdown${ddSize}${isPopoverOpen ? '' : ' hidden'}`;
+
     const hourMeta = this._getSpinMeta('hour');
     const minMeta = this._getSpinMeta('minute');
     const secMeta = this._getSpinMeta('second');
     const ampmMeta = this._getSpinMeta('ampm');
 
-    const tabFor = (part: TimePart) => (this._open && this._activePart === part ? 0 : -1);
-
+    const tabFor = (part: TimePart) => (isPopoverOpen && this._activePart === part ? 0 : -1);
     const labelIdToUse = hasVisibleLabel ? this.getLabelId() : this.normalizeIdList(this.ariaLabelledby);
 
     return (
@@ -1006,6 +1061,12 @@ export class TimePickerComponent {
           <div class="timepicker-group">
             <div class={`input-group${groupSize}`}>
               <input
+                ref={el => {
+                  this._inputEl = el as HTMLInputElement;
+                  if (this._inputEl && this._inputEl.value !== this._inputValue) {
+                    this._inputEl.value = this._inputValue;
+                  }
+                }}
                 type="text"
                 id={this.inputId}
                 name={this.inputName}
@@ -1015,7 +1076,7 @@ export class TimePickerComponent {
                 aria-label={ariaLabel}
                 aria-labelledby={ariaLabelledby || (hasVisibleLabel ? this.getLabelId() : undefined)}
                 aria-controls={dropdownId}
-                aria-expanded={this._open ? 'true' : 'false'}
+                aria-expanded={isPopoverOpen ? 'true' : 'false'}
                 aria-haspopup="dialog"
                 aria-invalid={isInvalid ? 'true' : undefined}
                 aria-required={this.required ? 'true' : undefined}
@@ -1023,12 +1084,13 @@ export class TimePickerComponent {
                 aria-describedby={describedBy}
                 maxLength={maxLength}
                 disabled={disabledAll}
+                onFocus={() => (this._isInputFocused = true)}
                 onBlur={() => {
-                  if (!disabledAll && this.isValid) this._updateTimeFromInput();
+                  this._isInputFocused = false;
+                  this._flushTimeInput();
+                  if (!disabledAll) this._commitFromInput();
                 }}
                 onInput={this._validateTimeInput}
-                onPaste={this._preventInvalidPaste}
-                onKeyPress={this._handleEnterKey}
                 onKeyDown={this._handleEnterKeyOnly}
               />
 
@@ -1048,7 +1110,7 @@ export class TimePickerComponent {
                   class={`time-icon input-group-text time-icon-btn${this.validation ? ' invalid' : ''}`}
                   aria-label="Open time picker"
                   aria-controls={dropdownId}
-                  aria-expanded={this._open ? 'true' : 'false'}
+                  aria-expanded={isPopoverOpen ? 'true' : 'false'}
                   aria-haspopup="dialog"
                   tabIndex={0}
                   onClick={this._toggleDropdown}
@@ -1059,7 +1121,6 @@ export class TimePickerComponent {
               )}
             </div>
 
-            {/* Popover/panel: dialog-like surface + focus trap + roving spinbuttons */}
             <div
               id={dropdownId}
               class={dropdownClass}
@@ -1068,7 +1129,8 @@ export class TimePickerComponent {
               aria-labelledby={labelIdToUse || undefined}
               aria-describedby={describedBy}
               tabIndex={-1}
-              style={disabledAll ? ({ pointerEvents: 'none' } as any) : undefined}
+              inert={!isPopoverOpen}
+              style={!isPopoverOpen ? ({ pointerEvents: 'none' } as any) : undefined}
             >
               <div class="time-spinner-wrapper">
                 {/* HOURS */}
@@ -1076,9 +1138,8 @@ export class TimePickerComponent {
                   <button
                     type="button"
                     class="arrow up"
-                    data-type="hour"
                     aria-label="Increment hour"
-                    onClick={this._increment}
+                    onClick={() => this._applySpinDelta('hour', +1)}
                     disabled={disabledAll}
                   >
                     <i class="fas fa-chevron-up" />
@@ -1103,9 +1164,8 @@ export class TimePickerComponent {
                   <button
                     type="button"
                     class="arrow down"
-                    data-type="hour"
                     aria-label="Decrement hour"
-                    onClick={this._decrement}
+                    onClick={() => this._applySpinDelta('hour', -1)}
                     disabled={disabledAll}
                   >
                     <i class="fas fa-chevron-down" />
@@ -1126,9 +1186,8 @@ export class TimePickerComponent {
                   <button
                     type="button"
                     class="arrow up"
-                    data-type="minute"
                     aria-label="Increment minute"
-                    onClick={this._increment}
+                    onClick={() => this._applySpinDelta('minute', +1)}
                     disabled={disabledAll}
                   >
                     <i class="fas fa-chevron-up" />
@@ -1153,9 +1212,8 @@ export class TimePickerComponent {
                   <button
                     type="button"
                     class="arrow down"
-                    data-type="minute"
                     aria-label="Decrement minute"
-                    onClick={this._decrement}
+                    onClick={() => this._applySpinDelta('minute', -1)}
                     disabled={disabledAll}
                   >
                     <i class="fas fa-chevron-down" />
@@ -1178,9 +1236,8 @@ export class TimePickerComponent {
                       <button
                         type="button"
                         class="arrow up"
-                        data-type="second"
                         aria-label="Increment second"
-                        onClick={this._increment}
+                        onClick={() => this._applySpinDelta('second', +1)}
                         disabled={disabledAll}
                       >
                         <i class="fas fa-chevron-up" />
@@ -1205,9 +1262,8 @@ export class TimePickerComponent {
                       <button
                         type="button"
                         class="arrow down"
-                        data-type="second"
                         aria-label="Decrement second"
-                        onClick={this._decrement}
+                        onClick={() => this._applySpinDelta('second', -1)}
                         disabled={disabledAll}
                       >
                         <i class="fas fa-chevron-down" />
@@ -1217,45 +1273,45 @@ export class TimePickerComponent {
                 )}
 
                 {/* AM/PM */}
-                <div class="time-spinner am-pm-spinner hidden" aria-hidden="true">
-                  <button
-                    type="button"
-                    class="arrow up"
-                    data-type="ampm"
-                    aria-label="Toggle AM/PM"
-                    onClick={this._increment}
-                    disabled={disabledAll}
-                  >
-                    <i class="fas fa-chevron-up" />
-                  </button>
+                {this.isTwentyFourHourFormat || this.twentyFourHourOnly ? null : (
+                  <div class="time-spinner am-pm-spinner" aria-hidden="false">
+                    <button
+                      type="button"
+                      class="arrow up"
+                      aria-label="Toggle AM/PM"
+                      onClick={() => this._applySpinDelta('ampm', +1)}
+                      disabled={disabledAll}
+                    >
+                      <i class="fas fa-chevron-up" />
+                    </button>
 
-                  <span
-                    class="ampm-display"
-                    role="spinbutton"
-                    aria-label={ampmMeta.label}
-                    aria-valuemin={String(ampmMeta.min)}
-                    aria-valuemax={String(ampmMeta.max)}
-                    aria-valuenow={String(ampmMeta.now)}
-                    aria-valuetext={ampmMeta.text}
-                    tabIndex={tabFor('ampm')}
-                    onFocus={() => this._setActivePart('ampm')}
-                    onMouseDown={() => this._setActivePart('ampm')}
-                    onKeyDown={e => this._onSpinKeyDown('ampm', e)}
-                  >
-                    {ampmMeta.text}
-                  </span>
+                    <span
+                      class="ampm-display"
+                      role="spinbutton"
+                      aria-label={ampmMeta.label}
+                      aria-valuemin={String(ampmMeta.min)}
+                      aria-valuemax={String(ampmMeta.max)}
+                      aria-valuenow={String(ampmMeta.now)}
+                      aria-valuetext={ampmMeta.text}
+                      tabIndex={tabFor('ampm')}
+                      onFocus={() => this._setActivePart('ampm')}
+                      onMouseDown={() => this._setActivePart('ampm')}
+                      onKeyDown={e => this._onSpinKeyDown('ampm', e)}
+                    >
+                      {ampmMeta.text}
+                    </span>
 
-                  <button
-                    type="button"
-                    class="arrow down"
-                    data-type="ampm"
-                    aria-label="Toggle AM/PM"
-                    onClick={this._decrement}
-                    disabled={disabledAll}
-                  >
-                    <i class="fas fa-chevron-down" />
-                  </button>
-                </div>
+                    <button
+                      type="button"
+                      class="arrow down"
+                      aria-label="Toggle AM/PM"
+                      onClick={() => this._applySpinDelta('ampm', -1)}
+                      disabled={disabledAll}
+                    >
+                      <i class="fas fa-chevron-down" />
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div class="time-spinner-close">
@@ -1276,7 +1332,11 @@ export class TimePickerComponent {
                 type="button"
                 class={`toggle-format-btn btn btn--outlined${this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : ''}`}
                 aria-label={this.isTwentyFourHourFormat ? 'Switch to 12 hour format' : 'Switch to 24 hour format'}
-                onClick={this._toggleFormat}
+                onClick={() => {
+                  if (this.twentyFourHourOnly || this.twelveHourOnly) return;
+                  this.isTwentyFourHourFormat = !this.isTwentyFourHourFormat;
+                  this._emitTimeChange('format');
+                }}
                 disabled={disableInteractive}
               >
                 {this.isTwentyFourHourFormat ? (
@@ -1298,7 +1358,7 @@ export class TimePickerComponent {
             {this.validationMessage}
           </div>
 
-          <div id={warningId} class="warning-message hidden" role="alert" aria-live="polite">
+          <div id={warningId} class={`warning-message ${this._warningShown ? '' : 'hidden'}`} role="alert" aria-live="polite">
             <i class="fa fa-exclamation-triangle" aria-hidden="true" /> Time values cannot exceed the limits.
           </div>
         </div>

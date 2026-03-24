@@ -67,7 +67,10 @@ const ICONS: Record<string, { viewBox: string; path: string }> = {
 
 @Component({
   tag: 'toasts-component',
-  styleUrls: ['toasts-styles.scss', '../utilities-styles.scss'],
+  styleUrls: [
+    'toasts-styles.scss',
+    // '../utilities-styles.scss'
+  ],
   shadow: false,
 })
 export class ToastsComponent {

@@ -573,7 +573,7 @@ $tp-dropdown-z: 10000;
 
     .input-group .form-control:invalid,
     .input-group .form-control.is-invalid {
-      background-position: right calc(-1.5em + 1.5rem) center;
+      background-position: right calc(-1.5em + 1.75rem) center;
     }
 
     .is-invalid,
@@ -721,6 +721,11 @@ $tp-dropdown-z: 10000;
       position: relative;
       transition: 0.4s;
       width: 100%;
+
+      &.invalid {
+        background-color: #b30009 !important;
+        height: 1px;
+      }
     }
 
     .b-focus {

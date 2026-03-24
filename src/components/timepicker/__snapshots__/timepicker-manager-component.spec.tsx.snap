@@ -11,6 +11,7 @@ exports[`timepicker-manager renders classic path and matches snapshot 1`] = `
   "labelText": "Enter Time",
   "inputId": "time-input",
   "inputName": "time",
+  "value": "",
   "isTwentyFourHourFormat": true,
   "size": "",
   "inputWidth": null,
@@ -22,6 +23,7 @@ exports[`timepicker-manager renders classic path and matches snapshot 1`] = `
   "hideTimepickerBtn": false,
   "hideSeconds": false,
   "required": false,
+  "timeInputThrottleMs": 50,
   "disableTimepicker": false
 }</pre>
   </timepicker-component>
@@ -39,6 +41,7 @@ exports[`timepicker-manager renders plumage path and matches snapshot 1`] = `
   "labelText": "Enter Time",
   "inputId": "time-input",
   "inputName": "time",
+  "value": "",
   "isTwentyFourHourFormat": true,
   "size": "",
   "inputWidth": null,
@@ -50,6 +53,7 @@ exports[`timepicker-manager renders plumage path and matches snapshot 1`] = `
   "hideTimepickerBtn": false,
   "hideSeconds": false,
   "required": false,
+  "timeInputThrottleMs": 50,
   "disabled": false
 }</pre>
   </plumage-timepicker-component>
