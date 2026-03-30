@@ -7,8 +7,56 @@ export default {
     layout: 'padded',
     docs: {
       description: {
-        component:
-          'The Timepicker Manager component wraps a timepicker input and forwards props to either <timepicker-component> or <plumage-timepicker-component>. It also forwards accessibility overrides (aria-label/labelledby/describedby) with aria-labelledby taking precedence.',
+        component: `
+The **Timepicker Manager** wraps a timepicker input and forwards props to either:
+- \`<timepicker-component>\` (classic) or
+- \`<plumage-timepicker-component>\` (plumage)
+
+It provides a consistent API surface (a11y, value/events, methods) across both implementations.
+
+## Controlled value + events
+The manager forwards \`value\` and re-emits child events:
+
+### Passthrough events
+- \`timeChange\`
+- \`timeInput\`
+
+### Namespaced events (recommended for parent listeners)
+To avoid collisions when multiple timepickers exist in the same page:
+- \`managerTimeChange\` includes \`managerInputId\` + \`impl\`
+- \`managerTimeInput\` includes \`managerInputId\` + \`impl\`
+
+\`impl\` is either:
+- \`timepicker-component\` or \`plumage-timepicker-component\`
+
+## Accessibility + derived IDs (recommended)
+The manager uses \`input-id\` as the stable base for relationships and forwards a11y props to the child.
+
+### Accessible name precedence (manager-level)
+- If \`aria-labelledby\` is provided: it wins and \`aria-label\` is not forwarded.
+- Otherwise: \`aria-label\` is forwarded when present.
+
+### \`aria-describedby\` composition (manager-level)
+The manager forwards \`aria-describedby\` and **appends** the child validation container id when a validation message exists:
+- external ids via \`aria-describedby\`
+- \`\${inputId}-validation\` when \`validation-message\` has content
+
+## Public methods
+The manager exposes methods for form/keyboard-first flows:
+
+- \`focusInput({ open: true })\`
+  - focuses the child input
+  - optionally opens the popover
+  - when opened, focuses the Hour spinbutton so arrow keys work immediately
+- \`close()\`
+  - closes the popover (both implementations)
+
+## Keyboard model
+When the popover is open (both implementations), the keyboard model is consistent:
+- Tab trap, Escape to close, Left/Right roving focus, Up/Down increment, PageUp/PageDown ±10, Home/End min/max, Enter commit.
+
+> Note: 508 compliance also depends on page-level usage: unique \`input-id\` per instance, visible or programmatic labels, and consistent error messaging.
+`.trim(),
       },
       source: {
         type: 'dynamic',
@@ -30,15 +78,13 @@ export default {
     ariaLabelledby: {
       control: 'text',
       name: 'aria-labelledby',
-      description:
-        'ID(s) of element(s) that label the timepicker input (space-separated). Takes precedence over aria-label.',
+      description: 'ID(s) of element(s) that label the timepicker input (space-separated). Takes precedence over aria-label.',
       table: { category: 'Accessibility' },
     },
     ariaDescribedby: {
       control: 'text',
       name: 'aria-describedby',
-      description:
-        'ID(s) of external description/help elements (space-separated). If validationMessage is present, manager appends the child validation element id.',
+      description: 'ID(s) of external description/help elements (space-separated). If validationMessage is present, manager appends the child validation element id.',
       table: { category: 'Accessibility' },
     },
 
@@ -49,8 +95,7 @@ export default {
       control: 'boolean',
       name: 'show-label',
       table: { defaultValue: { summary: true }, category: 'Labeling' },
-      description:
-        'Whether to show the label (for demo purposes; if not showing a visible label, prefer aria-labelledby or aria-label).',
+      description: 'Whether to show the label (for demo purposes; if not showing a visible label, prefer aria-labelledby or aria-label).',
     },
     labelText: {
       control: 'text',
@@ -142,8 +187,7 @@ export default {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'State' },
       name: 'disable-timepicker',
-      description:
-        'Disable the timepicker (input + buttons + dropdown). Passed to child as disableTimepicker or disabled (Plumage).',
+      description: 'Disable the timepicker (input + buttons + dropdown). Passed to child as disableTimepicker or disabled (Plumage).',
     },
     isValid: {
       control: 'boolean',
@@ -194,11 +238,11 @@ export default {
    Helpers
 ---------------------------------------------- */
 
-const normalizeHtml = (html) => {
+const normalizeHtml = html => {
   const lines = String(html ?? '')
     .replace(/\r\n/g, '\n')
     .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
+    .map(l => l.replace(/[ \t]+$/g, ''));
 
   const out = [];
   let prevBlank = false;
@@ -221,7 +265,7 @@ const normalizeHtml = (html) => {
   return out.join('\n');
 };
 
-const normalizeIdList = (v) => {
+const normalizeIdList = v => {
   const s = String(v ?? '').trim();
   if (!s) return '';
   return s.split(/\s+/).filter(Boolean).join(' ');
@@ -234,7 +278,7 @@ const attr = (name, v) => (v === undefined || v === null || v === '' ? null : `$
    Template
 ---------------------------------------------- */
 
-const Template = (args) => {
+const Template = args => {
   const width = Number.isFinite(args.wrapperWidth) ? `${args.wrapperWidth}px` : '';
 
   const attrs = [
@@ -304,8 +348,7 @@ Default.storyName = 'Default Timepicker Manager';
 Default.parameters = {
   docs: {
     description: {
-      story:
-        'Default configuration with a visible label. For best accessibility, prefer a visible label or external aria-labelledby.',
+      story: 'Default configuration with a visible label. For best accessibility, prefer a visible label or external aria-labelledby.',
     },
     story: { height: '220px' },
   },
@@ -322,8 +365,7 @@ SmallSize.storyName = 'Small Size (no Label)';
 SmallSize.parameters = {
   docs: {
     description: {
-      story:
-        'Small input with no visible label. In real usage, provide aria-labelledby to an external label or aria-label.',
+      story: 'Small input with no visible label. In real usage, provide aria-labelledby to an external label or aria-label.',
     },
     story: { height: '220px' },
   },
@@ -409,8 +451,7 @@ WithValidation.storyName = 'With Validation Message';
 WithValidation.parameters = {
   docs: {
     description: {
-      story:
-        'Invalid styling + validation message. Manager appends the child validation element id to aria-describedby when validationMessage is present.',
+      story: 'Invalid styling + validation message. Manager appends the child validation element id to aria-describedby when validationMessage is present.',
     },
     story: { height: '240px' },
   },
@@ -428,8 +469,7 @@ PlumageStyle.storyName = 'Plumage Style Timepicker';
 PlumageStyle.parameters = {
   docs: {
     description: {
-      story:
-        'Renders the <plumage-timepicker-component> when use-pl-timepicker is true. Disabled mapping differs (disabled vs disableTimepicker).',
+      story: 'Renders the <plumage-timepicker-component> when use-pl-timepicker is true. Disabled mapping differs (disabled vs disableTimepicker).',
     },
     story: { height: '240px' },
   },
@@ -437,7 +477,11 @@ PlumageStyle.parameters = {
 
 /* ============================== Accessibility Matrix (computed) ============================== */
 
-const splitIds = (v) => String(v || '').trim().split(/\s+/).filter(Boolean);
+const splitIds = v =>
+  String(v || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
 
 const resolveId = (scopeRoot, id) => {
   if (!id) return false;
@@ -448,10 +492,7 @@ const resolveId = (scopeRoot, id) => {
   }
 };
 
-const getChild = (mgr) =>
-  mgr?.querySelector('plumage-timepicker-component') ||
-  mgr?.querySelector('timepicker-component') ||
-  null;
+const getChild = mgr => mgr?.querySelector('plumage-timepicker-component') || mgr?.querySelector('timepicker-component') || null;
 
 const getSnapshot = (mgr, scopeRoot) => {
   const child = getChild(mgr);
@@ -465,10 +506,7 @@ const getSnapshot = (mgr, scopeRoot) => {
         ariaLabelledby: child.ariaLabelledby ?? null,
         ariaDescribedby: child.ariaDescribedby ?? null,
         // state
-        disableTimepicker:
-          childTag === 'plumage-timepicker-component'
-            ? child.disabled ?? null
-            : child.disableTimepicker ?? null,
+        disableTimepicker: childTag === 'plumage-timepicker-component' ? (child.disabled ?? null) : (child.disableTimepicker ?? null),
         showLabel: child.showLabel ?? null,
         inputId: child.inputId ?? null,
       }
@@ -489,7 +527,7 @@ const getSnapshot = (mgr, scopeRoot) => {
       'aria-describedby': mgr?.getAttribute?.('aria-describedby') ?? null,
       'input-id': mgrInputId || null,
       'validation-message': mgr?.getAttribute?.('validation-message') ?? null,
-      validation: mgr?.hasAttribute?.('validation') ?? null,
+      'validation': mgr?.hasAttribute?.('validation') ?? null,
       'is-valid': mgr?.getAttribute?.('is-valid') ?? null,
       'use-pl-timepicker': mgr?.hasAttribute?.('use-pl-timepicker') ?? null,
       'disable-timepicker': mgr?.hasAttribute?.('disable-timepicker') ?? null,
@@ -497,9 +535,9 @@ const getSnapshot = (mgr, scopeRoot) => {
     child: childProps,
     resolved: {
       labelledbyIds: labelledIds,
-      labelledbyAllResolve: labelledIds.every((id) => resolveId(scopeRoot, id)),
+      labelledbyAllResolve: labelledIds.every(id => resolveId(scopeRoot, id)),
       describedbyIds: describedIds,
-      describedbyAllResolve: describedIds.every((id) => resolveId(scopeRoot, id)),
+      describedbyAllResolve: describedIds.every(id => resolveId(scopeRoot, id)),
       inferredValidationId,
       inferredValidationResolves: inferredValidationId ? resolveId(scopeRoot, inferredValidationId) : false,
     },

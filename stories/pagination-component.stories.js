@@ -451,7 +451,7 @@ Standard.parameters = {
     source: { code: Template(Standard.args), language: 'html' },
     description: {
       story:
-        'Standard pagination with numeric page buttons and optional go-to controls. Wrapped in a <nav> landmark with an accessible label.',
+        'Standard pagination with numeric page buttons and optional go-to controls. Wrapped in a `<nav>` landmark with an accessible label.',
     },
   },
 };
@@ -599,7 +599,7 @@ export const MinimizeComponent = () =>
   use-minimize-pagination
 ></pagination-component>
 `);
-MinimizeComponent.storyName = 'MinimizeComponent';
+MinimizeComponent.storyName = 'Minimize Component';
 MinimizeComponent.parameters = {
   docs: {
     source: { code: MinimizeComponent(), language: 'html' },
@@ -652,7 +652,7 @@ export const ByPageComponent = () =>
   pagination-layout="center"
 ></pagination-component>
 `);
-ByPageComponent.storyName = 'ByPageComponent';
+ByPageComponent.storyName = 'By Page Component';
 ByPageComponent.parameters = {
   docs: {
     source: { code: ByPageComponent(), language: 'html' },
@@ -707,7 +707,7 @@ export const SmallAndLarge = () =>
   <pagination-component current-page="6" total-rows="120" page-size="10" size="lg"></pagination-component>
 </div>
 `);
-SmallAndLarge.storyName = 'SmallAndLarge';
+SmallAndLarge.storyName = 'Small And Large Sizes';
 SmallAndLarge.parameters = {
   docs: {
     source: { code: SmallAndLarge(), language: 'html' },
@@ -723,7 +723,7 @@ export const ColorVariants = () =>
   <pagination-component current-page="3" total-rows="120" page-size="10" pagination-variant-color="danger"></pagination-component>
 </div>
 `);
-ColorVariants.storyName = 'ColorVariants';
+ColorVariants.storyName = 'Color Variants';
 ColorVariants.parameters = {
   docs: {
     source: { code: ColorVariants(), language: 'html' },

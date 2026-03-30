@@ -20,7 +20,7 @@ export default {
       control: 'text',
       name: 'aria-label',
       description:
-        'ARIA override for the popover in click (dialog) mode. Ignored when aria-labelledby is provided or a title header is present.',
+        'ARIA override for the popover in click (dialog) mode. Ignored when aria-labelledby is provided. Also ignored when a header is present; use `no-header` to suppress the header.',
       table: { category: 'Accessibility' },
     },
     ariaLabelledby: {
@@ -44,6 +44,12 @@ export default {
       name: 'title',
       description: 'Popover title.',
       table: { category: 'Content' },
+    },
+    noHeader: {
+      control: 'boolean',
+      name: 'no-header',
+      description: 'When true, the popover header is not rendered even if `title` is provided.',
+      table: { category: 'Content', defaultValue: { summary: false } },
     },
     content: {
       control: 'text',
@@ -192,6 +198,10 @@ const buildPopoverAttrsBlock = a => {
     boolLine('super', a.superTooltip),
     attrLine('target', a.target),
     attrLine('title', a.popoverTitle),
+
+    // ✅ new prop
+    boolLine('no-header', a.noHeader),
+
     attrLine('trigger', a.trigger),
     attrLine('variant', a.variant),
     boolLine('visible', a.visible),
@@ -250,6 +260,7 @@ BasicPopover.args = {
   placement: 'bottom',
   plumage: false,
   popoverTitle: 'Popover title',
+  noHeader: false,
   superTooltip: false,
   target: '',
   trigger: 'click',
@@ -264,7 +275,31 @@ BasicPopover.args = {
 BasicPopover.storyName = 'Basic Popover';
 BasicPopover.parameters = {
   docs: {
-    source: { code: Template(BasicPopover.args), language: 'html' },
+    source: {
+      type: 'dynamic',
+      language: 'html',
+      transform: (_src, ctx) => {
+        // Use stable ids so code doesn't change every render just because of Math.random()
+        const stableArgs = { ...ctx.args, target: ctx.args.target?.trim() ? ctx.args.target.trim() : 'basic-popover-btn' };
+
+        // Build using a stable id instead of Template() (Template uses Math.random)
+        const html = `
+<div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+  ${
+    stableArgs.target
+      ? `
+  <button id="${stableArgs.target}" class="btn btn-primary">External trigger</button>
+  ${buildPopoverTagExternal(stableArgs, stableArgs.target)}
+  `
+      : `
+  ${buildPopoverTagWithChild(stableArgs, { id: 'basic-popover' })}
+  `
+  }
+</div>
+`;
+        return normalizeHtml(html);
+      },
+    },
     description: {
       story: 'A basic popover example. Use the controls to customize its behavior and appearance. You can change the trigger event, placement, content, and more.',
     },
@@ -339,9 +374,6 @@ export const Variants = () =>
   <popover-component title="dark" content="Color: dark" variant="dark" trigger="hover" placement="auto">
     <button-component variant="dark">dark</button-component>
   </popover-component>
-  <popover-component title="light" content="Color: light" variant="light" trigger="hover" placement="auto">
-    <button-component variant="light">light</button-component>
-  </popover-component>
 </div>
 `);
 Variants.storyName = 'Color Variants';
@@ -359,8 +391,8 @@ export const SuperTooltipMode = () =>
       <button-component id="btn-super-1" variant="primary">Super tooltip</button-component>
       </popover-component>
 
-      <popover-component title="Plumage Super tooltip" content="Plumage styled Super tooltip" plumage super placement="auto">
-        <button-component id="btn-super-2" size="plumage-size"variant="primary">Plumage Styled Super tooltip</button-component>
+      <popover-component title="Plumage Super tooltip" content="Plumage styled Super tooltip" plumage super placement="right">
+        <button-component id="btn-super-2" size="plumage-size" variant="primary">Plumage Styled Super tooltip</button-component>
       </popover-component>
     </div>
 `);
@@ -392,6 +424,44 @@ SlotContent.parameters = {
     description: {
       story:
         'Use a `<template slot="content">` to provide rich HTML content for the popover body. Using `<template>` avoids rendering the content in the page while still allowing the component to inject it into the popover.',
+    },
+  },
+};
+
+// Add this inside src/stories/popover-component.stories.js
+
+export const NoHeader = () =>
+  normalizeHtml(`
+<div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+  <popover-component
+    title="Header suppressed"
+    no-header
+    content="This popover has no header (even though title is set)."
+    placement="bottom"
+  >
+    <button-component id="btn-no-header" variant="primary">No Header</button-component>
+  </popover-component>
+
+  <popover-component
+    title="Plumage + Super (no header)"
+    no-header
+    plumage
+    super
+    content="No header + plumage styling + super mode."
+    placement="right"
+  >
+    <button-component id="btn-no-header-plumage-super" variant="primary" size="plumage-size">
+      No Header (Plumage + Super)
+    </button-component>
+  </popover-component>
+</div>
+`);
+NoHeader.storyName = 'No Header';
+NoHeader.parameters = {
+  docs: {
+    source: { code: NoHeader(), language: 'html' },
+    description: {
+      story: 'Demonstrates `no-header` which suppresses rendering `.popover-header` even when `title` is set. Includes a second example using `plumage` + `super`.',
     },
   },
 };
@@ -460,11 +530,7 @@ ExternalTarget.parameters = {
 /* ============================== Accessibility Matrix (computed) ============================== */
 
 const getSnapshot = host => {
-  const trigger =
-    host?.querySelector('button') ||
-    host?.querySelector('button-component') ||
-    host?.querySelector('[role="button"]') ||
-    host?.querySelector('[tabindex]');
+  const trigger = host?.querySelector('button') || host?.querySelector('button-component') || host?.querySelector('[role="button"]') || host?.querySelector('[tabindex]');
 
   const describedby = (trigger?.getAttribute?.('aria-describedby') || '').trim();
   const describedIds = describedby ? describedby.split(/\s+/).filter(Boolean) : [];
@@ -485,38 +551,38 @@ const getSnapshot = host => {
   const popDescribedbyIds = popDescribedby ? popDescribedby.split(/\s+/).filter(Boolean) : [];
 
   return {
-    host: host?.tagName?.toLowerCase() ?? null,
-    triggerTag: trigger?.tagName?.toLowerCase() ?? null,
-    triggerTabindex: trigger?.getAttribute?.('tabindex') ?? null,
+    'host': host?.tagName?.toLowerCase() ?? null,
+    'triggerTag': trigger?.tagName?.toLowerCase() ?? null,
+    'triggerTabindex': trigger?.getAttribute?.('tabindex') ?? null,
 
     'trigger aria-haspopup': trigger?.getAttribute?.('aria-haspopup') ?? null,
     'trigger aria-expanded': trigger?.getAttribute?.('aria-expanded') ?? null,
     'trigger aria-controls': trigger?.getAttribute?.('aria-controls') ?? null,
     'trigger aria-describedby': describedby || null,
 
-    triggerDescribedbyIds: describedIds,
-    triggerDescribedbyAllResolve: describedIds.every(resolve),
+    'triggerDescribedbyIds': describedIds,
+    'triggerDescribedbyAllResolve': describedIds.every(resolve),
 
-    popoverFound: !!pop,
-    popoverId: pop?.getAttribute?.('id') ?? null,
-    popoverRole: pop?.getAttribute?.('role') ?? null,
-    popoverTabindex: pop?.getAttribute?.('tabindex') ?? null,
+    'popoverFound': !!pop,
+    'popoverId': pop?.getAttribute?.('id') ?? null,
+    'popoverRole': pop?.getAttribute?.('role') ?? null,
+    'popoverTabindex': pop?.getAttribute?.('tabindex') ?? null,
     'popover aria-hidden': pop?.getAttribute?.('aria-hidden') ?? null,
     'popover aria-modal': pop?.getAttribute?.('aria-modal') ?? null,
     'popover aria-label': pop?.getAttribute?.('aria-label') ?? null,
     'popover aria-labelledby': popLabelledby || null,
     'popover aria-describedby': popDescribedby || null,
 
-    popoverLabelledbyIds: popLabelledbyIds,
-    popoverLabelledbyAllResolve: popLabelledbyIds.every(resolve),
+    'popoverLabelledbyIds': popLabelledbyIds,
+    'popoverLabelledbyAllResolve': popLabelledbyIds.every(resolve),
 
-    popoverDescribedbyIds: popDescribedbyIds,
-    popoverDescribedbyAllResolve: popDescribedbyIds.every(resolve),
+    'popoverDescribedbyIds': popDescribedbyIds,
+    'popoverDescribedbyAllResolve': popDescribedbyIds.every(resolve),
 
-    hasHeader: !!pop?.querySelector?.('.popover-header'),
-    headerId: pop?.querySelector?.('.popover-header')?.getAttribute?.('id') ?? null,
-    hasBody: !!pop?.querySelector?.('.popover-body'),
-    bodyId: pop?.querySelector?.('.popover-body')?.getAttribute?.('id') ?? null,
+    'hasHeader': !!pop?.querySelector?.('.popover-header'),
+    'headerId': pop?.querySelector?.('.popover-header')?.getAttribute?.('id') ?? null,
+    'hasBody': !!pop?.querySelector?.('.popover-body'),
+    'bodyId': pop?.querySelector?.('.popover-body')?.getAttribute?.('id') ?? null,
   };
 };
 
@@ -595,22 +661,14 @@ export const AccessibilityMatrix = {
     };
 
     const openClick = async host => {
-      const trigger =
-        host?.querySelector('button') ||
-        host?.querySelector('button-component') ||
-        host?.querySelector('[role="button"]') ||
-        host?.querySelector('[tabindex]');
+      const trigger = host?.querySelector('button') || host?.querySelector('button-component') || host?.querySelector('[role="button"]') || host?.querySelector('[tabindex]');
 
       trigger?.dispatchEvent?.(new MouseEvent('click', { bubbles: true }));
       await new Promise(r => requestAnimationFrame(r));
     };
 
     const openHover = async host => {
-      const trigger =
-        host?.querySelector('button') ||
-        host?.querySelector('button-component') ||
-        host?.querySelector('[role="button"]') ||
-        host?.querySelector('[tabindex]');
+      const trigger = host?.querySelector('button') || host?.querySelector('button-component') || host?.querySelector('[role="button"]') || host?.querySelector('[tabindex]');
 
       trigger?.dispatchEvent?.(new MouseEvent('mouseenter', { bubbles: true }));
       await new Promise(r => requestAnimationFrame(r));
@@ -623,6 +681,21 @@ export const AccessibilityMatrix = {
           trigger: 'click',
           popoverTitle: 'Default dialog',
           content: 'Click-triggered popover.',
+          placement: 'auto',
+          noHeader: false,
+        },
+        openClick,
+      ),
+    );
+
+    wrap.appendChild(
+      card(
+        'No header (click → dialog, aria-label fallback)',
+        {
+          trigger: 'click',
+          popoverTitle: 'Hidden header title',
+          noHeader: true,
+          content: 'Header suppressed; title should become aria-label.',
           placement: 'auto',
         },
         openClick,

@@ -3,12 +3,7 @@ import { Component, Prop, State, Event, EventEmitter, h, Element, Watch, Listen 
 
 @Component({
   tag: 'pagination-component',
-  styleUrls: [
-    './pagination-styles.scss',
-    '../input-field/input-field-styles.scss',
-    '../plumage-select-field/plumage-select-field-styles.scss',
-    '../form-styles.scss',
-  ],
+  styleUrls: ['./pagination-styles.scss', '../input-field/input-field-styles.scss', '../plumage-select-field/plumage-select-field-styles.scss', '../form-styles.scss'],
   shadow: false,
 })
 export class PaginationComponent {
@@ -129,9 +124,7 @@ export class PaginationComponent {
 
   connectedCallback() {
     if (this.itemsPerPage) {
-      const numericOptions = this.itemsPerPageOptions
-        .filter((s): s is number => s !== 'All')
-        .sort((a, b) => a - b);
+      const numericOptions = this.itemsPerPageOptions.filter((s): s is number => s !== 'All').sort((a, b) => a - b);
       if (numericOptions.length > 0) this.pageSize = numericOptions[0];
     }
     this.clampAndSync();
@@ -222,8 +215,7 @@ export class PaginationComponent {
    */
   private renderSizeChanger() {
     const sizeCls = this.size === 'sm' ? 'select-sm' : this.size === 'lg' ? 'select-lg' : '';
-    const wrapperCls =
-      'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
+    const wrapperCls = 'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
     const selectId = this.getSelectId();
     const helpId = this.getSelectHelpId();
 
@@ -236,12 +228,7 @@ export class PaginationComponent {
           {this.pageSizeHelpText}
         </div>
 
-        <select
-          id={selectId}
-          onChange={this._handlePageSizeChange}
-          class={`form-select form-control ${sizeCls}`}
-          aria-describedby={helpId}
-        >
+        <select id={selectId} onChange={this._handlePageSizeChange} class={`form-select form-control ${sizeCls}`} aria-describedby={helpId}>
           {this.itemsPerPageOptions.map(opt => {
             const isNum = typeof opt === 'number';
             const isAll = opt === 'All';
@@ -259,8 +246,7 @@ export class PaginationComponent {
 
   private renderPlumageStyleSizeChanger() {
     const sizeCls = this.size === 'sm' ? 'select-sm' : this.size === 'lg' ? 'select-lg' : '';
-    const wrapperCls =
-      'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
+    const wrapperCls = 'size-changer' + (this.size === 'sm' ? ' size-changer-sm' : this.size === 'lg' ? ' size-changer-lg' : '');
     const selectId = this.getSelectId();
     const helpId = this.getSelectHelpId();
 
@@ -306,8 +292,8 @@ export class PaginationComponent {
       this.effectiveVariant === 'minimize'
         ? ('minimize-pagination-component' as any)
         : this.effectiveVariant === 'by-page'
-        ? ('by-page-pagination-component' as any)
-        : ('standard-pagination-component' as any);
+          ? ('by-page-pagination-component' as any)
+          : ('standard-pagination-component' as any);
 
     // NOTE: We *do not* pass itemsPerPage / displayTotalNumberOfPages to children.
     // Parent renders those. Children keep them for standalone usage only.
@@ -335,8 +321,7 @@ export class PaginationComponent {
   }
 
   render() {
-    const rootCls =
-      'pagination-layout' + (this.plumage ? ' plumage' : '') + (this.paginationLayout === 'fill' ? '' : ' d-flex');
+    const rootCls = 'pagination-layout' + (this.plumage ? ' plumage' : '') + (this.paginationLayout === 'fill' ? '' : ' d-flex');
     const splitRootCls = 'pagination-split-layout' + (this.plumage ? ' plumage' : '');
 
     // Announce range updates politely when page/pageSize changes (helps SR users).
@@ -354,79 +339,99 @@ export class PaginationComponent {
 
     if (this.itemsPerPage && this.paginationLayout === 'start') {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell start">{this.renderPaginatorBody()}</div>
-          {this.displayTotalNumberOfPages ? rowDisplay('') : null}
-          <div class="pagination-cell end">{this.plumage ? this.renderPlumageStyleSizeChanger() : this.renderSizeChanger()}</div>
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell start">{this.renderPaginatorBody()}</div>
+            {this.displayTotalNumberOfPages ? rowDisplay('') : null}
+            <div class="pagination-cell end">{this.plumage ? this.renderPlumageStyleSizeChanger() : this.renderSizeChanger()}</div>
+          </div>
         </div>
       );
     } else if (this.itemsPerPage && this.paginationLayout === 'center') {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell center">{this.renderPaginatorBody()}</div>
-          {this.displayTotalNumberOfPages ? rowDisplay('') : null}
-          <div class="pagination-cell center">{this.plumage ? this.renderPlumageStyleSizeChanger() : this.renderSizeChanger()}</div>
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell center">{this.renderPaginatorBody()}</div>
+            {this.displayTotalNumberOfPages ? rowDisplay('') : null}
+            <div class="pagination-cell center">{this.plumage ? this.renderPlumageStyleSizeChanger() : this.renderSizeChanger()}</div>
+          </div>
         </div>
       );
     } else if (this.itemsPerPage && this.paginationLayout === 'end') {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell start">{this.plumage ? this.renderPlumageStyleSizeChanger() : this.renderSizeChanger()}</div>
-          {this.displayTotalNumberOfPages ? rowDisplay('') : null}
-          <div class="pagination-cell end">{this.renderPaginatorBody()}</div>
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell start">{this.plumage ? this.renderPlumageStyleSizeChanger() : this.renderSizeChanger()}</div>
+            {this.displayTotalNumberOfPages ? rowDisplay('') : null}
+            <div class="pagination-cell end">{this.renderPaginatorBody()}</div>
+          </div>
         </div>
       );
     } else if (this.itemsPerPage && this.paginationLayout === 'fill-left') {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell fill">{this.renderPaginatorBody()}</div>
-          {this.displayTotalNumberOfPages ? rowDisplay('') : null}
-          <div class="pagination-cell end">{this.plumage ? this.renderPlumageStyleSizeChanger() : this.renderSizeChanger()}</div>
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell fill">{this.renderPaginatorBody()}</div>
+            {this.displayTotalNumberOfPages ? rowDisplay('') : null}
+            <div class="pagination-cell end">{this.plumage ? this.renderPlumageStyleSizeChanger() : this.renderSizeChanger()}</div>
+          </div>
         </div>
       );
     } else if (this.itemsPerPage && this.paginationLayout === 'fill-right') {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell start">{this.plumage ? this.renderPlumageStyleSizeChanger() : this.renderSizeChanger()}</div>
-          {this.displayTotalNumberOfPages ? rowDisplay('') : null}
-          <div class="pagination-cell fill end">{this.renderPaginatorBody()}</div>
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell start">{this.plumage ? this.renderPlumageStyleSizeChanger() : this.renderSizeChanger()}</div>
+            {this.displayTotalNumberOfPages ? rowDisplay('') : null}
+            <div class="pagination-cell fill end">{this.renderPaginatorBody()}</div>
+          </div>
         </div>
       );
     }
 
     if (this.displayTotalNumberOfPages && this.paginationLayout === 'start' && !this.itemsPerPage) {
       return (
-        <div class={rootCls}>
-          <div class="pagination-cell start">{this.renderPaginatorBody()}</div>
-          {rowDisplay(' end')}
+        <div class="sc-pagination">
+          <div class={rootCls}>
+            <div class="pagination-cell start">{this.renderPaginatorBody()}</div>
+            {rowDisplay(' end')}
+          </div>
         </div>
       );
     } else if (this.displayTotalNumberOfPages && this.paginationLayout === 'center' && !this.itemsPerPage) {
       return (
-        <div class={rootCls}>
-          <div class="pagination-cell center">{this.renderPaginatorBody()}</div>
-          {rowDisplay(' justify-content-center flex-fill50')}
+        <div class="sc-pagination">
+          <div class={rootCls}>
+            <div class="pagination-cell center">{this.renderPaginatorBody()}</div>
+            {rowDisplay(' justify-content-center flex-fill50')}
+          </div>
         </div>
       );
     } else if (this.displayTotalNumberOfPages && this.paginationLayout === 'end' && !this.itemsPerPage) {
       return (
-        <div class={rootCls}>
-          {rowDisplay(' start')}
-          <div class="pagination-cell end">{this.renderPaginatorBody()}</div>
+        <div class="sc-pagination">
+          <div class={rootCls}>
+            {rowDisplay(' start')}
+            <div class="pagination-cell end">{this.renderPaginatorBody()}</div>
+          </div>
         </div>
       );
     } else if (this.displayTotalNumberOfPages && this.paginationLayout === 'fill-left' && !this.itemsPerPage) {
       return (
-        <div class={rootCls}>
-          <div class="pagination-cell fill">{this.renderPaginatorBody()}</div>
-          {rowDisplay(' end')}
+        <div class="sc-pagination">
+          <div class={rootCls}>
+            <div class="pagination-cell fill">{this.renderPaginatorBody()}</div>
+            {rowDisplay(' end')}
+          </div>
         </div>
       );
     } else if (this.displayTotalNumberOfPages && this.paginationLayout === 'fill-right' && !this.itemsPerPage) {
       return (
-        <div class={rootCls}>
-          {rowDisplay(' start')}
-          <div class="pagination-cell fill">{this.renderPaginatorBody()}</div>
+        <div class="sc-pagination">
+          <div class={rootCls}>
+            {rowDisplay(' start')}
+            <div class="pagination-cell fill">{this.renderPaginatorBody()}</div>
+          </div>
         </div>
       );
     }
@@ -435,35 +440,37 @@ export class PaginationComponent {
       this.paginationLayout === 'start'
         ? 'pagination-cell start'
         : this.paginationLayout === 'center'
-        ? 'pagination-cell center'
-        : this.paginationLayout === 'end'
-        ? 'pagination-cell end'
-        : '';
+          ? 'pagination-cell center'
+          : this.paginationLayout === 'end'
+            ? 'pagination-cell end'
+            : '';
 
     return (
-      <div class={rootCls}>
-        <div class={cellPosCls}>{this.renderPaginatorBody()}</div>
-        {this.displayTotalNumberOfPages ? (
-          <div
-            id={this.getRangeId()}
-            class={
-              'pagination-cell row-display' +
-              (this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : '') +
-              (this.paginationLayout === 'fill'
-                ? ' fill'
-                : this.paginationLayout === 'center'
-                ? ' justify-content-center flex-fill50'
-                : this.paginationLayout === 'end' || this.paginationLayout
-                ? ' justify-content-end'
-                : '')
-            }
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {this.displayRange}
-          </div>
-        ) : null}
+      <div class="sc-pagination">
+        <div class={rootCls}>
+          <div class={cellPosCls}>{this.renderPaginatorBody()}</div>
+          {this.displayTotalNumberOfPages ? (
+            <div
+              id={this.getRangeId()}
+              class={
+                'pagination-cell row-display' +
+                (this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : '') +
+                (this.paginationLayout === 'fill'
+                  ? ' fill'
+                  : this.paginationLayout === 'center'
+                    ? ' justify-content-center flex-fill50'
+                    : this.paginationLayout === 'end' || this.paginationLayout
+                      ? ' justify-content-end'
+                      : '')
+              }
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {this.displayRange}
+            </div>
+          ) : null}
+        </div>
       </div>
     );
   }

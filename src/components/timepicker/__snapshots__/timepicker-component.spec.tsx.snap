@@ -3,7 +3,7 @@
 exports[`timepicker-component disabled: disables input/buttons and dropdown stays hidden/inert 1`] = `
 <timepicker-component disable-timepicker="" input-id="tp5">
   <div class="time-picker-container">
-    <div class="mr-1 time-picker">
+    <div class="ms-1 time-picker">
       <label class="sr-only" htmlfor="tp5">
         Enter Time
       </label>
@@ -97,7 +97,7 @@ exports[`timepicker-component disabled: disables input/buttons and dropdown stay
 exports[`timepicker-component hides the label (sr-only) when "show-label" is omitted, and uses aria-label (no aria-labelledby) 1`] = `
 <timepicker-component input-id="a1" label-text="Hidden label test">
   <div class="time-picker-container">
-    <div class="mr-1 time-picker">
+    <div class="ms-1 time-picker">
       <label class="sr-only" htmlfor="a1">
         Hidden label test
       </label>
@@ -191,7 +191,7 @@ exports[`timepicker-component hides the label (sr-only) when "show-label" is omi
 exports[`timepicker-component required + invalid: sets aria-required + required, sets aria-invalid only when invalid, and wires validation message id 1`] = `
 <timepicker-component input-id="tp4">
   <div class="time-picker-container">
-    <div class="mr-1 time-picker">
+    <div class="ms-1 time-picker">
       <label class="invalid sr-only" htmlfor="tp4">
         Enter Time
         <span class="required">
@@ -290,7 +290,7 @@ exports[`timepicker-component required + invalid: sets aria-required + required,
 exports[`timepicker-component shows the label when "show-label" is present and wires label/id a11y (auto label id + dropdown id) 1`] = `
 <timepicker-component input-id="my-time" label-text="Pick a time" show-label="">
   <div class="time-picker-container">
-    <div class="mr-1 time-picker">
+    <div class="ms-1 time-picker">
       <label htmlfor="my-time" id="my-time-label">
         Pick a time
       </label>

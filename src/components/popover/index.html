@@ -45,7 +45,7 @@
           <!-- B) Hover trigger -->
           <div>
             <h4>B. Hover</h4>
-            <popover-component trigger="hover" title="Hover title" content="Shown while hovering." placement="auto">
+            <popover-component title="Hover title" content="Shown while hovering." placement="auto">
               <button-component id="btn-b" variant="secondary">Hover me</button-component>
             </popover-component>
           </div>
@@ -64,13 +64,13 @@
           <div>
             <h4>D. External target</h4>
             <button-component id="external-target" variant="secondary">External trigger</button-component>
-            <popover-component target="external-target" title="Using target" placement="auto" content="Trigger is outside the component."></popover-component>
+            <popover-component target="external-target" title="Using target" placement="top" content="Trigger is outside the component."></popover-component>
           </div>
 
           <!-- E) Variant + plumage + super -->
           <div>
             <h4>E. Variant + Plumage + Super</h4>
-            <popover-component title="Styled" content="Primary + plumage + super-tooltip." variant="danger" plumage super placement="top-start">
+            <popover-component title="Styled" content="Primary + plumage + super-tooltip." plumage super no-header placement="left">
               <button-component id="btn-e" variant="secondary">Styled popover</button-component>
             </popover-component>
           </div>
@@ -96,7 +96,7 @@
           <!-- H) Multiple triggers (e.g., "hover focus") -->
           <div>
             <h4>H. Multiple triggers</h4>
-            <popover-component title="Multi-trigger" content="Opens on hover or focus." trigger="hover focus" placement="auto">
+            <popover-component title="Multi-trigger" content="Opens on hover or focus."  placement="auto">
               <button-component id="btn-h" variant="secondary">Hover or focus me</button-component>
             </popover-component>
           </div>
@@ -104,7 +104,7 @@
           <div>
             <h4>I. Dynamic Popover</h4>
             <button-component id="dynamicPopoverBtn" variant="primary" size="sm">Hover over me</button-component>
-            <popover-component id="dynamicPopover" title="Multi-trigger" content="Opens on hover or focus." trigger="hover" placement="auto"> </popover-component>
+            <popover-component id="dynamicPopover" title="Multi-trigger" content="Opens on hover or focus." placement="auto"> </popover-component>
           </div>
 
           <div>

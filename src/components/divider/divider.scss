@@ -1,159 +1,198 @@
-[class^="divider"],
-[class*=" divider"] {
-  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
-  font-size: 14px;
-  box-sizing: border-box;
-}
+/* divider.scss */
 
-[class^="divider"]::before,
-[class*=" divider"]::before,
-[class^="divider"]::after,
-[class*=" divider"]::after {
-  box-sizing: border-box;
-}
+$divider-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+  'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+  'Noto Color Emoji';
 
-[class^="divider"] [class^="divider"],
-[class*=" divider"] [class^="divider"],
-[class^="divider"] [class*=" divider"],
-[class*=" divider"] [class*=" divider"] {
-  box-sizing: border-box;
-}
+$divider-text-color: rgba(0, 0, 0, 0.88);
+$divider-border-color: rgba(5, 5, 5, 0.25);
 
-[class^="divider"] [class^="divider"]::before,
-[class*=" divider"] [class^="divider"]::before,
-[class^="divider"] [class*=" divider"]::before,
-[class*=" divider"] [class*=" divider"]::before,
-[class^="divider"] [class^="divider"]::after,
-[class*=" divider"] [class^="divider"]::after,
-[class^="divider"] [class*=" divider"]::after,
-[class*=" divider"] [class*=" divider"]::after {
-  box-sizing: border-box;
-}
+$divider-font-size: 14px;
+$divider-line-height: 1.5714285714285714;
 
-.divider {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  color: rgba(0, 0, 0, 0.88);
-  font-size: 14px;
-  line-height: 1.5714285714285714;
-  list-style: none;
-  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
-  border-block-start: 1px solid rgba(5, 5, 5, 0.25);
-}
+$divider-vertical-margin-inline: 8px;
+$divider-horizontal-margin: 24px 0;
+$divider-with-text-margin: 16px 0;
 
-.divider-vertical {
-  position: relative;
-  top: -0.06em;
-  display: inline-block;
-  height: 0.9em;
-  margin-inline: 8px;
-  margin-block: 0;
-  vertical-align: middle;
-  border-top: 0;
-  border-inline-start: 1px solid rgba(5, 5, 5, 0.25);
-}
+$divider-with-text-font-size: 16px;
+$divider-with-text-font-weight: 500;
 
-.divider-horizontal {
-  display: flex;
-  clear: both;
-  width: 100%;
-  min-width: 100%;
-  margin: 24px 0;
-}
+$divider-left-right-ratio: 0.05;
 
-.divider-horizontal.divider-with-text {
+@mixin divider-with-text-base($plain: false) {
   display: flex;
   align-items: center;
-  margin: 16px 0;
-  color: rgba(0, 0, 0, 0.88);
-  font-weight: 500;
-  font-size: 16px;
+  margin: $divider-with-text-margin;
+  color: $divider-text-color;
   white-space: nowrap;
   text-align: center;
-  border-block-start: 0 rgba(5, 5, 5, 0.25);
+
+  // IMPORTANT: keep border COLOR on the element for ::before/::after to inherit,
+  // but make the element border width 0 so no "top border" renders on the container.
+  border-block-start: 0 solid $divider-border-color;
+
+  @if $plain == true {
+    font-weight: normal;
+    font-size: $divider-font-size;
+  } @else {
+    font-weight: $divider-with-text-font-weight;
+    font-size: $divider-with-text-font-size;
+  }
+
+  &::before,
+  &::after {
+    position: relative;
+    width: 50%;
+    border-block-start: 1px solid transparent;
+    border-block-start-color: inherit;
+    border-block-end: 0;
+    transform: translateY(50%);
+    content: '';
+  }
 }
 
-.divider-horizontal.divider-with-text::before,
-.divider-horizontal.divider-with-text::after {
-  position: relative;
-  width: 50%;
-  border-block-start: 1px solid transparent;
-  border-block-start-color: inherit;
-  border-block-end: 0;
-  transform: translateY(50%);
-  content: "";
-}
+.sc-divider {
+  // baseline for divider-ish classnames (scoped)
+  [class^='divider'],
+  [class*=' divider'] {
+    font-family: $divider-font;
+    font-size: $divider-font-size;
+    box-sizing: border-box;
 
-.divider-horizontal.divider-with-text-left::before {
-  width: calc(0.05 * 100%);
-}
+    &::before,
+    &::after {
+      box-sizing: border-box;
+    }
 
-.divider-horizontal.divider-with-text-left::after {
-  width: calc(100% - 0.05 * 100%);
-}
+    [class^='divider'],
+    [class*=' divider'] {
+      box-sizing: border-box;
 
-.divider-horizontal.divider-with-text-right::before {
-  width: calc(100% - 0.05 * 100%);
-}
+      &::before,
+      &::after {
+        box-sizing: border-box;
+      }
+    }
+  }
 
-.divider-horizontal.divider-with-text-right::after {
-  width: calc(0.05 * 100%);
-}
+  .divider {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    color: $divider-text-color;
+    font-size: $divider-font-size;
+    line-height: $divider-line-height;
+    list-style: none;
+    font-family: $divider-font;
 
-.divider .divider-inner-text {
-  display: inline-block;
-  padding-block: 0;
-  padding-inline: 1em;
-}
+    .divider-inner-text {
+      display: inline-block;
+      padding-block: 0;
+      padding-inline: 1em;
+    }
+  }
 
-.divider-dashed {
-  background: none;
-  border-color: rgba(5, 5, 5, 0.25);
-  border-style: dashed;
-  border-width: 1px 0 0;
-}
+  /* ----------------------------
+     Horizontal
+     ---------------------------- */
 
-.divider-horizontal.divider-with-text.divider-dashed::before,
-.divider-horizontal.divider-with-text.divider-dashed::after {
-  border-style: dashed none none;
-}
+  // ONLY non-text horizontals get the container border line
+  .divider-horizontal:not(.divider-with-text) {
+    display: flex;
+    clear: both;
+    width: 100%;
+    min-width: 100%;
+    margin: $divider-horizontal-margin;
+    border-block-start: 1px solid $divider-border-color;
+  }
 
-.divider-vertical.divider-dashed {
-  border-inline-start-width: 1px;
-  border-inline-end: 0;
-  border-block-start: 0;
-  border-block-end: 0;
-}
+  .divider-horizontal.divider-with-text {
+    @include divider-with-text-base(false);
 
-.divider-plain.divider-with-text {
-  color: rgba(0, 0, 0, 0.88);
-  font-weight: normal;
-  font-size: 14px;
-}
+    &.divider-plain {
+      @include divider-with-text-base(true);
+    }
 
-.divider-horizontal.divider-with-text-left.divider-no-default-orientation-margin-left::before {
-  width: 0;
-}
+    &.divider-with-text-left {
+      &::before {
+        width: calc(#{$divider-left-right-ratio} * 100%);
+      }
+      &::after {
+        width: calc(100% - #{$divider-left-right-ratio} * 100%);
+      }
 
-.divider-horizontal.divider-with-text-left.divider-no-default-orientation-margin-left::after {
-  width: 100%;
-}
+      &.divider-no-default-orientation-margin-left {
+        &::before {
+          width: 0;
+        }
+        &::after {
+          width: 100%;
+        }
 
-.divider-horizontal.divider-with-text-left.divider-no-default-orientation-margin-left
-  .divider-inner-text {
-  padding-inline-start: 0;
-}
+        .divider-inner-text {
+          padding-inline-start: 0;
+        }
+      }
+    }
 
-.divider-horizontal.divider-with-text-right.divider-no-default-orientation-margin-right::before {
-  width: 100%;
-}
+    &.divider-with-text-right {
+      &::before {
+        width: calc(100% - #{$divider-left-right-ratio} * 100%);
+      }
+      &::after {
+        width: calc(#{$divider-left-right-ratio} * 100%);
+      }
 
-.divider-horizontal.divider-with-text-right.divider-no-default-orientation-margin-right::after {
-  width: 0;
-}
+      &.divider-no-default-orientation-margin-right {
+        &::before {
+          width: 100%;
+        }
+        &::after {
+          width: 0;
+        }
 
-.divider-horizontal.divider-with-text-right.divider-no-default-orientation-margin-right
-  .divider-inner-text {
-  padding-inline-end: 0;
+        .divider-inner-text {
+          padding-inline-end: 0;
+        }
+      }
+    }
+
+    &.divider-dashed {
+      &::before,
+      &::after {
+        border-style: dashed none none;
+      }
+    }
+  }
+
+  /* ----------------------------
+     Vertical
+     ---------------------------- */
+
+  .divider-vertical {
+    position: relative;
+    top: -0.06em;
+    display: inline-block;
+    height: 0.9em;
+    margin-inline: $divider-vertical-margin-inline;
+    margin-block: 0;
+    vertical-align: middle;
+    border-top: 0;
+    border-inline-start: 1px solid $divider-border-color;
+
+    &.divider-dashed {
+      border-inline-start-style: dashed;
+      border-inline-end: 0;
+      border-block-start: 0;
+      border-block-end: 0;
+    }
+  }
+
+  /* dashed base (non-with-text horizontal uses this if you add .divider-dashed) */
+  .divider-horizontal:not(.divider-with-text).divider-dashed {
+    background: none;
+    border-color: $divider-border-color;
+    border-style: dashed;
+    border-width: 1px 0 0;
+  }
 }

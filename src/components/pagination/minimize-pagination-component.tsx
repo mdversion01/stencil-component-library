@@ -166,12 +166,7 @@ export class MinimizePagination {
           {this.pageSizeHelpText}
         </div>
 
-        <select
-          id={selectId}
-          class={`form-select form-control ${sizeCls}`}
-          aria-describedby={helpId}
-          onChange={this.onItemsPerPageChange}
-        >
+        <select id={selectId} class={`form-select form-control ${sizeCls}`} aria-describedby={helpId} onChange={this.onItemsPerPageChange}>
           {this.itemsPerPageOptions.map(opt => {
             const isAll = opt === 'All';
             const isNum = typeof opt === 'number';
@@ -204,8 +199,7 @@ export class MinimizePagination {
 
   private renderBar() {
     const sizeCls = this.size === 'sm' ? ' pagination-sm' : this.size === 'lg' ? ' pagination-lg' : '';
-    const layoutCls =
-      this.paginationLayout === 'center' ? ' justify-content-center' : this.paginationLayout === 'end' ? ' justify-content-end' : '';
+    const layoutCls = this.paginationLayout === 'center' ? ' justify-content-center' : this.paginationLayout === 'end' ? ' justify-content-end' : '';
     const plumageCls = this.plumage ? ' plumage' : '';
 
     const atStart = this.page <= 1;
@@ -228,11 +222,7 @@ export class MinimizePagination {
               aria-controls={ariaControls}
               tabIndex={atStart ? -1 : 0}
             >
-              {this.goToButtons === 'text' ? (
-                'First'
-              ) : (
-                <i class="fa-solid fa-angles-left" aria-hidden="true"></i>
-              )}
+              {this.goToButtons === 'text' ? 'First' : <i class="fa-solid fa-angles-left" aria-hidden="true"></i>}
             </button>
           </li>
 
@@ -247,11 +237,7 @@ export class MinimizePagination {
               aria-controls={ariaControls}
               tabIndex={atStart ? -1 : 0}
             >
-              {this.goToButtons === 'text' ? (
-                'Prev'
-              ) : (
-                <i class="fa-solid fa-angle-left" aria-hidden="true"></i>
-              )}
+              {this.goToButtons === 'text' ? 'Prev' : <i class="fa-solid fa-angle-left" aria-hidden="true"></i>}
             </button>
           </li>
 
@@ -266,11 +252,7 @@ export class MinimizePagination {
               aria-controls={ariaControls}
               tabIndex={atEnd ? -1 : 0}
             >
-              {this.goToButtons === 'text' ? (
-                'Next'
-              ) : (
-                <i class="fa-solid fa-angle-right" aria-hidden="true"></i>
-              )}
+              {this.goToButtons === 'text' ? 'Next' : <i class="fa-solid fa-angle-right" aria-hidden="true"></i>}
             </button>
           </li>
 
@@ -285,11 +267,7 @@ export class MinimizePagination {
               aria-controls={ariaControls}
               tabIndex={atEnd ? -1 : 0}
             >
-              {this.goToButtons === 'text' ? (
-                'Last'
-              ) : (
-                <i class="fa-solid fa-angles-right" aria-hidden="true"></i>
-              )}
+              {this.goToButtons === 'text' ? 'Last' : <i class="fa-solid fa-angles-right" aria-hidden="true"></i>}
             </button>
           </li>
         </ul>
@@ -306,53 +284,69 @@ export class MinimizePagination {
 
     if (showChildSizer && this.paginationLayout === 'start') {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell start">{this.renderBar()}</div>
-          {showChildRange ? this.rowDisplay('') : null}
-          <div class="pagination-cell end">{this.renderSizeChanger()}</div>
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell start">{this.renderBar()}</div>
+            {showChildRange ? this.rowDisplay('') : null}
+            <div class="pagination-cell end">{this.renderSizeChanger()}</div>
+          </div>
         </div>
       );
     } else if (showChildSizer && this.paginationLayout === 'center') {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell center">{this.renderBar()}</div>
-          {showChildRange ? this.rowDisplay('') : null}
-          <div class="pagination-cell center">{this.renderSizeChanger()}</div>
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell center">{this.renderBar()}</div>
+            {showChildRange ? this.rowDisplay('') : null}
+            <div class="pagination-cell center">{this.renderSizeChanger()}</div>
+          </div>
         </div>
       );
     } else if (showChildSizer && this.paginationLayout === 'end') {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell start">{this.renderSizeChanger()}</div>
-          {showChildRange ? this.rowDisplay('') : null}
-          <div class="pagination-cell end">{this.renderBar()}</div>
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell start">{this.renderSizeChanger()}</div>
+            {showChildRange ? this.rowDisplay('') : null}
+            <div class="pagination-cell end">{this.renderBar()}</div>
+          </div>
         </div>
       );
     }
 
     if (showChildRange && this.paginationLayout === 'start' && !showChildSizer) {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell start">{this.renderBar()}</div>
-          {this.rowDisplay(' end')}
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell start">{this.renderBar()}</div>
+            {this.rowDisplay(' end')}
+          </div>
         </div>
       );
     } else if (showChildRange && this.paginationLayout === 'center' && !showChildSizer) {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell center">{this.renderBar()}</div>
-          {this.rowDisplay(' justify-content-center flex-fill50')}
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell center">{this.renderBar()}</div>
+            {this.rowDisplay(' justify-content-center flex-fill50')}
+          </div>
         </div>
       );
     } else if (showChildRange && this.paginationLayout === 'end' && !showChildSizer) {
       return (
-        <div class={splitRootCls}>
-          {this.rowDisplay(' start')}
-          <div class="pagination-cell end">{this.renderBar()}</div>
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            {this.rowDisplay(' start')}
+            <div class="pagination-cell end">{this.renderBar()}</div>
+          </div>
         </div>
       );
     }
 
-    return <div class={rootCls}>{this.renderBar()}</div>;
+    return (
+      <div class="sc-pagination">
+        <div class={rootCls}>{this.renderBar()}</div>
+      </div>
+    );
   }
 }

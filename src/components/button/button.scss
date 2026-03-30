@@ -48,7 +48,7 @@ $btn-sizes: (
 
 // _btn-text-variants.scss
 
-@mixin text-button-base($base-text: rgba(0, 0, 0, 0.87), $hover-bg: #e1e1e1) {
+@mixin text-button-base($base-text: rgba(var(--bs-black), 0.87), $hover-bg: #e1e1e1) {
   .btn.text-btn,
   .btn.text,
   .btn.btn-icon {
@@ -178,25 +178,25 @@ $btn-text-variants: (
 
 .btn-outline-light {
   background-color: transparent !important;
-  border-color: #c5c5c5 !important;
-  color: #c5c5c5 !important;
+  border-color: var(--bs-light) !important;
+  color: var(--bs-light) !important;
 
   &:hover {
-    background-color: #dfdfdf !important;
-    border-color: #dfdfdf !important;
-    color: #1f1f1f !important;
+    background-color: var(--bs-light-hover) !important;
+    border-color: var(--bs-light-hover) !important;
+    color: var(--bs-light-hover-text) !important;
   }
 
   &:focus {
-    box-shadow: 0 0 0 0.2rem #dfdfdf !important;
+    box-shadow: 0 0 0 0.2rem var(--bs-light-focus) !important;
   }
 
   &.active,
   &:not(:disabled):not(.disabled).active,
   &:not(:disabled):not(.disabled):active {
-    background-color: #dfdfdf !important;
-    border-color: #dfdfdf !important;
-    color: #1f1f1f !important;
+    background-color: var(--bs-light-active) !important;
+    border-color: var(--bs-light-active) !important;
+    color: var(--bs-light-active-text) !important;
   }
 }
 
@@ -220,7 +220,7 @@ $btn-text-variants: (
     left: 25%;
     height: 100%;
     width: 50%;
-    background-color: #000;
+    background-color: var(--bs-black);
     border-radius: 30%;
     opacity: 0;
     pointer-events: none;
@@ -244,33 +244,8 @@ $btn-text-variants: (
   flex: 0 0 auto;
   letter-spacing: 0.0892857143em;
   justify-content: center;
-  // outline: 0;
   position: relative;
 }
-
-// .btn:hover {
-//   background-color: rgb(118, 118, 118);
-//   color: #fff;
-//   text-decoration: none;
-// }
-
-// .btn:before {
-//   border-radius: inherit;
-//   bottom: 0;
-//   color: inherit;
-//   content: '';
-//   left: 0;
-//   opacity: 0;
-//   pointer-events: none;
-//   position: absolute;
-//   right: 0;
-//   top: 0;
-//   transition: opacity 0.2s cubic-bezier(0.4, 0, 0.6, 1);
-// }
-
-// .btn:hover:before {
-//   opacity: 0.08;
-// }
 
 .btn-default {
   background-color: #e7e7e7 !important;
@@ -280,7 +255,7 @@ $btn-text-variants: (
   &:hover {
     background-color: #767676 !important;
     border-color: #767676 !important;
-    color: #fff !important;
+    color: var(--bs-white) !important;
   }
 
   &:focus {
@@ -315,7 +290,7 @@ $btn-text-variants: (
   &:not(:disabled):not(.disabled).active,
   &:not(:disabled):not(.disabled):active {
     border-color: #767676 !important;
-    color: #fff !important;
+    color: var(--bs-white) !important;
   }
 }
 
@@ -410,7 +385,7 @@ $btn-text-variants: (
   align-items: center;
   border-radius: 0.25rem;
   display: inline-flex;
-  font-size: 0.8333rem;
+  font-size: 0.8333rem !important;
   font-weight: normal;
   height: 1.375rem;
   line-height: 1.2;
@@ -440,7 +415,7 @@ $btn-text-variants: (
 .btn:not(.btn-outlined).success,
 .btn:not(.btn-outlined).warning,
 .btn:not(.btn-outlined).dark {
-  color: #fff;
+  color: var(--bs-white);
 }
 
 .btn.pill {
@@ -532,7 +507,7 @@ $btn-text-variants: (
     &:hover {
       background-color: #2680eb;
       border-color: #2680eb;
-      color: #fff;
+      color: var(--bs-white);
     }
   }
 }

@@ -5,12 +5,12 @@
     .bg-#{"" + $name} {
       background-color: #{$value};
       border-color: #{$value};
-      color: if(#{$name} == light, #000, '');
+      color: if(#{$name} == var(--bs-light), var(--bs-black), '');
     }
 
     .text-bg-#{"" + $name} {
       background-color: #{$value} !important;
-      color: if(#{$name} == yellow, #000, #fff) !important;
+      color: if(#{$name} == var(--bs-yellow), var(--bs-black), var(--bs-white)) !important;
 
       button {
         color: inherit !important;
@@ -18,7 +18,7 @@
     }
 
     .bg-#{"" + $name}.outlined {
-      background-color: #FFF;
+      background-color: var(--bs-white);
       border-color: #{$value};
       color: #{$value};
     }
@@ -61,16 +61,16 @@ $badge-sizes: (
 
 // _badge-variants
 $badge-variants: (
-  accent:   (#2680eb, true),
-  primary:  (#2680eb, true),
-  secondary:(#909090, true),
-  tertiary: (#b9b9b9, true),
-  success:  (#2d9d78, true),
-  danger:   (#e34850, true),
-  warning:  (#e68619, true),
-  info:     (#5aa9fa, true),
-  light:    (#c5c5c5, true), // <- outlined should use #c5c5c5 for text
-  dark:     (#323232, true)
+  accent:   (var(--bs-accent), true),
+  primary:  (var(--bs-primary), true),
+  secondary:(var(--bs-secondary), true),
+  tertiary: (var(--bs-tertiary), true),
+  success:  (var(--bs-success), true),
+  danger:   (var(--bs-danger), true),
+  warning:  (var(--bs-warning), true),
+  info:     (var(--bs-info), true),
+  light:    (var(--bs-light), true), // <- outlined should use #c5c5c5 for text
+  dark:     (var(--bs-dark), true)
 );
 
 // Variants that get white text when NOT outlined
@@ -79,15 +79,15 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
 // Base outlined rule
 .badge--outlined,
 .badge__token.outlined {
-  background-color: #fff;
-  border: thin solid #000;
-  color: #000;
+  background-color: var(--bs-white) !important;
+  border: thin solid var(--bs-black) !important;
+  color: var(--bs-black) !important;
 }
 
 // 1) Non-outlined: white text for selected variants
 @each $v in $badge-white-text-when-solid {
   .badge:not(.badge--outlined).#{$v} {
-    color: #fff;
+    color: var(--bs-white) !important;
   }
 }
 
@@ -98,7 +98,7 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
 
   .badge--outlined.#{$name},
   .badge__token.outlined.#{$name} {
-    background-color: #fff;
+    background-color: var(--bs-white) !important;
     border-color: $color;
     @if $set-text {
       color: $color; // now adds color for light too
@@ -109,12 +109,12 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
 // 3) Token override
 @each $name, $tuple in $badge-variants {
   .badge__token.outlined.#{$name} {
-    background-color: #fff;
+    background-color: var(--bs-white) !important;
   }
 }
 
 .badge.bg-light {
-  color: #000 !important;
+  color: var(--bs-black) !important;
 }
 
 .badge-flex {
@@ -144,7 +144,7 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
 
 .badge__token {
   border-radius: 10px;
-  color: #fff;
+  color: var(--bs-white);
   font-size: 12px;
   letter-spacing: 0;
   min-width: 12px;
@@ -250,8 +250,8 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
 .badge__token.primary:not(:disabled):not(.disabled):active  */
 .badge.primary.active,
 .badge__token.primary.active {
-  background-color: #1367cb;
-  border-color: #1261c0;
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
 }
 
 /* .badge.secondary:not(:disabled):not(.disabled).active,
@@ -278,7 +278,7 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
 .red.badge,
 .teal.badge,
 .shades.black.badge {
-  color: #fff;
+  color: var(--bs-white);
 }
 
 .amber.badge,
@@ -288,7 +288,7 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
 .orange.badge,
 .yellow.badge,
 .shades.white.badge {
-  color: #000;
+  color: var(--bs-black);
 }
 
 .badge.text {
@@ -303,7 +303,7 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
 .badge__token.yellow,
 .badge__token.light,
 .badge__token.white {
-  color: #000;
+  color: var(--bs-black);
 }
 
 .badge .icon {
@@ -332,13 +332,13 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
 .badge.link {
   background-color: transparent;
   border-color: transparent;
-  color: #2680eb;
+  color: var(--bs-link-color);
 }
 
 .badge.link:hover {
   background-color: transparent;
   border-color: transparent;
-  color: #115bb4;
+  color: var(--bs-link-hover-color);
 }
 
 .pulse {

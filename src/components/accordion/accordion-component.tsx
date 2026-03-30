@@ -73,9 +73,7 @@ export class AccordionComponent {
       const suffix = `${AccordionComponent._seq}-${Math.random().toString(36).slice(2, 6)}`;
       const unique = `${resolved}-${suffix}`;
       // eslint-disable-next-line no-console
-      console.warn(
-        `[accordion-component] targetId "${resolved}" already exists in DOM. Using "${unique}" to keep IDs unique.`,
-      );
+      console.warn(`[accordion-component] targetId "${resolved}" already exists in DOM. Using "${unique}" to keep IDs unique.`);
       resolved = unique;
     }
 
@@ -91,19 +89,29 @@ export class AccordionComponent {
     return this._resolvedHeaderId || '';
   }
 
+  /**
+   * Bootstrap-style a11y:
+   * - closed: aria-hidden + inert
+   * - open: remove both
+   *
+   * NOTE: do NOT use `hidden` / `display:none` for collapse animation.
+   */
   private setPanelA11y(targetEl: HTMLElement, isOpen: boolean) {
     if (isOpen) {
       targetEl.removeAttribute('aria-hidden');
-      targetEl.removeAttribute('hidden');
       targetEl.removeAttribute('inert');
-      targetEl.style.display = 'block';
     } else {
       targetEl.setAttribute('aria-hidden', 'true');
-      targetEl.setAttribute('hidden', '');
       targetEl.setAttribute('inert', '');
     }
   }
 
+  /**
+   * Ensure the panel has the correct *resting* classes on load / external prop updates.
+   * Resting states:
+   * - closed:  class="collapse"        (height:0 via CSS)
+   * - open:    class="collapse show"   (height:auto via CSS)
+   */
   private setInitialAccordionState() {
     const id = this.resolvedTargetId;
     if (!id) return;
@@ -111,13 +119,18 @@ export class AccordionComponent {
     const targetEl = document.getElementById(id) as HTMLElement | null;
     if (!targetEl) return;
 
+    // Clear any transitional state
+    targetEl.classList.remove('collapsing');
+    targetEl.style.removeProperty('height');
+
+    targetEl.classList.add('collapse');
+
     if (this.internalOpen) {
+      targetEl.classList.add('show');
       this.setPanelA11y(targetEl, true);
-      targetEl.style.height = 'auto';
     } else {
+      targetEl.classList.remove('show');
       this.setPanelA11y(targetEl, false);
-      targetEl.style.display = 'none';
-      targetEl.style.height = '0px';
     }
   }
 
@@ -148,6 +161,15 @@ export class AccordionComponent {
     }
   }
 
+  /**
+   * Bootstrap-like collapse transition:
+   * OPEN:
+   *   collapse -> collapsing (height: 0 -> scrollHeight) -> collapse show (height:auto)
+   * CLOSE:
+   *   collapse show -> collapsing (height: scrollHeight -> 0) -> collapse (height:0 via CSS)
+   *
+   * We do not render inline styles; height is set imperatively only during the transition.
+   */
   private toggleCollapse() {
     const id = this.resolvedTargetId;
     if (!id) return;
@@ -159,26 +181,67 @@ export class AccordionComponent {
     this.internalOpen = isOpening;
     this.toggleEvent.emit(this.internalOpen);
 
+    const onTransitionEnd = (ev: TransitionEvent) => {
+      if (ev.target !== targetEl || ev.propertyName !== 'height') return;
+
+      targetEl.removeEventListener('transitionend', onTransitionEnd);
+
+      targetEl.classList.remove('collapsing');
+      targetEl.classList.add('collapse');
+
+      if (this.internalOpen) {
+        targetEl.classList.add('show');
+        targetEl.style.removeProperty('height');
+        this.setPanelA11y(targetEl, true);
+      } else {
+        targetEl.classList.remove('show');
+        targetEl.style.removeProperty('height');
+        this.setPanelA11y(targetEl, false);
+      }
+    };
+
+    targetEl.removeEventListener('transitionend', onTransitionEnd);
+    targetEl.addEventListener('transitionend', onTransitionEnd);
+
     if (isOpening) {
+      // Opening: ensure visible to animate
       this.setPanelA11y(targetEl, true);
+
+      targetEl.classList.remove('collapse');
+      targetEl.classList.remove('show');
+      targetEl.classList.add('collapsing');
+
+      // start at 0 then expand to scrollHeight
       targetEl.style.height = '0px';
+
+      // force reflow so the browser picks up the start height
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      targetEl.offsetHeight;
+
       requestAnimationFrame(() => {
         targetEl.style.height = `${targetEl.scrollHeight}px`;
       });
     } else {
-      this.setPanelA11y(targetEl, false);
-      targetEl.style.height = `${targetEl.scrollHeight}px`;
+      // Closing: animate from current height to 0
+      // keep it visible during the animation (do NOT set hidden/display none)
+      this.setPanelA11y(targetEl, true);
+
+      const startHeight = targetEl.scrollHeight;
+
+      targetEl.style.height = `${startHeight}px`;
+
+      // force reflow so the start height applies
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      targetEl.offsetHeight;
+
+      targetEl.classList.remove('collapse');
+      targetEl.classList.remove('show');
+      targetEl.classList.add('collapsing');
+
       requestAnimationFrame(() => {
         targetEl.style.height = '0px';
       });
     }
-
-    const onTransitionEnd = () => {
-      if (this.internalOpen) targetEl.style.height = 'auto';
-      else targetEl.style.display = 'none';
-      targetEl.removeEventListener('transitionend', onTransitionEnd);
-    };
-    targetEl.addEventListener('transitionend', onTransitionEnd);
   }
 
   get iconArray(): string[] {
@@ -195,22 +258,11 @@ export class AccordionComponent {
     const labelledby = this.regionLabelledby?.trim() || this.headerId;
     const isOpen = this.internalOpen;
 
+    // ✅ class-driven collapse (no inline styles)
+    const cls = `collapse${isOpen ? ' show' : ''}`;
+
     return (
-      <div
-        id={id}
-        role="region"
-        aria-labelledby={labelledby}
-        aria-hidden={isOpen ? undefined : 'true'}
-        hidden={!isOpen}
-        inert={!isOpen}
-        class="collapse"
-        style={{
-          height: isOpen ? 'auto' : '0px',
-          overflow: 'hidden',
-          transition: 'height 0.35s ease',
-          display: isOpen ? 'block' : 'none',
-        }}
-      >
+      <div id={id} role="region" aria-labelledby={labelledby} aria-hidden={isOpen ? undefined : 'true'} inert={isOpen ? undefined : ('' as any)} class={cls}>
         <div class={`${this.accordion ? 'accordion-body' : 'accordion-card accordion-body'} ${this.textSizing()}`}>
           <slot name="content"></slot>
         </div>
@@ -221,8 +273,7 @@ export class AccordionComponent {
   private renderAccordionButton() {
     const id = this.resolvedTargetId;
 
-    const displayIcon =
-      this.iconArray.length === 1 ? this.iconArray[0] : this.internalOpen ? this.iconArray[1] : this.iconArray[0];
+    const displayIcon = this.iconArray.length === 1 ? this.iconArray[0] : this.internalOpen ? this.iconArray[1] : this.iconArray[0];
 
     return (
       <button-component
@@ -255,10 +306,12 @@ export class AccordionComponent {
 
   private renderAccordionExpansionCard() {
     return (
-      <div class={`accordion ${this.flush ? 'accordion-flush' : ''}`}>
-        <div class="accordion-item">
-          {this.renderAccordionButton()}
-          {this.renderExpansionContentArea()}
+      <div class="sc-accordion">
+        <div class={`accordion ${this.flush ? 'accordion-flush' : ''}`}>
+          <div class="accordion-item">
+            {this.renderAccordionButton()}
+            {this.renderExpansionContentArea()}
+          </div>
         </div>
       </div>
     );
@@ -317,12 +370,14 @@ export class AccordionComponent {
   render() {
     if (!this.targetId || !this.targetId.trim()) {
       return (
-        <div class="accordion-wrapper">
-          <div>
-            <slot name={this.accordion ? 'accordion-header' : 'button-text'}></slot>
-          </div>
-          <div class="collapse">
-            <slot name="content"></slot>
+        <div class="sc-accordion">
+          <div class="accordion-wrapper">
+            <div>
+              <slot name={this.accordion ? 'accordion-header' : 'button-text'}></slot>
+            </div>
+            <div class="collapse">
+              <slot name="content"></slot>
+            </div>
           </div>
         </div>
       );
@@ -331,9 +386,11 @@ export class AccordionComponent {
     if (this.accordion) return this.renderAccordionExpansionCard();
 
     return (
-      <div class="accordion-wrapper">
-        {this.link ? this.renderToggleLink() : this.renderToggleButton()}
-        {this.renderExpansionContentArea()}
+      <div class="sc-accordion">
+        <div class="accordion-wrapper">
+          {this.link ? this.renderToggleLink() : this.renderToggleButton()}
+          {this.renderExpansionContentArea()}
+        </div>
       </div>
     );
   }

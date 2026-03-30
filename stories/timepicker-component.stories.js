@@ -8,8 +8,62 @@ export default {
     layout: 'padded',
     docs: {
       description: {
-        component:
-          'The Timepicker Component is a time selection input field that allows users to select or input time values. It supports both 12-hour and 24-hour formats, optional seconds input, and various customization options to fit different use cases.',
+        component: `
+The **Timepicker Component** is a time selection input field that supports manual entry and an accessible popover “spinner” picker.
+
+## Controlled value + events
+This component supports a controlled (or semi-controlled) \`value\` prop:
+
+- \`value\` (mutable): when set (non-empty), the component parses/displays it.
+- On **commit-like actions** (blur/enter/spinner/clear/format toggle), the component updates \`value\` and emits events.
+
+### \`timeChange\` (commit)
+Emitted on committed changes:
+- \`source\`: \`commit\` | \`spinner\` | \`clear\` | \`format\` | \`external\` | \`inputName\` | \`inputId\` | \`constraints\` | \`hideSeconds\`
+- \`value\`: formatted value
+- \`parts\`: { hour, minute, second, ampm }
+- \`isValid\`
+
+### \`timeInput\` (typing)
+Emitted on keystrokes (throttled via \`time-input-throttle-ms\`):
+- \`raw\`: raw input string
+- \`normalized\`: normalized-for-typing string (does **not** pad segments)
+- \`caretStart\` / \`caretEnd\`
+- \`inputType\` (from InputEvent.inputType)
+- \`isValid\`, \`reason\` (pattern/range) and optional \`parts\` (only when complete+valid)
+
+## Accessibility + derived IDs (recommended)
+This component derives stable IDs from \`input-id\`:
+
+- **Label id**: \`\${inputId}-label\` (used when \`show-label\` is true)
+- **Popover id**: \`\${inputId}-dropdown\`
+- **Validation message id**: \`\${inputId}-validation\` (present in DOM; shown when \`validation-message\` has content)
+- **Warning message id**: \`\${inputId}-warning\` (present in DOM; shown when time limits are exceeded)
+
+### Accessible name precedence
+- If \`show-label\` is true: the input is labelled by \`\${inputId}-label\`.
+- Otherwise: if \`aria-labelledby\` is provided, it is used.
+- Otherwise: falls back to \`aria-label\`.
+
+### \`aria-describedby\` composition
+\`aria-describedby\` merges:
+- external ids provided via \`aria-describedby\`
+- \`\${inputId}-validation\` when a validation message exists
+- \`\${inputId}-warning\` when the warning is visible
+
+## Keyboard model for the popover/spinners
+When the popover is open:
+
+- **Tab / Shift+Tab**: focus is trapped within the popover
+- **Escape**: closes the popover and returns focus
+- **Left / Right**: roving focus between parts (Hour → Minute → Second → AM/PM)
+- **Up / Down**: increment/decrement active part
+- **PageUp / PageDown**: increment/decrement by 10
+- **Home / End**: jump to min/max for that part
+- **Enter**: commits the value
+
+> Note: 508 compliance also depends on page-level usage: unique \`input-id\` per instance, visible or programmatic labels, and consistent error messaging.
+`.trim(),
       },
       source: {
         type: 'dynamic',
@@ -39,8 +93,7 @@ export default {
     ariaDescribedby: {
       control: 'text',
       name: 'aria-describedby',
-      description:
-        'ID(s) of external help/description elements (space-separated). The component may add its own ids when validation/warning are visible.',
+      description: 'ID(s) of external help/description elements (space-separated). The component may add its own ids when validation/warning are visible.',
       table: { category: 'Accessibility' },
     },
 
@@ -322,8 +375,7 @@ export const Default = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Default configuration. With no visible label and no aria-labelledby, the input uses aria-label for its accessible name.',
+        story: 'Default configuration. With no visible label and no aria-labelledby, the input uses aria-label for its accessible name.',
       },
       story: { height: '220px' },
       source: { transform: (_code, ctx) => Template(ctx.args) },
@@ -361,8 +413,7 @@ export const LargeWithVisibleLabel = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Large size (`size="lg"`) with visible label. When `show-label` is true, the component wires aria-labelledby to `${inputId}-label`.',
+        story: 'Large size (`size="lg"`) with visible label. When `show-label` is true, the component wires aria-labelledby to `${inputId}-label`.',
       },
       story: { height: '240px' },
       source: { transform: (_code, ctx) => Template(ctx.args) },
@@ -474,8 +525,7 @@ export const WithValidationMessage = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Shows invalid styling + a validation message. The input will reference the validation container id via aria-describedby.',
+        story: 'Shows invalid styling + a validation message. The input will reference the validation container id via aria-describedby.',
       },
       story: { height: '260px' },
       source: { transform: (_code, ctx) => Template(ctx.args) },
@@ -504,7 +554,11 @@ export const CustomInputWidth = {
 
 /* ============================== Accessibility Matrix (computed) ============================== */
 
-const splitIds = v => String(v || '').trim().split(/\s+/).filter(Boolean);
+const splitIds = v =>
+  String(v || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
 
 const resolveId = (scopeRoot, id) => {
   if (!id) return false;
@@ -542,9 +596,9 @@ const getSnapshot = (host, scopeRoot) => {
     },
     input: input
       ? {
-          role: input.getAttribute('role') ?? null,
-          disabled: input.hasAttribute('disabled'),
-          required: input.hasAttribute('required'),
+          'role': input.getAttribute('role') ?? null,
+          'disabled': input.hasAttribute('disabled'),
+          'required': input.hasAttribute('required'),
           'aria-label': input.getAttribute('aria-label'),
           'aria-labelledby': input.getAttribute('aria-labelledby'),
           'aria-describedby': input.getAttribute('aria-describedby'),
@@ -557,7 +611,7 @@ const getSnapshot = (host, scopeRoot) => {
       : null,
     trigger: trigger
       ? {
-          disabled: trigger.hasAttribute('disabled'),
+          'disabled': trigger.hasAttribute('disabled'),
           'aria-controls': trigger.getAttribute('aria-controls'),
           'aria-expanded': trigger.getAttribute('aria-expanded'),
           'aria-haspopup': trigger.getAttribute('aria-haspopup'),
@@ -565,9 +619,9 @@ const getSnapshot = (host, scopeRoot) => {
       : null,
     dropdown: dropdown
       ? {
-          role: dropdown.getAttribute('role'),
-          hiddenClass: dropdown.classList.contains('hidden'),
-          inert: dropdown.hasAttribute('inert'),
+          'role': dropdown.getAttribute('role'),
+          'hiddenClass': dropdown.classList.contains('hidden'),
+          'inert': dropdown.hasAttribute('inert'),
           'aria-labelledby': dropdown.getAttribute('aria-labelledby'),
           'aria-describedby': dropdown.getAttribute('aria-describedby'),
         }
@@ -575,8 +629,8 @@ const getSnapshot = (host, scopeRoot) => {
     spinbuttons: {
       hour: hour
         ? {
-            role: hour.getAttribute('role'),
-            tabIndex: hour.getAttribute('tabindex'),
+            'role': hour.getAttribute('role'),
+            'tabIndex': hour.getAttribute('tabindex'),
             'aria-valuemin': hour.getAttribute('aria-valuemin'),
             'aria-valuemax': hour.getAttribute('aria-valuemax'),
             'aria-valuenow': hour.getAttribute('aria-valuenow'),
@@ -585,8 +639,8 @@ const getSnapshot = (host, scopeRoot) => {
         : null,
       minute: minute
         ? {
-            role: minute.getAttribute('role'),
-            tabIndex: minute.getAttribute('tabindex'),
+            'role': minute.getAttribute('role'),
+            'tabIndex': minute.getAttribute('tabindex'),
             'aria-valuemin': minute.getAttribute('aria-valuemin'),
             'aria-valuemax': minute.getAttribute('aria-valuemax'),
             'aria-valuenow': minute.getAttribute('aria-valuenow'),
@@ -595,8 +649,8 @@ const getSnapshot = (host, scopeRoot) => {
         : null,
       second: second
         ? {
-            role: second.getAttribute('role'),
-            tabIndex: second.getAttribute('tabindex'),
+            'role': second.getAttribute('role'),
+            'tabIndex': second.getAttribute('tabindex'),
             'aria-valuemin': second.getAttribute('aria-valuemin'),
             'aria-valuemax': second.getAttribute('aria-valuemax'),
             'aria-valuenow': second.getAttribute('aria-valuenow'),
@@ -605,8 +659,8 @@ const getSnapshot = (host, scopeRoot) => {
         : null,
       ampm: ampm
         ? {
-            role: ampm.getAttribute('role'),
-            tabIndex: ampm.getAttribute('tabindex'),
+            'role': ampm.getAttribute('role'),
+            'tabIndex': ampm.getAttribute('tabindex'),
             'aria-valuemin': ampm.getAttribute('aria-valuemin'),
             'aria-valuemax': ampm.getAttribute('aria-valuemax'),
             'aria-valuenow': ampm.getAttribute('aria-valuenow'),

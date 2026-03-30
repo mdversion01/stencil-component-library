@@ -18,3 +18,55 @@
 //   }
 // }
 
+/**
+ * Generic flex helper.
+ *
+ * @param {string} $justify - justify-content value
+ * @param {string} $align - align-items value
+ * @param {string|null} $gap - gap value (null = no output)
+ * @param {bool} $wrap - whether to wrap
+ * @param {string} $direction - flex-direction value
+ */
+@mixin flex(
+  $justify: flex-start,
+  $align: center,
+  $gap: null,
+  $wrap: true,
+  $direction: row
+) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+
+  @if $wrap == true {
+    flex-wrap: wrap;
+  } @else {
+    flex-wrap: nowrap;
+  }
+
+  @if $gap != null {
+    gap: $gap;
+  }
+}
+
+/**
+ * Stack helper (column layout) to standardize vertical rhythm.
+ *
+ * @param {string|null} $gap - gap value (null = no output)
+ * @param {string} $align - align-items value
+ * @param {string} $justify - justify-content value
+ */
+@mixin stack(
+  $gap: 1rem,
+  $align: stretch,
+  $justify: flex-start
+) {
+  @include flex(
+    $justify: $justify,
+    $align: $align,
+    $gap: $gap,
+    $wrap: false,
+    $direction: column
+  );
+}

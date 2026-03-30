@@ -166,12 +166,7 @@ export class StandardPagination {
           {this.pageSizeHelpText}
         </div>
 
-        <select
-          id={this.selectId}
-          class={`form-select form-control ${sizeCls}`}
-          aria-describedby={this.selectHelpId}
-          onChange={this.onItemsPerPageChange}
-        >
+        <select id={this.selectId} class={`form-select form-control ${sizeCls}`} aria-describedby={this.selectHelpId} onChange={this.onItemsPerPageChange}>
           {this.itemsPerPageOptions.map(opt => {
             const isAll = opt === 'All';
             const isNum = typeof opt === 'number';
@@ -211,7 +206,7 @@ export class StandardPagination {
     // Presentation-only: not interactive
     return (
       <li class={`page-item disabled bv-d-xs-down-none${flexLi}`} aria-hidden="true">
-        <span class={`page-link${flexA}`}>…</span>
+        <span class={`page-link ellipsis${flexA}`}>…</span>
       </li>
     );
   }
@@ -373,79 +368,99 @@ export class StandardPagination {
 
     if (showChildSizer && this.paginationLayout === 'start') {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell start">{this.renderBar()}</div>
-          {showChildRange ? this.rowDisplay('') : null}
-          <div class="pagination-cell end">{this.renderSizeChanger()}</div>
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell start">{this.renderBar()}</div>
+            {showChildRange ? this.rowDisplay('') : null}
+            <div class="pagination-cell end">{this.renderSizeChanger()}</div>
+          </div>
         </div>
       );
     } else if (showChildSizer && this.paginationLayout === 'center') {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell center">{this.renderBar()}</div>
-          {showChildRange ? this.rowDisplay('') : null}
-          <div class="pagination-cell center">{this.renderSizeChanger()}</div>
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell center">{this.renderBar()}</div>
+            {showChildRange ? this.rowDisplay('') : null}
+            <div class="pagination-cell center">{this.renderSizeChanger()}</div>
+          </div>
         </div>
       );
     } else if (showChildSizer && this.paginationLayout === 'end') {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell start">{this.renderSizeChanger()}</div>
-          {showChildRange ? this.rowDisplay('') : null}
-          <div class="pagination-cell end">{this.renderBar()}</div>
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell start">{this.renderSizeChanger()}</div>
+            {showChildRange ? this.rowDisplay('') : null}
+            <div class="pagination-cell end">{this.renderBar()}</div>
+          </div>
         </div>
       );
     } else if (showChildSizer && this.paginationLayout === 'fill-left') {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell fill">{this.renderBar()}</div>
-          {showChildRange ? this.rowDisplay('') : null}
-          <div class="pagination-cell end">{this.renderSizeChanger()}</div>
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell fill">{this.renderBar()}</div>
+            {showChildRange ? this.rowDisplay('') : null}
+            <div class="pagination-cell end">{this.renderSizeChanger()}</div>
+          </div>
         </div>
       );
     } else if (showChildSizer && this.paginationLayout === 'fill-right') {
       return (
-        <div class={splitRootCls}>
-          <div class="pagination-cell start">{this.renderSizeChanger()}</div>
-          {showChildRange ? this.rowDisplay('') : null}
-          <div class="pagination-cell fill end">{this.renderBar()}</div>
+        <div class="sc-pagination">
+          <div class={splitRootCls}>
+            <div class="pagination-cell start">{this.renderSizeChanger()}</div>
+            {showChildRange ? this.rowDisplay('') : null}
+            <div class="pagination-cell fill end">{this.renderBar()}</div>
+          </div>
         </div>
       );
     }
 
     if (showChildRange && this.paginationLayout === 'start' && !showChildSizer) {
       return (
-        <div class={rootCls}>
-          <div class="pagination-cell start">{this.renderBar()}</div>
-          {this.rowDisplay(' end')}
+        <div class="sc-pagination">
+          <div class={rootCls}>
+            <div class="pagination-cell start">{this.renderBar()}</div>
+            {this.rowDisplay(' end')}
+          </div>
         </div>
       );
     } else if (showChildRange && this.paginationLayout === 'center' && !showChildSizer) {
       return (
-        <div class={rootCls}>
-          <div class="pagination-cell center">{this.renderBar()}</div>
-          {this.rowDisplay(' justify-content-center flex-fill50')}
+        <div class="sc-pagination">
+          <div class={rootCls}>
+            <div class="pagination-cell center">{this.renderBar()}</div>
+            {this.rowDisplay(' justify-content-center flex-fill50')}
+          </div>
         </div>
       );
     } else if (showChildRange && this.paginationLayout === 'end' && !showChildSizer) {
       return (
-        <div class={rootCls}>
-          {this.rowDisplay(' start')}
-          <div class="pagination-cell end">{this.renderBar()}</div>
+        <div class="sc-pagination">
+          <div class={rootCls}>
+            {this.rowDisplay(' start')}
+            <div class="pagination-cell end">{this.renderBar()}</div>
+          </div>
         </div>
       );
     } else if (showChildRange && this.paginationLayout === 'fill-left' && !showChildSizer) {
       return (
-        <div class={rootCls}>
-          <div class="pagination-cell fill">{this.renderBar()}</div>
-          {this.rowDisplay(' end')}
+        <div class="sc-pagination">
+          <div class={rootCls}>
+            <div class="pagination-cell fill">{this.renderBar()}</div>
+            {this.rowDisplay(' end')}
+          </div>
         </div>
       );
     } else if (showChildRange && this.paginationLayout === 'fill-right' && !showChildSizer) {
       return (
-        <div class={rootCls}>
-          {this.rowDisplay(' start')}
-          <div class="pagination-cell fill">{this.renderBar()}</div>
+        <div class="sc-pagination">
+          <div class={rootCls}>
+            {this.rowDisplay(' start')}
+            <div class="pagination-cell fill">{this.renderBar()}</div>
+          </div>
         </div>
       );
     }
@@ -461,10 +476,12 @@ export class StandardPagination {
             : '';
 
     return (
-      <div class={rootCls}>
-        {/* Always include the live range node for aria-describedby resolution */}
-        {this.rowDisplay(' sr-only') /* keep resolvable even if not visually shown */}
-        <div class={cellPosCls}>{this.renderBar()}</div>
+      <div class="sc-pagination">
+        <div class={rootCls}>
+          {/* Always include the live range node for aria-describedby resolution */}
+          {this.rowDisplay(' sr-only') /* keep resolvable even if not visually shown */}
+          <div class={cellPosCls}>{this.renderBar()}</div>
+        </div>
       </div>
     );
   }

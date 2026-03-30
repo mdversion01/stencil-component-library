@@ -1048,7 +1048,7 @@ export class TimePickerComponent {
 
     return (
       <div class="time-picker-container">
-        <div class={`time-picker ${!this.twentyFourHourOnly && !this.twelveHourOnly ? 'mr-1' : ''}`}>
+        <div class={`time-picker ${!this.twentyFourHourOnly && !this.twelveHourOnly ? 'ms-1' : ''}`}>
           <label
             htmlFor={this.inputId}
             id={hasVisibleLabel ? this.getLabelId() : undefined}

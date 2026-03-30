@@ -220,7 +220,7 @@ export default {
     options: ['', 'left', 'right'],
     name: 'bdg-position',
     description:
-      "When placing a badge on the left of any content of a <button-component>, this adds the class 'mr-1' to the badge... Placing to the right adds 'ml-1'.",
+      "When placing a badge on the left of any content of a <button-component>, this adds the class 'ms-1' to the badge... Placing to the right adds 'me-1'.",
     table: { category: 'Placement' },
   },
   inset: {

@@ -1,6 +1,11 @@
 // src/components/popover/popover-component.tsx
 import { Component, Prop, Element, Listen, Watch } from '@stencil/core';
-import type { Instance as PopperInstance, Placement as PopperPlacement, Modifier, VirtualElement } from '@popperjs/core';
+import type {
+  Instance as PopperInstance,
+  Placement as PopperPlacement,
+  Modifier,
+  VirtualElement,
+} from '@popperjs/core';
 import { createPopper } from '@popperjs/core';
 
 type PlacementU =
@@ -30,6 +35,11 @@ export class PopoverComponent {
   @Prop({ attribute: 'title' }) popoverTitle: string = '';
   @Prop() content: string = `Default popover content. Use the 'content' attribute to change this text.`;
 
+  /**
+   * When true, the popover header (popover-header) is not rendered even if `title` is provided.
+   */
+  @Prop() noHeader: boolean = false;
+
   @Prop() placement:
     | 'auto'
     | 'top'
@@ -50,7 +60,8 @@ export class PopoverComponent {
   @Prop({ mutable: true, reflect: true }) visible: boolean = false;
   @Prop({ attribute: 'super' }) superTooltip: boolean = false;
 
-  @Prop() trigger: 'click' | 'hover' | 'focus' | `${'click' | 'hover' | 'focus'} ${'click' | 'hover' | 'focus'}` = 'click';
+  @Prop() trigger: 'click' | 'hover' | 'focus' | `${'click' | 'hover' | 'focus'} ${'click' | 'hover' | 'focus'}` =
+    'click';
 
   @Prop() fallbackPlacement:
     | 'flip'
@@ -103,6 +114,7 @@ export class PopoverComponent {
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
 
   private popoverId = `popover_${Math.random().toString(36).slice(2, 11)}`;
+  private popoverScopeEl: HTMLDivElement | null = null; // scoping wrapper (.sc-popover)
   private popoverEl: HTMLDivElement | null = null;
   private triggerEl: HTMLElement | null = null;
   private originatingTrigger: HTMLElement | null = null;
@@ -111,8 +123,20 @@ export class PopoverComponent {
 
   private get isTooltipMode(): boolean {
     const set = this.trigger.split(' ');
-    // Tooltip-like semantics only when click is NOT part of the trigger set.
     return set.includes('hover') || set.includes('focus') ? !set.includes('click') : false;
+  }
+
+  private get trimmedTitle(): string {
+    return (this.popoverTitle ?? '').trim();
+  }
+
+  /**
+   * `.no-header` class should be present when:
+   * - consumer explicitly requests noHeader, OR
+   * - title is empty (auto behavior).
+   */
+  private get effectiveNoHeader(): boolean {
+    return this.noHeader || !this.trimmedTitle;
   }
 
   private normalizeIdList(value?: string): string | undefined {
@@ -184,7 +208,6 @@ export class PopoverComponent {
       return;
     }
 
-    // Only trap Tab when in click/popover mode (interactive)
     if (!this.isTooltipMode && ev.key === 'Tab') {
       const f = Array.from(
         this.popoverEl.querySelectorAll<HTMLElement>(
@@ -211,7 +234,6 @@ export class PopoverComponent {
     }
   };
 
-  // Popper's eventListeners modifier already updates on scroll/resize.
   @Listen('resize', { target: 'window' })
   onWindowResize() {
     this.popper?.update();
@@ -221,6 +243,20 @@ export class PopoverComponent {
   onVisibleChange() {
     this.syncTriggerA11y();
     this.syncPopoverA11y();
+  }
+
+  @Watch('noHeader')
+  onNoHeaderChange() {
+    if (!this.visible || !this.popoverEl) return;
+    this.syncNoHeaderClass();
+    this.updatePopoverHeader();
+  }
+
+  @Watch('popoverTitle')
+  onPopoverTitleChange() {
+    if (!this.visible || !this.popoverEl) return;
+    this.syncNoHeaderClass();
+    this.updatePopoverHeader();
   }
 
   componentDidLoad() {
@@ -233,7 +269,6 @@ export class PopoverComponent {
       console.error('Trigger element not found');
     }
 
-    // If rendered initially visible, create and sync
     if (this.visible) {
       this.showPopover();
     }
@@ -310,7 +345,6 @@ export class PopoverComponent {
     });
 
     if (this.popoverEl) {
-      // Tooltip mode: make popover non-interactive by stripping tabbables inside
       if (this.isTooltipMode) {
         this.popoverEl.querySelectorAll('[tabindex]').forEach(n => n.removeAttribute('tabindex'));
         this.popoverEl.removeEventListener('keydown', this.onKeyDown);
@@ -363,20 +397,15 @@ export class PopoverComponent {
   private syncTriggerA11y() {
     if (!this.triggerEl) return;
 
-    // Always: indicate a popup relationship (popover/tooltip)
     this.triggerEl.setAttribute('aria-haspopup', this.isTooltipMode ? 'false' : 'dialog');
 
-    // Click/popover mode: controls + expanded
     if (!this.isTooltipMode) {
       this.triggerEl.setAttribute('aria-controls', this.popoverId);
       this.triggerEl.setAttribute('aria-expanded', this.visible ? 'true' : 'false');
-
-      // If consumer passed describedby on the trigger (rare), don't stomp it; only ensure the popover relationship via controls.
       this.triggerEl.removeAttribute('aria-describedby');
       return;
     }
 
-    // Tooltip mode: describedby (content is the description)
     this.triggerEl.removeAttribute('aria-controls');
     this.triggerEl.removeAttribute('aria-expanded');
 
@@ -396,20 +425,17 @@ export class PopoverComponent {
     if (header) header.id = titleId;
     if (body) body.id = bodyId;
 
-    // Tooltip vs dialog semantics
     if (this.isTooltipMode) {
       this.popoverEl.setAttribute('role', 'tooltip');
       this.popoverEl.setAttribute('aria-hidden', this.visible ? 'false' : 'true');
       this.popoverEl.removeAttribute('aria-modal');
 
-      // Tooltip labeling: let AT announce body; title is not typically used for tooltips.
       this.popoverEl.removeAttribute('aria-label');
       this.popoverEl.removeAttribute('aria-labelledby');
       this.popoverEl.removeAttribute('aria-describedby');
       return;
     }
 
-    // Popover (interactive): role dialog, not modal
     this.popoverEl.setAttribute('role', 'dialog');
     this.popoverEl.setAttribute('aria-modal', 'false');
     this.popoverEl.removeAttribute('aria-hidden');
@@ -419,12 +445,11 @@ export class PopoverComponent {
     const userDescribedBy = this.normalizeIdList(this.ariaDescribedby);
 
     const autoLabelledBy = header ? titleId : undefined;
-    const autoLabel = !autoLabelledBy && this.popoverTitle ? this.popoverTitle : undefined;
+    const autoLabel = !autoLabelledBy && this.trimmedTitle ? this.trimmedTitle : undefined;
 
     const ariaLabelledBy = userLabelledBy ?? autoLabelledBy;
     const ariaLabel = ariaLabelledBy ? undefined : userLabel ?? autoLabel;
 
-    // Describe by body (and optionally consumer extra ids)
     const describedBy = this.mergeIdLists(userDescribedBy, body ? bodyId : undefined);
 
     if (ariaLabelledBy) this.popoverEl.setAttribute('aria-labelledby', ariaLabelledBy);
@@ -455,8 +480,62 @@ export class PopoverComponent {
     }
   }
 
+  private ensureScopeWrapper() {
+    if (this.popoverScopeEl) return;
+
+    const scope = document.createElement('div');
+    scope.classList.add('sc-popover');
+    scope.style.position = 'static';
+
+    document.body.appendChild(scope);
+    this.popoverScopeEl = scope;
+  }
+
+  private shouldRenderHeader(): boolean {
+    return !this.noHeader && !!this.trimmedTitle;
+  }
+
+  private syncNoHeaderClass() {
+    if (!this.popoverEl) return;
+    this.popoverEl.classList.toggle('no-header', this.effectiveNoHeader);
+  }
+
+  private updatePopoverHeader() {
+    if (!this.popoverEl) return;
+
+    this.syncNoHeaderClass();
+
+    const wantsHeader = this.shouldRenderHeader();
+    const existing = this.popoverEl.querySelector('.popover-header') as HTMLElement | null;
+    const body = this.popoverEl.querySelector('.popover-body') as HTMLElement | null;
+
+    if (!wantsHeader) {
+      if (existing) existing.remove();
+      this.syncPopoverA11y();
+      this.popper?.update();
+      return;
+    }
+
+    if (existing) {
+      existing.textContent = this.trimmedTitle;
+      this.syncPopoverA11y();
+      this.popper?.update();
+      return;
+    }
+
+    const headerEl = document.createElement('h3');
+    headerEl.className = 'popover-header';
+    headerEl.textContent = this.trimmedTitle;
+
+    this.popoverEl.insertBefore(headerEl, body ?? null);
+    this.syncPopoverA11y();
+    this.popper?.update();
+  }
+
   private createPopoverElement() {
     if (this.popoverEl) return;
+
+    this.ensureScopeWrapper();
 
     const el = document.createElement('div');
     el.id = this.popoverId;
@@ -464,6 +543,9 @@ export class PopoverComponent {
     el.classList.add('popover', 'fade', 'show');
     if (this.plumage) el.classList.add('plumage');
     if (this.superTooltip) el.classList.add('super-tooltip');
+
+    // ✅ auto no-header when title is empty, or when noHeader prop is true
+    if (this.effectiveNoHeader) el.classList.add('no-header');
 
     const v = this.getColor(this.variant);
     if (v) el.classList.add(v);
@@ -473,11 +555,10 @@ export class PopoverComponent {
     el.style.top = '0';
     el.style.left = '0';
 
-    // Focus target only for click/popover mode
     if (!this.isTooltipMode) el.setAttribute('tabindex', '-1');
 
     const arrowHtml = this.arrowOff ? '' : '<div class="popover-arrow" data-popper-arrow></div>';
-    const headerHtml = this.popoverTitle ? `<h3 class="popover-header"></h3>` : '';
+    const headerHtml = this.shouldRenderHeader() ? `<h3 class="popover-header"></h3>` : '';
     const bodyTab = !this.isTooltipMode ? 'tabindex="0"' : '';
 
     el.innerHTML = `
@@ -486,11 +567,10 @@ export class PopoverComponent {
       <div class="popover-body" ${bodyTab}></div>
     `;
 
-    // Set header text safely
     const headerEl = el.querySelector('.popover-header') as HTMLElement | null;
-    if (headerEl && this.popoverTitle) headerEl.textContent = this.popoverTitle;
+    if (headerEl && this.trimmedTitle) headerEl.textContent = this.trimmedTitle;
 
-    document.body.appendChild(el);
+    this.popoverScopeEl!.appendChild(el);
     this.popoverEl = el;
 
     const bodyEl = this.popoverEl.querySelector('.popover-body') as HTMLElement | null;
@@ -500,10 +580,16 @@ export class PopoverComponent {
   }
 
   private removePopover() {
-    if (!this.popoverEl) return;
-    this.popoverEl.removeEventListener('keydown', this.onKeyDown);
-    this.popoverEl.parentNode?.removeChild(this.popoverEl);
-    this.popoverEl = null;
+    if (this.popoverEl) {
+      this.popoverEl.removeEventListener('keydown', this.onKeyDown);
+      this.popoverEl.parentNode?.removeChild(this.popoverEl);
+      this.popoverEl = null;
+    }
+
+    if (this.popoverScopeEl) {
+      this.popoverScopeEl.parentNode?.removeChild(this.popoverScopeEl);
+      this.popoverScopeEl = null;
+    }
   }
 
   // -----------------------------
@@ -546,10 +632,25 @@ export class PopoverComponent {
     const raw = this.fallbackPlacement;
     const list = Array.isArray(raw) ? raw : [raw];
 
-    const asPlacements = list.filter(v => v !== 'flip' && v !== 'clockwise' && v !== 'counterclockwise').map(v => this.toPopperPlacement(v as PlacementU));
+    const asPlacements = list
+      .filter(v => v !== 'flip' && v !== 'clockwise' && v !== 'counterclockwise')
+      .map(v => this.toPopperPlacement(v as PlacementU));
     if (asPlacements.length) return asPlacements;
 
-    const order: PopperPlacement[] = ['top', 'right', 'bottom', 'left', 'top-start', 'top-end', 'right-start', 'right-end', 'bottom-start', 'bottom-end', 'left-start', 'left-end'];
+    const order: PopperPlacement[] = [
+      'top',
+      'right',
+      'bottom',
+      'left',
+      'top-start',
+      'top-end',
+      'right-start',
+      'right-end',
+      'bottom-start',
+      'bottom-end',
+      'left-start',
+      'left-end',
+    ];
 
     const wantsClock = list.includes('clockwise');
     const wantsCounter = list.includes('counterclockwise');
@@ -620,7 +721,11 @@ export class PopoverComponent {
         const currentRef = this.popper.state.elements.reference;
         if (currentRef !== reference) {
           this.destroyPopper();
-          this.popper = createPopper(reference as any, this.popoverEl, { placement, strategy: 'absolute', modifiers: modifiers as any });
+          this.popper = createPopper(reference as any, this.popoverEl, {
+            placement,
+            strategy: 'absolute',
+            modifiers: modifiers as any,
+          });
         }
       } catch {
         // ignore
@@ -628,7 +733,11 @@ export class PopoverComponent {
       return;
     }
 
-    this.popper = createPopper(reference as any, this.popoverEl, { placement, strategy: 'absolute', modifiers: modifiers as any });
+    this.popper = createPopper(reference as any, this.popoverEl, {
+      placement,
+      strategy: 'absolute',
+      modifiers: modifiers as any,
+    });
   }
 
   private destroyPopper() {

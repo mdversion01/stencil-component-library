@@ -258,7 +258,7 @@ export const Sizes = () => {
 Sizes.parameters = {
   docs: {
     description: {
-      story: 'Examples using FA size classes (`size`) and inline pixel sizing (`iconSize`).',
+      story: 'Examples using Font Awesome size classes (`size`) and inline pixel sizing (`iconSize`).',
     },
   },
 };
@@ -427,7 +427,7 @@ IconGallery.parameters = {
       ].join('\n'),
     },
     description: {
-      story: 'A small gallery of icons (decorative).',
+      story: 'A small gallery of Font Awesome icons (decorative).',
     },
   },
 };

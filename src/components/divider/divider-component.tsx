@@ -25,11 +25,14 @@ export class DividerComponent {
   private getTextStyle(): { [key: string]: string } | undefined {
     if (!this.styles) return undefined;
 
-    return this.styles.split(';').reduce((acc, pair) => {
-      const [key, value] = pair.split(':');
-      if (key && value) acc[key.trim()] = value.trim();
-      return acc;
-    }, {} as { [key: string]: string });
+    return this.styles.split(';').reduce(
+      (acc, pair) => {
+        const [key, value] = pair.split(':');
+        if (key && value) acc[key.trim()] = value.trim();
+        return acc;
+      },
+      {} as { [key: string]: string },
+    );
   }
 
   private getClassNames(base: string) {
@@ -60,7 +63,7 @@ export class DividerComponent {
 
   private getSeparatorA11yProps(withText: boolean): { [key: string]: any } {
     const props: { [key: string]: any } = {
-      role: 'separator',
+      'role': 'separator',
       'aria-orientation': this.getAriaOrientation(),
     };
 
@@ -75,21 +78,31 @@ export class DividerComponent {
 
   private renderWithText() {
     return (
-      <div class={this.getClassNames('divider-horizontal')} {...this.getSeparatorA11yProps(true)}>
-        <span class="divider-inner-text" style={this.getTextStyle()}>
-          <slot></slot>
-        </span>
+      <div class="sc-divider">
+        <div class={this.getClassNames('divider-horizontal')} {...this.getSeparatorA11yProps(true)}>
+          <span class="divider-inner-text" style={this.getTextStyle()}>
+            <slot></slot>
+          </span>
+        </div>
       </div>
     );
   }
 
   private renderHorizontal() {
-    return <div class={this.getClassNames('divider-horizontal')} {...this.getSeparatorA11yProps(false)}></div>;
+    return (
+      <div class="sc-divider">
+        <div class={this.getClassNames('divider-horizontal')} {...this.getSeparatorA11yProps(false)}></div>
+      </div>
+    );
   }
 
   private renderVertical() {
     // Keep your original class signature for vertical
-    return <div class="divider divider-vertical" {...this.getSeparatorA11yProps(false)}></div>;
+    return (
+      <div class="sc-divider">
+        <div class="divider divider-vertical" {...this.getSeparatorA11yProps(false)}></div>
+      </div>
+    );
   }
 
   render() {

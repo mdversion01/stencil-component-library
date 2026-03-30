@@ -91,9 +91,7 @@ export class ModalComponent {
     const body = document.body;
     if (!body) return;
 
-    const siblings = Array.from(body.children).filter(
-      el => el instanceof HTMLElement && el !== modalRoot && !el.contains(modalRoot),
-    ) as HTMLElement[];
+    const siblings = Array.from(body.children).filter(el => el instanceof HTMLElement && el !== modalRoot && !el.contains(modalRoot)) as HTMLElement[];
 
     siblings.forEach(el => {
       // Don’t stomp an existing author value
@@ -203,28 +201,22 @@ export class ModalComponent {
       .filter(Boolean)
       .join(' ');
 
-    const computedAriaLabel =
-      (this.ariaLabel && this.ariaLabel.trim()) ||
-      (this.titleAttr && this.titleAttr.trim()) ||
-      (this.btnText && this.btnText.trim()) ||
-      'Open dialog';
+    const computedAriaLabel = (this.ariaLabel && this.ariaLabel.trim()) || (this.titleAttr && this.titleAttr.trim()) || (this.btnText && this.btnText.trim()) || 'Open dialog';
 
     const buttonProps = {
       'aria-label': computedAriaLabel,
       // If link-style, keep button focusable but announce disabled state
       'aria-disabled': this.link && this.disabled ? 'true' : undefined,
-      class: classList,
-      disabled: !this.link && this.disabled,
-      title: this.titleAttr || undefined,
+      'class': classList,
+      'disabled': !this.link && this.disabled,
+      'title': this.titleAttr || undefined,
       // Connect trigger to dialog (SR relationship)
       'aria-haspopup': 'dialog',
       'aria-controls': id,
       'aria-expanded': this.isOpenNow() ? 'true' : 'false',
     };
 
-    const modalClass = ['modal', 'fade', this.scrollLongContent ? 'modal-scroll-long' : '']
-      .filter(Boolean)
-      .join(' ');
+    const modalClass = ['modal', 'fade', this.scrollLongContent ? 'modal-scroll-long' : ''].filter(Boolean).join(' ');
 
     const dialogClass = [
       'modal-dialog',
@@ -237,73 +229,52 @@ export class ModalComponent {
       .join(' ');
 
     return (
-      <div class="modal-component-wrapper">
-        {/* Trigger button */}
-        <button
-          type="button"
-          data-bs-toggle="modal"
-          data-bs-target={`#${id}`}
-          {...(buttonProps as any)}
-          onClick={this.onTriggerClick}
-          onKeyDown={this.onTriggerKeydown}
-        >
-          {this.btnText}
-        </button>
+      <div class="sc-modal">
+        <div class="modal-component-wrapper">
+          {/* Trigger button */}
+          <button type="button" data-bs-toggle="modal" data-bs-target={`#${id}`} {...(buttonProps as any)} onClick={this.onTriggerClick} onKeyDown={this.onTriggerKeydown}>
+            {this.btnText}
+          </button>
 
-        {/* Modal (Bootstrap 5 markup) */}
-        <div
-          class={modalClass}
-          id={id}
-          tabIndex={-1}
-          // Accessible name + description
-          aria-labelledby={this.labelId}
-          aria-describedby={this.descId}
-          // ✅ Use dialog role + aria-modal
-          role="dialog"
-          aria-modal="true"
-          // DO NOT hardcode aria-hidden here; Bootstrap toggles it.
-          ref={el => (this.modalEl = el as HTMLDivElement)}
-        >
+          {/* Modal (Bootstrap 5 markup) */}
           <div
-            id={this.dialogId}
-            class={dialogClass}
+            class={modalClass}
+            id={id}
             tabIndex={-1}
-            role="document"
+            // Accessible name + description
+            aria-labelledby={this.labelId}
+            aria-describedby={this.descId}
+            // ✅ Use dialog role + aria-modal
+            role="dialog"
+            aria-modal="true"
+            // DO NOT hardcode aria-hidden here; Bootstrap toggles it.
+            ref={el => (this.modalEl = el as HTMLDivElement)}
           >
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id={this.labelId}>
-                  {this.modalTitle}
-                </h5>
+            <div id={this.dialogId} class={dialogClass} tabIndex={-1} role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id={this.labelId}>
+                    {this.modalTitle}
+                  </h5>
 
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                  onClick={() => this.close()}
-                />
-              </div>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => this.close()} />
+                </div>
 
-              {/* Hidden help text so aria-describedby always resolves */}
-              <div id={this.descId} class="sr-only">
-                {`Dialog: ${this.modalTitle}. Press Escape to close.`}
-              </div>
+                {/* Hidden help text so aria-describedby always resolves */}
+                <div id={this.descId} class="sr-only">
+                  {`Dialog: ${this.modalTitle}. Press Escape to close.`}
+                </div>
 
-              <div class="modal-body">
-                <slot></slot>
-              </div>
+                <div class="modal-body">
+                  <slot></slot>
+                </div>
 
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class={`btn btn-secondary ${this.size ? `btn-${this.size}` : ''}`}
-                  data-bs-dismiss="modal"
-                  onClick={() => this.close()}
-                >
-                  {this.cancelCloseBtn}
-                </button>
-                <slot name="footer"></slot>
+                <div class="modal-footer">
+                  <button type="button" class={`btn btn-secondary ${this.size ? `btn-${this.size}` : ''}`} data-bs-dismiss="modal" onClick={() => this.close()}>
+                    {this.cancelCloseBtn}
+                  </button>
+                  <slot name="footer"></slot>
+                </div>
               </div>
             </div>
           </div>

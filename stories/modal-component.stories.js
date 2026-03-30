@@ -352,7 +352,7 @@ const buildDocsHtml = (args, storyName = '') => {
     `  ${
       args.footerHtml
         ? `<span slot="footer">${args.footerHtml}</span>`
-        : `<button-component slot="footer" variant="primary">Save changes</button-component>`
+        : `<button-component slot="footer" variant="primary" ${attr('size', args.size)}>Save changes</button-component>`
     }`,
     `</modal-component>`,
   ]
@@ -396,7 +396,7 @@ const Template = (args) => `
   ${
     args.footerHtml
       ? `<span slot="footer">${args.footerHtml}</span>`
-      : `<button-component slot="footer" variant="primary">Save changes</button-component>`
+      : `<button-component slot="footer" variant="primary" ${attr('size', args.size)}>Save changes</button-component>`
   }
 </modal-component>
 `;

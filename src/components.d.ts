@@ -3291,6 +3291,11 @@ export namespace Components {
         | 'right-end'
       >;
         /**
+          * When true, the popover header (popover-header) is not rendered even if `title` is provided.
+          * @default false
+         */
+        "noHeader": boolean;
+        /**
           * Extra distance away from trigger (main axis).
           * @default 0
          */
@@ -8711,6 +8716,11 @@ declare namespace LocalJSX {
         | 'right-start'
         | 'right-end'
       >;
+        /**
+          * When true, the popover header (popover-header) is not rendered even if `title` is provided.
+          * @default false
+         */
+        "noHeader"?: boolean;
         /**
           * Extra distance away from trigger (main axis).
           * @default 0

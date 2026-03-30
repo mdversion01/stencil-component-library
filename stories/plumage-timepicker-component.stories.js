@@ -10,8 +10,29 @@ export default {
         component: `
 The **Plumage Timepicker Component** is a time selection input field styled to match the Plumage design system.
 
+## Controlled value + events
+This component supports a controlled (or semi-controlled) \`value\` prop:
+
+- \`value\` (mutable): when set (non-empty), the component parses/displays it.
+- On **commit-like actions** (blur/enter/spinner/clear/format toggle), the component updates \`value\` and emits:
+
+### \`timeChange\` (commit)
+Emitted on committed changes:
+- \`source\`: \`commit\` | \`spinner\` | \`clear\` | \`format\` | \`external\` | \`inputName\` | \`inputId\` | \`constraints\` | \`hideSeconds\`
+- \`value\`: formatted value
+- \`parts\`: { hour, minute, second, ampm }
+- \`isValid\`
+
+### \`timeInput\` (typing)
+Emitted on keystrokes (throttled with \`time-input-throttle-ms\`):
+- \`raw\`: raw input string
+- \`normalized\`: normalized-for-typing string (does **not** pad segments)
+- \`caretStart\` / \`caretEnd\`
+- \`inputType\` (from InputEvent.inputType)
+- \`isValid\`, \`reason\` (pattern/range) and optional \`parts\` (only when complete+valid)
+
 ## Accessibility + derived IDs (recommended)
-This component derives stable IDs from \`input-id\` to support robust labeling and relationships:
+This component derives stable IDs from \`input-id\`:
 
 - **Label id**: \`\${inputId}-label\` (used when \`show-label\` is true)
 - **Popover id**: \`\${inputId}-dropdown\`
@@ -19,42 +40,42 @@ This component derives stable IDs from \`input-id\` to support robust labeling a
 - **Warning message id**: \`\${inputId}-warning\` (present in DOM; shown when time limits are exceeded)
 
 ### Accessible name precedence
-- If \`show-label\` is true: the input is labelled by the internal label id (\`\${inputId}-label\`).
+- If \`show-label\` is true: the input is labelled by \`\${inputId}-label\`.
 - Otherwise: if \`aria-labelledby\` is provided, it is used.
-- Otherwise: the component falls back to \`aria-label\`.
+- Otherwise: falls back to \`aria-label\`.
 
 ### \`aria-describedby\` composition
 \`aria-describedby\` merges:
-- any external ids provided via \`aria-describedby\`
+- external ids provided via \`aria-describedby\`
 - \`\${inputId}-validation\` when a validation message exists
 - \`\${inputId}-warning\` when the warning is visible
 
-## Keyboard model for the popover/spinners (best-practice)
+## Keyboard model for the popover/spinners
 When the popover is open:
 
 - **Tab / Shift+Tab**: focus is trapped within the popover
-- **Escape**: closes the popover and returns focus to the trigger/input
-- **Left / Right**: roving focus between time parts (Hour → Minute → Second → AM/PM)
+- **Escape**: closes the popover and returns focus
+- **Left / Right**: roving focus between parts (Hour → Minute → Second → AM/PM)
 - **Up / Down**: increment/decrement active part
 - **PageUp / PageDown**: increment/decrement by 10
 - **Home / End**: jump to min/max for that part
-- **Enter**: commits the value (keeps popover open by default)
+- **Enter**: commits the value
 
-> Note: True 508 compliance also depends on page-level usage: unique \`input-id\` per instance, visible or programmatic labels, and consistent error messaging.
+> Note: 508 compliance also depends on page-level usage: unique \`input-id\` per instance, visible or programmatic labels, and consistent error messaging.
         `.trim(),
       },
       source: {
         type: 'dynamic',
         language: 'html',
-        // ✅ keep Docs "Code" tab synced + show HTML cleanly
         transform: (_code, ctx) => Template(ctx.args),
       },
     },
   },
+
   argTypes: {
     /* -----------------------------
      Storybook Only
-  ------------------------------ */
+    ------------------------------ */
     wrapperWidth: {
       control: { type: 'number', min: 120, step: 10 },
       description: 'Demo wrapper width (px)',
@@ -64,11 +85,12 @@ When the popover is open:
 
     /* -----------------------------
      Accessibility
-  ------------------------------ */
+    ------------------------------ */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
-      description: 'Accessible label for the timepicker input (used when aria-labelledby is not provided and no visible label).',
+      description:
+        'Accessible label for the timepicker input (used when aria-labelledby is not provided and no visible label).',
       table: { category: 'Accessibility' },
     },
     ariaLabelledby: {
@@ -80,18 +102,20 @@ When the popover is open:
     ariaDescribedby: {
       control: 'text',
       name: 'aria-describedby',
-      description: 'ID(s) of external description/help elements (space-separated). Component may append -validation/-warning ids when shown.',
+      description:
+        'ID(s) of external description/help elements (space-separated). Component may append -validation/-warning ids when shown.',
       table: { category: 'Accessibility' },
     },
 
     /* -----------------------------
      Labeling
-  ------------------------------ */
+    ------------------------------ */
     showLabel: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Labeling' },
       name: 'show-label',
-      description: 'Whether to show the label visually. If false, label is sr-only (still available to AT).',
+      description:
+        'Whether to show the label visually. If false, label is sr-only (still available to AT).',
     },
     labelText: {
       control: 'text',
@@ -108,11 +132,12 @@ When the popover is open:
 
     /* -----------------------------
      Input Attributes
-  ------------------------------ */
+    ------------------------------ */
     inputId: {
       control: 'text',
       name: 'input-id',
-      description: 'ID for the timepicker input element. Used as the base for derived ids: -label/-dropdown/-validation/-warning.',
+      description:
+        'ID for the timepicker input element. Used as the base for derived ids: -label/-dropdown/-validation/-warning.',
       table: { category: 'Input Attributes' },
     },
     inputName: {
@@ -123,12 +148,24 @@ When the popover is open:
     },
 
     /* -----------------------------
+     Controlled Value
+    ------------------------------ */
+    value: {
+      control: 'text',
+      name: 'value',
+      description:
+        'Controlled value (optional). If non-empty, component parses/displays it. Updated on commits (blur/enter/spinner/clear/format).',
+      table: { category: 'Controlled Value' },
+    },
+
+    /* -----------------------------
      Layout & Sizing
-  ------------------------------ */
+    ------------------------------ */
     inputWidth: {
       control: { type: 'number', min: 0, step: 1 },
       name: 'input-width',
-      description: 'Custom width for the timepicker input (px). If not set, defaults to auto width.',
+      description:
+        'Custom width for the timepicker input (px). If not set, defaults to auto width.',
       table: { category: 'Layout & Sizing' },
     },
     size: {
@@ -141,7 +178,7 @@ When the popover is open:
 
     /* -----------------------------
      Format & Options
-  ------------------------------ */
+    ------------------------------ */
     isTwentyFourHourFormat: {
       control: 'boolean',
       table: { defaultValue: { summary: true }, category: 'Format & Options' },
@@ -169,17 +206,29 @@ When the popover is open:
 
     /* -----------------------------
      UI Controls
-  ------------------------------ */
+    ------------------------------ */
     hideTimepickerBtn: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'UI Controls' },
       name: 'hide-timepicker-btn',
-      description: 'If true, the button to open the timepicker dropdown is hidden (manual input only).',
+      description:
+        'If true, the button to open the timepicker dropdown is hidden (manual input only).',
+    },
+
+    /* -----------------------------
+     Events / Throttling
+    ------------------------------ */
+    timeInputThrottleMs: {
+      control: { type: 'number', min: 0, step: 10 },
+      name: 'time-input-throttle-ms',
+      description:
+        'Throttle window for timeInput events (ms). Set 0 to disable throttling.',
+      table: { category: 'Events' },
     },
 
     /* -----------------------------
      State
-  ------------------------------ */
+    ------------------------------ */
     disabled: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'State' },
@@ -190,17 +239,19 @@ When the popover is open:
       control: 'boolean',
       table: { defaultValue: { summary: true }, category: 'State' },
       name: 'is-valid',
-      description: 'Indicates whether the current input value is valid.',
+      description:
+        'Indicates whether the current input value is valid (component updates this internally).',
     },
 
     /* -----------------------------
      Validation
-  ------------------------------ */
+    ------------------------------ */
     validation: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Validation' },
       name: 'validation',
-      description: 'If true, applies Plumage underline styles to indicate validation state.',
+      description:
+        'If true, applies Plumage underline styles to indicate validation state.',
     },
     validationMessage: {
       control: 'text',
@@ -219,6 +270,7 @@ When the popover is open:
     labelText: 'Enter Time',
     inputId: 'time-input',
     inputName: 'time',
+    value: '',
     isTwentyFourHourFormat: true,
     required: false,
     size: '',
@@ -231,6 +283,7 @@ When the popover is open:
     inputWidth: null,
     validation: false,
     disabled: false,
+    timeInputThrottleMs: 50,
   },
 };
 
@@ -271,11 +324,14 @@ const normalizeIdList = (v) => {
   return s.split(/\s+/).filter(Boolean).join(' ');
 };
 
-const boolAttr = (name, on) => (on ? name : null);
 const attr = (name, v) => (v === undefined || v === null || v === '' ? null : `${name}="${String(v)}"`);
 
-// ✅ Explicit boolean-as-string attributes so Docs doesn't strip them
-const boolTrueAttr = (name, on) => (on ? `${name}="true"` : null);
+// ✅ Stencil-safe boolean serialization:
+// - For booleans where "false" matters vs default, emit explicit "true"/"false"
+const boolStrAttr = (name, v) => (typeof v === 'boolean' ? `${name}="${v ? 'true' : 'false'}"` : null);
+
+// For boolean flags where presence is fine (default false)
+const boolPresenceAttr = (name, on) => (on ? name : null);
 
 /* ---------------------------------------------
    Template (UPDATED)
@@ -291,28 +347,34 @@ const Template = (args) => {
     attr('aria-describedby', normalizeIdList(args.ariaDescribedby)),
 
     // label + identity
-    boolAttr('show-label', args.showLabel),
+    boolPresenceAttr('show-label', args.showLabel),
     attr('label-text', args.labelText),
     attr('input-id', args.inputId),
     attr('input-name', args.inputName),
 
-    // options
-    boolAttr('is-twenty-four-hour-format', args.isTwentyFourHourFormat),
-    boolAttr('twenty-four-hour-only', args.twentyFourHourOnly),
-    boolAttr('twelve-hour-only', args.twelveHourOnly),
-    boolAttr('hide-seconds', args.hideSeconds),
-    boolAttr('hide-timepicker-btn', args.hideTimepickerBtn),
+    // controlled value
+    attr('value', args.value),
 
-    // state
-    boolAttr('is-valid', args.isValid),
+    // options (explicit bool strings where false must be representable)
+    boolStrAttr('is-twenty-four-hour-format', !!args.isTwentyFourHourFormat),
+    boolPresenceAttr('twenty-four-hour-only', args.twentyFourHourOnly),
+    boolPresenceAttr('twelve-hour-only', args.twelveHourOnly),
+    boolPresenceAttr('hide-seconds', args.hideSeconds),
+    boolPresenceAttr('hide-timepicker-btn', args.hideTimepickerBtn),
+
+    // state/validation (explicit bool strings to allow false)
+    boolStrAttr('is-valid', !!args.isValid),
+    attr('validation-message', args.validationMessage),
+    boolStrAttr('validation', !!args.validation),
+    boolStrAttr('required', !!args.required),
+    boolStrAttr('disabled', !!args.disabled),
+
+    // layout
     attr('input-width', args.inputWidth),
     attr('size', args.size),
-    attr('validation-message', args.validationMessage),
 
-    // ✅ keep visible in Docs
-    boolTrueAttr('required', args.required),
-    boolTrueAttr('validation', args.validation),
-    boolTrueAttr('disabled', args.disabled),
+    // events
+    attr('time-input-throttle-ms', args.timeInputThrottleMs),
   ]
     .filter(Boolean)
     .join('\n    ');
@@ -340,6 +402,7 @@ Default.args = {
   labelText: 'Enter Time',
   inputId: 'time-input',
   inputName: 'time',
+  value: '',
   isTwentyFourHourFormat: true,
   required: false,
   size: '',
@@ -352,6 +415,7 @@ Default.args = {
   inputWidth: null,
   validation: false,
   disabled: false,
+  timeInputThrottleMs: 50,
 };
 Default.storyName = 'Default Plumage Styled Timepicker';
 Default.parameters = {
@@ -371,9 +435,7 @@ Small.args = {
 Small.storyName = 'Small Size (no label)';
 Small.parameters = {
   docs: {
-    description: {
-      story: 'Small size variant (`size="sm"`). Label remains sr-only unless `show-label` is enabled.',
-    },
+    description: { story: 'Small size variant (`size="sm"`). Label remains sr-only unless `show-label` is enabled.' },
     story: { height: '200px' },
     source: { transform: (_code, ctx) => Template(ctx.args) },
   },
@@ -473,13 +535,6 @@ NoDropdownButton.parameters = {
   },
 };
 
-/**
- * ✅ Validation story:
- * - Use `validation` to apply underline invalid styling
- * - Use `validationMessage` to show the message
- * - Component clears invalid/message when user clears, types, or changes spinners
- * - Format toggle does NOT clear validation
- */
 export const WithValidationMessage = Template.bind({});
 WithValidationMessage.args = {
   ...Default.args,
@@ -522,6 +577,28 @@ CustomInputWidth.parameters = {
   },
 };
 
+export const ControlledValueExample = Template.bind({});
+ControlledValueExample.args = {
+  ...Default.args,
+  wrapperWidth: 320,
+  showLabel: true,
+  labelText: 'Controlled Value',
+  inputId: 'pl-controlled',
+  value: '13:05:09',
+  isTwentyFourHourFormat: true,
+};
+ControlledValueExample.storyName = 'Controlled Value (value="13:05:09")';
+ControlledValueExample.parameters = {
+  docs: {
+    description: {
+      story:
+        'Demonstrates initializing the component with a controlled value. On commit actions, the component updates its mutable `value` prop and emits `timeChange`.',
+    },
+    story: { height: '200px' },
+    source: { transform: (_code, ctx) => Template(ctx.args) },
+  },
+};
+
 /* ============================== Accessibility Matrix (computed) ============================== */
 
 const splitIds = (v) => String(v || '').trim().split(/\s+/).filter(Boolean);
@@ -539,8 +616,6 @@ const getComputedSnapshot = (cmp, scopeRoot) => {
   const input = cmp?.querySelector?.('input.time-input') || null;
   const label = cmp?.querySelector?.('label') || null;
   const dropdown = cmp?.querySelector?.('.time-dropdown') || null;
-  const validation = cmp?.querySelector?.(`#${CSS.escape(`${cmp?.inputId || cmp?.getAttribute?.('input-id') || 'time-input'}-validation`)}`) || null;
-  const warning = cmp?.querySelector?.(`#${CSS.escape(`${cmp?.inputId || cmp?.getAttribute?.('input-id') || 'time-input'}-warning`)}`) || null;
 
   const inputId = cmp?.inputId ?? cmp?.getAttribute?.('input-id') ?? null;
   const derived = inputId
@@ -550,6 +625,13 @@ const getComputedSnapshot = (cmp, scopeRoot) => {
         validation: `${inputId}-validation`,
         warning: `${inputId}-warning`,
       }
+    : null;
+
+  const validation = derived
+    ? cmp?.querySelector?.(`#${CSS.escape(derived.validation)}`) || null
+    : null;
+  const warning = derived
+    ? cmp?.querySelector?.(`#${CSS.escape(derived.warning)}`) || null
     : null;
 
   const ariaLabelledby = input?.getAttribute?.('aria-labelledby') ?? null;
@@ -562,8 +644,9 @@ const getComputedSnapshot = (cmp, scopeRoot) => {
     component: {
       tag: cmp?.tagName?.toLowerCase?.() ?? null,
       inputId,
-      isOpen: cmp?._open ?? null, // may be undefined in prod builds; ok
-      activePart: cmp?._activePart ?? null, // may be undefined in prod builds; ok
+      value: cmp?.value ?? cmp?.getAttribute?.('value') ?? null,
+      isOpen: cmp?._open ?? null,
+      activePart: cmp?._activePart ?? null,
     },
     derivedIds: derived,
     dom: {
@@ -617,7 +700,7 @@ const getComputedSnapshot = (cmp, scopeRoot) => {
     },
     spinbuttons: (() => {
       if (!dropdown) return null;
-      const spins = Array.from(dropdown.querySelectorAll('[role="spinbutton"]')).map((el) => ({
+      return Array.from(dropdown.querySelectorAll('[role="spinbutton"]')).map((el) => ({
         class: el.getAttribute('class'),
         tabIndex: el.getAttribute('tabindex'),
         ariaLabel: el.getAttribute('aria-label'),
@@ -626,7 +709,6 @@ const getComputedSnapshot = (cmp, scopeRoot) => {
         ariaValueMin: el.getAttribute('aria-valuemin'),
         ariaValueMax: el.getAttribute('aria-valuemax'),
       }));
-      return spins;
     })(),
   };
 };
@@ -705,12 +787,8 @@ export const AccessibilityMatrix = {
           }
 
           const cmp = await waitFor(() => mount.querySelector('plumage-timepicker-component'));
+          if (cmp?.componentOnReady) await cmp.componentOnReady();
 
-          if (cmp?.componentOnReady) {
-            await cmp.componentOnReady();
-          }
-
-          // hydration signal
           await waitFor(() => cmp.querySelector('input.time-input'));
 
           pre.textContent = JSON.stringify(getComputedSnapshot(cmp, mount), null, 2);
@@ -719,7 +797,6 @@ export const AccessibilityMatrix = {
         }
       };
 
-      // schedule after DOM insertion
       setTimeout(() => requestAnimationFrame(update), 0);
 
       box.appendChild(t);
@@ -728,7 +805,6 @@ export const AccessibilityMatrix = {
       return box;
     };
 
-    // Default
     wrap.appendChild(
       card('Default (sr-only label, aria-label fallback)', {
         showLabel: false,
@@ -745,7 +821,6 @@ export const AccessibilityMatrix = {
       }),
     );
 
-    // Inline: no visible label, external label + help
     wrap.appendChild(
       card(
         'Inline (external aria-labelledby + aria-describedby)',
@@ -767,28 +842,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Horizontal (simulated): label left, control right
-    wrap.appendChild(
-      card(
-        'Horizontal (simulated layout, external labelledby)',
-        {
-          showLabel: false,
-          inputId: 'mx-pl-horizontal',
-          ariaLabelledby: 'mx-pl-horizontal-label',
-          ariaDescribedby: '',
-          isValid: true,
-          disabled: false,
-        },
-        `
-        <div style="display:grid; grid-template-columns:220px 1fr; gap:12px; align-items:center; max-width:860px; margin-bottom:8px;">
-          <div id="mx-pl-horizontal-label" style="font-weight:600;">Time (horizontal label area)</div>
-        </div>
-        `,
-        'max-width:860px;',
-      ),
-    );
-
-    // Error/validation
     wrap.appendChild(
       card(
         'Error / validation (aria-describedby should include -validation)',
@@ -812,7 +865,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Disabled
     wrap.appendChild(
       card('Disabled (popover should remain inert/hidden)', {
         disabled: true,

@@ -2,22 +2,24 @@
 import { h } from '@stencil/core';
 import { newSpecPage } from '@stencil/core/testing';
 import { AccordionComponent } from './accordion-component';
-// IMPORTANT: also register the child so its native control renders
 import { Button as ButtonComponent } from '../button/button-component';
 
 describe('accordion-component', () => {
   const getHostBtn = (root: HTMLElement) => root.querySelector('button-component') as HTMLElement | null;
 
-  const getInnerControl = (root: HTMLElement) => root.querySelector<HTMLElement>('button-component button, button-component a');
+  const getInnerControl = (root: HTMLElement) =>
+    root.querySelector<HTMLElement>('button-component button, button-component a');
 
   const getTargetById = (root: HTMLElement, id: string) => root.querySelector<HTMLElement>(`#${id}`);
 
-  const fireTransitionEnd = async (el: HTMLElement, page: any) => {
-    el.dispatchEvent(new Event('transitionend'));
+  const fireHeightTransitionEnd = async (el: HTMLElement, page: any) => {
+    const ev = new Event('transitionend') as any;
+    ev.propertyName = 'height';
+    el.dispatchEvent(ev);
     await page.waitForChanges();
   };
 
-  it('renders closed by default (with hidden/inert panel)', async () => {
+  it('renders closed by default (collapse class only; aria-hidden + inert)', async () => {
     const page = await newSpecPage({
       components: [AccordionComponent, ButtonComponent],
       html: `<accordion-component target-id="section1"></accordion-component>`,
@@ -37,17 +39,21 @@ describe('accordion-component', () => {
     expect(target.getAttribute('role')).toBe('region');
     expect(target.getAttribute('aria-labelledby')).toBe('section1-header');
 
+    // a11y closed
     expect(target.getAttribute('aria-hidden')).toBe('true');
-    expect(target.hasAttribute('hidden')).toBe(true);
     expect(target.hasAttribute('inert')).toBe(true);
 
-    expect(target.style.display).toBe('none');
-    expect(target.style.height).toBe('0px');
+    // class-driven collapse
+    expect(target.classList.contains('collapse')).toBe(true);
+    expect(target.classList.contains('show')).toBe(false);
+
+    // no hidden/display:none resting state
+    expect(target.hasAttribute('hidden')).toBe(false);
 
     expect(page.root).toMatchSnapshot();
   });
 
-  it('renders open by default when is-open is set (panel is not hidden/inert)', async () => {
+  it('renders open by default when is-open is set (collapse show; aria-hidden removed)', async () => {
     const page = await newSpecPage({
       components: [AccordionComponent, ButtonComponent],
       html: `<accordion-component target-id="section2" is-open="true"></accordion-component>`,
@@ -67,17 +73,18 @@ describe('accordion-component', () => {
     expect(target.getAttribute('role')).toBe('region');
     expect(target.getAttribute('aria-labelledby')).toBe('section2-header');
 
+    // a11y open
     expect(target.getAttribute('aria-hidden')).toBeNull();
-    expect(target.hasAttribute('hidden')).toBe(false);
     expect(target.hasAttribute('inert')).toBe(false);
 
-    expect(target.style.display).toBe('block');
-    expect(target.style.height).toBe('auto');
+    // class-driven open
+    expect(target.classList.contains('collapse')).toBe(true);
+    expect(target.classList.contains('show')).toBe(true);
 
     expect(page.root).toMatchSnapshot();
   });
 
-  it('toggles open/closed state on click (customClick from button-component) and flips hidden/inert', async () => {
+  it('toggles open/closed on click and uses collapsing + transitionend finalization', async () => {
     const page = await newSpecPage({
       components: [AccordionComponent, ButtonComponent],
       html: `<accordion-component target-id="section3"></accordion-component>`,
@@ -97,13 +104,17 @@ describe('accordion-component', () => {
     expect(instance.internalOpen).toBe(true);
     expect(control!.getAttribute('aria-expanded')).toBe('true');
 
-    expect(target.getAttribute('aria-hidden')).toBeNull();
-    expect(target.hasAttribute('hidden')).toBe(false);
-    expect(target.hasAttribute('inert')).toBe(false);
-    expect(target.style.display).toBe('block');
+    // during open transition
+    expect(target.classList.contains('collapsing')).toBe(true);
 
-    await fireTransitionEnd(target, page);
-    expect(target.style.height).toBe('auto');
+    await fireHeightTransitionEnd(target, page);
+
+    // resting open
+    expect(target.classList.contains('collapse')).toBe(true);
+    expect(target.classList.contains('show')).toBe(true);
+    expect(target.classList.contains('collapsing')).toBe(false);
+    expect(target.getAttribute('aria-hidden')).toBeNull();
+    expect(target.hasAttribute('inert')).toBe(false);
 
     // close
     hostBtn.dispatchEvent(new CustomEvent('customClick', { bubbles: true }));
@@ -112,13 +123,17 @@ describe('accordion-component', () => {
     expect(instance.internalOpen).toBe(false);
     expect(control!.getAttribute('aria-expanded')).toBe('false');
 
-    expect(target.getAttribute('aria-hidden')).toBe('true');
-    expect(target.hasAttribute('hidden')).toBe(true);
-    expect(target.hasAttribute('inert')).toBe(true);
+    // during close transition
+    expect(target.classList.contains('collapsing')).toBe(true);
 
-    await fireTransitionEnd(target, page);
-    expect(target.style.display).toBe('none');
-    expect(target.style.height).toBe('0px');
+    await fireHeightTransitionEnd(target, page);
+
+    // resting closed
+    expect(target.classList.contains('collapse')).toBe(true);
+    expect(target.classList.contains('show')).toBe(false);
+    expect(target.classList.contains('collapsing')).toBe(false);
+    expect(target.getAttribute('aria-hidden')).toBe('true');
+    expect(target.hasAttribute('inert')).toBe(true);
   });
 
   it('renders icon and switches when toggled', async () => {
@@ -143,7 +158,7 @@ describe('accordion-component', () => {
 
     hostBtn.dispatchEvent(new CustomEvent('customClick', { bubbles: true }));
     await page.waitForChanges();
-    await fireTransitionEnd(target, page);
+    await fireHeightTransitionEnd(target, page);
 
     const updatedIcon = page.root.querySelector('icon-component')!;
     expect(updatedIcon.getAttribute('icon')).toContain('fa-chevron-up');
@@ -162,15 +177,13 @@ describe('accordion-component', () => {
     inner.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     await page.waitForChanges();
     expect(instance.internalOpen).toBe(true);
-    target.dispatchEvent(new Event('transitionend'));
-    await page.waitForChanges();
+    await fireHeightTransitionEnd(target, page);
 
     inner.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
     inner.dispatchEvent(new KeyboardEvent('keyup', { key: ' ', bubbles: true }));
     await page.waitForChanges();
     expect(instance.internalOpen).toBe(false);
-    target.dispatchEvent(new Event('transitionend'));
-    await page.waitForChanges();
+    await fireHeightTransitionEnd(target, page);
   });
 
   it('renders and toggles in link mode (anchor-like button)', async () => {
@@ -194,15 +207,13 @@ describe('accordion-component', () => {
     inner.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     await page.waitForChanges();
     expect(instance.internalOpen).toBe(true);
-    target.dispatchEvent(new Event('transitionend'));
-    await page.waitForChanges();
+    await fireHeightTransitionEnd(target, page);
 
     inner.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
     inner.dispatchEvent(new KeyboardEvent('keyup', { key: ' ', bubbles: true }));
     await page.waitForChanges();
     expect(instance.internalOpen).toBe(false);
-    target.dispatchEvent(new Event('transitionend'));
-    await page.waitForChanges();
+    await fireHeightTransitionEnd(target, page);
   });
 
   it('emits toggleEvent(boolean) with the new state', async () => {
@@ -224,7 +235,7 @@ describe('accordion-component', () => {
     expect(spy).toHaveBeenLastCalledWith(false);
   });
 
-  it('@Watch("isOpen"): updating host prop updates internalOpen and styles + aria-expanded + hidden/inert', async () => {
+  it('@Watch("isOpen"): updating host prop updates internalOpen + aria-expanded + collapse classes', async () => {
     const page = await newSpecPage({
       components: [AccordionComponent, ButtonComponent],
       html: `<accordion-component target-id="watched"></accordion-component>`,
@@ -241,25 +252,29 @@ describe('accordion-component', () => {
     expect(control!.getAttribute('aria-expanded')).toBe('false');
     expect(target.getAttribute('aria-hidden')).toBe('true');
     expect(target.hasAttribute('inert')).toBe(true);
+    expect(target.classList.contains('collapse')).toBe(true);
+    expect(target.classList.contains('show')).toBe(false);
 
     page.root.setAttribute('is-open', 'true');
     await page.waitForChanges();
+
     expect(instance.internalOpen).toBe(true);
     expect(control!.getAttribute('aria-expanded')).toBe('true');
     expect(hostBtn.getAttribute('id')).toBe('watched-header');
-    expect(target.style.display).toBe('block');
-    expect(target.style.height).toBe('auto');
     expect(target.getAttribute('aria-hidden')).toBeNull();
     expect(target.hasAttribute('inert')).toBe(false);
+    expect(target.classList.contains('collapse')).toBe(true);
+    expect(target.classList.contains('show')).toBe(true);
 
     page.root.setAttribute('is-open', 'false');
     await page.waitForChanges();
+
     expect(instance.internalOpen).toBe(false);
     expect(control!.getAttribute('aria-expanded')).toBe('false');
-    expect(target.style.display).toBe('none');
-    expect(target.style.height).toBe('0px');
     expect(target.getAttribute('aria-hidden')).toBe('true');
     expect(target.hasAttribute('inert')).toBe(true);
+    expect(target.classList.contains('collapse')).toBe(true);
+    expect(target.classList.contains('show')).toBe(false);
   });
 
   it('dedupes targetId when it collides in DOM (unique IDs used in aria-controls and region id)', async () => {
@@ -276,11 +291,11 @@ describe('accordion-component', () => {
     });
     await page.waitForChanges();
 
-    // newSpecPage may set page.root to the first rendered component rather than the wrapper.
     const comp =
       (page.root && page.root.tagName?.toLowerCase() === 'accordion-component'
         ? (page.root as HTMLElement)
-        : (page.root.querySelector('accordion-component') as HTMLElement | null)) || (page.doc.querySelector('accordion-component') as HTMLElement | null);
+        : (page.root.querySelector('accordion-component') as HTMLElement | null)) ||
+      (page.doc.querySelector('accordion-component') as HTMLElement | null);
 
     expect(comp).toBeTruthy();
 

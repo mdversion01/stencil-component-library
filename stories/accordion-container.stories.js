@@ -355,7 +355,7 @@ export const AccessibilityMatrix = {
             hidden: region?.hasAttribute('hidden') ?? null,
             inert: region?.hasAttribute('inert') ?? null,
             'data-bs-parent': region?.getAttribute('data-bs-parent') ?? null,
-            display: region?.style.display ?? null,
+            className: region?.getAttribute('class') ?? null,
             height: region?.style.height ?? null,
           };
         });

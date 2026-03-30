@@ -1,7 +1,8 @@
-// src/components/accordion-container/test/accordion-container.spec.tsx
+// src/components/accordion-container/accordion-container.spec.tsx
 import { h } from '@stencil/core';
 import { newSpecPage } from '@stencil/core/testing';
 import { AccordionContainer } from './accordion-container';
+// IMPORTANT: register the child so its native control renders
 import { Button as ButtonComponent } from '../button/button-component';
 
 // helpers
@@ -16,7 +17,13 @@ const firstHostBtn = (root: HTMLElement) =>
 const innerButtonOf = (hostBtn: HTMLElement | null) =>
   (hostBtn ? (hostBtn.querySelector('button') as HTMLButtonElement | null) : null);
 
-const panelAt = (root: HTMLElement, i: number) => root.querySelectorAll<HTMLElement>('.accordion-collapse')[i] ?? null;
+const panelAt = (root: HTMLElement, i: number) =>
+  (root.querySelectorAll<HTMLElement>('.accordion-collapse')[i] as HTMLElement | null) ?? null;
+
+const fireTransitionEnd = async (el: HTMLElement, page: any) => {
+  el.dispatchEvent(new Event('transitionend'));
+  await page.waitForChanges();
+};
 
 describe('accordion-container', () => {
   const sampleData = [
@@ -196,15 +203,16 @@ describe('accordion-container', () => {
 
     expect(panel.getAttribute('role')).toBe('region');
     expect(panel.getAttribute('aria-labelledby')).toBe(expectedTriggerId);
-
     expect(panel.getAttribute('id')).toBe(expectedPanelId);
 
-    // collapsed panels should be hidden + inert
+    // collapsed panels
+    expect(panel.classList.contains('collapse')).toBe(true);
+    expect(panel.classList.contains('show')).toBe(false);
+    expect(panel.classList.contains('collapsing')).toBe(false);
+
     expect(panel.getAttribute('aria-hidden')).toBe('true');
     expect(panel.hasAttribute('hidden')).toBe(true);
     expect(panel.hasAttribute('inert')).toBe(true);
-    expect(panel.style.display).toBe('none');
-    expect(panel.style.height).toBe('0px');
 
     // data-bs-parent only present when singleOpen=true
     expect(panel.getAttribute('data-bs-parent')).toBeNull();
@@ -224,33 +232,51 @@ describe('accordion-container', () => {
     const panel0 = panelAt(page.root, 0)!;
 
     // initial (closed)
+    expect(panel0.classList.contains('collapse')).toBe(true);
+    expect(panel0.classList.contains('show')).toBe(false);
+    expect(panel0.classList.contains('collapsing')).toBe(false);
+
     expect(panel0.getAttribute('aria-hidden')).toBe('true');
     expect(panel0.hasAttribute('hidden')).toBe(true);
     expect(panel0.hasAttribute('inert')).toBe(true);
 
-    // open
+    // open -> should enter "collapsing" state (height set inline temporarily)
     click(inner0);
     await page.waitForChanges();
 
     expect(page.rootInstance.openIndexes.has(0)).toBe(true);
+    expect(panel0.classList.contains('collapsing')).toBe(true);
+
+    // a11y open during animation
     expect(panel0.getAttribute('aria-hidden')).toBeNull();
     expect(panel0.hasAttribute('hidden')).toBe(false);
     expect(panel0.hasAttribute('inert')).toBe(false);
-    expect(panel0.style.display).toBe('block');
-    // during/after open transition height is auto in component; in tests it should already be "auto"
-    expect(panel0.style.height).toBe('auto');
 
-    // close
+    // finish transition
+    await fireTransitionEnd(panel0, page);
+
+    expect(panel0.classList.contains('collapse')).toBe(true);
+    expect(panel0.classList.contains('show')).toBe(true);
+    expect(panel0.classList.contains('collapsing')).toBe(false);
+    expect(panel0.style.height).toBe(''); // cleared after transition
+
+    // close -> "collapsing" again, then settle closed
     click(inner0);
     await page.waitForChanges();
 
     expect(page.rootInstance.openIndexes.has(0)).toBe(false);
+    expect(panel0.classList.contains('collapsing')).toBe(true);
+
+    await fireTransitionEnd(panel0, page);
+
+    expect(panel0.classList.contains('collapse')).toBe(true);
+    expect(panel0.classList.contains('show')).toBe(false);
+    expect(panel0.classList.contains('collapsing')).toBe(false);
+    expect(panel0.style.height).toBe(''); // cleared
+
     expect(panel0.getAttribute('aria-hidden')).toBe('true');
     expect(panel0.hasAttribute('hidden')).toBe(true);
     expect(panel0.hasAttribute('inert')).toBe(true);
-    expect(panel0.style.height).toBe('0px');
-    // display becomes none immediately in render
-    expect(panel0.style.display).toBe('none');
   });
 
   it('sets data-bs-parent when singleOpen=true', async () => {
@@ -442,7 +468,11 @@ describe('accordion-container', () => {
     await newSpecPage({
       components: [AccordionContainer, ButtonComponent],
       template: () => (
-        <accordion-container icon="fas fa-plus,fas fa-minus" parentId="test-acc" data={[{ header: 'Test Header', content: 'Test Content' }]}></accordion-container>
+        <accordion-container
+          icon="fas fa-plus,fas fa-minus"
+          parentId="test-acc"
+          data={[{ header: 'Test Header', content: 'Test Content' }]}
+        ></accordion-container>
       ),
     });
 

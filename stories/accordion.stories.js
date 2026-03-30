@@ -9,6 +9,7 @@ function setAttr(el, name, v) {
   else el.setAttribute(name, String(v));
 }
 
+// Ensure the story never collides with other instances (Docs/Canvas)
 function makeUniqueTargetId(base, context) {
   const b = base && String(base).trim() ? base.trim() : 'acc';
   const scope = context?.viewMode || 'story';
@@ -36,6 +37,9 @@ function buildAccordion(args, context) {
   setAttr(host, 'icon', args.icon);
   setAttr(host, 'is-open', args.isOpen);
 
+  // Optional external label for the region
+  setAttr(host, 'region-labelledby', args.regionLabelledby);
+
   const header = document.createElement('span');
   header.slot = args.accordion ? 'accordion-header' : 'button-text';
   header.textContent = args.headerText;
@@ -62,7 +66,7 @@ export default {
       page: DocsPage,
       description: {
         component: [
-          "An Accordion Component belongs to the Accordion Container but can also be use on it's own.\n",
+          "An Accordion Component belongs to the Accordion Container but can also be used on its own.\n",
           'Use the `accordion-header` and `content` slots to provide header and body content.\n',
           '```html',
           '<accordion-component target-id="accordion-section-3">',
@@ -74,7 +78,12 @@ export default {
           '**Accessibility:**',
           '- Toggle exposes `aria-expanded` and `aria-controls`.',
           '- Panel uses `role="region"` and `aria-labelledby` tied to the toggle id.',
-          '- Collapsed panels are `aria-hidden`, `hidden`, and `inert` to prevent focus.',
+          '- Collapsed panels are `aria-hidden` and `inert` (do not use `hidden`/`display:none` so the height transition can animate).',
+          '',
+          '**Animation model (Bootstrap-like):**',
+          '- Resting closed: `class="collapse"` (CSS height: 0).',
+          '- Resting open: `class="collapse show"` (CSS height: auto).',
+          '- During transition: `class="collapsing"` with an inline `height` set imperatively only while animating.',
         ].join('\n'),
       },
     },
@@ -118,6 +127,13 @@ export default {
       table: { category: 'Targeting' },
     },
 
+    regionLabelledby: {
+      control: 'text',
+      name: 'region-labelledby',
+      description: 'Optional: external label element id for the region (overrides the default toggle-based aria-labelledby).',
+      table: { category: 'Accessibility' },
+    },
+
     headerText: { table: { disable: true }, control: 'false' },
     contentLine1: { table: { disable: true }, control: 'false' },
     contentLine2: { table: { disable: true }, control: 'false' },
@@ -141,13 +157,16 @@ export default {
     variant: '',
     icon: 'fas fa-angle-down',
 
+    // a11y
+    regionLabelledby: '',
+
     headerText: 'Toggle section.',
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
   },
 };
 
-// Stories (kept; none removed)
+// Stories (kept)
 export const Accordion = {
   args: { accordion: true, headerText: 'Accordion header', targetId: 'accordion-1', contentLine1: 'This is the collapsible content area.', contentLine2: 'Put any markup here.' },
   parameters: { docs: { description: { story: 'Basic accordion item that can be used on its own or as part of an accordion container. Each item can be opened or closed independently.' } } },
@@ -199,7 +218,7 @@ export const LinkToggle = {
   parameters: { docs: { description: { story: 'Standalone toggle rendered as a link.' } } },
 };
 
-// NEW: Accessibility matrix story (updated to include hidden/inert)
+// Accessibility matrix story (UPDATED for class-driven collapse + no hidden/display:none)
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: (_args, context) => {
@@ -209,7 +228,9 @@ export const AccessibilityMatrix = {
     wrap.style.maxWidth = '980px';
 
     const title = document.createElement('div');
-    title.innerHTML = `<strong>Accessibility matrix</strong><div style="opacity:.8">Shows computed toggle + region ARIA, ids, expanded state, and hidden/inert.</div>`;
+    title.innerHTML =
+      `<strong>Accessibility matrix</strong>` +
+      `<div style="opacity:.8">Shows computed toggle + region ARIA, ids, expanded state, and collapse classes (collapse/show/collapsing).</div>`;
     wrap.appendChild(title);
 
     const mkRow = (labelText, makeHost) => {
@@ -230,7 +251,7 @@ export const AccessibilityMatrix = {
       right.style.gap = '8px';
 
       const demo = document.createElement('div');
-      demo.style.display = 'inline-flex';
+      // demo.style.display = 'inline-flex';
       demo.style.alignItems = 'center';
       demo.style.gap = '12px';
       demo.style.flexWrap = 'wrap';
@@ -258,23 +279,24 @@ export const AccessibilityMatrix = {
         const inner = host.querySelector('button-component button, button-component a');
         const region = host.querySelector('[role="region"]');
 
+        const cls = region ? Array.from(region.classList).join(' ') : null;
+
         const attrs = {
           mode: host.getAttribute('accordion') != null ? 'accordion' : host.getAttribute('link') != null ? 'link' : 'button',
-          targetId: region?.getAttribute('id') ?? host.getAttribute('target-id'),
-          headerId: bc?.getAttribute('id') ?? null,
+          regionId: region?.getAttribute('id') ?? host.getAttribute('target-id'),
+          toggleHostId: bc?.getAttribute('id') ?? null,
           innerTag: inner?.tagName ?? null,
           innerRole: inner?.getAttribute('role') ?? null,
           'aria-expanded': inner?.getAttribute('aria-expanded') ?? null,
           'aria-controls': inner?.getAttribute('aria-controls') ?? null,
-          regionId: region?.getAttribute('id') ?? null,
           regionRole: region?.getAttribute('role') ?? null,
           'region aria-labelledby': region?.getAttribute('aria-labelledby') ?? null,
           'aria-hidden': region?.getAttribute('aria-hidden') ?? null,
-          hidden: region?.hasAttribute('hidden') ?? null,
           inert: region?.hasAttribute('inert') ?? null,
-          display: region?.style.display ?? null,
-          height: region?.style.height ?? null,
+          class: cls,
+          inlineHeight: region?.style?.height ?? null, // set only during transitions
         };
+
         pre.textContent = JSON.stringify(attrs, null, 2);
       };
 
@@ -294,6 +316,7 @@ export const AccessibilityMatrix = {
           headerText: 'Toggle section',
           contentLine1: 'Body',
           contentLine2: 'More',
+          variant: 'primary',
         }),
       ),
     );
@@ -308,6 +331,7 @@ export const AccessibilityMatrix = {
           headerText: 'Toggle section',
           contentLine1: 'Body',
           contentLine2: 'More',
+          variant: 'primary',
         }),
       ),
     );
@@ -347,7 +371,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Renders multiple configurations and prints computed accessibility attributes for the inner toggle and the region: `aria-expanded`, `aria-controls`, `role="region"`, `aria-labelledby`, ids, expanded state, and hidden/inert behavior.',
+          'Renders multiple configurations and prints computed accessibility attributes for the toggle + region: `aria-expanded`, `aria-controls`, `role="region"`, `aria-labelledby`, ids, and collapse state via classes (`collapse`/`show`/`collapsing`).',
       },
     },
   },

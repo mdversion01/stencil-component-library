@@ -3,7 +3,17 @@ import { newSpecPage } from '@stencil/core/testing';
 import { h } from '@stencil/core';
 import { PopoverComponent } from './popover-component';
 
-const triggerRect = { top: 100, left: 100, right: 150, bottom: 130, width: 50, height: 30, x: 100, y: 100, toJSON() {} };
+const triggerRect = {
+  top: 100,
+  left: 100,
+  right: 150,
+  bottom: 130,
+  width: 50,
+  height: 30,
+  x: 100,
+  y: 100,
+  toJSON() {},
+};
 const popoverRect = { top: 0, left: 0, right: 120, bottom: 80, width: 120, height: 80, x: 0, y: 0, toJSON() {} };
 
 function mockRects() {
@@ -25,14 +35,15 @@ function getPopover(): HTMLElement | null {
 }
 
 function normalize(html: string) {
+  // IMPORTANT: apply more-specific replacements first (title/body) before generic popover id patterns.
   return html
-    .replace(/id="popover_[^"]+"/g, 'id="popover_TEST"')
-    .replace(/aria-controls="popover_[^"]+"/g, 'aria-controls="popover_TEST"')
-    .replace(/aria-describedby="popover_[^"]+"/g, 'aria-describedby="popover_TEST"')
     .replace(/aria-labelledby="popover_[^"]+-title"/g, 'aria-labelledby="popover_TEST-title"')
+    .replace(/aria-describedby="popover_[^"]+-body"/g, 'aria-describedby="popover_TEST-body"')
     .replace(/id="popover_[^"]+-title"/g, 'id="popover_TEST-title"')
     .replace(/id="popover_[^"]+-body"/g, 'id="popover_TEST-body"')
-    .replace(/aria-describedby="popover_[^"]+-body"/g, 'aria-describedby="popover_TEST-body"')
+    .replace(/aria-controls="popover_[^"]+"/g, 'aria-controls="popover_TEST"')
+    .replace(/aria-describedby="popover_[^"]+"/g, 'aria-describedby="popover_TEST"')
+    .replace(/id="popover_[^"]+"/g, 'id="popover_TEST"')
     .replace(/\sstyle="[^"]*"/g, '');
 }
 
@@ -115,6 +126,36 @@ describe('popover-component', () => {
     expect(bodyEl?.id).toMatch(/^popover_.*-body$/);
 
     expect(normalize(pop!.outerHTML)).toMatchInlineSnapshot(`"<div id="popover_TEST" class="popover fade show plumage super-tooltip primary" tabindex="-1" role="dialog" aria-modal="false" aria-labelledby="popover_TEST-title" aria-describedby="popover_TEST"><div class="popover-arrow" data-popper-arrow></div> <h3 class="popover-header" id="popover_TEST">Header</h3> <div class="popover-body" tabindex="0" id="popover_TEST">Body text</div></div>"`);
+  });
+
+  test('noHeader removes the header element (even if title is set) and uses aria-label fallback', async () => {
+    const page = await newSpecPage({
+      components: [PopoverComponent],
+      template: () => (
+        <popover-component title="Header" content="Body text" noHeader>
+          <button id="t">T</button>
+        </popover-component>
+      ),
+    });
+
+    const btn = page.root!.querySelector('#t') as HTMLButtonElement;
+    btn.click();
+    await page.waitForChanges();
+
+    const pop = getPopover()!;
+    expect(pop).toBeTruthy();
+
+    // header removed
+    expect(pop.querySelector('.popover-header')).toBeNull();
+
+    // no aria-labelledby without header
+    expect(pop.getAttribute('aria-labelledby')).toBeNull();
+
+    // title becomes aria-label fallback in dialog mode when no header exists
+    expect(pop.getAttribute('aria-label')).toBe('Header');
+
+    // body describedby still wired
+    expect(pop.getAttribute('aria-describedby')).toMatch(/^popover_.*-body$/);
   });
 
   test('outside click hides popover and updates aria-expanded', async () => {
@@ -252,13 +293,8 @@ describe('popover-component', () => {
     const pop = getPopover()!;
     expect(pop.getAttribute('role')).toBe('dialog');
 
-    // ✅ now this is expected to exist
     expect(pop.getAttribute('aria-label')).toBe('Custom label');
-
-    // still describes by body
     expect(pop.getAttribute('aria-describedby')).toMatch(/^popover_.*-body$/);
-
-    // and should NOT have aria-labelledby since no header
     expect(pop.getAttribute('aria-labelledby')).toBeNull();
   });
 });

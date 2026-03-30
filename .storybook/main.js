@@ -1,5 +1,6 @@
 // .storybook/main.js
 export default {
+  logLevel: 'warn', // or 'error' to be stricter
   framework: { name: '@storybook/web-components-vite', options: {} },
   stories: ['../stories/**/*.stories.@(js|ts|tsx)'],
   addons: ['@storybook/addon-essentials', '@storybook/addon-a11y', '@storybook/addon-interactions'],
