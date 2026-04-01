@@ -1,0 +1,28 @@
+/* src/global/_tokens.scss */
+/**
+ * Shared design tokens (variants) for all components.
+ * Import this into component SCSS files.
+ */
+
+$cc-variants: (
+  primary: (c: #1867c0, header-text: #fff),
+  secondary: (c: #6c757d, header-text: #fff),
+  success: (c: #28a745, header-text: #fff),
+  info: (c: #17a2b8, header-text: #FFF),
+  warning: (c: #ffc107, header-text: #000),
+  danger: (c: #dc3545, header-text: #fff),
+  dark: (c: #343a40, header-text: #fff),
+  light: (c: #f8f9fa, header-text: #000)
+);
+
+@function cc-var($name, $key) {
+  @return map-get(map-get($cc-variants, $name), $key);
+}
+
+@mixin cc-variant-classes($selector: '&', $apply: null) {
+  @each $name, $cfg in $cc-variants {
+    #{$selector}.#{$name} {
+      @content ($name, $cfg);
+    }
+  }
+}

@@ -10,12 +10,13 @@ export default {
         component:
           'A versatile progress display component supporting linear and circular styles, with options for single or multiple bars, animations, custom labels, and accessibility overrides.',
       },
+      source: { type: 'dynamic' },
     },
   },
   argTypes: {
     /* -----------------------------
      Accessibility
-  ------------------------------ */
+    ------------------------------ */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -37,7 +38,7 @@ export default {
 
     /* -----------------------------
      Mode & Structure
-  ------------------------------ */
+    ------------------------------ */
     circular: {
       control: 'boolean',
       description: 'Renders a circular progress indicator.',
@@ -56,7 +57,7 @@ export default {
 
     /* -----------------------------
      Value & Formatting (Common)
-  ------------------------------ */
+    ------------------------------ */
     value: {
       control: { type: 'number', min: 0, max: 100, step: 1 },
       description: 'Current value of the progress.',
@@ -75,10 +76,11 @@ export default {
 
     /* -----------------------------
      Labels & Slot Demo (Linear stories)
-  ------------------------------ */
+    ------------------------------ */
     label: {
       control: 'text',
-      description: "Optional label text. This can be used on it's own or with the `use-named-bar-0` option. Leave empty for no label.",
+      description:
+        "Optional label text. This can be used on it's own or with the `use-named-bar-0` option. Leave empty for no label.",
       table: { category: 'Labels & Slot Demo' },
     },
     useNamedBar0: {
@@ -99,13 +101,13 @@ export default {
       control: { type: 'select' },
       options: ['', 'left', 'right'],
       name: 'progress-align',
-      description: 'Alignment of label vs progress text within the bar when both are present (e.g., with `label` or slot content).',
+      description: 'Alignment of label vs progress text within the bar when both are present.',
       table: { category: 'Labels & Slot Demo' },
     },
 
     /* -----------------------------
      Display Toggles (Common)
-  ------------------------------ */
+    ------------------------------ */
     showProgress: {
       control: 'boolean',
       name: 'show-progress',
@@ -121,7 +123,7 @@ export default {
 
     /* -----------------------------
      Styling (Common / Linear)
-  ------------------------------ */
+    ------------------------------ */
     variant: {
       control: { type: 'select' },
       options: ['', 'primary', 'secondary', 'success', 'danger', 'info', 'warning', 'dark'],
@@ -131,7 +133,7 @@ export default {
 
     /* -----------------------------
      Linear Options
-  ------------------------------ */
+    ------------------------------ */
     height: {
       control: { type: 'number', min: 4, step: 1 },
       description: 'Height of the progress bar in pixels (linear only).',
@@ -155,7 +157,7 @@ export default {
 
     /* -----------------------------
      Circular Options
-  ------------------------------ */
+    ------------------------------ */
     size: {
       control: { type: 'number', min: 32, step: 1 },
       description: 'Diameter of the circular progress indicator in pixels (circular only).',
@@ -196,9 +198,9 @@ export default {
   },
 };
 
-const boolLine = (name, on) => (on ? name : null);
+const boolAttr = (name, on) => (on ? name : null);
 
-const attrLine = (name, v) => {
+const attr = (name, v) => {
   if (v === undefined || v === null || v === '') return null;
   const s = String(v);
   const useSingle = s.includes('"');
@@ -206,124 +208,200 @@ const attrLine = (name, v) => {
   return `${name}=${useSingle ? `'${escaped}'` : `"${escaped}"`}`;
 };
 
-const serializeBars = bars => {
-  if (!bars) return '';
+const serializeBars = (bars) => {
+  if (!bars) return null;
   try {
-    return JSON.stringify(bars);
+    const s = JSON.stringify(bars);
+    return s && s !== '[]' ? s : null;
   } catch {
-    return '';
+    return null;
   }
 };
 
-const LinearTemplate = args => {
+const resolveMode = (args) => (args.multi ? 'multi' : args.circular ? 'circular' : 'linear');
+
+/* -------------------------------------------------------------------------- */
+/* Docs source: single serializer (code preview)                               */
+/* -------------------------------------------------------------------------- */
+const buildAttrsForMarkup = (args) => {
   const labelText = String(args.label ?? '').trim();
   const useNamed = !!labelText && !!args.useNamedBar0;
 
+  const mode = resolveMode(args);
+  const isLinear = mode === 'linear';
+  const isCircular = mode === 'circular';
+  const isMulti = mode === 'multi';
+
+  return [
+    // mode
+    isCircular ? 'circular' : null,
+    isMulti ? 'multi' : null,
+
+    // a11y overrides
+    attr('aria-label', args.ariaLabel),
+    attr('aria-labelledby', args.ariaLabelledby),
+    attr('aria-describedby', args.ariaDescribedby),
+
+    // common
+    attr('label', labelText),
+    attr('value', args.value),
+    attr('max', args.max),
+    attr('precision', args.precision),
+    boolAttr('show-progress', args.showProgress),
+    boolAttr('show-value', args.showValue),
+    attr('variant', args.variant),
+
+    // linear-only
+    isLinear || isMulti ? attr('height', args.height) : null,
+    isLinear ? boolAttr('striped', args.striped) : null,
+    isLinear ? boolAttr('animated', args.animated) : null,
+    isLinear ? attr('progress-align', args.progressAlign) : null,
+    isLinear ? attr('styles', args.styles) : null,
+    isLinear ? boolAttr('use-named-bar-0', useNamed) : null,
+
+    // multi-only
+    isMulti ? attr('bars', serializeBars(args.bars)) : null,
+
+    // circular-only
+    isCircular ? attr('size', args.size) : null,
+    isCircular ? attr('rotate', args.rotate) : null,
+    isCircular ? attr('width', args.strokeWidth) : null,
+    isCircular ? boolAttr('indeterminate', args.indeterminate) : null,
+    isCircular ? boolAttr('line-cap', args.lineCap) : null,
+  ]
+    .filter(Boolean)
+    .join('\n  ');
+};
+
+const toMarkup = (args) => {
+  const mode = resolveMode(args);
+  const attrsList = buildAttrsForMarkup(args);
+
   const slotText = String(args.slotText ?? '').trim();
+  const children = String(args.children ?? '').trim();
 
-  const attrs = [
-    // a11y overrides
-    attrLine('aria-label', args.ariaLabel),
-    attrLine('aria-labelledby', args.ariaLabelledby),
-    attrLine('aria-describedby', args.ariaDescribedby),
+  const inner = mode === 'multi' ? children : slotText;
 
-    boolLine('animated', args.animated),
-    attrLine('height', args.height),
-    attrLine('label', labelText),
-    boolLine('use-named-bar-0', useNamed),
-    attrLine('max', args.max),
-    attrLine('precision', args.precision),
-    attrLine('progress-align', args.progressAlign),
-    args.styles ? attrLine('styles', args.styles) : null,
-    boolLine('show-progress', args.showProgress),
-    boolLine('show-value', args.showValue),
-    boolLine('striped', args.striped),
-    attrLine('value', args.value),
-    attrLine('variant', args.variant),
-  ]
-    .filter(Boolean)
-    .join('\n  ');
-
-  if (slotText) {
+  if (inner) {
     return `<progress-display-component
-  ${attrs}
->${slotText}</progress-display-component>`;
-  }
-
-  return `<progress-display-component
-  ${attrs}
-></progress-display-component>`;
-};
-
-const CircularTemplate = args => {
-  const labelText = String(args.label ?? '').trim();
-
-  const attrs = [
-    // a11y overrides
-    attrLine('aria-label', args.ariaLabel),
-    attrLine('aria-labelledby', args.ariaLabelledby),
-    attrLine('aria-describedby', args.ariaDescribedby),
-
-    'circular',
-    attrLine('label', labelText),
-    attrLine('value', args.value),
-    attrLine('max', args.max),
-    attrLine('size', args.size),
-    attrLine('precision', args.precision),
-    attrLine('rotate', args.rotate),
-    attrLine('width', args.strokeWidth),
-    boolLine('indeterminate', args.indeterminate),
-    boolLine('line-cap', args.lineCap),
-    boolLine('show-progress', args.showProgress),
-    boolLine('show-value', args.showValue),
-    attrLine('variant', args.variant),
-  ]
-    .filter(Boolean)
-    .join('\n  ');
-
-  return `<progress-display-component
-  ${attrs}
-></progress-display-component>`;
-};
-
-const MultiTemplate = args => {
-  const labelText = String(args.label ?? '').trim();
-
-  const attrs = [
-    // a11y overrides (apply to group)
-    attrLine('aria-label', args.ariaLabel),
-    attrLine('aria-labelledby', args.ariaLabelledby),
-    attrLine('aria-describedby', args.ariaDescribedby),
-
-    'multi',
-    attrLine('label', labelText),
-    attrLine('height', args.height),
-    attrLine('bars', serializeBars(args.bars)),
-  ]
-    .filter(Boolean)
-    .join('\n  ');
-
-  const children = (args.children || '').trim();
-  if (children) {
-    return `<progress-display-component
-  ${attrs}
+  ${attrsList}
 >
-  ${children}
+  ${inner}
 </progress-display-component>`;
   }
 
   return `<progress-display-component
-  ${attrs}
+  ${attrsList}
 ></progress-display-component>`;
+};
+
+/* -------------------------------------------------------------------------- */
+/* Canvas render: create element + apply args (fixes label not updating)       */
+/* -------------------------------------------------------------------------- */
+const setBoolAttr = (el, name, on) => (on ? el.setAttribute(name, '') : el.removeAttribute(name));
+
+const setAttr = (el, name, v) => {
+  if (v === undefined || v === null || v === '') el.removeAttribute(name);
+  else el.setAttribute(name, String(v));
+};
+
+const setMaybeProp = (el, name, v) => {
+  try {
+    // eslint-disable-next-line no-param-reassign
+    el[name] = v;
+  } catch {}
+};
+
+const applyArgsToElement = (el, args) => {
+  const mode = resolveMode(args);
+
+  // mode flags
+  setBoolAttr(el, 'circular', mode === 'circular');
+  setBoolAttr(el, 'multi', mode === 'multi');
+
+  // a11y
+  setAttr(el, 'aria-label', args.ariaLabel);
+  setAttr(el, 'aria-labelledby', args.ariaLabelledby);
+  setAttr(el, 'aria-describedby', args.ariaDescribedby);
+
+  // common
+  const labelText = String(args.label ?? '').trim();
+  setAttr(el, 'label', labelText);
+  setMaybeProp(el, 'label', labelText); // ✅ covers components that only react to prop changes
+
+  setAttr(el, 'value', args.value);
+  setAttr(el, 'max', args.max);
+  setAttr(el, 'precision', args.precision);
+  setBoolAttr(el, 'show-progress', !!args.showProgress);
+  setBoolAttr(el, 'show-value', !!args.showValue);
+  setAttr(el, 'variant', args.variant);
+
+  // linear-only
+  if (mode === 'linear') {
+    setAttr(el, 'height', args.height);
+    setBoolAttr(el, 'striped', !!args.striped);
+    setBoolAttr(el, 'animated', !!args.animated);
+    setAttr(el, 'progress-align', args.progressAlign);
+    setAttr(el, 'styles', args.styles);
+
+    const useNamed = !!labelText && !!args.useNamedBar0;
+    setBoolAttr(el, 'use-named-bar-0', useNamed);
+
+    const slotText = String(args.slotText ?? '').trim();
+    el.innerHTML = slotText;
+  }
+
+  // multi-only
+  if (mode === 'multi') {
+    setAttr(el, 'height', args.height);
+
+    const bars = (() => {
+      if (!args.bars) return '';
+      try {
+        return JSON.stringify(args.bars);
+      } catch {
+        return '';
+      }
+    })();
+    setAttr(el, 'bars', bars);
+
+    const children = String(args.children ?? '').trim();
+    el.innerHTML = children;
+  }
+
+  // circular-only
+  if (mode === 'circular') {
+    setAttr(el, 'size', args.size);
+    setAttr(el, 'rotate', args.rotate);
+    setAttr(el, 'width', args.strokeWidth);
+    setBoolAttr(el, 'indeterminate', !!args.indeterminate);
+    setBoolAttr(el, 'line-cap', !!args.lineCap);
+    el.innerHTML = '';
+  }
+};
+
+const RenderElement = (args) => {
+  const wrap = document.createElement('div');
+
+  // ✅ remount on arg change (covers read-once components)
+  const key = btoa(unescape(encodeURIComponent(JSON.stringify(args)))).slice(0, 32);
+
+  const el = document.createElement('progress-display-component');
+  el.setAttribute('data-sb-key', key);
+
+  applyArgsToElement(el, args);
+
+  wrap.appendChild(el);
+  return wrap;
 };
 
 /* ===========================
    Stories
    =========================== */
 
-export const LinearBasic = {
-  name: 'Linear Basic',
-  render: LinearTemplate,
+export const Default = {
+  name: 'Default',
+  render: RenderElement,
   args: {
     // mode toggles
     circular: false,
@@ -366,99 +444,15 @@ export const LinearBasic = {
   parameters: {
     docs: {
       source: {
+        type: 'dynamic',
         language: 'html',
-        transform: (_code, storyContext) => LinearTemplate(storyContext.args),
+        transform: (_code, ctx) => toMarkup(ctx.args),
       },
       description: {
         story:
-          'A basic linear progress bar. Default slot content (e.g., "Loading") can be provided between the tags. `slotText` is a Storybook-only control to demonstrate that behavior from Controls.',
+          'One story that can switch between linear, circular, and multi via Controls. The Docs source and the rendered example stay in sync.',
       },
     },
-  },
-};
-
-export const LinearSingleNamedSlotBar0 = () => `
-<progress-display-component use-named-bar-0 label="Uploading" show-progress value="75" variant="primary">
-</progress-display-component>
-`;
-LinearSingleNamedSlotBar0.storyName = 'Linear (Single) — use-named-bar-0 + label';
-LinearSingleNamedSlotBar0.parameters = {
-  controls: { disable: true },
-  docs: {
-    source: { code: LinearSingleNamedSlotBar0(), language: 'html' },
-    description: {
-      story:
-        'Uses `label` plus `use-named-bar-0` to wrap the label as an internal `<span slot="bar-0">…</span>` for single-bar compatibility with multi-bar markup.',
-    },
-  },
-};
-
-export const LinearLabelAttr = () => `
-<progress-display-component label="Progress" show-progress value="50" variant="primary">
-</progress-display-component>
-`;
-LinearLabelAttr.storyName = 'Linear (Single) — label attribute';
-LinearLabelAttr.parameters = {
-  controls: { disable: true },
-  docs: {
-    source: { code: LinearLabelAttr(), language: 'html' },
-    description: { story: 'Using the `label` attribute wires aria-labelledby to a real label id and renders a visible label.' },
-  },
-};
-
-export const LinearStripedAnimated = LinearTemplate.bind({});
-LinearStripedAnimated.args = {
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
-  animated: true,
-  height: 18,
-  label: '',
-  useNamedBar0: false,
-  slotText: '',
-  max: 100,
-  precision: 0,
-  progressAlign: '',
-  showProgress: true,
-  showValue: false,
-  striped: true,
-  styles: '',
-  value: 72,
-  variant: 'success',
-};
-LinearStripedAnimated.storyName = 'Linear Striped & Animated';
-LinearStripedAnimated.parameters = {
-  docs: {
-    source: { code: LinearTemplate(LinearStripedAnimated.args), language: 'html' },
-    description: { story: 'A linear progress bar with striped styling and animation enabled.' },
-  },
-};
-
-export const LinearWithCustomStyles = LinearTemplate.bind({});
-LinearWithCustomStyles.args = {
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
-  animated: false,
-  height: 12,
-  label: '',
-  useNamedBar0: false,
-  slotText: '',
-  max: 100,
-  precision: 0,
-  progressAlign: 'left',
-  showProgress: false,
-  showValue: true,
-  striped: false,
-  styles: 'border-radius:8px; overflow:hidden; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);',
-  value: 30,
-  variant: 'warning',
-};
-LinearWithCustomStyles.storyName = 'Linear With Custom Styles';
-LinearWithCustomStyles.parameters = {
-  docs: {
-    source: { code: LinearTemplate(LinearWithCustomStyles.args), language: 'html' },
-    description: { story: 'A linear progress bar with custom CSS styles applied.' },
   },
 };
 
@@ -500,133 +494,9 @@ AnimatedValueViaJS.parameters = {
   },
 };
 
-export const MultiStacked = MultiTemplate.bind({});
-MultiStacked.args = {
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
-  height: 18,
-  label: '',
-  bars: [
-    { value: 20, variant: 'primary', striped: false, animated: false, showProgress: true, precision: 0, progressAlign: '' },
-    { value: 35, variant: 'success', striped: true, animated: true, showProgress: true, precision: 0, progressAlign: '' },
-    { value: 15, variant: 'danger', striped: false, animated: false, showProgress: true, precision: 0, progressAlign: '' },
-  ],
-  children: '',
-};
-MultiStacked.storyName = 'Multi Stacked';
-MultiStacked.parameters = {
-  docs: {
-    source: { code: MultiTemplate(MultiStacked.args), language: 'html' },
-    description: { story: 'A multi-segment linear progress bar with stacked bars.' },
-  },
-};
-
-export const MultiWithLeftRightText = MultiTemplate.bind({});
-MultiWithLeftRightText.args = {
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
-  height: 20,
-  label: '',
-  bars: [
-    { value: 40, variant: 'info', showProgress: true, progressAlign: 'left', precision: 0 },
-    { value: 25, variant: 'warning', showProgress: true, progressAlign: 'right', precision: 0 },
-  ],
-  children: `
-<span slot="bar-0">Info chunk</span>
-<span slot="bar-1">Warn chunk</span>
-`,
-};
-MultiWithLeftRightText.storyName = 'Multi With Left/Right Labels';
-MultiWithLeftRightText.parameters = {
-  docs: {
-    source: { code: MultiTemplate(MultiWithLeftRightText.args), language: 'html' },
-    description: { story: 'A multi-segment linear progress bar with left/right aligned text in each bar.' },
-  },
-};
-
-export const CircularBasic = CircularTemplate.bind({});
-CircularBasic.args = {
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
-  label: '',
-  value: 64,
-  max: 100,
-  size: 96,
-  rotate: 0,
-  strokeWidth: 6,
-  precision: 0,
-  lineCap: false,
-  showProgress: true,
-  showValue: false,
-  indeterminate: false,
-  variant: 'primary',
-};
-CircularBasic.storyName = 'Circular Basic';
-CircularBasic.parameters = {
-  docs: {
-    source: { code: CircularTemplate(CircularBasic.args), language: 'html' },
-    description: { story: 'A basic circular progress bar.' },
-  },
-};
-
-export const CircularRotatedWide = CircularTemplate.bind({});
-CircularRotatedWide.args = {
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
-  label: '',
-  value: 80,
-  max: 100,
-  size: 120,
-  rotate: -90,
-  strokeWidth: 10,
-  precision: 0,
-  lineCap: true,
-  showProgress: true,
-  showValue: false,
-  indeterminate: false,
-  variant: 'info',
-};
-CircularRotatedWide.storyName = 'Circular Rotated + Wide';
-CircularRotatedWide.parameters = {
-  docs: {
-    source: { code: CircularTemplate(CircularRotatedWide.args), language: 'html' },
-    description: { story: 'A circular progress bar with rotation and wider stroke.' },
-  },
-};
-
-export const CircularIndeterminate = CircularTemplate.bind({});
-CircularIndeterminate.args = {
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
-  label: '',
-  value: 0,
-  max: 100,
-  size: 80,
-  rotate: 0,
-  strokeWidth: 4,
-  precision: 0,
-  lineCap: false,
-  showProgress: false,
-  showValue: false,
-  indeterminate: true,
-  variant: 'secondary',
-};
-CircularIndeterminate.storyName = 'Circular Indeterminate';
-CircularIndeterminate.parameters = {
-  docs: {
-    source: { code: CircularTemplate(CircularIndeterminate.args), language: 'html' },
-    description: { story: 'A circular progress bar in indeterminate state.' },
-  },
-};
-
 /* ============================== Accessibility Matrix (computed) ============================== */
 
-const getSnapshot = host => {
+const getSnapshot = (host) => {
   const root = host;
   const group = root?.querySelector?.('[role="group"]');
   const bars = Array.from(root?.querySelectorAll?.('[role="progressbar"]') || []);
@@ -636,7 +506,7 @@ const getSnapshot = host => {
     return !!scope?.querySelector?.(`#${CSS.escape(id)}`);
   };
 
-  const snapEl = el => {
+  const snapEl = (el) => {
     if (!el) return null;
     const describedby = (el.getAttribute('aria-describedby') || '').trim();
     const describedIds = describedby ? describedby.split(/\s+/).filter(Boolean) : [];
@@ -658,9 +528,9 @@ const getSnapshot = host => {
       'aria-valuetext': el.getAttribute('aria-valuetext'),
       'aria-busy': el.getAttribute('aria-busy'),
       labelledbyIds: labelledIds,
-      labelledbyAllResolve: labelledIds.every(id => resolveIn(root, id)),
+      labelledbyAllResolve: labelledIds.every((x) => resolveIn(root, x)),
       describedbyIds: describedIds,
-      describedbyAllResolve: describedIds.every(id => resolveIn(root, id)),
+      describedbyAllResolve: describedIds.every((x) => resolveIn(root, x)),
     };
   };
 
@@ -675,7 +545,7 @@ const getSnapshot = host => {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
-  render: args => {
+  render: (args) => {
     const wrap = document.createElement('div');
     wrap.style.display = 'grid';
     wrap.style.gap = '16px';
@@ -722,13 +592,12 @@ export const AccessibilityMatrix = {
         if (host?.componentOnReady) {
           try {
             await host.componentOnReady();
-          } catch (_e) {}
+          } catch {}
         } else if (window.customElements?.whenDefined) {
           try {
             await customElements.whenDefined('progress-display-component');
-          } catch (_e) {}
+          } catch {}
         }
-
         pre.textContent = JSON.stringify(getSnapshot(host), null, 2);
       };
 
@@ -740,14 +609,6 @@ export const AccessibilityMatrix = {
       return box;
     };
 
-    // NOTE: "default/inline/horizontal, error/validation, disabled" are not native concepts for progress.
-    // We map them to representative states:
-    // - default: linear determinate
-    // - inline: small height + inline label/progress text
-    // - horizontal: multi stacked (horizontal segments)
-    // - error/validation: danger variant + describedby
-    // - disabled: indeterminate/busy
-
     const helpId = `mx-help-${Math.random().toString(36).slice(2, 7)}`;
     const helpText = `<div id="${helpId}" style="font-size:12px; opacity:.85;">Help text describing this progress indicator.</div>`;
 
@@ -756,7 +617,7 @@ export const AccessibilityMatrix = {
         'Default (linear determinate)',
         `
         ${helpText}
-        ${LinearTemplate({ ...LinearBasic.args, ...args, ariaDescribedby: helpId, value: 35, showProgress: true, slotText: '' })}
+        ${toMarkup({ ...Default.args, ...args, circular: false, multi: false, ariaDescribedby: helpId, value: 35, slotText: '' })}
       `,
       ),
     );
@@ -765,7 +626,7 @@ export const AccessibilityMatrix = {
       card(
         'Inline (compact)',
         `
-        ${LinearTemplate({ ...LinearBasic.args, ...args, height: 10, value: 60, showProgress: true, progressAlign: 'right', slotText: 'Loading' })}
+        ${toMarkup({ ...Default.args, ...args, circular: false, multi: false, height: 10, value: 60, showProgress: true, progressAlign: 'right', slotText: 'Loading' })}
       `,
       ),
     );
@@ -774,15 +635,22 @@ export const AccessibilityMatrix = {
       card(
         'Horizontal (multi stacked)',
         `
-        ${MultiTemplate({
-          ...MultiStacked.args,
+        ${toMarkup({
+          ...Default.args,
           ...args,
+          circular: false,
+          multi: true,
           label: 'Stacked segments',
           bars: [
             { value: 20, variant: 'primary', showProgress: true },
             { value: 35, variant: 'success', showProgress: true },
             { value: 15, variant: 'warning', showProgress: true },
           ],
+          children: `
+<span slot="bar-0">Primary chunk</span>
+<span slot="bar-1">Success chunk</span>
+<span slot="bar-2">Warn chunk</span>
+          `.trim(),
         })}
       `,
       ),
@@ -793,7 +661,7 @@ export const AccessibilityMatrix = {
         'Error / validation (danger + describedby)',
         `
         ${helpText}
-        ${LinearTemplate({ ...LinearBasic.args, ...args, ariaDescribedby: helpId, variant: 'danger', value: 15, showProgress: true, slotText: '' })}
+        ${toMarkup({ ...Default.args, ...args, circular: false, multi: false, ariaDescribedby: helpId, variant: 'danger', value: 15, showProgress: true, slotText: '' })}
       `,
       ),
     );
@@ -802,7 +670,7 @@ export const AccessibilityMatrix = {
       card(
         'Disabled / busy (indeterminate)',
         `
-        ${CircularTemplate({ ...CircularIndeterminate.args, ...args, indeterminate: true, variant: 'secondary', label: 'Loading', showProgress: false })}
+        ${toMarkup({ ...Default.args, ...args, circular: true, multi: false, indeterminate: true, variant: 'secondary', label: 'Loading', showProgress: false, slotText: '' })}
       `,
       ),
     );
@@ -812,11 +680,11 @@ export const AccessibilityMatrix = {
   parameters: {
     controls: { disable: true },
     docs: {
+      source: { language: 'html', type: 'dynamic' },
       description: {
         story:
           'Prints computed accessibility wiring for progress. Shows `role="progressbar"` (and `role="group"` for multi) plus `aria-valuenow/max/min` or indeterminate `aria-busy`, and validates that `aria-labelledby` / `aria-describedby` ids resolve.',
       },
-      source: { language: 'html', type: 'dynamic' },
     },
   },
 };

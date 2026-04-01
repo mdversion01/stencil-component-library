@@ -156,8 +156,7 @@ export class BasicSliderComponent {
 
     // If aria-labelledby exists, do NOT set aria-label.
     // Otherwise: aria-label = (user aria-label) OR (label prop) OR fallback
-    const ariaLabel =
-      ariaLabelledBy ? undefined : userLabel ?? ((this.label ?? '').trim() ? (this.label ?? '').trim() : 'Slider');
+    const ariaLabel = ariaLabelledBy ? undefined : (userLabel ?? ((this.label ?? '').trim() ? (this.label ?? '').trim() : 'Slider'));
 
     const ariaDescribedBy = userDescribedBy;
 
@@ -291,108 +290,108 @@ export class BasicSliderComponent {
 
     const { ariaLabel, ariaLabelledBy, ariaDescribedBy } = this.computeA11y();
 
-    const thumbContainerClass = ['slider-thumb-container', color, this.disabled ? 'slider-thumb-container-disabled' : '']
-      .filter(Boolean)
-      .join(' ');
+    const thumbContainerClass = ['slider-thumb-container', color, this.disabled ? 'slider-thumb-container-disabled' : ''].filter(Boolean).join(' ');
 
     const valueText = this.formatWithUnit(this.value);
 
     return (
-      <div class="slider-wrapper">
-        <div dir="ltr" class="slider" role="presentation">
-          {/* Visible label (also becomes aria-labelledby target) */}
-          {this.sliderThumbLabel || !this.label ? null : (
-            <label id={labelId} class="form-control-label">
-              {this.label} <span id={valueId}>{valueText}</span>
-            </label>
-          )}
-
-          <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
-            {!hideLeft && (
-              <div role="textbox" aria-readonly="true" aria-labelledby={labelId} class="slider-value-left">
-                {valueText}
-              </div>
+      <div class="sc-slider">
+        <div class="slider-wrapper">
+          <div dir="ltr" class="slider" role="presentation">
+            {/* Visible label (also becomes aria-labelledby target) */}
+            {this.sliderThumbLabel || !this.label ? null : (
+              <label id={labelId} class="form-control-label">
+                {this.label} <span id={valueId}>{valueText}</span>
+              </label>
             )}
 
-            <div class="slider-min-value" aria-hidden="true">
-              {this.formatWithUnit(this.min)}
-            </div>
+            <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
+              {!hideLeft && (
+                <div role="textbox" aria-readonly="true" aria-labelledby={labelId} class="slider-value-left">
+                  {valueText}
+                </div>
+              )}
 
-            <div class="slider-controls" role="presentation">
-              <div class="slider-background-track" style={{ width: '100%' }} aria-hidden="true" />
-              <div class={`slider-moving-track ${color}`} style={{ width: `${pct}%` }} aria-hidden="true" />
+              <div class="slider-min-value" aria-hidden="true">
+                {this.formatWithUnit(this.min)}
+              </div>
 
-              {/* ✅ THIS is the one and only slider element for AT + keyboard focus */}
-              <div
-                class={thumbContainerClass}
-                style={{ left: `${pct}%`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
-                onMouseDown={this.disabled ? undefined : this.onDragStart}
-                onKeyDown={this.handleKeyDown}
-                onKeyUp={this.handleKeyUp}
-                role="slider"
-                tabIndex={this.disabled ? -1 : 0}
-                aria-label={ariaLabel}
-                aria-labelledby={ariaLabelledBy}
-                aria-describedby={ariaDescribedBy}
-                aria-valuemin={String(this.min)}
-                aria-valuemax={String(this.max)}
-                aria-valuenow={String(Math.round(this.value))}
-                aria-valuetext={valueText}
-                aria-orientation="horizontal"
-                aria-disabled={this.disabled ? 'true' : undefined}
-              >
-                {/* purely visual thumb */}
-                {this.plumage ? (
-                  <div class={`slider-handle ${color}`} role="presentation" aria-hidden="true" />
-                ) : (
-                  <div class={`slider-thumb ${color}`} role="presentation" aria-hidden="true" />
-                )}
+              <div class="slider-controls" role="presentation">
+                <div class="slider-background-track" style={{ width: '100%' }} aria-hidden="true" />
+                <div class={`slider-moving-track ${color}`} style={{ width: `${pct}%` }} aria-hidden="true" />
 
-                {this.sliderThumbLabel ? (
-                  <div
-                    class={`slider-thumb-label ${color}`}
-                    style={{
-                      position: 'absolute',
-                      left: `${pct}%`,
-                      transform: 'translateX(-50%) translateY(30%) translateY(-100%) rotate(45deg)',
-                    }}
-                    aria-hidden="true"
-                  >
-                    <div>
-                      <span>{valueText}</span>
+                {/* ✅ THIS is the one and only slider element for AT + keyboard focus */}
+                <div
+                  class={thumbContainerClass}
+                  style={{ left: `${pct}%`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
+                  onMouseDown={this.disabled ? undefined : this.onDragStart}
+                  onKeyDown={this.handleKeyDown}
+                  onKeyUp={this.handleKeyUp}
+                  role="slider"
+                  tabIndex={this.disabled ? -1 : 0}
+                  aria-label={ariaLabel}
+                  aria-labelledby={ariaLabelledBy}
+                  aria-describedby={ariaDescribedBy}
+                  aria-valuemin={String(this.min)}
+                  aria-valuemax={String(this.max)}
+                  aria-valuenow={String(Math.round(this.value))}
+                  aria-valuetext={valueText}
+                  aria-orientation="horizontal"
+                  aria-disabled={this.disabled ? 'true' : undefined}
+                >
+                  {/* purely visual thumb */}
+                  {this.plumage ? (
+                    <div class={`slider-handle ${color}`} role="presentation" aria-hidden="true" />
+                  ) : (
+                    <div class={`slider-thumb ${color}`} role="presentation" aria-hidden="true" />
+                  )}
+
+                  {this.sliderThumbLabel ? (
+                    <div
+                      class={`slider-thumb-label ${color}`}
+                      style={{
+                        position: 'absolute',
+                        left: `${pct}%`,
+                        transform: 'translateX(-50%) translateY(30%) translateY(-100%) rotate(45deg)',
+                      }}
+                      aria-hidden="true"
+                    >
+                      <div>
+                        <span>{valueText}</span>
+                      </div>
                     </div>
+                  ) : null}
+                </div>
+
+                {showTicks ? (
+                  <div class="slider-ticks" aria-hidden="true">
+                    {this._ticks.map(tick => {
+                      const pos = ((tick - this.min) / Math.max(1e-9, this.max - this.min)) * 100;
+                      return (
+                        <div>
+                          <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} />
+                          {this.tickLabels ? (
+                            <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
+                              {this.formatWithUnit(tick)}
+                            </div>
+                          ) : null}
+                        </div>
+                      );
+                    })}
                   </div>
                 ) : null}
               </div>
 
-              {showTicks ? (
-                <div class="slider-ticks" aria-hidden="true">
-                  {this._ticks.map(tick => {
-                    const pos = ((tick - this.min) / Math.max(1e-9, this.max - this.min)) * 100;
-                    return (
-                      <div>
-                        <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} />
-                        {this.tickLabels ? (
-                          <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
-                            {this.formatWithUnit(tick)}
-                          </div>
-                        ) : null}
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : null}
-            </div>
-
-            <div class="slider-max-value" aria-hidden="true">
-              {this.formatWithUnit(this.max)}
-            </div>
-
-            {!hideRight && (
-              <div role="textbox" aria-readonly="true" aria-labelledby={labelId} class="slider-value-right">
-                {valueText}
+              <div class="slider-max-value" aria-hidden="true">
+                {this.formatWithUnit(this.max)}
               </div>
-            )}
+
+              {!hideRight && (
+                <div role="textbox" aria-readonly="true" aria-labelledby={labelId} class="slider-value-right">
+                  {valueText}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -5,8 +5,8 @@ import { DiscreteSliderComponent } from './discrete-slider-component';
 
 // ---- helpers ---------------------------------------------------------------
 
-function getContainer(root: HTMLElement) {
-  return root.querySelector('.slider-container') as HTMLDivElement | null;
+function getControls(root: HTMLElement) {
+  return root.querySelector('.slider-controls') as HTMLDivElement | null;
 }
 function getSliderEl(root: HTMLElement) {
   return root.querySelector('[role="slider"]') as HTMLElement | null;
@@ -36,11 +36,15 @@ function splitIds(v: string | null): string[] {
     .filter(Boolean);
 }
 
-// crude bbox mock for slider container (so drag math works deterministically)
-function mockContainerRects(page: any, { left = 0, width = 200 }: { left?: number; width?: number } = {}) {
-  const container = getContainer(page.root as HTMLElement)!;
-  const original = container.getBoundingClientRect;
-  (container as any).getBoundingClientRect = () =>
+/**
+ * ✅ Updated for new drag math: the component now reads getBoundingClientRect()
+ * from `.slider-controls` (track), not `.slider-container`.
+ */
+function mockControlsRects(page: any, { left = 0, width = 200 }: { left?: number; width?: number } = {}) {
+  const controls = getControls(page.root as HTMLElement)!;
+  const original = controls.getBoundingClientRect;
+
+  (controls as any).getBoundingClientRect = () =>
     ({
       left,
       right: left + width,
@@ -54,7 +58,7 @@ function mockContainerRects(page: any, { left = 0, width = 200 }: { left?: numbe
     } as any);
 
   return () => {
-    (container as any).getBoundingClientRect = original;
+    (controls as any).getBoundingClientRect = original;
   };
 }
 
@@ -69,7 +73,7 @@ describe('discrete-slider-component', () => {
 
     const root = page.root as HTMLElement;
 
-    expect(getContainer(root)).toBeTruthy();
+    expect(getControls(root)).toBeTruthy();
     expect(getMovingTrack(root)).toBeTruthy();
     expect(getRightTextbox(root)).toBeTruthy();
 
@@ -175,7 +179,9 @@ describe('discrete-slider-component', () => {
       template: () => <discrete-slider-component string-values='["A","B","C","D","E"]' selected-index={0} />,
     });
 
-    const teardown = mockContainerRects(page, { left: 0, width: 200 });
+    // ✅ updated mock: drag math uses `.slider-controls`
+    const teardown = mockControlsRects(page, { left: 0, width: 200 });
+
     const host = page.root as HTMLElement;
     const slider = getSliderEl(host)!;
 

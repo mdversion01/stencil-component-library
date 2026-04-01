@@ -161,8 +161,9 @@ export class MultiRangeSliderComponent {
     const autoLabelId = hasVisibleLabel ? this.getA11yLabelId() : undefined;
     const ariaLabelledBy = userLabelledBy ?? autoLabelId;
 
-    const ariaLabel =
-      ariaLabelledBy ? undefined : userLabel ?? ((this.label ?? '').trim() ? (this.label ?? '').trim() : 'Range slider');
+    const ariaLabel = ariaLabelledBy
+      ? undefined
+      : userLabel ?? ((this.label ?? '').trim() ? (this.label ?? '').trim() : 'Range slider');
 
     return { ariaLabel, ariaLabelledBy, ariaDescribedBy: userDescribedBy };
   }
@@ -309,150 +310,148 @@ export class MultiRangeSliderComponent {
     const upperText = this.formatWithUnit(this.upperValue);
     const rangeText = `${lowerText} – ${upperText}`;
 
-    const lowerThumbContainerClass = ['slider-thumb-container', 'lower-thumb', color, this.disabled ? 'slider-thumb-container-disabled' : '']
-      .filter(Boolean)
-      .join(' ');
-    const upperThumbContainerClass = ['slider-thumb-container', 'upper-thumb', color, this.disabled ? 'slider-thumb-container-disabled' : '']
-      .filter(Boolean)
-      .join(' ');
+    const lowerThumbContainerClass = ['slider-thumb-container', 'lower-thumb', color, this.disabled ? 'slider-thumb-container-disabled' : ''].filter(Boolean).join(' ');
+    const upperThumbContainerClass = ['slider-thumb-container', 'upper-thumb', color, this.disabled ? 'slider-thumb-container-disabled' : ''].filter(Boolean).join(' ');
 
     return (
-      <div class="slider-wrapper">
-        <div dir="ltr" class="slider" role="presentation">
-          {hasVisibleLabel ? (
-            <label id={labelId} class="form-control-label">
-              {this.label} <span id={valueId}>{rangeText}</span>
-            </label>
-          ) : null}
+      <div class="sc-slider">
+        <div class="slider-wrapper">
+          <div dir="ltr" class="slider" role="presentation">
+            {hasVisibleLabel ? (
+              <label id={labelId} class="form-control-label">
+                {this.label} <span id={valueId}>{rangeText}</span>
+              </label>
+            ) : null}
 
-          <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
-            {!hideLeft && (
-              <div role="textbox" aria-readonly="true" aria-labelledby={hasVisibleLabel ? labelId : undefined} class="slider-value-left">
-                {lowerText}
-              </div>
-            )}
-
-            <div class="slider-min-value" aria-hidden="true">
-              {this.formatWithUnit(this.min)}
-            </div>
-
-            <div class="slider-controls" role="presentation">
-              <div class={`slider-track multi ${color}`} style={{ width: `${lowerPct}%` }} aria-hidden="true" />
-              <div class={`slider-track multi ${color}`} style={{ left: `${lowerPct}%`, right: `${100 - upperPct}%` }} aria-hidden="true" />
-              <div class="slider-track multi" style={{ width: `${100 - upperPct}%` }} aria-hidden="true" />
-
-              {/* Lower thumb slider */}
-              <div
-                class={lowerThumbContainerClass}
-                style={{ left: `calc(${lowerPct}% - 5px)`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
-                onMouseDown={this.disabled ? undefined : e => this.onThumbMouseDown(e, 'lower')}
-                onFocus={() => (this.activeThumb = 'lower')}
-                onKeyDown={this.onKeyDown}
-                role="slider"
-                tabIndex={this.disabled ? -1 : 0}
-                aria-label={ariaLabelledBy ? undefined : `${ariaLabel ?? 'Range'} lower`}
-                aria-labelledby={ariaLabelledBy}
-                aria-describedby={ariaDescribedBy}
-                aria-orientation="horizontal"
-                aria-disabled={this.disabled ? 'true' : undefined}
-                aria-valuemin={String(this.min)}
-                aria-valuemax={String(this.max)}
-                aria-valuenow={String(Math.round(this.lowerValue))}
-                aria-valuetext={lowerText}
-              >
-                {this.plumage ? (
-                  <div class={`slider-handle ${color}`} role="presentation" aria-hidden="true" />
-                ) : (
-                  <div class={`slider-thumb ${color}`} role="presentation" aria-hidden="true" />
-                )}
-
-                {this.sliderThumbLabel ? (
-                  <div
-                    class={`slider-thumb-label ${color}`}
-                    style={{
-                      position: 'absolute',
-                      left: `${lowerPct}%`,
-                      transform: 'translateX(-30%) translateY(30%) translateY(-100%) rotate(45deg)',
-                    }}
-                    aria-hidden="true"
-                  >
-                    <div>
-                      <span>{lowerText}</span>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-
-              {/* Upper thumb slider */}
-              <div
-                class={upperThumbContainerClass}
-                style={{ left: `calc(${upperPct}% - 8px)`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
-                onMouseDown={this.disabled ? undefined : e => this.onThumbMouseDown(e, 'upper')}
-                onFocus={() => (this.activeThumb = 'upper')}
-                onKeyDown={this.onKeyDown}
-                role="slider"
-                tabIndex={this.disabled ? -1 : 0}
-                aria-label={ariaLabelledBy ? undefined : `${ariaLabel ?? 'Range'} upper`}
-                aria-labelledby={ariaLabelledBy}
-                aria-describedby={ariaDescribedBy}
-                aria-orientation="horizontal"
-                aria-disabled={this.disabled ? 'true' : undefined}
-                aria-valuemin={String(this.min)}
-                aria-valuemax={String(this.max)}
-                aria-valuenow={String(Math.round(this.upperValue))}
-                aria-valuetext={upperText}
-              >
-                {this.plumage ? (
-                  <div class={`slider-handle ${color}`} role="presentation" aria-hidden="true" />
-                ) : (
-                  <div class={`slider-thumb ${color}`} role="presentation" aria-hidden="true" />
-                )}
-
-                {this.sliderThumbLabel ? (
-                  <div
-                    class={`slider-thumb-label ${color}`}
-                    style={{
-                      position: 'absolute',
-                      left: `calc(${upperPct}% + 3px)`,
-                      transform: 'translateX(-30%) translateY(30%) translateY(-100%) rotate(45deg)',
-                    }}
-                    aria-hidden="true"
-                  >
-                    <div>
-                      <span>{upperText}</span>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-
-              {this._ticks.length > 0 ? (
-                <div class="slider-ticks" aria-hidden="true">
-                  {this._ticks.map(tick => {
-                    const pos = ((tick - this.min) / Math.max(1e-9, this.max - this.min)) * 100;
-                    return (
-                      <div>
-                        <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} />
-                        {this.tickLabels ? (
-                          <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
-                            {this.formatWithUnit(tick)}
-                          </div>
-                        ) : null}
-                      </div>
-                    );
-                  })}
+            <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
+              {!hideLeft && (
+                <div role="textbox" aria-readonly="true" aria-labelledby={hasVisibleLabel ? labelId : undefined} class="slider-value-left">
+                  {lowerText}
                 </div>
-              ) : null}
-            </div>
+              )}
 
-            <div class="slider-max-value" aria-hidden="true">
-              {this.formatWithUnit(this.max)}
-            </div>
-
-            {!hideRight && (
-              <div role="textbox" aria-readonly="true" aria-labelledby={hasVisibleLabel ? labelId : undefined} class="slider-value-right">
-                {upperText}
+              <div class="slider-min-value" aria-hidden="true">
+                {this.formatWithUnit(this.min)}
               </div>
-            )}
+
+              <div class="slider-controls" role="presentation">
+                <div class={`slider-track multi ${color}`} style={{ width: `${lowerPct}%` }} aria-hidden="true" />
+                <div class={`slider-track multi ${color}`} style={{ left: `${lowerPct}%`, right: `${100 - upperPct}%` }} aria-hidden="true" />
+                <div class={`slider-track multi ${color}`} style={{ width: `${100 - upperPct}%` }} aria-hidden="true" />
+
+                {/* Lower thumb slider */}
+                <div
+                  class={lowerThumbContainerClass}
+                  style={{ left: `${lowerPct}%`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
+                  onMouseDown={this.disabled ? undefined : e => this.onThumbMouseDown(e, 'lower')}
+                  onFocus={() => (this.activeThumb = 'lower')}
+                  onKeyDown={this.onKeyDown}
+                  role="slider"
+                  tabIndex={this.disabled ? -1 : 0}
+                  aria-label={ariaLabelledBy ? undefined : `${ariaLabel ?? 'Range'} lower`}
+                  aria-labelledby={ariaLabelledBy}
+                  aria-describedby={ariaDescribedBy}
+                  aria-orientation="horizontal"
+                  aria-disabled={this.disabled ? 'true' : undefined}
+                  aria-valuemin={String(this.min)}
+                  aria-valuemax={String(this.max)}
+                  aria-valuenow={String(Math.round(this.lowerValue))}
+                  aria-valuetext={lowerText}
+                >
+                  {this.plumage ? (
+                    <div class={`slider-handle ${color}`} role="presentation" aria-hidden="true" />
+                  ) : (
+                    <div class={`slider-thumb ${color}`} role="presentation" aria-hidden="true" />
+                  )}
+
+                  {this.sliderThumbLabel ? (
+                    <div
+                      class={`slider-thumb-label ${color}`}
+                      style={{
+                        position: 'absolute',
+                        left: `${lowerPct}%`,
+                        transform: 'translateX(-52%) translateY(30%) translateY(-100%) rotate(45deg)',
+                      }}
+                      aria-hidden="true"
+                    >
+                      <div>
+                        <span>{lowerText}</span>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+
+                {/* Upper thumb slider */}
+                <div
+                  class={upperThumbContainerClass}
+                  style={{ left: `${upperPct}%`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
+                  onMouseDown={this.disabled ? undefined : e => this.onThumbMouseDown(e, 'upper')}
+                  onFocus={() => (this.activeThumb = 'upper')}
+                  onKeyDown={this.onKeyDown}
+                  role="slider"
+                  tabIndex={this.disabled ? -1 : 0}
+                  aria-label={ariaLabelledBy ? undefined : `${ariaLabel ?? 'Range'} upper`}
+                  aria-labelledby={ariaLabelledBy}
+                  aria-describedby={ariaDescribedBy}
+                  aria-orientation="horizontal"
+                  aria-disabled={this.disabled ? 'true' : undefined}
+                  aria-valuemin={String(this.min)}
+                  aria-valuemax={String(this.max)}
+                  aria-valuenow={String(Math.round(this.upperValue))}
+                  aria-valuetext={upperText}
+                >
+                  {this.plumage ? (
+                    <div class={`slider-handle ${color}`} role="presentation" aria-hidden="true" />
+                  ) : (
+                    <div class={`slider-thumb ${color}`} role="presentation" aria-hidden="true" />
+                  )}
+
+                  {this.sliderThumbLabel ? (
+                    <div
+                      class={`slider-thumb-label ${color}`}
+                      style={{
+                        position: 'absolute',
+                        left: `calc(${upperPct}% + 3px)`,
+                        transform: 'translateX(-62%) translateY(30%) translateY(-100%) rotate(45deg)',
+                      }}
+                      aria-hidden="true"
+                    >
+                      <div>
+                        <span>{upperText}</span>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+
+                {this._ticks.length > 0 ? (
+                  <div class="slider-ticks" aria-hidden="true">
+                    {this._ticks.map(tick => {
+                      const pos = ((tick - this.min) / Math.max(1e-9, this.max - this.min)) * 100;
+                      return (
+                        <div>
+                          <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} />
+                          {this.tickLabels ? (
+                            <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
+                              {this.formatWithUnit(tick)}
+                            </div>
+                          ) : null}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </div>
+
+              <div class="slider-max-value" aria-hidden="true">
+                {this.formatWithUnit(this.max)}
+              </div>
+
+              {!hideRight && (
+                <div role="textbox" aria-readonly="true" aria-labelledby={hasVisibleLabel ? labelId : undefined} class="slider-value-right">
+                  {upperText}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

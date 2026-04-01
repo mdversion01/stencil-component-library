@@ -1,4 +1,4 @@
-/* path: styles/_popover.scss */
+@use '../../global/tokens' as t;
 
 /* box sizing + inherited decoration */
 *,
@@ -158,16 +158,8 @@
 /* Base popover (bootstrap-like)                                               */
 /* -------------------------------------------------------------------------- */
 
-$popover-themes: (
-  primary: (color: #1867c0, header-text: #fff),
-  secondary: (color: #6c757d, header-text: #fff),
-  success: (color: #28a745, header-text: #fff),
-  danger: (color: #dc3545, header-text: #fff),
-  warning: (color: #ffc107, header-text: #000),
-  info: (color: #0dcaf0, header-text: #000),
-  dark: (color: #343a40, header-text: #fff),
-  light: (color: #f8f9fa, header-text: #000)
-);
+/* ✅ Use shared tokens map */
+$popover-themes: t.$cc-variants;
 
 .popover {
   z-index: 1070;
@@ -228,12 +220,13 @@ $popover-themes: (
 }
 
 /* Arrow geometry for base popover (keeps legacy fills from your file) */
-@include popover-arrow-geometry(".popover");
+@include popover-arrow-geometry('.popover');
 
 /* Theme styling + themed arrow borders */
-@each $name, $t in $popover-themes {
-  $c: map-get($t, color);
-  $header-text: map-get($t, header-text);
+@each $name, $theme in $popover-themes {
+  /* ✅ tokens use (c: ...) not (color: ...) */
+  $c: map-get($theme, c);
+  $header-text: map-get($theme, header-text);
 
   .popover.#{$name} {
     border-color: $c !important;
@@ -321,7 +314,7 @@ $popover-themes: (
 
 .plumage {
   @include popover-arrow-geometry(
-    "&.popover",
+    '&.popover',
     $arrow-size: 0.5rem,
     $arrow-offset: 0.09rem,
     $arrow-half: calc(1rem * 0.5),
@@ -569,12 +562,12 @@ $popover-themes: (
     }
 
     /* ---------------------------------------------------------------------- */
-    /* Super-tooltip theming                                                   */
+    /* Super-tooltip theming (UPDATED FOR TOKENS MAP)                          */
     /* ---------------------------------------------------------------------- */
 
     /* Outer borders (all directions) */
-    @each $name, $t in $popover-themes {
-      $c: map-get($t, color);
+    @each $name, $theme in $popover-themes {
+      $c: map-get($theme, c);
 
       &.#{$name} {
         &[data-popper-placement^='top'] > .popover-arrow::before,
@@ -607,8 +600,7 @@ $popover-themes: (
       }
     }
 
-    /* Inner fills (super-tooltip) */
-    /* Neutral fills by default (non-start variants) */
+    /* Inner fills (super-tooltip) — neutral defaults */
     &[data-popper-placement^='top'] > .popover-arrow::after,
     &[data-popper-placement^='top-start'] > .popover-arrow::after,
     &[data-popper-placement^='top-end'] > .popover-arrow::after,
@@ -645,8 +637,8 @@ $popover-themes: (
     }
 
     /* Theme fills only for: bottom*, left-start, right-start */
-    @each $name, $t in $popover-themes {
-      $c: map-get($t, color);
+    @each $name, $theme in $popover-themes {
+      $c: map-get($theme, c);
 
       &.#{$name} {
         &[data-popper-placement^='bottom'] > .popover-arrow::after,

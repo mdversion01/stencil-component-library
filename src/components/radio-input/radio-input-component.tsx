@@ -96,9 +96,7 @@ export class RadioComponent {
   }
 
   private joinIds(...ids: Array<string | undefined>) {
-    const cleaned = ids
-      .map(s => (s || '').trim())
-      .filter(Boolean);
+    const cleaned = ids.map(s => (s || '').trim()).filter(Boolean);
     return cleaned.length ? Array.from(new Set(cleaned.join(' ').split(/\s+/))).join(' ') : undefined;
   }
 
@@ -128,50 +126,52 @@ export class RadioComponent {
       const describedBy = this.joinIds(userDescribedBy, showValidation && this.validationMsg ? errorId : undefined);
 
       return (
-        <div class={`radios radio-group ${showValidation ? 'was-validated' : ''}`}>
-          <div
-            role="radiogroup"
-            aria-labelledby={ariaLabelledBy}
-            aria-label={ariaLabel}
-            aria-required={this.required ? 'true' : undefined}
-            aria-invalid={showValidation ? 'true' : undefined}
-            aria-describedby={describedBy}
-          >
-            {this.groupTitle ? (
-              <div id={titleId} class={`group-title ${this.groupTitleSize}`}>
-                {this.groupTitle}
-                {this.required ? <span class="required">*</span> : ''}
-              </div>
-            ) : null}
-
-            <div class={`form-group ${this.inline ? 'form-inline' : ''}`}>
-              {this.parsedOptions.map(option => (
-                <div class={wrapperClass}>
-                  <input
-                    class={inputClass}
-                    type="radio"
-                    name={this.name}
-                    id={option.inputId}
-                    value={option.value}
-                    checked={!!option.checked}
-                    disabled={!!option.disabled}
-                    required={this.required}
-                    aria-invalid={showValidation ? 'true' : undefined}
-                    aria-describedby={describedBy}
-                    onChange={e => this.handleGroupChange(e, option.value)}
-                  />
-                  <label class={`${labelClass} ${this.size}`} htmlFor={option.inputId}>
-                    {option.labelTxt}
-                  </label>
+        <div class="sc-radios">
+          <div class={`radios radio-group ${showValidation ? 'was-validated' : ''}`}>
+            <div
+              role="radiogroup"
+              aria-labelledby={ariaLabelledBy}
+              aria-label={ariaLabel}
+              aria-required={this.required ? 'true' : undefined}
+              aria-invalid={showValidation ? 'true' : undefined}
+              aria-describedby={describedBy}
+            >
+              {this.groupTitle ? (
+                <div id={titleId} class={`group-title ${this.groupTitleSize}`}>
+                  {this.groupTitle}
+                  {this.required ? <span class="required">*</span> : ''}
                 </div>
-              ))}
-            </div>
+              ) : null}
 
-            {showValidation && this.validationMsg ? (
-              <div id={errorId} class="invalid-feedback form-text" role="alert" aria-live="polite" style={{ display: 'block' }}>
-                {this.validationMsg}
+              <div class={`form-group ${this.inline ? 'form-inline' : ''}`}>
+                {this.parsedOptions.map(option => (
+                  <div class={wrapperClass}>
+                    <input
+                      class={inputClass}
+                      type="radio"
+                      name={this.name}
+                      id={option.inputId}
+                      value={option.value}
+                      checked={!!option.checked}
+                      disabled={!!option.disabled}
+                      required={this.required}
+                      aria-invalid={showValidation ? 'true' : undefined}
+                      aria-describedby={describedBy}
+                      onChange={e => this.handleGroupChange(e, option.value)}
+                    />
+                    <label class={`${labelClass} ${this.size}`} htmlFor={option.inputId}>
+                      {option.labelTxt}
+                    </label>
+                  </div>
+                ))}
               </div>
-            ) : null}
+
+              {showValidation && this.validationMsg ? (
+                <div id={errorId} class="invalid-feedback form-text" role="alert" aria-live="polite" style={{ display: 'block' }}>
+                  {this.validationMsg}
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
       );
@@ -199,33 +199,35 @@ export class RadioComponent {
     const describedBy = this.joinIds(userDescribedBy, showSingleValidation && this.validationMsg ? errorId : undefined);
 
     return (
-      <div class={`radios form-group ${showSingleValidation ? 'was-validated' : ''}`}>
-        <div class={singleWrapperClass}>
-          <input
-            class={singleInputClass}
-            id={this.inputId}
-            type="radio"
-            name={this.name}
-            value={this.value}
-            disabled={this.disabled}
-            required={this.required}
-            aria-labelledby={ariaLabelledBy}
-            aria-label={ariaLabel}
-            aria-describedby={describedBy}
-            aria-invalid={showSingleValidation ? 'true' : undefined}
-            onChange={e => this.handleSingleChange(e)}
-          />
-          <label id={labelId} class={`${singleLabelClass} ${this.size}`} htmlFor={this.inputId}>
-            {this.labelTxt}
-            {this.required ? <span class="required">*</span> : ''}
-          </label>
-        </div>
-
-        {showSingleValidation && this.validationMsg ? (
-          <div id={errorId} class="invalid-feedback form-text" role="alert" aria-live="polite" style={{ display: 'block' }}>
-            {this.validationMsg}
+      <div class="sc-radios">
+        <div class={`radios form-group ${showSingleValidation ? 'was-validated' : ''}`}>
+          <div class={singleWrapperClass}>
+            <input
+              class={singleInputClass}
+              id={this.inputId}
+              type="radio"
+              name={this.name}
+              value={this.value}
+              disabled={this.disabled}
+              required={this.required}
+              aria-labelledby={ariaLabelledBy}
+              aria-label={ariaLabel}
+              aria-describedby={describedBy}
+              aria-invalid={showSingleValidation ? 'true' : undefined}
+              onChange={e => this.handleSingleChange(e)}
+            />
+            <label id={labelId} class={`${singleLabelClass} ${this.size}`} htmlFor={this.inputId}>
+              {this.labelTxt}
+              {this.required ? <span class="required">*</span> : ''}
+            </label>
           </div>
-        ) : null}
+
+          {showSingleValidation && this.validationMsg ? (
+            <div id={errorId} class="invalid-feedback form-text" role="alert" aria-live="polite" style={{ display: 'block' }}>
+              {this.validationMsg}
+            </div>
+          ) : null}
+        </div>
       </div>
     );
   }

@@ -208,10 +208,10 @@ export class ProgressDisplayComponent {
     const autoLabelId = hasVisibleLabel ? this.getLabelId() : undefined;
     const ariaLabelledBy = userLabelledBy ?? autoLabelId;
 
-    const ariaLabel = ariaLabelledBy ? undefined : userLabel ?? (hasVisibleLabel ? undefined : 'Progress');
+    const ariaLabel = ariaLabelledBy ? undefined : (userLabel ?? (hasVisibleLabel ? undefined : 'Progress'));
 
     const attrs: Record<string, any> = {
-      role: 'progressbar',
+      'role': 'progressbar',
       'aria-describedby': userDescribedBy,
     };
 
@@ -241,11 +241,11 @@ export class ProgressDisplayComponent {
     const autoLabelId = hasVisibleLabel ? this.getLabelId() : undefined;
 
     const ariaLabelledBy = userLabelledBy ?? autoLabelId;
-    const ariaLabel = ariaLabelledBy ? undefined : userLabel ?? (hasVisibleLabel ? undefined : 'Progress');
+    const ariaLabel = ariaLabelledBy ? undefined : (userLabel ?? (hasVisibleLabel ? undefined : 'Progress'));
 
     const attrs: Record<string, any> = {
-      role: 'group',
-      id: this.getGroupId(),
+      'role': 'group',
+      'id': this.getGroupId(),
       'aria-describedby': userDescribedBy,
     };
 
@@ -275,71 +275,65 @@ export class ProgressDisplayComponent {
 
     const valuetext = this.showProgress ? this.formatPercent(ratio, this.precision) : undefined;
 
-    const infoText = this.showProgress
-      ? this.formatPercent(ratio, this.precision)
-      : this.showValue && now > 0 && now < safeMax
-      ? `${(now / 2).toFixed(this.precision)}%`
-      : '';
+    const infoText = this.showProgress ? this.formatPercent(ratio, this.precision) : this.showValue && now > 0 && now < safeMax ? `${(now / 2).toFixed(this.precision)}%` : '';
 
     const a11y = this.computeA11yForSingle(now, safeMax, valuetext);
 
     return (
-      <div class="progress-root">
-        {(this.label ?? '').trim() ? (
-          <span id={this.getLabelId()} class="progress-a11y-label">
-            {this.label}
-          </span>
-        ) : null}
+      <div class="sc-progress">
+        <div class="progress-root">
+          {(this.label ?? '').trim() ? (
+            <div id={this.getLabelId()} class="progress-a11y-label">
+              {this.label}
+            </div>
+          ) : null}
 
-        <div
-          class={
-            'progress-circular ' +
-            (this.indeterminate ? 'progress-circular-spin progress-circular-visible ' : '') +
-            this.getColorText(this.variant)
-          }
-          style={styleSize}
-          {...a11y}
-        >
-          {this.indeterminate ? (
-            <svg viewBox={`0 0 ${viewBox} ${viewBox}`} style={rotateStyle as any}>
-              <circle
-                fill="transparent"
-                cx={cxCy}
-                cy={cxCy}
-                r={radius}
-                class="progress-circular-overlay"
-                stroke-width={this.strokeWidth}
-                stroke-dasharray={String(circumference)}
-                stroke-dashoffset={String(offset)}
-              />
-            </svg>
-          ) : (
-            <svg viewBox={`0 0 ${viewBox} ${viewBox}`} style={rotateStyle as any}>
-              <circle
-                fill="transparent"
-                cx={cxCy}
-                cy={cxCy}
-                r={radius}
-                stroke-width={this.strokeWidth}
-                stroke-dasharray={String(circumference)}
-                stroke-dashoffset="0"
-                class="progress-circular-underlay"
-              />
-              <circle
-                cx={cxCy}
-                cy={cxCy}
-                r={radius}
-                class="progress-circular-overlay"
-                stroke-width={this.strokeWidth}
-                stroke-dasharray={String(circumference)}
-                stroke-dashoffset={String(offset)}
-                style={{ 'stroke-linecap': this.lineCap ? 'square' : 'round' } as any}
-              />
-            </svg>
-          )}
+          <div
+            class={'progress-circular ' + (this.indeterminate ? 'progress-circular-spin progress-circular-visible ' : '') + this.getColorText(this.variant)}
+            style={styleSize}
+            {...a11y}
+          >
+            {this.indeterminate ? (
+              <svg viewBox={`0 0 ${viewBox} ${viewBox}`} style={rotateStyle as any}>
+                <circle
+                  fill="transparent"
+                  cx={cxCy}
+                  cy={cxCy}
+                  r={radius}
+                  class="progress-circular-overlay"
+                  stroke-width={this.strokeWidth}
+                  stroke-dasharray={String(circumference)}
+                  stroke-dashoffset={String(offset)}
+                />
+              </svg>
+            ) : (
+              <svg viewBox={`0 0 ${viewBox} ${viewBox}`} style={rotateStyle as any}>
+                <circle
+                  fill="transparent"
+                  cx={cxCy}
+                  cy={cxCy}
+                  r={radius}
+                  stroke-width={this.strokeWidth}
+                  stroke-dasharray={String(circumference)}
+                  stroke-dashoffset="0"
+                  class="progress-circular-underlay"
+                />
+                <circle
+                  cx={cxCy}
+                  cy={cxCy}
+                  r={radius}
+                  class="progress-circular-overlay"
+                  stroke-width={this.strokeWidth}
+                  stroke-dasharray={String(circumference)}
+                  stroke-dashoffset={String(offset)}
+                  style={{ 'stroke-linecap': this.lineCap ? 'square' : 'round' } as any}
+                />
+              </svg>
+            )}
 
-          <div class="progress-circular-info" style={blackText as any} aria-hidden="true">
-            {infoText}
+            <div class="progress-circular-info" style={blackText as any} aria-hidden="true">
+              {infoText}
+            </div>
           </div>
         </div>
       </div>
@@ -351,99 +345,91 @@ export class ProgressDisplayComponent {
     const groupA11y = this.computeA11yForMultiGroup();
 
     return (
-      <div class="progress-root" {...groupA11y}>
-        {(this.label ?? '').trim() ? (
-          <span id={this.getLabelId()} class="progress-a11y-label">
-            {this.label}
-          </span>
-        ) : null}
+      <div class="sc-progress">
+        <div class="progress-root" {...groupA11y}>
+          {(this.label ?? '').trim() ? (
+            <span id={this.getLabelId()} class="progress-a11y-label">
+              {this.label}
+            </span>
+          ) : null}
 
-        <div class="linear-progress" style={{ height: `${this.height}px` }}>
-          {bars.map((bar, index) => {
-            const barMax = this.safeMax(bar.max ?? this.max);
-            const now = this.clamp(bar.value, 0, barMax);
-            const liRatio = now / barMax;
+          <div class="linear-progress" style={{ height: `${this.height}px` }}>
+            {bars.map((bar, index) => {
+              const barMax = this.safeMax(bar.max ?? this.max);
+              const now = this.clamp(bar.value, 0, barMax);
+              const liRatio = now / barMax;
 
-            const barCls =
-              `progress-bar ${this.getColorBg(bar.variant ?? '')}` +
-              (bar.striped ? ' progress-bar-striped' : '') +
-              (bar.animated ? ' progress-bar-animated' : '');
+              const barCls = `progress-bar ${this.getColorBg(bar.variant ?? '')}` + (bar.striped ? ' progress-bar-striped' : '') + (bar.animated ? ' progress-bar-animated' : '');
 
-            const text =
-              bar.showProgress
+              const text = bar.showProgress
                 ? this.formatPercent(liRatio, bar.precision ?? this.precision)
                 : bar.showValue && now > 0 && now < barMax
-                ? `${(now / 2).toFixed(bar.precision ?? this.precision)}%`
-                : null;
+                  ? `${(now / 2).toFixed(bar.precision ?? this.precision)}%`
+                  : null;
 
-            const slotName = `bar-${index}`;
-            const hasSlot = this.hasNamedSlotContent(slotName);
-            const showSideBySide = hasSlot && text !== null;
+              const slotName = `bar-${index}`;
+              const hasSlot = this.hasNamedSlotContent(slotName);
+              const showSideBySide = hasSlot && text !== null;
 
-            const order = bar.progressAlign === 'right' ? ['text', 'slot'] : ['slot', 'text'];
-            const ariaValueText = bar.showProgress ? this.formatPercent(liRatio, bar.precision ?? this.precision) : undefined;
+              const order = bar.progressAlign === 'right' ? ['text', 'slot'] : ['slot', 'text'];
+              const ariaValueText = bar.showProgress ? this.formatPercent(liRatio, bar.precision ?? this.precision) : undefined;
 
-            return (
-              <div
-                class={barCls}
-                style={{ width: `${(liRatio * 100).toFixed(4)}%` }}
-                role="progressbar"
-                aria-valuenow={String(now)}
-                aria-valuemin="0"
-                aria-valuemax={String(barMax)}
-                aria-valuetext={ariaValueText}
-              >
-                {showSideBySide ? (
-                  <span class="progress-inline">
-                    {order.map(part =>
-                      part === 'slot' ? (
-                        <span class="progress-label">
-                          <slot name={slotName} />
-                        </span>
-                      ) : (
+              return (
+                <div
+                  class={barCls}
+                  style={{ width: `${(liRatio * 100).toFixed(4)}%` }}
+                  role="progressbar"
+                  aria-valuenow={String(now)}
+                  aria-valuemin="0"
+                  aria-valuemax={String(barMax)}
+                  aria-valuetext={ariaValueText}
+                >
+                  {showSideBySide ? (
+                    <span class="progress-inline">
+                      {order.map(part =>
+                        part === 'slot' ? (
+                          <span class="progress-label">
+                            <slot name={slotName} />
+                          </span>
+                        ) : (
+                          <span class="progress-text" aria-hidden="true">
+                            {text}
+                          </span>
+                        ),
+                      )}
+                    </span>
+                  ) : (
+                    [
+                      bar.progressAlign === 'left' ? <slot name={slotName} /> : null,
+                      text !== null ? (
                         <span class="progress-text" aria-hidden="true">
                           {text}
                         </span>
+                      ) : (
+                        <slot name={slotName} />
                       ),
-                    )}
-                  </span>
-                ) : (
-                  [
-                    bar.progressAlign === 'left' ? <slot name={slotName} /> : null,
-                    text !== null ? (
-                      <span class="progress-text" aria-hidden="true">
-                        {text}
-                      </span>
-                    ) : (
-                      <slot name={slotName} />
-                    ),
-                    bar.progressAlign === 'right' ? <slot name={slotName} /> : null,
-                  ]
-                )}
-              </div>
-            );
-          })}
+                      bar.progressAlign === 'right' ? <slot name={slotName} /> : null,
+                    ]
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     );
   }
+
+  // File: src/components/progress/progress-display-component.tsx
 
   private renderLinear() {
     const safeMax = this.safeMax(this.max);
     const now = this.clamp(this.value, 0, safeMax);
     const ratio = now / safeMax;
 
-    const cls =
-      `progress-bar ${this.getColorBg(this.variant)}` +
-      (this.striped ? ' progress-bar-striped' : '') +
-      (this.animated ? ' progress-bar-animated' : '');
+    const cls = `progress-bar ${this.getColorBg(this.variant)}` + (this.striped ? ' progress-bar-striped' : '') + (this.animated ? ' progress-bar-animated' : '');
 
-    const text =
-      this.showProgress
-        ? this.formatPercent(ratio, this.precision)
-        : this.showValue && now > 0 && now < safeMax
-        ? `${(now / 2).toFixed(this.precision)}%`
-        : null;
+    const text = this.showProgress ? this.formatPercent(ratio, this.precision) : this.showValue && now > 0 && now < safeMax ? `${(now / 2).toFixed(this.precision)}%` : null;
 
     const containerStyle: any = { height: `${this.height}px` };
     if (this.styles) {
@@ -477,43 +463,46 @@ export class ProgressDisplayComponent {
     const a11y = this.computeA11yForSingle(now, safeMax, valuetext);
 
     return (
-      <div class="progress-root">
-        {labelText && !linearNamed && !hasDefault ? (
-          <span id={this.getLabelId()} class="progress-a11y-label">
-            {labelText}
-          </span>
-        ) : null}
+      <div class="sc-progress">
+        <div class="progress-root">
+          {/* ✅ Always show visible label on single/linear when label prop has text */}
+          {labelText ? (
+            <span id={this.getLabelId()} class="progress-a11y-label">
+              {labelText}
+            </span>
+          ) : null}
 
-        <div class="linear-progress" style={containerStyle}>
-          <div class={cls} {...a11y} style={{ width: `${(ratio * 100).toFixed(4)}%` }}>
-            {showSideBySide ? (
-              <span class="progress-inline">
-                {order.map(part =>
-                  part === 'label' ? (
+          <div class="linear-progress" style={containerStyle}>
+            <div class={cls} {...a11y} style={{ width: `${(ratio * 100).toFixed(4)}%` }}>
+              {showSideBySide ? (
+                <span class="progress-inline">
+                  {order.map(part =>
+                    part === 'label' ? (
+                      <span class="progress-label">
+                        <LabelNode />
+                      </span>
+                    ) : (
+                      <span class="progress-text" aria-hidden="true">
+                        {text}
+                      </span>
+                    ),
+                  )}
+                </span>
+              ) : (
+                [
+                  hasAnyLabel ? (
                     <span class="progress-label">
                       <LabelNode />
                     </span>
-                  ) : (
+                  ) : null,
+                  !hasAnyLabel && text !== null ? (
                     <span class="progress-text" aria-hidden="true">
                       {text}
                     </span>
-                  ),
-                )}
-              </span>
-            ) : (
-              [
-                hasAnyLabel ? (
-                  <span class="progress-label">
-                    <LabelNode />
-                  </span>
-                ) : null,
-                !hasAnyLabel && text !== null ? (
-                  <span class="progress-text" aria-hidden="true">
-                    {text}
-                  </span>
-                ) : null,
-              ]
-            )}
+                  ) : null,
+                ]
+              )}
+            </div>
           </div>
         </div>
       </div>
