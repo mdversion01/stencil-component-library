@@ -86,7 +86,7 @@ export class SliderManagerComponent {
     return (
       <Host>
         {this.type === 'basic' && (
-          <basic-slider-component
+          <slider-basic-component
             label={this.label}
             value={this.value}
             min={this.min}

@@ -744,76 +744,6 @@ export namespace Components {
          */
         "zIndex": string;
     }
-    interface BasicSliderComponent {
-        "ariaDescribedby"?: string;
-        "ariaLabel"?: string;
-        "ariaLabelledby"?: string;
-        /**
-          * @default false
-         */
-        "disabled": boolean;
-        /**
-          * @default false
-         */
-        "hideLeftTextBox": boolean;
-        /**
-          * @default false
-         */
-        "hideRightTextBox": boolean;
-        /**
-          * @default false
-         */
-        "hideTextBoxes": boolean;
-        /**
-          * @default ''
-         */
-        "label": string;
-        /**
-          * @default 100
-         */
-        "max": number;
-        /**
-          * @default 0
-         */
-        "min": number;
-        /**
-          * @default false
-         */
-        "plumage": boolean;
-        /**
-          * @default false
-         */
-        "sliderThumbLabel": boolean;
-        /**
-          * @default false
-         */
-        "snapToTicks": boolean;
-        /**
-          * @default false
-         */
-        "tickLabels": boolean;
-        /**
-          * Accepts array or JSON string in HTML
-          * @default []
-         */
-        "tickValues": number[] | string;
-        /**
-          * @default ''
-         */
-        "ticks": number | '';
-        /**
-          * @default ''
-         */
-        "unit": string;
-        /**
-          * @default 0
-         */
-        "value": number;
-        /**
-          * @default ''
-         */
-        "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
-    }
     interface ButtonComponent {
         /**
           * @default false
@@ -3639,6 +3569,76 @@ export namespace Components {
          */
         "withTable": boolean;
     }
+    interface SliderBasicComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "hideLeftTextBox": boolean;
+        /**
+          * @default false
+         */
+        "hideRightTextBox": boolean;
+        /**
+          * @default false
+         */
+        "hideTextBoxes": boolean;
+        /**
+          * @default ''
+         */
+        "label": string;
+        /**
+          * @default 100
+         */
+        "max": number;
+        /**
+          * @default 0
+         */
+        "min": number;
+        /**
+          * @default false
+         */
+        "plumage": boolean;
+        /**
+          * @default false
+         */
+        "sliderThumbLabel": boolean;
+        /**
+          * @default false
+         */
+        "snapToTicks": boolean;
+        /**
+          * @default false
+         */
+        "tickLabels": boolean;
+        /**
+          * Accepts array or JSON string in HTML
+          * @default []
+         */
+        "tickValues": number[] | string;
+        /**
+          * @default ''
+         */
+        "ticks": number | '';
+        /**
+          * @default ''
+         */
+        "unit": string;
+        /**
+          * @default 0
+         */
+        "value": number;
+        /**
+          * @default ''
+         */
+        "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+    }
     interface SliderManagerComponent {
         "ariaDescribedby"?: string;
         "ariaLabel"?: string;
@@ -4502,10 +4502,6 @@ export interface BadgeComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBadgeComponentElement;
 }
-export interface BasicSliderComponentCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLBasicSliderComponentElement;
-}
 export interface ButtonComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLButtonComponentElement;
@@ -4597,6 +4593,10 @@ export interface RadioInputComponentCustomEvent<T> extends CustomEvent<T> {
 export interface SelectFieldComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLSelectFieldComponentElement;
+}
+export interface SliderBasicComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSliderBasicComponentElement;
 }
 export interface StandardPaginationComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -4729,23 +4729,6 @@ declare global {
     var HTMLBadgeComponentElement: {
         prototype: HTMLBadgeComponentElement;
         new (): HTMLBadgeComponentElement;
-    };
-    interface HTMLBasicSliderComponentElementEventMap {
-        "valueChange": { value: number };
-    }
-    interface HTMLBasicSliderComponentElement extends Components.BasicSliderComponent, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLBasicSliderComponentElementEventMap>(type: K, listener: (this: HTMLBasicSliderComponentElement, ev: BasicSliderComponentCustomEvent<HTMLBasicSliderComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLBasicSliderComponentElementEventMap>(type: K, listener: (this: HTMLBasicSliderComponentElement, ev: BasicSliderComponentCustomEvent<HTMLBasicSliderComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLBasicSliderComponentElement: {
-        prototype: HTMLBasicSliderComponentElement;
-        new (): HTMLBasicSliderComponentElement;
     };
     interface HTMLButtonComponentElementEventMap {
         "customClick": void;
@@ -5224,6 +5207,23 @@ declare global {
         prototype: HTMLSelectFieldComponentElement;
         new (): HTMLSelectFieldComponentElement;
     };
+    interface HTMLSliderBasicComponentElementEventMap {
+        "valueChange": { value: number };
+    }
+    interface HTMLSliderBasicComponentElement extends Components.SliderBasicComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSliderBasicComponentElementEventMap>(type: K, listener: (this: HTMLSliderBasicComponentElement, ev: SliderBasicComponentCustomEvent<HTMLSliderBasicComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSliderBasicComponentElementEventMap>(type: K, listener: (this: HTMLSliderBasicComponentElement, ev: SliderBasicComponentCustomEvent<HTMLSliderBasicComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSliderBasicComponentElement: {
+        prototype: HTMLSliderBasicComponentElement;
+        new (): HTMLSliderBasicComponentElement;
+    };
     interface HTMLSliderManagerComponentElement extends Components.SliderManagerComponent, HTMLStencilElement {
     }
     var HTMLSliderManagerComponentElement: {
@@ -5361,7 +5361,6 @@ declare global {
         "autocomplete-multiselect": HTMLAutocompleteMultiselectElement;
         "autocomplete-single": HTMLAutocompleteSingleElement;
         "badge-component": HTMLBadgeComponentElement;
-        "basic-slider-component": HTMLBasicSliderComponentElement;
         "button-component": HTMLButtonComponentElement;
         "button-group": HTMLButtonGroupElement;
         "by-page-pagination-component": HTMLByPagePaginationComponentElement;
@@ -5392,6 +5391,7 @@ declare global {
         "progress-display-component": HTMLProgressDisplayComponentElement;
         "radio-input-component": HTMLRadioInputComponentElement;
         "select-field-component": HTMLSelectFieldComponentElement;
+        "slider-basic-component": HTMLSliderBasicComponentElement;
         "slider-manager-component": HTMLSliderManagerComponentElement;
         "standard-pagination-component": HTMLStandardPaginationComponentElement;
         "svg-component": HTMLSvgComponentElement;
@@ -6130,77 +6130,6 @@ declare namespace LocalJSX {
           * @default ''
          */
         "zIndex"?: string;
-    }
-    interface BasicSliderComponent {
-        "ariaDescribedby"?: string;
-        "ariaLabel"?: string;
-        "ariaLabelledby"?: string;
-        /**
-          * @default false
-         */
-        "disabled"?: boolean;
-        /**
-          * @default false
-         */
-        "hideLeftTextBox"?: boolean;
-        /**
-          * @default false
-         */
-        "hideRightTextBox"?: boolean;
-        /**
-          * @default false
-         */
-        "hideTextBoxes"?: boolean;
-        /**
-          * @default ''
-         */
-        "label"?: string;
-        /**
-          * @default 100
-         */
-        "max"?: number;
-        /**
-          * @default 0
-         */
-        "min"?: number;
-        "onValueChange"?: (event: BasicSliderComponentCustomEvent<{ value: number }>) => void;
-        /**
-          * @default false
-         */
-        "plumage"?: boolean;
-        /**
-          * @default false
-         */
-        "sliderThumbLabel"?: boolean;
-        /**
-          * @default false
-         */
-        "snapToTicks"?: boolean;
-        /**
-          * @default false
-         */
-        "tickLabels"?: boolean;
-        /**
-          * Accepts array or JSON string in HTML
-          * @default []
-         */
-        "tickValues"?: number[] | string;
-        /**
-          * @default ''
-         */
-        "ticks"?: number | '';
-        /**
-          * @default ''
-         */
-        "unit"?: string;
-        /**
-          * @default 0
-         */
-        "value"?: number;
-        /**
-          * @default ''
-         */
-        "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
     }
     interface ButtonComponent {
         /**
@@ -9067,6 +8996,77 @@ declare namespace LocalJSX {
          */
         "withTable"?: boolean;
     }
+    interface SliderBasicComponent {
+        "ariaDescribedby"?: string;
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "hideLeftTextBox"?: boolean;
+        /**
+          * @default false
+         */
+        "hideRightTextBox"?: boolean;
+        /**
+          * @default false
+         */
+        "hideTextBoxes"?: boolean;
+        /**
+          * @default ''
+         */
+        "label"?: string;
+        /**
+          * @default 100
+         */
+        "max"?: number;
+        /**
+          * @default 0
+         */
+        "min"?: number;
+        "onValueChange"?: (event: SliderBasicComponentCustomEvent<{ value: number }>) => void;
+        /**
+          * @default false
+         */
+        "plumage"?: boolean;
+        /**
+          * @default false
+         */
+        "sliderThumbLabel"?: boolean;
+        /**
+          * @default false
+         */
+        "snapToTicks"?: boolean;
+        /**
+          * @default false
+         */
+        "tickLabels"?: boolean;
+        /**
+          * Accepts array or JSON string in HTML
+          * @default []
+         */
+        "tickValues"?: number[] | string;
+        /**
+          * @default ''
+         */
+        "ticks"?: number | '';
+        /**
+          * @default ''
+         */
+        "unit"?: string;
+        /**
+          * @default 0
+         */
+        "value"?: number;
+        /**
+          * @default ''
+         */
+        "variant"?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+    }
     interface SliderManagerComponent {
         "ariaDescribedby"?: string;
         "ariaLabel"?: string;
@@ -9923,7 +9923,6 @@ declare namespace LocalJSX {
         "autocomplete-multiselect": AutocompleteMultiselect;
         "autocomplete-single": AutocompleteSingle;
         "badge-component": BadgeComponent;
-        "basic-slider-component": BasicSliderComponent;
         "button-component": ButtonComponent;
         "button-group": ButtonGroup;
         "by-page-pagination-component": ByPagePaginationComponent;
@@ -9954,6 +9953,7 @@ declare namespace LocalJSX {
         "progress-display-component": ProgressDisplayComponent;
         "radio-input-component": RadioInputComponent;
         "select-field-component": SelectFieldComponent;
+        "slider-basic-component": SliderBasicComponent;
         "slider-manager-component": SliderManagerComponent;
         "standard-pagination-component": StandardPaginationComponent;
         "svg-component": SvgComponent;
@@ -9976,7 +9976,6 @@ declare module "@stencil/core" {
             "autocomplete-multiselect": LocalJSX.AutocompleteMultiselect & JSXBase.HTMLAttributes<HTMLAutocompleteMultiselectElement>;
             "autocomplete-single": LocalJSX.AutocompleteSingle & JSXBase.HTMLAttributes<HTMLAutocompleteSingleElement>;
             "badge-component": LocalJSX.BadgeComponent & JSXBase.HTMLAttributes<HTMLBadgeComponentElement>;
-            "basic-slider-component": LocalJSX.BasicSliderComponent & JSXBase.HTMLAttributes<HTMLBasicSliderComponentElement>;
             "button-component": LocalJSX.ButtonComponent & JSXBase.HTMLAttributes<HTMLButtonComponentElement>;
             "button-group": LocalJSX.ButtonGroup & JSXBase.HTMLAttributes<HTMLButtonGroupElement>;
             "by-page-pagination-component": LocalJSX.ByPagePaginationComponent & JSXBase.HTMLAttributes<HTMLByPagePaginationComponentElement>;
@@ -10012,6 +10011,7 @@ declare module "@stencil/core" {
             "progress-display-component": LocalJSX.ProgressDisplayComponent & JSXBase.HTMLAttributes<HTMLProgressDisplayComponentElement>;
             "radio-input-component": LocalJSX.RadioInputComponent & JSXBase.HTMLAttributes<HTMLRadioInputComponentElement>;
             "select-field-component": LocalJSX.SelectFieldComponent & JSXBase.HTMLAttributes<HTMLSelectFieldComponentElement>;
+            "slider-basic-component": LocalJSX.SliderBasicComponent & JSXBase.HTMLAttributes<HTMLSliderBasicComponentElement>;
             "slider-manager-component": LocalJSX.SliderManagerComponent & JSXBase.HTMLAttributes<HTMLSliderManagerComponentElement>;
             "standard-pagination-component": LocalJSX.StandardPaginationComponent & JSXBase.HTMLAttributes<HTMLStandardPaginationComponentElement>;
             "svg-component": LocalJSX.SvgComponent & JSXBase.HTMLAttributes<HTMLSvgComponentElement>;

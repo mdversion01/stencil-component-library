@@ -1,7 +1,7 @@
-// src/components/slider/basic-slider-component.spec.tsx
+// src/components/slider/slider-basic-component.spec.tsx
 import { newSpecPage } from '@stencil/core/testing';
 import { h } from '@stencil/core';
-import { BasicSliderComponent } from './basic-slider-component';
+import { SliderBasicComponent } from './slider-basic-component';
 
 // helpers
 function getSliderEl(root: HTMLElement) {
@@ -60,11 +60,11 @@ function mockContainerRects(page: any, { left = 0, width = 200 }: { left?: numbe
   };
 }
 
-describe('basic-slider-component', () => {
+describe('slider-basic-component', () => {
   test('renders with defaults (snapshot) + a11y slider element', async () => {
     const page = await newSpecPage({
-      components: [BasicSliderComponent],
-      template: () => <basic-slider-component />,
+      components: [SliderBasicComponent],
+      template: () => <slider-basic-component />,
     });
 
     const root = page.root as HTMLElement;
@@ -90,9 +90,9 @@ describe('basic-slider-component', () => {
 
   test('parses tickValues from JSON attribute and shows tick labels', async () => {
     const page = await newSpecPage({
-      components: [BasicSliderComponent],
+      components: [SliderBasicComponent],
       template: () => (
-        <basic-slider-component min={0} max={100} value={50} unit="%" tick-values="[0,25,50,75,100]" tick-labels={true} ticks={5} />
+        <slider-basic-component min={0} max={100} value={50} unit="%" tick-values="[0,25,50,75,100]" tick-labels={true} ticks={5} />
       ),
     });
 
@@ -114,8 +114,8 @@ describe('basic-slider-component', () => {
 
   test('keyboard ArrowRight/ArrowLeft without snapToTicks increments by 1 step', async () => {
     const page = await newSpecPage({
-      components: [BasicSliderComponent],
-      template: () => <basic-slider-component min={0} max={10} value={5} />,
+      components: [SliderBasicComponent],
+      template: () => <slider-basic-component min={0} max={10} value={5} />,
     });
 
     const host = page.root as HTMLElement;
@@ -137,8 +137,8 @@ describe('basic-slider-component', () => {
 
   test('keyboard snapping to tickValues goes to next/prev tick', async () => {
     const page = await newSpecPage({
-      components: [BasicSliderComponent],
-      template: () => <basic-slider-component min={0} max={60} value={20} snap-to-ticks={true} tick-values="[0,20,40,60]" />,
+      components: [SliderBasicComponent],
+      template: () => <slider-basic-component min={0} max={60} value={20} snap-to-ticks={true} tick-values="[0,20,40,60]" />,
     });
 
     const host = page.root as HTMLElement;
@@ -160,8 +160,8 @@ describe('basic-slider-component', () => {
 
   test('drag changes value (no snap), and snapToTicks snaps to nearest', async () => {
     const page = await newSpecPage({
-      components: [BasicSliderComponent],
-      template: () => <basic-slider-component min={0} max={100} value={0} />,
+      components: [SliderBasicComponent],
+      template: () => <slider-basic-component min={0} max={100} value={0} />,
     });
 
     const teardown = mockContainerRects(page, { left: 0, width: 200 });
@@ -179,8 +179,8 @@ describe('basic-slider-component', () => {
     teardown();
 
     const page2 = await newSpecPage({
-      components: [BasicSliderComponent],
-      template: () => <basic-slider-component min={0} max={100} value={0} snap-to-ticks={true} tick-values="[0,25,50,75,100]" />,
+      components: [SliderBasicComponent],
+      template: () => <slider-basic-component min={0} max={100} value={0} snap-to-ticks={true} tick-values="[0,25,50,75,100]" />,
     });
 
     const teardown2 = mockContainerRects(page2, { left: 0, width: 200 });
@@ -201,24 +201,24 @@ describe('basic-slider-component', () => {
 
   test('hideTextBoxes hides both; individual flags hide respective side', async () => {
     const pageA = await newSpecPage({
-      components: [BasicSliderComponent],
-      template: () => <basic-slider-component value={33} hide-text-boxes={true} />,
+      components: [SliderBasicComponent],
+      template: () => <slider-basic-component value={33} hide-text-boxes={true} />,
     });
     expect(getLeftTextbox(pageA.root as any)).toBeNull();
     expect(getRightTextbox(pageA.root as any)).toBeNull();
     expect(pageA.root).toMatchSnapshot('hidden-both');
 
     const pageB = await newSpecPage({
-      components: [BasicSliderComponent],
-      template: () => <basic-slider-component value={33} hide-left-text-box={true} />,
+      components: [SliderBasicComponent],
+      template: () => <slider-basic-component value={33} hide-left-text-box={true} />,
     });
     expect(getLeftTextbox(pageB.root as any)).toBeNull();
     expect(getRightTextbox(pageB.root as any)).toBeTruthy();
     expect(pageB.root).toMatchSnapshot('hidden-left');
 
     const pageC = await newSpecPage({
-      components: [BasicSliderComponent],
-      template: () => <basic-slider-component value={33} hide-right-text-box={true} />,
+      components: [SliderBasicComponent],
+      template: () => <slider-basic-component value={33} hide-right-text-box={true} />,
     });
     expect(getLeftTextbox(pageC.root as any)).toBeTruthy();
     expect(getRightTextbox(pageC.root as any)).toBeNull();
@@ -227,8 +227,8 @@ describe('basic-slider-component', () => {
 
   test('applies variant class to moving track and thumb container', async () => {
     const page = await newSpecPage({
-      components: [BasicSliderComponent],
-      template: () => <basic-slider-component value={20} variant="danger" />,
+      components: [SliderBasicComponent],
+      template: () => <slider-basic-component value={20} variant="danger" />,
     });
 
     const root = page.root as HTMLElement;
@@ -243,8 +243,8 @@ describe('basic-slider-component', () => {
 
   test('renders label and sliderThumbLabel modes (label id changed)', async () => {
     const pageA = await newSpecPage({
-      components: [BasicSliderComponent],
-      template: () => <basic-slider-component label="Volume" value={7} unit="%" />,
+      components: [SliderBasicComponent],
+      template: () => <slider-basic-component label="Volume" value={7} unit="%" />,
     });
 
     const rootA = pageA.root as HTMLElement;
@@ -262,8 +262,8 @@ describe('basic-slider-component', () => {
     expect(pageA.root).toMatchSnapshot('label-no-thumb');
 
     const pageB = await newSpecPage({
-      components: [BasicSliderComponent],
-      template: () => <basic-slider-component value={7} unit="%" slider-thumb-label={true} />,
+      components: [SliderBasicComponent],
+      template: () => <slider-basic-component value={7} unit="%" slider-thumb-label={true} />,
     });
 
     const rootB = pageB.root as HTMLElement;
@@ -278,18 +278,18 @@ describe('basic-slider-component', () => {
 
   test('a11y overrides: aria-labelledby wins over aria-label; describedby is forwarded', async () => {
     const page = await newSpecPage({
-      components: [BasicSliderComponent],
+      components: [SliderBasicComponent],
       template: () => (
         <div>
           <div id="ext-label">External label</div>
           <div id="ext-help">External help</div>
-          <basic-slider-component value={10} min={0} max={20} aria-label="Ignored" aria-labelledby="ext-label" aria-describedby="ext-help" />
+          <slider-basic-component value={10} min={0} max={20} aria-label="Ignored" aria-labelledby="ext-label" aria-describedby="ext-help" />
         </div>
       ),
     });
 
     // The first root can be the wrapper; safest is to resolve slider from page.body.
-    const slider = page.body.querySelector('basic-slider-component')!.querySelector('[role="slider"]') as HTMLElement;
+    const slider = page.body.querySelector('slider-basic-component')!.querySelector('[role="slider"]') as HTMLElement;
 
     expect(slider.getAttribute('aria-labelledby')).toBe('ext-label');
     expect(slider.getAttribute('aria-label')).toBeNull();
@@ -304,8 +304,8 @@ describe('basic-slider-component', () => {
 
   test('disabled: slider is not focusable and sets aria-disabled', async () => {
     const page = await newSpecPage({
-      components: [BasicSliderComponent],
-      template: () => <basic-slider-component disabled={true} value={5} />,
+      components: [SliderBasicComponent],
+      template: () => <slider-basic-component disabled={true} value={5} />,
     });
 
     const slider = getSliderEl(page.root as HTMLElement)!;

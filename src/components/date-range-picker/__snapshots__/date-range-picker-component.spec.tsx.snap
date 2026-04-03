@@ -5,7 +5,7 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
   <div class="date-picker">
     <div class="dropdown-wrapper">
       <div class="form-group form-input-group-basic">
-        <label class="form-control-label" htmlfor="drp" id="drp-6-aq82-label">
+        <label class="form-control-label" htmlfor="drp" id="drp-6-0hez-label">
           <span>
             Date Range Picker
           </span>
@@ -13,7 +13,7 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
         <div>
           <div aria-label="Date picker group" class="input-group" role="group">
             <div class="drp-input-field">
-              <input aria-describedby="drp-6-aq82-dialog-desc" aria-labelledby="drp-6-aq82-label" class="form-control" id="drp" placeholder="YYYY-MM-DD  -  YYYY-MM-DD" type="text" value="">
+              <input aria-describedby="drp-6-0hez-dialog-desc" aria-labelledby="drp-6-0hez-label" class="form-control" id="drp" placeholder="YYYY-MM-DD  -  YYYY-MM-DD" type="text" value="">
             </div>
             <div class="input-group-append">
               <button aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text" type="button">
@@ -24,11 +24,11 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
         </div>
       </div>
       <div class="dropdown">
-        <div aria-describedby="drp-6-aq82-dialog-desc" aria-labelledby="drp-6-aq82-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
-          <div class="sr-only visually-hidden" id="drp-6-aq82-dialog-title">
+        <div aria-describedby="drp-6-0hez-dialog-desc" aria-labelledby="drp-6-0hez-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
+          <div class="sr-only visually-hidden" id="drp-6-0hez-dialog-title">
             Date Range Picker
           </div>
-          <div class="sr-only visually-hidden" id="drp-6-aq82-dialog-desc">
+          <div class="sr-only visually-hidden" id="drp-6-0hez-dialog-desc">
             Select a start date and an end date. Use arrow keys to navigate days. Press Enter to select.
           </div>
           <div class="date-picker">
@@ -40,10 +40,10 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                   </svg>
                 </button>
                 <div class="selectors">
-                  <label class="sr-only visually-hidden" htmlfor="drp-6-aq82-months">
+                  <label class="sr-only visually-hidden" htmlfor="drp-6-0hez-months">
                     Select month
                   </label>
-                  <select aria-label="Select month" class="form-control form-select months select-sm" id="drp-6-aq82-months">
+                  <select aria-label="Select month" class="form-control form-select months select-sm" id="drp-6-0hez-months">
                     <option value="0">
                       January
                     </option>
@@ -81,10 +81,10 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                       December
                     </option>
                   </select>
-                  <label class="sr-only visually-hidden" htmlfor="drp-6-aq82-year">
+                  <label class="sr-only visually-hidden" htmlfor="drp-6-0hez-year">
                     Select year
                   </label>
-                  <select aria-label="Select year" class="form-control form-select select-sm years" id="drp-6-aq82-year">
+                  <select aria-label="Select year" class="form-control form-select select-sm years" id="drp-6-0hez-year">
                     <option value="2014">
                       2014
                     </option>
@@ -164,7 +164,7 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
               <div class="range-picker">
                 <div aria-label="Calendars" class="calendar-wrapper" tabindex="0">
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-6-aq82-grid-start-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-6-0hez-grid-start-caption">
                       April 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -190,7 +190,7 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                         Sat
                       </small>
                     </div>
-                    <div aria-labelledby="drp-6-aq82-grid-start-caption" class="calendar-grid" id="drp-6-aq82-grid-start" role="grid">
+                    <div aria-labelledby="drp-6-0hez-grid-start-caption" class="calendar-grid" id="drp-6-0hez-grid-start" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="March 29, 2026" class="calendar-grid-item previous-month-day" data-date="2026-03-29" data-day="29" data-month="3" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
@@ -208,7 +208,7 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                           </span>
                         </div>
                         <div aria-label="April 1, 2026" class="calendar-grid-item csm-first-day" data-date="2026-04-01" data-day="1" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             1
                           </span>
                         </div>
@@ -218,7 +218,7 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                           </span>
                         </div>
                         <div aria-label="April 3, 2026" class="calendar-grid-item" data-date="2026-04-03" data-day="3" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
                             3
                           </span>
                         </div>
@@ -416,7 +416,7 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                     </div>
                   </div>
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-6-aq82-grid-end-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-6-0hez-grid-end-caption">
                       May 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -442,7 +442,7 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                         Sat
                       </small>
                     </div>
-                    <div aria-labelledby="drp-6-aq82-grid-end-caption" class="calendar-grid" id="drp-6-aq82-grid-end" role="grid">
+                    <div aria-labelledby="drp-6-0hez-grid-end-caption" class="calendar-grid" id="drp-6-0hez-grid-end" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="April 26, 2026" class="calendar-grid-item previous-month-day" data-date="2026-04-26" data-day="26" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
@@ -673,8 +673,8 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                     Use cursor keys to navigate calendar dates
                   </div>
                 </footer>
-                <div aria-labelledby="drp-6-aq82-date-ranges" class="date-range-display" role="region" tabindex="0">
-                  <div class="date-ranges" id="drp-6-aq82-date-ranges">
+                <div aria-labelledby="drp-6-0hez-date-ranges" class="date-range-display" role="region" tabindex="0">
+                  <div class="date-ranges" id="drp-6-0hez-date-ranges">
                     <span class="start-end-ranges">
                       <span class="start-date">
                         N/A
@@ -708,7 +708,7 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
   <div class="date-picker">
     <div class="dropdown-wrapper">
       <div class="form-group form-input-group-basic">
-        <label class="form-control-label" htmlfor="drp" id="drp-1-nq3b-label">
+        <label class="form-control-label" htmlfor="drp" id="drp-1-0syh-label">
           <span>
             Date Range Picker
           </span>
@@ -716,7 +716,7 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
         <div>
           <div aria-label="Date picker group" class="input-group" role="group">
             <div class="drp-input-field">
-              <input aria-describedby="drp-1-nq3b-dialog-desc" aria-labelledby="drp-1-nq3b-label" class="form-control" id="drp" placeholder="YYYY-MM-DD  -  YYYY-MM-DD" type="text" value="">
+              <input aria-describedby="drp-1-0syh-dialog-desc" aria-labelledby="drp-1-0syh-label" class="form-control" id="drp" placeholder="YYYY-MM-DD  -  YYYY-MM-DD" type="text" value="">
             </div>
             <div class="input-group-append">
               <button aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text" type="button">
@@ -727,11 +727,11 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
         </div>
       </div>
       <div class="dropdown">
-        <div aria-describedby="drp-1-nq3b-dialog-desc" aria-labelledby="drp-1-nq3b-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
-          <div class="sr-only visually-hidden" id="drp-1-nq3b-dialog-title">
+        <div aria-describedby="drp-1-0syh-dialog-desc" aria-labelledby="drp-1-0syh-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
+          <div class="sr-only visually-hidden" id="drp-1-0syh-dialog-title">
             Date Range Picker
           </div>
-          <div class="sr-only visually-hidden" id="drp-1-nq3b-dialog-desc">
+          <div class="sr-only visually-hidden" id="drp-1-0syh-dialog-desc">
             Select a start date and an end date. Use arrow keys to navigate days. Press Enter to select.
           </div>
           <div class="date-picker">
@@ -743,10 +743,10 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                   </svg>
                 </button>
                 <div class="selectors">
-                  <label class="sr-only visually-hidden" htmlfor="drp-1-nq3b-months">
+                  <label class="sr-only visually-hidden" htmlfor="drp-1-0syh-months">
                     Select month
                   </label>
-                  <select aria-label="Select month" class="form-control form-select months select-sm" id="drp-1-nq3b-months">
+                  <select aria-label="Select month" class="form-control form-select months select-sm" id="drp-1-0syh-months">
                     <option value="0">
                       January
                     </option>
@@ -784,10 +784,10 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                       December
                     </option>
                   </select>
-                  <label class="sr-only visually-hidden" htmlfor="drp-1-nq3b-year">
+                  <label class="sr-only visually-hidden" htmlfor="drp-1-0syh-year">
                     Select year
                   </label>
-                  <select aria-label="Select year" class="form-control form-select select-sm years" id="drp-1-nq3b-year">
+                  <select aria-label="Select year" class="form-control form-select select-sm years" id="drp-1-0syh-year">
                     <option value="2014">
                       2014
                     </option>
@@ -867,7 +867,7 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
               <div class="range-picker">
                 <div aria-label="Calendars" class="calendar-wrapper" tabindex="0">
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-1-nq3b-grid-start-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-1-0syh-grid-start-caption">
                       April 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -893,7 +893,7 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                         Sat
                       </small>
                     </div>
-                    <div aria-labelledby="drp-1-nq3b-grid-start-caption" class="calendar-grid" id="drp-1-nq3b-grid-start" role="grid">
+                    <div aria-labelledby="drp-1-0syh-grid-start-caption" class="calendar-grid" id="drp-1-0syh-grid-start" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="March 29, 2026" class="calendar-grid-item previous-month-day" data-date="2026-03-29" data-day="29" data-month="3" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
@@ -911,7 +911,7 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                           </span>
                         </div>
                         <div aria-label="April 1, 2026" class="calendar-grid-item csm-first-day" data-date="2026-04-01" data-day="1" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             1
                           </span>
                         </div>
@@ -921,7 +921,7 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                           </span>
                         </div>
                         <div aria-label="April 3, 2026" class="calendar-grid-item" data-date="2026-04-03" data-day="3" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
                             3
                           </span>
                         </div>
@@ -1119,7 +1119,7 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                     </div>
                   </div>
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-1-nq3b-grid-end-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-1-0syh-grid-end-caption">
                       May 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -1145,7 +1145,7 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                         Sat
                       </small>
                     </div>
-                    <div aria-labelledby="drp-1-nq3b-grid-end-caption" class="calendar-grid" id="drp-1-nq3b-grid-end" role="grid">
+                    <div aria-labelledby="drp-1-0syh-grid-end-caption" class="calendar-grid" id="drp-1-0syh-grid-end" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="April 26, 2026" class="calendar-grid-item previous-month-day" data-date="2026-04-26" data-day="26" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
@@ -1376,8 +1376,8 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                     Use cursor keys to navigate calendar dates
                   </div>
                 </footer>
-                <div aria-labelledby="drp-1-nq3b-date-ranges" class="date-range-display" role="region" tabindex="0">
-                  <div class="date-ranges" id="drp-1-nq3b-date-ranges">
+                <div aria-labelledby="drp-1-0syh-date-ranges" class="date-range-display" role="region" tabindex="0">
+                  <div class="date-ranges" id="drp-1-0syh-date-ranges">
                     <span class="start-end-ranges">
                       <span class="start-date">
                         N/A

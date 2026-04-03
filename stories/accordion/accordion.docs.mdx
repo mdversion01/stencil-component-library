@@ -1,0 +1,29 @@
+import { Meta, Title, Subtitle, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as AccordionStories from './accordion.stories.js';
+import { reactExample, vueExample, angularExample } from './accordion.examples.js';
+
+<Meta of={AccordionStories} />
+
+# Accordion
+
+<Description of={AccordionStories} />
+
+## HTML
+
+```html
+<accordion-component target-id="accordion-section-1" accordion>
+  <span slot="accordion-header">Header Text</span>
+  <div slot="content">Body content</div>
+</accordion-component>
+```
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

@@ -21,6 +21,7 @@
 .wd-40 {
   width: 40px;
 }
+
 .primary {
   color: #fff !important;
 }
@@ -65,15 +66,11 @@
         height: calc(1rem + 0.25rem + 8px) !important;
       }
 
-      // .input-group-append {
-      //   height: inherit;
-
       button {
         min-height: 28px;
         font-size: 0.875rem;
         padding: 0.1rem 0.3rem 0 0.3rem;
       }
-      // }
     }
 
     &.input-group-lg {
@@ -82,13 +79,9 @@
         height: 3rem;
       }
 
-      // .input-group-append {
-      //   height: inherit;
-
       button {
         font-size: 1.125rem;
       }
-      // }
     }
   }
 
@@ -148,10 +141,14 @@
   }
 }
 
-.time-picker .input-group-sm .time-icon-btn {
-  font-size: 0.875rem !important;
-  padding: 0.3rem 0.3rem 0.2rem 0.3rem !important;
-  height: 28px !important;
+.time-picker {
+  .input-group-sm {
+    .time-icon-btn {
+      font-size: 0.875rem !important;
+      padding: 0.3rem 0.3rem 0.2rem 0.3rem !important;
+      height: 28px !important;
+    }
+  }
 }
 
 .clear-button {
@@ -191,19 +188,23 @@
   &.invalid {
     border-color: #b30009 !important;
   }
+
+  &[disabled],
+  &.disabled {
+    background-color: var(--bs-secondary-bg);
+  }
 }
 
-.clear-button[disabled],
-.clear-button.disabled {
-  background-color: var(--bs-secondary-bg);
-}
-
-.time-picker .input-group button:last-child {
-  border-top-left-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
-  border-top-right-radius: 0.2rem !important;
-  border-bottom-right-radius: 0.2rem !important;
-  border: 1px solid #dee2e6;
+.time-picker {
+  .input-group {
+    button:last-child {
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+      border-top-right-radius: 0.2rem !important;
+      border-bottom-right-radius: 0.2rem !important;
+      border: 1px solid #dee2e6;
+    }
+  }
 }
 
 /* ================================
@@ -243,7 +244,7 @@ $time-dropdown-z: 10000;
     }
 
     .time-spinner-colon .dot {
-      font-size: 0.35rem;
+      font-size: 0.35rem !important;
     }
 
     .time-spinner-close button {
@@ -382,9 +383,11 @@ button.arrow {
   color: #b30009 !important;
 }
 
-.time-picker .form-control.is-invalid {
-  background-image: none;
-  padding-right: 0.25rem !important;
+.time-picker {
+  .form-control.is-invalid {
+    background-image: none;
+    padding-right: 0.25rem !important;
+  }
 }
 
 /* ================================
@@ -395,15 +398,23 @@ input[type='number'] {
   width: 40px;
 }
 
-.plumage .time-picker .input-group-sm .clear-button {
-  min-height: 28px;
-  font-size: 0.875rem;
-  padding: 0.1rem 0.3rem 0 0.3rem !important;
-}
+.plumage {
+  .time-picker {
+    .input-group-sm {
+      .clear-button {
+        min-height: 28px;
+        font-size: 0.875rem;
+        padding: 0.1rem 0.3rem 0 0.3rem !important;
+      }
+    }
 
-.plumage .time-picker .input-group button:last-child {
-  border: none;
-  border-radius: 0 !important;
+    .input-group {
+      button:last-child {
+        border: none;
+        border-radius: 0 !important;
+      }
+    }
+  }
 }
 
 /* =========================================
@@ -446,6 +457,7 @@ $tp-dropdown-z: 10000;
       > .form-control:first-child {
         padding-left: 0.5rem;
       }
+
       > .form-control:not(first-child) {
         padding-left: 0;
       }
@@ -461,6 +473,7 @@ $tp-dropdown-z: 10000;
     .input-group-prepend {
       margin-right: -1px;
     }
+
     .input-group-append {
       margin-left: -1px;
     }
@@ -706,6 +719,7 @@ $tp-dropdown-z: 10000;
       &.sm {
         top: 30px;
       }
+
       &.lg {
         top: 41px;
       }

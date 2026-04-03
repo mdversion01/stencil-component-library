@@ -24,30 +24,32 @@ describe('table-component', () => {
 <table-component table-id="t1">
   <!---->
   <div>
-    <table class="table" id="t1">
-      <thead role="rowgroup">
-        <tr role="row">
-          <th aria-colindex="1" aria-label="Sort by First Name" aria-sort="none" data-field="first_name" role="columnheader" scope="col" tabindex="0" style="cursor: pointer;">
-            First Name
-            <i aria-hidden="true" class="none sort-icon"></i>
-          </th>
-          <th aria-colindex="2" aria-label="Sort by Age" aria-sort="none" data-field="age" role="columnheader" scope="col" tabindex="0" style="cursor: pointer;">
-            Age
-            <i aria-hidden="true" class="none sort-icon"></i>
-          </th>
-        </tr>
-      </thead>
-      <tbody role="rowgroup">
-        <tr aria-selected="false" class="striped-row" id="t1-row-0" role="row" tabindex="0">
-          <td aria-colindex="1" role="cell">
-            Anna
-          </td>
-          <td aria-colindex="2" role="cell">
-            25
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="sc-table">
+      <table class="table" id="t1">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th aria-colindex="1" aria-label="Sort by First Name" aria-sort="none" data-field="first_name" role="columnheader" scope="col" tabindex="0" style="cursor: pointer;">
+              First Name
+              <i aria-hidden="true" class="none sort-icon"></i>
+            </th>
+            <th aria-colindex="2" aria-label="Sort by Age" aria-sort="none" data-field="age" role="columnheader" scope="col" tabindex="0" style="cursor: pointer;">
+              Age
+              <i aria-hidden="true" class="none sort-icon"></i>
+            </th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          <tr aria-selected="false" class="striped-row" id="t1-row-0" role="row" tabindex="0">
+            <td aria-colindex="1" role="cell">
+              Anna
+            </td>
+            <td aria-colindex="2" role="cell">
+              25
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </table-component>
 `);

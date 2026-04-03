@@ -11,10 +11,10 @@ exports[`slider-manager-component reacts to type changes at runtime and keeps ar
 
 exports[`slider-manager-component renders BASIC by default and forwards props + aria-*: basic/default-snapshot 1`] = `
 <slider-manager-component aria-describedby="speed-help" aria-label="Speed slider" aria-labelledby="speed-label" type="basic">
-  <basic-slider-component aria-describedby="speed-help" aria-label="Speed slider" aria-labelledby="speed-label">
+  <slider-basic-component aria-describedby="speed-help" aria-label="Speed slider" aria-labelledby="speed-label">
     <div class="basic stub"><pre class="props">{"kind":"basic","label":"Speed","value":42,"min":0,"max":120,"unit":"%","plumage":true,"sliderThumbLabel":true,"snapToTicks":true,"tickLabels":true,"tickValues":[0,20,40,60,80,100,120],"variant":"primary","hideTextBoxes":false,"hideLeftTextBox":false,"hideRightTextBox":true,"disabled":false,"aria-label":"Speed slider","aria-labelledby":"speed-label","aria-describedby":"speed-help"}</pre>
     </div>
-  </basic-slider-component>
+  </slider-basic-component>
 </slider-manager-component>
 `;
 

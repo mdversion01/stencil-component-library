@@ -1,11 +1,11 @@
-// src/components/sliders/basic-slider-component.tsx
+// src/components/sliders/slider-basic-component.tsx
 import { Component, Prop, Event, EventEmitter, h, State, Watch, Element } from '@stencil/core';
 
 @Component({
-  tag: 'basic-slider-component',
+  tag: 'slider-basic-component',
   shadow: false,
 })
-export class BasicSliderComponent {
+export class SliderBasicComponent {
   @Element() host!: HTMLElement;
 
   // Public API
@@ -77,7 +77,7 @@ export class BasicSliderComponent {
         return Array.isArray(parsed) ? parsed.map(n => Number(n)).filter(n => Number.isFinite(n)) : [];
       } catch {
         // eslint-disable-next-line no-console
-        console.warn('[basic-slider-component] Invalid JSON for tickValues');
+        console.warn('[slider-basic-component] Invalid JSON for tickValues');
       }
     }
     return [];

@@ -10,7 +10,7 @@ import { SliderManagerComponent } from './slider-manager-component';
 
 type Variant = '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
 
-@Component({ tag: 'basic-slider-component', shadow: false })
+@Component({ tag: 'slider-basic-component', shadow: false })
 class BasicStub {
   @Prop() label: string;
   @Prop() value: number;

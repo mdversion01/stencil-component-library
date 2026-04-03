@@ -903,11 +903,18 @@ export class TableComponent {
     const bottomPaginate = this.effectivePaginationEnabled && (this.paginationPosition === 'bottom' || this.paginationPosition === 'both');
 
     const tableBody = this.responsive ? (
+      <div class="sc-table">
       <div class="table-responsive">{this.renderTable()}</div>
+      </div>
     ) : this.sticky ? (
+      <div class="sc-table">
       <div class="table-sticky-header">{this.renderTable()}</div>
+      </div>
     ) : (
-      this.renderTable()
+      <div class="sc-table">
+      {this.renderTable()}
+      </div>
+
     );
 
     return (

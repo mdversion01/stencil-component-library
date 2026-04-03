@@ -38,14 +38,14 @@
 
 ### Depends on
 
-- [basic-slider-component](.)
+- [slider-basic-component](.)
 - [multi-range-slider-component](.)
 - [discrete-slider-component](.)
 
 ### Graph
 ```mermaid
 graph TD;
-  slider-manager-component --> basic-slider-component
+  slider-manager-component --> slider-basic-component
   slider-manager-component --> multi-range-slider-component
   slider-manager-component --> discrete-slider-component
   style slider-manager-component fill:#f9f,stroke:#333,stroke-width:4px

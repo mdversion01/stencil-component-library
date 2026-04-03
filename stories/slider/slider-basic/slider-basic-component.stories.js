@@ -1,8 +1,8 @@
-// src/stories/basic-slider-component.stories.js
+// src/stories/slider-basic-component.stories.js
 // UPDATED: adds aria-label / aria-labelledby / aria-describedby controls + Accessibility Matrix (computed)
 
 export default {
-  title: 'Components/Slider/Basic Slider',
+  title: 'Components/Slider/Basic',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',
@@ -225,7 +225,7 @@ const Template = (args) => {
   return normalizeHtml(`
 <div style="margin-top: 40px; margin-bottom: 40px;">
   <!-- div wrapper is for better appearance in Storybook -->
-  <basic-slider-component${attrs}></basic-slider-component>
+  <slider-basic-component${attrs}></slider-basic-component>
 </div>
   `);
 };
@@ -278,7 +278,7 @@ export const SnapToTicks = Template.bind({});
 SnapToTicks.args = {
   ...Basic.args,
   label: 'Opacity',
-  value: 75,
+  value: 60,
   snapToTicks: true,
   tickValues: [0, 20, 40, 60, 80, 100],
   tickLabels: true,
@@ -365,7 +365,7 @@ Disabled.parameters = {
 const splitIds = (v) => String(v || '').trim().split(/\s+/).filter(Boolean);
 
 const getSnapshot = (root) => {
-  const host = root?.querySelector?.('basic-slider-component') || root;
+  const host = root?.querySelector?.('slider-basic-component') || root;
   const slider = host?.querySelector?.('[role="slider"]') || null;
 
   const resolve = (id) => {
@@ -451,12 +451,12 @@ export const AccessibilityMatrix = {
       demo.appendChild(mount);
 
       const update = async () => {
-        const host = mount.querySelector('basic-slider-component');
+        const host = mount.querySelector('slider-basic-component');
 
         if (host?.componentOnReady) {
           try { await host.componentOnReady(); } catch (_e) {}
         } else if (window.customElements?.whenDefined) {
-          try { await customElements.whenDefined('basic-slider-component'); } catch (_e) {}
+          try { await customElements.whenDefined('slider-basic-component'); } catch (_e) {}
         }
 
         pre.textContent = JSON.stringify(getSnapshot(mount), null, 2);
