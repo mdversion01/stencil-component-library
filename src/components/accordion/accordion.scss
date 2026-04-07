@@ -1,73 +1,15 @@
 /* accordion.scss */
-
-$fade-transition: opacity 0.15s linear;
-$collapse-transition: height 0.35s ease;
-$rotate-transition: transform 0.3s ease-in-out;
-
-@mixin reduced-motion {
-  @media (prefers-reduced-motion: reduce) {
-    @content;
-  }
-}
-
-%rotate-base {
-  transform-origin: center center;
-  transition: $rotate-transition;
-}
-
-/* Keep the generic utilities global if they’re used elsewhere */
-.fade {
-  transition: $fade-transition;
-
-  &:not(.show) {
-    opacity: 0;
-  }
-
-  @include reduced-motion {
-    transition: none;
-  }
-}
-
-.collapse {
-  position: relative;
-  overflow: hidden;
-  transition: $collapse-transition;
-  height: 0;
-
-  &.show {
-    height: auto;
-  }
-}
-
-.collapsing {
-  transition: $collapse-transition;
-
-  @include reduced-motion {
-    transition: none;
-  }
-}
-
-.rotate-down {
-  @extend %rotate-base;
-  transform: rotate(180deg);
-}
-
-.rotate-up {
-  @extend %rotate-base;
-  transform: rotate(0deg);
-}
-
 /* Wrapper scope: put this on a parent element around your accordion */
 .sc-accordion {
   .accordion-wrapper {
     text-align: left;
     overflow-anchor: none;
+  }
 
-    .accordion-body {
-      flex: 1 1 auto;
-      padding: 1.25rem;
-      text-align: left;
-    }
+  .accordion-body {
+    flex: 1 1 auto;
+    padding: 1.25rem;
+    text-align: left;
   }
 
   .accordion-item {
@@ -94,8 +36,7 @@ $rotate-transition: transform 0.3s ease-in-out;
         border-top-right-radius: var(--bs-accordion-inner-border-radius);
         color: var(--bs-accordion-active-color);
         background-color: var(--bs-accordion-active-bg);
-        box-shadow: inset 0 calc(-1 * var(--bs-accordion-border-width)) 0
-          var(--bs-accordion-border-color);
+        box-shadow: inset 0 calc(-1 * var(--bs-accordion-border-width)) 0 var(--bs-accordion-border-color);
       }
     }
   }

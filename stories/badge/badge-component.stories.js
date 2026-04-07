@@ -1,351 +1,306 @@
-// stories/badge-component.stories.js
+// File: src/stories/badge-component/badge-component.stories.js
 
-import { size } from '@floating-ui/dom';
-
-// helper: set/remove attributes based on value
-const setAttr = (el, name, value) => {
-  if (value === true) el.setAttribute(name, '');
-  else if (value === false || value == null || value === '') el.removeAttribute(name);
-  else el.setAttribute(name, String(value));
-};
+import DocsPage from './badge-component.docs.mdx';
+import { buildDocsHtml, buildDocsHtmlMany, renderBadge, setAttr } from './badge-component.story-helpers.js';
 
 export default {
   title: 'Components/Badge',
   tags: ['autodocs'],
 
-  render: args => {
-    const el = document.createElement('badge-component');
-
-    // strings
-    setAttr(el, 'id', args.id);
-    setAttr(el, 'aria-label', args.ariaLabel);
-    setAttr(el, 'badge-id', args.badgeId);
-    setAttr(el, 'label', args.label);
-    setAttr(el, 'variant', args.variant);
-    setAttr(el, 'size', args.size);
-    setAttr(el, 'shape', args.shape);
-    setAttr(el, 'class-names', args.classNames);
-    setAttr(el, 'bdg-position', args.bdgPosition);
-    setAttr(el, 'elevation', args.elevation);
-    setAttr(el, 'background-color', args.backgroundColor);
-    setAttr(el, 'color', args.color);
-    setAttr(el, 'inline-styles', args.inlineStyles);
-    setAttr(el, 'styles', args.styles);
-    setAttr(el, 'left', args.left);
-    setAttr(el, 'right', args.right);
-    setAttr(el, 'top', args.top);
-    setAttr(el, 'bottom', args.bottom);
-    setAttr(el, 'offset-x', args.offsetX);
-    setAttr(el, 'offset-y', args.offsetY);
-    setAttr(el, 'z-index', args.zIndex);
-    setAttr(el, 'aria-labelledby', args.ariaLabelledby);
-    setAttr(el, 'aria-describedby', args.ariaDescribedby);
-
-    // booleans
-    setAttr(el, 'absolute', args.absolute);
-    setAttr(el, 'disabled', args.disabled);
-    setAttr(el, 'outlined', args.outlined);
-    setAttr(el, 'bordered', args.bordered);
-    setAttr(el, 'pulse', args.pulse);
-    setAttr(el, 'inset', args.inset);
-    setAttr(el, 'icon', args.icon);
-    setAttr(el, 'token', args.token);
-    setAttr(el, 'dot', args.dot);
-    setAttr(el, 'dev-mode', args.devMode);
-
-    // ---------- slot content ----------
-    // Default slot: either plain text or a <button-component>
-    if (args.useButtonComponentChild) {
-      const btnc = document.createElement('button-component');
-      setAttr(btnc, 'type', args.buttonType || 'button');
-      setAttr(btnc, 'variant', args.buttonVariant || 'secondary');
-      setAttr(btnc, 'outlined', !!args.buttonOutlined);
-      setAttr(btnc, 'size', args.buttonSize || 'sm');
-      btnc.textContent = args.buttonText || 'Action';
-      el.appendChild(btnc);
-    } else if (args.text) {
-      el.appendChild(document.createTextNode(args.text));
-    }
-
-    // Icon slot (rendered when `icon` is true)
-    if (args.icon) {
-      const iconHost = document.createElement('span');
-      iconHost.setAttribute('slot', 'icon');
-      if (args.iconMode === 'icon-component' && args.iconName) {
-        iconHost.innerHTML = `<icon-component icon="${args.iconName}"></icon-component>`;
-      } else if (args.iconClass) {
-        iconHost.innerHTML = `<i class="${args.iconClass}"></i>`;
-      }
-      el.appendChild(iconHost);
-    }
-
-    // Token slot (useful for token mode)
-    if (args.token) {
-      if (args.tokenIconMode === 'icon-component' && args.tokenIconName) {
-        const tokenIcon = document.createElement('span');
-        tokenIcon.setAttribute('slot', 'token');
-        tokenIcon.innerHTML = `<icon-component icon="${args.tokenIconName}"></icon-component>`;
-        el.appendChild(tokenIcon);
-      } else if (args.tokenIconClass) {
-        const tokenIcon = document.createElement('span');
-        tokenIcon.setAttribute('slot', 'token');
-        tokenIcon.innerHTML = `<i class="${args.tokenIconClass}"></i>`;
-        el.appendChild(tokenIcon);
-      }
-    }
-
-    // demo click log
-    el.addEventListener('customClick', e => {
-      // eslint-disable-next-line no-console
-      console.log('[badge-component] customClick', e?.detail);
-    });
-
-    return el;
-  },
+  render: (args) => renderBadge(args),
 
   parameters: {
     docs: {
+      page: DocsPage,
       description: {
-        component: ['Content is provided via the **default slot** (text or markup).', 'Use `icon` with the **`icon` slot**, and `token` with the **`token` slot**.', ''].join('\n'),
+        component: [
+          'Content is provided via the **default slot** (text or markup).',
+          'Use `icon` with the **`icon` slot**, and `token` with the **`token` slot**.',
+          '',
+        ].join('\n'),
+      },
+      source: {
+        language: 'html',
+        transform: (_src, ctx) => buildDocsHtml(ctx.args),
       },
     },
   },
 
   argTypes: {
-      // -------- Content / Identity --------
-  label: {
-    control: 'text',
-    name: 'label',
-    description: 'Label text for the badge.',
-    table: { category: 'Content' },
-  },
-  badgeId: {
-    control: 'text',
-    name: 'badge-id',
-    description: 'Sets the ID attribute on the badge component.',
-    table: { category: 'Content' },
-  },
-  variant: {
-    control: 'text',
-    description:
-      'Visual variant/color for the badge (e.g., primary, secondary, success, danger, warning, info, light, dark, or any custom variant your app supports).',
-    table: { category: 'Appearance' },
-  },
-  size: {
-    control: { type: 'select' },
-    options: ['base', 'xs', 'sm', 'lg'],
-    description: 'Size, base, xs, sm, or lg, of the badge component.',
-    table: { category: 'Appearance' },
-  },
-  shape: {
-    control: { type: 'select' },
-    options: ['', 'pill', 'square'],
-    description:
-      'Shape, pill, square, or circle, of the badge component. The default shape is the standard rectangle with rounded corners.',
-    table: { category: 'Appearance' },
-  },
+    label: {
+      control: 'text',
+      name: 'label',
+      description: 'Label text for the badge.',
+      table: { category: 'Content' },
+    },
+    badgeId: {
+      control: 'text',
+      name: 'badge-id',
+      description: 'Sets the ID attribute on the badge component.',
+      table: { category: 'Content' },
+    },
+    variant: {
+      control: 'text',
+      description:
+        'Visual variant/color for the badge (e.g., primary, secondary, success, danger, warning, info, light, dark, or any custom variant your app supports).',
+      table: { category: 'Appearance' },
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['base', 'xs', 'sm', 'lg'],
+      description: 'Size, base, xs, sm, or lg, of the badge component.',
+      table: { category: 'Appearance' },
+    },
+    shape: {
+      control: { type: 'select' },
+      options: ['', 'pill', 'square'],
+      description:
+        'Shape, pill, square, or circle, of the badge component. The default shape is the standard rectangle with rounded corners.',
+      table: { category: 'Appearance' },
+    },
 
-  // -------- Accessibility --------
-  ariaLabel: {
-    control: 'text',
-    name: 'aria-label',
-    description: 'Sets the aria-label attribute on the badge component.',
-    table: { category: 'Accessibility' },
-  },
-  ariaLabelledby: {
-    control: 'text',
-    name: 'aria-labelledby',
-    description: 'Sets the aria-labelledby attribute on the badge component.',
-    table: { category: 'Accessibility' },
-  },
-  ariaDescribedby: {
-    control: 'text',
-    name: 'aria-describedby',
-    description: 'Sets the aria-describedby attribute on the badge component.',
-    table: { category: 'Accessibility' },
-  },
+    ariaLabel: {
+      control: 'text',
+      name: 'aria-label',
+      description: 'Sets the aria-label attribute on the badge component.',
+      table: { category: 'Accessibility' },
+    },
+    ariaLabelledby: {
+      control: 'text',
+      name: 'aria-labelledby',
+      description: 'Sets the aria-labelledby attribute on the badge component.',
+      table: { category: 'Accessibility' },
+    },
+    ariaDescribedby: {
+      control: 'text',
+      name: 'aria-describedby',
+      description: 'Sets the aria-describedby attribute on the badge component.',
+      table: { category: 'Accessibility' },
+    },
 
-  // -------- State --------
-  disabled: {
-    control: 'boolean',
-    description: 'If true, sets a disabled state on the badge component.',
-    table: { category: 'State', defaultValue: { summary: false } },
-  },
-  devMode: {
-    control: 'boolean',
-    name: 'dev-mode',
-    description: 'If true, enables dev mode with extra logging to the console.',
-    table: { category: 'State', defaultValue: { summary: false } },
-  },
+    disabled: {
+      control: 'boolean',
+      description: 'If true, sets a disabled state on the badge component.',
+      table: { category: 'State', defaultValue: { summary: false } },
+    },
+    devMode: {
+      control: 'boolean',
+      name: 'dev-mode',
+      description: 'If true, enables dev mode with extra logging to the console.',
+      table: { category: 'State', defaultValue: { summary: false } },
+    },
 
-  // -------- Display Modes --------
-  outlined: {
-    control: 'boolean',
-    description: 'If true, renders the badge with an outlined style.',
-    table: { category: 'Modes', defaultValue: { summary: false } },
-  },
-  bordered: {
-    control: 'boolean',
-    description: 'If true, adds a border to the badge component.',
-    table: { category: 'Modes', defaultValue: { summary: false } },
-  },
-  token: {
-    control: 'boolean',
-    description:
-      'If true, renders the badge as a token, typically used to indicate a status or category associated with the parent element.',
-    table: { category: 'Modes', defaultValue: { summary: false } },
-  },
-  dot: {
-    control: 'boolean',
-    description:
-      'If true, renders the badge as a small dot, often used to indicate notifications or status without text content.',
-    table: { category: 'Modes', defaultValue: { summary: false } },
-  },
-  pulse: {
-    control: 'boolean',
-    description:
-      'If true, adds a pulsing animation to the dot badge, typically used to draw attention to notification badges.',
-    table: { category: 'Modes', defaultValue: { summary: false } },
-  },
-  icon: {
-    control: 'boolean',
-    description:
-      'If true, when using an icon within a badge, this property will add the some spacing to the left and right of the icon.',
-    table: { category: 'Modes', defaultValue: { summary: false } },
-  },
+    outlined: {
+      control: 'boolean',
+      description: 'If true, renders the badge with an outlined style.',
+      table: { category: 'Modes', defaultValue: { summary: false } },
+    },
+    bordered: {
+      control: 'boolean',
+      description: 'If true, adds a border to the badge component.',
+      table: { category: 'Modes', defaultValue: { summary: false } },
+    },
+    token: {
+      control: 'boolean',
+      description:
+        'If true, renders the badge as a token, typically used to indicate a status or category associated with the parent element.',
+      table: { category: 'Modes', defaultValue: { summary: false } },
+    },
+    dot: {
+      control: 'boolean',
+      description:
+        'If true, renders the badge as a small dot, often used to indicate notifications or status without text content.',
+      table: { category: 'Modes', defaultValue: { summary: false } },
+    },
+    pulse: {
+      control: 'boolean',
+      description:
+        'If true, adds a pulsing animation to the dot badge, typically used to draw attention to notification badges.',
+      table: { category: 'Modes', defaultValue: { summary: false } },
+    },
+    icon: {
+      control: 'boolean',
+      description:
+        'If true, when using an icon within a badge, this property will add the some spacing to the left and right of the icon.',
+      table: { category: 'Modes', defaultValue: { summary: false } },
+    },
 
-  // -------- Placement / Alignment --------
-  bdgPosition: {
-    control: { type: 'select' },
-    options: ['', 'left', 'right'],
-    name: 'bdg-position',
-    description:
-      "When placing a badge on the left of any content of a <button-component>, this adds the class 'ms-1' to the badge... Placing to the right adds 'me-1'.",
-    table: { category: 'Placement' },
-  },
-  inset: {
-    control: 'boolean',
-    description:
-      "To be used with the token or dot badges, if true, adds the set default style of 'inset: auto auto calc(100% - 12px) calc(100% - 12px);', positioning the badge token to the upper right of the element it is used with.",
-    table: { category: 'Placement', defaultValue: { summary: false } },
-  },
-  absolute: {
-    control: 'boolean',
-    description:
-      'To be used with the token or dot badges, if true, adds position: absolute inline style to the badge.',
-    table: { category: 'Placement', defaultValue: { summary: false } },
-  },
+    bdgPosition: {
+      control: { type: 'select' },
+      options: ['', 'left', 'right'],
+      name: 'bdg-position',
+      description:
+        "When placing a badge on the left of any content of a <button-component>, this adds the class 'ms-1' to the badge... Placing to the right adds 'me-1'.",
+      table: { category: 'Placement' },
+    },
+    inset: {
+      control: 'boolean',
+      description:
+        "To be used with the token or dot badges, if true, adds the set default style of 'inset: auto auto calc(100% - 12px) calc(100% - 12px);', positioning the badge token to the upper right of the element it is used with.",
+      table: { category: 'Placement', defaultValue: { summary: false } },
+    },
+    absolute: {
+      control: 'boolean',
+      description:
+        'To be used with the token or dot badges, if true, adds position: absolute inline style to the badge.',
+      table: { category: 'Placement', defaultValue: { summary: false } },
+    },
 
-  // -------- Styling / Classes --------
-  classNames: {
-    control: 'text',
-    name: 'class-names',
-    description: 'Additional custom class names to apply to the badge component.',
-    table: { category: 'Styling' },
-  },
-  elevation: {
-    control: 'text',
-    description: 'Applies a shadow elevation to the badge component (0-24).',
-    table: { category: 'Styling' },
-  },
-  styles: {
-    control: 'text',
-    name: 'styles',
-    description: 'Additional inline styles can be added to the badge. Ex: styles="color: green; padding: 10px;"',
-    table: { category: 'Styling' },
-  },
-  inlineStyles: {
-    control: 'text',
-    name: 'inline-styles',
-    description: 'Additional inline styles can be added to the dot or token badges. Ex: inline-styles="color: pink; padding: 10px;"',
-    table: { category: 'Styling' },
-  },
-  backgroundColor: {
-    control: 'text',
-    name: 'background-color',
-    description:
-      'To be used with the token or dot badges, sets or adds an inline style for background color that uses any valid CSS color value.',
-    table: { category: 'Styling' },
-  },
-  color: {
-    control: 'text',
-    description:
-      'To be used with the token or dot badges, sets or adds an inline style for text color that uses any valid CSS color value.',
-    table: { category: 'Styling' },
-  },
+    classNames: {
+      control: 'text',
+      name: 'class-names',
+      description: 'Additional custom class names to apply to the badge component.',
+      table: { category: 'Styling' },
+    },
+    elevation: {
+      control: 'text',
+      description: 'Applies a shadow elevation to the badge component (0-24).',
+      table: { category: 'Styling' },
+    },
+    styles: {
+      control: 'text',
+      name: 'styles',
+      description: 'Additional inline styles can be added to the badge. Ex: styles="color: green; padding: 10px;"',
+      table: { category: 'Styling' },
+    },
+    inlineStyles: {
+      control: 'text',
+      name: 'inline-styles',
+      description: 'Additional inline styles can be added to the dot or token badges. Ex: inline-styles="color: pink; padding: 10px;"',
+      table: { category: 'Styling' },
+    },
+    backgroundColor: {
+      control: 'text',
+      name: 'background-color',
+      description:
+        'To be used with the token or dot badges, sets or adds an inline style for background color that uses any valid CSS color value.',
+      table: { category: 'Styling' },
+    },
+    color: {
+      control: 'text',
+      description:
+        'To be used with the token or dot badges, sets or adds an inline style for text color that uses any valid CSS color value.',
+      table: { category: 'Styling' },
+    },
 
-  // -------- Position Offsets --------
-  top: {
-    control: 'text',
-    description: 'To be used with the token or dot badges, adds an inline style that sets the top CSS property.',
-    table: { category: 'Offsets' },
-  },
-  right: {
-    control: 'text',
-    description: 'To be used with the token or dot badges, adds an inline style that sets the right CSS property.',
-    table: { category: 'Offsets' },
-  },
-  bottom: {
-    control: 'text',
-    description: 'To be used with the token or dot badges, adds an inline style that sets the bottom CSS property.',
-    table: { category: 'Offsets' },
-  },
-  left: {
-    control: 'text',
-    description: 'To be used with the token or dot badges, adds an inline style that sets the left CSS property.',
-    table: { category: 'Offsets' },
-  },
-  offsetX: {
-    control: 'text',
-    name: 'offset-x',
-    description:
-      "To be used with the token or dot badges, used with the 'inset' property to overwrite the default bottom position value. Ex: offsetX=\"50\"",
-    table: { category: 'Offsets' },
-  },
-  offsetY: {
-    control: 'text',
-    name: 'offset-y',
-    description:
-      "To be used with the token or dot badges, used with the 'inset' property to overwrite the default left position value. Ex: offsetY=\"50\"",
-    table: { category: 'Offsets' },
-  },
-  zIndex: {
-    control: 'text',
-    name: 'z-index',
-    description:
-      'To be used with the token or dot badges, adds an inline style that sets the z-index CSS property. Ex: z-index="100"',
-    table: { category: 'Offsets' },
-  },
+    top: {
+      control: 'text',
+      description: 'To be used with the token or dot badges, adds an inline style that sets the top CSS property.',
+      table: { category: 'Offsets' },
+    },
+    right: {
+      control: 'text',
+      description: 'To be used with the token or dot badges, adds an inline style that sets the right CSS property.',
+      table: { category: 'Offsets' },
+    },
+    bottom: {
+      control: 'text',
+      description: 'To be used with the token or dot badges, adds an inline style that sets the bottom CSS property.',
+      table: { category: 'Offsets' },
+    },
+    left: {
+      control: 'text',
+      description: 'To be used with the token or dot badges, adds an inline style that sets the left CSS property.',
+      table: { category: 'Offsets' },
+    },
+    offsetX: {
+      control: 'text',
+      name: 'offset-x',
+      description:
+        "To be used with the token or dot badges, used with the 'inset' property to overwrite the default bottom position value. Ex: offsetX=\"50\"",
+      table: { category: 'Offsets' },
+    },
+    offsetY: {
+      control: 'text',
+      name: 'offset-y',
+      description:
+        "To be used with the token or dot badges, used with the 'inset' property to overwrite the default left position value. Ex: offsetY=\"50\"",
+      table: { category: 'Offsets' },
+    },
+    zIndex: {
+      control: 'text',
+      name: 'z-index',
+      description:
+        'To be used with the token or dot badges, adds an inline style that sets the z-index CSS property. Ex: z-index="100"',
+      table: { category: 'Offsets' },
+    },
 
-  // -------- Hidden SB-only helpers (keep as-is) --------
-  id: {
-    table: { disable: true },
-    control: 'false',
-    description: 'ID attribute for the badge component.',
-  },
-  text: {
-    table: { disable: true },
-    control: false,
-  },
-
-    // hides from Controls// useButtonComponentChild: { control: 'boolean' },
-    // buttonText: { control: 'text' },
-    // buttonType: { control: 'text' },
-    // buttonVariant: { control: 'text' },
-    // buttonOutlined: { control: 'boolean' },
-    // buttonSize: { control: { type: 'select' }, options: ['sm', 'lg', ''] },
-
-    // iconMode: { control: { type: 'select' }, options: ['icon-component', 'fa', ''] },
-    // iconName: { control: 'text', description: 'Used when iconMode = icon-component, e.g. "fas fa-info-circle".' },
-    // iconClass: { control: 'text', description: 'Used when iconMode = fa (plain <i> tag class list).' },
-
-    // tokenIconMode: { control: { type: 'select' }, options: ['icon-component', 'fa', ''] },
-    // tokenIconName: { control: 'text', description: 'Used when tokenIconMode = icon-component.' },
-    // tokenIconClass: { control: 'text', description: 'Used when tokenIconMode = fa.' },
+    id: {
+      table: { disable: true },
+      control: false,
+      description: 'ID attribute for the badge component.',
+    },
+    text: {
+      table: { disable: true },
+      control: false,
+    },
+    useButtonComponentChild: {
+      table: { disable: true },
+      control: false,
+    },
+    buttonText: {
+      table: { disable: true },
+      control: false,
+    },
+    buttonType: {
+      table: { disable: true },
+      control: false,
+    },
+    buttonVariant: {
+      table: { disable: true },
+      control: false,
+    },
+    buttonOutlined: {
+      table: { disable: true },
+      control: false,
+    },
+    buttonSize: {
+      table: { disable: true },
+      control: false,
+    },
+    iconMode: {
+      table: { disable: true },
+      control: false,
+    },
+    iconName: {
+      table: { disable: true },
+      control: false,
+    },
+    iconClass: {
+      table: { disable: true },
+      control: false,
+    },
+    tokenIconMode: {
+      table: { disable: true },
+      control: false,
+    },
+    tokenIconName: {
+      table: { disable: true },
+      control: false,
+    },
+    tokenIconClass: {
+      table: { disable: true },
+      control: false,
+    },
   },
 
   controls: {
-    exclude: ['id', 'text'], // belt & suspenders for Controls panel
+    exclude: [
+      'id',
+      'text',
+      'useButtonComponentChild',
+      'buttonText',
+      'buttonType',
+      'buttonVariant',
+      'buttonOutlined',
+      'buttonSize',
+      'iconMode',
+      'iconName',
+      'iconClass',
+      'tokenIconMode',
+      'tokenIconName',
+      'tokenIconClass',
+    ],
   },
 
   args: {
@@ -380,27 +335,22 @@ export default {
     top: '',
     variant: '',
     zIndex: '',
-
-    // id: 'badge-1',
-    // text: 'Badge',
-    // iconMode: 'icon-component',
-    // iconName: '',
-    // iconClass: '',
-    // tokenIconMode: 'fa',
-    // tokenIconName: '',
-    // tokenIconClass: '',
-    // useButtonComponentChild: false,
-    // buttonText: 'Action',
-    // buttonType: 'button',
-    // buttonVariant: 'secondary',
-    // buttonOutlined: false,
-    // buttonSize: 'sm',
+    text: 'Badge',
+    iconMode: 'icon-component',
+    iconName: '',
+    iconClass: '',
+    tokenIconMode: 'fa',
+    tokenIconName: '',
+    tokenIconClass: '',
+    useButtonComponentChild: false,
+    buttonText: 'Action',
+    buttonType: 'button',
+    buttonVariant: 'secondary',
+    buttonOutlined: false,
+    buttonSize: 'sm',
   },
 };
 
-// ——— Example stories mirroring your HTML ———
-
-// 1) <badge-component id="badge1" elevation="6" shape="square">Badge Base</badge-component>
 export const Default = {
   args: {
     text: 'Badge Base',
@@ -421,14 +371,13 @@ export const VariantBadges = {
     const variants = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
     const wrap = document.createElement('div');
 
-    variants.forEach(v => {
+    variants.forEach((v) => {
       const holder = document.createElement('span');
       holder.style.display = 'inline-block';
       holder.style.margin = '6px';
 
       const badge = document.createElement('badge-component');
       setAttr(badge, 'variant', v);
-      // optional: make them base; remove if you want default size
       setAttr(badge, 'size', 'base');
       badge.appendChild(document.createTextNode(v.charAt(0).toUpperCase() + v.slice(1)));
 
@@ -439,7 +388,16 @@ export const VariantBadges = {
     return wrap;
   },
   parameters: {
+    controls: { disable: true },
     docs: {
+      source: {
+        language: 'html',
+        code: buildDocsHtmlMany(
+          ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'].map(
+            (v) => `<badge-component variant="${v}" size="base">${v.charAt(0).toUpperCase() + v.slice(1)}</badge-component>`,
+          ),
+        ),
+      },
       description: {
         story: 'Displays one **badge** for each core variant: primary, secondary, success, danger, warning, info, light, and dark.',
       },
@@ -453,26 +411,33 @@ export const OutlinedCoreVariants = {
     const variants = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
     const wrap = document.createElement('div');
 
-    variants.forEach(v => {
+    variants.forEach((v) => {
       const badge = document.createElement('badge-component');
       setAttr(badge, 'outlined', true);
       setAttr(badge, 'variant', v);
-      setAttr(badge, 'size', 'base'); // keep your default
+      setAttr(badge, 'size', 'base');
       badge.appendChild(document.createTextNode(v.charAt(0).toUpperCase() + v.slice(1)));
 
-      // simple spacing for preview
       const holder = document.createElement('span');
       holder.style.display = 'inline-block';
       holder.style.margin = '6px';
       holder.appendChild(badge);
-
       wrap.appendChild(holder);
     });
 
     return wrap;
   },
   parameters: {
+    controls: { disable: true },
     docs: {
+      source: {
+        language: 'html',
+        code: buildDocsHtmlMany(
+          ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'].map(
+            (v) => `<badge-component outlined variant="${v}" size="base">${v.charAt(0).toUpperCase() + v.slice(1)}</badge-component>`,
+          ),
+        ),
+      },
       description: {
         story: 'Outlined badges rendered in each core variant: **primary, secondary, success, danger, warning, info, light, dark**.',
       },
@@ -480,7 +445,6 @@ export const OutlinedCoreVariants = {
   },
 };
 
-// 2) With icon slot using <icon-component>
 export const BadgeWithAnIcon = {
   args: {
     badgeId: 'badge1-icon',
@@ -501,7 +465,6 @@ export const BadgeWithAnIcon = {
   },
 };
 
-// 3) <badge-component id="badge2" variant="success" size="lg">Badge Large</badge-component>
 export const BadgeSizes = {
   name: 'Badge Sizes',
   render: () => {
@@ -527,13 +490,14 @@ export const BadgeSizes = {
     return wrap;
   },
   parameters: {
-    controls: { disable: true }, // this example doesn’t use the shared args/controls
+    controls: { disable: true },
     docs: {
       source: {
+        language: 'html',
         code: `<badge-component badge-id="badge-xs" variant="primary" size="xs">Extra Small</badge-component>
-              <badge-component badge-id="badge-sm" variant="primary" size="sm">Small</badge-component>
-              <badge-component badge-id="badge-base" variant="primary" size="base">Default</badge-component>
-              <badge-component badge-id="badge-lg" variant="primary" size="lg">Large</badge-component>`,
+<badge-component badge-id="badge-sm" variant="primary" size="sm">Small</badge-component>
+<badge-component badge-id="badge-base" variant="primary" size="base">Default</badge-component>
+<badge-component badge-id="badge-lg" variant="primary" size="lg">Large</badge-component>`,
       },
       description: {
         story: 'This example shows the different size options for the badge component: xs, sm, base, and lg.',
@@ -542,7 +506,6 @@ export const BadgeSizes = {
   },
 };
 
-// 4) <badge-component id="badge3" variant="purple" outlined shape="pill" size="sm">Badge Small</badge-component>
 export const BadgeShapes = {
   name: 'Badge Shapes',
   render: () => {
@@ -556,7 +519,7 @@ export const BadgeShapes = {
       b.setAttribute('variant', 'primary');
       b.setAttribute('shape', shape);
       b.setAttribute('size', 'base');
-      b.setAttribute('badge-id', `badge-${shape}`);
+      b.setAttribute('badge-id', `badge-${shape || 'base'}`);
       b.textContent = label;
       return b;
     };
@@ -568,13 +531,13 @@ export const BadgeShapes = {
     return wrap;
   },
   parameters: {
-    controls: { disable: true }, // this example doesn’t use the shared args/controls
+    controls: { disable: true },
     docs: {
       source: {
+        language: 'html',
         code: `<badge-component badge-id="badge-base" variant="primary">Base</badge-component>
-              <badge-component badge-id="badge-pill" variant="primary" shape="pill">Pill</badge-component>
-              <badge-component badge-id="badge-square" variant="primary" shape="square">Square</badge-component>
-              `,
+<badge-component badge-id="badge-pill" variant="primary" shape="pill">Pill</badge-component>
+<badge-component badge-id="badge-square" variant="primary" shape="square">Square</badge-component>`,
       },
       description: {
         story: 'This example shows the different shape options for the badge component: pill, square, and the default rectangular shape.',
@@ -583,11 +546,6 @@ export const BadgeShapes = {
   },
 };
 
-// 5) Token + left position + inset + button-component child + token icon
-// <badge-component id="badge4" bdg-position="left" elevation="3" outlined variant="purple" token bordered shape="circle" inset>
-//   <button-component type="button" variant="primary" outlined size="sm">Badge Small</button-component>
-//   <span slot="token"><i class="fa-solid fa-house"></i></span>
-// </badge-component>
 export const ButtonWithBadgeToken = {
   args: {
     id: 'badge5',
@@ -616,10 +574,6 @@ export const ButtonWithBadgeToken = {
   },
 };
 
-// 6) Dot/pulse + button-component child
-// <badge-component id="badge5" elevation="1" dot pulse variant="warning">
-//   <button-component type="button" variant="secondary" outlined size="sm">Badge Small</button-component>
-// </badge-component>
 export const ButtonWithDotBadge = {
   args: {
     id: 'badge6',
@@ -643,7 +597,6 @@ export const ButtonWithDotBadge = {
   },
 };
 
-// 7) Button with a badge (badge positioned on the right)
 export const ButtonWithBadge = {
   name: 'Button with Badge',
   render: () => {
@@ -663,12 +616,13 @@ export const ButtonWithBadge = {
     return btn;
   },
   parameters: {
-    controls: { disable: true }, // this example doesn't use the badge story args
+    controls: { disable: true },
     docs: {
       source: {
+        language: 'html',
         code: `<button-component title-attr="Button with Badge" btn-text="With a badge" variant="primary">
-                  <badge-component id="badge12" variant="light" bdg-position="right" size="sm">1</badge-component>
-              </button-component>`,
+  <badge-component id="badge12" variant="light" bdg-position="right" size="sm">1</badge-component>
+</button-component>`,
       },
       description: {
         story: 'This example shows a badge positioned on the right side of a button component, typically used to indicate notifications or counts.',
@@ -677,7 +631,6 @@ export const ButtonWithBadge = {
   },
 };
 
-// Accessibility matrix: renders default/token/dot and prints computed host a11y attrs
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: () => {
@@ -732,7 +685,6 @@ export const AccessibilityMatrix = {
       row.appendChild(left);
       row.appendChild(right);
 
-      // compute host attrs after element is connected & rendered
       const update = () => {
         const attrs = {
           role: el.getAttribute('role'),
@@ -746,13 +698,11 @@ export const AccessibilityMatrix = {
         pre.textContent = JSON.stringify(attrs, null, 2);
       };
 
-      // give Stencil a microtask + frame to render/reflect attrs
       queueMicrotask(() => requestAnimationFrame(update));
 
       return row;
     };
 
-    // 1) Default badge: no a11y name => aria-hidden should be true (role absent)
     wrap.appendChild(
       mkRow('Default (no ARIA name)', () => {
         const b = document.createElement('badge-component');
@@ -761,7 +711,6 @@ export const AccessibilityMatrix = {
       }),
     );
 
-    // 2) Default badge with name => should get role="note" (unless overridden) and aria-hidden cleared
     wrap.appendChild(
       mkRow('Default (with aria-label)', () => {
         const b = document.createElement('badge-component');
@@ -771,7 +720,6 @@ export const AccessibilityMatrix = {
       }),
     );
 
-    // 3) Token badge: should compute role="status" + aria-live/atomic; name required (we provide)
     wrap.appendChild(
       mkRow('Token (with aria-label)', () => {
         const b = document.createElement('badge-component');
@@ -784,7 +732,6 @@ export const AccessibilityMatrix = {
       }),
     );
 
-    // 4) Dot badge: should compute role="status" + aria-live/atomic; name required (we provide)
     wrap.appendChild(
       mkRow('Dot (with aria-label)', () => {
         const b = document.createElement('badge-component');
@@ -792,12 +739,10 @@ export const AccessibilityMatrix = {
         b.setAttribute('variant', 'danger');
         b.setAttribute('pulse', '');
         b.setAttribute('aria-label', 'Notification badge');
-        b.textContent = '';
         return b;
       }),
     );
 
-    // 5) Explicit role override: verify we can override computed role
     wrap.appendChild(
       mkRow('Override role (role="img")', () => {
         const b = document.createElement('badge-component');
@@ -818,6 +763,7 @@ export const AccessibilityMatrix = {
           'Renders several badge modes and prints the **computed host** accessibility attributes (role + aria-*). Useful for validating 508 compliance behavior after changes.',
       },
       source: {
+        language: 'html',
         code: `<!-- Default (no ARIA name) -->
 <badge-component>Default</badge-component>
 

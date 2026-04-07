@@ -6,7 +6,7 @@ exports[`slider-basic-component applies variant class to moving track and thumb 
     <div class="slider-wrapper">
       <div class="slider" dir="ltr" role="presentation">
         <div class="slider-container">
-          <div aria-labelledby="slider_52vt1opy7-label" aria-readonly="true" class="slider-value-left" role="textbox">
+          <div aria-labelledby="slider_p0914zsy9-label" aria-readonly="true" class="slider-value-left" role="textbox">
             20
           </div>
           <div aria-hidden="true" class="slider-min-value">
@@ -22,7 +22,7 @@ exports[`slider-basic-component applies variant class to moving track and thumb 
           <div aria-hidden="true" class="slider-max-value">
             100
           </div>
-          <div aria-labelledby="slider_52vt1opy7-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_p0914zsy9-label" aria-readonly="true" class="slider-value-right" role="textbox">
             20
           </div>
         </div>
@@ -38,7 +38,7 @@ exports[`slider-basic-component disabled: slider is not focusable and sets aria-
     <div class="slider-wrapper">
       <div class="slider" dir="ltr" role="presentation">
         <div class="slider-container">
-          <div aria-labelledby="slider_27wl5lb7s-label" aria-readonly="true" class="slider-value-left" role="textbox">
+          <div aria-labelledby="slider_97f01jb3i-label" aria-readonly="true" class="slider-value-left" role="textbox">
             5
           </div>
           <div aria-hidden="true" class="slider-min-value">
@@ -54,7 +54,7 @@ exports[`slider-basic-component disabled: slider is not focusable and sets aria-
           <div aria-hidden="true" class="slider-max-value">
             100
           </div>
-          <div aria-labelledby="slider_27wl5lb7s-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_97f01jb3i-label" aria-readonly="true" class="slider-value-right" role="textbox">
             5
           </div>
         </div>
@@ -70,7 +70,7 @@ exports[`slider-basic-component drag changes value (no snap), and snapToTicks sn
     <div class="slider-wrapper">
       <div class="slider" dir="ltr" role="presentation">
         <div class="slider-container">
-          <div aria-labelledby="slider_zm0nfjxqn-label" aria-readonly="true" class="slider-value-left" role="textbox">
+          <div aria-labelledby="slider_jhoxcyaw6-label" aria-readonly="true" class="slider-value-left" role="textbox">
             50
           </div>
           <div aria-hidden="true" class="slider-min-value">
@@ -86,7 +86,7 @@ exports[`slider-basic-component drag changes value (no snap), and snapToTicks sn
           <div aria-hidden="true" class="slider-max-value">
             100
           </div>
-          <div aria-labelledby="slider_zm0nfjxqn-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_jhoxcyaw6-label" aria-readonly="true" class="slider-value-right" role="textbox">
             50
           </div>
         </div>
@@ -141,7 +141,7 @@ exports[`slider-basic-component hideTextBoxes hides both; individual flags hide 
           <div aria-hidden="true" class="slider-max-value">
             100
           </div>
-          <div aria-labelledby="slider_7bs6wsnba-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_uehchcz5c-label" aria-readonly="true" class="slider-value-right" role="textbox">
             33
           </div>
         </div>
@@ -157,7 +157,7 @@ exports[`slider-basic-component hideTextBoxes hides both; individual flags hide 
     <div class="slider-wrapper">
       <div class="slider" dir="ltr" role="presentation">
         <div class="slider-container">
-          <div aria-labelledby="slider_wv3iuyhou-label" aria-readonly="true" class="slider-value-left" role="textbox">
+          <div aria-labelledby="slider_hlrqodmaj-label" aria-readonly="true" class="slider-value-left" role="textbox">
             33
           </div>
           <div aria-hidden="true" class="slider-min-value">
@@ -186,7 +186,7 @@ exports[`slider-basic-component keyboard ArrowRight/ArrowLeft without snapToTick
     <div class="slider-wrapper">
       <div class="slider" dir="ltr" role="presentation">
         <div class="slider-container">
-          <div aria-labelledby="slider_y4i003apk-label" aria-readonly="true" class="slider-value-left" role="textbox">
+          <div aria-labelledby="slider_soas6o3w5-label" aria-readonly="true" class="slider-value-left" role="textbox">
             5
           </div>
           <div aria-hidden="true" class="slider-min-value">
@@ -202,7 +202,7 @@ exports[`slider-basic-component keyboard ArrowRight/ArrowLeft without snapToTick
           <div aria-hidden="true" class="slider-max-value">
             10
           </div>
-          <div aria-labelledby="slider_y4i003apk-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_soas6o3w5-label" aria-readonly="true" class="slider-value-right" role="textbox">
             5
           </div>
         </div>
@@ -218,7 +218,7 @@ exports[`slider-basic-component keyboard snapping to tickValues goes to next/pre
     <div class="slider-wrapper">
       <div class="slider" dir="ltr" role="presentation">
         <div class="slider-container">
-          <div aria-labelledby="slider_3nppfgrog-label" aria-readonly="true" class="slider-value-left" role="textbox">
+          <div aria-labelledby="slider_olfgu6svx-label" aria-readonly="true" class="slider-value-left" role="textbox">
             20
           </div>
           <div aria-hidden="true" class="slider-min-value">
@@ -234,7 +234,7 @@ exports[`slider-basic-component keyboard snapping to tickValues goes to next/pre
           <div aria-hidden="true" class="slider-max-value">
             60
           </div>
-          <div aria-labelledby="slider_3nppfgrog-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_olfgu6svx-label" aria-readonly="true" class="slider-value-right" role="textbox">
             20
           </div>
         </div>
@@ -250,7 +250,7 @@ exports[`slider-basic-component parses tickValues from JSON attribute and shows 
     <div class="slider-wrapper">
       <div class="slider" dir="ltr" role="presentation">
         <div class="slider-container">
-          <div aria-labelledby="slider_wn24icobj-label" aria-readonly="true" class="slider-value-left" role="textbox">
+          <div aria-labelledby="slider_oequa7ga1-label" aria-readonly="true" class="slider-value-left" role="textbox">
             50%
           </div>
           <div aria-hidden="true" class="slider-min-value">
@@ -298,7 +298,7 @@ exports[`slider-basic-component parses tickValues from JSON attribute and shows 
           <div aria-hidden="true" class="slider-max-value">
             100%
           </div>
-          <div aria-labelledby="slider_wn24icobj-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_oequa7ga1-label" aria-readonly="true" class="slider-value-right" role="textbox">
             50%
           </div>
         </div>
@@ -313,14 +313,14 @@ exports[`slider-basic-component renders label and sliderThumbLabel modes (label 
   <div class="sc-slider">
     <div class="slider-wrapper">
       <div class="slider" dir="ltr" role="presentation">
-        <label class="form-control-label" id="slider_e5azdn0he-label">
+        <label class="form-control-label" id="slider_24qg0ejbv-label">
           Volume
-          <span id="slider_e5azdn0he-value">
+          <span id="slider_24qg0ejbv-value">
             7%
           </span>
         </label>
         <div class="slider-container">
-          <div aria-labelledby="slider_e5azdn0he-label" aria-readonly="true" class="slider-value-left" role="textbox">
+          <div aria-labelledby="slider_24qg0ejbv-label" aria-readonly="true" class="slider-value-left" role="textbox">
             7%
           </div>
           <div aria-hidden="true" class="slider-min-value">
@@ -329,14 +329,14 @@ exports[`slider-basic-component renders label and sliderThumbLabel modes (label 
           <div class="slider-controls" role="presentation">
             <div aria-hidden="true" class="slider-background-track" style="width: 100%;"></div>
             <div aria-hidden="true" class="slider-moving-track" style="width: 7%;"></div>
-            <div aria-labelledby="slider_e5azdn0he-label" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="7" aria-valuetext="7%" class="slider-thumb-container" role="slider" tabindex="0" style="left: 7%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+            <div aria-labelledby="slider_24qg0ejbv-label" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="7" aria-valuetext="7%" class="slider-thumb-container" role="slider" tabindex="0" style="left: 7%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
               <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
             </div>
           </div>
           <div aria-hidden="true" class="slider-max-value">
             100%
           </div>
-          <div aria-labelledby="slider_e5azdn0he-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_24qg0ejbv-label" aria-readonly="true" class="slider-value-right" role="textbox">
             7%
           </div>
         </div>
@@ -352,7 +352,7 @@ exports[`slider-basic-component renders label and sliderThumbLabel modes (label 
     <div class="slider-wrapper">
       <div class="slider" dir="ltr" role="presentation">
         <div class="slider-container">
-          <div aria-labelledby="slider_v447t7mfi-label" aria-readonly="true" class="slider-value-left" role="textbox">
+          <div aria-labelledby="slider_6crrybfgf-label" aria-readonly="true" class="slider-value-left" role="textbox">
             7%
           </div>
           <div aria-hidden="true" class="slider-min-value">
@@ -375,7 +375,7 @@ exports[`slider-basic-component renders label and sliderThumbLabel modes (label 
           <div aria-hidden="true" class="slider-max-value">
             100%
           </div>
-          <div aria-labelledby="slider_v447t7mfi-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_6crrybfgf-label" aria-readonly="true" class="slider-value-right" role="textbox">
             7%
           </div>
         </div>
@@ -391,7 +391,7 @@ exports[`slider-basic-component renders with defaults (snapshot) + a11y slider e
     <div class="slider-wrapper">
       <div class="slider" dir="ltr" role="presentation">
         <div class="slider-container">
-          <div aria-labelledby="slider_lilbc48pb-label" aria-readonly="true" class="slider-value-left" role="textbox">
+          <div aria-labelledby="slider_lv0tolsah-label" aria-readonly="true" class="slider-value-left" role="textbox">
             0
           </div>
           <div aria-hidden="true" class="slider-min-value">
@@ -407,7 +407,7 @@ exports[`slider-basic-component renders with defaults (snapshot) + a11y slider e
           <div aria-hidden="true" class="slider-max-value">
             100
           </div>
-          <div aria-labelledby="slider_lilbc48pb-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_lv0tolsah-label" aria-readonly="true" class="slider-value-right" role="textbox">
             0
           </div>
         </div>

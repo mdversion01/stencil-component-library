@@ -1,0 +1,33 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as DateRangePickerStories from './date-range-picker-component.stories.js';
+import { reactExample, vueExample, angularExample } from './date-range-picker-component.examples.js';
+
+<Meta of={DateRangePickerStories} />
+
+# Date Range Picker
+
+<Description of={DateRangePickerStories} />
+
+## HTML
+
+```html
+<date-range-picker-component
+  input-id="date-range-example"
+  label="Select date range"
+  date-format="YYYY-MM-DD"
+  join-by=" - "
+  append-prop
+></date-range-picker-component>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

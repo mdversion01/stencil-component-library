@@ -1,0 +1,56 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as AutocompleteMultiselectStories from './autocomplete-multiselect.stories.js';
+import { reactExample, vueExample, angularExample } from './autocomplete-multiselect.examples.js';
+
+<Meta of={AutocompleteMultiselectStories} />
+
+# Autocomplete Multiselect
+
+<Description of={AutocompleteMultiselectStories} />
+
+## HTML
+
+```html
+<autocomplete-multiselect
+  input-id="acm-example"
+  label="Favorite fruits"
+  placeholder="Type to search"
+  editable
+  add-btn
+  badge-variant="primary"
+></autocomplete-multiselect>
+
+<script>
+  const el = document.querySelector('autocomplete-multiselect')
+
+  el.options = [
+    'Apple',
+    'Banana',
+    'Orange',
+    'Mango',
+    'Blueberry',
+    'Strawberry'
+  ]
+
+  el.value = ['Apple', 'Mango']
+
+  el.addEventListener('multiSelectChange', (event) => {
+    console.log('multiSelectChange:', event.detail)
+  })
+
+  el.addEventListener('optionsChange', (event) => {
+    console.log('optionsChange:', event.detail)
+  })
+</script>
+```
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

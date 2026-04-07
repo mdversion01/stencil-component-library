@@ -1,206 +1,14 @@
-// stories/checkbox-component.stories.js
-import { action } from '@storybook/addon-actions';
+// File: src/stories/checkbox-component/checkbox-component.stories.js
 
-// ======================================================
-// Helpers (normalize + docs HTML builder)
-// ======================================================
-
-/** Collapse blank lines + trim edges */
-const normalize = (txt) => {
-  const lines = String(txt || '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      prevBlank = true;
-      out.push('');
-      continue;
-    }
-    prevBlank = false;
-    out.push(line);
-  }
-
-  while (out[0] === '') out.shift();
-  while (out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-/** Build clean attribute block (skips undefined/null/''/false; boolean true -> attribute only) */
-const attrs = (pairs) =>
-  pairs
-    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
-    .map(([k, v]) => (v === true ? k : `${k}="${String(v).replaceAll('"', '&quot;')}"`))
-    .join('\n  ');
-
-/** Pretty JSON for docs (multi-line, stable-ish) */
-const prettyJson = (v) => {
-  try {
-    return JSON.stringify(v, null, 2);
-  } catch {
-    return '[]';
-  }
-};
-
-/**
- * Build the docs preview HTML for the "Source" panel.
- * Note: groupOptions is assigned as a PROPERTY (array), not an HTML attribute, for reliability.
- */
-const buildDocsHtml = (args) => {
-  const isGroup = !!args.checkboxGroup || !!args.customCheckboxGroup;
-
-  const effectiveGroupTitle = args.groupTitle || args.labelTxt || '';
-
-  const attributeBlock = attrs([
-    // mode flags
-    ['custom-checkbox', !!args.customCheckbox],
-    ['checkbox-group', !!args.checkboxGroup],
-    ['custom-checkbox-group', !!args.customCheckboxGroup],
-
-    // common
-    ['input-id', args.inputId],
-    ['name', args.name],
-    ['label-txt', args.labelTxt],
-    ['value', args.value],
-    ['size', args.size],
-    ['inline', !!args.inline],
-    ['required', !!args.required],
-    ['disabled', !!args.disabled],
-    ['validation', !!args.validation],
-    ['validation-msg', args.validationMsg],
-
-    // single-specific (prop is "checked")
-    ['checked', !isGroup ? !!args.checked : false],
-
-    // group-specific
-    ['group-title', isGroup ? effectiveGroupTitle : ''],
-    ['group-title-size', isGroup ? args.groupTitleSize : ''],
-  ]);
-
-  const groupOptions =
-    Array.isArray(args.groupOptions)
-      ? args.groupOptions
-      : (() => {
-          try {
-            return JSON.parse(args.groupOptions || '[]');
-          } catch {
-            return [];
-          }
-        })();
-
-  const groupOptionsJs = isGroup
-    ? normalize(`
-<script>
-  // groupOptions is assigned as a PROPERTY (array), not an HTML attribute
-  const groupOptions = ${prettyJson(groupOptions)};
-</script>
-`)
-    : '';
-
-  return normalize(`
-<checkbox-component
-  ${attributeBlock}
-></checkbox-component>
-${groupOptionsJs}
-`);
-};
-
-// ======================================================
-// Runtime helpers
-// ======================================================
-
-const setAttr = (el, name, value) => {
-  if (value === true) el.setAttribute(name, '');
-  else if (value === false || value == null || value === '') el.removeAttribute(name);
-  else el.setAttribute(name, String(value));
-};
-
-const toArrayOptions = (v) => {
-  if (Array.isArray(v)) return v;
-  if (typeof v === 'string') {
-    try {
-      const parsed = JSON.parse(v);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  }
-  return [];
-};
-
-const buildEl = (args) => {
-  const el = document.createElement('checkbox-component');
-
-  // Mode flags (NOTE: component no longer has a "checkbox" prop; default path is single checkbox)
-  el.customCheckbox = !!args.customCheckbox;
-  el.checkboxGroup = !!args.checkboxGroup;
-  el.customCheckboxGroup = !!args.customCheckboxGroup;
-
-  // Common props
-  el.inputId = args.inputId || '';
-  el.name = args.name || '';
-  el.labelTxt = args.labelTxt || '';
-  el.value = args.value || '';
-  el.size = args.size || '';
-  el.inline = !!args.inline;
-  el.required = !!args.required;
-  el.disabled = !!args.disabled;
-  el.validation = !!args.validation;
-  el.validationMsg = args.validationMsg || '';
-
-  // Single
-  el.checked = !!args.checked;
-
-  // Group
-  el.groupTitle = args.groupTitle || '';
-  el.groupTitleSize = args.groupTitleSize || '';
-  el.groupOptions = toArrayOptions(args.groupOptions);
-
-  // Also set attributes for docs parity (kebab-case)
-  setAttr(el, 'custom-checkbox', !!args.customCheckbox);
-  setAttr(el, 'checkbox-group', !!args.checkboxGroup);
-  setAttr(el, 'custom-checkbox-group', !!args.customCheckboxGroup);
-
-  setAttr(el, 'input-id', args.inputId);
-  setAttr(el, 'name', args.name);
-  setAttr(el, 'label-txt', args.labelTxt);
-  setAttr(el, 'value', args.value);
-  setAttr(el, 'size', args.size);
-  setAttr(el, 'inline', !!args.inline);
-  setAttr(el, 'required', !!args.required);
-  setAttr(el, 'disabled', !!args.disabled);
-  setAttr(el, 'validation', !!args.validation);
-  setAttr(el, 'validation-msg', args.validationMsg);
-  setAttr(el, 'checked', !!args.checked);
-  setAttr(el, 'group-title', args.groupTitle);
-  setAttr(el, 'group-title-size', args.groupTitleSize);
-
-  // Events -> SB Actions
-  el.addEventListener('groupChange', (e) => action('groupChange')(e.detail));
-  el.addEventListener('toggle', (e) => action('toggle')(e.detail));
-  el.addEventListener('change', (e) => action('change')(e?.detail));
-
-  return el;
-};
-
-const Template = (args) => buildEl(args);
-
-// ======================================================
-// Default export
-// ======================================================
+import DocsPage from './checkbox-component.docs.mdx';
+import { buildDocsHtml, Template } from './checkbox-component.story-helpers.js';
 
 export default {
   title: 'Form/Checkbox',
   tags: ['autodocs'],
   parameters: {
     docs: {
+      page: DocsPage,
       description: {
         component: ['Checkbox component for single or multiple selections with optional custom styles.', ''].join('\n'),
       },
@@ -211,9 +19,6 @@ export default {
     },
   },
   argTypes: {
-    /* =========================
-     * Modes
-     * ========================= */
     checkboxGroup: {
       control: 'boolean',
       name: 'checkbox-group',
@@ -233,9 +38,6 @@ export default {
       description: 'Render a single checkbox with custom styles.',
     },
 
-    /* =========================
-     * Group Attributes
-     * ========================= */
     groupOptions: {
       control: 'object',
       name: 'group-options',
@@ -256,9 +58,6 @@ export default {
       description: 'Size modifier for the group title.',
     },
 
-    /* =========================
-     * Input Attributes
-     * ========================= */
     checked: {
       control: 'boolean',
       table: { category: 'Input Attributes', defaultValue: { summary: false } },
@@ -298,18 +97,12 @@ export default {
       description: 'Value attribute for single checkbox and emitted in toggle event.',
     },
 
-    /* =========================
-     * Layout
-     * ========================= */
     inline: {
       control: 'boolean',
       table: { category: 'Layout', defaultValue: { summary: false } },
       description: 'Whether to display group checkboxes inline.',
     },
 
-    /* =========================
-     * Validation
-     * ========================= */
     required: {
       control: 'boolean',
       table: { category: 'Validation', defaultValue: { summary: false } },
@@ -329,12 +122,10 @@ export default {
   },
 
   args: {
-    // modes
     checkboxGroup: false,
     customCheckbox: false,
     customCheckboxGroup: false,
 
-    // common
     inputId: 'agree-1',
     labelTxt: 'I agree to the terms',
     name: 'agree',
@@ -342,16 +133,13 @@ export default {
     size: '',
     inline: false,
 
-    // state
     checked: false,
     disabled: false,
 
-    // validation
     required: false,
     validation: false,
     validationMsg: '',
 
-    // group
     groupTitle: 'Pick one or more',
     groupTitleSize: '',
     groupOptions: [
@@ -363,8 +151,6 @@ export default {
 
   render: (args) => Template(args),
 };
-
-// ===== Stories =====
 
 export const SingleBasic = Template.bind({});
 SingleBasic.args = {
@@ -490,7 +276,6 @@ GroupDisabledOptions.parameters = {
   docs: { description: { story: 'A group of checkboxes with some options disabled.' } },
 };
 
-// --- NEW: Accessibility matrix story ---
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: (args) => {
@@ -556,39 +341,28 @@ export const AccessibilityMatrix = {
         pre.textContent = JSON.stringify(
           {
             mode: fieldset ? 'group' : 'single',
-
-            // group wiring
             fieldsetRole: fieldset?.getAttribute('role') ?? null,
             fieldsetAriaLabelledby: fieldset?.getAttribute('aria-labelledby') ?? null,
             fieldsetAriaDescribedby: fieldset?.getAttribute('aria-describedby') ?? null,
             fieldsetAriaInvalid: fieldset?.getAttribute('aria-invalid') ?? null,
             legendId: legend?.getAttribute('id') ?? null,
             legendText: legend?.textContent?.trim() ?? null,
-
-            // single wiring
             inputId: singleInput?.getAttribute('id') ?? null,
             inputName: singleInput?.getAttribute('name') ?? null,
             labelFor: singleLabel?.getAttribute('for') || singleLabel?.getAttribute('htmlfor') || (singleLabel ? singleLabel.htmlFor : null) || null,
             labelText: singleLabel?.textContent?.trim() ?? null,
-
-            // state
             disabledAttr: singleInput?.hasAttribute('disabled') ?? null,
             requiredAttr: singleInput?.hasAttribute('required') ?? null,
-
-            // group option summary
             options: groupInputs.map((i) => ({
               id: i.getAttribute('id'),
               name: i.getAttribute('name'),
-              checked: (i).checked,
+              checked: i.checked,
               disabled: i.hasAttribute('disabled'),
-              // component intentionally avoids aria-checked/aria-disabled on native checkboxes
               ariaChecked: i.getAttribute('aria-checked'),
               ariaDisabled: i.getAttribute('aria-disabled'),
               ariaInvalid: i.getAttribute('aria-invalid'),
               ariaDescribedby: i.getAttribute('aria-describedby'),
             })),
-
-            // validation block
             invalidId: invalidFeedback?.getAttribute('id') ?? null,
             invalidText: invalidFeedback?.textContent?.trim() ?? null,
           },
@@ -601,7 +375,6 @@ export const AccessibilityMatrix = {
       return c;
     };
 
-    // Default single
     wrap.appendChild(
       card('Default (single)', () =>
         Template({
@@ -621,7 +394,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Group inline
     wrap.appendChild(
       card('Group (inline)', () =>
         Template({
@@ -643,7 +415,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Error/validation (group required with none checked)
     wrap.appendChild(
       card('Validation (group required, none checked)', () =>
         Template({
@@ -662,7 +433,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Disabled (single)
     wrap.appendChild(
       card('Disabled (single)', () =>
         Template({

@@ -1,16 +1,14 @@
-// stories/button-group.stories.js
+// File: src/stories/button-group/button-group.stories.js
 
-const setAttr = (el, name, v) => {
-  if (v === true) el.setAttribute(name, '');
-  else if (v === false || v == null || v === '') el.removeAttribute(name);
-  else el.setAttribute(name, String(v));
-};
+import DocsPage from './button-group.docs.mdx';
+import { buildDocsHtml, renderButtonGroup, setAttr } from './button-group.story-helpers.js';
 
 export default {
   title: 'Components/Button Group',
   tags: ['autodocs'],
   parameters: {
     docs: {
+      page: DocsPage,
       description: {
         component: [
           'Button Group component allows grouping multiple buttons together.',
@@ -24,99 +22,14 @@ export default {
           '**Note:** `vertical` / `disabled` on `<button-group>` do not automatically propagate to slotted `<button-component>` children. This story applies them to children so visuals match the selected controls.',
         ].join('\n'),
       },
+      source: {
+        language: 'html',
+        transform: (_src, ctx) => buildDocsHtml(ctx.args),
+      },
     },
   },
 
-  render: args => {
-    const el = document.createElement('button-group');
-
-    // group attributes
-    setAttr(el, 'vertical', args.vertical);
-    setAttr(el, 'disabled', args.disabled);
-    setAttr(el, 'class-names', args.classNames);
-
-    // a11y
-    if (args.ariaLabelledby) {
-      setAttr(el, 'aria-labelledby', args.ariaLabelledby);
-      el.removeAttribute('aria-label'); // labelledby wins
-    } else if (args.ariaLabel) {
-      setAttr(el, 'aria-label', args.ariaLabel);
-      el.removeAttribute('aria-labelledby');
-    } else {
-      el.removeAttribute('aria-label');
-      el.removeAttribute('aria-labelledby');
-    }
-    setAttr(el, 'aria-describedby', args.ariaDescribedby);
-
-    // helper: apply group-derived state to child buttons (visual parity)
-    const applyChildGroupState = btn => {
-      // vertical impacts group positioning classes in button-component
-      setAttr(btn, 'vertical', args.vertical);
-
-      // if the group is disabled, disable all children (common expected behavior)
-      // (you can change this to only set aria-disabled if you prefer)
-      if (args.disabled) setAttr(btn, 'disabled', true);
-    };
-
-    // slot buttons
-    const b1 = document.createElement('button-component');
-    setAttr(b1, 'title-attr', 'Go Ahead');
-    setAttr(b1, 'start', true);
-    setAttr(b1, 'size', 'sm');
-    setAttr(b1, 'variant', 'active-blue');
-    setAttr(b1, 'active', true);
-    setAttr(b1, 'group-btn', true);
-    setAttr(b1, 'btn-text', 'Default Button');
-    applyChildGroupState(b1);
-
-    const b2 = document.createElement('button-component');
-    setAttr(b2, 'title-attr', 'Go Ahead');
-    setAttr(b2, 'variant', 'active-blue');
-    setAttr(b2, 'size', 'sm');
-    setAttr(b2, 'group-btn', true);
-    setAttr(b2, 'btn-text', 'Default Button');
-    applyChildGroupState(b2);
-
-    const b3 = document.createElement('button-component');
-    setAttr(b3, 'title-attr', 'Go Ahead');
-    setAttr(b3, 'variant', 'active-blue');
-    setAttr(b3, 'size', 'sm');
-    setAttr(b3, 'group-btn', true);
-    setAttr(b3, 'end', true);
-    setAttr(b3, 'btn-text', 'Default This Button');
-
-    // story-only: allow just the 3rd child to be disabled when group itself isn't disabled
-    if (!args.disabled && args.showDisabledChild) setAttr(b3, 'disabled', true);
-
-    applyChildGroupState(b3);
-
-    el.append(b1, b2, b3);
-
-    // optional external label/description demo elements (when ids provided)
-    const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '12px';
-    wrap.style.padding = '16px';
-
-    if (args.ariaLabelledby) {
-      const label = document.createElement('div');
-      label.id = args.ariaLabelledby;
-      label.textContent = 'External group label';
-      label.style.fontWeight = '600';
-      wrap.appendChild(label);
-    }
-
-    if (args.ariaDescribedby) {
-      const desc = document.createElement('div');
-      desc.id = args.ariaDescribedby;
-      desc.textContent = 'Helper text for the group.';
-      desc.style.opacity = '0.85';
-      wrap.appendChild(desc);
-    }
-
-    wrap.appendChild(el);
-    return wrap;
-  },
+  render: (args) => renderButtonGroup(args),
 
   argTypes: {
     vertical: {
@@ -191,13 +104,190 @@ export const Vertical = {
   args: {
     vertical: true,
     ariaLabel: 'Vertical Button Group',
-    showDisabledChild: true, // ✅ make 3rd child disabled
+    showDisabledChild: true,
     disabled: false,
   },
   parameters: {
     docs: {
       description: {
         story: 'Vertical button group with different variants and states.',
+      },
+    },
+  },
+};
+
+export const DisabledGroup = {
+  args: {
+    vertical: false,
+    ariaLabel: 'Disabled Button Group',
+    disabled: true,
+    showDisabledChild: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Disabled group example. The group gets `aria-disabled="true"` and this story also disables all child buttons for visual parity.',
+      },
+    },
+  },
+};
+
+export const ExternalLabelAndDescription = {
+  args: {
+    vertical: false,
+    ariaLabel: '',
+    ariaLabelledby: 'button-group-label',
+    ariaDescribedby: 'button-group-description',
+    disabled: false,
+    showDisabledChild: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Example using external label and description ids with `aria-labelledby` and `aria-describedby`.',
+      },
+    },
+  },
+};
+
+export const AccessibilityMatrix = {
+  name: 'Accessibility Matrix (computed)',
+  render: () => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '16px';
+    wrap.style.maxWidth = '980px';
+
+    const title = document.createElement('div');
+    title.innerHTML =
+      '<strong>Accessibility matrix</strong>' +
+      '<div style="opacity:.8">Shows computed role and aria-* attributes on the group container.</div>';
+    wrap.appendChild(title);
+
+    const mkRow = (labelText, makeHost, afterMount) => {
+      const row = document.createElement('div');
+      row.style.display = 'grid';
+      row.style.gridTemplateColumns = '260px 1fr';
+      row.style.gap = '12px';
+      row.style.alignItems = 'start';
+      row.style.border = '1px solid #ddd';
+      row.style.borderRadius = '8px';
+      row.style.padding = '12px';
+
+      const left = document.createElement('div');
+      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+
+      const right = document.createElement('div');
+      right.style.display = 'grid';
+      right.style.gap = '8px';
+
+      const demo = document.createElement('div');
+      const host = makeHost();
+      demo.appendChild(host);
+
+      const pre = document.createElement('pre');
+      pre.style.margin = '0';
+      pre.style.padding = '10px';
+      pre.style.borderRadius = '8px';
+      pre.style.overflow = 'auto';
+      pre.style.border = '1px solid #eee';
+      pre.style.background = '#fafafa';
+      pre.textContent = 'Loading computed attributes…';
+
+      right.appendChild(demo);
+      right.appendChild(pre);
+
+      row.appendChild(left);
+      row.appendChild(right);
+
+      const update = () => {
+        const group = demo.querySelector('button-group > div[role="group"]') || demo.querySelector('[role="group"]');
+        const attrs = {
+          tag: group?.tagName ?? null,
+          role: group?.getAttribute('role') ?? null,
+          class: group?.getAttribute('class') ?? null,
+          'aria-label': group?.getAttribute('aria-label') ?? null,
+          'aria-labelledby': group?.getAttribute('aria-labelledby') ?? null,
+          'aria-describedby': group?.getAttribute('aria-describedby') ?? null,
+          'aria-disabled': group?.getAttribute('aria-disabled') ?? null,
+        };
+        pre.textContent = JSON.stringify(attrs, null, 2);
+      };
+
+      queueMicrotask(() =>
+        requestAnimationFrame(async () => {
+          update();
+          if (afterMount) await afterMount(demo, update);
+        }),
+      );
+
+      return row;
+    };
+
+    wrap.appendChild(
+      mkRow('Fallback label', () =>
+        renderButtonGroup({
+          vertical: false,
+          classNames: '',
+          disabled: false,
+          ariaLabel: '',
+          ariaLabelledby: '',
+          ariaDescribedby: '',
+          showDisabledChild: false,
+        }),
+      ),
+    );
+
+    wrap.appendChild(
+      mkRow('aria-label provided', () =>
+        renderButtonGroup({
+          vertical: false,
+          classNames: '',
+          disabled: false,
+          ariaLabel: 'Primary actions',
+          ariaLabelledby: '',
+          ariaDescribedby: '',
+          showDisabledChild: true,
+        }),
+      ),
+    );
+
+    wrap.appendChild(
+      mkRow('aria-labelledby + aria-describedby', () =>
+        renderButtonGroup({
+          vertical: false,
+          classNames: '',
+          disabled: false,
+          ariaLabel: '',
+          ariaLabelledby: 'group-ext-label',
+          ariaDescribedby: 'group-ext-desc',
+          showDisabledChild: true,
+        }),
+      ),
+    );
+
+    wrap.appendChild(
+      mkRow('Vertical + disabled', () =>
+        renderButtonGroup({
+          vertical: true,
+          classNames: '',
+          disabled: true,
+          ariaLabel: 'Disabled vertical group',
+          ariaLabelledby: '',
+          ariaDescribedby: '',
+          showDisabledChild: false,
+        }),
+      ),
+    );
+
+    return wrap;
+  },
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Renders several button-group configurations and prints the computed group container attributes: `role`, `aria-label`, `aria-labelledby`, `aria-describedby`, and `aria-disabled`.',
       },
     },
   },

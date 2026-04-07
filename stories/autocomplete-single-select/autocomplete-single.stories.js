@@ -1,311 +1,17 @@
-// stories/autocomplete-single.stories.js
+// File: src/stories/autocomplete-single/autocomplete-single.stories.js
 
-// ======================================================
-// Helpers (Docs formatting + HTML source generation)
-// ======================================================
-
-// Inject CSS so Docs code blocks wrap instead of one long line.
-const DocsWrapStyles = () => {
-  const style = document.createElement('style');
-  style.innerHTML = `
-    .sbdocs pre,
-    .sbdocs pre code {
-      white-space: pre-wrap !important;
-      word-break: break-word !important;
-      overflow-x: auto !important;
-    }
-  `;
-  return style;
-};
-
-/** Collapse blank lines + trim edges (keeps docs code previews clean) */
-const normalize = (txt) => {
-  const lines = String(txt || '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      prevBlank = true;
-      out.push('');
-      continue;
-    }
-    prevBlank = false;
-    out.push(line);
-  }
-
-  while (out[0] === '') out.shift();
-  while (out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-/** Put each attribute on its own line (for Docs code previews) */
-const attrLines = (pairs) =>
-  pairs
-    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
-    .map(([k, v]) => (v === true ? `${k}` : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
-    .join('\n  ');
-
-/** Build docs HTML for the component (options applied at runtime, not as attribute) */
-const buildDocsHtml = (args) =>
-  normalize(`
-<autocomplete-single
-  ${attrLines([
-    // ids/labels
-    ['id', args.id],
-    ['input-id', args.inputId],
-    ['label', args.label],
-    ['placeholder', args.placeholder],
-
-    // NEW standard a11y props (preferred)
-    ['aria-label', args.ariaLabel],
-    ['aria-labelledby', args.ariaLabelledby],
-    ['aria-describedby', args.ariaDescribedby],
-
-    // legacy a11y
-    ['arialabelled-by', args.arialabelledBy],
-
-    // layout
-    ['form-id', args.formId],
-    ['form-layout', args.formLayout],
-    ['label-align', args.labelAlign],
-    ['label-size', args.labelSize],
-    ['size', args.size],
-
-    // legacy numeric cols (horizontal)
-    ['label-col', args.labelCol],
-    ['input-col', args.inputCol],
-
-    // responsive cols
-    ['label-cols', args.labelCols],
-    ['input-cols', args.inputCols],
-
-    // state
-    ['required', args.required],
-    ['validation', args.validation],
-    ['validation-message', args.validationMessage],
-    ['error', args.error],
-    ['error-message', args.errorMessage],
-    ['disabled', args.disabled],
-    ['label-hidden', args.labelHidden],
-    ['dev-mode', args.devMode],
-
-    // behavior
-    ['auto-sort', args.autoSort],
-    ['remove-clear-btn', args.removeClearBtn],
-    ['clear-icon', args.clearIcon],
-    ['type', args.type],
-
-    // controlled value (string)
-    ['value', args.value],
-  ])}
-></autocomplete-single>
-`);
-
-/** Docs wrapper */
-const wrapDocsHtml = (innerHtml) =>
-  normalize(`
-<div style="max-width:680px;">
-  ${String(innerHtml).replace(/\n/g, '\n  ')}
-</div>
-`);
-
-/** Multi-snippet docs helper (single wrapper, multiple components) */
-const buildDocsHtmlMany = (snippets) =>
-  wrapDocsHtml(
-    normalize(`
-<div style="display:grid; gap:14px;">
-${snippets.map((s) => `  ${String(s).replace(/\n/g, '\n  ')}`).join('\n')}
-</div>
-`),
-  );
-
-// ======================================================
-// Runtime helpers (DOM render path)
-// ======================================================
-
-const setAttr = (el, name, value) => {
-  if (value === true) el.setAttribute(name, '');
-  else if (value === false || value == null || value === '') el.removeAttribute(name);
-  else el.setAttribute(name, String(value));
-};
-
-const whenReady = async (el, tagName) => {
-  if (typeof el?.componentOnReady === 'function') {
-    await el.componentOnReady();
-    return;
-  }
-  if (window.customElements?.whenDefined) {
-    await customElements.whenDefined(tagName);
-  }
-};
-
-const setOptionsWhenReady = async (el, options) => {
-  const safe = Array.isArray(options) ? options.slice() : [];
-  await whenReady(el, 'autocomplete-single');
-  el.options = safe;
-};
-
-const setValueWhenReady = async (el, value) => {
-  await whenReady(el, 'autocomplete-single');
-  el.value = typeof value === 'string' ? value : '';
-};
-
-const setAutoSortWhenReady = async (el, autoSort) => {
-  await whenReady(el, 'autocomplete-single');
-  el.autoSort = !!autoSort;
-};
-
-// best-effort Storybook args syncing (Canvas), while still working in Docs/static
-const updateArgsBestEffort = (ctx, updatedArgs) => {
-  if (typeof ctx?.updateArgs === 'function') {
-    try {
-      ctx.updateArgs(updatedArgs);
-      return;
-    } catch (_e) {}
-  }
-
-  try {
-    const channel =
-      window.__STORYBOOK_ADDONS_CHANNEL__ ||
-      window.__STORYBOOK_PREVIEW__?.addons?.getChannel?.() ||
-      window.__STORYBOOK_ADDONS?.getChannel?.();
-
-    const storyId = ctx?.id;
-    if (!channel || !storyId) return;
-
-    channel.emit('updateStoryArgs', { storyId, updatedArgs });
-    channel.emit('UPDATE_STORY_ARGS', { storyId, updatedArgs });
-  } catch (_e) {}
-};
-
-// ======================================================
-// Sample data
-// ======================================================
-
-const DEFAULT_OPTIONS = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
-
-// ======================================================
-// ✅ Unique-per-mount ids (Docs mounts stories multiple times)
-// ======================================================
-
-const __renderSeqByStory = Object.create(null);
-
-const safeStoryKey = (ctx) => String(ctx?.id || 'story').replace(/[^a-z0-9_-]/gi, '_');
-
-const nextMountSuffix = (ctx) => {
-  const k = safeStoryKey(ctx);
-  __renderSeqByStory[k] = (__renderSeqByStory[k] || 0) + 1;
-  return `${k}_${__renderSeqByStory[k]}`;
-};
-
-const withUniqueId = (base, suffix) => {
-  const b = String(base || '').trim() || 'acSingle';
-  return `${b}__${suffix}`;
-};
-
-const getMountSuffix = (ctx) => {
-  // One suffix per story mount (not per component call)
-  if (!ctx) return 'mount';
-  if (!ctx.__acSingleMountSuffix) ctx.__acSingleMountSuffix = nextMountSuffix(ctx);
-  if (!ctx.__acSingleLocalSeq) ctx.__acSingleLocalSeq = 0;
-  return ctx.__acSingleMountSuffix;
-};
-
-const nextLocalSeq = (ctx) => {
-  if (!ctx) return 1;
-  ctx.__acSingleLocalSeq = (ctx.__acSingleLocalSeq || 0) + 1;
-  return ctx.__acSingleLocalSeq;
-};
-
-// ======================================================
-// Reusable renderer (used by stories + a11y matrix)
-// ======================================================
-
-const renderComponent = (args, ctx) => {
-  const el = document.createElement('autocomplete-single');
-
-  // ✅ ensure unique ids even if the same story is mounted twice (Docs)
-  const mountSuffix = getMountSuffix(ctx);
-  const local = nextLocalSeq(ctx);
-  const uniq = `${mountSuffix}_${local}`;
-
-  const hostId = withUniqueId(args.id, uniq);
-  const inputId = withUniqueId(args.inputId, uniq);
-
-  // string attrs
-  setAttr(el, 'id', hostId);
-  setAttr(el, 'input-id', inputId);
-  setAttr(el, 'label', args.label);
-  setAttr(el, 'placeholder', args.placeholder);
-  setAttr(el, 'form-id', args.formId);
-  setAttr(el, 'form-layout', args.formLayout);
-  setAttr(el, 'label-align', args.labelAlign);
-  setAttr(el, 'label-size', args.labelSize);
-  setAttr(el, 'size', args.size);
-  setAttr(el, 'type', args.type || 'text');
-
-  // layout cols
-  setAttr(el, 'label-col', args.labelCol);
-  setAttr(el, 'input-col', args.inputCol);
-  setAttr(el, 'label-cols', args.labelCols);
-  setAttr(el, 'input-cols', args.inputCols);
-
-  // validation / state strings
-  setAttr(el, 'validation-message', args.validationMessage);
-  setAttr(el, 'error-message', args.errorMessage);
-  setAttr(el, 'clear-icon', args.clearIcon);
-
-  // NEW standard a11y attrs
-  setAttr(el, 'aria-label', args.ariaLabel);
-  setAttr(el, 'aria-labelledby', args.ariaLabelledby);
-  setAttr(el, 'aria-describedby', args.ariaDescribedby);
-
-  // legacy a11y
-  setAttr(el, 'arialabelled-by', args.arialabelledBy);
-
-  // booleans
-  args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
-  args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
-  args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
-  args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
-  args.labelHidden ? el.setAttribute('label-hidden', '') : el.removeAttribute('label-hidden');
-  args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
-  args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
-
-  // behavior props applied post-hydration
-  setOptionsWhenReady(el, Array.isArray(args.options) && args.options.length ? args.options : DEFAULT_OPTIONS);
-  setAutoSortWhenReady(el, args.autoSort);
-  setValueWhenReady(el, args.value);
-
-  // logs
-  el.addEventListener('itemSelect', (e) => console.log('[autocomplete-single] itemSelect', e.detail));
-  el.addEventListener('valueChange', (e) => console.log('[autocomplete-single] valueChange', e.detail));
-  el.addEventListener('clear', () => console.log('[autocomplete-single] clear'));
-
-  // ✅ FIX: DO NOT sync args on every keystroke.
-  // Only sync on discrete actions (select/clear) to prevent remount flicker and cross-instance mirroring.
-  el.addEventListener('itemSelect', (e) => {
-    const next = String(e?.detail ?? '');
-    updateArgsBestEffort(ctx, { value: next });
-  });
-  el.addEventListener('clear', () => {
-    updateArgsBestEffort(ctx, { value: '' });
-  });
-
-  return el;
-};
-
-// ======================================================
-// Default export
-// ======================================================
+import DocsPage from './autocomplete-single.docs.mdx';
+import {
+  DocsWrapStyles,
+  DEFAULT_OPTIONS,
+  SIZE_VARIANTS,
+  buildDocsHtml,
+  buildDocsHtmlMany,
+  renderComponent,
+  setValueWhenReady,
+  updateArgsBestEffort,
+  wrapDocsHtml,
+} from './autocomplete-single.story-helpers.js';
 
 export default {
   title: 'Form/Autocomplete Single',
@@ -320,6 +26,7 @@ export default {
   ],
   parameters: {
     docs: {
+      page: DocsPage,
       description: {
         component: ['Autocomplete Single component for selecting a single option from a list with autocomplete functionality.', ''].join('\n'),
       },
@@ -333,9 +40,6 @@ export default {
   render: (args, ctx) => renderComponent(args, ctx),
 
   argTypes: {
-    /* =========================
-     * Attributes
-     * ========================= */
     autoSort: {
       control: 'boolean',
       name: 'auto-sort',
@@ -380,9 +84,6 @@ export default {
       description: 'Hide the clear button.',
     },
 
-    /* =========================
-     * Button Attributes
-     * ========================= */
     clearIcon: {
       control: 'text',
       name: 'clear-icon',
@@ -390,9 +91,6 @@ export default {
       description: 'The icon to use for the clear button.',
     },
 
-    /* =========================
-     * Data
-     * ========================= */
     options: {
       control: 'object',
       name: 'options',
@@ -400,9 +98,6 @@ export default {
       description: 'The array of options available for selection in the autocomplete. (Applied at runtime via prop assignment.)',
     },
 
-    /* =========================
-     * Accessibility (NEW)
-     * ========================= */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -421,8 +116,6 @@ export default {
       table: { category: 'Accessibility' },
       description: 'Optional helper text id reference. Component appends validation/error ids when present.',
     },
-
-    // legacy a11y
     arialabelledBy: {
       control: 'text',
       name: 'arialabelled-by',
@@ -430,9 +123,6 @@ export default {
       description: 'Legacy: The id(s) of the element(s) that label the input.',
     },
 
-    /* =========================
-     * Input Attributes
-     * ========================= */
     inputId: {
       control: 'text',
       name: 'input-id',
@@ -465,9 +155,6 @@ export default {
       description: 'Controlled value (external source of truth). The component sanitizes and mirrors this into its input.',
     },
 
-    /* =========================
-     * Layout
-     * ========================= */
     formLayout: {
       control: { type: 'select' },
       options: ['', 'horizontal', 'inline'],
@@ -521,9 +208,6 @@ export default {
       description: 'Sets the size of the input field.',
     },
 
-    /* =========================
-     * Validation
-     * ========================= */
     error: {
       control: 'boolean',
       name: 'error',
@@ -557,14 +241,10 @@ export default {
   },
 
   args: {
-    // legacy a11y
     arialabelledBy: '',
-
-    // NEW standard a11y
     ariaLabel: '',
     ariaLabelledby: '',
     ariaDescribedby: '',
-
     autoSort: true,
     clearIcon: 'fa-solid fa-xmark',
     devMode: false,
@@ -595,13 +275,8 @@ export default {
   },
 };
 
-// ======================================================
-// Stories (existing kept; none removed)
-// ======================================================
-
 export const Basic = {
   args: {
-    // ✅ different base ids (still suffixed per mount)
     id: 'acSingle_basic',
     inputId: 'acSingle_basic',
     value: '',
@@ -641,13 +316,6 @@ InlineLayout.parameters = {
   docs: { description: { story: 'Inline layout where label + input sit in a single row.' }, story: { height: '300px' } },
 };
 
-// Sizes (sm, default "", lg)
-const SIZE_VARIANTS = [
-  { key: 'sm', label: 'Small', size: 'sm', inputId: 'acSingle_sm', id: 'acSingle_sm' },
-  { key: 'default', label: 'Default', size: '', inputId: 'acSingle_md', id: 'acSingle_md' },
-  { key: 'lg', label: 'Large', size: 'lg', inputId: 'acSingle_lg', id: 'acSingle_lg' },
-];
-
 export const Sizes = {
   render: (args, ctx) => {
     const container = document.createElement('div');
@@ -682,7 +350,7 @@ export const Sizes = {
                 inputId: v.inputId,
                 label: `${ctx.args.label || 'Autocomplete Single'} — ${v.label}`,
                 size: v.size,
-                options: undefined, // runtime-only
+                options: undefined,
               }),
             ),
           ),
@@ -696,7 +364,6 @@ export const Sizes = {
 };
 Sizes.storyName = 'Sizes';
 
-// Controlled Value (buttons always work; ✅ no keystroke syncing)
 export const ControlledValue = {
   args: {
     id: 'acSingle_controlled',
@@ -743,7 +410,6 @@ export const ControlledValue = {
     btnMango.addEventListener('click', () => applyValue('Mango'));
     btnClear.addEventListener('click', () => applyValue(''));
 
-    // sync on select/clear only (discrete)
     el.addEventListener('itemSelect', (e) => applyValue(String(e?.detail ?? '')));
     el.addEventListener('clear', () => applyValue(''));
 
@@ -793,10 +459,6 @@ Disabled.storyName = 'Disabled';
 Disabled.parameters = {
   docs: { description: { story: 'Disabled state example (with a preset value).' } },
 };
-
-// ======================================================
-// NEW: Accessibility matrix story (unchanged)
-// ======================================================
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',

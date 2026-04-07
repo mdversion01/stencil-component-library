@@ -1,121 +1,13 @@
-// stories/card-component.stories.js
-import { action } from '@storybook/addon-actions';
+// File: src/stories/card-component/card-component.stories.js
 
-// ======================================================
-// Helpers (Docs formatting + HTML source generation)
-// ======================================================
-
-// Inject CSS so Docs code blocks wrap instead of one long line.
-const DocsWrapStyles = () => {
-  const style = document.createElement('style');
-  style.innerHTML = `
-    .sbdocs pre,
-    .sbdocs pre code {
-      white-space: pre-wrap !important;
-      word-break: break-word !important;
-      overflow-x: auto !important;
-    }
-  `;
-  return style;
-};
-
-/** Collapse extra blank lines + trim edges */
-const normalize = (txt) => {
-  const lines = String(txt || '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      prevBlank = true;
-      out.push('');
-      continue;
-    }
-    prevBlank = false;
-    out.push(line);
-  }
-
-  while (out[0] === '') out.shift();
-  while (out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-const attrLines = (pairs) =>
-  pairs
-    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
-    .map(([k, v]) => (v === true ? `${k}` : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
-    .join('\n  ');
-
-const buildDocsHtml = (args) =>
-  normalize(`
-<card-component
-  ${attrLines([
-    // a11y / landmark
-    ['aria-label', args.ariaLabel],
-    ['aria-labelledby', args.ariaLabelledby],
-    ['aria-describedby', args.ariaDescribedby],
-    ['landmark', args.landmark],
-
-    // heading
-    ['heading-level', args.headingLevel],
-
-    // interactivity
-    ['clickable', args.clickable],
-    ['disabled', args.disabled],
-
-    // state
-    ['actions', args.actions],
-    ['img', args.img],
-    ['no-footer', args.noFooter],
-    ['no-header', args.noHeader],
-
-    // styling
-    ['card-max-width', args.cardMaxWidth],
-    ['class-names', args.classNames],
-    ['elevation', args.elevation],
-    ['inline-styles', args.inlineStyles],
-
-    // image
-    ['img-src', args.imgSrc],
-    ['img-height', args.imgHeight],
-    ['alt-text', args.altText],
-    ['decorative-image', args.decorativeImage],
-  ])}
->
-  ${args.noHeader ? '' : `<div slot="header">${args.slotHeader}</div>`}
-  <span slot="title">${args.slotTitle}</span>
-  <span slot="text">${args.slotText}</span>
-  ${args.actions ? `<span slot="actions">${args.slotActions}</span>` : ''}
-  ${args.noFooter ? '' : `<div slot="footer"><p>${args.slotFooter}</p></div>`}
-</card-component>
-`);
-
-const wrapDocsHtml = (innerHtml) =>
-  normalize(`
-<div style="max-width:680px;">
-  ${String(innerHtml).replace(/\n/g, '\n  ')}
-</div>
-`);
-
-// Helper: only set an attribute when the value is meaningful; otherwise remove it
-const setAttr = (el, name, value) => {
-  const isEmpty =
-    value === false ||
-    value === null ||
-    value === undefined ||
-    (typeof value === 'string' && value.trim() === '');
-
-  if (isEmpty) el.removeAttribute(name);
-  else if (value === true) el.setAttribute(name, '');
-  else el.setAttribute(name, String(value));
-};
+import DocsPage from './card-component.docs.mdx';
+import {
+  DocsWrapStyles,
+  buildDocsHtml,
+  normalize,
+  renderCard,
+  wrapDocsHtml,
+} from './card-component.story-helpers.js';
 
 export default {
   title: 'Components/Card',
@@ -132,6 +24,7 @@ export default {
 
   parameters: {
     docs: {
+      page: DocsPage,
       description: {
         component: ['Card component for displaying content in a card layout.', ''].join('\n'),
       },
@@ -143,9 +36,6 @@ export default {
   },
 
   argTypes: {
-    /* -----------------------------
-     * Accessibility
-     * ------------------------------ */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -175,12 +65,9 @@ export default {
       options: [2, 3, 4, 5, 6],
       name: 'heading-level',
       description: 'Heading level used for the title slot.',
-      table: { category: 'Accessibility', defaultValue: { summary: 5 } }, // ✅ updated default
+      table: { category: 'Accessibility', defaultValue: { summary: 5 } },
     },
 
-    /* -----------------------------
-     * Interactivity
-     * ------------------------------ */
     clickable: {
       control: 'boolean',
       description: 'If true, card behaves like a button (role="button", tabindex=0, Enter/Space emit customClick).',
@@ -192,9 +79,6 @@ export default {
       table: { category: 'Interactivity', defaultValue: { summary: false } },
     },
 
-    /* -----------------------------
-     * State
-     * ------------------------------ */
     actions: {
       control: 'boolean',
       description: 'If true, displays the actions slot.',
@@ -218,9 +102,6 @@ export default {
       table: { category: 'State', defaultValue: { summary: false } },
     },
 
-    /* -----------------------------
-     * Layout & Styling
-     * ------------------------------ */
     cardMaxWidth: {
       control: 'text',
       name: 'card-max-width',
@@ -245,9 +126,6 @@ export default {
       table: { category: 'Layout & Styling' },
     },
 
-    /* -----------------------------
-     * Image
-     * ------------------------------ */
     imgSrc: {
       control: 'text',
       name: 'img-src',
@@ -273,9 +151,6 @@ export default {
       table: { category: 'Image', defaultValue: { summary: false } },
     },
 
-    /* -----------------------------
-     * Slots
-     * ------------------------------ */
     slotHeader: {
       control: 'text',
       description: 'Content for the header slot.',
@@ -308,24 +183,20 @@ export default {
     },
   },
 
-  // Minimal defaults: undefined for optional strings so *nothing* appears unless a story opts-in
   args: {
-    // interactivity/a11y
     ariaLabel: undefined,
     ariaLabelledby: undefined,
     ariaDescribedby: undefined,
     landmark: false,
-    headingLevel: 5, // ✅ updated default
+    headingLevel: 5,
     clickable: false,
     disabled: false,
 
-    // state
     actions: false,
     img: false,
     noFooter: false,
     noHeader: false,
 
-    // styling
     altText: undefined,
     cardMaxWidth: undefined,
     classNames: undefined,
@@ -335,7 +206,6 @@ export default {
     inlineStyles: undefined,
     decorativeImage: false,
 
-    // default slot content
     slotActions: '<button class="btn btn-primary btn-sm" type="button">Action</button>',
     slotFooter: 'Card footer',
     slotHeader: 'Card header',
@@ -344,86 +214,7 @@ export default {
   },
 };
 
-const Template = (args) => {
-  const el = document.createElement('card-component');
-
-  // ----- PROPERTIES (runtime behavior) -----
-  el.actions = !!args.actions;
-  el.img = !!args.img;
-  el.noFooter = !!args.noFooter;
-  el.noHeader = !!args.noHeader;
-
-  // interactivity/a11y
-  el.clickable = !!args.clickable;
-  el.disabled = !!args.disabled;
-  el.landmark = !!args.landmark;
-  el.headingLevel = Number(args.headingLevel) || 5;
-  el.decorativeImage = !!args.decorativeImage;
-
-  // Only set non-empty/meaningful props
-  if (args.ariaLabel) el.ariaLabel = args.ariaLabel;
-  if (args.ariaLabelledby) el.ariaLabelledby = args.ariaLabelledby;
-  if (args.ariaDescribedby) el.ariaDescribedby = args.ariaDescribedby;
-
-  if (args.classNames) el.classNames = args.classNames;
-  if (args.elevation) el.elevation = args.elevation;
-  if (args.inlineStyles) el.inlineStyles = args.inlineStyles;
-  if (args.cardMaxWidth) el.cardMaxWidth = args.cardMaxWidth;
-
-  // Image props only when img is enabled
-  if (args.img) {
-    if (args.altText) el.altText = args.altText;
-    if (args.imgSrc) el.imgSrc = args.imgSrc;
-    if (args.imgHeight) el.imgHeight = args.imgHeight;
-  }
-
-  // ----- ATTRIBUTES (Docs code shows only what a story uses) -----
-  setAttr(el, 'actions', !!args.actions);
-  setAttr(el, 'img', !!args.img);
-  setAttr(el, 'no-footer', !!args.noFooter);
-  setAttr(el, 'no-header', !!args.noHeader);
-
-  setAttr(el, 'clickable', !!args.clickable);
-  setAttr(el, 'disabled', !!args.disabled);
-  setAttr(el, 'landmark', !!args.landmark);
-  setAttr(el, 'heading-level', args.headingLevel);
-  setAttr(el, 'decorative-image', !!args.decorativeImage);
-
-  setAttr(el, 'aria-label', args.ariaLabel);
-  setAttr(el, 'aria-labelledby', args.ariaLabelledby);
-  setAttr(el, 'aria-describedby', args.ariaDescribedby);
-
-  setAttr(el, 'class-names', args.classNames);
-  setAttr(el, 'elevation', args.elevation);
-  setAttr(el, 'inline-styles', args.inlineStyles);
-  setAttr(el, 'card-max-width', args.cardMaxWidth);
-
-  if (args.img) {
-    setAttr(el, 'alt-text', args.altText);
-    setAttr(el, 'img-src', args.imgSrc);
-    setAttr(el, 'img-height', args.imgHeight);
-  } else {
-    el.removeAttribute('alt-text');
-    el.removeAttribute('img-src');
-    el.removeAttribute('img-height');
-  }
-
-  // ----- Slots -----
-  el.innerHTML = `
-    ${args.noHeader ? '' : `<div slot="header">${args.slotHeader}</div>`}
-    <span slot="title">${args.slotTitle}</span>
-    <span slot="text">${args.slotText}</span>
-    ${args.actions ? `<span slot="actions">${args.slotActions}</span>` : ''}
-    ${args.noFooter ? '' : `<div slot="footer"><p>${args.slotFooter}</p></div>`}
-  `;
-
-  // Event for SB Actions panel
-  el.addEventListener('customClick', action('customClick'));
-
-  return el;
-};
-
-// ----- Stories -----
+const Template = (args) => renderCard(args);
 
 export const Basic = Template.bind({});
 Basic.args = {};
@@ -527,7 +318,6 @@ Elevated.parameters = {
   },
 };
 
-// --- NEW: Accessibility matrix story ---
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: (args) => {
@@ -580,8 +370,7 @@ export const AccessibilityMatrix = {
 
       const snapshot = () => {
         const host = demo.querySelector('card-component');
-        const root = host?.querySelector('article') || host; // host is <card-component>; inner root is <article>
-
+        const root = host?.querySelector('article') || host;
         const heading = host?.querySelector('.card-title');
         const img = host?.querySelector('img');
 
@@ -589,19 +378,15 @@ export const AccessibilityMatrix = {
           {
             hostTag: host?.tagName?.toLowerCase() ?? null,
             rootTag: root?.tagName?.toLowerCase() ?? null,
-
             role: root?.getAttribute('role') ?? null,
             tabIndexAttr: root?.getAttribute('tabindex') ?? null,
-
             'aria-label': root?.getAttribute('aria-label') ?? null,
             'aria-labelledby': root?.getAttribute('aria-labelledby') ?? null,
             'aria-describedby': root?.getAttribute('aria-describedby') ?? null,
             'aria-disabled': root?.getAttribute('aria-disabled') ?? null,
-
             headingTag: heading ? heading.tagName.toLowerCase() : null,
             headingId: heading?.getAttribute('id') ?? null,
             headingText: heading?.textContent?.trim() ?? null,
-
             imgPresent: !!img,
             imgAlt: img?.getAttribute('alt') ?? null,
             imgAriaHidden: img?.getAttribute('aria-hidden') ?? null,
@@ -615,7 +400,6 @@ export const AccessibilityMatrix = {
       return c;
     };
 
-    // Default (not landmark, not clickable)
     wrap.appendChild(
       card('Default (no landmark)', () =>
         Template({
@@ -632,7 +416,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Landmark region (named)
     wrap.appendChild(
       card('Landmark region (named)', () => {
         const outer = document.createElement('div');
@@ -661,7 +444,6 @@ export const AccessibilityMatrix = {
       }),
     );
 
-    // Clickable
     wrap.appendChild(
       card('Clickable (role=button)', () =>
         Template({
@@ -675,7 +457,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Clickable disabled
     wrap.appendChild(
       card('Clickable + disabled', () =>
         Template({
@@ -689,7 +470,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Decorative image example
     wrap.appendChild(
       card('Decorative image', () =>
         Template({

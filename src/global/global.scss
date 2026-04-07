@@ -34,6 +34,63 @@ $fa-font-path: '/assets/fonts'; // ✅ must be before imports!
   border: 1px solid rgb(0 0 0 / 28%) !important;
 }
 
+$fade-transition: opacity 0.15s linear;
+$collapse-transition: height 0.35s ease;
+$rotate-transition: transform 0.3s ease-in-out;
+
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+%rotate-base {
+  transform-origin: center center;
+  transition: $rotate-transition;
+}
+
+/* Keep the generic utilities global if they’re used elsewhere */
+.fade {
+  transition: $fade-transition;
+
+  &:not(.show) {
+    opacity: 0;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+}
+
+.collapse {
+  position: relative;
+  overflow: hidden;
+  transition: $collapse-transition;
+  height: 0;
+
+  &.show {
+    height: auto;
+  }
+}
+
+.collapsing {
+  transition: $collapse-transition;
+
+  @include reduced-motion {
+    transition: none;
+  }
+}
+
+.rotate-down {
+  @extend %rotate-base;
+  transform: rotate(180deg);
+}
+
+.rotate-up {
+  @extend %rotate-base;
+  transform: rotate(0deg);
+}
+
 
 // :root {
 //   --amber: #ffc107;

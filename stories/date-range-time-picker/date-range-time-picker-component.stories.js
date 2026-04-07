@@ -1,161 +1,18 @@
-// stories/date-range-time-picker-component.stories.js
-import { action } from '@storybook/addon-actions';
+// File: stories/date-range-time-picker-component.stories.js
 
-// ======================================================
-// Docs helpers (same pattern as datepicker + date-range)
-// ======================================================
-
-/** Collapse blank lines + trim edges */
-const normalize = txt => {
-  const lines = String(txt ?? '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map(l => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      prevBlank = true;
-      out.push('');
-      continue;
-    }
-    prevBlank = false;
-    out.push(line);
-  }
-
-  while (out[0] === '') out.shift();
-  while (out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-/** Build clean attribute block (line-wrapped) */
-const attrs = pairs =>
-  pairs
-    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
-    .map(([k, v]) => (v === true ? k : `${k}="${String(v)}"`))
-    .join('\n  ');
-
-/** Ensure numeric cols render only when meaningful (avoid "col-NaN") */
-const asNumOrUndef = v => {
-  if (v === '' || v === null || v === undefined) return undefined;
-  const n = Number(v);
-  return Number.isFinite(n) ? n : undefined;
-};
-
-/** Safe text escape for <pre> blocks */
-const esc = s =>
-  String(s ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-
-/** Render attributes of interest */
-const pickAttr = (el, name) => (el && el.hasAttribute(name) ? el.getAttribute(name) : null);
-
-const describeElA11y = (label, el, extra = []) => {
-  if (!el) {
-    return `${label}: (not found)`;
-  }
-  const base = {
-    tag: el.tagName.toLowerCase(),
-    id: el.id || null,
-    role: pickAttr(el, 'role'),
-    tabIndex: pickAttr(el, 'tabindex'),
-    name: el.getAttribute('name') || null,
-    type: el.getAttribute('type') || null,
-    disabled: el.hasAttribute('disabled') ? true : null,
-    'aria-label': pickAttr(el, 'aria-label'),
-    'aria-labelledby': pickAttr(el, 'aria-labelledby'),
-    'aria-describedby': pickAttr(el, 'aria-describedby'),
-    'aria-controls': pickAttr(el, 'aria-controls'),
-    'aria-expanded': pickAttr(el, 'aria-expanded'),
-    'aria-haspopup': pickAttr(el, 'aria-haspopup'),
-    'aria-modal': pickAttr(el, 'aria-modal'),
-    'aria-invalid': pickAttr(el, 'aria-invalid'),
-    'aria-required': pickAttr(el, 'aria-required'),
-    'aria-live': pickAttr(el, 'aria-live'),
-  };
-
-  for (const [k, v] of extra) base[k] = v;
-
-  // remove nulls for readability
-  const cleaned = Object.fromEntries(Object.entries(base).filter(([, v]) => v !== null));
-  return `${label}:\n${JSON.stringify(cleaned, null, 2)}`;
-};
-
-const collectIds = root => {
-  const ids = Array.from(root.querySelectorAll('[id]')).map(n => n.id).filter(Boolean);
-  const counts = new Map();
-  for (const id of ids) counts.set(id, (counts.get(id) || 0) + 1);
-  const dups = Array.from(counts.entries()).filter(([, c]) => c > 1).map(([id, c]) => ({ id, count: c }));
-  return { total: ids.length, unique: counts.size, duplicates: dups };
-};
-
-/** Docs code preview that reflects CURRENT args (including Controls changes) */
-const buildDocsHtml = args => {
-  const attributeBlock = attrs([
-    // Core
-    ['plumage', !!args.plumage],
-    ['range-time-picker', !!args.rangeTimePicker],
-    ['disabled', !!args.disabled],
-    ['required', !!args.required],
-
-    // Display format
-    ['date-format', args.dateFormat],
-    ['is-twenty-four-hour-format', !!args.isTwentyFourHourFormat],
-    ['show-duration', !!args.showDuration],
-    ['show-ymd', !!args.showYmd],
-    ['show-long', !!args.showLong],
-    ['show-iso', !!args.showIso],
-
-    // Input / adornments
-    ['placeholder', args.placeholder],
-    ['join-by', args.joinBy],
-    ['icon', args.icon],
-    ['input-id', args.inputId],
-    ['append-prop', !!args.appendProp],
-    ['prepend-prop', !!args.prependProp],
-
-    // Layout
-    ['label', args.label],
-    ['label-align', args.labelAlign],
-    ['label-hidden', !!args.labelHidden],
-    ['form-layout', args.formLayout],
-    ['size', args.size],
-
-    // Grid
-    ['label-col', asNumOrUndef(args.labelCol)],
-    ['input-col', asNumOrUndef(args.inputCol)],
-    ['label-cols', args.labelCols],
-    ['input-cols', args.inputCols],
-
-    // Validation
-    ['validation', !!args.validation],
-    ['validation-message', args.validationMessage],
-    ['warning-message', args.warningMessage],
-
-    // Controls
-    ['show-ok-button', !!args.showOkButton],
-    ['aria-label', args.ariaLabel],
-  ]);
-
-  return normalize(`
-<date-range-time-picker-component
-  ${attributeBlock}
-></date-range-time-picker-component>
-`);
-};
+import DocsPage from './date-range-time-picker-component.docs.mdx';
+import {
+  buildDocsHtml,
+  Template,
+  renderDRTPMatrixRow,
+} from './date-range-time-picker-component.story-helpers.js';
 
 export default {
   title: 'Form/Date Range + Time Picker',
   tags: ['autodocs'],
   parameters: {
     docs: {
+      page: DocsPage,
       description: {
         component: 'A combined date range and time picker, with flexible display and layout options.',
       },
@@ -166,7 +23,6 @@ export default {
     },
   },
   argTypes: {
-    // Core
     plumage: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Core' },
@@ -189,7 +45,6 @@ export default {
       description: 'Mark the input as required',
     },
 
-    // Display format
     dateFormat: {
       control: { type: 'select' },
       options: ['YYYY-MM-DD', 'MM-DD-YYYY'],
@@ -219,7 +74,7 @@ export default {
       control: 'boolean',
       name: 'show-long',
       table: { category: 'Formatting', defaultValue: { summary: false } },
-      description: 'Force long date display (e.g., Wednesday, January 1, 2025)',
+      description: 'Force long date display',
     },
     showIso: {
       control: 'boolean',
@@ -228,15 +83,27 @@ export default {
       description: 'Show/accept full ISO datetimes in the main input',
     },
 
-    // Input / adornments
     placeholder: {
       control: 'text',
       table: { category: 'Input' },
       description: 'Placeholder text for the input; if empty, a default will be computed based on display format + joinBy',
     },
-    joinBy: { control: 'text', table: { category: 'Input' }, description: 'Separator between start and end (input & display)' },
-    icon: { control: 'text', table: { category: 'Input' }, description: 'Calendar button icon (e.g. "fas fa-calendar-alt")' },
-    inputId: { control: 'text', name: 'input-id', table: { category: 'Input' }, description: 'ID for the input element' },
+    joinBy: {
+      control: 'text',
+      table: { category: 'Input' },
+      description: 'Separator between start and end (input & display)',
+    },
+    icon: {
+      control: 'text',
+      table: { category: 'Input' },
+      description: 'Calendar button icon (e.g. "fas fa-calendar-alt")',
+    },
+    inputId: {
+      control: 'text',
+      name: 'input-id',
+      table: { category: 'Input' },
+      description: 'ID for the input element',
+    },
 
     appendProp: {
       control: 'boolean',
@@ -251,8 +118,11 @@ export default {
       description: 'Show a prepend button (calendar icon) that triggers the picker',
     },
 
-    // Label & layout
-    label: { control: 'text', table: { category: 'Layout' }, description: 'Label text for the input' },
+    label: {
+      control: 'text',
+      table: { category: 'Layout' },
+      description: 'Label text for the input',
+    },
     labelAlign: {
       control: { type: 'select' },
       options: ['', 'right'],
@@ -279,7 +149,6 @@ export default {
       description: 'Size variant; applies to input and buttons.',
     },
 
-    // Grid
     labelCol: {
       control: 'number',
       min: 0,
@@ -307,7 +176,6 @@ export default {
       description: 'e.g. "col-sm-9 col-md-8" or "xs-12 sm-6 md-8"',
     },
 
-    // Validation
     validation: {
       control: 'boolean',
       table: { category: 'Validation', defaultValue: { summary: false } },
@@ -326,16 +194,19 @@ export default {
       description: 'Optional warning message (displays with warning visuals)',
     },
 
-    // Controls
     showOkButton: {
       control: 'boolean',
       name: 'show-ok-button',
       table: { category: 'Controls', defaultValue: { summary: true } },
       description: 'Show the OK/Close button in the picker (ignored when rangeTimePicker=true)',
     },
-    ariaLabel: { control: 'text', name: 'aria-label', table: { category: 'Controls' }, description: 'ARIA label for the component/input' },
+    ariaLabel: {
+      control: 'text',
+      name: 'aria-label',
+      table: { category: 'Controls' },
+      description: 'ARIA label for the component/input',
+    },
 
-    // Value
     value: {
       control: 'text',
       table: { category: 'Value', disable: true },
@@ -373,71 +244,10 @@ export default {
     validation: false,
     validationMessage: 'Required field',
     warningMessage: '',
+    value: '',
   },
+  render: (args) => Template(args),
 };
-
-// ======================================================
-// Render
-// ======================================================
-
-const buildEl = args => {
-  const el = document.createElement('date-range-time-picker-component');
-
-  // Core flags
-  el.plumage = !!args.plumage;
-  el.rangeTimePicker = !!args.rangeTimePicker;
-  el.disabled = !!args.disabled;
-  el.required = !!args.required;
-
-  // Formats
-  el.dateFormat = args.dateFormat;
-  el.isTwentyFourHourFormat = !!args.isTwentyFourHourFormat;
-  el.showDuration = !!args.showDuration;
-  el.showYmd = !!args.showYmd;
-  el.showLong = !!args.showLong;
-  el.showIso = !!args.showIso;
-
-  // Inputs/adornments
-  el.placeholder = args.placeholder || undefined; // let component compute when empty
-  el.joinBy = args.joinBy || ' - ';
-  el.icon = args.icon || 'fas fa-calendar-alt';
-  el.inputId = args.inputId || 'date-range-time';
-  el.appendProp = !!args.appendProp;
-  el.prependProp = !!args.prependProp;
-
-  // Label & layout
-  el.label = args.label || 'Date and Time Picker';
-  el.labelAlign = args.labelAlign || '';
-  el.labelHidden = !!args.labelHidden;
-  el.formLayout = args.formLayout || '';
-  el.size = args.size || '';
-
-  // Grid
-  el.labelCol = Number(args.labelCol ?? 2);
-  el.inputCol = Number(args.inputCol ?? 10);
-  el.labelCols = args.labelCols || '';
-  el.inputCols = args.inputCols || '';
-
-  // Validation
-  el.validation = !!args.validation;
-  el.validationMessage = args.validationMessage || 'Required field';
-  el.warningMessage = args.warningMessage || '';
-
-  // Controls
-  el.showOkButton = !!args.showOkButton;
-  el.ariaLabel = args.ariaLabel || '';
-
-  // Event
-  el.addEventListener('date-time-updated', e => action('date-time-updated')(e.detail));
-
-  return el;
-};
-
-const Template = args => buildEl(args);
-
-// ======================================================
-// Stories (existing)
-// ======================================================
 
 export const Basic = Template.bind({});
 Basic.args = {
@@ -539,7 +349,7 @@ export const ISOInputOutput = Template.bind({});
 ISOInputOutput.args = {
   showIso: true,
   joinBy: ' to ',
-  placeholder: '', // component will show ISO example
+  placeholder: '',
   labelCol: '',
   inputCol: '',
   inputId: 'iso-drtp',
@@ -613,7 +423,7 @@ Disabled.parameters = {
 
 export const Sizes = Template.bind({});
 Sizes.args = {
-  size: 'sm', // try '', 'sm', 'lg'
+  size: 'sm',
   labelCol: '',
   inputCol: '',
   inputId: 'size-drtp',
@@ -622,7 +432,7 @@ Sizes.storyName = 'Sizes';
 Sizes.parameters = {
   docs: {
     description: {
-      story: 'Size variants for the date/time range picker. Sizes are "" for default, "sm", and "lg".',
+      story: 'Size variants for the date/time range picker. Sizes are "", "sm", and "lg".',
     },
     story: { height: '525px' },
   },
@@ -631,7 +441,7 @@ Sizes.parameters = {
 export const PickerOnly_NoInput = Template.bind({});
 PickerOnly_NoInput.args = {
   rangeTimePicker: true,
-  showOkButton: false, // ignored in picker-only mode
+  showOkButton: false,
 };
 PickerOnly_NoInput.storyName = 'Picker Only (No Input)';
 PickerOnly_NoInput.parameters = {
@@ -643,153 +453,6 @@ PickerOnly_NoInput.parameters = {
   },
 };
 
-// ======================================================
-// NEW: Accessibility matrix story
-// - default / inline / horizontal
-// - error/validation
-// - disabled
-// - prints computed role + aria-* + ids
-// ======================================================
-
-const pickAttrs = (el, names) => {
-  const out = {};
-  if (!el) return out;
-  for (const n of names) {
-    const v = el.getAttribute(n);
-    if (v !== null && v !== '') out[n] = v;
-  }
-  return out;
-};
-
-const splitIds = (v) =>
-  String(v || '')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-
-const resolveIdsWithin = (host, ids) => {
-  const res = {};
-  for (const id of ids) {
-    const safe = String(id).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-    res[id] = !!host.querySelector(`[id="${safe}"]`);
-  }
-  return res;
-};
-
-const snapshotDRTPA11y = (host) => {
-  const input = host.querySelector('input.form-control');
-  const label = host.querySelector('label.form-control-label');
-  const toggle = host.querySelector('.calendar-button, button.btn.input-group-text');
-  const dialog = host.querySelector('.dropdown-content');
-  const help = host.querySelector('[id$="__desc"]');
-  const validation = host.querySelector('.invalid-feedback.validation, .invalid-feedback.warning, .invalid-feedback, [id$="__validation"]');
-
-  const describedByIds = input ? splitIds(input.getAttribute('aria-describedby')) : [];
-  const labelledByIds = input ? splitIds(input.getAttribute('aria-labelledby')) : [];
-
-  return {
-    host: {
-      tag: host.tagName.toLowerCase(),
-      id: host.id || null,
-      role: host.getAttribute('role') || null,
-      ...pickAttrs(host, ['aria-label', 'aria-labelledby', 'aria-describedby']),
-    },
-    input: input
-      ? {
-          tag: input.tagName.toLowerCase(),
-          id: input.id || null,
-          role: input.getAttribute('role') || null,
-          ...pickAttrs(input, ['name', 'type', 'autocomplete', 'required', 'aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid']),
-          resolves: {
-            'aria-labelledby': resolveIdsWithin(host, labelledByIds),
-            'aria-describedby': resolveIdsWithin(host, describedByIds),
-          },
-        }
-      : null,
-    label: label
-      ? {
-          tag: label.tagName.toLowerCase(),
-          id: label.id || null,
-          for: label.getAttribute('for') || null,
-        }
-      : null,
-    helpText: help
-      ? {
-          id: help.id || null,
-          insideDialog: !!(dialog && dialog.contains(help)),
-        }
-      : null,
-    toggle: toggle
-      ? {
-          tag: toggle.tagName.toLowerCase(),
-          id: toggle.id || null,
-          role: toggle.getAttribute('role') || null,
-          ...pickAttrs(toggle, ['aria-label', 'aria-haspopup', 'aria-expanded', 'aria-controls', 'disabled']),
-        }
-      : null,
-    dialog: dialog
-      ? {
-          tag: dialog.tagName.toLowerCase(),
-          id: dialog.id || null,
-          role: dialog.getAttribute('role') || null,
-          ...pickAttrs(dialog, ['aria-modal', 'aria-labelledby']),
-        }
-      : null,
-    validation: validation
-      ? {
-          tag: validation.tagName.toLowerCase(),
-          id: validation.id || null,
-          ...pickAttrs(validation, ['aria-live', 'aria-atomic']),
-          text: validation.textContent?.trim() || null,
-        }
-      : null,
-    ids: collectIds(host),
-  };
-};
-
-const renderDRTPMatrixRow = ({ title, args, idSuffix }) => {
-  const wrap = document.createElement('div');
-  wrap.style.border = '1px solid #ddd';
-  wrap.style.borderRadius = '12px';
-  wrap.style.padding = '12px';
-  wrap.style.display = 'grid';
-  wrap.style.gap = '10px';
-
-  const heading = document.createElement('div');
-  heading.style.fontWeight = '700';
-  heading.textContent = title;
-
-  const el = buildEl({
-    ...args,
-    inputId: `drtp-matrix-${idSuffix}`,
-  });
-
-  const stage = document.createElement('div');
-  stage.style.maxWidth = '560px';
-
-  const pre = document.createElement('pre');
-  pre.style.margin = '0';
-  pre.style.padding = '10px';
-  pre.style.background = '#f6f8fa';
-  pre.style.borderRadius = '10px';
-  pre.style.overflowX = 'auto';
-  pre.style.fontSize = '12px';
-  pre.textContent = 'Collecting aria/role/id…';
-
-  stage.appendChild(el);
-  wrap.appendChild(heading);
-  wrap.appendChild(stage);
-  wrap.appendChild(pre);
-
-  const update = () => {
-    pre.textContent = JSON.stringify(snapshotDRTPA11y(el), null, 2);
-  };
-
-  requestAnimationFrame(() => requestAnimationFrame(update));
-
-  return wrap;
-};
-
 export const AccessibilityMatrix = (args) => {
   const root = document.createElement('div');
   root.style.display = 'grid';
@@ -799,21 +462,90 @@ export const AccessibilityMatrix = (args) => {
   intro.innerHTML = `
     <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
     <div style="font-size:13px; color:#444;">
-      Date Range + Time Picker: common variants + computed <code>role</code>, <code>aria-*</code>, IDs (and ARIA reference resolution).
+      Date Range + Time Picker: common variants + computed <code>role</code>, <code>aria-*</code>, IDs.
     </div>
   `;
   root.appendChild(intro);
 
   const base = { ...args };
   const rows = [
-    { title: 'Default', args: { ...base, formLayout: '', disabled: false, required: false, validation: false, rangeTimePicker: false, labelHidden: false } },
-    { title: 'Inline', args: { ...base, formLayout: 'inline', disabled: false, required: false, validation: false, rangeTimePicker: false, labelHidden: false, labelCol: '', inputCol: '' } },
-    { title: 'Horizontal', args: { ...base, formLayout: 'horizontal', labelAlign: 'right', labelCol: 3, inputCol: 9, disabled: false, required: false, validation: false, rangeTimePicker: false, labelHidden: false } },
-    { title: 'Validation / Error (required + validation=true)', args: { ...base, formLayout: '', required: true, validation: true, validationMessage: 'Please enter a valid date/time range.', disabled: false, rangeTimePicker: false, labelHidden: false } },
-    { title: 'Disabled', args: { ...base, formLayout: '', disabled: true, required: false, validation: false, rangeTimePicker: false, labelHidden: false } },
+    {
+      title: 'Default',
+      args: {
+        ...base,
+        formLayout: '',
+        disabled: false,
+        required: false,
+        validation: false,
+        rangeTimePicker: false,
+        labelHidden: false,
+      },
+    },
+    {
+      title: 'Inline',
+      args: {
+        ...base,
+        formLayout: 'inline',
+        disabled: false,
+        required: false,
+        validation: false,
+        rangeTimePicker: false,
+        labelHidden: false,
+        labelCol: '',
+        inputCol: '',
+      },
+    },
+    {
+      title: 'Horizontal',
+      args: {
+        ...base,
+        formLayout: 'horizontal',
+        labelAlign: 'right',
+        labelCol: 3,
+        inputCol: 9,
+        disabled: false,
+        required: false,
+        validation: false,
+        rangeTimePicker: false,
+        labelHidden: false,
+      },
+    },
+    {
+      title: 'Validation / Error (required + validation=true)',
+      args: {
+        ...base,
+        formLayout: '',
+        required: true,
+        validation: true,
+        validationMessage: 'Please enter a valid date/time range.',
+        disabled: false,
+        rangeTimePicker: false,
+        labelHidden: false,
+      },
+    },
+    {
+      title: 'Disabled',
+      args: {
+        ...base,
+        formLayout: '',
+        disabled: true,
+        required: false,
+        validation: false,
+        rangeTimePicker: false,
+        labelHidden: false,
+      },
+    },
   ];
 
-  rows.forEach((r, idx) => root.appendChild(renderDRTPMatrixRow({ ...r, idSuffix: String(idx + 1) })));
+  rows.forEach((row, idx) => {
+    root.appendChild(
+      renderDRTPMatrixRow({
+        ...row,
+        idSuffix: String(idx + 1),
+      }),
+    );
+  });
+
   return root;
 };
 

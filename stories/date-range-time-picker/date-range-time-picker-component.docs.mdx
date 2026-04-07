@@ -1,0 +1,35 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as StoriesModule from './date-range-time-picker-component.stories.js';
+import { reactExample, vueExample, angularExample } from './date-range-time-picker-component.examples.js';
+import { buildDocsHtml } from './date-range-time-picker-component.story-helpers.js';
+
+<Meta of={StoriesModule} />
+
+# Date Range + Time Picker
+
+<Description of={StoriesModule} />
+
+## HTML
+
+<Source
+  code={buildDocsHtml(StoriesModule.default.args)}
+  language="html"
+/>
+
+## React
+
+<Source code={reactExample} language="tsx" />
+
+## Vue
+
+<Source code={vueExample} language="vue" />
+
+## Angular
+
+<Source code={angularExample} language="ts" />
+
+## Playground
+
+<Primary />
+<Controls />
+<Stories includePrimary={false} />

@@ -1,4 +1,3 @@
-// src/components/date-range-time-picker-component/date-range-time-picker-component.tsx
 import { Component, Prop, State, h, Element, Event, EventEmitter, Watch, Method, Fragment } from '@stencil/core';
 import { createPopper, Instance as PopperInstance } from '@popperjs/core';
 
@@ -24,7 +23,6 @@ import { createPopper, Instance as PopperInstance } from '@popperjs/core';
   shadow: false,
 })
 export class DateRangeTimePickerComponent {
-  // -------------------- element + refs --------------------
   @Element() el!: HTMLElement;
 
   private inputEl?: HTMLInputElement;
@@ -32,8 +30,26 @@ export class DateRangeTimePickerComponent {
   private dropdownContentEl?: HTMLDivElement;
   private popper?: PopperInstance;
 
-  // -------------------- public API (props) ----------------
-  @Prop() ariaLabel: string = ''; // used to name the dialog (and fallback labeling)
+  private draftSnapshot:
+    | {
+        value: string;
+        startDate: Date | null;
+        endDate: Date | null;
+        startTime: string;
+        endTime: string;
+        startAmPm: 'AM' | 'PM';
+        endAmPm: 'AM' | 'PM';
+        durationText: string;
+        currentStartMonth: number;
+        currentStartYear: number;
+        currentEndMonth: number;
+        currentEndYear: number;
+        validation: boolean;
+        validationMessage: string;
+      }
+    | null = null;
+
+  @Prop() ariaLabel: string = '';
   @Prop() dateFormat: 'YYYY-MM-DD' | 'MM-DD-YYYY' = 'YYYY-MM-DD';
   @Prop() plumage: boolean = false;
 
@@ -51,11 +67,9 @@ export class DateRangeTimePickerComponent {
   @Prop() label: string = 'Date and Time Picker';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
-  /** '', 'horizontal', or 'inline' */
   @Prop() formLayout: '' | 'horizontal' | 'inline' = '';
   @Prop() icon: string = 'fas fa-calendar-alt';
 
-  /** External placeholder (immutable). We derive default into state. */
   @Prop() placeholder?: string;
 
   @Prop() required: boolean = false;
@@ -65,28 +79,21 @@ export class DateRangeTimePickerComponent {
   @Prop({ mutable: true }) validationMessage: string = 'Required field';
   @Prop({ mutable: true }) warningMessage: string = '';
 
-  /** Render only the picker; disables OK button */
   @Prop() rangeTimePicker: boolean = false;
-  /** Allow host to control the OK/Close button; masked when rangeTimePicker */
   @Prop({ mutable: true }) showOkButton: boolean = true;
 
-  /** Time options */
   @Prop() isTwentyFourHourFormat: boolean = true;
   @Prop() showDuration: boolean = false;
 
-  /** Grid like date-range-picker-component */
   @Prop() labelCol: number = 2;
-  /** Grid like date-range-picker-component */
   @Prop() inputCol: number = 10;
   @Prop() labelCols: string = '';
   @Prop() inputCols: string = '';
 
-  /** Output flags */
   @Prop() showYmd: boolean = false;
   @Prop() showLong: boolean = false;
   @Prop() showIso: boolean = false;
 
-  // -------------------- internal state --------------------
   @State() dropdownOpen: boolean = false;
 
   @State() startDate: Date | null = null;
@@ -97,14 +104,11 @@ export class DateRangeTimePickerComponent {
   @State() currentEndMonth: number = (this.currentStartMonth + 1) % 12;
   @State() currentEndYear: number = this.currentStartMonth === 11 ? this.currentStartYear + 1 : this.currentStartYear;
 
-  // Focus model (visual ring only when userNavigated)
   @State() focusedDate: Date = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate()));
   @State() userNavigated: boolean = false;
 
-  /** Derived default placeholder */
   @State() placeholderText: string = '';
 
-  // Time state (display-time strings)
   @State() startTime: string = '';
   @State() endTime: string = '';
   @State() startAmPm: 'AM' | 'PM' = 'PM';
@@ -113,7 +117,6 @@ export class DateRangeTimePickerComponent {
 
   private okButtonLabel: 'OK' | 'Close' = 'Close';
 
-  // -------------------- events ----------------------------
   @Event({ eventName: 'date-time-updated' })
   dateTimeUpdated!: EventEmitter<{
     startDate: string;
@@ -127,7 +130,6 @@ export class DateRangeTimePickerComponent {
     endDateTimeIso?: string;
   }>;
 
-  // ---------- Unique ID protection (prevents ARIA collisions) ----------
   private static _seq = 0;
   private _baseId = '';
 
@@ -192,7 +194,6 @@ export class DateRangeTimePickerComponent {
     return `${this.ids}-warning`;
   }
 
-  // -------------------- lifecycle -------------------------
   componentWillLoad() {
     this.resolveBaseId();
     this.placeholderText = this.computePlaceholder();
@@ -206,14 +207,12 @@ export class DateRangeTimePickerComponent {
   }
 
   componentDidLoad() {
-    // Bind ONLY the external summary input (not the time inputs).
     if (!this.rangeTimePicker) {
       this.inputEl = (this.el.querySelector(`#${this.inputId}`) as HTMLInputElement) || undefined;
     }
 
     this.dropdownEl = this.el.querySelector('.dropdown') as HTMLDivElement | undefined;
 
-    // focus styling hooks
     if (this.inputEl) {
       this.inputEl.addEventListener('focus', this.addFocusClass);
       this.inputEl.addEventListener('blur', this.removeFocusClass);
@@ -224,7 +223,6 @@ export class DateRangeTimePickerComponent {
       btn.addEventListener('blur', this.removeFocusClass);
     });
 
-    // delegated keyboard nav + wrapper focus management
     const calendarWrapper = this.el.querySelector('.calendar-wrapper');
     if (calendarWrapper) {
       calendarWrapper.addEventListener('keydown', this.handleKeyDown as any);
@@ -235,14 +233,12 @@ export class DateRangeTimePickerComponent {
       });
     }
 
-    // outside clicks
     document.addEventListener('click', this.handleOutsideClick, { capture: true });
-
-    // reset events
     this.el.addEventListener('reset-picker', this.resetCalendar as EventListener);
 
     this.syncMonthYearSelectors();
     this.setDefaultWarningMessage();
+    this.syncWarningMessage();
   }
 
   disconnectedCallback() {
@@ -273,7 +269,6 @@ export class DateRangeTimePickerComponent {
     this.destroyPopper();
   }
 
-  // Keep time defaults in sync when format toggles
   @Watch('isTwentyFourHourFormat')
   onFormatChange() {
     this._setDefaultTimes();
@@ -292,15 +287,67 @@ export class DateRangeTimePickerComponent {
     this.placeholderText = this.computePlaceholder();
   }
 
-  // -------------------- public method ---------------------
   @Method()
   async clear() {
     this.clearInputField();
   }
 
-  // -------------------- helpers ---------------------------
   private waitForRender() {
     return new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+  }
+
+  private cloneDate(date: Date | null): Date | null {
+    return date ? new Date(date.getTime()) : null;
+  }
+
+  private captureDraftSnapshot() {
+    this.draftSnapshot = {
+      value: this.value,
+      startDate: this.cloneDate(this.startDate),
+      endDate: this.cloneDate(this.endDate),
+      startTime: this.startTime,
+      endTime: this.endTime,
+      startAmPm: this.startAmPm,
+      endAmPm: this.endAmPm,
+      durationText: this.durationText,
+      currentStartMonth: this.currentStartMonth,
+      currentStartYear: this.currentStartYear,
+      currentEndMonth: this.currentEndMonth,
+      currentEndYear: this.currentEndYear,
+      validation: this.validation,
+      validationMessage: this.validationMessage,
+    };
+  }
+
+  private clearDraftSnapshot() {
+    this.draftSnapshot = null;
+  }
+
+  private restoreDraftSnapshot() {
+    if (!this.draftSnapshot) return;
+
+    this.value = this.draftSnapshot.value;
+    this.startDate = this.cloneDate(this.draftSnapshot.startDate);
+    this.endDate = this.cloneDate(this.draftSnapshot.endDate);
+    this.startTime = this.draftSnapshot.startTime;
+    this.endTime = this.draftSnapshot.endTime;
+    this.startAmPm = this.draftSnapshot.startAmPm;
+    this.endAmPm = this.draftSnapshot.endAmPm;
+    this.durationText = this.draftSnapshot.durationText;
+    this.currentStartMonth = this.draftSnapshot.currentStartMonth;
+    this.currentStartYear = this.draftSnapshot.currentStartYear;
+    this.currentEndMonth = this.draftSnapshot.currentEndMonth;
+    this.currentEndYear = this.draftSnapshot.currentEndYear;
+    this.validation = this.draftSnapshot.validation;
+    this.validationMessage = this.draftSnapshot.validationMessage;
+
+    this.syncMonthYearSelectors();
+    this.syncInputAndPanelFromState();
+    this.updateSelectedRange();
+    this.updateDisplayedDateRange();
+    this.updateOkButtonState();
+
+    requestAnimationFrame(() => this.syncWarningMessage());
   }
 
   private _setDefaultTimes() {
@@ -310,7 +357,6 @@ export class DateRangeTimePickerComponent {
     this.endAmPm = 'PM';
   }
 
-  /** Placeholder builder */
   private computePlaceholder(): string {
     if (this.placeholder) return this.placeholder;
 
@@ -328,7 +374,6 @@ export class DateRangeTimePickerComponent {
     return `${this.dateFormat} ${timeMask} ${this.joinBy} ${this.dateFormat} ${timeMask}`;
   }
 
-  // Keep month/year <select>s in sync with state (NO CSS.escape to avoid Jest/JSDOM gaps)
   private syncMonthYearSelectors() {
     const root = this.el;
     if (!root) return;
@@ -357,8 +402,8 @@ export class DateRangeTimePickerComponent {
     return out.length ? out.join(' ') : undefined;
   }
 
-  // -------------------- dropdown & popper -----------------
   private openDropdown = () => {
+    this.captureDraftSnapshot();
     this.dropdownOpen = true;
     this.userNavigated = false;
     this.createPopperInstance();
@@ -373,11 +418,19 @@ export class DateRangeTimePickerComponent {
       });
     }
 
+    requestAnimationFrame(() => this.syncWarningMessage());
     setTimeout(() => this.dropdownContentEl?.focus(), 0);
   };
 
-  private closeDropdown = () => {
+  private closeDropdown = (restoreDraft = true) => {
+    if (restoreDraft) {
+      this.restoreDraftSnapshot();
+    } else {
+      this.clearDraftSnapshot();
+    }
+
     this.dropdownOpen = false;
+    requestAnimationFrame(() => this.syncWarningMessage());
     this.destroyPopper();
   };
 
@@ -386,7 +439,7 @@ export class DateRangeTimePickerComponent {
     if (this.disabled) return;
 
     if (this.dropdownOpen) {
-      this.closeDropdown();
+      this.closeDropdown(true);
     } else {
       if (this.startDate) {
         this.currentStartMonth = this.startDate.getUTCMonth();
@@ -433,15 +486,13 @@ export class DateRangeTimePickerComponent {
   private handleOutsideClick = (ev: MouseEvent) => {
     const root = this.el;
     if (!root) return;
-    const okButton = root.querySelector('.ok-button button');
     const path = (ev.composedPath && ev.composedPath()) || [];
     const clickInside = path.includes(this.el);
-    if (!clickInside || (okButton && ev.target === okButton)) {
-      this.closeDropdown();
+    if (!clickInside) {
+      this.closeDropdown(true);
     }
   };
 
-  // -------------------- calendar helpers -----------------
   private getFirstDayOfMonth(year: number, month0b: number) {
     return new Date(Date.UTC(year, month0b, 1)).getUTCDay();
   }
@@ -514,9 +565,41 @@ export class DateRangeTimePickerComponent {
     } as const);
   }
 
+  private isValidTimeValue(time: string): boolean {
+    if (!/^\d{2}:\d{2}$/.test(time)) return false;
+
+    const [hhRaw, mmRaw] = time.split(':');
+    const hh = parseInt(hhRaw, 10);
+    const mm = parseInt(mmRaw, 10);
+
+    if (Number.isNaN(hh) || Number.isNaN(mm)) return false;
+    if (mm < 0 || mm > 59) return false;
+
+    if (this.isTwentyFourHourFormat) {
+      return hh >= 0 && hh <= 23;
+    }
+
+    return hh >= 1 && hh <= 12;
+  }
+
+  private hasInvalidTimeFields(): boolean {
+    const startHasValue = this.startTime.trim().length > 0;
+    const endHasValue = this.endTime.trim().length > 0;
+
+    return (startHasValue && !this.isValidTimeValue(this.startTime)) || (endHasValue && !this.isValidTimeValue(this.endTime));
+  }
+
+  private hasEmptyTimeFields(): boolean {
+    return !this.startTime || !this.endTime;
+  }
+
+  private hasBlockingTimeIssue(): boolean {
+    return this.hasEmptyTimeFields() || this.hasInvalidTimeFields();
+  }
+
   private buildIsoDateTime(date: Date | null, time: string, ampm?: 'AM' | 'PM'): string | null {
     if (!date) return null;
-    if (!/^(\d{2}):([0-5]\d)$/.test(time)) return null;
+    if (!this.isValidTimeValue(time)) return null;
 
     const dateIso = date.toISOString().split('T')[0];
     const time24 = this.formatTimeForStorage(time, ampm);
@@ -560,6 +643,7 @@ export class DateRangeTimePickerComponent {
 
   private durationFromParts(): string {
     if (!this.startDate || !this.endDate || !this.startTime || !this.endTime) return '';
+    if (!this.isValidTimeValue(this.startTime) || !this.isValidTimeValue(this.endTime)) return '';
     const sIso = this.buildIsoDateTime(this.startDate, this.startTime, this.startAmPm);
     const eIso = this.buildIsoDateTime(this.endDate, this.endTime, this.endAmPm);
     if (!sIso || !eIso) return '';
@@ -572,7 +656,6 @@ export class DateRangeTimePickerComponent {
     return days > 0 ? `${days}d ${hours}h` : `${hours}h`;
   }
 
-  // -------------------- selection & nav ------------------
   private selectDate(date: Date) {
     if (!this.startDate || (this.startDate && this.endDate)) {
       this.startDate = this.normalizeDate(date);
@@ -593,8 +676,8 @@ export class DateRangeTimePickerComponent {
   }
 
   private updateOkButtonState() {
-    const startValid = !!this.startDate && !!this.startTime;
-    const endValid = !!this.endDate && !!this.endTime;
+    const startValid = !!this.startDate && !!this.startTime && this.isValidTimeValue(this.startTime);
+    const endValid = !!this.endDate && !!this.endTime && this.isValidTimeValue(this.endTime);
     this.okButtonLabel = startValid && endValid ? 'OK' : 'Close';
   }
 
@@ -636,7 +719,6 @@ export class DateRangeTimePickerComponent {
     await this.waitForRender();
   }
 
-  // -------------------- PARSING & VALIDATION -------------
   private escapeRegex(s: string) {
     return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
@@ -777,7 +859,6 @@ export class DateRangeTimePickerComponent {
       return;
     }
 
-    // ISO mode: groups (1) leftISO (2) rightISO
     if (this.showIso) {
       const leftIso = match[1];
       const rightIso = match[2];
@@ -812,6 +893,14 @@ export class DateRangeTimePickerComponent {
         this.endAmPm = eh >= 12 ? 'PM' : 'AM';
       }
 
+      if (!this.isValidTimeValue(this.startTime) || !this.isValidTimeValue(this.endTime)) {
+        this.validation = true;
+        this.validationMessage = 'Invalid time.';
+        this.value = inputValue;
+        this.el.setAttribute('value', this.value);
+        return;
+      }
+
       this.realignCalendarsToStart();
       this.validation = false;
       this.validationMessage = '';
@@ -829,7 +918,6 @@ export class DateRangeTimePickerComponent {
       return;
     }
 
-    // Non-ISO — groups: (1) leftDate (2) leftTime (3) rightDate (4) rightTime
     const leftDateStr = match[1];
     const leftTimeStr = match[2];
     const rightDateStr = match[3];
@@ -843,6 +931,14 @@ export class DateRangeTimePickerComponent {
     if (!sDate || !eDate || !sTimeParts || !eTimeParts) {
       this.validation = true;
       this.validationMessage = 'Please enter a valid date/time range.';
+      this.value = inputValue;
+      this.el.setAttribute('value', this.value);
+      return;
+    }
+
+    if (!this.isValidTimeValue(sTimeParts.time) || !this.isValidTimeValue(eTimeParts.time)) {
+      this.validation = true;
+      this.validationMessage = 'Invalid time.';
       this.value = inputValue;
       this.el.setAttribute('value', this.value);
       return;
@@ -905,9 +1001,9 @@ export class DateRangeTimePickerComponent {
     this.syncMonthYearSelectors();
   }
 
-  // -------------------- LIVE EMIT HELPER -----------------
   private emitIfCompleteAndValid(_source: 'time' | 'input' | 'calendar' = 'time') {
     if (!(this.startDate && this.endDate && this.startTime && this.endTime)) return;
+    if (!this.isValidTimeValue(this.startTime) || !this.isValidTimeValue(this.endTime)) return;
 
     const startISO = this.buildIsoDateTime(this.startDate, this.startTime, this.startAmPm);
     const endISO = this.buildIsoDateTime(this.endDate, this.endTime, this.endAmPm);
@@ -935,7 +1031,14 @@ export class DateRangeTimePickerComponent {
 
   private _handleOkClick = () => {
     if (!(this.startDate && this.endDate && this.startTime && this.endTime)) {
-      this.closeDropdown();
+      this.syncWarningMessage();
+      return;
+    }
+
+    if (!this.isValidTimeValue(this.startTime) || !this.isValidTimeValue(this.endTime)) {
+      this.validation = true;
+      this.validationMessage = 'Invalid time.';
+      this.syncWarningMessage();
       return;
     }
 
@@ -946,12 +1049,14 @@ export class DateRangeTimePickerComponent {
     this.validation = false;
     this.validationMessage = '';
 
-    this.closeDropdown();
+    this.clearDraftSnapshot();
+    this.closeDropdown(false);
     this.syncMonthYearSelectors();
   };
 
   private syncInputFromState() {
     if (!(this.startDate && this.endDate)) return;
+    if (!this.isValidTimeValue(this.startTime) || !this.isValidTimeValue(this.endTime)) return;
 
     if (this.showIso) {
       const startISO = this.buildIsoDateTime(this.startDate, this.startTime, this.startAmPm);
@@ -980,9 +1085,8 @@ export class DateRangeTimePickerComponent {
     this.syncInputFromState();
   }
 
-  // -------------------- reset & clear --------------------
   private setDefaultWarningMessage() {
-    this.validation = this.validation; // no-op
+    this.validation = this.validation;
   }
 
   private clearInputField = () => {
@@ -1015,16 +1119,14 @@ export class DateRangeTimePickerComponent {
     this.updateSelectedRange();
     this.updateDisplayedDateRange();
     this.updateActiveDateElements();
+    this.syncWarningMessage();
   };
 
   private resetCalendar = () => {
     this.clearInputField();
   };
 
-  // -------------------- UI updates -----------------------
-  private updateSelectedRange() {
-    /* class-driven via render */
-  }
+  private updateSelectedRange() {}
 
   private _updateDuration() {
     if (!this.showDuration) return;
@@ -1051,27 +1153,35 @@ export class DateRangeTimePickerComponent {
     return;
   }
 
-  // -------------------- focus styling --------------------
   private addFocusClass = () => {
     const grp = this.el.querySelector('.input-group');
     if (grp) grp.classList.add('focus');
   };
+
   private removeFocusClass = () => {
     const grp = this.el.querySelector('.input-group');
     if (grp) grp.classList.remove('focus');
   };
 
-  // -------------------- layout helpers & grid utils -------
   private showAsRequired() {
-    const haveAll = !!(this.startDate && this.endDate && this.startTime && this.endTime);
+    const haveAll =
+      !!this.startDate &&
+      !!this.endDate &&
+      !!this.startTime &&
+      !!this.endTime &&
+      this.isValidTimeValue(this.startTime) &&
+      this.isValidTimeValue(this.endTime);
     return this.required && !haveAll;
   }
+
   private isHorizontal() {
     return this.formLayout === 'horizontal';
   }
+
   private isInline() {
     return this.formLayout === 'inline';
   }
+
   private labelClassBase() {
     return [
       'form-control-label',
@@ -1083,12 +1193,15 @@ export class DateRangeTimePickerComponent {
       .filter(Boolean)
       .join(' ');
   }
+
   private labelClassHorizontal(labelColClass: string) {
     return [this.labelClassBase(), labelColClass, 'no-padding', 'col-form-label'].filter(Boolean).join(' ');
   }
+
   private groupSizeClass() {
     return this.size === 'sm' ? 'input-group-sm' : this.size === 'lg' ? 'input-group-lg' : '';
   }
+
   private parseColsSpec(spec?: string): string {
     if (!spec) return '';
     const tokens = spec.trim().split(/\s+/);
@@ -1115,6 +1228,7 @@ export class DateRangeTimePickerComponent {
     }
     return Array.from(new Set(out)).join(' ');
   }
+
   private buildColClass(kind: 'label' | 'input'): string {
     const spec = (kind === 'label' ? this.labelCols : this.inputCols)?.trim();
 
@@ -1137,6 +1251,7 @@ export class DateRangeTimePickerComponent {
     if (this.isInline()) return spec ? this.parseColsSpec(spec) : '';
     return '';
   }
+
   private getComputedCols() {
     const DEFAULT_LABEL = 2;
     const DEFAULT_INPUT = 10;
@@ -1159,7 +1274,6 @@ export class DateRangeTimePickerComponent {
     return { label, input };
   }
 
-  // -------------------- keyboard navigation ---------------
   private handleDayPointer = (ev: MouseEvent) => {
     const cell = ev.currentTarget as HTMLElement | null;
     if (!cell) return;
@@ -1352,7 +1466,6 @@ export class DateRangeTimePickerComponent {
     this.updateActiveDateElements();
   };
 
-  // -------------------- selects change -------------------
   private handleMonthChange = (ev: Event) => {
     const sel = ev.target as HTMLSelectElement;
     const selectedMonth = parseInt(sel.value, 10);
@@ -1377,42 +1490,69 @@ export class DateRangeTimePickerComponent {
   private handleFocus = () => this.addFocusClass();
   private handleBlur = () => this.removeFocusClass();
 
-  // -------------------- time input handlers ---------------
+  private preserveCursorAndSetValue(target: HTMLInputElement, nextValue: string, previousSelectionStart: number) {
+    target.value = nextValue;
+
+    const digitsBeforeCaret = target.value
+      .slice(0, Math.max(0, previousSelectionStart))
+      .replace(/[^0-9]/g, '').length;
+
+    let caret = 0;
+    let seenDigits = 0;
+
+    while (caret < nextValue.length && seenDigits < digitsBeforeCaret) {
+      if (/\d/.test(nextValue.charAt(caret))) seenDigits += 1;
+      caret += 1;
+    }
+
+    requestAnimationFrame(() => {
+      try {
+        target.setSelectionRange(caret, caret);
+      } catch {
+        return;
+      }
+    });
+  }
+
   private onTimeInput = (e: Event) => {
     const target = e.target as HTMLInputElement;
-    const type = target.getAttribute('data-type'); // 'start' | 'end'
-    let input = target.value.replace(/[^0-9]/g, '');
+    const type = target.getAttribute('data-type');
+    const rawValue = target.value;
+    const previousSelectionStart = target.selectionStart ?? rawValue.length;
+
+    let input = rawValue.replace(/[^0-9]/g, '');
 
     if (input.length === 0) {
+      target.value = '';
       if (type === 'start') this.startTime = '';
       else this.endTime = '';
+      this.validation = false;
+      this.validationMessage = '';
       this._validateTimePresence();
       this._updateDuration();
       this.updateOkButtonState();
-      this.syncInputAndPanelFromState();
       return;
     }
 
     if (input.length >= 2) input = input.slice(0, 2) + ':' + (input.slice(2, 4) || '');
     input = input.substring(0, 5);
 
-    let [h, m] = input.split(':');
-    if (!this.isTwentyFourHourFormat && h && m && h.length === 2 && m.length === 2) {
-      let hh = Math.max(1, Math.min(12, parseInt(h, 10) || 1));
-      h = String(hh).padStart(2, '0');
-      input = `${h}:${m}`;
-    }
+    this.preserveCursorAndSetValue(target, input, previousSelectionStart);
 
-    target.value = input;
     if (type === 'start') this.startTime = input;
     else this.endTime = input;
+
+    if (this.hasInvalidTimeFields()) {
+      this.validation = true;
+      this.validationMessage = 'Invalid time.';
+    } else {
+      this.validation = false;
+      this.validationMessage = '';
+    }
 
     this._validateTimePresence();
     this._updateDuration();
     this.updateOkButtonState();
-
-    this.syncInputAndPanelFromState();
-    this.emitIfCompleteAndValid('time');
   };
 
   private onToggleAmPm = (e: MouseEvent) => {
@@ -1421,25 +1561,38 @@ export class DateRangeTimePickerComponent {
     if (type === 'start') this.startAmPm = this.startAmPm === 'AM' ? 'PM' : 'AM';
     else this.endAmPm = this.endAmPm === 'AM' ? 'PM' : 'AM';
 
+    if (this.hasInvalidTimeFields()) {
+      this.validation = true;
+      this.validationMessage = 'Invalid time.';
+    } else {
+      this.validation = false;
+      this.validationMessage = '';
+    }
+
     this._updateDuration();
     this.updateOkButtonState();
-    this.syncInputAndPanelFromState();
-    this.emitIfCompleteAndValid('time');
   };
 
-  private _validateTimePresence() {
+  private syncWarningMessage() {
     const warn = this.el.querySelector('.warning-message') as HTMLElement | null;
     if (!warn) return;
-    if (!this.startTime || !this.endTime) {
-      warn.textContent = 'Times cannot be empty.';
-      warn.classList.remove('hide');
-    } else {
-      warn.textContent = '';
-      warn.classList.add('hide');
+
+    let text = '';
+    if (this.dropdownOpen && this.hasEmptyTimeFields()) {
+      text = 'Times cannot be empty.';
+    } else if (this.dropdownOpen && this.hasInvalidTimeFields()) {
+      text = 'Invalid time.';
     }
+
+    this.warningMessage = text;
+    warn.textContent = text;
+    warn.classList.toggle('hide', !text);
   }
 
-  // -------------------- calendar rendering ----------------
+  private _validateTimePresence() {
+    this.syncWarningMessage();
+  }
+
   private renderSelects(plumage = false) {
     const monthSelectEl = (
       <select
@@ -1524,7 +1677,7 @@ export class DateRangeTimePickerComponent {
   private handleInputFocusStyle = (ev: FocusEvent) => {
     const target = ev.currentTarget as HTMLElement | null;
     const container = target?.closest('.input-container') as HTMLElement | null;
-    let bf: HTMLElement | null =
+    const bf: HTMLElement | null =
       (container && (container.querySelector('.b-focus') as HTMLElement | null)) ||
       ((target?.closest('.plumage') as HTMLElement | null)?.querySelector('.b-underline .b-focus') as HTMLElement | null) ||
       (this.el.querySelector('.b-underline .b-focus') as HTMLElement | null);
@@ -1538,7 +1691,7 @@ export class DateRangeTimePickerComponent {
   private handleInputBlurStyle = (ev: FocusEvent) => {
     const target = ev.currentTarget as HTMLElement | null;
     const container = target?.closest('.input-container') as HTMLElement | null;
-    let bf: HTMLElement | null =
+    const bf: HTMLElement | null =
       (container && (container.querySelector('.b-focus') as HTMLElement | null)) ||
       ((target?.closest('.plumage') as HTMLElement | null)?.querySelector('.b-underline .b-focus') as HTMLElement | null) ||
       (this.el.querySelector('.b-underline .b-focus') as HTMLElement | null);
@@ -1565,7 +1718,6 @@ export class DateRangeTimePickerComponent {
           {formattedMonthYear}
         </div>
 
-        {/* Weekday row sits ABOVE grid (CSS compatibility) */}
         <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d, i) => (
             <small
@@ -1579,7 +1731,6 @@ export class DateRangeTimePickerComponent {
           ))}
         </div>
 
-        {/* Single grid role (no nested grid roles) */}
         <div class="calendar-grid" role="grid" id={gridId} aria-roledescription="Calendar" aria-label={`Calendar for ${formattedMonthYear}`} aria-labelledby={captionId}>
           {this.renderCalendarDays(month0b, year)}
         </div>
@@ -1668,7 +1819,6 @@ export class DateRangeTimePickerComponent {
       currentRow.push(cell);
 
       if (currentRow.length === 7) {
-        // Keep ARIA row semantics without affecting CSS grid layout
         rows.push(
           <div role="row" class="calendar-grid-row" style={{ display: 'contents' }}>
             {currentRow}
@@ -1681,7 +1831,6 @@ export class DateRangeTimePickerComponent {
     return <Fragment>{rows}</Fragment>;
   }
 
-  // -------------------- picker markup --------------------
   private renderDateRangeTimePicker() {
     const sm = this.currentStartMonth;
     const sy = this.currentStartYear;
@@ -1692,7 +1841,6 @@ export class DateRangeTimePickerComponent {
 
     return (
       <div class="date-picker">
-        {/* Not a landmark by default; dialog provides the semantic container */}
         <div class="range-picker-wrapper">
           <div class="range-picker-nav mb-1" aria-label="Navigation controls">
             <button type="button" onClick={() => this.prevMonth()} class="range-picker-nav-btn btn-outline-secondary" aria-label="Previous month">
@@ -1724,7 +1872,6 @@ export class DateRangeTimePickerComponent {
           </div>
 
           <div class="range-picker">
-            {/* DO NOT use role="application" */}
             <div class="calendar-wrapper" aria-label="Calendars" tabIndex={0}>
               {this.renderCalendar(sm, sy, 'start')}
               {this.renderCalendar(nm, ny, 'end')}
@@ -1745,7 +1892,6 @@ export class DateRangeTimePickerComponent {
                 <span class={`start-end-ranges${this.showIso ? ' iso' : this.showLong ? ' long' : ''}`}>
                   <span class="start-date">N/A</span>
 
-                  {/* Start time label (single label element, referenced via aria-labelledby) */}
                   <label id={this.startTimeLabelId} class="sr-only visually-hidden" htmlFor={this.startTimeId}>
                     Start time
                   </label>
@@ -1807,7 +1953,6 @@ export class DateRangeTimePickerComponent {
                   <span class="to-spacing">{this.joinBy}</span>
                   <span class="end-date">N/A</span>
 
-                  {/* End time label (single label element, referenced via aria-labelledby) */}
                   <label id={this.endTimeLabelId} class="sr-only visually-hidden" htmlFor={this.endTimeId}>
                     End time
                   </label>
@@ -1869,7 +2014,13 @@ export class DateRangeTimePickerComponent {
 
           {showOk ? (
             <div class="ok-button">
-              <button type="button" onClick={this._handleOkClick} class="btn btn-primary" aria-label="Confirm or close date picker" disabled={this.disabled}>
+              <button
+                type="button"
+                onClick={this._handleOkClick}
+                class="btn btn-primary"
+                aria-label="Confirm or close date picker"
+                disabled={this.disabled || this.hasBlockingTimeIssue()}
+              >
                 {this.okButtonLabel}
               </button>
             </div>
@@ -1892,7 +2043,6 @@ export class DateRangeTimePickerComponent {
           ref={(el) => (this.dropdownContentEl = el as HTMLDivElement)}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Dialog accessible name/desc (unique IDs) */}
           <div id={this.dialogTitleId} class="sr-only visually-hidden">
             {this.ariaLabel || this.label || 'Date and time range picker'}
           </div>
@@ -1906,7 +2056,6 @@ export class DateRangeTimePickerComponent {
     );
   }
 
-  // ------------- Plumage input group with responsive cols -------------
   private renderInputGroupPlumage() {
     const isRow = this.isHorizontal() || this.isInline();
 
@@ -1927,7 +2076,6 @@ export class DateRangeTimePickerComponent {
     return (
       <div class={this.formLayout ? this.formLayout : ''}>
         <div class={['form-group', 'form-input-group', this.formLayout || '', isRow ? 'row' : ''].filter(Boolean).join(' ')}>
-          {/* Visible label (or sr-only if labelHidden); do NOT aria-hide labels */}
           <label id={this.labelId} class={this.isHorizontal() ? this.labelClassHorizontal(labelColClass) : this.labelClassBase()} htmlFor={this.inputId}>
             <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
             {this.required ? <span class="required">*</span> : null}
@@ -2017,7 +2165,6 @@ export class DateRangeTimePickerComponent {
     );
   }
 
-  // ------------- Classic input group with responsive cols -------------
   private renderInputGroupClassic() {
     const isRow = this.isHorizontal() || this.isInline();
 
@@ -2038,7 +2185,6 @@ export class DateRangeTimePickerComponent {
     return (
       <Fragment>
         <div class={['form-group', 'form-input-group-basic', this.formLayout, isRow ? 'row' : ''].filter(Boolean).join(' ')}>
-          {/* Visible label (or sr-only if labelHidden); do NOT aria-hide labels */}
           <label id={this.labelId} class={this.isHorizontal() ? this.labelClassHorizontal(labelColClass) : this.labelClassBase()} htmlFor={this.inputId}>
             <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
             {this.required ? <span class="required">*</span> : null}
@@ -2134,7 +2280,6 @@ export class DateRangeTimePickerComponent {
     );
   }
 
-  // -------------------- render ---------------------------
   render() {
     if (this.rangeTimePicker) return this.plumage ? <div class="plumage">{this.renderDateRangeTimePicker()}</div> : this.renderDateRangeTimePicker();
     return this.plumage ? <div class="plumage">{this.renderInputs()}</div> : this.renderInputs();

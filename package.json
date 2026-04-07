@@ -9,20 +9,19 @@
   "unpkg": "dist/stencil-component-library/stencil-component-library.esm.js",
   "type": "module",
   "types": "dist/types/index.d.ts",
+   "style": "dist/stencil-component-library/stencil-component-library.css",
   "exports": {
     ".": {
       "import": "./dist/stencil-component-library/stencil-component-library.esm.js",
       "require": "./dist/stencil-component-library/stencil-component-library.cjs.js"
     },
-    "./my-component": {
-      "import": "./dist/components/my-component.js",
-      "types": "./dist/components/my-component.d.ts"
-    },
     "./loader": {
       "import": "./loader/index.js",
       "require": "./loader/index.cjs",
       "types": "./loader/index.d.ts"
-    }
+    },
+    "./style.css": "./dist/stencil-component-library/stencil-component-library.css",
+    "./assets/*": "./www/assets/*"
   },
   "typesVersions": {
     "*": {
@@ -45,29 +44,37 @@
     "dist/",
     "loader/",
     "www/build/",
+    "www/assets/",
     "components.d.ts",
     "readme.md",
     "LICENSE"
   ],
-  "style": "dist/global.css",
-  "scripts": {
+   "scripts": {
     "clean": "rimraf www dist .stencil",
     "copy:mdi": "node scripts/copy-mdi.mjs",
     "postinstall": "npm run copy:mdi",
-    "build": "stencil build",
+
+    "build": "stencil build && node scripts/fix-style-paths.mjs",
+
     "prestart": "rimraf www/assets && rimraf www/build",
     "start": "stencil build --dev --watch --serve",
+
     "test": "stencil test --spec",
     "test:u": "stencil test --spec --updateSnapshot",
     "test.watch": "stencil test --spec --watchAll",
+    "test:watch": "jest --watch",
+
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "generate": "stencil generate",
-    "prestorybook": "npx stencil build",
+
+    "dev:stencil": "cross-env STORYBOOK=true stencil build --dev --watch",
+    "dev:storybook": "storybook dev -p 6006",
+    "dev": "npm run build && concurrently -n STENCIL,SB -c green,cyan \"npm:dev:stencil\" \"npm:dev:storybook\"",
+
+    "prestorybook": "npm run build",
     "storybook": "storybook dev -p 6006",
-    "dev": "concurrently -n STENCIL,SB -c green,cyan \"cross-env STORYBOOK=true stencil build --dev --watch\" \"storybook dev -p 6006\"",
-    "build-storybook": "storybook build",
-    "test:watch": "jest --watch"
+    "build-storybook": "npm run build && storybook build"
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",

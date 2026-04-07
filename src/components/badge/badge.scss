@@ -145,7 +145,7 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
 .badge__token {
   border-radius: 10px;
   color: var(--bs-white);
-  font-size: 12px;
+  font-size: 12px !important;
   letter-spacing: 0;
   min-width: 12px;
   padding: 4px;
@@ -156,6 +156,10 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
   top: auto;
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
   white-space: nowrap;
+
+  i {
+    font-size: 12px;
+  }
 }
 
 .badge--icon .badge__token {

@@ -1,0 +1,48 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as CheckboxStories from './checkbox-component.stories.js';
+import { reactExample, vueExample, angularExample } from './checkbox-component.examples.js';
+
+<Meta of={CheckboxStories} />
+
+# Checkbox
+
+<Description of={CheckboxStories} />
+
+## HTML
+
+```html
+<checkbox-component
+  input-id="agree-1"
+  name="agree"
+  label-txt="I agree to the terms"
+  value="agree"
+></checkbox-component>
+
+<checkbox-component
+  checkbox-group
+  name="features"
+  group-title="Pick one or more"
+  validation
+  validation-msg="Select at least one option."
+></checkbox-component>
+
+<script>
+  document.querySelectorAll('checkbox-component')[1].groupOptions = [
+    { inputId: 'opt-1', value: 'alpha', labelTxt: 'Alpha' },
+    { inputId: 'opt-2', value: 'beta', labelTxt: 'Beta', checked: true },
+    { inputId: 'opt-3', value: 'gamma', labelTxt: 'Gamma' }
+  ];
+</script>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

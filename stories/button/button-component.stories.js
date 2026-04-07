@@ -1,104 +1,17 @@
-// stories/button-component.stories.js
+// File: src/stories/button-component/button-component.stories.js
 
-// tiny helper to set/remove attributes cleanly
-const setAttr = (el, name, value) => {
-  if (value === true) el.setAttribute(name, '');
-  else if (value === false || value == null || value === '') el.removeAttribute(name);
-  else el.setAttribute(name, String(value));
-};
+import DocsPage from './button-component.docs.mdx';
+import { buildDocsHtml, buildDocsHtmlMany, renderButton, setAttr } from './button-component.story-helpers.js';
 
 export default {
   title: 'Components/Button',
   tags: ['autodocs'],
 
-  render: args => {
-    const el = document.createElement('button-component');
-
-    // Accessibility / passthrough
-    setAttr(el, 'aria-label', args.ariaLabel);
-    setAttr(el, 'aria-labelledby', args.ariaLabelledby);
-    setAttr(el, 'aria-describedby', args.ariaDescribedby);
-    setAttr(el, 'role', args.role);
-    setAttr(el, 'tabindex', args.tabindex);
-
-    // Element
-    setAttr(el, 'type', args.type);
-
-    // strings
-    setAttr(el, 'btn-text', args.btnText);
-    setAttr(el, 'class-names', args.classNames);
-    setAttr(el, 'elevation', args.elevation);
-    setAttr(el, 'left', args.left);
-    setAttr(el, 'right', args.right);
-    setAttr(el, 'top', args.top);
-    setAttr(el, 'bottom', args.bottom);
-    setAttr(el, 'size', args.size);
-    setAttr(el, 'shape', args.shape);
-    setAttr(el, 'styles', args.styles);
-    setAttr(el, 'title-attr', args.titleAttr);
-    setAttr(el, 'url', args.url);
-    setAttr(el, 'variant', args.variant);
-    setAttr(el, 'z-index', args.zIndex);
-    setAttr(el, 'slot-side', args.slotSide);
-
-    // accordion
-    setAttr(el, 'accordion', args.accordion);
-    setAttr(el, 'is-open', args.isOpen);
-    setAttr(el, 'target-id', args.targetId);
-
-    // advanced
-    setAttr(el, 'allow-focusable-children', args.allowFocusableChildren);
-
-    // booleans
-    setAttr(el, 'absolute', args.absolute);
-    setAttr(el, 'active', args.active);
-    setAttr(el, 'block', args.block);
-    setAttr(el, 'btn-icon', args.btnIcon);
-    setAttr(el, 'disabled', args.disabled);
-    setAttr(el, 'end', args.end);
-    setAttr(el, 'fixed', args.fixed);
-    setAttr(el, 'group-btn', args.groupBtn);
-    setAttr(el, 'icon-btn', args.iconBtn);
-    setAttr(el, 'link', args.link);
-    setAttr(el, 'outlined', args.outlined);
-    setAttr(el, 'ripple', args.ripple);
-    setAttr(el, 'start', args.start);
-    setAttr(el, 'stripped', args.stripped);
-    setAttr(el, 'text', args.text);
-    setAttr(el, 'text-btn', args.textBtn);
-    setAttr(el, 'vertical', args.vertical);
-    setAttr(el, 'dev-mode', args.devMode);
-
-    // toggle + pressed
-    setAttr(el, 'toggle', args.toggle);
-    if (args.toggle) setAttr(el, 'pressed', args.pressed);
-    else el.removeAttribute('pressed');
-
-    // default slot content
-    // icon-only/iconBtn: provide icon markup in slot
-    if (args.iconHtml && (args.btnIcon || args.iconBtn)) {
-      const icon = document.createElement('span');
-      icon.innerHTML = args.iconHtml;
-      el.appendChild(icon);
-    }
-
-    // left/right “side icon” via slotSide. (Component uses a single default slot, driven by slotSide.)
-    if (args.slotSide && args.slotSide !== 'none' && args.sideIconHtml) {
-      const side = document.createElement('span');
-      side.innerHTML = args.sideIconHtml;
-      el.appendChild(side);
-    }
-
-    el.addEventListener('customClick', () => {
-      // eslint-disable-next-line no-console
-      console.log('[button-component] customClick');
-    });
-
-    return el;
-  },
+  render: (args) => renderButton(args),
 
   parameters: {
     docs: {
+      page: DocsPage,
       description: {
         component: [
           'Button component allows for various styles and behaviors.',
@@ -110,11 +23,14 @@ export default {
           '- For icon-only, provide `aria-label` (or `aria-labelledby`).',
         ].join('\n'),
       },
+      source: {
+        language: 'html',
+        transform: (_src, ctx) => buildDocsHtml(ctx.args),
+      },
     },
   },
 
   argTypes: {
-    /* -------------------- Accessibility -------------------- */
     ariaLabel: { control: 'text', name: 'aria-label', description: 'Accessible name override (best for icon-only).', table: { category: 'Accessibility' } },
     ariaLabelledby: { control: 'text', name: 'aria-labelledby', description: 'References element(s) that label the button.', table: { category: 'Accessibility' } },
     ariaDescribedby: { control: 'text', name: 'aria-describedby', description: 'References element(s) that describe the button.', table: { category: 'Accessibility' } },
@@ -122,17 +38,15 @@ export default {
     tabindex: { control: 'text', description: 'Optional tabindex passthrough to the inner control.', table: { category: 'Accessibility' } },
     titleAttr: { control: 'text', name: 'title-attr', description: 'Title attribute (tooltip / fallback label when icon-only and no aria provided).', table: { category: 'Accessibility' } },
 
-    /* -------------------- Content -------------------- */
     btnText: { control: 'text', name: 'btn-text', description: 'Text content of the button.', table: { category: 'Content' } },
     slotSide: {
       control: { type: 'select' },
       options: ['', 'left', 'right', 'none'],
       name: 'slot-side',
-      description: "If using a side icon, choose left or right.",
+      description: 'If using a side icon, choose left or right.',
       table: { category: 'Content' },
     },
 
-    /* -------------------- Element -------------------- */
     type: {
       control: { type: 'select' },
       options: ['button', 'submit', 'reset'],
@@ -140,11 +54,9 @@ export default {
       table: { category: 'Element' },
     },
 
-    /* -------------------- State -------------------- */
     active: { control: 'boolean', description: 'If true, adds active styles to the button.', table: { category: 'State', defaultValue: { summary: false } } },
     disabled: { control: 'boolean', description: 'If true, disables the button.', table: { category: 'State', defaultValue: { summary: false } } },
 
-    /* -------------------- Appearance -------------------- */
     variant: { control: 'text', description: 'Visual variant/color.', table: { category: 'Appearance' } },
     size: { control: { type: 'select' }, options: ['', 'xs', 'sm', 'lg', 'plumage-size'], description: 'Size.', table: { category: 'Appearance' } },
     shape: { control: { type: 'select' }, options: ['', 'circle', 'pill', 'square'], description: 'Shape.', table: { category: 'Appearance' } },
@@ -157,7 +69,6 @@ export default {
     classNames: { control: 'text', name: 'class-names', description: 'Extra classes.', table: { category: 'Appearance' } },
     styles: { control: 'text', description: 'Inline styles (CSS declarations).', table: { category: 'Appearance' } },
 
-    /* -------------------- Layout & Position -------------------- */
     block: { control: 'boolean', description: 'Full width.', table: { category: 'Layout & Position', defaultValue: { summary: false } } },
     start: { control: 'boolean', description: 'Button-group placement start.', table: { category: 'Layout & Position', defaultValue: { summary: false } } },
     end: { control: 'boolean', description: 'Button-group placement end.', table: { category: 'Layout & Position', defaultValue: { summary: false } } },
@@ -171,24 +82,19 @@ export default {
     left: { control: 'text', description: 'Left offset (px).', table: { category: 'Layout & Position' } },
     zIndex: { control: 'text', name: 'z-index', description: 'z-index.', table: { category: 'Layout & Position' } },
 
-    /* -------------------- Icon Button -------------------- */
     btnIcon: { control: 'boolean', name: 'btn-icon', description: 'Icon-only mode.', table: { category: 'Icon Button', defaultValue: { summary: false } } },
     iconBtn: { control: 'boolean', name: 'icon-btn', description: 'Icon button mode.', table: { category: 'Icon Button', defaultValue: { summary: false } } },
 
-    /* -------------------- Behavior -------------------- */
     ripple: { control: 'boolean', description: 'Ripple effect.', table: { category: 'Behavior', defaultValue: { summary: false } } },
     toggle: { control: 'boolean', description: 'Toggle mode (aria-pressed).', table: { category: 'Behavior', defaultValue: { summary: false } } },
     pressed: { control: 'boolean', description: 'Pressed state (toggle only).', table: { category: 'Behavior', defaultValue: { summary: false } } },
 
-    /* -------------------- Link / Navigation -------------------- */
     url: { control: 'text', description: 'Href for link mode.', table: { category: 'Link / Navigation' } },
 
-    /* -------------------- Accordion -------------------- */
     accordion: { control: 'boolean', description: 'Accordion toggle ARIA.', table: { category: 'Accordion', defaultValue: { summary: false } } },
     isOpen: { control: 'boolean', name: 'is-open', description: 'Accordion expanded state.', table: { category: 'Accordion', defaultValue: { summary: false } } },
     targetId: { control: 'text', name: 'target-id', description: 'Accordion panel id (aria-controls).', table: { category: 'Accordion' } },
 
-    /* -------------------- Advanced -------------------- */
     allowFocusableChildren: {
       control: 'boolean',
       name: 'allow-focusable-children',
@@ -196,10 +102,8 @@ export default {
       table: { category: 'Advanced', defaultValue: { summary: false } },
     },
 
-    /* -------------------- Dev -------------------- */
     devMode: { control: 'boolean', name: 'dev-mode', description: 'Enable dev logging.', table: { category: 'Dev', defaultValue: { summary: false } } },
 
-    /* -------------------- Story-only helpers -------------------- */
     iconHtml: { table: { disable: true }, control: false },
     sideIconHtml: { table: { disable: true }, control: false },
   },
@@ -257,10 +161,11 @@ export default {
     targetId: '',
 
     allowFocusableChildren: false,
+
+    iconHtml: '',
+    sideIconHtml: '',
   },
 };
-
-// ——— Stories ———
 
 export const Basic = {
   args: {
@@ -291,10 +196,10 @@ export const BackgroundColors = {
     wrap.style.flexWrap = 'wrap';
     wrap.style.gap = '12px';
 
-    const title = v => v.charAt(0).toUpperCase() + v.slice(1);
+    const title = (v) => v.charAt(0).toUpperCase() + v.slice(1);
     const variants = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
 
-    variants.forEach(v => {
+    variants.forEach((v) => {
       const btn = document.createElement('button-component');
       setAttr(btn, 'variant', v);
       setAttr(btn, 'btn-text', title(v));
@@ -305,10 +210,17 @@ export const BackgroundColors = {
   },
   parameters: {
     docs: {
+      source: {
+        language: 'html',
+        code: buildDocsHtmlMany(
+          ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'].map(
+            (v) => `<button-component variant="${v}" btn-text="${v.charAt(0).toUpperCase() + v.slice(1)}"></button-component>`,
+          ),
+        ),
+      },
       description: {
         story:
-          'Filled buttons for all core variants. Each button sets `variant` to one of: ' +
-          '`primary`, `secondary`, `success`, `danger`, `warning`, `info`, `light`, `dark`.',
+          'Filled buttons for all core variants. Each button sets `variant` to one of: `primary`, `secondary`, `success`, `danger`, `warning`, `info`, `light`, `dark`.',
       },
     },
   },
@@ -322,10 +234,10 @@ export const OutlineColors = {
     wrap.style.flexWrap = 'wrap';
     wrap.style.gap = '12px';
 
-    const title = v => v.charAt(0).toUpperCase() + v.slice(1);
+    const title = (v) => v.charAt(0).toUpperCase() + v.slice(1);
     const variants = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
 
-    variants.forEach(v => {
+    variants.forEach((v) => {
       const btn = document.createElement('button-component');
       setAttr(btn, 'outlined', true);
       setAttr(btn, 'variant', v);
@@ -337,10 +249,17 @@ export const OutlineColors = {
   },
   parameters: {
     docs: {
+      source: {
+        language: 'html',
+        code: buildDocsHtmlMany(
+          ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'].map(
+            (v) => `<button-component outlined variant="${v}" btn-text="Outlined ${v.charAt(0).toUpperCase() + v.slice(1)}"></button-component>`,
+          ),
+        ),
+      },
       description: {
         story:
-          'Outlined buttons for all core variants. Each button uses `outlined` with `variant` set to one of: ' +
-          '`primary`, `secondary`, `success`, `danger`, `warning`, `info`, `light`, `dark`.',
+          'Outlined buttons for all core variants. Each button uses `outlined` with `variant` set to one of: `primary`, `secondary`, `success`, `danger`, `warning`, `info`, `light`, `dark`.',
       },
     },
   },
@@ -351,7 +270,7 @@ export const Sizes = {
   args: {
     variant: 'primary',
   },
-  render: args => {
+  render: (args) => {
     const wrap = document.createElement('div');
     wrap.style.display = 'flex';
     wrap.style.gap = '12px';
@@ -377,12 +296,12 @@ export const Shapes = {
   args: {
     variant: 'primary',
   },
-  render: args => {
+  render: (args) => {
     const wrap = document.createElement('div');
     wrap.style.display = 'flex';
     wrap.style.gap = '12px';
 
-    const mk = opts => {
+    const mk = (opts) => {
       const btn = document.createElement('button-component');
       setAttr(btn, 'variant', opts.variant ?? args.variant ?? 'primary');
       setAttr(btn, 'shape', opts.shape || '');
@@ -396,7 +315,6 @@ export const Shapes = {
     const pill = mk({ shape: 'pill', btnText: 'Pill' });
     const square = mk({ shape: 'square', btnText: 'Square' });
 
-    // Circle icon-only: must have accessible name
     const circle = mk({ shape: 'circle', btnIcon: true, ariaLabel: 'Home' });
     const icon = document.createElement('span');
     icon.innerHTML = '<i class="fa-solid fa-house"></i>';
@@ -450,7 +368,7 @@ export const IconsLeftAndRightExamples = {
     variant: 'primary',
     btnText: 'Home',
   },
-  render: args => {
+  render: (args) => {
     const wrap = document.createElement('div');
     wrap.style.display = 'flex';
     wrap.style.gap = '12px';
@@ -530,6 +448,7 @@ export const DisabledLinkWithUrl = {
           'Renders link-mode as an `<a>` but in a disabled state. Expected: **no `href`**, `aria-disabled="true"`, and `tabindex="-1"`.',
       },
       source: {
+        language: 'html',
         code: `<button-component link disabled url="/somewhere" variant="primary" btn-text="Disabled Link (url set)" aria-label="Disabled link button"></button-component>`,
       },
     },
@@ -586,6 +505,7 @@ export const ButtonWithBadge = {
     controls: { disable: true },
     docs: {
       source: {
+        language: 'html',
         code: `<button-component title-attr="Button with Badge" btn-text="With a badge" variant="primary">
   <badge-component id="badge12" variant="light" bdg-position="right" size="sm" aria-label="Count 1">1</badge-component>
 </button-component>`,
@@ -595,7 +515,6 @@ export const ButtonWithBadge = {
   },
 };
 
-// --- NEW: Accessibility matrix (computed role/aria-*, href, tabindex) ---
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: () => {

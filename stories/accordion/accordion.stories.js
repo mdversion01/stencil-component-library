@@ -10,6 +10,22 @@ export default {
   parameters: {
     docs: {
       page: DocsPage,
+      description: {
+        component: [
+          "An Accordion Component belongs to the Accordion Container but can also be used on its own.\n",
+          'Use the `accordion-header` and `content` slots to provide header and body content.\n',
+          '',
+          '**Accessibility:**',
+          '- Toggle exposes `aria-expanded` and `aria-controls`.',
+          '- Panel uses `role="region"` and `aria-labelledby` tied to the toggle id.',
+          '- Collapsed panels are `aria-hidden` and `inert` (do not use `hidden`/`display:none` so the height transition can animate).',
+          '',
+          '**Animation model (Bootstrap-like):**',
+          '- Resting closed: `class="collapse"` (CSS height: 0).',
+          '- Resting open: `class="collapse show"` (CSS height: auto).',
+          '- During transition: `class="collapsing"` with an inline `height` set imperatively only while animating.',
+        ].join('\n'),
+      },
     },
   },
 

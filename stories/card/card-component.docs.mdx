@@ -1,0 +1,58 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as CardStories from './card-component.stories.js';
+import { reactExample, vueExample, angularExample } from './card-component.examples.js';
+
+<Meta of={CardStories} />
+
+# Card
+
+<Description of={CardStories} />
+
+## HTML
+
+```html
+<card-component card-max-width="22" elevation="3">
+  <div slot="header">Featured</div>
+  <span slot="title">Card title</span>
+  <span slot="text">
+    This is some quick example text to build on the card title and make up the
+    bulk of the card content.
+  </span>
+  <div slot="footer">
+    <p>Card footer</p>
+  </div>
+</card-component>
+
+<card-component clickable heading-level="3" aria-label="Open account details">
+  <span slot="title">Clickable card</span>
+  <span slot="text">
+    This card behaves like a button and emits a customClick event.
+  </span>
+</card-component>
+
+<card-component
+  img
+  img-src="https://picsum.photos/800/450"
+  img-height="11.25rem"
+  alt-text="Card image"
+  actions
+>
+  <span slot="title">Card with image</span>
+  <span slot="text">Cards can also include media and actions.</span>
+  <span slot="actions">
+    <button class="btn btn-primary btn-sm" type="button">Action</button>
+  </span>
+</card-component>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

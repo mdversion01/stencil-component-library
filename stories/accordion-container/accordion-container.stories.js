@@ -1,52 +1,5 @@
-// stories/accordion-container.stories.js
-// Ensures unique parent-id (and thus unique collapse IDs/targets) per render,
-// so the Docs preview and the Canvas instance never collide.
-
-const TAG = 'accordion-container';
-
-// Helpers
-const setAttr = (el, name, v) => {
-  if (v === true) el.setAttribute(name, '');
-  else if (v === false || v == null || v === '') el.removeAttribute(name);
-  else el.setAttribute(name, String(v));
-};
-
-// Per-render unique token
-const uid = () => Math.random().toString(36).slice(2, 8) + '-' + Date.now().toString(36);
-
-// Build the element with a unique parent-id every time render() is called
-function buildContainer(args, baseId = 'acc') {
-  const el = document.createElement(TAG);
-
-  // Unique token per instance (Docs preview & Canvas get their own)
-  const token = uid();
-
-  // Compose a truly unique parent-id for this instance
-  const parentId = `${baseId}-${token}`;
-
-  // Assign data as a property (not attribute)
-  el.data = Array.isArray(args.data) ? args.data : [];
-
-  // Optional container labelling (new a11y support)
-  setAttr(el, 'aria-label', args.ariaLabel);
-  setAttr(el, 'aria-labelledby', args.ariaLabelledby);
-
-  // Attributes
-  setAttr(el, 'parent-id', parentId);
-  setAttr(el, 'flush', args.flush);
-  setAttr(el, 'variant', args.variant);
-  setAttr(el, 'size', args.size);
-  setAttr(el, 'outlined', args.outlined);
-  setAttr(el, 'block', args.block);
-  setAttr(el, 'disabled', args.disabled);
-  setAttr(el, 'ripple', args.ripple);
-  setAttr(el, 'class-names', args.classNames);
-  setAttr(el, 'content-txt-size', args.contentTxtSize);
-  setAttr(el, 'icon', args.icon);
-  setAttr(el, 'single-open', args.singleOpen);
-
-  return el;
-}
+import DocsPage from './accordion-container.docs.mdx';
+import { buildContainer } from './accordion-container.story-helpers.js';
 
 export default {
   title: 'Components/Accordion Container',
@@ -59,29 +12,14 @@ export default {
 
   parameters: {
     docs: {
+      page: DocsPage,
       description: {
         component: [
-          'The Accordion Container renders multiple accordion items from a data array. ',
-          'Each story instance uses a unique `parent-id`, ensuring that the generated ',
+          'The Accordion Container renders multiple accordion items from a data array.',
+          'Each story instance uses a unique `parent-id`, ensuring that the generated',
           '`id`/`data-bs-target` values are unique in both the Docs preview and the Canvas.',
-          'Accordions can be set up with data as shown below.\n',
-          '```html',
-          '<accordion-container id="accordion-1" parent-id="accordion-example"></accordion-container>',
-          '<script>',
-          'const collapseData = [',
-          "  { header: 'Accordion 1', content: 'Content 1' },",
-          "  { header: 'Accordion 2', content: 'Content 2' },",
-          "  { header: 'Accordion 3', content: 'Content 3' },",
-          "  { header: 'Accordion 4', content: 'Content 4' },",
-          '];',
-          "document.getElementById('accordion-1').data = collapseData;",
-          '</script>',
-          '```',
           '',
-          '**Tip:** Make sure your component prefixes each item’s `id`/`data-bs-target` ',
-          'with the `parent-id` (e.g., `id="${parentId}-collapse-${index}"`).',
-          '',
-          '**Accessibility:** Each panel uses `role="region"` and is labelled by the interactive trigger: ',
+          '**Accessibility:** Each panel uses `role="region"` and is labelled by the interactive trigger:',
           '`aria-labelledby="${parentId}-trigger-${index}"`. The trigger uses `aria-controls` and `aria-expanded`.',
           'Collapsed panels are `aria-hidden`, `hidden`, and `inert` to prevent focus.',
           'When `single-open` is enabled, panels include `data-bs-parent="#${parentId}"`.',
@@ -91,7 +29,6 @@ export default {
   },
 
   argTypes: {
-    // -------- Layout --------
     block: {
       control: 'boolean',
       description: 'Full width container.',
@@ -104,7 +41,6 @@ export default {
       table: { category: 'Layout' },
     },
 
-    // -------- Data / Content --------
     data: {
       control: 'object',
       description: 'Array of items: `{ header: string, content: string }` used to render each accordion section.',
@@ -118,7 +54,6 @@ export default {
       table: { category: 'Data' },
     },
 
-    // -------- Accessibility --------
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -132,7 +67,6 @@ export default {
       table: { category: 'Accessibility' },
     },
 
-    // -------- Behavior --------
     singleOpen: {
       control: 'boolean',
       name: 'single-open',
@@ -140,10 +74,9 @@ export default {
       table: { category: 'Behavior', defaultValue: { summary: false } },
     },
 
-    // -------- Appearance --------
     variant: {
       control: 'text',
-      description: 'Visual variant for headers/buttons (e.g., primary, secondary, etc.).',
+      description: 'Visual variant for headers/buttons.',
       table: { category: 'Appearance' },
     },
     outlined: {
@@ -159,18 +92,15 @@ export default {
     size: {
       control: { type: 'select' },
       options: ['', 'xs', 'sm', 'lg', 'plumage-size'],
-      description:
-        'Sets the size of the button, e.g., extra small (xs), small (sm), large (lg), or plumage-size. If not set, default size is used.',
+      description: 'Sets the size of the button.',
       table: { category: 'Appearance' },
     },
     icon: {
       control: 'text',
-      description:
-        'Default `fas fa-angle-down`. You can pass two icons separated by a comma for closed/open: `"fa-solid fa-plus, fa-solid fa-minus"`.',
+      description: 'Default `fas fa-angle-down`. You can pass two icons separated by a comma for closed/open.',
       table: { category: 'Appearance' },
     },
 
-    // -------- State / Interaction --------
     disabled: {
       control: 'boolean',
       description: 'Disables interaction.',
@@ -182,11 +112,10 @@ export default {
       table: { category: 'Interaction', defaultValue: { summary: false } },
     },
 
-    // -------- Internal / Story-only (hidden) --------
     parentId: {
       control: false,
       name: 'parent-id',
-      description: 'Computed uniquely per render to avoid collisions (not set manually by the story).',
+      description: 'Computed uniquely per render to avoid collisions.',
       table: { disable: true },
     },
   },
@@ -209,18 +138,14 @@ export default {
     singleOpen: false,
     size: '',
     variant: '',
-
-    // Accessibility
     ariaLabel: '',
     ariaLabelledby: '',
   },
 };
 
-// ——— Stories ———
-
 export const Basic = {
   name: 'Basic',
-  render: (args, ctx) => buildContainer(args, 'basic'),
+  render: args => buildContainer(args, 'basic'),
   parameters: {
     docs: {
       description: {
@@ -233,11 +158,11 @@ export const Basic = {
 export const SingleOpen = {
   name: 'Single Open',
   args: { singleOpen: true },
-  render: (args, ctx) => buildContainer(args, 'single'),
+  render: args => buildContainer(args, 'single'),
   parameters: {
     docs: {
       description: {
-        story: 'Accordion container that enforces a single expanded item at a time (opening one item closes the previously open item).',
+        story: 'Accordion container that enforces a single expanded item at a time.',
       },
     },
   },
@@ -246,7 +171,7 @@ export const SingleOpen = {
 export const Flush = {
   name: 'Flush',
   args: { flush: true },
-  render: (args, ctx) => buildContainer(args, 'flush'),
+  render: args => buildContainer(args, 'flush'),
   parameters: {
     docs: {
       description: {
@@ -259,7 +184,7 @@ export const Flush = {
 export const Disabled = {
   name: 'Disabled',
   args: { disabled: true },
-  render: (args, ctx) => buildContainer(args, 'disabled'),
+  render: args => buildContainer(args, 'disabled'),
   parameters: {
     docs: {
       description: {
@@ -272,7 +197,7 @@ export const Disabled = {
 export const CustomIcons = {
   name: 'Custom Icons',
   args: { icon: 'fa-solid fa-plus, fa-solid fa-minus' },
-  render: (args, ctx) => buildContainer(args, 'icons'),
+  render: args => buildContainer(args, 'icons'),
   parameters: {
     docs: {
       description: {
@@ -282,7 +207,6 @@ export const CustomIcons = {
   },
 };
 
-// --- Accessibility matrix story ---
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: (args, ctx) => {
@@ -293,8 +217,8 @@ export const AccessibilityMatrix = {
 
     const title = document.createElement('div');
     title.innerHTML =
-      `<strong>Accessibility matrix</strong>` +
-      `<div style="opacity:.8">Prints per-item toggle + region ARIA + ids; also verifies singleOpen closes others.</div>`;
+      '<strong>Accessibility matrix</strong>' +
+      '<div style="opacity:.8">Prints per-item toggle + region ARIA + ids; also verifies singleOpen closes others.</div>';
     wrap.appendChild(title);
 
     const mkRow = (labelText, build, afterMount) => {
@@ -337,7 +261,10 @@ export const AccessibilityMatrix = {
       row.appendChild(right);
 
       const snapshot = () => {
-        const items = Array.from(host.querySelectorAll('.accordion-item')).map((item, i) => {
+        const hostContainer = demo.querySelector('accordion-container');
+        const root = hostContainer || host;
+
+        const items = Array.from(root.querySelectorAll('.accordion-item')).map((item, i) => {
           const btnHost = item.querySelector('button-component');
           const inner = item.querySelector('button-component button, button-component a');
           const region = item.querySelector('.accordion-collapse[role="region"]');
@@ -362,11 +289,11 @@ export const AccessibilityMatrix = {
 
         pre.textContent = JSON.stringify(
           {
-            parentId: host.getAttribute('parent-id'),
-            singleOpen: host.hasAttribute('single-open'),
-            containerRole: host.getAttribute('role'),
-            containerAriaLabel: host.getAttribute('aria-label'),
-            containerAriaLabelledby: host.getAttribute('aria-labelledby'),
+            parentId: hostContainer?.getAttribute('parent-id') ?? null,
+            singleOpen: hostContainer?.hasAttribute('single-open') ?? null,
+            containerRole: root.querySelector('.accordion')?.getAttribute('role') ?? null,
+            containerAriaLabel: root.querySelector('.accordion')?.getAttribute('aria-label') ?? null,
+            containerAriaLabelledby: root.querySelector('.accordion')?.getAttribute('aria-labelledby') ?? null,
             items,
           },
           null,
@@ -405,7 +332,7 @@ export const AccessibilityMatrix = {
           const inners = host.querySelectorAll('button-component button, button-component a');
           inners[0]?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
           inners[1]?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-          await new Promise(r => requestAnimationFrame(r));
+          await new Promise(resolve => requestAnimationFrame(resolve));
           snapshot();
         },
       ),
@@ -429,9 +356,9 @@ export const AccessibilityMatrix = {
         async (host, snapshot) => {
           const inners = host.querySelectorAll('button-component button, button-component a');
           inners[0]?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-          await new Promise(r => requestAnimationFrame(r));
+          await new Promise(resolve => requestAnimationFrame(resolve));
           inners[1]?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-          await new Promise(r => requestAnimationFrame(r));
+          await new Promise(resolve => requestAnimationFrame(resolve));
           snapshot();
         },
       ),
@@ -481,4 +408,3 @@ export const AccessibilityMatrix = {
     },
   },
 };
-

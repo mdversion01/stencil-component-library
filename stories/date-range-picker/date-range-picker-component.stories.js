@@ -1,118 +1,14 @@
-// stories/date-range-picker-component.stories.js
-import { action } from '@storybook/addon-actions';
+// File: src/stories/date-range-picker-component/date-range-picker-component.stories.js
 
-// ======================================================
-// Docs helpers (match datepicker story behavior)
-// ======================================================
-
-/** Collapse blank lines + trim edges */
-const normalize = (txt) => {
-  const lines = String(txt ?? '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      prevBlank = true;
-      out.push('');
-      continue;
-    }
-    prevBlank = false;
-    out.push(line);
-  }
-
-  while (out[0] === '') out.shift();
-  while (out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-/** Build clean attribute block (line-wrapped) */
-const attrs = (pairs) =>
-  pairs
-    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
-    .map(([k, v]) => (v === true ? k : `${k}="${String(v)}"`))
-    .join('\n  ');
-
-/** Ensure numeric cols render only when meaningful (avoid "col-NaN") */
-const asNumOrUndef = (v) => {
-  if (v === '' || v === null || v === undefined) return undefined;
-  const n = Number(v);
-  return Number.isFinite(n) ? n : undefined;
-};
-
-/** Docs code preview that reflects CURRENT args (including Controls changes) */
-const buildDocsHtml = (args) => {
-  const attributeBlock = attrs([
-    // Core
-    ['plumage', !!args.plumage],
-    ['range-picker', !!args.rangePicker],
-    ['disabled', !!args.disabled],
-    ['required', !!args.required],
-
-    // Formatting
-    ['date-format', args.dateFormat],
-    ['show-ymd', !!args.showYmd],
-    ['show-long', !!args.showLong],
-    ['show-iso', !!args.showIso],
-
-    // Input / adornments
-    ['placeholder', args.placeholder],
-    ['join-by', args.joinBy],
-    ['icon', args.icon],
-    ['input-id', args.inputId],
-
-    // ✅ NOTE: component props are appendProp/prependProp (NOT "append"/"prepend")
-    ['append-prop', !!args.appendProp],
-    ['prepend-prop', !!args.prependProp],
-    ['append-id', args.appendId],
-    ['prepend-id', args.prependId],
-
-    // Layout
-    ['label', args.label],
-    ['label-align', args.labelAlign],
-    ['label-hidden', !!args.labelHidden],
-    ['form-layout', args.formLayout],
-    ['size', args.size],
-
-    // Grid
-    ['label-col', asNumOrUndef(args.labelCol)],
-    ['input-col', asNumOrUndef(args.inputCol)],
-    ['label-cols', args.labelCols],
-    ['input-cols', args.inputCols],
-
-    // Validation
-    ['validation', !!args.validation],
-    ['validation-message', args.validationMessage],
-    ['warning-message', args.warningMessage],
-
-    // Controls
-    ['show-ok-button', !!args.showOkButton],
-    ['aria-label', args.ariaLabel],
-  ]);
-
-  return normalize(`
-<date-range-picker-component
-  ${attributeBlock}
-></date-range-picker-component>
-`);
-};
-
-// ======================================================
-// Storybook meta
-// ======================================================
+import DocsPage from './date-range-picker-component.docs.mdx';
+import { buildDocsHtml, Template } from './date-range-picker-component.story-helpers.js';
 
 export default {
   title: 'Form/Date Range Picker',
   tags: ['autodocs'],
   parameters: {
     docs: {
+      page: DocsPage,
       description: {
         component:
           'A date range picker component with built-in support for various display formats, form layouts, and validation states.',
@@ -124,7 +20,6 @@ export default {
     },
   },
   argTypes: {
-    // Core
     plumage: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Core' },
@@ -147,7 +42,6 @@ export default {
       description: 'Mark the input as required',
     },
 
-    // Display format
     dateFormat: {
       control: { type: 'select' },
       options: ['YYYY-MM-DD', 'MM-DD-YYYY'],
@@ -174,15 +68,23 @@ export default {
       description: 'Force ISO display',
     },
 
-    // Input / adornments
     placeholder: {
       control: 'text',
       table: { category: 'Input' },
       description:
         'Placeholder text for the input; if empty, a default will be computed based on the display format + joinBy',
     },
-    joinBy: { control: 'text', name: 'join-by', table: { category: 'Input' }, description: 'Separator between start and end (input & display)' },
-    icon: { control: 'text', table: { category: 'Input' }, description: 'Calendar button icon (e.g. "fas fa-calendar-alt")' },
+    joinBy: {
+      control: 'text',
+      name: 'join-by',
+      table: { category: 'Input' },
+      description: 'Separator between start and end (input & display)',
+    },
+    icon: {
+      control: 'text',
+      table: { category: 'Input' },
+      description: 'Calendar button icon (e.g. "fas fa-calendar-alt")',
+    },
     inputId: {
       control: 'text',
       name: 'input-id',
@@ -190,63 +92,63 @@ export default {
       description: 'ID for the input element (used for accessibility and testing)',
     },
 
-    // ✅ NEW props exposed in component
     appendProp: {
       control: 'boolean',
       name: 'append-prop',
       table: { category: 'Input', defaultValue: { summary: true } },
-      description: 'Show an append button (e.g. calendar icon) that triggers the picker',
+      description: 'Show an append button that triggers the picker',
     },
     prependProp: {
       control: 'boolean',
       name: 'prepend-prop',
       table: { category: 'Input', defaultValue: { summary: false } },
-      description: 'Show a prepend button (e.g. calendar icon) that triggers the picker',
+      description: 'Show a prepend button that triggers the picker',
     },
     appendId: {
       control: 'text',
       name: 'append-id',
       table: { category: 'Input' },
-      description: 'Optional id attribute for the append button (if rendered).',
+      description: 'Optional id attribute for the append button.',
     },
     prependId: {
       control: 'text',
       name: 'prepend-id',
       table: { category: 'Input' },
-      description: 'Optional id attribute for the prepend button (if rendered).',
+      description: 'Optional id attribute for the prepend button.',
     },
 
-    // Label & layout
-    label: { control: 'text', table: { category: 'Layout' }, description: 'Label text for the input' },
+    label: {
+      control: 'text',
+      table: { category: 'Layout' },
+      description: 'Label text for the input',
+    },
     labelAlign: {
       control: { type: 'select' },
       options: ['', 'right'],
       name: 'label-align',
       table: { category: 'Layout' },
-      description: 'Alignment for the label text (only applies when label is visible)',
+      description: 'Alignment for the label text',
     },
     labelHidden: {
       control: 'boolean',
       name: 'label-hidden',
       table: { category: 'Layout', defaultValue: { summary: false } },
-      description: 'Visually hide the label (but keep it accessible to screen readers)',
+      description: 'Visually hide the label while keeping it accessible',
     },
     formLayout: {
       control: { type: 'select' },
       options: ['', 'horizontal', 'inline'],
       name: 'form-layout',
       table: { category: 'Layout' },
-      description:
-        'Form layout variant. "Horizontal" uses a grid layout with label and input side by side. "Inline" is similar but uses auto-width columns for a more compact display.',
+      description: 'Form layout variant',
     },
     size: {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
       table: { category: 'Layout' },
-      description: 'Size variant; applies to input and buttons.',
+      description: 'Size variant',
     },
 
-    // Grid
     labelCol: {
       control: 'number',
       min: 0,
@@ -254,7 +156,7 @@ export default {
       step: 1,
       name: 'label-col',
       table: { category: 'Layout', subcategory: 'Grid' },
-      description: 'Number of grid columns for the label (horizontal layout only)',
+      description: 'Number of grid columns for the label',
     },
     inputCol: {
       control: 'number',
@@ -263,7 +165,7 @@ export default {
       step: 1,
       name: 'input-col',
       table: { category: 'Layout', subcategory: 'Grid' },
-      description: 'Number of grid columns for the input (horizontal layout only)',
+      description: 'Number of grid columns for the input',
     },
     labelCols: {
       control: 'text',
@@ -278,12 +180,10 @@ export default {
       description: 'e.g. "col-sm-9 col-md-8" or "xs-12 sm-6 md-8"',
     },
 
-    // Validation
     validation: {
       control: 'boolean',
       table: { category: 'Validation', defaultValue: { summary: false } },
-      description:
-        'Show validation state (e.g. invalid). Does not perform validation; it only reflects the current state.',
+      description: 'Show validation state',
     },
     validationMessage: {
       control: 'text',
@@ -295,29 +195,26 @@ export default {
       control: 'text',
       name: 'warning-message',
       table: { defaultValue: { summary: '' }, category: 'Validation' },
-      description: 'Optional warning message (displays with warning visuals)',
+      description: 'Optional warning message',
     },
 
-    // Controls
     showOkButton: {
       control: 'boolean',
       name: 'show-ok-button',
       table: { category: 'Controls', defaultValue: { summary: true } },
-      description: 'Show the OK button in the picker (ignored when rangePicker=true)',
+      description: 'Show the OK button in the picker',
     },
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
       table: { category: 'Controls' },
-      description: 'ARIA label for the dialog title (and used for screen-reader naming)',
+      description: 'ARIA label for the dialog title',
     },
 
-    // Value (string reflected by component)
     value: {
       control: 'text',
       table: { category: 'Value', disable: true },
-      description:
-        'Current value of the input (for controlled usage); should be in the format "startDate{joinBy}endDate"',
+      description: 'Current input value',
     },
   },
 
@@ -352,72 +249,11 @@ export default {
     validation: false,
     validationMessage: 'Required field',
     warningMessage: '',
+    value: '',
   },
+
+  render: (args) => Template(args),
 };
-
-// ======================================================
-// Render
-// ======================================================
-
-const buildEl = (args) => {
-  const el = document.createElement('date-range-picker-component');
-
-  // Core
-  el.plumage = !!args.plumage;
-  el.rangePicker = !!args.rangePicker;
-  el.disabled = !!args.disabled;
-  el.required = !!args.required;
-
-  // Display format
-  el.dateFormat = args.dateFormat;
-  el.showYmd = !!args.showYmd;
-  el.showLong = !!args.showLong;
-  el.showIso = !!args.showIso;
-
-  // Input / adornments
-  el.placeholder = args.placeholder || undefined; // let component compute example if empty
-  el.joinBy = args.joinBy || ' - ';
-  el.icon = args.icon || 'fas fa-calendar-alt';
-  el.inputId = args.inputId || 'drp';
-
-  el.appendProp = !!args.appendProp;
-  el.prependProp = !!args.prependProp;
-  if (args.appendId) el.appendId = args.appendId;
-  if (args.prependId) el.prependId = args.prependId;
-
-  // Label & layout
-  el.label = args.label || 'Date Range Picker';
-  el.labelAlign = args.labelAlign || '';
-  el.labelHidden = !!args.labelHidden;
-  el.formLayout = args.formLayout || '';
-  el.size = args.size || '';
-
-  // Grid
-  if (asNumOrUndef(args.labelCol) !== undefined) el.labelCol = Number(args.labelCol);
-  if (asNumOrUndef(args.inputCol) !== undefined) el.inputCol = Number(args.inputCol);
-  el.labelCols = args.labelCols || '';
-  el.inputCols = args.inputCols || '';
-
-  // Validation
-  el.validation = !!args.validation;
-  el.validationMessage = args.validationMessage || 'Required field';
-  el.warningMessage = args.warningMessage || '';
-
-  // Controls
-  el.showOkButton = !!args.showOkButton;
-  el.ariaLabel = args.ariaLabel || '';
-
-  // Events
-  el.addEventListener('date-range-updated', (e) => action('date-range-updated')(e.detail));
-
-  return el;
-};
-
-const Template = (args) => buildEl(args);
-
-// ======================================================
-// Stories (DO NOT REMOVE — only update)
-// ======================================================
 
 export const Basic = Template.bind({});
 Basic.args = {
@@ -450,7 +286,7 @@ DateFormat.parameters = {
   docs: {
     description: {
       story:
-        'Customize the date format using the "dateFormat" prop. This controls how the selected dates are displayed and parsed. The placeholder will default to match the date format if left empty.',
+        'Customize the date format using the "dateFormat" prop. This controls how the selected dates are displayed and parsed.',
     },
     story: { height: '525px' },
   },
@@ -468,8 +304,7 @@ Plumage.storyName = 'Plumage Styling';
 Plumage.parameters = {
   docs: {
     description: {
-      story:
-        'Enable Plumage styling by setting the "plumage" prop to true. This applies Plumage form styles to the component, including the input and buttons.',
+      story: 'Enable Plumage styling by setting the "plumage" prop to true.',
     },
     story: { height: '525px' },
   },
@@ -525,7 +360,7 @@ WithValidation.args = {
 WithValidation.parameters = {
   docs: {
     description: {
-      story: 'A date range picker with validation enabled. The validation message is shown until a valid range is selected.',
+      story: 'A date range picker with validation enabled.',
     },
     story: { height: '525px' },
   },
@@ -542,8 +377,7 @@ CustomSeparator.args = {
 CustomSeparator.parameters = {
   docs: {
     description: {
-      story:
-        'Customize the separator between the start and end dates using the "joinBy" prop. The placeholder will be computed from the display format and the joinBy value.',
+      story: 'Customize the separator between the start and end dates using the "joinBy" prop.',
     },
     story: { height: '525px' },
   },
@@ -609,8 +443,7 @@ Disabled.args = {
 Disabled.parameters = {
   docs: {
     description: {
-      story:
-        'Disable the date range picker using the "disabled" prop. This will disable the input and prevent interaction with the calendar.',
+      story: 'Disable the date range picker using the "disabled" prop.',
     },
     story: { height: '525px' },
   },
@@ -626,7 +459,7 @@ Sizes.args = {
 Sizes.parameters = {
   docs: {
     description: {
-      story: 'Set the size of the date range picker using the "size" prop. Available options are "", "sm", and "lg".',
+      story: 'Set the size of the date range picker using the "size" prop.',
     },
     story: { height: '525px' },
   },
@@ -635,7 +468,7 @@ Sizes.parameters = {
 export const StandalonePickerOnly = Template.bind({});
 StandalonePickerOnly.args = {
   rangePicker: true,
-  showOkButton: false, // ignored when rangePicker = true
+  showOkButton: false,
   labelCol: '',
   inputCol: '',
   inputId: 'drp-standalone',
@@ -643,20 +476,11 @@ StandalonePickerOnly.args = {
 StandalonePickerOnly.parameters = {
   docs: {
     description: {
-      story:
-        'Render only the date range picker without the input group. The OK button is not shown in this mode.',
+      story: 'Render only the date range picker without the input group.',
     },
     story: { height: '425px' },
   },
 };
-
-// ======================================================
-// NEW: Accessibility Matrix
-// - default / inline / horizontal
-// - error/validation
-// - disabled
-// - prints computed role + aria-* + ids
-// ======================================================
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
@@ -669,7 +493,7 @@ export const AccessibilityMatrix = {
     intro.innerHTML = `
       <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
       <div style="font-size:13px; color:#444;">
-        Date Range Picker: common variants + computed <code>role</code>, <code>aria-*</code>, IDs (and ARIA reference resolution).
+        Date Range Picker: common variants + computed <code>role</code>, <code>aria-*</code>, IDs.
       </div>
     `;
     root.appendChild(intro);
@@ -717,8 +541,7 @@ export const AccessibilityMatrix = {
       const group = host.querySelector('.input-group');
       const toggle = host.querySelector('.calendar-button, button.btn.input-group-text');
       const dialog = host.querySelector('.dropdown-content[role="dialog"], .dropdown-content');
-      const help = host.querySelector('[id$="__desc"]');
-      const validation = host.querySelector('.invalid-feedback.validation, .invalid-feedback.warning, .invalid-feedback, [id$="__validation"]');
+      const validation = host.querySelector('.invalid-feedback.validation, .invalid-feedback.warning, .invalid-feedback');
 
       const describedByIds = input ? splitIds(input.getAttribute('aria-describedby')) : [];
       const labelledByIds = input ? splitIds(input.getAttribute('aria-labelledby')) : [];
@@ -749,12 +572,6 @@ export const AccessibilityMatrix = {
               for: label.getAttribute('for') || null,
             }
           : null,
-        helpText: help
-          ? {
-              id: help.id || null,
-              insideDialog: !!(dialog && dialog.contains(help)),
-            }
-          : null,
         group: group
           ? {
               tag: group.tagName.toLowerCase(),
@@ -776,7 +593,7 @@ export const AccessibilityMatrix = {
               tag: dialog.tagName.toLowerCase(),
               id: dialog.id || null,
               role: dialog.getAttribute('role') || null,
-              ...pickAttrs(dialog, ['aria-modal', 'aria-labelledby']),
+              ...pickAttrs(dialog, ['aria-modal', 'aria-labelledby', 'aria-describedby']),
             }
           : null,
         validation: validation
@@ -791,7 +608,7 @@ export const AccessibilityMatrix = {
       };
     };
 
-    const renderDRPMatrixRow = ({ title, build }) => {
+    const renderRow = ({ title, build }) => {
       const wrap = document.createElement('div');
       wrap.style.border = '1px solid #ddd';
       wrap.style.borderRadius = '12px';
@@ -884,7 +701,7 @@ export const AccessibilityMatrix = {
           }),
       },
       {
-        title: 'Validation / Error (required + validation=true)',
+        title: 'Validation / Error',
         build: () =>
           Template({
             ...base,
@@ -910,7 +727,7 @@ export const AccessibilityMatrix = {
       },
     ];
 
-    cases.forEach((c) => root.appendChild(renderDRPMatrixRow(c)));
+    cases.forEach((c) => root.appendChild(renderRow(c)));
     return root;
   },
   parameters: {
@@ -918,7 +735,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Matrix of common Date Range Picker states (default/inline/horizontal, validation/error, disabled) with computed roles, aria-* attributes, and IDs.',
+          'Matrix of common Date Range Picker states with computed roles, aria-* attributes, and IDs.',
       },
       story: { height: '1200px' },
     },

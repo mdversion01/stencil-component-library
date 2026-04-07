@@ -1322,7 +1322,6 @@ export namespace Components {
          */
         "disabled": boolean;
         /**
-          * '', 'horizontal', or 'inline'
           * @default ''
          */
         "formLayout": '' | 'horizontal' | 'inline';
@@ -1331,7 +1330,6 @@ export namespace Components {
          */
         "icon": string;
         /**
-          * Grid like date-range-picker-component
           * @default 10
          */
         "inputCol": number;
@@ -1344,7 +1342,6 @@ export namespace Components {
          */
         "inputId": string;
         /**
-          * Time options
           * @default true
          */
         "isTwentyFourHourFormat": boolean;
@@ -1361,7 +1358,6 @@ export namespace Components {
          */
         "labelAlign": '' | 'right';
         /**
-          * Grid like date-range-picker-component
           * @default 2
          */
         "labelCol": number;
@@ -1373,9 +1369,6 @@ export namespace Components {
           * @default false
          */
         "labelHidden": boolean;
-        /**
-          * External placeholder (immutable). We derive default into state.
-         */
         "placeholder"?: string;
         /**
           * @default false
@@ -1390,7 +1383,6 @@ export namespace Components {
          */
         "prependProp": boolean;
         /**
-          * Render only the picker; disables OK button
           * @default false
          */
         "rangeTimePicker": boolean;
@@ -1411,12 +1403,10 @@ export namespace Components {
          */
         "showLong": boolean;
         /**
-          * Allow host to control the OK/Close button; masked when rangeTimePicker
           * @default true
          */
         "showOkButton": boolean;
         /**
-          * Output flags
           * @default false
          */
         "showYmd": boolean;
@@ -6719,7 +6709,6 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
-          * '', 'horizontal', or 'inline'
           * @default ''
          */
         "formLayout"?: '' | 'horizontal' | 'inline';
@@ -6728,7 +6717,6 @@ declare namespace LocalJSX {
          */
         "icon"?: string;
         /**
-          * Grid like date-range-picker-component
           * @default 10
          */
         "inputCol"?: number;
@@ -6741,7 +6729,6 @@ declare namespace LocalJSX {
          */
         "inputId"?: string;
         /**
-          * Time options
           * @default true
          */
         "isTwentyFourHourFormat"?: boolean;
@@ -6758,7 +6745,6 @@ declare namespace LocalJSX {
          */
         "labelAlign"?: '' | 'right';
         /**
-          * Grid like date-range-picker-component
           * @default 2
          */
         "labelCol"?: number;
@@ -6781,9 +6767,6 @@ declare namespace LocalJSX {
     startDateTimeIso?: string;
     endDateTimeIso?: string;
   }>) => void;
-        /**
-          * External placeholder (immutable). We derive default into state.
-         */
         "placeholder"?: string;
         /**
           * @default false
@@ -6798,7 +6781,6 @@ declare namespace LocalJSX {
          */
         "prependProp"?: boolean;
         /**
-          * Render only the picker; disables OK button
           * @default false
          */
         "rangeTimePicker"?: boolean;
@@ -6819,12 +6801,10 @@ declare namespace LocalJSX {
          */
         "showLong"?: boolean;
         /**
-          * Allow host to control the OK/Close button; masked when rangeTimePicker
           * @default true
          */
         "showOkButton"?: boolean;
         /**
-          * Output flags
           * @default false
          */
         "showYmd"?: boolean;

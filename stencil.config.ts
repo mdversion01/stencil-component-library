@@ -1,4 +1,3 @@
-// stencil.config.ts
 import { Config } from '@stencil/core';
 import { sass } from '@stencil/sass';
 import { postcss } from '@stencil/postcss';
@@ -20,18 +19,29 @@ const isStorybook = process.env.STORYBOOK === 'true';
 export const config: Config = {
   namespace: 'stencil-component-library',
   globalStyle: 'src/global/global.scss',
-  plugins: [sass({ includePaths: ['src', 'src/global', 'node_modules'] }), postcss({ plugins: [escapeBackslashDigits()] })],
+
+  plugins: [
+    sass({ includePaths: ['src', 'src/global', 'node_modules'] }),
+    postcss({ plugins: [escapeBackslashDigits()] }),
+  ],
+
   devServer: { reloadStrategy: 'hmr' },
+
+  extras: {
+    enableImportInjection: true,
+  },
+
+  buildDist: true,
+
   outputTargets: [
     { type: 'dist', esmLoaderPath: '../loader' },
     {
       type: 'dist-custom-elements',
-      customElementsExportBehavior: 'auto-define-custom-elements',
+      customElementsExportBehavior: 'bundle',
       externalRuntime: false,
     },
     { type: 'docs-readme' },
 
-    // ✅ Skip www during storybook dev to avoid EBUSY font copy locks on Windows
     ...(isStorybook
       ? []
       : [
@@ -43,11 +53,12 @@ export const config: Config = {
               { src: '../node_modules/@fortawesome/fontawesome-free/webfonts', dest: 'assets/fonts' },
               { src: 'assets/mdi/materialdesignicons.min.css', dest: 'assets/mdi/materialdesignicons.min.css' },
               { src: 'assets/mdi/fonts', dest: 'assets/mdi/fonts' },
-              { src: 'components', dest: 'components' }, // copies src/components/** to www/components/**
+              { src: 'components', dest: 'components' },
             ],
           } as any,
         ]),
   ],
+
   testing: {
     browserHeadless: 'shell',
     setupFilesAfterEnv: ['<rootDir>/src/test/setupTests.ts'],

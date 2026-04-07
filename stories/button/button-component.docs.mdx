@@ -1,0 +1,53 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as ButtonStories from './button-component.stories.js';
+import { reactExample, vueExample, angularExample } from './button-component.examples.js';
+
+<Meta of={ButtonStories} />
+
+# Button
+
+<Description of={ButtonStories} />
+
+## HTML
+
+```html
+<button-component variant="primary" btn-text="Primary Button"></button-component>
+
+<button-component
+  outlined
+  variant="success"
+  btn-text="Outlined Success"
+></button-component>
+
+<button-component
+  slot-side="left"
+  variant="secondary"
+  btn-text="With Left Icon"
+>
+  <span>
+    <i class="fa-solid fa-house"></i>
+  </span>
+</button-component>
+
+<button-component
+  btn-icon
+  aria-label="Favorite"
+  title-attr="Favorite"
+>
+  <span>
+    <i class="fa-solid fa-star"></i>
+  </span>
+</button-component>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

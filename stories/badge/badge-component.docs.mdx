@@ -1,0 +1,55 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as BadgeStories from './badge-component.stories.js';
+import { reactExample, vueExample, angularExample } from './badge-component.examples.js';
+
+<Meta of={BadgeStories} />
+
+# Badge
+
+<Description of={BadgeStories} />
+
+## HTML
+
+```html
+<badge-component variant="primary" aria-label="Primary badge">
+  New
+</badge-component>
+
+<badge-component
+  variant="success"
+  shape="pill"
+  icon
+  aria-label="Success badge with icon"
+>
+  Active
+  <span slot="icon">
+    <icon-component icon="fas fa-check-circle"></icon-component>
+  </span>
+</badge-component>
+
+<badge-component
+  token
+  inset
+  variant="danger"
+  aria-label="Notification token badge"
+>
+  <button-component variant="secondary" size="sm">
+    Messages
+  </button-component>
+  <span slot="token">
+    <i class="fa-solid fa-bell"></i>
+  </span>
+</badge-component>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

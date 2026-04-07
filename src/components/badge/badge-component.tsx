@@ -1,4 +1,4 @@
-// src/components/badge/badge.tsx
+// src/components/badge/badge-component.tsx
 import { Component, Prop, h, Element, Event, EventEmitter, Host } from '@stencil/core';
 import { buildBadgeClass } from '../../utils/buildBadgeClass';
 import { renderTokenSpan } from '../../utils/render.helpers';

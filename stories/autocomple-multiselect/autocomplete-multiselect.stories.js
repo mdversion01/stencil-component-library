@@ -1,291 +1,15 @@
-// stories/autocomplete-multiselect.stories.js
+// File: src/stories/autocomplete-multiselect/autocomplete-multiselect.stories.js
 
-// ======================================================
-// Docs: wrap long code lines + show formatted HTML
-// ======================================================
-
-const DocsWrapStyles = () => {
-  const style = document.createElement('style');
-  style.innerHTML = `
-    .sbdocs pre,
-    .sbdocs pre code {
-      white-space: pre-wrap !important;
-      word-break: break-word !important;
-      overflow-x: auto !important;
-    }
-  `;
-  return style;
-};
-
-/** Collapse extra blank lines + trim edges (keeps intentional line breaks) */
-const normalize = (txt) => {
-  const lines = String(txt)
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      prevBlank = true;
-      out.push('');
-      continue;
-    }
-    prevBlank = false;
-    out.push(line);
-  }
-
-  while (out[0] === '') out.shift();
-  while (out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-const attrLines = (pairs) =>
-  pairs
-    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
-    .map(([k, v]) => (v === true ? `${k}` : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
-    .join('\n  ');
-
-/** HTML shown in Docs "Code" panel (always HTML + line-broken attrs) */
-const buildDocsHtml = (args) =>
-  normalize(`
-<autocomplete-multiselect
-  ${attrLines([
-    // ids/labels
-    ['id', args.id],
-    ['input-id', args.inputId],
-    ['label', args.label],
-    ['placeholder', args.placeholder],
-
-    // NEW standard a11y attrs (preferred)
-    ['aria-label', args.ariaLabel],
-    ['aria-labelledby', args.ariaLabelledby],
-    ['aria-describedby', args.ariaDescribedby],
-
-    // legacy a11y
-    ['arialabelled-by', args.arialabelledBy],
-
-    // layout
-    ['form-id', args.formId],
-    ['form-layout', args.formLayout],
-    ['label-align', args.labelAlign],
-    ['label-size', args.labelSize],
-    ['size', args.size],
-
-    // legacy numeric columns (horizontal)
-    ['label-col', args.labelCol],
-    ['input-col', args.inputCol],
-
-    // responsive cols
-    ['label-cols', args.labelCols],
-    ['input-cols', args.inputCols],
-
-    // validation / state
-    ['required', args.required],
-    ['validation', args.validation],
-    ['validation-message', args.validationMessage],
-    ['error', args.error],
-    ['error-message', args.errorMessage],
-    ['disabled', args.disabled],
-    ['label-hidden', args.labelHidden],
-    ['dev-mode', args.devMode],
-
-    // actions / icons
-    ['add-btn', args.addBtn],
-    ['editable', args.editable],
-    ['add-icon', args.addIcon],
-    ['remove-clear-btn', args.removeClearBtn],
-    ['remove-btn-border', args.removeBtnBorder],
-    ['clear-icon', args.clearIcon],
-    ['clear-input-on-blur-outside', args.clearInputOnBlurOutside],
-
-    // behavior
-    ['auto-sort', args.autoSort],
-    ['add-new-on-enter', args.addNewOnEnter],
-    ['preserve-input-on-select', args.preserveInputOnSelect],
-
-    // controlled selection (Docs-only)
-    ['value', Array.isArray(args.value) ? JSON.stringify(args.value) : ''],
-
-    // form names
-    ['name', args.name],
-    ['raw-input-name', args.rawInputName],
-    ['type', args.type],
-
-    // badge display
-    ['badge-variant', args.badgeVariant],
-    ['badge-shape', args.badgeShape],
-    ['badge-inline-styles', args.badgeInlineStyles],
-  ])}
-></autocomplete-multiselect>
-`);
-
-const wrapDocsHtml = (innerHtml) =>
-  normalize(`
-<div style="max-width:680px;">
-  ${String(innerHtml).replace(/\n/g, '\n  ')}
-</div>
-`);
-
-const buildDocsHtmlMany = (snippets) =>
-  wrapDocsHtml(
-    normalize(`
-<div style="display:grid; gap:14px;">
-${snippets.map((s) => `  ${String(s).replace(/\n/g, '\n  ')}`).join('\n')}
-</div>
-`),
-  );
-
-// ======================================================
-// Tiny helpers
-// ======================================================
-
-const setAttr = (el, name, value) => {
-  if (value === true) el.setAttribute(name, '');
-  else if (value === false || value == null || value === '') el.removeAttribute(name);
-  else el.setAttribute(name, String(value));
-};
-
-const whenReady = async (el, tagName) => {
-  if (typeof el?.componentOnReady === 'function') {
-    await el.componentOnReady();
-    return;
-  }
-  if (window.customElements?.whenDefined) {
-    await customElements.whenDefined(tagName);
-  }
-};
-
-const setOptionsWhenReady = async (el, options) => {
-  const safe = Array.isArray(options) ? options.slice() : [];
-  await whenReady(el, 'autocomplete-multiselect');
-  // component exposes setOptions()
-  if (typeof el.setOptions === 'function') await el.setOptions(safe);
-  else el.options = safe;
-};
-
-const setValueWhenReady = async (el, value) => {
-  const safe = Array.isArray(value) ? value.slice() : [];
-  await whenReady(el, 'autocomplete-multiselect');
-  // value is a PROP array; set via property, not attribute
-  el.value = safe;
-};
-
-const wrapEl = (childEl) => {
-  const wrap = document.createElement('div');
-  wrap.style.maxWidth = '680px';
-  wrap.appendChild(childEl);
-  return wrap;
-};
-
-// ======================================================
-// Sample data
-// ======================================================
-
-const FRUIT = [
-  'Apple',
-  'Apparatus',
-  'Apple Pie',
-  'Applegate',
-  'Banana',
-  'Orange',
-  'Mango',
-  'Bet',
-  'Betty',
-  'Bobby',
-  'Bob',
-  'Bobby Brown',
-  'Bobby Blue',
-  'Bobby Green',
-];
-
-// ======================================================
-// Reusable render logic
-// ======================================================
-
-const renderComponent = (args) => {
-  const el = document.createElement('autocomplete-multiselect');
-
-  // string/enum attrs
-  setAttr(el, 'id', args.id);
-  setAttr(el, 'input-id', args.inputId);
-  setAttr(el, 'label', args.label);
-  setAttr(el, 'placeholder', args.placeholder);
-  setAttr(el, 'form-id', args.formId);
-  setAttr(el, 'form-layout', args.formLayout);
-  setAttr(el, 'label-align', args.labelAlign);
-  setAttr(el, 'label-size', args.labelSize);
-  setAttr(el, 'size', args.size);
-
-  // NEW standard a11y attrs
-  setAttr(el, 'aria-label', args.ariaLabel);
-  setAttr(el, 'aria-labelledby', args.ariaLabelledby);
-  setAttr(el, 'aria-describedby', args.ariaDescribedby);
-
-  // legacy a11y
-  setAttr(el, 'arialabelled-by', args.arialabelledBy);
-
-  // layout cols
-  setAttr(el, 'label-col', args.labelCol);
-  setAttr(el, 'input-col', args.inputCol);
-  setAttr(el, 'label-cols', args.labelCols);
-  setAttr(el, 'input-cols', args.inputCols);
-
-  // misc strings
-  setAttr(el, 'validation-message', args.validationMessage);
-  setAttr(el, 'clear-icon', args.clearIcon);
-  setAttr(el, 'add-icon', args.addIcon);
-  setAttr(el, 'name', args.name);
-  setAttr(el, 'raw-input-name', args.rawInputName);
-  setAttr(el, 'badge-variant', args.badgeVariant);
-  setAttr(el, 'badge-shape', args.badgeShape);
-  setAttr(el, 'badge-inline-styles', args.badgeInlineStyles);
-  setAttr(el, 'type', args.type || 'text');
-  setAttr(el, 'error-message', args.errorMessage);
-
-  // booleans
-  args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
-  args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
-  args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
-  args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
-  args.labelHidden ? el.setAttribute('label-hidden', '') : el.removeAttribute('label-hidden');
-  args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
-  args.addBtn ? el.setAttribute('add-btn', '') : el.removeAttribute('add-btn');
-  args.editable ? el.setAttribute('editable', '') : el.removeAttribute('editable');
-  args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
-  args.removeBtnBorder ? el.setAttribute('remove-btn-border', '') : el.removeAttribute('remove-btn-border');
-  args.clearInputOnBlurOutside ? el.setAttribute('clear-input-on-blur-outside', '') : el.removeAttribute('clear-input-on-blur-outside');
-
-  // behavior
-  setAttr(el, 'auto-sort', args.autoSort);
-  setAttr(el, 'add-new-on-enter', args.addNewOnEnter);
-  setAttr(el, 'preserve-input-on-select', args.preserveInputOnSelect);
-
-  // logs
-  el.addEventListener('multiSelectChange', (e) => console.log('[acm] selectionChange', e.detail));
-  el.addEventListener('valueChange', (e) => console.log('[acm] valueChange', e.detail));
-  el.addEventListener('optionsChange', (e) => console.log('[acm] optionsChange', e.detail));
-  el.addEventListener('optionDelete', (e) => console.log('[acm] optionDelete', e.detail));
-  el.addEventListener('clear', () => console.log('[acm] clear'));
-
-  // provide options after hydration
-  const fallback = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
-  setOptionsWhenReady(el, Array.isArray(args.options) && args.options.length ? args.options : fallback);
-
-  // controlled selections via property
-  setValueWhenReady(el, Array.isArray(args.value) ? args.value : []);
-
-  return wrapEl(el);
-};
-
-// ======================================================
-// Default export
-// ======================================================
+import DocsPage from './autocomplete-multiselect.docs.mdx';
+import {
+  DocsWrapStyles,
+  FRUIT,
+  SIZE_VARIANTS,
+  buildDocsHtml,
+  buildDocsHtmlMany,
+  renderComponent,
+  wrapDocsHtml,
+} from './autocomplete-multiselect.story-helpers.js';
 
 export default {
   title: 'Form/Autocomplete Multiselect',
@@ -300,6 +24,7 @@ export default {
   ],
   parameters: {
     docs: {
+      page: DocsPage,
       description: {
         component: ['Autocomplete Multiselect component for selecting multiple options from a list with autocomplete functionality.', ''].join('\n'),
       },
@@ -313,9 +38,6 @@ export default {
   render: (args) => renderComponent(args),
 
   argTypes: {
-    /* =========================
-     * Attributes
-     * ========================= */
     addNewOnEnter: {
       control: 'boolean',
       name: 'add-new-on-enter',
@@ -359,9 +81,6 @@ export default {
       description: 'The name attribute for the raw input hidden field.',
     },
 
-    /* =========================
-     * Accessibility (NEW standard + legacy)
-     * ========================= */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -388,9 +107,6 @@ export default {
         'Legacy: id(s) of label(s) that label this input (space-separated). If empty, component falls back to its internal <label> id.',
     },
 
-    /* =========================
-     * Badge Attributes
-     * ========================= */
     badgeInlineStyles: {
       control: 'text',
       name: 'badge-inline-styles',
@@ -410,9 +126,6 @@ export default {
       description: 'The variant style for the badge.',
     },
 
-    /* =========================
-     * Button Attributes
-     * ========================= */
     addBtn: {
       control: 'boolean',
       name: 'add-btn',
@@ -444,9 +157,6 @@ export default {
       description: 'Removes the clear button from the input field.',
     },
 
-    /* =========================
-     * Data
-     * ========================= */
     options: {
       control: 'object',
       name: 'options',
@@ -460,9 +170,6 @@ export default {
       description: 'Controlled selected values (array). Applied via property at runtime.',
     },
 
-    /* =========================
-     * Dev Mode
-     * ========================= */
     devMode: {
       control: 'boolean',
       name: 'dev-mode',
@@ -470,9 +177,6 @@ export default {
       description: 'Enables developer mode (extra logging).',
     },
 
-    /* =========================
-     * Input / Layout Attributes
-     * ========================= */
     disabled: {
       control: 'boolean',
       name: 'disabled',
@@ -574,9 +278,6 @@ export default {
       description: 'Input type (default "text").',
     },
 
-    /* =========================
-     * Validation
-     * ========================= */
     error: {
       control: 'boolean',
       name: 'error',
@@ -613,15 +314,10 @@ export default {
     addBtn: false,
     addIcon: 'fas fa-plus',
     addNewOnEnter: true,
-
-    // legacy a11y (still supported)
     arialabelledBy: '',
-
-    // NEW standard a11y
     ariaLabel: '',
     ariaLabelledby: '',
     ariaDescribedby: '',
-
     autoSort: true,
     badgeInlineStyles: '',
     badgeShape: '',
@@ -660,8 +356,6 @@ export default {
     value: [],
   },
 };
-
-// ------- Stories (existing kept; none removed) -------
 
 export const Basic = {
   args: {
@@ -826,12 +520,6 @@ export const ControlledValue = {
 };
 ControlledValue.storyName = 'Controlled Value (array)';
 
-const SIZE_VARIANTS = [
-  { key: 'sm', label: 'Small', size: 'sm', inputId: 'acm-sm', id: 'acm_sm' },
-  { key: 'default', label: 'Default', size: '', inputId: 'acm-md', id: 'acm_md' },
-  { key: 'lg', label: 'Large', size: 'lg', inputId: 'acm-lg', id: 'acm_lg' },
-];
-
 export const Sizes = {
   render: (args) => {
     const container = document.createElement('div');
@@ -943,7 +631,6 @@ BadgeStyling.parameters = {
   },
 };
 
-// --- Accessibility matrix story (kept, updated to include role + aria-* + ids) ---
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: (args) => {
@@ -954,15 +641,13 @@ export const AccessibilityMatrix = {
 
     const title = document.createElement('div');
     title.innerHTML =
-      `<strong>Accessibility matrix</strong>` +
-      `<div style="opacity:.8">Prints computed combobox/listbox/label wiring: role + aria-* + ids (default/inline/horizontal, error/validation, disabled).</div>`;
+      '<strong>Accessibility matrix</strong>' +
+      '<div style="opacity:.8">Prints computed combobox/listbox/label wiring: role + aria-* + ids (default/inline/horizontal, error/validation, disabled).</div>';
     wrap.appendChild(title);
 
     const card = (labelText, build) => {
       const c = document.createElement('div');
       c.style.display = 'grid';
-      // c.style.gridTemplateColumns = '300px 1fr';
-      // c.style.gap = '12px';
       c.style.alignItems = 'start';
       c.style.border = '1px solid #ddd';
       c.style.borderRadius = '8px';
@@ -1010,7 +695,6 @@ export const AccessibilityMatrix = {
             labelFor: labelEl?.getAttribute('for') ?? labelEl?.getAttribute('htmlfor') ?? null,
             labelText: labelEl?.textContent?.trim() ?? null,
             labelCount: host ? host.querySelectorAll('label').length : null,
-
             role: input?.getAttribute('role') ?? null,
             'aria-labelledby': input?.getAttribute('aria-labelledby') ?? null,
             'aria-label': input?.getAttribute('aria-label') ?? null,
@@ -1022,7 +706,6 @@ export const AccessibilityMatrix = {
             'aria-invalid': input?.getAttribute('aria-invalid') ?? null,
             'aria-disabled': input?.getAttribute('aria-disabled') ?? null,
             disabledAttr: input?.hasAttribute('disabled') ?? null,
-
             listboxPresent: !!listbox,
             listboxId: listbox?.getAttribute('id') ?? null,
             hasValidation: !!host?.querySelector('.invalid-feedback'),
@@ -1048,7 +731,6 @@ export const AccessibilityMatrix = {
           error: false,
           validation: false,
           value: [],
-          // keep external labelling empty so internal label id is used
           ariaLabel: '',
           ariaLabelledby: '',
           ariaDescribedby: '',

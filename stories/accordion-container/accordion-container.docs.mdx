@@ -1,15 +1,37 @@
-import { Meta, Title, Subtitle, Description, Primary, Controls, Stories } from '@storybook/blocks';
-import * as AccordionContainerStories from './accordion-container.stories';
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as AccordionContainerStories from './accordion-container.stories.js';
+import { reactExample, vueExample, angularExample } from './accordion-container.examples.js';
 
 <Meta of={AccordionContainerStories} />
 
-<Title />
-<Subtitle>An Accordion is a UI pattern that lets users expand and collapse sections of related content.</Subtitle>
-
-<Primary />
+# Accordion Container
 
 <Description of={AccordionContainerStories} />
 
+## HTML
+
+```html
+<accordion-container id="accordion-1" parent-id="accordion-example"></accordion-container>
+<script>
+  const collapseData = [
+    { header: 'Accordion 1', content: 'Content 1' },
+    { header: 'Accordion 2', content: 'Content 2' },
+    { header: 'Accordion 3', content: 'Content 3' },
+    { header: 'Accordion 4', content: 'Content 4' }
+  ];
+
+  document.getElementById('accordion-1').data = collapseData;
+</script>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
 {/* Show a live preview + controls table */}
+<Primary />
 <Controls />
 <Stories />

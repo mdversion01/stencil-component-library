@@ -1,34 +1,38 @@
 export const reactExample = `
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react'
 
-export default function Example() {
-  const ref = useRef(null);
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    el.accordion = true;
-    el.targetId = 'react-accordion';
-    el.isOpen = open;
-
-    const onToggle = (event) => setOpen(Boolean(event.detail));
-    el.addEventListener('toggleEvent', onToggle);
-
-    return () => el.removeEventListener('toggleEvent', onToggle);
-  }, []);
+export default function AccordionComponent() {
+  const ref = useRef(null)
 
   useEffect(() => {
-    if (ref.current) ref.current.isOpen = open;
-  }, [open]);
+    const el = ref.current
+    if (!el) return
+
+    el.accordion = true
+    el.targetId = 'react-accordion'
+    el.isOpen = false
+
+    const onToggle = (event) => {
+      console.log('toggleEvent fired:', event.detail)
+    }
+
+    el.addEventListener('toggleEvent', onToggle)
+
+    return () => {
+      el.removeEventListener('toggleEvent', onToggle)
+    }
+  }, [])
 
   return (
-    <accordion-component ref={ref}>
-      <span slot="accordion-header">Accordion header</span>
-      <div slot="content">Accordion content</div>
-    </accordion-component>
-  );
+    <main>
+      <accordion-component ref={ref}>
+        <span slot="accordion-header">Accordion header</span>
+        <div slot="content">
+          Accordion content
+        </div>
+      </accordion-component>
+    </main>
+  )
 }
 `.trim();
 
