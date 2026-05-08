@@ -579,14 +579,14 @@ export class PlumageInputGroupComponent {
             </button>
           ) : null}
 
-          <div class={`b-underline${this.validationState ? ' invalid' : ''}`} role="presentation" aria-hidden="true">
+          {/* <div class={`b-underline${this.validationState ? ' invalid' : ''}`} role="presentation" aria-hidden="true">
             <div
               class={`b-focus${this.disabled ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`}
               role="presentation"
               aria-hidden="true"
               style={{ width: '0', left: '50%' } as any}
             />
-          </div>
+          </div> */}
 
           {this.validationState && this.validationMessage ? (
             <div id={ids.validationId} class="invalid-feedback form-text" aria-live="polite">

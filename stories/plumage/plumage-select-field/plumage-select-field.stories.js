@@ -1,3 +1,13 @@
+import DocsPage from './plumage-select-field.docs.mdx';
+import {
+  DocsWrapStyles,
+  buildDocsHtml,
+  getSnapshot,
+  normalize,
+  renderComponent as Template,
+  SIZE_VARIANTS,
+} from './plumage-select-field.story-helpers.js';
+
 /* ------------------------------------------------------------------
  * Storybook: Plumage Select Field (Web Component)
  * ------------------------------------------------------------------ */
@@ -5,26 +15,44 @@
 export default {
   title: 'Form/Plumage Select Field',
   tags: ['autodocs'],
+  decorators: [
+    Story => {
+      const wrap = document.createElement('div');
+      wrap.appendChild(DocsWrapStyles());
+
+      const out = Story();
+
+      if (typeof out === 'string') {
+        const mount = document.createElement('div');
+        mount.innerHTML = out;
+        wrap.appendChild(mount);
+      } else if (out instanceof Node) {
+        wrap.appendChild(out);
+      } else {
+        const mount = document.createElement('div');
+        mount.textContent = String(out ?? '');
+        wrap.appendChild(mount);
+      }
+
+      return wrap;
+    },
+  ],
   parameters: {
     layout: 'padded',
     docs: {
+      page: DocsPage,
       description: {
         component:
           'A Plumage-styled `<select>` with focus underline, optional horizontal/inline form layout, validation, and multi-select. Works in the light DOM and accepts a JSON array for `options`.',
       },
       source: {
         language: 'html',
-        // IMPORTANT: docs preview must reflect CURRENT args (including Controls changes)
         transform: (_src, ctx) => buildDocsHtml(ctx.args),
       },
     },
   },
 
-  // ✅ alphabetized (within category) + grouped by category
   argTypes: {
-    /* =========================
-     * Accessibility
-     * ========================= */
     ariaDescribedby: {
       control: 'text',
       name: 'aria-describedby',
@@ -47,9 +75,6 @@ export default {
         'ARIA override: element id(s) that label the select (space-separated). Takes precedence over aria-label and component-generated label id.',
     },
 
-    /* =========================
-     * Layout
-     * ========================= */
     classes: { control: 'text', table: { category: 'Layout' }, description: 'Additional CSS classes' },
     formId: {
       control: 'text',
@@ -112,15 +137,9 @@ export default {
       description: 'Size variant of the select field',
     },
 
-    /* =========================
-     * Options
-     * ========================= */
     multiple: { control: 'boolean', table: { category: 'Options', defaultValue: false }, description: 'Enable multiple selection mode' },
     options: { control: 'object', description: 'Array of { value, name } or JSON string', table: { category: 'Options' } },
 
-    /* =========================
-     * Other
-     * ========================= */
     withTable: {
       control: 'boolean',
       name: 'with-table',
@@ -128,9 +147,6 @@ export default {
       description: 'This associates the select field with a table for synchronized behavior.',
     },
 
-    /* =========================
-     * Select Field Attributes
-     * ========================= */
     custom: {
       control: 'boolean',
       table: { category: 'Select Field Attributes', defaultValue: false },
@@ -165,9 +181,6 @@ export default {
       description: 'For single select; in multiple mode prefer selection via UI',
     },
 
-    /* =========================
-     * Validation
-     * ========================= */
     required: { control: 'boolean', table: { category: 'Validation', defaultValue: false }, description: 'Mark the field as required' },
     validation: { control: 'boolean', table: { category: 'Validation', defaultValue: false }, description: 'Enable validation' },
     validationMessage: {
@@ -178,193 +191,6 @@ export default {
     },
   },
 };
-
-/* ======================================================
- * Docs helpers (no blank lines + consistent HTML)
- * ====================================================== */
-
-const normalize = txt => {
-  const lines = String(txt || '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map(l => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      prevBlank = true;
-      out.push('');
-      continue;
-    }
-    prevBlank = false;
-    out.push(line);
-  }
-
-  while (out[0] === '') out.shift();
-  while (out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
-const normalizeAttrValue = value => {
-  if (value === '' || value == null) return undefined;
-  if (value === true) return true;
-  if (value === false) return false;
-  return value;
-};
-
-const serializeOptions = opts => {
-  if (!opts) return '';
-  if (typeof opts === 'string') return opts; // allow raw JSON string
-  try {
-    return JSON.stringify(opts);
-  } catch {
-    return '[]';
-  }
-};
-
-const buildDocsHtml = args => {
-  const a = { ...args };
-
-  // only show value attribute for single-select
-  const valueAttr = !a.multiple ? normalizeAttrValue(a.value) : undefined;
-
-  const attrs = [
-    // Accessibility overrides
-    ['aria-label', normalizeAttrValue(a.ariaLabel)],
-    ['aria-labelledby', normalizeAttrValue(a.ariaLabelledby)],
-    ['aria-describedby', normalizeAttrValue(a.ariaDescribedby)],
-
-    // Layout / label
-    ['classes', normalizeAttrValue(a.classes)],
-    ['form-id', normalizeAttrValue(a.formId)],
-    ['form-layout', normalizeAttrValue(a.formLayout)],
-    ['input-col', normalizeAttrValue(a.inputCol)],
-    ['input-cols', normalizeAttrValue(a.inputCols)],
-    ['label', normalizeAttrValue(a.label)],
-    ['label-align', normalizeAttrValue(a.labelAlign)],
-    ['label-col', normalizeAttrValue(a.labelCol)],
-    ['label-cols', normalizeAttrValue(a.labelCols)],
-    ['label-size', normalizeAttrValue(a.labelSize)],
-    ['size', normalizeAttrValue(a.size)],
-
-    // Select field attributes
-    ['default-option-txt', normalizeAttrValue(a.defaultOptionTxt)],
-    ['field-height', normalizeAttrValue(a.fieldHeight)],
-    ['select-field-id', normalizeAttrValue(a.selectFieldId)],
-    ['value', valueAttr],
-
-    // Options
-    ['options', normalizeAttrValue(serializeOptions(a.options))],
-
-    // Validation
-    ['validation-message', normalizeAttrValue(a.validationMessage)],
-
-    // boolean attrs (presence-based)
-    ['custom', !!a.custom],
-    ['disabled', !!a.disabled],
-    ['label-hidden', !!a.labelHidden],
-    ['multiple', !!a.multiple],
-    ['required', !!a.required],
-    ['validation', !!a.validation],
-    ['with-table', !!a.withTable],
-  ];
-
-  const attrLines = attrs
-    .filter(([_, v]) => v !== undefined && v !== false)
-    .map(([k, v]) => (v === true ? `  ${k}` : `  ${k}="${esc(v)}"`))
-    .join('\n');
-
-  const open = attrLines
-    ? `<plumage-select-field-component\n${attrLines}\n></plumage-select-field-component>`
-    : '<plumage-select-field-component></plumage-select-field-component>';
-
-  return normalize(open);
-};
-
-/* ======================================================
- * Render helpers
- * ====================================================== */
-
-const boolAttr = (name, on) => (on ? ` ${name}` : '');
-
-const attr = (name, v) => {
-  if (v === undefined || v === null || v === '') return '';
-  const s = String(v);
-  // Prefer single-quoted attribute if the value contains double quotes (e.g., JSON)
-  const useSingle = s.includes('"');
-  const escaped = useSingle ? s.replace(/'/g, '&#39;') : s.replace(/"/g, '&quot;');
-  return ` ${name}=${useSingle ? `'${escaped}'` : `"${escaped}"`}`;
-};
-
-const serializeOptionsForAttr = opts => {
-  if (!opts) return '';
-  if (typeof opts === 'string') return opts;
-  try {
-    return JSON.stringify(opts);
-  } catch {
-    return '[]';
-  }
-};
-
-const attrAllowEmpty = (name, v) => {
-  if (v === undefined || v === null) return '';
-  const s = String(v);
-  const useSingle = s.includes('"');
-  const escaped = useSingle ? s.replace(/'/g, '&#39;') : s.replace(/"/g, '&quot;');
-  return ` ${name}=${useSingle ? `'${escaped}'` : `"${escaped}"`}`;
-};
-
-/* Base template --------------------------------------------------------- */
-const Template = args => `
-<plumage-select-field-component
-  ${attr('label', args.label)}
-  ${attr('label-size', args.labelSize)}
-  ${attr('label-align', args.labelAlign)}
-  ${boolAttr('label-hidden', args.labelHidden)}
-
-  ${attr('aria-label', args.ariaLabel)}
-  ${attr('aria-labelledby', args.ariaLabelledby)}
-  ${attr('aria-describedby', args.ariaDescribedby)}
-
-  ${attr('size', args.size)}
-  ${boolAttr('custom', args.custom)}
-  ${attr('classes', args.classes)}
-
-  ${boolAttr('multiple', args.multiple)}
-  ${boolAttr('required', args.required)}
-  ${boolAttr('disabled', args.disabled)}
-
-  ${boolAttr('validation', args.validation)}
-  ${attr('validation-message', args.validationMessage)}
-
-  ${attr('default-option-txt', args.defaultOptionTxt)}
-  ${!args.multiple ? attrAllowEmpty('value', args.value ?? '') : ''}
-
-  ${attr('options', serializeOptionsForAttr(args.options))}
-
-  ${attr('form-id', args.formId)}
-  ${attr('form-layout', args.formLayout)}
-  ${attr('select-field-id', args.selectFieldId)}
-
-  ${args.fieldHeight != null && args.fieldHeight !== '' ? attr('field-height', args.fieldHeight) : ''}
-
-  ${attr('label-col', args.labelCol)}
-  ${attr('input-col', args.inputCol)}
-  ${attr('label-cols', args.labelCols)}
-  ${attr('input-cols', args.inputCols)}
-
-  ${boolAttr('with-table', args.withTable)}
-></plumage-select-field-component>
-`;
-
-/* Stories --------------------------------------------------------------- */
 
 export const BasicSingle = Template.bind({});
 BasicSingle.args = {
@@ -437,7 +263,6 @@ MultipleSelection.args = {
   ...BasicSingle.args,
   label: 'Tags',
   multiple: true,
-  // For multiple, leave `value` empty and use UI to select; you can also set via property in a play() if needed.
   defaultOptionTxt: 'Choose tags',
   options: [
     { value: 'ux', name: 'UX' },
@@ -445,7 +270,7 @@ MultipleSelection.args = {
     { value: 'mobile', name: 'Mobile' },
     { value: 'data', name: 'Data' },
   ],
-  fieldHeight: 6, // show more rows
+  fieldHeight: 6,
 };
 MultipleSelection.storyName = 'Multiple Selections';
 MultipleSelection.parameters = {
@@ -523,13 +348,6 @@ Disabled.parameters = {
   },
 };
 
-// ✅ helper used only by the Sizes story
-const SIZE_VARIANTS = [
-  { key: 'sm', labelSize: 'xs', size: 'sm', selectFieldId: 'fruit-size-sm', label: 'Small field with x-small label' },
-  { key: 'default', labelSize: 'sm', size: '', selectFieldId: 'fruit-size-default', label: 'Default field with sm label' },
-  { key: 'lg', labelSize: 'lg', size: 'lg', selectFieldId: 'fruit-size-lg', label: 'Large field with lg label' },
-];
-
 export const SizeVariants = {
   render: args => {
     const container = document.createElement('div');
@@ -562,7 +380,6 @@ export const SizeVariants = {
 
   args: {
     ...BasicSingle.args,
-    // keep the base args consistent; each variant overrides `size`
   },
 
   storyName: 'Size Variants',
@@ -630,7 +447,6 @@ export const OptionsViaJSONAttribute = () => {
   `;
 
   const el = wrap.querySelector('plumage-select-field-component');
-  // ensure placeholder is the selected option
   if (el) el.value = '';
 
   return wrap;
@@ -660,50 +476,6 @@ OptionsViaJSONAttribute.parameters = {
       story: 'An example of passing options as a JSON string via the `options` attribute.',
     },
   },
-};
-
-/* ======================================================
- * Accessibility Matrix Story (computed) — matches layout pattern requested
- * ====================================================== */
-
-const getSnapshot = host => {
-  const select = host?.querySelector('select');
-
-  const label = host?.querySelector('label');
-  const describedby = (select?.getAttribute('aria-describedby') || '').trim();
-  const describedIds = describedby ? describedby.split(/\s+/).filter(Boolean) : [];
-
-  const resolve = id => {
-    if (!id) return false;
-    return !!host?.querySelector(`#${id}`);
-  };
-
-  const labelledby = (select?.getAttribute('aria-labelledby') || '').trim();
-  const labelledIds = labelledby ? labelledby.split(/\s+/).filter(Boolean) : [];
-
-  return {
-    host: host?.tagName?.toLowerCase() ?? null,
-    selectId: select?.getAttribute('id') ?? null,
-    labelId: label?.getAttribute('id') ?? null,
-    labelFor: label?.getAttribute('for') ?? label?.getAttribute('htmlfor') ?? null,
-    role: select?.getAttribute('role') ?? null,
-    sizeAttr: select?.getAttribute('size') ?? null,
-    multiple: select?.hasAttribute('multiple') ?? false,
-    disabled: select?.hasAttribute('disabled') ?? false,
-    required: select?.hasAttribute('required') ?? false,
-    'aria-label': select?.getAttribute('aria-label') ?? null,
-    'aria-labelledby': labelledby || null,
-    'aria-describedby': describedby || null,
-    'aria-required': select?.getAttribute('aria-required') ?? null,
-    'aria-invalid': select?.getAttribute('aria-invalid') ?? null,
-    'aria-disabled': select?.getAttribute('aria-disabled') ?? null,
-    labelledbyIds: labelledIds,
-    labelledbyAllResolve: labelledIds.every(resolve),
-    describedbyIds: describedIds,
-    describedbyAllResolve: describedIds.every(resolve),
-    hasValidationMessage: !!host?.querySelector('.invalid-feedback'),
-    validationId: host?.querySelector('.invalid-feedback')?.getAttribute('id') ?? null,
-  };
 };
 
 export const AccessibilityMatrix = {

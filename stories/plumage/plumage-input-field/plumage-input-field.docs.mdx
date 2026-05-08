@@ -1,0 +1,40 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as PlumageInputFieldStories from './plumage-input-field.stories.js';
+import { reactExample, vueExample, angularExample } from './plumage-input-field.examples.js';
+
+<Meta of={PlumageInputFieldStories} />
+
+# Plumage Input Field
+
+<Description of={PlumageInputFieldStories} />
+
+## HTML
+
+```html
+<plumage-input-field-component
+  label="First Name"
+  input-id="first-name"
+  placeholder="Enter your first name"
+  value="Taylor"
+></plumage-input-field-component>
+
+<script>
+  const el = document.querySelector('plumage-input-field-component');
+
+  el.addEventListener('valueChange', (event) => {
+    console.log('valueChange:', event.detail);
+  });
+</script>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

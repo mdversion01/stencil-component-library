@@ -1,0 +1,53 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as InputGroupStories from './input-group-component.stories.js';
+import { reactExample, vueExample, angularExample } from './input-group-component.examples.js';
+
+<Meta of={InputGroupStories} />
+
+# Input Group
+
+<Description of={InputGroupStories} />
+
+## HTML
+
+```html
+<input-group-component
+  append
+  label="Amount"
+  input-id="amount-play"
+  placeholder="Enter amount"
+  append-icon="fa-solid fa-dollar-sign"
+></input-group-component>
+
+<input-group-component
+  prepend
+  append
+  label="Amount"
+  input-id="amount-both-icons"
+  prepend-icon="fa-solid fa-dollar-sign"
+  append-icon="fa-solid fa-dollar-sign"
+></input-group-component>
+
+<input-group-component
+  prepend
+  append
+  other-content
+  label="Search"
+  input-id="search-q"
+>
+  <button-component slot="prepend" type="button" variant="secondary">Go</button-component>
+  <button-component slot="append" type="button" variant="secondary">Go</button-component>
+</input-group-component>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

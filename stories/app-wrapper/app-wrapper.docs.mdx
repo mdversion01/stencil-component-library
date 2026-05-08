@@ -1,6 +1,6 @@
 import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
 import * as AppWrapperStories from './app-wrapper.stories.js';
-import { reactExample, vueExample, angularExample } from './app-wrapper.examples.js';
+import { reactExample, vueExample, angularExample, svelteExample, svelteKitExample } from './app-wrapper.examples.js';
 
 <Meta of={AppWrapperStories} />
 
@@ -23,13 +23,19 @@ import { reactExample, vueExample, angularExample } from './app-wrapper.examples
 ```
 
 ## React
+
 <Source code={reactExample} language="tsx" />
 ## Vue
 <Source code={vueExample} language="vue" />
 ## Angular
 <Source code={angularExample} language="ts" />
+## Svelte
+<Source code={svelteExample} language="svelte" />
+## SvelteKit
+<Source code={svelteKitExample} language="svelte" />
 
 {/* Show a live preview + controls table */}
+
 <Primary />
 <Controls />
 <Stories />

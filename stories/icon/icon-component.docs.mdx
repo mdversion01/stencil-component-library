@@ -1,0 +1,42 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as IconStories from './icon-component.stories.js';
+import { reactExample, vueExample, angularExample } from './icon-component.examples.js';
+
+<Meta of={IconStories} />
+
+# Icon
+
+<Description of={IconStories} />
+
+## HTML
+
+```html
+<icon-component icon="fa-solid fa-user" icon-size="20"></icon-component>
+
+<icon-component
+  icon="fa-solid fa-circle-info"
+  color="#2563eb"
+  icon-size="18"
+  icon-aria-hidden="false"
+  icon-aria-label="Information"
+></icon-component>
+
+<icon-component
+  icon="fa-solid fa-bell"
+  token-icon
+  icon-margin="left"
+  color="#dc2626"
+></icon-component>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

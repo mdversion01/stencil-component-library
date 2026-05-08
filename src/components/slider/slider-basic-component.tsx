@@ -8,7 +8,6 @@ import { Component, Prop, Event, EventEmitter, h, State, Watch, Element } from '
 export class SliderBasicComponent {
   @Element() host!: HTMLElement;
 
-  // Public API
   @Prop() label: string = '';
   @Prop({ mutable: true }) value: number = 0;
   @Prop() disabled: boolean = false;
@@ -24,30 +23,26 @@ export class SliderBasicComponent {
   @Prop() sliderThumbLabel: boolean = false;
 
   @Prop() snapToTicks: boolean = false;
-  /** Accepts array or JSON string in HTML */
   @Prop() tickValues: number[] | string = [];
-  @Prop() tickLabels: boolean = false; // renders labels under ticks
-  @Prop() ticks: number | '' = ''; // not used directly for math, but parity kept
+  @Prop() tickLabels: boolean = false;
+  @Prop() ticks: number | '' = '';
 
   @Prop() unit: string = '';
   @Prop() variant: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark' = '';
+  @Prop() orientation: 'horizontal' | 'vertical' = 'horizontal';
 
-  // ----------------- a11y override props -----------------
   @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
   @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
 
-  // Internal
   @State() private _ticks: number[] = [];
 
-  private containerEl?: HTMLDivElement;
+  private controlsEl?: HTMLDivElement;
   private dragging = false;
   private a11yBaseId = `slider_${Math.random().toString(36).slice(2, 11)}`;
 
-  // Events
-  @Event() valueChange: EventEmitter<{ value: number }>;
+  @Event() valueChange!: EventEmitter<{ value: number }>;
 
-  // Lifecycle
   componentWillLoad() {
     this._ticks = this.normalizeTicks(this.tickValues);
     this.value = this.clamp(this.value, this.min, this.max);
@@ -68,7 +63,6 @@ export class SliderBasicComponent {
     this.value = this.clamp(this.value, this.min, this.max);
   }
 
-  // Helpers
   private normalizeTicks(input: number[] | string): number[] {
     if (Array.isArray(input)) return input.map(n => Number(n)).filter(n => Number.isFinite(n));
     if (typeof input === 'string' && input.trim()) {
@@ -76,7 +70,6 @@ export class SliderBasicComponent {
         const parsed = JSON.parse(input);
         return Array.isArray(parsed) ? parsed.map(n => Number(n)).filter(n => Number.isFinite(n)) : [];
       } catch {
-        // eslint-disable-next-line no-console
         console.warn('[slider-basic-component] Invalid JSON for tickValues');
       }
     }
@@ -110,13 +103,9 @@ export class SliderBasicComponent {
   }
 
   private percent(): number {
-    return Math.round(this.ratio() * 100);
+    return this.ratio() * 100;
   }
 
-  /**
-   * Format numeric values with unit.
-   * If unit is "$", prefix it (e.g. $42). Otherwise suffix (e.g. 42°F).
-   */
   private formatWithUnit(n: number): string {
     const unit = String(this.unit ?? '').trim();
     const rounded = Math.round(n);
@@ -153,29 +142,31 @@ export class SliderBasicComponent {
     const autoLabelId = hasVisibleLabel ? this.getA11yLabelId() : undefined;
 
     const ariaLabelledBy = userLabelledBy ?? autoLabelId;
-
-    // If aria-labelledby exists, do NOT set aria-label.
-    // Otherwise: aria-label = (user aria-label) OR (label prop) OR fallback
     const ariaLabel = ariaLabelledBy ? undefined : (userLabel ?? ((this.label ?? '').trim() ? (this.label ?? '').trim() : 'Slider'));
-
     const ariaDescribedBy = userDescribedBy;
 
     return { ariaLabel, ariaLabelledBy, ariaDescribedBy };
   }
 
-  // Keyboard (attach to the element that has role="slider" + tabindex)
   private handleKeyDown = (event: KeyboardEvent) => {
     if (this.disabled) return;
     let inc = 0;
+    const isVertical = this.orientation === 'vertical';
 
     switch (event.key) {
-      case 'ArrowRight':
       case 'ArrowUp':
         inc = this.findNearestTick(this.value, +1);
         break;
-      case 'ArrowLeft':
       case 'ArrowDown':
         inc = this.findNearestTick(this.value, -1);
+        break;
+      case 'ArrowRight':
+        if (!isVertical) inc = this.findNearestTick(this.value, +1);
+        else return;
+        break;
+      case 'ArrowLeft':
+        if (!isVertical) inc = this.findNearestTick(this.value, -1);
+        else return;
         break;
       case 'Home':
         this.setValue(this.min);
@@ -202,7 +193,7 @@ export class SliderBasicComponent {
   };
 
   private findNearestTick(currentValue: number, direction: 1 | -1): number {
-    if (!this.snapToTicks || this._ticks.length === 0) return direction; // step 1
+    if (!this.snapToTicks || this._ticks.length === 0) return direction;
 
     const idx = this._ticks.indexOf(currentValue);
     if (idx >= 0) {
@@ -220,11 +211,11 @@ export class SliderBasicComponent {
     return 0;
   }
 
-  // Drag
   private addDragListeners() {
     window.addEventListener('mousemove', this.onDragMove);
     window.addEventListener('mouseup', this.onDragStop);
   }
+
   private removeDragListeners() {
     window.removeEventListener('mousemove', this.onDragMove);
     window.removeEventListener('mouseup', this.onDragStop);
@@ -239,13 +230,27 @@ export class SliderBasicComponent {
     el?.classList.add('slider-thumb-container-active');
   };
 
-  private onDragMove = (e: MouseEvent) => {
-    if (!this.dragging || !this.containerEl) return;
+  private getValueFromPointer(e: MouseEvent): number | null {
+    if (!this.controlsEl) return null;
 
-    const rect = this.containerEl.getBoundingClientRect();
+    const rect = this.controlsEl.getBoundingClientRect();
+
+    if (this.orientation === 'vertical') {
+      const y = this.clamp(e.clientY - rect.top, 0, rect.height);
+      const pct = 1 - y / Math.max(1, rect.height);
+      return this.min + pct * (this.max - this.min);
+    }
+
     const x = this.clamp(e.clientX - rect.left, 0, rect.width);
     const pct = x / Math.max(1, rect.width);
-    let newValue = this.min + pct * (this.max - this.min);
+    return this.min + pct * (this.max - this.min);
+  }
+
+  private onDragMove = (e: MouseEvent) => {
+    if (!this.dragging || !this.controlsEl) return;
+
+    let newValue = this.getValueFromPointer(e);
+    if (newValue == null) return;
 
     if (this.snapToTicks && this._ticks.length > 0) {
       let nearest = this._ticks[0];
@@ -278,12 +283,73 @@ export class SliderBasicComponent {
     }
   }
 
+  private getThumbPositionStyle(pct: number) {
+    if (this.orientation === 'vertical') {
+      return {
+        bottom: `${pct}%`,
+        left: '50%',
+        transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s',
+      };
+    }
+
+    return {
+      left: `${pct}%`,
+      transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s',
+    };
+  }
+
+  private getMovingTrackStyle(pct: number) {
+    if (this.orientation === 'vertical') {
+      return {
+        bottom: '0',
+        height: `${pct}%`,
+      };
+    }
+
+    return { width: `${pct}%` };
+  }
+
+  private getThumbLabelStyle(pct: number) {
+    if (this.orientation === 'vertical') {
+      return {
+        position: 'absolute',
+        bottom: `calc(${pct}% - 18px)`,
+        left: 'calc(100% + 18px)',
+        transform: 'translateY(50%) translateY(-50%) rotate(140deg)',
+      };
+    }
+
+    return {
+      position: 'absolute',
+      left: `${pct}%`,
+      transform: 'translateX(-50%) translateY(30%) translateY(-100%) rotate(45deg)',
+    };
+  }
+
+  private getTickStyle(pos: number) {
+    if (this.orientation === 'vertical') {
+      return { bottom: `${pos}%`, left: '50%' };
+    }
+
+    return { left: `${pos}%`, top: 'calc(50% - 10px)' };
+  }
+
+  private getTickLabelStyle(pos: number) {
+    if (this.orientation === 'vertical') {
+      return { bottom: `${pos}%`, left: 'calc(50% + 8px)', transform: 'translateY(50%)' };
+    }
+
+    return { left: `${pos}%`, transform: 'translateX(-50%)' };
+  }
+
   render() {
     const pct = this.percent();
     const color = this.getColor(this.variant);
     const showTicks = Array.isArray(this._ticks) && this._ticks.length > 0 && (Number(this.ticks) || this.tickLabels);
+    const showMinMaxLabels = this._ticks.length === 0;
     const hideLeft = this.hideTextBoxes || this.hideLeftTextBox;
     const hideRight = this.hideTextBoxes || this.hideRightTextBox;
+    const isVertical = this.orientation === 'vertical';
 
     const labelId = this.getA11yLabelId();
     const valueId = this.getA11yValueId();
@@ -291,39 +357,41 @@ export class SliderBasicComponent {
     const { ariaLabel, ariaLabelledBy, ariaDescribedBy } = this.computeA11y();
 
     const thumbContainerClass = ['slider-thumb-container', color, this.disabled ? 'slider-thumb-container-disabled' : ''].filter(Boolean).join(' ');
-
     const valueText = this.formatWithUnit(this.value);
+    const sliderClass = ['slider', isVertical ? 'slider-vertical' : 'slider-horizontal'].filter(Boolean).join(' ');
+    const sliderContainerClass = ['slider-container', isVertical ? 'slider-container-vertical' : 'slider-container-horizontal'].filter(Boolean).join(' ');
+    const sliderControlsClass = ['slider-controls', isVertical ? 'slider-controls-vertical' : 'slider-controls-horizontal'].filter(Boolean).join(' ');
 
     return (
       <div class="sc-slider">
         <div class="slider-wrapper">
-          <div dir="ltr" class="slider" role="presentation">
-            {/* Visible label (also becomes aria-labelledby target) */}
+          <div dir="ltr" class={sliderClass} role="presentation">
             {this.sliderThumbLabel || !this.label ? null : (
               <label id={labelId} class="form-control-label">
                 {this.label} <span id={valueId}>{valueText}</span>
               </label>
             )}
 
-            <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
+            <div class={sliderContainerClass}>
               {!hideLeft && (
                 <div role="textbox" aria-readonly="true" aria-labelledby={labelId} class="slider-value-left">
                   {valueText}
                 </div>
               )}
 
-              <div class="slider-min-value" aria-hidden="true">
-                {this.formatWithUnit(this.min)}
-              </div>
+              {showMinMaxLabels ? (
+                <div class="slider-min-value" aria-hidden="true">
+                  {this.formatWithUnit(this.min)}
+                </div>
+              ) : null}
 
-              <div class="slider-controls" role="presentation">
-                <div class="slider-background-track" style={{ width: '100%' }} aria-hidden="true" />
-                <div class={`slider-moving-track ${color}`} style={{ width: `${pct}%` }} aria-hidden="true" />
+              <div class={sliderControlsClass} role="presentation" ref={el => (this.controlsEl = el as HTMLDivElement)}>
+                <div class="slider-background-track" aria-hidden="true" />
+                <div class={`slider-moving-track ${color}`} style={this.getMovingTrackStyle(pct)} aria-hidden="true" />
 
-                {/* ✅ THIS is the one and only slider element for AT + keyboard focus */}
                 <div
                   class={thumbContainerClass}
-                  style={{ left: `${pct}%`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
+                  style={this.getThumbPositionStyle(pct)}
                   onMouseDown={this.disabled ? undefined : this.onDragStart}
                   onKeyDown={this.handleKeyDown}
                   onKeyUp={this.handleKeyUp}
@@ -336,10 +404,9 @@ export class SliderBasicComponent {
                   aria-valuemax={String(this.max)}
                   aria-valuenow={String(Math.round(this.value))}
                   aria-valuetext={valueText}
-                  aria-orientation="horizontal"
+                  aria-orientation={this.orientation}
                   aria-disabled={this.disabled ? 'true' : undefined}
                 >
-                  {/* purely visual thumb */}
                   {this.plumage ? (
                     <div class={`slider-handle ${color}`} role="presentation" aria-hidden="true" />
                   ) : (
@@ -347,15 +414,7 @@ export class SliderBasicComponent {
                   )}
 
                   {this.sliderThumbLabel ? (
-                    <div
-                      class={`slider-thumb-label ${color}`}
-                      style={{
-                        position: 'absolute',
-                        left: `${pct}%`,
-                        transform: 'translateX(-50%) translateY(30%) translateY(-100%) rotate(45deg)',
-                      }}
-                      aria-hidden="true"
-                    >
+                    <div class={`slider-thumb-label ${color}`} style={this.getThumbLabelStyle(pct)} aria-hidden="true">
                       <div>
                         <span>{valueText}</span>
                       </div>
@@ -369,9 +428,9 @@ export class SliderBasicComponent {
                       const pos = ((tick - this.min) / Math.max(1e-9, this.max - this.min)) * 100;
                       return (
                         <div>
-                          <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} />
+                          <div class="slider-tick" style={this.getTickStyle(pos)} />
                           {this.tickLabels ? (
-                            <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
+                            <div class="slider-tick-label" style={this.getTickLabelStyle(pos)}>
                               {this.formatWithUnit(tick)}
                             </div>
                           ) : null}
@@ -382,9 +441,11 @@ export class SliderBasicComponent {
                 ) : null}
               </div>
 
-              <div class="slider-max-value" aria-hidden="true">
-                {this.formatWithUnit(this.max)}
-              </div>
+              {showMinMaxLabels ? (
+                <div class="slider-max-value" aria-hidden="true">
+                  {this.formatWithUnit(this.max)}
+                </div>
+              ) : null}
 
               {!hideRight && (
                 <div role="textbox" aria-readonly="true" aria-labelledby={labelId} class="slider-value-right">

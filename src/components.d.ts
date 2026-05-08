@@ -1583,11 +1583,23 @@ export namespace Components {
         /**
           * @default false
          */
+        "hideLeftTextBox": boolean;
+        /**
+          * @default false
+         */
         "hideRightTextBox": boolean;
+        /**
+          * @default false
+         */
+        "hideTextBoxes": boolean;
         /**
           * @default ''
          */
         "label": string;
+        /**
+          * @default 'horizontal'
+         */
+        "orientation": 'horizontal' | 'vertical';
         /**
           * @default false
          */
@@ -1597,7 +1609,10 @@ export namespace Components {
          */
         "selectedIndex": number;
         /**
-          * Accepts array or JSON string in HTML
+          * @default false
+         */
+        "sliderThumbLabel": boolean;
+        /**
           * @default []
          */
         "stringValues": string[] | string;
@@ -1722,7 +1737,7 @@ export namespace Components {
          */
         "variant": string;
     }
-    interface FormComponent {
+    interface FormWrapperComponent {
         /**
           * Native form attributes
           * @default ''
@@ -1780,7 +1795,7 @@ export namespace Components {
          */
         "method": string;
         /**
-          * If true, do not render a <form>. Inputs placed outside the form can still read formId via closest('form-component') and set their own form attribute.
+          * If true, do not render a <form>. Inputs placed outside the form can still read formId via closest('form-wrapper-component') and set their own form attribute.
           * @default false
          */
         "outsideOfForm": boolean;
@@ -2191,9 +2206,17 @@ export namespace Components {
          */
         "min": number;
         /**
+          * @default 'horizontal'
+         */
+        "orientation": 'horizontal' | 'vertical';
+        /**
           * @default false
          */
         "plumage": boolean;
+        /**
+          * @default 'inside'
+         */
+        "rangeFillMode": 'inside' | 'outside';
         /**
           * @default false
          */
@@ -2207,7 +2230,6 @@ export namespace Components {
          */
         "tickLabels": boolean;
         /**
-          * Accepts array or JSON string in HTML
           * @default []
          */
         "tickValues": number[] | string;
@@ -3592,6 +3614,10 @@ export namespace Components {
          */
         "min": number;
         /**
+          * @default 'horizontal'
+         */
+        "orientation": 'horizontal' | 'vertical';
+        /**
           * @default false
          */
         "plumage": boolean;
@@ -3608,7 +3634,6 @@ export namespace Components {
          */
         "tickLabels": boolean;
         /**
-          * Accepts array or JSON string in HTML
           * @default []
          */
         "tickValues": number[] | string;
@@ -3666,9 +3691,17 @@ export namespace Components {
          */
         "min": number;
         /**
+          * @default 'horizontal'
+         */
+        "orientation": 'horizontal' | 'vertical';
+        /**
           * @default false
          */
         "plumage": boolean;
+        /**
+          * @default 'inside'
+         */
+        "rangeFillMode": 'inside' | 'outside';
         /**
           * @default 0
          */
@@ -4908,11 +4941,11 @@ declare global {
         prototype: HTMLDropdownComponentElement;
         new (): HTMLDropdownComponentElement;
     };
-    interface HTMLFormComponentElement extends Components.FormComponent, HTMLStencilElement {
+    interface HTMLFormWrapperComponentElement extends Components.FormWrapperComponent, HTMLStencilElement {
     }
-    var HTMLFormComponentElement: {
-        prototype: HTMLFormComponentElement;
-        new (): HTMLFormComponentElement;
+    var HTMLFormWrapperComponentElement: {
+        prototype: HTMLFormWrapperComponentElement;
+        new (): HTMLFormWrapperComponentElement;
     };
     interface HTMLIconComponentElement extends Components.IconComponent, HTMLStencilElement {
     }
@@ -5362,7 +5395,7 @@ declare global {
         "discrete-slider-component": HTMLDiscreteSliderComponentElement;
         "divider-component": HTMLDividerComponentElement;
         "dropdown-component": HTMLDropdownComponentElement;
-        "form-component": HTMLFormComponentElement;
+        "form-wrapper-component": HTMLFormWrapperComponentElement;
         "icon-component": HTMLIconComponentElement;
         "input-field-component": HTMLInputFieldComponentElement;
         "input-group-component": HTMLInputGroupComponentElement;
@@ -6982,13 +7015,25 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "hideLeftTextBox"?: boolean;
+        /**
+          * @default false
+         */
         "hideRightTextBox"?: boolean;
+        /**
+          * @default false
+         */
+        "hideTextBoxes"?: boolean;
         /**
           * @default ''
          */
         "label"?: string;
         "onIndexChange"?: (event: DiscreteSliderComponentCustomEvent<{ index: number }>) => void;
         "onValueChange"?: (event: DiscreteSliderComponentCustomEvent<{ value: string }>) => void;
+        /**
+          * @default 'horizontal'
+         */
+        "orientation"?: 'horizontal' | 'vertical';
         /**
           * @default false
          */
@@ -6998,7 +7043,10 @@ declare namespace LocalJSX {
          */
         "selectedIndex"?: number;
         /**
-          * Accepts array or JSON string in HTML
+          * @default false
+         */
+        "sliderThumbLabel"?: boolean;
+        /**
           * @default []
          */
         "stringValues"?: string[] | string;
@@ -7124,7 +7172,7 @@ declare namespace LocalJSX {
          */
         "variant"?: string;
     }
-    interface FormComponent {
+    interface FormWrapperComponent {
         /**
           * Native form attributes
           * @default ''
@@ -7182,7 +7230,7 @@ declare namespace LocalJSX {
          */
         "method"?: string;
         /**
-          * If true, do not render a <form>. Inputs placed outside the form can still read formId via closest('form-component') and set their own form attribute.
+          * If true, do not render a <form>. Inputs placed outside the form can still read formId via closest('form-wrapper-component') and set their own form attribute.
           * @default false
          */
         "outsideOfForm"?: boolean;
@@ -7589,9 +7637,17 @@ declare namespace LocalJSX {
         "min"?: number;
         "onRangeChange"?: (event: MultiRangeSliderComponentCustomEvent<{ lowerValue: number; upperValue: number }>) => void;
         /**
+          * @default 'horizontal'
+         */
+        "orientation"?: 'horizontal' | 'vertical';
+        /**
           * @default false
          */
         "plumage"?: boolean;
+        /**
+          * @default 'inside'
+         */
+        "rangeFillMode"?: 'inside' | 'outside';
         /**
           * @default false
          */
@@ -7605,7 +7661,6 @@ declare namespace LocalJSX {
          */
         "tickLabels"?: boolean;
         /**
-          * Accepts array or JSON string in HTML
           * @default []
          */
         "tickValues"?: number[] | string;
@@ -9010,6 +9065,10 @@ declare namespace LocalJSX {
         "min"?: number;
         "onValueChange"?: (event: SliderBasicComponentCustomEvent<{ value: number }>) => void;
         /**
+          * @default 'horizontal'
+         */
+        "orientation"?: 'horizontal' | 'vertical';
+        /**
           * @default false
          */
         "plumage"?: boolean;
@@ -9026,7 +9085,6 @@ declare namespace LocalJSX {
          */
         "tickLabels"?: boolean;
         /**
-          * Accepts array or JSON string in HTML
           * @default []
          */
         "tickValues"?: number[] | string;
@@ -9084,9 +9142,17 @@ declare namespace LocalJSX {
          */
         "min"?: number;
         /**
+          * @default 'horizontal'
+         */
+        "orientation"?: 'horizontal' | 'vertical';
+        /**
           * @default false
          */
         "plumage"?: boolean;
+        /**
+          * @default 'inside'
+         */
+        "rangeFillMode"?: 'inside' | 'outside';
         /**
           * @default 0
          */
@@ -9914,7 +9980,7 @@ declare namespace LocalJSX {
         "discrete-slider-component": DiscreteSliderComponent;
         "divider-component": DividerComponent;
         "dropdown-component": DropdownComponent;
-        "form-component": FormComponent;
+        "form-wrapper-component": FormWrapperComponent;
         "icon-component": IconComponent;
         "input-field-component": InputFieldComponent;
         "input-group-component": InputGroupComponent;
@@ -9972,7 +10038,7 @@ declare module "@stencil/core" {
             "discrete-slider-component": LocalJSX.DiscreteSliderComponent & JSXBase.HTMLAttributes<HTMLDiscreteSliderComponentElement>;
             "divider-component": LocalJSX.DividerComponent & JSXBase.HTMLAttributes<HTMLDividerComponentElement>;
             "dropdown-component": LocalJSX.DropdownComponent & JSXBase.HTMLAttributes<HTMLDropdownComponentElement>;
-            "form-component": LocalJSX.FormComponent & JSXBase.HTMLAttributes<HTMLFormComponentElement>;
+            "form-wrapper-component": LocalJSX.FormWrapperComponent & JSXBase.HTMLAttributes<HTMLFormWrapperComponentElement>;
             "icon-component": LocalJSX.IconComponent & JSXBase.HTMLAttributes<HTMLIconComponentElement>;
             "input-field-component": LocalJSX.InputFieldComponent & JSXBase.HTMLAttributes<HTMLInputFieldComponentElement>;
             "input-group-component": LocalJSX.InputGroupComponent & JSXBase.HTMLAttributes<HTMLInputGroupComponentElement>;

@@ -1,5 +1,6 @@
 // src/stories/multi-range-slider-component.stories.js
-// UPDATED: Accessibility Matrix now also shows keyboard focus behavior (lower vs upper thumb)
+import MultiRangeSliderDocs from './multi-range-slider-component.docs.mdx';
+import { Template, normalizeHtml, getSnapshot } from './multi-range-slider-component.story-helpers';
 
 export default {
   title: 'Components/Slider/Multi Range Slider',
@@ -7,8 +8,10 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
+      page: MultiRangeSliderDocs,
       description: {
-        component: 'A multi-range slider component allowing selection of a range between two values.',
+        component:
+          'A multi-range slider component allowing selection of a range between two values, with support for horizontal and vertical orientation.',
       },
       source: {
         type: 'dynamic',
@@ -18,9 +21,6 @@ export default {
     },
   },
   argTypes: {
-    /* -----------------------------
-     Accessibility
-  ------------------------------ */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -152,101 +152,25 @@ export default {
       table: { category: 'Ticks & Snapping' },
       description: 'Array of numeric values for tick marks.',
     },
+
+    rangeFillMode: {
+      control: { type: 'select' },
+      options: ['inside', 'outside'],
+      name: 'range-fill-mode',
+      table: { defaultValue: { summary: 'inside' }, category: 'Range Fill' },
+      description: 'Controls whether the colored range is inside the thumbs or outside them.',
+    },
+
+    orientation: {
+      control: { type: 'select' },
+      options: ['horizontal', 'vertical'],
+      name: 'orientation',
+      table: { defaultValue: { summary: 'horizontal' }, category: 'Layout' },
+      description: 'Controls whether the slider is rendered horizontally or vertically.',
+    },
   },
 };
 
-/* helpers */
-const boolLine = (name, on) => (on ? ` ${name}` : '');
-const attrLine = (name, v) => {
-  if (v === undefined || v === null || v === '') return '';
-  const s = String(v);
-  const useSingle = s.includes('"');
-  const escaped = useSingle ? s.replace(/'/g, '&#39;') : s.replace(/"/g, '&quot;');
-  return ` ${name}=${useSingle ? `'${escaped}'` : `"${escaped}"`}`;
-};
-
-const serializeArray = (val) => {
-  if (val === undefined || val === null) return '';
-  try {
-    return JSON.stringify(val);
-  } catch {
-    return '';
-  }
-};
-
-const normalizeHtml = (html) => {
-  const lines = String(html ?? '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      out.push('');
-      prevBlank = true;
-      continue;
-    }
-    out.push(line);
-    prevBlank = false;
-  }
-
-  while (out.length && out[0] === '') out.shift();
-  while (out.length && out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-const normalizeIdList = (v) => {
-  const s = String(v ?? '').trim();
-  if (!s) return '';
-  return s.split(/\s+/).filter(Boolean).join(' ');
-};
-
-/* template */
-const Template = (args) => {
-  const attrs = [
-    // a11y
-    attrLine('aria-label', args.ariaLabel),
-    attrLine('aria-labelledby', normalizeIdList(args.ariaLabelledby)),
-    attrLine('aria-describedby', normalizeIdList(args.ariaDescribedby)),
-
-    boolLine('disabled', args.disabled),
-    boolLine('hide-left-text-box', args.hideLeftTextBox),
-    boolLine('hide-right-text-box', args.hideRightTextBox),
-    boolLine('hide-text-boxes', args.hideTextBoxes),
-    attrLine('label', args.label),
-    attrLine('lower-value', args.lowerValue),
-    attrLine('max', args.max),
-    attrLine('min', args.min),
-    boolLine('plumage', args.plumage),
-    boolLine('slider-thumb-label', args.sliderThumbLabel),
-    boolLine('snap-to-ticks', args.snapToTicks),
-    boolLine('tick-labels', args.tickLabels),
-    attrLine('tick-values', serializeArray(args.tickValues)),
-    attrLine('unit', args.unit),
-    attrLine('upper-value', args.upperValue),
-    attrLine('variant', args.variant),
-  ]
-    .filter(Boolean)
-    .join('');
-
-  return normalizeHtml(`
-<div style="margin-top: 40px; margin-bottom: 40px;">
-  <!-- div wrapper is for better appearance in Storybook -->
-  <multi-range-slider-component${attrs}></multi-range-slider-component>
-</div>
-`);
-};
-
-/**
- * Apply “dynamic source” ONLY to Template-driven stories
- * so Docs Source stays in sync with Controls.
- */
 const templateStoryParameters = {
   docs: {
     source: {
@@ -257,7 +181,6 @@ const templateStoryParameters = {
   },
 };
 
-/* stories */
 export const Basic = Template.bind({});
 Basic.args = {
   disabled: false,
@@ -276,6 +199,8 @@ Basic.args = {
   unit: '$',
   upperValue: 80,
   variant: 'primary',
+  rangeFillMode: 'inside',
+  orientation: 'horizontal',
 
   ariaLabel: '',
   ariaLabelledby: '',
@@ -287,6 +212,24 @@ Basic.parameters = {
     ...templateStoryParameters.docs,
     description: {
       story: 'A basic multi-range slider allowing selection of a range between two values.',
+    },
+  },
+};
+
+export const Vertical = Template.bind({});
+Vertical.args = {
+  ...Basic.args,
+  label: 'Vertical price range',
+  lowerValue: 20,
+  upperValue: 80,
+  orientation: 'vertical',
+};
+Vertical.parameters = {
+  ...templateStoryParameters,
+  docs: {
+    ...templateStoryParameters.docs,
+    description: {
+      story: 'A vertical multi-range slider allowing selection of a range between two values.',
     },
   },
 };
@@ -309,6 +252,22 @@ WithThumbLabels.parameters = {
   },
 };
 
+export const VerticalWithThumbLabels = Template.bind({});
+VerticalWithThumbLabels.args = {
+  ...WithThumbLabels.args,
+  label: 'Vertical temperature',
+  orientation: 'vertical',
+};
+VerticalWithThumbLabels.parameters = {
+  ...templateStoryParameters,
+  docs: {
+    ...templateStoryParameters.docs,
+    description: {
+      story: 'A vertical multi-range slider that shows the current values on the slider thumbs.',
+    },
+  },
+};
+
 export const WithTicksAndSnapping = Template.bind({});
 WithTicksAndSnapping.args = {
   ...Basic.args,
@@ -327,6 +286,22 @@ WithTicksAndSnapping.parameters = {
     ...templateStoryParameters.docs,
     description: {
       story: 'A multi-range slider with tick marks and snapping functionality.',
+    },
+  },
+};
+
+export const VerticalWithTicksAndSnapping = Template.bind({});
+VerticalWithTicksAndSnapping.args = {
+  ...WithTicksAndSnapping.args,
+  label: 'Vertical steps',
+  orientation: 'vertical',
+};
+VerticalWithTicksAndSnapping.parameters = {
+  ...templateStoryParameters,
+  docs: {
+    ...templateStoryParameters.docs,
+    description: {
+      story: 'A vertical multi-range slider with tick marks and snapping functionality.',
     },
   },
 };
@@ -408,52 +383,39 @@ Disabled.parameters = {
   },
 };
 
-/* ============================== Accessibility Matrix (computed) ============================== */
+export const OutsideFill = Template.bind({});
+OutsideFill.args = {
+  ...Basic.args,
+  label: 'Outside fill range',
+  rangeFillMode: 'outside',
+};
+OutsideFill.parameters = {
+  ...templateStoryParameters,
+  docs: {
+    ...templateStoryParameters.docs,
+    description: {
+      story: 'A multi-range slider using `range-fill-mode="outside"` so the colored segments appear outside the two thumbs.',
+    },
+  },
+};
 
-const splitIds = (v) => String(v || '').trim().split(/\s+/).filter(Boolean);
-
-const getSnapshot = (host, scopeRoot) => {
-  const sliders = Array.from(host.querySelectorAll('[role="slider"]'));
-  const labelEl = host.querySelector('label.form-control-label');
-  const labelledby = (sliders[0]?.getAttribute('aria-labelledby') || '').trim();
-  const describedby = (sliders[0]?.getAttribute('aria-describedby') || '').trim();
-
-  const resolve = (id) => {
-    if (!id) return false;
-    try {
-      return !!scopeRoot.querySelector(`#${CSS.escape(id)}`);
-    } catch {
-      return false;
-    }
-  };
-
-  const labelledIds = splitIds(labelledby);
-  const describedIds = splitIds(describedby);
-
-  return {
-    host: host?.tagName?.toLowerCase?.() ?? null,
-    sliderCount: sliders.length,
-    labelElId: labelEl?.getAttribute('id') ?? null,
-    activeElementTag: document.activeElement?.tagName?.toLowerCase?.() ?? null,
-    sliders: sliders.map((s, i) => ({
-      index: i,
-      role: s.getAttribute('role'),
-      tabIndex: s.getAttribute('tabindex'),
-      isFocused: document.activeElement === s,
-      'aria-disabled': s.getAttribute('aria-disabled'),
-      'aria-label': s.getAttribute('aria-label'),
-      'aria-labelledby': s.getAttribute('aria-labelledby'),
-      'aria-describedby': s.getAttribute('aria-describedby'),
-      'aria-valuemin': s.getAttribute('aria-valuemin'),
-      'aria-valuemax': s.getAttribute('aria-valuemax'),
-      'aria-valuenow': s.getAttribute('aria-valuenow'),
-      'aria-valuetext': s.getAttribute('aria-valuetext'),
-    })),
-    labelledbyIds: labelledIds,
-    labelledbyAllResolve: labelledIds.every(resolve),
-    describedbyIds: describedIds,
-    describedbyAllResolve: describedIds.every(resolve),
-  };
+export const VerticalOutsideFill = Template.bind({});
+VerticalOutsideFill.args = {
+  ...Basic.args,
+  label: 'Vertical outside fill',
+  lowerValue: 20,
+  upperValue: 80,
+  orientation: 'vertical',
+  rangeFillMode: 'outside',
+};
+VerticalOutsideFill.parameters = {
+  ...templateStoryParameters,
+  docs: {
+    ...templateStoryParameters.docs,
+    description: {
+      story: 'A vertical multi-range slider using `range-fill-mode="outside"` so the colored segments appear outside the two thumbs.',
+    },
+  },
 };
 
 export const AccessibilityMatrix = {
@@ -468,7 +430,7 @@ export const AccessibilityMatrix = {
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
       <div style="opacity:.8">
-        Prints computed <code>role</code> + <code>aria-*</code> + ids for default / inline / horizontal, validation, disabled,
+        Prints computed <code>role</code> + <code>aria-*</code> + ids for default / inline / horizontal / vertical / validation / disabled,
         and includes a keyboard focus demo (Tab + Arrow keys).
       </div>
     `;
@@ -508,9 +470,13 @@ export const AccessibilityMatrix = {
         const host = mount.querySelector('multi-range-slider-component');
 
         if (host?.componentOnReady) {
-          try { await host.componentOnReady(); } catch (_e) {}
+          try {
+            await host.componentOnReady();
+          } catch (_e) {}
         } else if (window.customElements?.whenDefined) {
-          try { await customElements.whenDefined('multi-range-slider-component'); } catch (_e) {}
+          try {
+            await customElements.whenDefined('multi-range-slider-component');
+          } catch (_e) {}
         }
 
         const renderSnapshot = () => {
@@ -521,17 +487,16 @@ export const AccessibilityMatrix = {
 
         if (keyboardDemo) {
           const sliders = Array.from(host.querySelectorAll('[role="slider"]'));
-          // Update snapshot when focus/keydown happens.
-          sliders.forEach((s) => {
+          sliders.forEach(s => {
             s.addEventListener('focus', renderSnapshot);
             s.addEventListener('blur', renderSnapshot);
             s.addEventListener('keydown', renderSnapshot);
           });
 
-          // Small helper text to make it obvious.
           const hint = document.createElement('div');
           hint.style.opacity = '.85';
-          hint.innerHTML = `Tip: click a thumb, then press <kbd>Tab</kbd> to move focus to the other thumb. Use <kbd>Arrow</kbd> keys to change the focused thumb.`;
+          hint.innerHTML =
+            'Tip: click a thumb, then press <kbd>Tab</kbd> to move focus to the other thumb. Use <kbd>Arrow</kbd> keys to change the focused thumb.';
           box.insertBefore(hint, pre);
         }
       };
@@ -597,6 +562,19 @@ export const AccessibilityMatrix = {
     );
 
     wrap.appendChild(
+      card('Vertical', {
+        label: 'Vertical range',
+        min: 0,
+        max: 100,
+        lowerValue: 20,
+        upperValue: 80,
+        unit: '$',
+        orientation: 'vertical',
+        ariaLabel: 'Vertical range slider',
+      }),
+    );
+
+    wrap.appendChild(
       card(
         'Error / validation (simulated via aria-describedby)',
         {
@@ -623,7 +601,6 @@ export const AccessibilityMatrix = {
       }),
     );
 
-    // ✅ NEW: keyboard focus demo (Tab between thumbs + arrows apply to focused thumb)
     wrap.appendChild(
       card(
         'Keyboard focus demo (Tab switches thumb)',
@@ -649,7 +626,11 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Prints computed accessibility wiring for the multi-range slider: two focusable `role="slider"` thumbs with `aria-valuemin/max/now/text`, optional `aria-label` / `aria-labelledby` / `aria-describedby`, plus simulated inline/horizontal layouts, simulated error describedby, disabled state, and a keyboard demo where focus determines which thumb arrow keys modify.',
+          'Prints computed accessibility wiring for the multi-range slider: two focusable `role="slider"` thumbs with `aria-valuemin/max/now/text`, optional `aria-label` / `aria-labelledby` / `aria-describedby`, plus simulated inline/horizontal/vertical layouts, simulated error describedby, disabled state, and a keyboard demo where focus determines which thumb arrow keys modify.',
+      },
+      source: {
+        language: 'html',
+        transform: (_src, ctx) => Template(ctx.args),
       },
     },
   },

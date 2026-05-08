@@ -1,446 +1,19 @@
-// stories/plumage-autocomplete-multiselect.stories.js
-
-/* ------------------------------------------------------------------
- * Storybook: Plumage Autocomplete – Multiselect
- * Component tag: <plumage-autocomplete-multiselect-component>
- * ------------------------------------------------------------------ */
+import DocsPage from './plumage-autocomplete-multiselect.docs.mdx';
+import {
+  DocsWrapStyles,
+  FRUIT,
+  SIZE_VARIANTS,
+  buildDocsComponentHtml,
+  buildDocsHtmlMany,
+  mkMatrixCellA11y,
+  normalize,
+  renderComponent,
+  setOptionsWhenReady,
+  setValueWhenReady,
+  wrapDocsHtml,
+} from './plumage-autocomplete-multiselect.story-helpers.js';
 
 const TAG = 'plumage-autocomplete-multiselect-component';
-
-/* ======================================================
- * Docs: wrap long code lines + show formatted HTML
- * ====================================================== */
-
-// Inject CSS so Docs code blocks wrap instead of horizontal scrolling forever.
-const DocsWrapStyles = () => {
-  const style = document.createElement('style');
-  style.innerHTML = `
-    .sbdocs pre,
-    .sbdocs pre code {
-      white-space: pre-wrap !important;
-      word-break: break-word !important;
-      overflow-x: auto !important;
-    }
-  `;
-  return style;
-};
-
-/** Collapse extra blank lines + trim edges (keeps intentional line breaks) */
-const normalize = (txt) => {
-  const lines = String(txt)
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      prevBlank = true;
-      out.push('');
-      continue;
-    }
-    prevBlank = false;
-    out.push(line);
-  }
-
-  while (out[0] === '') out.shift();
-  while (out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-/** Put each attribute on its own line (for Docs code previews) */
-const attrLines = (pairs) =>
-  pairs
-    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
-    .map(([k, v]) => (v === true ? `${k}` : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
-    .join('\n  ');
-
-/** Docs wrapper */
-const wrapDocsHtml = (innerHtml) =>
-  normalize(`
-<div style="max-width:680px;">
-  ${String(innerHtml).replace(/\n/g, '\n  ')}
-</div>
-`);
-
-/** HTML shown in Docs "Code" panel (always HTML + line-broken attrs) */
-const buildDocsHtml = (args) =>
-  normalize(`
-<${TAG}
-  ${attrLines([
-    // ids/labels
-    ['id', args.id],
-    ['input-id', args.inputId],
-    ['label', args.label],
-    ['placeholder', args.placeholder],
-
-    // ✅ controlled selections (as attribute in docs)
-    // Note: Stencil string[] props passed via attribute arrive as string; we hydrate property in JS below.
-    ['value', Array.isArray(args.value) ? args.value.join(', ') : args.value],
-
-    // layout
-    ['form-layout', args.formLayout],
-    ['label-align', args.labelAlign],
-    ['label-size', args.labelSize],
-    ['size', args.size],
-
-    // legacy numeric columns (horizontal)
-    ['label-col', args.labelCol],
-    ['input-col', args.inputCol],
-
-    // responsive cols
-    ['label-cols', args.labelCols],
-    ['input-cols', args.inputCols],
-
-    // validation / state
-    ['required', args.required],
-    ['validation', args.validation],
-    ['validation-message', args.validationMessage],
-    ['error', args.error],
-    ['error-message', args.errorMessage],
-    ['disabled', args.disabled],
-    ['label-hidden', args.labelHidden],
-    ['dev-mode', args.devMode],
-
-    // actions / icons
-    ['add-btn', args.addBtn],
-    ['editable', args.editable],
-    ['add-icon', args.addIcon],
-    ['remove-clear-btn', args.removeClearBtn],
-    ['clear-icon', args.clearIcon],
-    ['clear-input-on-blur-outside', args.clearInputOnBlurOutside],
-
-    // behavior
-    ['auto-sort', args.autoSort],
-    ['add-new-on-enter', args.addNewOnEnter],
-    ['preserve-input-on-select', args.preserveInputOnSelect],
-
-    // badges
-    ['badge-variant', args.badgeVariant],
-    ['badge-shape', args.badgeShape],
-    ['badge-inline-styles', args.badgeInlineStyles],
-
-    // form data
-    ['name', args.name],
-    ['raw-input-name', args.rawInputName],
-
-    // misc & a11y
-    ['type', args.type],
-    ['form-id', args.formId],
-    ['arialabelled-by', args.arialabelledBy],
-  ])}
-></${TAG}>
-`);
-
-/** For multi-instance stories (like Sizes) */
-const buildDocsHtmlMany = (blocks) =>
-  normalize(`
-<div style="display:grid; gap:14px; max-width:760px;">
-${blocks.map((b) => `  ${b.replace(/\n/g, '\n  ')}`).join('\n')}
-</div>
-`);
-
-/* ======================================================
- * DOM render helpers (no blank lines in Docs preview)
- * ====================================================== */
-
-const setAttr = (el, name, value) => {
-  if (value === true) el.setAttribute(name, '');
-  else if (value === false || value == null || value === '') el.removeAttribute(name);
-  else el.setAttribute(name, String(value));
-};
-
-const setOptionsWhenReady = async (el, options) => {
-  const safe = Array.isArray(options) ? options.slice() : [];
-
-  if (typeof el.componentOnReady === 'function') {
-    await el.componentOnReady();
-  } else if (window.customElements?.whenDefined) {
-    await customElements.whenDefined(TAG);
-  }
-
-  el.options = safe;
-};
-
-const setValueWhenReady = async (el, value) => {
-  const safe = Array.isArray(value) ? value.slice() : [];
-
-  if (typeof el.componentOnReady === 'function') {
-    await el.componentOnReady();
-  } else if (window.customElements?.whenDefined) {
-    await customElements.whenDefined(TAG);
-  }
-
-  // ✅ set as PROPERTY so the component receives string[]
-  el.value = safe;
-};
-
-const wrapEl = (childEl) => {
-  const wrap = document.createElement('div');
-  wrap.style.maxWidth = '680px';
-  wrap.appendChild(childEl);
-  return wrap;
-};
-
-const wireLogsOnce = (el) => {
-  if (!el || el._wired) return;
-  el.addEventListener('multiSelectChange', (e) => console.log('[multiSelectChange]', e.detail));
-  el.addEventListener('valueChange', (e) => console.log('[valueChange]', e.detail));
-  el.addEventListener('itemSelect', (e) => console.log('[itemSelect]', e.detail));
-  el.addEventListener('clear', () => console.log('[clear]'));
-  el._wired = true;
-};
-
-const renderOne = (args, { idOverride } = {}) => {
-  const el = document.createElement(TAG);
-
-  const id = idOverride || args.inputId || args.id || 'plumage-ac-multiselect';
-  setAttr(el, 'id', id);
-
-  // core
-  setAttr(el, 'id', args.id);
-  setAttr(el, 'input-id', args.inputId);
-  setAttr(el, 'label', args.label);
-  setAttr(el, 'placeholder', args.placeholder);
-
-  // ui/layout
-  setAttr(el, 'size', args.size);
-  setAttr(el, 'form-layout', args.formLayout);
-  setAttr(el, 'label-hidden', args.labelHidden);
-  setAttr(el, 'label-align', args.labelAlign);
-  setAttr(el, 'label-size', args.labelSize);
-  setAttr(el, 'label-col', args.labelCol);
-  setAttr(el, 'input-col', args.inputCol);
-  setAttr(el, 'label-cols', args.labelCols);
-  setAttr(el, 'input-cols', args.inputCols);
-
-  // validation/state
-  args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
-  args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
-  setAttr(el, 'validation-message', args.validationMessage);
-
-  args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
-  setAttr(el, 'error-message', args.errorMessage);
-
-  args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
-
-  // controls
-  args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
-  setAttr(el, 'clear-icon', args.clearIcon);
-
-  // add/behavior
-  args.addBtn ? el.setAttribute('add-btn', '') : el.removeAttribute('add-btn');
-  setAttr(el, 'add-icon', args.addIcon);
-  args.editable ? el.setAttribute('editable', '') : el.removeAttribute('editable');
-  setAttr(el, 'add-new-on-enter', args.addNewOnEnter);
-  setAttr(el, 'auto-sort', args.autoSort);
-  args.preserveInputOnSelect ? el.setAttribute('preserve-input-on-select', '') : el.removeAttribute('preserve-input-on-select');
-  args.clearInputOnBlurOutside ? el.setAttribute('clear-input-on-blur-outside', '') : el.removeAttribute('clear-input-on-blur-outside');
-
-  // badges
-  setAttr(el, 'badge-variant', args.badgeVariant);
-  setAttr(el, 'badge-shape', args.badgeShape);
-  setAttr(el, 'badge-inline-styles', args.badgeInlineStyles);
-
-  // form data
-  setAttr(el, 'name', args.name);
-  setAttr(el, 'raw-input-name', args.rawInputName);
-
-  // misc/a11y
-  setAttr(el, 'type', args.type || 'text');
-  setAttr(el, 'form-id', args.formId);
-  args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
-  setAttr(el, 'arialabelled-by', args.arialabelledBy);
-
-  wireLogsOnce(el);
-
-  // options + controlled value after hydration
-  setOptionsWhenReady(el, Array.isArray(args.options) ? args.options : []);
-  setValueWhenReady(el, Array.isArray(args.value) ? args.value : []);
-
-  return wrapEl(el);
-};
-
-/* ======================================================
- * Sample data
- * ====================================================== */
-
-const FRUIT = [
-  'Apple',
-  'Apparatus',
-  'Apple Pie',
-  'Applegate',
-  'Apricot',
-  'Banana',
-  'Blackberry',
-  'Blueberry',
-  'Cherry',
-  'Clementine',
-  'Date',
-  'Dragonfruit',
-  'Grape',
-  'Grapefruit',
-  'Kiwi',
-  'Lemon',
-  'Lime',
-  'Mango',
-  'Orange',
-  'Papaya',
-  'Peach',
-  'Pear',
-  'Pineapple',
-  'Plum',
-  'Strawberry',
-];
-
-/* ======================================================
- * Accessibility matrix helpers (unique names; no redeclare)
- * ====================================================== */
-
-const escapeHtmlA11y = (s) =>
-  String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-
-const whenReadyA11y = (el) => {
-  if (!el) return Promise.resolve();
-  if (typeof el.componentOnReady === 'function') return el.componentOnReady();
-  if (window.customElements?.whenDefined) return customElements.whenDefined(TAG);
-  return Promise.resolve();
-};
-
-const readA11ySnapshotA11y = (el) => {
-  const input = el?.querySelector?.('input') || null;
-
-  const keys = [
-    'role',
-    'id',
-    'name',
-    'type',
-    'placeholder',
-    'aria-autocomplete',
-    'aria-expanded',
-    'aria-controls',
-    'aria-activedescendant',
-    'aria-haspopup',
-    'aria-required',
-    'aria-invalid',
-    'aria-disabled',
-    'aria-describedby',
-    'aria-labelledby',
-    'aria-label',
-  ];
-
-  const inputAttrs = {};
-  for (const k of keys) inputAttrs[k] = input ? input.getAttribute(k) : null;
-
-  const listboxId = inputAttrs['aria-controls'] || null;
-  const listbox = listboxId ? el.querySelector(`#${listboxId}`) : null;
-
-  const listboxAttrs = {};
-  if (listbox) {
-    for (const k of ['id', 'role', 'aria-multiselectable']) listboxAttrs[k] = listbox.getAttribute(k);
-  }
-
-  const live = input?.id ? el.querySelector(`#${input.id}-live`) : el.querySelector('.sr-only[aria-live]');
-  const messages = el.querySelectorAll('[role="alert"], .invalid-feedback, .error-message');
-  const msgTexts = Array.from(messages)
-    .map((n) => (n.textContent || '').trim())
-    .filter(Boolean);
-
-  return {
-    ids: {
-      inputId: input?.id || null,
-      listboxId,
-      liveId: live?.getAttribute?.('id') || null,
-    },
-    input: inputAttrs,
-    listbox: listboxAttrs,
-    liveRegion: live
-      ? {
-          id: live.getAttribute('id'),
-          'aria-live': live.getAttribute('aria-live'),
-          'aria-atomic': live.getAttribute('aria-atomic'),
-          text: (live.textContent || '').trim(),
-        }
-      : null,
-    messages: msgTexts,
-  };
-};
-
-const mkMatrixCellA11y = (args, { idOverride } = {}) => {
-  const wrap = document.createElement('div');
-  wrap.style.border = '1px solid #ddd';
-  wrap.style.borderRadius = '10px';
-  wrap.style.padding = '12px';
-  wrap.style.background = 'white';
-
-  const title = document.createElement('div');
-  title.style.fontWeight = '700';
-  title.style.marginBottom = '8px';
-  title.textContent = args.__title || 'Variant';
-
-  const compWrap = renderOne(args, { idOverride });
-  compWrap.style.maxWidth = '100%';
-
-  const status = document.createElement('div');
-  status.style.fontSize = '12px';
-  status.style.color = '#666';
-  status.style.marginTop = '8px';
-  status.textContent = 'Computing ARIA snapshot…';
-
-  const pre = document.createElement('pre');
-  pre.style.marginTop = '10px';
-  pre.style.background = '#f8f9fa';
-  pre.style.borderRadius = '8px';
-  pre.style.padding = '10px';
-  pre.style.fontSize = '12px';
-  pre.style.lineHeight = '1.35';
-  pre.style.whiteSpace = 'pre-wrap';
-  pre.textContent = '';
-
-  wrap.appendChild(title);
-  wrap.appendChild(compWrap);
-  wrap.appendChild(status);
-  wrap.appendChild(pre);
-
-  const el = compWrap.querySelector(TAG);
-
-  whenReadyA11y(el)
-    .then(() => {
-      // Force validation state when required (so aria-invalid + message IDs render)
-      if (el && args.required && typeof el.validate === 'function') {
-        try {
-          el.validate();
-        } catch (_) {
-          // ignore
-        }
-      }
-      return new Promise((r) => setTimeout(r, 0));
-    })
-    .then(() => {
-      const snap = el ? readA11ySnapshotA11y(el) : null;
-      pre.innerHTML = escapeHtmlA11y(JSON.stringify(snap, null, 2));
-      status.textContent = 'Snapshot ready.';
-    })
-    .catch((err) => {
-      status.textContent = 'Snapshot error.';
-      pre.innerHTML = escapeHtmlA11y(String(err?.stack || err));
-    });
-
-  return wrap;
-};
-
-/* ======================================================
- * Default export
- * ====================================================== */
 
 export default {
   title: 'Form/Plumage Autocomplete Multiselect',
@@ -458,24 +31,21 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
+      page: DocsPage,
       description: {
         component:
           'Plumage-styled multiselect autocomplete with badges, keyboard navigation (arrows/Home/End/PageUp/PageDown/Escape), optional adding/deleting user options, and responsive layouts (stacked, horizontal, inline).',
       },
       source: {
         language: 'html',
-        transform: (_src, ctx) => wrapDocsHtml(buildDocsHtml(ctx.args)),
+        transform: (_src, ctx) => wrapDocsHtml(buildDocsComponentHtml(ctx.args)),
       },
     },
   },
 
-  render: (args) => renderOne(args),
+  render: (args) => renderComponent(args),
 
   argTypes: {
-    /* =========================
-     * Attributes
-     * ========================= */
-
     addNewOnEnter: {
       control: 'boolean',
       name: 'add-new-on-enter',
@@ -519,18 +89,12 @@ export default {
       table: { category: 'Attributes' },
       description: 'The name attribute for the raw input hidden field.',
     },
-
-    /* Controlled value (selected items) */
     value: {
       control: 'object',
       name: 'value',
       table: { category: 'Attributes' },
       description: 'Controlled selected items (string[]). Set as a property at runtime (not as an attribute).',
     },
-
-    /* =========================
-     * Badge Attributes
-     * ========================= */
 
     badgeInlineStyles: {
       control: 'text',
@@ -550,10 +114,6 @@ export default {
       table: { category: 'Badge Attributes' },
       description: 'The variant style for the badge.',
     },
-
-    /* =========================
-     * Button Attributes
-     * ========================= */
 
     addBtn: {
       control: 'boolean',
@@ -580,9 +140,6 @@ export default {
       description: 'Removes the clear button from the input field.',
     },
 
-    /* =========================
-     * Data
-     * ========================= */
     options: {
       control: 'object',
       name: 'options',
@@ -590,9 +147,6 @@ export default {
       description: 'The array of options available for selection in the autocomplete.',
     },
 
-    /* =========================
-     * Dev Mode
-     * ========================= */
     devMode: {
       control: 'boolean',
       name: 'dev-mode',
@@ -600,9 +154,6 @@ export default {
       description: 'Enables developer mode (extra logging).',
     },
 
-    /* =========================
-     * Input Attributes
-     * ========================= */
     arialabelledBy: {
       control: 'text',
       name: 'arialabelled-by',
@@ -644,10 +195,6 @@ export default {
       table: { category: 'Input Attributes' },
       description: 'The type attribute for the input element.',
     },
-
-    /* =========================
-     * Layout
-     * ========================= */
 
     formId: {
       control: 'text',
@@ -713,9 +260,6 @@ export default {
       description: 'Sets the size of the input field.',
     },
 
-    /* =========================
-     * Validation
-     * ========================= */
     error: {
       control: 'boolean',
       table: { category: 'Validation', defaultValue: { summary: false } },
@@ -788,10 +332,6 @@ export default {
     value: [],
   },
 };
-
-/* ======================================================
- * Stories
- * ====================================================== */
 
 export const Basic = {
   args: {
@@ -877,26 +417,20 @@ export const InlineLayout = {
     options: ['Austin', 'Boston', 'Chicago', 'Denver', 'Los Angeles', 'New York', 'Portland', 'Seattle', 'San Francisco'],
     value: [],
   },
-
-  render: (args) => renderOne(args, { idOverride: 'ams_inline1' }),
-
-  parameters: {
-    docs: {
-      source: {
-        language: 'html',
-        transform: (_src, ctx) => wrapDocsHtml(buildDocsHtml(ctx.args)),
-      },
-      description: {
-        story: 'Applies an inline layout where the label and input are displayed in a single line.',
-      },
-      story: { height: '300px' },
+  render: (args) => renderComponent(args, { idOverride: 'ams_inline1' }),
+};
+InlineLayout.storyName = 'Inline Layout';
+InlineLayout.parameters = {
+  docs: {
+    description: {
+      story: 'Applies an inline layout where the label and input are displayed in a single line.',
     },
+    story: { height: '300px' },
   },
 };
 
 export const EditableKeepOpenRapidPick = {
   name: 'Adding new items to the dropdown list (Editable)',
-
   args: {
     inputId: 'ams-editable',
     label: 'Tags',
@@ -912,25 +446,18 @@ export const EditableKeepOpenRapidPick = {
     options: ['Frontend', 'Backend', 'Fullstack', 'DevOps', 'Data', 'Design', 'QA', 'Product'],
     value: ['Frontend', 'DevOps'],
   },
-
-  render: (args) => renderOne(args, { idOverride: 'ams_edit' }),
-
-  parameters: {
-    docs: {
-      source: {
-        language: 'html',
-        transform: (_src, ctx) => wrapDocsHtml(buildDocsHtml(ctx.args)),
-      },
-      description: {
-        story:
-          'When "editable" is enabled, users can type new items/options into the field and those items will appear in the dropdown list if removed from the input. This also allows deleting the added item from the dropdown list.',
-      },
-      story: { height: '300px' },
+  render: (args) => renderComponent(args, { idOverride: 'ams_edit' }),
+};
+EditableKeepOpenRapidPick.parameters = {
+  docs: {
+    description: {
+      story:
+        'When "editable" is enabled, users can type new items/options into the field and those items will appear in the dropdown list if removed from the input. This also allows deleting the added item from the dropdown list.',
     },
+    story: { height: '300px' },
   },
 };
 
-/* Controlled Value (array) story */
 export const ControlledValue = {
   name: 'Controlled Value (array)',
   args: {
@@ -948,7 +475,7 @@ export const ControlledValue = {
     const wrap = document.createElement('div');
     wrap.style.maxWidth = '760px';
 
-    const elWrap = renderOne(args, { idOverride: 'ams_controlled' });
+    const elWrap = renderComponent(args, { idOverride: 'ams_controlled' });
     const el = elWrap.querySelector(TAG);
 
     const buttons = document.createElement('div');
@@ -998,7 +525,7 @@ export const ControlledValue = {
         transform: (_src, ctx) =>
           wrapDocsHtml(
             normalize(`
-${buildDocsHtml(ctx.args)}
+${buildDocsComponentHtml(ctx.args)}
 <!-- Value is a string[] prop; in real usage you typically set it as a property:
 <script>
   const el = document.querySelector('${TAG}');
@@ -1017,13 +544,6 @@ ${buildDocsHtml(ctx.args)}
   },
 };
 
-// helper: Sizes story variants
-const SIZES_VARIANTS = [
-  { idOverride: 'ams_sm', inputId: 'ams-sm', size: 'sm', label: 'Small', editable: false, addBtn: false, validationMessage: '', autoSort: false, addNewOnEnter: false, addIcon: '', value: [] },
-  { idOverride: 'ams_md', inputId: 'ams-md', size: '', label: 'Default', editable: false, addBtn: false, validationMessage: '', autoSort: false, addNewOnEnter: false, addIcon: '', value: [] },
-  { idOverride: 'ams_lg', inputId: 'ams-lg', size: 'lg', label: 'Large', editable: false, addBtn: false, validationMessage: '', autoSort: false, addNewOnEnter: false, addIcon: '', value: [] },
-];
-
 export const Sizes = {
   render: (args) => {
     const container = document.createElement('div');
@@ -1031,8 +551,8 @@ export const Sizes = {
     container.style.gap = '14px';
     container.style.maxWidth = '760px';
 
-    for (const v of SIZES_VARIANTS) {
-      const elWrap = renderOne({ ...args, ...v }, { idOverride: v.idOverride });
+    for (const v of SIZE_VARIANTS) {
+      const elWrap = renderComponent({ ...args, ...v }, { idOverride: v.id });
       container.appendChild(elWrap);
 
       const el = elWrap.querySelector(TAG);
@@ -1044,15 +564,14 @@ export const Sizes = {
 
     return container;
   },
-
   parameters: {
     docs: {
       source: {
         language: 'html',
         transform: (_src, ctx) =>
           buildDocsHtmlMany(
-            SIZES_VARIANTS.map((v) =>
-              buildDocsHtml({
+            SIZE_VARIANTS.map((v) =>
+              buildDocsComponentHtml({
                 ...ctx.args,
                 ...v,
                 options: undefined,
@@ -1144,10 +663,6 @@ BadgeStyling.parameters = {
   },
 };
 
-/* ======================================================
- * ✅ NEW: Accessibility matrix
- * ====================================================== */
-
 export const AccessibilityMatrix = {
   name: 'Accessibility matrix',
   args: {
@@ -1200,26 +715,23 @@ export const AccessibilityMatrix = {
     outer.appendChild(container);
 
     const variants = [
-      // Default
       { __title: 'Default / normal', inputId: 'ams-a11y-default', label: 'Default', formLayout: '', disabled: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
       { __title: 'Default / validation (required)', inputId: 'ams-a11y-default-validation', label: 'Default + validation', formLayout: '', disabled: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
       { __title: 'Default / error', inputId: 'ams-a11y-default-error', label: 'Default + error', formLayout: '', disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
       { __title: 'Default / disabled', inputId: 'ams-a11y-default-disabled', label: 'Default disabled', formLayout: '', disabled: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Apple', 'Mango'] },
 
-      // Inline
       { __title: 'Inline / normal', inputId: 'ams-a11y-inline', label: 'Inline', formLayout: 'inline', disabled: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
       { __title: 'Inline / validation (required)', inputId: 'ams-a11y-inline-validation', label: 'Inline + validation', formLayout: 'inline', disabled: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
       { __title: 'Inline / error', inputId: 'ams-a11y-inline-error', label: 'Inline + error', formLayout: 'inline', disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
       { __title: 'Inline / disabled', inputId: 'ams-a11y-inline-disabled', label: 'Inline disabled', formLayout: 'inline', disabled: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Banana', 'Orange'] },
 
-      // Horizontal
       { __title: 'Horizontal / normal', inputId: 'ams-a11y-horizontal', label: 'Horizontal', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
       { __title: 'Horizontal / validation (required)', inputId: 'ams-a11y-horizontal-validation', label: 'Horizontal + validation', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
       { __title: 'Horizontal / error', inputId: 'ams-a11y-horizontal-error', label: 'Horizontal + error', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
       { __title: 'Horizontal / disabled', inputId: 'ams-a11y-horizontal-disabled', label: 'Horizontal disabled', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Strawberry'] },
     ];
 
-    for (let i = 0; i < variants.length; i++) {
+    for (let i = 0; i < variants.length; i += 1) {
       const v = variants[i];
       const cell = mkMatrixCellA11y(
         {
@@ -1249,7 +761,7 @@ export const AccessibilityMatrix = {
             normalize(`
 <!-- Accessibility Matrix renders multiple instances; see Canvas for printed computed role + aria-* + ids. -->
 
-${buildDocsHtml({
+${buildDocsComponentHtml({
   ...ctx.args,
   inputId: 'ams-a11y-default',
   label: 'Default',

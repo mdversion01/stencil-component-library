@@ -383,7 +383,7 @@ export class ToastsComponent {
                   Notification
                 </span>
               )}
-              <small class="text-muted mr-2">{toast.additionalHdrContent}</small>
+              <small class="additional-text text-muted mr-2">{toast.additionalHdrContent}</small>
             </div>
             {this.renderCloseButton(toast)}
           </header>

@@ -1,0 +1,35 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as RadioInputStories from './radio-input-component.stories';
+import { reactExample, vueExample, angularExample } from './radio-input-component.examples';
+
+<Meta of={RadioInputStories} />
+
+# Radio Input
+
+<Description of={RadioInputStories} />
+
+## HTML
+
+```html
+<radio-input-component
+  bs-radio-group
+  name="preferredContact"
+  group-title="Preferred Contact"
+  group-options='[
+    { "inputId": "contact-email", "value": "email", "labelTxt": "Email", "checked": true },
+    { "inputId": "contact-sms", "value": "sms", "labelTxt": "SMS" },
+    { "inputId": "contact-call", "value": "call", "labelTxt": "Phone Call" }
+  ]'
+></radio-input-component>
+```
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

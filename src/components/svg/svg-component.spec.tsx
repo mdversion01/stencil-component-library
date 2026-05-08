@@ -4,13 +4,15 @@ import { h } from '@stencil/core';
 import { SvgComponent } from './svg-component';
 
 function normalizeIds(html: string) {
-  return html
-    // normalize title/desc ids
-    .replace(/svg_[a-z0-9]+-title/g, 'svg_TEST-title')
-    .replace(/svg_[a-z0-9]+-desc/g, 'svg_TEST-desc')
-    // normalize any aria-labelledby/aria-describedby references to those ids too
-    .replace(/aria-labelledby="svg_[a-z0-9]+-title"/g, 'aria-labelledby="svg_TEST-title"')
-    .replace(/aria-describedby="svg_[a-z0-9]+-desc"/g, 'aria-describedby="svg_TEST-desc"');
+  return (
+    html
+      // normalize title/desc ids
+      .replace(/svg_[a-z0-9]+-title/g, 'svg_TEST-title')
+      .replace(/svg_[a-z0-9]+-desc/g, 'svg_TEST-desc')
+      // normalize any aria-labelledby/aria-describedby references to those ids too
+      .replace(/aria-labelledby="svg_[a-z0-9]+-title"/g, 'aria-labelledby="svg_TEST-title"')
+      .replace(/aria-describedby="svg_[a-z0-9]+-desc"/g, 'aria-describedby="svg_TEST-desc"')
+  );
 }
 
 describe('svg-component', () => {
@@ -128,18 +130,16 @@ describe('svg-component', () => {
 
     await page.waitForChanges();
 
-    const cmp = page.rootInstance as any;
-    const svg = (page.root as HTMLElement).querySelector('svg') as SVGSVGElement;
+    const host = page.root as HTMLElement;
+    const svg = host.querySelector('svg') as SVGSVGElement;
 
-    // meaningful
     expect(svg.getAttribute('aria-hidden')).toBeNull();
     expect(svg.getAttribute('aria-label')).toBe('Close');
     expect(svg.getAttribute('role')).toBe('img');
-    expect(svg.getAttribute('tabindex')).toBeNull(); // meaningful icons not tabbable by default
+    expect(svg.getAttribute('tabindex')).toBeNull();
 
-    // switch to decorative
-    cmp.svgAriaHidden = 'true';
-    cmp.svgAriaLabel = '';
+    host.setAttribute('svg-aria-hidden', 'true');
+    host.setAttribute('svg-aria-label', '');
     await page.waitForChanges();
 
     expect(svg.getAttribute('aria-hidden')).toBe('true');
@@ -155,14 +155,7 @@ describe('svg-component', () => {
   it('supports svg-title/svg-desc: injects <title>/<desc>, uses title as name when no aria-label/labelledby, uses desc as describedby when none provided', async () => {
     const page = await newSpecPage({
       components: [SvgComponent],
-      template: () => (
-        <svg-component
-          svg-aria-hidden="false"
-          svg-title="Settings"
-          svg-desc="Opens settings"
-          path={'<path d="M0 0H10V10H0z" />'}
-        ></svg-component>
-      ),
+      template: () => <svg-component svg-aria-hidden="false" svg-title="Settings" svg-desc="Opens settings" path={'<path d="M0 0H10V10H0z" />'}></svg-component>,
     });
 
     await page.waitForChanges();
@@ -193,13 +186,13 @@ describe('svg-component', () => {
 
     await page.waitForChanges();
 
-    const cmp = page.rootInstance as any;
-    const svg = (page.root as HTMLElement).querySelector('svg') as SVGSVGElement;
+    const host = page.root as HTMLElement;
+    const svg = host.querySelector('svg') as SVGSVGElement;
 
     const p1 = svg.querySelector('path') as SVGPathElement;
     expect(p1.getAttribute('d')).toBe('M1 1H2V2H1z');
 
-    cmp.path = '<path d="M9 9H10V10H9z" />';
+    host.setAttribute('path', '<path d="M9 9H10V10H9z" />');
     await page.waitForChanges();
 
     const p2 = svg.querySelector('path') as SVGPathElement;

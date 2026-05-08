@@ -1,13 +1,58 @@
-import { Meta, Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
 import * as ToastStories from './toasts-component.stories';
+import { reactExample, vueExample, angularExample, svelteExample, svelteKitExample } from './toasts-component.examples';
 
 <Meta of={ToastStories} />
 
-<Title />
-<Description />
+# Toasts Component
+
+<Description of={ToastStories} />
+
+## HTML
+
+```html
+<section>
+  <button type="button" id="show-toast-btn">Show Toast</button>
+
+  <toasts-component id="toast-example" aria-label="Notifications" position="top-right" append-toast persistent></toasts-component>
+</section>
+
+<script>
+  (async () => {
+    await customElements.whenDefined('toasts-component');
+
+    const host = document.getElementById('toast-example');
+    const btn = document.getElementById('show-toast-btn');
+
+    btn.addEventListener('click', async () => {
+      await host.showToast({
+        toastTitle: 'Saved',
+        content: 'Your changes were saved successfully.',
+        variantClass: 'success',
+        svgIcon: 'check-circle-fill',
+        additionalHdrContent: 'Just now',
+        persistent: true,
+      });
+    });
+  })();
+</script>
+```
+
+## React
+
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+## Svelte
+<Source code={svelteExample} language="svelte" />
+## SvelteKit
+<Source code={svelteKitExample} language="svelte" />
+
+{/* Show a live preview + controls table */}
 
 <Primary />
 <Controls />
-
 {/* ✅ This is what stops the “Primary appears again as first story” problem */}
 <Stories includePrimary={false} />

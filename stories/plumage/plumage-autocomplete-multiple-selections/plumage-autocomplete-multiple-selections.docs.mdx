@@ -1,0 +1,53 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as PlumageAutocompleteMultipleSelectionsStories from './plumage-autocomplete-multiple-selections.stories.js';
+import { reactExample, vueExample, angularExample } from './plumage-autocomplete-multiple-selections.examples.js';
+
+<Meta of={PlumageAutocompleteMultipleSelectionsStories} />
+
+# Plumage Autocomplete Multiple Selections
+
+<Description of={PlumageAutocompleteMultipleSelectionsStories} />
+
+## HTML
+
+```html
+<plumage-autocomplete-multiple-selections-component
+  input-id="acms-example"
+  label="Favorite fruits"
+  placeholder="Type to search"
+  editable
+  add-btn
+  badge-variant="primary"
+></plumage-autocomplete-multiple-selections-component>
+
+<script>
+  const el = document.querySelector('plumage-autocomplete-multiple-selections-component')
+
+  el.options = [
+    'Apple',
+    'Banana',
+    'Orange',
+    'Mango',
+    'Blueberry',
+    'Strawberry'
+  ]
+
+  el.value = ['Apple', 'Mango']
+
+  el.addEventListener('multiSelectChange', (event) => {
+    console.log('multiSelectChange:', event.detail)
+  })
+</script>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

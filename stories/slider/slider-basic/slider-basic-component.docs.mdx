@@ -1,0 +1,63 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as SliderBasicStories from './slider-basic-component.stories';
+import {
+  reactExample,
+  reactVerticalExample,
+  vueExample,
+  vueVerticalExample,
+  angularExample,
+  angularVerticalExample,
+} from './slider-basic-component.examples';
+
+<Meta of={SliderBasicStories} />
+
+# Basic Slider
+
+<Description of={SliderBasicStories} />
+
+## HTML
+### Horizontal and Vertical Sliders
+
+```html
+<div style="margin-top: 40px; margin-bottom: 40px;">
+  <slider-basic-component
+    label="Volume"
+    min="0"
+    max="100"
+    value="30"
+    variant="primary"
+    orientation="horizontal"
+  ></slider-basic-component>
+</div>
+
+<div style="margin-top: 40px; margin-bottom: 40px;">
+  <slider-basic-component
+    label="Volume"
+    min="0"
+    max="100"
+    value="30"
+    variant="primary"
+    orientation="vertical"
+  ></slider-basic-component>
+</div>
+```
+## React
+### Horizontal Slider
+<Source code={reactExample} language="tsx" />
+### Vertical Slider
+<Source code={reactVerticalExample} language="tsx" />
+## Vue
+### Horizontal Slider
+<Source code={vueExample} language="vue" />
+### Vertical Slider
+<Source code={vueVerticalExample} language="vue" />
+## Angular
+### Horizontal Slider
+<Source code={angularExample} language="ts" />
+### Vertical Slider
+<Source code={angularVerticalExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

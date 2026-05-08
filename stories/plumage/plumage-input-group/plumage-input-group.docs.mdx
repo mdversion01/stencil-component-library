@@ -1,0 +1,41 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as PlumageInputGroupStories from './plumage-input-group.stories.js';
+import { reactExample, vueExample, angularExample } from './plumage-input-group.examples.js';
+
+<Meta of={PlumageInputGroupStories} />
+
+# Plumage Input Group
+
+<Description of={PlumageInputGroupStories} />
+
+## HTML
+
+```html
+<plumage-input-group-component
+  label="Amount"
+  input-id="amount-example"
+  placeholder="Enter amount"
+  append
+  append-icon="fa-solid fa-dollar-sign"
+></plumage-input-group-component>
+
+<script>
+  const el = document.querySelector('plumage-input-group-component');
+
+  el.addEventListener('valueChange', (event) => {
+    console.log('valueChange:', event.detail);
+  });
+</script>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

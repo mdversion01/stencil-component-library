@@ -1,11 +1,12 @@
 // Include full Bootstrap if needed:
 @import 'bootstrap/scss/bootstrap'; // Includes everything, but less tree-shakeable
 
-$fa-font-path: '/assets/fonts'; // ✅ must be before imports!
+$fa-font-path: '../../assets/fonts'; // ✅ must be before imports!
 /* Import raw CSS */
 @import '@fortawesome/fontawesome-free/scss/fontawesome.scss';
 @import '@fortawesome/fontawesome-free/scss/solid.scss';
 @import '@fortawesome/fontawesome-free/scss/regular.scss';
+@import '../assets/mdi/materialdesignicons.min.css';
 
 @import './variables.scss';
 // @import "./mixins.scss";

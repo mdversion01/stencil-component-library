@@ -747,7 +747,7 @@ describe('<date-range-time-picker-component>', () => {
             </span>
             <span class="duration"></span>
           </div>
-          <div aria-live="assertive" class="hide warning-message" id="date-range-time-1-4fzz-warning"></div>
+          <div aria-live="assertive" class="warning-message" id="date-range-time-1-4fzz-warning"></div>
         </div>
       </div>
     </div>
@@ -1468,7 +1468,7 @@ describe('<date-range-time-picker-component>', () => {
                       <input aria-describedby="date-range-time-2-4fzz-warning" aria-labelledby="date-range-time-2-4fzz-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="date-range-time-2-4fzz-end-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
                     </span>
                   </div>
-                  <div aria-live="assertive" class="hide warning-message" id="date-range-time-2-4fzz-warning"></div>
+                  <div aria-live="assertive" class="warning-message" id="date-range-time-2-4fzz-warning"></div>
                 </div>
               </div>
               <div class="ok-button">
@@ -1483,7 +1483,7 @@ describe('<date-range-time-picker-component>', () => {
     </div>
   </div>
 </date-range-time-picker-component>
-`) /* keep your existing snapshot here */;
+`) /* keep your existing snapshot here */ /* keep your existing snapshot here */;
   });
 
   test('REGRESSION: picker-only should not shove summary into Start Time input', async () => {

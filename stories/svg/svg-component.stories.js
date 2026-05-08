@@ -1,6 +1,13 @@
 // src/stories/svg-component.stories.js
-// UPDATED: uses svg-title / svg-desc (NOT title/desc) to avoid reserved prop name warnings
-// + Accessibility Matrix (computed)
+import SvgDocs from './svg-component.docs.mdx';
+import {
+  Template,
+  InlineWithTextTemplate,
+  normalizeHtml,
+  getSnapshot,
+  DEFAULT_PATH,
+  DEFAULT_VIEWBOX,
+} from './svg-component.story-helpers';
 
 export default {
   title: 'Components/SVG',
@@ -8,6 +15,7 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
+      page: SvgDocs,
       description: {
         component:
           'An SVG component for rendering inline SVG icons with accessibility and styling options. Uses `path` + `viewBox` to render the SVG markup. Defaults to decorative when unnamed.',
@@ -20,9 +28,6 @@ export default {
     },
   },
   argTypes: {
-    /* -----------------------------
-     Appearance
-  ------------------------------ */
     fill: {
       control: 'color',
       description: 'Fill color for the SVG icon.',
@@ -47,9 +52,6 @@ export default {
       table: { category: 'Appearance' },
     },
 
-    /* -----------------------------
-     SVG Content
-  ------------------------------ */
     path: {
       control: 'text',
       description: 'Raw SVG markup inserted inside the `<svg>` (e.g. `<path d="..." />`).',
@@ -62,9 +64,6 @@ export default {
       table: { category: 'SVG Content' },
     },
 
-    /* -----------------------------
-     Accessibility
-  ------------------------------ */
     decorative: {
       control: 'boolean',
       description:
@@ -104,7 +103,6 @@ export default {
       description: 'Optional description ids (space-separated).',
       table: { category: 'Accessibility' },
     },
-    // IMPORTANT: use svg-title/svg-desc, not title/desc
     svgTitle: {
       control: 'text',
       name: 'svg-title',
@@ -115,131 +113,21 @@ export default {
     svgDesc: {
       control: 'text',
       name: 'svg-desc',
-      description: 'Optional <desc> content. If no aria-describedby is provided, desc is used as describedby.',
+      description: 'Optional `<desc>` content. If no aria-describedby is provided, desc is used as describedby.',
       table: { category: 'Accessibility' },
     },
   },
 };
 
-/* ---------------- helpers ---------------- */
-
-const attrLine = (name, v) => {
-  if (v === undefined || v === null || v === '') return null;
-
-  const s = String(v);
-  const useSingle = s.includes('"');
-  const escaped = useSingle ? s.replace(/'/g, '&#39;') : s.replace(/"/g, '&quot;');
-
-  return `${name}=${useSingle ? `'${escaped}'` : `"${escaped}"`}`;
+const templateStoryParameters = {
+  docs: {
+    source: {
+      type: 'dynamic',
+      language: 'html',
+      transform: (_code, ctx) => Template(ctx.args),
+    },
+  },
 };
-
-const boolLine = (name, on) => (on ? `${name}` : null);
-
-const normalizeHtml = html => {
-  const lines = String(html ?? '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map(l => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      out.push('');
-      prevBlank = true;
-      continue;
-    }
-    out.push(line);
-    prevBlank = false;
-  }
-
-  while (out.length && out[0] === '') out.shift();
-  while (out.length && out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-const normalizeIdList = v => {
-  const s = String(v ?? '').trim();
-  if (!s) return '';
-  return s.split(/\s+/).filter(Boolean).join(' ');
-};
-
-/* ---------------- defaults ---------------- */
-
-const DEFAULT_VIEWBOX = '0 0 640 640';
-const DEFAULT_PATH = `<path d="M341.8 72.6C329.5 61.2 310.5 61.2 298.3 72.6L74.3 280.6C64.7 289.6 61.5 303.5 66.3 315.7C71.1 327.9 82.8 336 96 336L112 336L112 512C112 547.3 140.7 576 176 576L464 576C499.3 576 528 547.3 528 512L528 336L544 336C557.2 336 569 327.9 573.8 315.7C578.6 303.5 575.4 289.5 565.8 280.6L341.8 72.6zM304 384L336 384C362.5 384 384 405.5 384 432L384 528L256 528L256 432C256 405.5 277.5 384 304 384z" />`;
-
-/* ---------------- templates ---------------- */
-
-const Template = args => {
-  const attrs = [
-    attrLine('fill', args.fill),
-    attrLine('height', args.height),
-    attrLine('path', args.path),
-    attrLine('svg-margin', args.svgMargin),
-    attrLine('view-box', args.viewBox),
-    attrLine('width', args.width),
-
-    // a11y
-    typeof args.decorative === 'boolean' ? boolLine('decorative', args.decorative) : null,
-    args.focusable === true ? attrLine('focusable', 'true') : args.focusable === false ? attrLine('focusable', 'false') : null,
-    attrLine('svg-aria-hidden', args.svgAriaHidden),
-    attrLine('svg-aria-label', args.svgAriaLabel),
-    attrLine('svg-aria-labelledby', normalizeIdList(args.svgAriaLabelledby)),
-    attrLine('svg-aria-describedby', normalizeIdList(args.svgAriaDescribedby)),
-    // IMPORTANT: svg-title/svg-desc
-    attrLine('svg-title', args.svgTitle),
-    attrLine('svg-desc', args.svgDesc),
-  ]
-    .filter(Boolean)
-    .join('\n  ');
-
-  return normalizeHtml(
-    `<svg-component
-  ${attrs}
-></svg-component>`,
-  );
-};
-
-const InlineWithTextTemplate = args => {
-  const attrs = [
-    attrLine('fill', args.fill),
-    attrLine('height', args.height),
-    attrLine('path', args.path),
-    attrLine('svg-margin', args.svgMargin),
-    attrLine('view-box', args.viewBox),
-    attrLine('width', args.width),
-
-    // a11y
-    typeof args.decorative === 'boolean' ? boolLine('decorative', args.decorative) : null,
-    args.focusable === true ? attrLine('focusable', 'true') : args.focusable === false ? attrLine('focusable', 'false') : null,
-    attrLine('svg-aria-hidden', args.svgAriaHidden),
-    attrLine('svg-aria-label', args.svgAriaLabel),
-    attrLine('svg-aria-labelledby', normalizeIdList(args.svgAriaLabelledby)),
-    attrLine('svg-aria-describedby', normalizeIdList(args.svgAriaDescribedby)),
-    // IMPORTANT: svg-title/svg-desc
-    attrLine('svg-title', args.svgTitle),
-    attrLine('svg-desc', args.svgDesc),
-  ]
-    .filter(Boolean)
-    .join('\n    ');
-
-  return normalizeHtml(
-    `<div style="display:flex;align-items:center;gap:8px;font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;">
-  <span>Inline text</span>
-  <svg-component
-    ${attrs}
-  ></svg-component>
-  <span>Inline text</span>
-</div>`,
-  );
-};
-
-/* ---------------- stories ---------------- */
 
 export const Basic = Template.bind({});
 Basic.args = {
@@ -250,7 +138,6 @@ Basic.args = {
   viewBox: DEFAULT_VIEWBOX,
   width: 32,
 
-  // default behavior: unnamed => decorative
   decorative: undefined,
   focusable: undefined,
   svgAriaHidden: undefined,
@@ -261,7 +148,9 @@ Basic.args = {
   svgDesc: '',
 };
 Basic.parameters = {
+  ...templateStoryParameters,
   docs: {
+    ...templateStoryParameters.docs,
     description: {
       story: 'A basic SVG icon. With no accessible name, the component defaults to decorative (aria-hidden="true").',
     },
@@ -276,7 +165,9 @@ WithDimensions.args = {
   width: 48,
 };
 WithDimensions.parameters = {
+  ...templateStoryParameters,
   docs: {
+    ...templateStoryParameters.docs,
     description: {
       story: 'An SVG icon with custom width and height.',
     },
@@ -293,7 +184,9 @@ WithAriaLabel.args = {
   svgAriaLabel: 'Status: online',
 };
 WithAriaLabel.parameters = {
+  ...templateStoryParameters,
   docs: {
+    ...templateStoryParameters.docs,
     description: {
       story: 'A meaningful SVG icon with an aria-label (role="img", not aria-hidden).',
     },
@@ -309,9 +202,11 @@ WithTitleAndDesc.args = {
 };
 WithTitleAndDesc.storyName = 'With Title + Desc';
 WithTitleAndDesc.parameters = {
+  ...templateStoryParameters,
   docs: {
+    ...templateStoryParameters.docs,
     description: {
-      story: 'Uses <title>/<desc>. When no aria-label/labelledby is provided, title becomes the accessible name.',
+      story: 'Uses `<title>/<desc>`. When no aria-label/labelledby is provided, title becomes the accessible name.',
     },
   },
 };
@@ -327,6 +222,11 @@ InlineMarginLeft.args = {
 };
 InlineMarginLeft.parameters = {
   docs: {
+    source: {
+      type: 'dynamic',
+      language: 'html',
+      transform: (_code, ctx) => InlineWithTextTemplate(ctx.args),
+    },
     description: {
       story: 'An SVG icon with margin on the left side, displayed inline with text (decorative).',
     },
@@ -344,6 +244,11 @@ InlineMarginRight.args = {
 };
 InlineMarginRight.parameters = {
   docs: {
+    source: {
+      type: 'dynamic',
+      language: 'html',
+      transform: (_code, ctx) => InlineWithTextTemplate(ctx.args),
+    },
     description: {
       story: 'An SVG icon with margin on the right side, displayed inline with text (decorative).',
     },
@@ -361,52 +266,15 @@ InlineMarginBoth.args = {
 };
 InlineMarginBoth.parameters = {
   docs: {
+    source: {
+      type: 'dynamic',
+      language: 'html',
+      transform: (_code, ctx) => InlineWithTextTemplate(ctx.args),
+    },
     description: {
       story: 'An SVG icon with margin on both sides, displayed inline with text (decorative).',
     },
   },
-};
-
-/* ============================== Accessibility Matrix (computed) ============================== */
-
-const splitIds = v => String(v || '').trim().split(/\s+/).filter(Boolean);
-
-const getSnapshot = (host, scopeRoot) => {
-  const svg = host?.querySelector('svg');
-
-  const labelledby = (svg?.getAttribute('aria-labelledby') || '').trim();
-  const describedby = (svg?.getAttribute('aria-describedby') || '').trim();
-
-  const resolve = id => {
-    if (!id) return false;
-    try {
-      return !!scopeRoot.querySelector(`#${CSS.escape(id)}`);
-    } catch {
-      return false;
-    }
-  };
-
-  const labelledIds = splitIds(labelledby);
-  const describedIds = splitIds(describedby);
-
-  return {
-    host: host?.tagName?.toLowerCase?.() ?? null,
-    role: svg?.getAttribute('role') ?? null,
-    tabIndex: svg?.getAttribute('tabindex') ?? null,
-    focusable: svg?.getAttribute('focusable') ?? null,
-    'aria-hidden': svg?.getAttribute('aria-hidden') ?? null,
-    'aria-label': svg?.getAttribute('aria-label') ?? null,
-    'aria-labelledby': labelledby || null,
-    'aria-describedby': describedby || null,
-    hasTitle: !!svg?.querySelector('title'),
-    hasDesc: !!svg?.querySelector('desc'),
-    titleId: svg?.querySelector('title')?.getAttribute('id') ?? null,
-    descId: svg?.querySelector('desc')?.getAttribute('id') ?? null,
-    labelledbyIds: labelledIds,
-    labelledbyAllResolve: labelledIds.every(resolve),
-    describedbyIds: describedIds,
-    describedbyAllResolve: describedIds.every(resolve),
-  };
 };
 
 export const AccessibilityMatrix = {

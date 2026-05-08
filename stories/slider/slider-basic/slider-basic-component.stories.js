@@ -1,5 +1,6 @@
 // src/stories/slider-basic-component.stories.js
-// UPDATED: adds aria-label / aria-labelledby / aria-describedby controls + Accessibility Matrix (computed)
+import SliderBasicDocs from './slider-basic-component.docs.mdx';
+import { Template, normalizeHtml, getSnapshot } from './slider-basic-component.story-helpers';
 
 export default {
   title: 'Components/Slider/Basic',
@@ -7,17 +8,18 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
-      description: { component: 'A basic slider component allowing selection of a single value within a range.' },
+      page: SliderBasicDocs,
+      description: {
+        component: 'A basic slider component allowing selection of a single value within a range.',
+      },
       source: {
+        type: 'dynamic',
         language: 'html',
         transform: (_src, ctx) => Template(ctx.args),
       },
     },
   },
   argTypes: {
-    /* -----------------------------
-     Accessibility
-  ------------------------------ */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -37,7 +39,6 @@ export default {
       table: { category: 'Accessibility' },
     },
 
-    // -------- Behavior / State --------
     disabled: {
       control: 'boolean',
       description: 'Disables the slider when true.',
@@ -49,7 +50,6 @@ export default {
       table: { category: 'Behavior', defaultValue: { summary: false } },
     },
 
-    // -------- Content --------
     label: {
       control: 'text',
       description: 'Label for the slider.',
@@ -61,7 +61,6 @@ export default {
       table: { category: 'Content' },
     },
 
-    // -------- Value & Range --------
     value: {
       control: { type: 'number', step: 1 },
       description: 'Current value of the slider.',
@@ -78,7 +77,6 @@ export default {
       table: { category: 'Value & Range' },
     },
 
-    // -------- Tick Marks --------
     snapToTicks: {
       control: 'boolean',
       name: 'snap-to-ticks',
@@ -104,7 +102,6 @@ export default {
       table: { category: 'Ticks', defaultValue: { summary: false } },
     },
 
-    // -------- Layout / Text Boxes --------
     hideLeftTextBox: {
       control: 'boolean',
       name: 'hide-left-text-box',
@@ -123,8 +120,13 @@ export default {
       description: 'Hides both text boxes when true.',
       table: { category: 'Layout', defaultValue: { summary: false } },
     },
+    orientation: {
+      control: { type: 'select' },
+      options: ['horizontal', 'vertical'],
+      description: 'Controls whether the slider is rendered horizontally or vertically.',
+      table: { category: 'Layout', defaultValue: { summary: 'horizontal' } },
+    },
 
-    // -------- Appearance --------
     variant: {
       control: { type: 'select' },
       options: ['', 'primary', 'secondary', 'success', 'danger', 'info', 'warning', 'dark'],
@@ -134,103 +136,16 @@ export default {
   },
 };
 
-/* helpers */
-const boolLine = (name, on) => (on ? ` ${name}` : '');
-const attrLine = (name, v) => {
-  if (v === undefined || v === null || v === '') return '';
-  const s = String(v);
-  const useSingle = s.includes('"');
-  const escaped = useSingle ? s.replace(/'/g, '&#39;') : s.replace(/"/g, '&quot;');
-  return ` ${name}=${useSingle ? `'${escaped}'` : `"${escaped}"`}`;
+const templateStoryParameters = {
+  docs: {
+    source: {
+      type: 'dynamic',
+      language: 'html',
+      transform: (_src, ctx) => Template(ctx.args),
+    },
+  },
 };
 
-const serializeArray = (val) => {
-  if (!val) return '';
-  try {
-    return JSON.stringify(val);
-  } catch {
-    return '';
-  }
-};
-
-const normalizeHtml = (html) => {
-  const lines = String(html ?? '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      out.push('');
-      prevBlank = true;
-      continue;
-    }
-    out.push(line);
-    prevBlank = false;
-  }
-
-  while (out.length && out[0] === '') out.shift();
-  while (out.length && out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-const normalizeIdList = (v) => {
-  const s = String(v ?? '').trim();
-  if (!s) return '';
-  return s.split(/\s+/).filter(Boolean).join(' ');
-};
-
-/* base template */
-const Template = (args) => {
-  const attrs = [
-    // a11y
-    attrLine('aria-label', args.ariaLabel),
-    attrLine('aria-labelledby', normalizeIdList(args.ariaLabelledby)),
-    attrLine('aria-describedby', normalizeIdList(args.ariaDescribedby)),
-
-    // flags
-    boolLine('disabled', args.disabled),
-    boolLine('hide-left-text-box', args.hideLeftTextBox),
-    boolLine('hide-right-text-box', args.hideRightTextBox),
-    boolLine('hide-text-boxes', args.hideTextBoxes),
-
-    // content/range
-    attrLine('label', args.label),
-    attrLine('max', args.max),
-    attrLine('min', args.min),
-
-    // appearance/behavior
-    boolLine('plumage', args.plumage),
-    boolLine('slider-thumb-label', args.sliderThumbLabel),
-
-    // ticks
-    boolLine('snap-to-ticks', args.snapToTicks),
-    boolLine('tick-labels', args.tickLabels),
-    attrLine('tick-values', serializeArray(args.tickValues)),
-
-    // other
-    attrLine('unit', args.unit),
-    attrLine('value', args.value),
-    attrLine('variant', args.variant),
-  ]
-    .filter(Boolean)
-    .join('');
-
-  return normalizeHtml(`
-<div style="margin-top: 40px; margin-bottom: 40px;">
-  <!-- div wrapper is for better appearance in Storybook -->
-  <slider-basic-component${attrs}></slider-basic-component>
-</div>
-  `);
-};
-
-/* stories */
 export const Basic = Template.bind({});
 Basic.args = {
   disabled: false,
@@ -248,14 +163,32 @@ Basic.args = {
   unit: '',
   value: 30,
   variant: 'primary',
+  orientation: 'horizontal',
 
   ariaLabel: '',
   ariaLabelledby: '',
   ariaDescribedby: '',
 };
 Basic.parameters = {
+  ...templateStoryParameters,
   docs: {
+    ...templateStoryParameters.docs,
     description: { story: 'The basic slider with default settings.' },
+  },
+};
+
+export const Vertical = Template.bind({});
+Vertical.args = {
+  ...Basic.args,
+  label: 'Volume',
+  value: 30,
+  orientation: 'vertical',
+};
+Vertical.parameters = {
+  ...templateStoryParameters,
+  docs: {
+    ...templateStoryParameters.docs,
+    description: { story: 'A vertical basic slider.' },
   },
 };
 
@@ -269,8 +202,23 @@ WithTicks.args = {
   variant: 'info',
 };
 WithTicks.parameters = {
+  ...templateStoryParameters,
   docs: {
+    ...templateStoryParameters.docs,
     description: { story: 'A slider with tick marks and labels.' },
+  },
+};
+
+export const VerticalWithTicks = Template.bind({});
+VerticalWithTicks.args = {
+  ...WithTicks.args,
+  orientation: 'vertical',
+};
+VerticalWithTicks.parameters = {
+  ...templateStoryParameters,
+  docs: {
+    ...templateStoryParameters.docs,
+    description: { story: 'A vertical slider with tick marks and labels.' },
   },
 };
 
@@ -285,8 +233,23 @@ SnapToTicks.args = {
   variant: 'secondary',
 };
 SnapToTicks.parameters = {
+  ...templateStoryParameters,
   docs: {
+    ...templateStoryParameters.docs,
     description: { story: 'A slider that snaps to predefined tick values.' },
+  },
+};
+
+export const VerticalSnapToTicks = Template.bind({});
+VerticalSnapToTicks.args = {
+  ...SnapToTicks.args,
+  orientation: 'vertical',
+};
+VerticalSnapToTicks.parameters = {
+  ...templateStoryParameters,
+  docs: {
+    ...templateStoryParameters.docs,
+    description: { story: 'A vertical slider that snaps to predefined tick values.' },
   },
 };
 
@@ -300,8 +263,23 @@ ThumbLabel.args = {
   variant: 'success',
 };
 ThumbLabel.parameters = {
+  ...templateStoryParameters,
   docs: {
+    ...templateStoryParameters.docs,
     description: { story: 'A slider with a label displayed on the thumb.' },
+  },
+};
+
+export const VerticalThumbLabel = Template.bind({});
+VerticalThumbLabel.args = {
+  ...ThumbLabel.args,
+  orientation: 'vertical',
+};
+VerticalThumbLabel.parameters = {
+  ...templateStoryParameters,
+  docs: {
+    ...templateStoryParameters.docs,
+    description: { story: 'A vertical slider with a label displayed on the thumb.' },
   },
 };
 
@@ -314,7 +292,9 @@ PlumageVariant.args = {
   variant: 'primary',
 };
 PlumageVariant.parameters = {
+  ...templateStoryParameters,
   docs: {
+    ...templateStoryParameters.docs,
     description: { story: 'A slider with the plumage variant.' },
   },
 };
@@ -327,7 +307,9 @@ HideTextBoxes.args = {
   hideTextBoxes: true,
 };
 HideTextBoxes.parameters = {
+  ...templateStoryParameters,
   docs: {
+    ...templateStoryParameters.docs,
     description: { story: 'A slider with hidden text boxes.' },
   },
 };
@@ -341,7 +323,9 @@ HideLeftOrRight.args = {
   hideRightTextBox: false,
 };
 HideLeftOrRight.parameters = {
+  ...templateStoryParameters,
   docs: {
+    ...templateStoryParameters.docs,
     description: { story: 'A slider with only the left text box hidden.' },
   },
 };
@@ -355,52 +339,11 @@ Disabled.args = {
   variant: '',
 };
 Disabled.parameters = {
+  ...templateStoryParameters,
   docs: {
+    ...templateStoryParameters.docs,
     description: { story: 'A disabled slider.' },
   },
-};
-
-/* ============================== Accessibility Matrix (computed) ============================== */
-
-const splitIds = (v) => String(v || '').trim().split(/\s+/).filter(Boolean);
-
-const getSnapshot = (root) => {
-  const host = root?.querySelector?.('slider-basic-component') || root;
-  const slider = host?.querySelector?.('[role="slider"]') || null;
-
-  const resolve = (id) => {
-    if (!id) return false;
-    try {
-      return !!root?.querySelector?.(`#${CSS.escape(id)}`);
-    } catch {
-      return false;
-    }
-  };
-
-  const labelledby = (slider?.getAttribute?.('aria-labelledby') || '').trim();
-  const describedby = (slider?.getAttribute?.('aria-describedby') || '').trim();
-
-  const labelledIds = splitIds(labelledby);
-  const describedIds = splitIds(describedby);
-
-  return {
-    host: host?.tagName?.toLowerCase?.() ?? null,
-    sliderRole: slider?.getAttribute?.('role') ?? null,
-    tabIndex: slider?.getAttribute?.('tabindex') ?? null,
-    disabled: slider?.getAttribute?.('aria-disabled') ?? null,
-    'aria-label': slider?.getAttribute?.('aria-label') ?? null,
-    'aria-labelledby': labelledby || null,
-    'aria-describedby': describedby || null,
-    'aria-valuemin': slider?.getAttribute?.('aria-valuemin') ?? null,
-    'aria-valuemax': slider?.getAttribute?.('aria-valuemax') ?? null,
-    'aria-valuenow': slider?.getAttribute?.('aria-valuenow') ?? null,
-    'aria-valuetext': slider?.getAttribute?.('aria-valuetext') ?? null,
-    labelledbyIds: labelledIds,
-    labelledbyAllResolve: labelledIds.every(resolve),
-    describedbyIds: describedIds,
-    describedbyAllResolve: describedIds.every(resolve),
-    labelElId: host?.querySelector?.('label.form-control-label')?.getAttribute?.('id') ?? null,
-  };
 };
 
 export const AccessibilityMatrix = {
@@ -415,7 +358,7 @@ export const AccessibilityMatrix = {
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
       <div style="opacity:.8">
-        Prints computed <code>role</code> + <code>aria-*</code> + ids for default / inline / horizontal, validation, and disabled.
+        Prints computed <code>role</code> + <code>aria-*</code> + ids for default / inline / horizontal / vertical / validation / disabled.
       </div>
     `;
     wrap.appendChild(header);
@@ -454,9 +397,13 @@ export const AccessibilityMatrix = {
         const host = mount.querySelector('slider-basic-component');
 
         if (host?.componentOnReady) {
-          try { await host.componentOnReady(); } catch (_e) {}
+          try {
+            await host.componentOnReady();
+          } catch (_e) {}
         } else if (window.customElements?.whenDefined) {
-          try { await customElements.whenDefined('slider-basic-component'); } catch (_e) {}
+          try {
+            await customElements.whenDefined('slider-basic-component');
+          } catch (_e) {}
         }
 
         pre.textContent = JSON.stringify(getSnapshot(mount), null, 2);
@@ -470,7 +417,6 @@ export const AccessibilityMatrix = {
       return box;
     };
 
-    // Default
     wrap.appendChild(
       card('Default', {
         label: 'Default',
@@ -481,7 +427,6 @@ export const AccessibilityMatrix = {
       }),
     );
 
-    // Inline (simulated): external label id
     wrap.appendChild(
       card(
         'Inline (simulated, aria-labelledby external)',
@@ -494,7 +439,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Horizontal (simulated): grid label left + slider right
     wrap.appendChild(
       card(
         'Horizontal (simulated)',
@@ -509,7 +453,15 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Error/validation (simulated): describedby points to error/help
+    wrap.appendChild(
+      card('Vertical', {
+        label: 'Vertical',
+        value: 45,
+        orientation: 'vertical',
+        ariaLabel: 'Vertical slider',
+      }),
+    );
+
     wrap.appendChild(
       card(
         'Error / validation (simulated via aria-describedby)',
@@ -522,7 +474,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Disabled
     wrap.appendChild(
       card('Disabled', {
         label: 'Disabled',
@@ -539,7 +490,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Prints computed accessibility wiring for the slider: the focused element has `role="slider"` with `aria-valuemin/max/now/text`, and optional `aria-label` / `aria-labelledby` / `aria-describedby`. Includes simulated inline/horizontal layouts, simulated error describedby, and disabled state.',
+          'Prints computed accessibility wiring for the slider: the focused element has `role="slider"` with `aria-valuemin/max/now/text`, and optional `aria-label` / `aria-labelledby` / `aria-describedby`. Includes simulated inline/horizontal/vertical layouts, simulated error describedby, and disabled state.',
       },
       source: {
         language: 'html',

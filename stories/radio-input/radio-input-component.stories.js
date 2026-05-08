@@ -1,206 +1,56 @@
 // src/stories/radio-input-component.stories.js
-// UPDATED:
-// 1) ALL props are defined in the top-level `export default.args` so ArgsTable never shows "Set boolean/object/string".
-// 2) docs.source is explicitly dynamic so Source preview updates with Controls.
-// 3) Events are hidden from Controls (no button UI).
-// 4) groupOptions uses a text control (JSON) for consistent textarea behavior.
 
-const normalize = (txt) => {
-  const lines = String(txt || '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
+import RadioInputDocs from './radio-input-component.docs.mdx';
+import {
+  normalize,
+  buildDocsHtml,
+  SingleTemplate,
+  GroupTemplate,
+  getSnapshot,
+} from './radio-input-component.story-helpers';
 
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      prevBlank = true;
-      out.push('');
-      continue;
-    }
-    prevBlank = false;
-    out.push(line);
-  }
-
-  while (out[0] === '') out.shift();
-  while (out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-const esc = (s) =>
-  String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-
-const serialize = (v) => {
-  if (typeof v === 'string') return v;
-  try {
-    return JSON.stringify(v ?? []);
-  } catch {
-    return '[]';
-  }
-};
-
-const attrLines = (pairs) =>
-  pairs
-    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
-    .map(([k, v]) => (v === true ? `${k}` : `${k}="${esc(v)}"`))
-    .join('\n  ');
-
-const groupOptionsAttrLine = (groupOptions) => {
-  // Accept JSON string (textarea control) OR array/object
-  const json = serialize(groupOptions).replace(/'/g, '&#39;');
-  return `group-options='${json}'`;
-};
-
-const buildDocsHtml = (args) => {
-  const isGroup = !!(args.bsRadioGroup || args.basicRadioGroup);
-
-  if (!isGroup) {
-    return normalize(`
-<radio-input-component
-  ${attrLines([
-    ['basic-radio', !!args.basicRadio],
-    ['bs-radio', !!args.bsRadio && !args.basicRadio],
-
-    ['aria-label', args.ariaLabel],
-    ['aria-labelledby', args.ariaLabelledby],
-    ['aria-describedby', args.ariaDescribedby],
-
-    ['disabled', !!args.disabled],
-    ['input-id', args.inputId],
-    ['label-txt', args.labelTxt],
-    ['name', args.name],
-    ['required', !!args.required],
-    ['size', args.size],
-    ['validation', !!args.validation],
-    ['validation-msg', args.validationMsg],
-    ['value', args.value],
-  ])}
-></radio-input-component>
-`);
-  }
-
-  return normalize(`
-<radio-input-component
-  ${attrLines([
-    ['basic-radio-group', !!args.basicRadioGroup],
-    ['bs-radio-group', !!args.bsRadioGroup && !args.basicRadioGroup],
-
-    ['aria-label', args.ariaLabel],
-    ['aria-labelledby', args.ariaLabelledby],
-    ['aria-describedby', args.ariaDescribedby],
-
-    ['group-title', args.groupTitle],
-    ['group-title-size', args.groupTitleSize],
-    ['inline', !!args.inline],
-    ['name', args.name],
-    ['required', !!args.required],
-    ['validation', !!args.validation],
-    ['validation-msg', args.validationMsg],
-  ])}
-  ${groupOptionsAttrLine(args.groupOptions)}
-></radio-input-component>
-`);
-};
-
-const SingleTemplate = (args) =>
-  normalize(`
-<radio-input-component
-  ${attrLines([
-    ['basic-radio', !!args.basicRadio],
-    ['bs-radio', !!args.bsRadio && !args.basicRadio],
-
-    ['aria-label', args.ariaLabel],
-    ['aria-labelledby', args.ariaLabelledby],
-    ['aria-describedby', args.ariaDescribedby],
-
-    ['disabled', !!args.disabled],
-    ['input-id', args.inputId],
-    ['label-txt', args.labelTxt],
-    ['name', args.name],
-    ['required', !!args.required],
-    ['size', args.size],
-    ['validation', !!args.validation],
-    ['validation-msg', args.validationMsg],
-    ['value', args.value],
-  ])}
-></radio-input-component>
-`);
-
-const GroupTemplate = (args) =>
-  normalize(`
-<radio-input-component
-  ${attrLines([
-    ['basic-radio-group', !!args.basicRadioGroup],
-    ['bs-radio-group', !!args.bsRadioGroup && !args.basicRadioGroup],
-
-    ['aria-label', args.ariaLabel],
-    ['aria-labelledby', args.ariaLabelledby],
-    ['aria-describedby', args.ariaDescribedby],
-
-    ['group-title', args.groupTitle],
-    ['group-title-size', args.groupTitleSize],
-    ['inline', !!args.inline],
-    ['name', args.name],
-    ['required', !!args.required],
-    ['validation', !!args.validation],
-    ['validation-msg', args.validationMsg],
-  ])}
-  ${groupOptionsAttrLine(args.groupOptions)}
-></radio-input-component>
-`);
+const LABEL_SIZE_VARIANTS = [
+  { key: 'sm', label: 'Small', size: 'sm' },
+  { key: 'default', label: 'Default', size: '' },
+  { key: 'lg', label: 'Large', size: 'lg' },
+];
 
 export default {
   title: 'Form/Radio Input',
   tags: ['autodocs'],
 
-  // ✅ DEFINE EVERYTHING HERE so ArgsTable always renders real controls (no "Set boolean/object/string")
   args: {
-    // Mode flags (kept as-is; you may later replace with a single "mode" select)
     basicRadio: false,
     bsRadio: false,
     basicRadioGroup: false,
     bsRadioGroup: false,
 
-    // Single attrs
     inputId: '',
     labelTxt: '',
     value: '',
 
-    // Shared attrs
     name: '',
     size: '',
     disabled: false,
     required: false,
 
-    // Group attrs
     groupTitle: '',
     groupTitleSize: '',
     inline: false,
 
-    // Validation
     validation: false,
     validationMsg: '',
 
-    // Accessibility
     ariaLabel: '',
     ariaLabelledby: '',
     ariaDescribedby: '',
 
-    // Group options as JSON string for consistent textarea control
     groupOptions: '[]',
   },
 
   parameters: {
     docs: {
+      page: RadioInputDocs,
       description: {
         component:
           'A Bootstrap radio or basic radio input component that supports both single and grouped radios with various styling options. Includes radiogroup semantics and validation ARIA wiring.',
@@ -214,7 +64,6 @@ export default {
   },
 
   argTypes: {
-    // Events (hidden from Controls to avoid button UI)
     groupChange: {
       action: 'groupChange',
       name: 'group-change',
@@ -223,7 +72,6 @@ export default {
       description: 'Emitted when a radio in the group is selected (group mode). Detail contains the selected value.',
     },
 
-    /* Group Attributes */
     groupOptions: {
       control: 'text',
       name: 'group-options',
@@ -245,7 +93,6 @@ export default {
       description: 'Size class for the radio group title.',
     },
 
-    /* Input Attributes */
     basicRadio: {
       control: 'boolean',
       name: 'basic-radio',
@@ -304,7 +151,6 @@ export default {
       description: 'Value attribute for the input element.',
     },
 
-    /* Accessibility */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -324,14 +170,12 @@ export default {
       description: 'Optional external description element id(s). Component also appends validation error id when invalid.',
     },
 
-    /* Layout */
     inline: {
       control: 'boolean',
       table: { category: 'Layout', defaultValue: { summary: false } },
       description: 'Display radio buttons inline (group mode).',
     },
 
-    /* Validation */
     required: {
       control: 'boolean',
       table: { category: 'Validation', defaultValue: { summary: false } },
@@ -350,8 +194,6 @@ export default {
     },
   },
 };
-
-/* Stories */
 
 export const SingleBasic = SingleTemplate.bind({});
 SingleBasic.args = {
@@ -374,7 +216,6 @@ SingleBasic.args = {
   validation: false,
   validationMsg: '',
 
-  // keep defined (group)
   groupTitle: '',
   groupTitleSize: '',
   inline: false,
@@ -446,12 +287,6 @@ SingleBasicStyled.storyName = 'Single (Basic styling)';
 SingleBasicStyled.parameters = {
   docs: { description: { story: 'A single radio input with basic styling.' } },
 };
-
-const LABEL_SIZE_VARIANTS = [
-  { key: 'sm', label: 'Small', size: 'sm' },
-  { key: 'default', label: 'Default', size: '' },
-  { key: 'lg', label: 'Large', size: 'lg' },
-];
 
 export const LabelSizes = {
   name: 'Label Sizes (Basic + Bootstrap)',
@@ -525,7 +360,6 @@ export const LabelSizes = {
   },
 
   args: {
-    // keep EVERYTHING defined here too
     basicRadio: false,
     bsRadio: false,
     basicRadioGroup: false,
@@ -634,7 +468,6 @@ GroupBasic.args = {
   validation: false,
   validationMsg: '',
 
-  // JSON string for textarea control
   groupOptions: JSON.stringify(
     [
       { inputId: 'color-red', value: 'red', labelTxt: 'Red', checked: true },
@@ -645,7 +478,6 @@ GroupBasic.args = {
     0,
   ),
 
-  // keep defined (single)
   inputId: '',
   labelTxt: '',
   value: '',
@@ -816,7 +648,6 @@ GroupDisabledOptions.parameters = {
   docs: { description: { story: 'A group of radio inputs with some options disabled (Bootstrap styling).' } },
 };
 
-/* Optional: wire Storybook action to the custom event for docs demo */
 GroupBasic.play = async ({ canvasElement, args }) => {
   const el = canvasElement.querySelector('radio-input-component');
   if (el) el.addEventListener('groupChange', (e) => args.groupChange?.(e.detail));
@@ -825,94 +656,6 @@ GroupInline.play = GroupBasic.play;
 GroupBasicStyled.play = GroupBasic.play;
 GroupWithValidation.play = GroupBasic.play;
 GroupDisabledOptions.play = GroupBasic.play;
-
-/* ============================== Accessibility Matrix (computed) ============================== */
-
-const splitIds = (v) => String(v || '').trim().split(/\s+/).filter(Boolean);
-
-const getSnapshot = (hostOrOuter) => {
-  const host = hostOrOuter?.querySelector?.('radio-input-component') || hostOrOuter;
-  const group = host?.querySelector?.('[role="radiogroup"]') || null;
-  const isGroup = !!group;
-
-  const resolveInOuter = (id) => {
-    if (!id) return false;
-    try {
-      return !!hostOrOuter?.querySelector?.(`#${CSS.escape(id)}`);
-    } catch {
-      return false;
-    }
-  };
-
-  if (!isGroup) {
-    const input = host?.querySelector?.('input[type="radio"]') || null;
-    const label = host?.querySelector?.('label') || null;
-    const error = host?.querySelector?.('.invalid-feedback') || null;
-
-    const describedby = (input?.getAttribute?.('aria-describedby') || '').trim();
-    const describedIds = splitIds(describedby);
-    const labelledby = (input?.getAttribute?.('aria-labelledby') || '').trim();
-    const labelledIds = splitIds(labelledby);
-
-    return {
-      mode: 'single',
-      host: host?.tagName?.toLowerCase?.() ?? null,
-      inputId: input?.getAttribute?.('id') ?? null,
-      name: input?.getAttribute?.('name') ?? null,
-      required: input?.hasAttribute?.('required') ?? null,
-      disabled: input?.hasAttribute?.('disabled') ?? null,
-      'aria-label': input?.getAttribute?.('aria-label') ?? null,
-      'aria-labelledby': labelledby || null,
-      'aria-describedby': describedby || null,
-      'aria-invalid': input?.getAttribute?.('aria-invalid') ?? null,
-      labelId: label?.getAttribute?.('id') ?? null,
-      labelFor: label?.getAttribute?.('for') ?? label?.getAttribute?.('htmlfor') ?? null,
-      errorId: error?.getAttribute?.('id') ?? null,
-      errorRole: error?.getAttribute?.('role') ?? null,
-      errorLive: error?.getAttribute?.('aria-live') ?? null,
-      labelledbyIds: labelledIds,
-      labelledbyAllResolve: labelledIds.every(resolveInOuter),
-      describedbyIds: describedIds,
-      describedbyAllResolve: describedIds.every(resolveInOuter),
-    };
-  }
-
-  const titleEl = host?.querySelector?.('.group-title[id]') || null;
-  const error = host?.querySelector?.('.invalid-feedback') || null;
-  const radios = Array.from(host?.querySelectorAll?.('input[type="radio"]') || []);
-
-  const describedby = (group?.getAttribute?.('aria-describedby') || '').trim();
-  const describedIds = splitIds(describedby);
-  const labelledby = (group?.getAttribute?.('aria-labelledby') || '').trim();
-  const labelledIds = splitIds(labelledby);
-
-  return {
-    mode: 'group',
-    host: host?.tagName?.toLowerCase?.() ?? null,
-    role: group?.getAttribute?.('role') ?? null,
-    'aria-label': group?.getAttribute?.('aria-label') ?? null,
-    'aria-labelledby': labelledby || null,
-    'aria-describedby': describedby || null,
-    'aria-required': group?.getAttribute?.('aria-required') ?? null,
-    'aria-invalid': group?.getAttribute?.('aria-invalid') ?? null,
-    titleId: titleEl?.getAttribute?.('id') ?? null,
-    errorId: error?.getAttribute?.('id') ?? null,
-    errorRole: error?.getAttribute?.('role') ?? null,
-    errorLive: error?.getAttribute?.('aria-live') ?? null,
-    labelledbyIds: labelledIds,
-    labelledbyAllResolve: labelledIds.every(resolveInOuter),
-    describedbyIds: describedIds,
-    describedbyAllResolve: describedIds.every(resolveInOuter),
-    radios: radios.map((i) => ({
-      id: i.getAttribute('id'),
-      name: i.getAttribute('name'),
-      checked: i.checked,
-      disabled: i.disabled,
-      'aria-invalid': i.getAttribute('aria-invalid'),
-      'aria-describedby': i.getAttribute('aria-describedby'),
-    })),
-  };
-};
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',

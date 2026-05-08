@@ -1,0 +1,45 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as DividerStories from './divider-component.stories.js';
+import { reactExample, vueExample, angularExample } from './divider-component.examples.js';
+
+<Meta of={DividerStories} />
+
+# Divider
+
+<Description of={DividerStories} />
+
+## HTML
+
+```html
+<div>
+  <p>Content above</p>
+  <divider-component></divider-component>
+  <p>Content below</p>
+</div>
+
+<div>
+  <p>Content above</p>
+  <divider-component orientation="center" aria-label="Section divider">
+    Section Title
+  </divider-component>
+  <p>Content below</p>
+</div>
+
+<div style="display:flex; align-items:center; gap:12px; height:48px;">
+  <div>Left</div>
+  <divider-component direction="vertical"></divider-component>
+  <div>Right</div>
+</div>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

@@ -1,0 +1,66 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as DiscreteSliderStories from './discrete-slider-component.stories';
+import {
+  reactExample,
+  reactVerticalExample,
+  vueExample,
+  vueVerticalExample,
+  angularExample,
+  angularVerticalExample,
+} from './discrete-slider-component.examples';
+
+<Meta of={DiscreteSliderStories} />
+
+# Discrete Slider
+
+<Description of={DiscreteSliderStories} />
+
+## HTML
+
+### Horizontal and Vertical Slider
+
+```html
+<div style="margin-top: 40px; margin-bottom: 40px;">
+  <discrete-slider-component
+    label="T-Shirt Size"
+    selected-index="2"
+    string-values='["XS","S","M","L","XL"]'
+    tick-labels
+    variant="secondary"
+    orientation="horizontal"
+  ></discrete-slider-component>
+</div>
+
+<div style="margin-top: 40px; margin-bottom: 40px;">
+  <discrete-slider-component
+    label="T-Shirt Size"
+    selected-index="2"
+    string-values='["XS","S","M","L","XL"]'
+    tick-labels
+    slider-thumb-label
+    variant="secondary"
+    orientation="vertical"
+  ></discrete-slider-component>
+</div>
+```
+
+## React
+### Horizontal Slider
+<Source code={reactExample} language="tsx" />
+### Vertical Slider
+<Source code={reactVerticalExample} language="tsx" />
+## Vue
+### Horizontal Slider
+<Source code={vueExample} language="vue" />
+### Vertical Slider
+<Source code={vueVerticalExample} language="vue" />
+## Angular
+### Horizontal Slider
+<Source code={angularExample} language="ts" />
+### Vertical Slider
+<Source code={angularVerticalExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

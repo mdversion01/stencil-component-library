@@ -12,7 +12,7 @@ export default {
       page: DocsPage,
       description: {
         component: [
-          "An Accordion Component belongs to the Accordion Container but can also be used on its own.\n",
+          'An Accordion Component belongs to the Accordion Container but can also be used on its own.\n',
           'Use the `accordion-header` and `content` slots to provide header and body content.\n',
           '',
           '**Accessibility:**',
@@ -145,6 +145,13 @@ export const Accordion = {
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
   },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Default accordion item with basic header and content.',
+      },
+    },
+  },
 };
 
 export const AccordionWithCustomIcon = {
@@ -156,6 +163,7 @@ export const AccordionWithCustomIcon = {
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
   },
+  parameters: { docs: { description: { story: 'Accordion item using custom icons for open/closed states.' } } },
 };
 
 export const ButtonToggle = {
@@ -166,6 +174,7 @@ export const ButtonToggle = {
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
   },
+  parameters: { docs: { description: { story: 'Accordion item with a button toggle.' } } },
 };
 
 export const ButtonToggleDisabled = {
@@ -176,6 +185,7 @@ export const ButtonToggleDisabled = {
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
   },
+  parameters: { docs: { description: { story: 'Button toggle in a disabled state.' } } },
 };
 
 export const ButtonToggleOpenByDefault = {
@@ -187,6 +197,7 @@ export const ButtonToggleOpenByDefault = {
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
   },
+  parameters: { docs: { description: { story: 'Button toggle open by default.' } } },
 };
 
 export const LinkToggle = {
@@ -197,5 +208,165 @@ export const LinkToggle = {
     targetId: 'accordion-6',
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
+  },
+  parameters: { docs: { description: { story: 'Accordion item with a link toggle.' } } },
+};
+
+// Accessibility matrix story (UPDATED for class-driven collapse + no hidden/display:none)
+export const AccessibilityMatrix = {
+  name: 'Accessibility Matrix (computed)',
+  render: (_args, context) => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '16px';
+    wrap.style.maxWidth = '980px';
+
+    const title = document.createElement('div');
+    title.innerHTML =
+      `<strong>Accessibility matrix</strong>` +
+      `<div style="opacity:.8">Shows computed toggle + region ARIA, ids, expanded state, and collapse classes (collapse/show/collapsing).</div>`;
+    wrap.appendChild(title);
+
+    const mkRow = (labelText, makeHost) => {
+      const row = document.createElement('div');
+      row.style.display = 'grid';
+      row.style.gridTemplateColumns = '260px 1fr';
+      row.style.gap = '12px';
+      row.style.alignItems = 'start';
+      row.style.border = '1px solid #ddd';
+      row.style.borderRadius = '8px';
+      row.style.padding = '12px';
+
+      const left = document.createElement('div');
+      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+
+      const right = document.createElement('div');
+      right.style.display = 'grid';
+      right.style.gap = '8px';
+
+      const demo = document.createElement('div');
+      // demo.style.display = 'inline-flex';
+      demo.style.alignItems = 'center';
+      demo.style.gap = '12px';
+      demo.style.flexWrap = 'wrap';
+
+      const host = makeHost();
+      demo.appendChild(host);
+
+      const pre = document.createElement('pre');
+      pre.style.margin = '0';
+      pre.style.padding = '10px';
+      pre.style.borderRadius = '8px';
+      pre.style.overflow = 'auto';
+      pre.style.border = '1px solid #eee';
+      pre.style.background = '#fafafa';
+      pre.textContent = 'Loading computed attributes…';
+
+      right.appendChild(demo);
+      right.appendChild(pre);
+
+      row.appendChild(left);
+      row.appendChild(right);
+
+      const update = () => {
+        const bc = host.querySelector('button-component');
+        const inner = host.querySelector('button-component button, button-component a');
+        const region = host.querySelector('[role="region"]');
+
+        const cls = region ? Array.from(region.classList).join(' ') : null;
+
+        const attrs = {
+          mode: host.getAttribute('accordion') != null ? 'accordion' : host.getAttribute('link') != null ? 'link' : 'button',
+          regionId: region?.getAttribute('id') ?? host.getAttribute('target-id'),
+          toggleHostId: bc?.getAttribute('id') ?? null,
+          innerTag: inner?.tagName ?? null,
+          innerRole: inner?.getAttribute('role') ?? null,
+          'aria-expanded': inner?.getAttribute('aria-expanded') ?? null,
+          'aria-controls': inner?.getAttribute('aria-controls') ?? null,
+          regionRole: region?.getAttribute('role') ?? null,
+          'region aria-labelledby': region?.getAttribute('aria-labelledby') ?? null,
+          'aria-hidden': region?.getAttribute('aria-hidden') ?? null,
+          inert: region?.hasAttribute('inert') ?? null,
+          class: cls,
+          inlineHeight: region?.style?.height ?? null, // set only during transitions
+        };
+
+        pre.textContent = JSON.stringify(attrs, null, 2);
+      };
+
+      queueMicrotask(() => requestAnimationFrame(update));
+      return row;
+    };
+
+    const mk = (args) => buildAccordion(args, context);
+
+    wrap.appendChild(
+      mkRow('Button toggle (closed)', () =>
+        mk({
+          accordion: false,
+          link: false,
+          isOpen: false,
+          targetId: 'mx-btn',
+          headerText: 'Toggle section',
+          contentLine1: 'Body',
+          contentLine2: 'More',
+          variant: 'primary',
+        }),
+      ),
+    );
+
+    wrap.appendChild(
+      mkRow('Button toggle (open)', () =>
+        mk({
+          accordion: false,
+          link: false,
+          isOpen: true,
+          targetId: 'mx-btn-open',
+          headerText: 'Toggle section',
+          contentLine1: 'Body',
+          contentLine2: 'More',
+          variant: 'primary',
+        }),
+      ),
+    );
+
+    wrap.appendChild(
+      mkRow('Accordion mode (with icon)', () =>
+        mk({
+          accordion: true,
+          icon: 'fa-solid fa-plus, fa-solid fa-minus',
+          isOpen: false,
+          targetId: 'mx-acc',
+          headerText: 'Accordion header',
+          contentLine1: 'Body',
+          contentLine2: 'More',
+        }),
+      ),
+    );
+
+    wrap.appendChild(
+      mkRow('Link mode', () =>
+        mk({
+          link: true,
+          variant: 'link',
+          isOpen: false,
+          targetId: 'mx-link',
+          headerText: 'Open via link',
+          contentLine1: 'Body',
+          contentLine2: 'More',
+        }),
+      ),
+    );
+
+    return wrap;
+  },
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Renders multiple configurations and prints computed accessibility attributes for the toggle + region: `aria-expanded`, `aria-controls`, `role="region"`, `aria-labelledby`, ids, and collapse state via classes (`collapse`/`show`/`collapsing`).',
+      },
+    },
   },
 };

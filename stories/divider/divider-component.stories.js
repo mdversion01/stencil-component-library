@@ -1,6 +1,7 @@
-// stories/divider-component.stories.js
+// File: src/stories/divider-component/divider-component.stories.js
 
-import { A } from "storybook/internal/components";
+import DocsPage from './divider-component.docs.mdx';
+import { buildDocsHtml, buildDocsHtmlMany, buildDivider, makeParagraph } from './divider-component.story-helpers.js';
 
 export default {
   title: 'Components/Divider',
@@ -8,11 +9,14 @@ export default {
 
   parameters: {
     docs: {
+      page: DocsPage,
       description: {
         component: ['Divider component for separating content with optional text or styling.', ''].join('\n'),
       },
-      // Ensure Docs shows rendered markup (attributes) in the Code tab
-      source: { type: 'dynamic', language: 'html' },
+      source: {
+        language: 'html',
+        transform: (_src, ctx) => buildDocsHtml(ctx.args),
+      },
     },
   },
 
@@ -60,13 +64,12 @@ export default {
     },
 
     /* -----------------------------
-     Accessibility (NEW)
+     Accessibility
     ------------------------------ */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
-      description:
-        'Accessible name for the divider when it includes visible text. If not provided, it is derived from the slotted text.',
+      description: 'Accessible name for the divider when it includes visible text. If not provided, it is derived from the slotted text.',
       table: { category: 'Accessibility' },
     },
 
@@ -75,12 +78,10 @@ export default {
     ------------------------------ */
     slotText: {
       table: { category: 'Storybook Only', disable: true },
-      control: 'false',
+      control: false,
       description: 'Text content for the slot (used only in this Storybook preview).',
       name: 'slot text',
     },
-
-    // Storybook-only "matrix" helpers (do NOT affect component API)
     sbId: {
       control: 'text',
       name: 'sb-id',
@@ -90,19 +91,18 @@ export default {
     sbAriaDisabled: {
       control: 'boolean',
       name: 'sb-aria-disabled',
-      description:
-        'Storybook-only: set aria-disabled="true" on the divider element (audit/debug only; aria-disabled is a global ARIA state).',
+      description: 'Storybook-only: set aria-disabled="true" on the divider element (audit/debug only; aria-disabled is a global ARIA state).',
       table: { category: 'Storybook Only', defaultValue: { summary: false } },
     },
   },
 
   controls: {
-    exclude: ['slotText', 'sbId', 'sbAriaDisabled'], // keep Controls panel tidy for normal stories
+    exclude: ['slotText', 'sbId', 'sbAriaDisabled'],
   },
 
   args: {
     dashed: false,
-    direction: 'horizontal', // default (should not appear in markup)
+    direction: 'horizontal',
     orientation: undefined,
     plain: false,
     removeOrientationMargin: undefined,
@@ -114,91 +114,14 @@ export default {
   },
 };
 
-// -------- Helpers --------
+// ===== Stories =====
 
-const LOREM =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.';
-
-const setAttr = (el, name, value) => {
-  if (!name) return;
-  if (value === true) el.setAttribute(name, '');
-  else if (value === false || value == null || value === '') el.removeAttribute(name);
-  else el.setAttribute(name, String(value));
-};
-
-const buildDivider = (args) => {
-  const el = document.createElement('divider-component');
-
-  // --- set PROPS (runtime behavior) ---
-  // Only set direction prop if vertical; let component default handle horizontal
-  if (args.direction === 'vertical') el.direction = 'vertical';
-  else delete el.direction;
-
-  el.dashed = !!args.dashed;
-  el.plain = !!args.plain;
-
-  if (args.orientation === undefined) delete el.orientation;
-  else el.orientation = args.orientation;
-
-  if (args.removeOrientationMargin === undefined) delete el.removeOrientationMargin;
-  else el.removeOrientationMargin = args.removeOrientationMargin;
-
-  if (args.styles && String(args.styles).trim().length) {
-    el.styles = args.styles;
-  } else {
-    el.removeAttribute('styles');
-  }
-
-  // NEW: a11y prop
-  if (args.ariaLabel && String(args.ariaLabel).trim().length) {
-    el.ariaLabel = String(args.ariaLabel).trim();
-  } else {
-    // clear any prior value
-    el.ariaLabel = undefined;
-  }
-
-  // --- set ATTRIBUTES (so Docs prints them in the code block) ---
-  // Only render direction attribute when vertical (horizontal is default)
-  if (args.direction === 'vertical') setAttr(el, 'direction', 'vertical');
-  else el.removeAttribute('direction');
-
-  setAttr(el, 'dashed', !!args.dashed);
-  setAttr(el, 'plain', !!args.plain);
-  setAttr(el, 'orientation', args.orientation);
-  setAttr(el, 'remove-orientation-margin', args.removeOrientationMargin);
-  setAttr(el, 'styles', args.styles);
-
-  // NEW: aria-label attribute mirrors prop (Stencil will reflect it; we set for docs clarity)
-  setAttr(el, 'aria-label', args.ariaLabel && String(args.ariaLabel).trim().length ? String(args.ariaLabel).trim() : '');
-
-  // Storybook-only debug attributes
-  if (args.sbId && String(args.sbId).trim().length) setAttr(el, 'id', String(args.sbId).trim());
-  else el.removeAttribute('id');
-
-  if (args.sbAriaDisabled) setAttr(el, 'aria-disabled', 'true');
-  else el.removeAttribute('aria-disabled');
-
-  // slot content (only appears if orientation is set)
-  el.textContent = args.slotText || '';
-
-  return el;
-};
-
-const makeParagraph = (text = LOREM) => {
-  const p = document.createElement('p');
-  p.textContent = text;
-  return p;
-};
-
-// Template: wraps horizontal (default) dividers with <p> before and after
-const Template = (args) => {
+const Template = args => {
   const wrap = document.createElement('div');
-  const divider = buildDivider({ ...args, direction: 'horizontal' }); // ensure we demo horizontal without printing attribute
+  const divider = buildDivider({ ...args, direction: 'horizontal' });
   wrap.append(makeParagraph(), divider, makeParagraph());
   return wrap;
 };
-
-// ===== Stories (non-vertical use Template and therefore get <p> before/after) =====
 
 export const Horizontal = Template.bind({});
 Horizontal.parameters = {
@@ -304,9 +227,7 @@ TextRightWithNoRightMargin.parameters = {
   },
 };
 
-// Vertical example: no paragraphs; custom layout
-export const Vertical = (args) => {
-  // Showcase vertical divider inside a flex row
+export const Vertical = args => {
   const wrap = document.createElement('div');
   wrap.style.display = 'flex';
   wrap.style.alignItems = 'center';
@@ -337,13 +258,11 @@ Vertical.parameters = {
   },
 };
 
-// Mixed demo: includes vertical and horizontal examples
-export const KitchenSink = (args) => {
+export const KitchenSink = args => {
   const container = document.createElement('div');
   container.style.display = 'grid';
   container.style.gap = '16px';
 
-  // Standalone horizontal examples (with paragraphs before/after)
   const aWrap = document.createElement('div');
   aWrap.append(makeParagraph(), buildDivider({ ...args, dashed: true, orientation: undefined, direction: 'horizontal' }), makeParagraph());
 
@@ -365,7 +284,6 @@ export const KitchenSink = (args) => {
     makeParagraph(),
   );
 
-  // Row with vertical dividers (no paragraphs)
   const row = document.createElement('div');
   row.style.display = 'flex';
   row.style.alignItems = 'center';
@@ -388,17 +306,42 @@ KitchenSink.parameters = {
     description: {
       story: 'A collection of various divider examples in one view.',
     },
+    source: {
+      language: 'html',
+      code: buildDocsHtmlMany([
+        `<div>
+  <p>Content above</p>
+  <divider-component dashed></divider-component>
+  <p>Content below</p>
+</div>`,
+        `<div>
+  <p>Content above</p>
+  <divider-component orientation="center">Overview</divider-component>
+  <p>Content below</p>
+</div>`,
+        `<div>
+  <p>Content above</p>
+  <divider-component
+    orientation="left"
+    remove-orientation-margin="left"
+    plain
+    styles="color:#555; font-weight:600;"
+  >
+    Details
+  </divider-component>
+  <p>Content below</p>
+</div>`,
+        `<div style="display:flex; align-items:center; gap:8px; height:40px;">
+  Alpha
+  <divider-component direction="vertical"></divider-component>
+  Beta
+  <divider-component direction="vertical" dashed></divider-component>
+  Gamma
+</div>`,
+      ]),
+    },
   },
 };
-
-// ======================================================
-// NEW: Accessibility matrix (Divider)
-// Notes:
-//  - Divider is a non-interactive separator; it does not support validation/disabled as component props.
-//  - For auditing consistency, the matrix includes "validation" and "disabled" rows using Storybook-only
-//    attributes (sb-aria-disabled) and visual styling on the wrapper (not component behavior).
-//  - Prints computed role + aria-* + id + className for the divider element.
-// ======================================================
 
 function pickAriaAndCoreAttrs(el) {
   const out = {};
@@ -466,125 +409,168 @@ function renderMatrixRow({ title, build, idSuffix }) {
   return wrap;
 }
 
-export const AccessibilityMatrix = () => {
-  const root = document.createElement('div');
-  root.style.display = 'grid';
-  root.style.gap = '16px';
+export const AccessibilityMatrix = {
+  name: 'Accessibility Matrix (computed)',
+  render: () => {
+    const root = document.createElement('div');
+    root.style.display = 'grid';
+    root.style.gap = '16px';
 
-  const intro = document.createElement('div');
-  intro.innerHTML = `
-    <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
-    <div style="font-size:13px; color:#444;">
-      Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + <code>id</code> and divider <code>className</code>.
-      For divider, "inline" is represented as the <em>vertical</em> variant inside an inline row. "Validation" and "Disabled" rows are audit demos only.
-    </div>
-  `;
-  root.appendChild(intro);
+    const intro = document.createElement('div');
+    intro.innerHTML = `
+      <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
+      <div style="font-size:13px; color:#444;">
+        Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + <code>id</code> and divider <code>className</code>.
+        For divider, "inline" is represented as the <em>vertical</em> variant inside an inline row. "Validation" and "Disabled" rows are audit demos only.
+      </div>
+    `;
+    root.appendChild(intro);
 
-  const rows = [
-    {
-      title: 'Default (horizontal)',
-      build: (n) => {
-        const wrap = document.createElement('div');
-        wrap.append(makeParagraph(), buildDivider({ direction: 'horizontal', sbId: `divider-a11y-${n}` }), makeParagraph());
-        return wrap;
+    const rows = [
+      {
+        title: 'Default (horizontal)',
+        build: n => {
+          const wrap = document.createElement('div');
+          wrap.append(makeParagraph(), buildDivider({ direction: 'horizontal', sbId: `divider-a11y-${n}` }), makeParagraph());
+          return wrap;
+        },
       },
-    },
-    {
-      title: 'Inline (vertical separator in a row)',
-      build: (n) => {
-        const wrap = document.createElement('div');
-        wrap.style.display = 'inline-flex';
-        wrap.style.alignItems = 'center';
-        wrap.style.gap = '10px';
-        wrap.append(
-          document.createTextNode('Alpha'),
-          buildDivider({ direction: 'vertical', sbId: `divider-a11y-${n}` }),
-          document.createTextNode('Beta'),
-        );
-        return wrap;
+      {
+        title: 'Inline (vertical separator in a row)',
+        build: n => {
+          const wrap = document.createElement('div');
+          wrap.style.display = 'inline-flex';
+          wrap.style.alignItems = 'center';
+          wrap.style.gap = '10px';
+          wrap.append(document.createTextNode('Alpha'), buildDivider({ direction: 'vertical', sbId: `divider-a11y-${n}` }), document.createTextNode('Beta'));
+          return wrap;
+        },
       },
-    },
-    {
-      title: 'Horizontal (with text + aria-label)',
-      build: (n) => {
-        const wrap = document.createElement('div');
-        wrap.append(
-          makeParagraph(),
-          buildDivider({
-            direction: 'horizontal',
-            orientation: 'center',
-            slotText: 'Section',
-            ariaLabel: 'Section divider',
-            sbId: `divider-a11y-${n}`,
-          }),
-          makeParagraph(),
-        );
-        return wrap;
+      {
+        title: 'Horizontal (with text + aria-label)',
+        build: n => {
+          const wrap = document.createElement('div');
+          wrap.append(
+            makeParagraph(),
+            buildDivider({
+              direction: 'horizontal',
+              orientation: 'center',
+              slotText: 'Section',
+              ariaLabel: 'Section divider',
+              sbId: `divider-a11y-${n}`,
+            }),
+            makeParagraph(),
+          );
+          return wrap;
+        },
       },
-    },
-    {
-      title: 'Error / Validation (audit demo)',
-      build: (n) => {
-        const wrap = document.createElement('div');
-        const note = document.createElement('div');
-        note.style.fontSize = '12px';
-        note.style.color = '#444';
-        note.textContent =
-          'Divider has no validation state; this row demonstrates a dashed divider with text as a visual separator in an error section.';
-        wrap.append(note);
+      {
+        title: 'Error / Validation (audit demo)',
+        build: n => {
+          const wrap = document.createElement('div');
+          const note = document.createElement('div');
+          note.style.fontSize = '12px';
+          note.style.color = '#444';
+          note.textContent = 'Divider has no validation state; this row demonstrates a dashed divider with text as a visual separator in an error section.';
+          wrap.append(note);
 
-        wrap.append(
-          buildDivider({
-            direction: 'horizontal',
-            dashed: true,
-            orientation: 'left',
-            slotText: 'Error section',
-            ariaLabel: 'Error section divider',
-            sbId: `divider-a11y-${n}`,
-          }),
-        );
-        return wrap;
+          wrap.append(
+            buildDivider({
+              direction: 'horizontal',
+              dashed: true,
+              orientation: 'left',
+              slotText: 'Error section',
+              ariaLabel: 'Error section divider',
+              sbId: `divider-a11y-${n}`,
+            }),
+          );
+          return wrap;
+        },
       },
-    },
-    {
-      title: 'Disabled (audit demo via aria-disabled)',
-      build: (n) => {
-        const wrap = document.createElement('div');
-        const note = document.createElement('div');
-        note.style.fontSize = '12px';
-        note.style.color = '#444';
-        note.textContent =
-          'Divider is non-interactive; this row sets aria-disabled="true" for audit only and dims the wrapper visually.';
-        wrap.append(note);
+      {
+        title: 'Disabled (audit demo via aria-disabled)',
+        build: n => {
+          const wrap = document.createElement('div');
+          const note = document.createElement('div');
+          note.style.fontSize = '12px';
+          note.style.color = '#444';
+          note.textContent = 'Divider is non-interactive; this row sets aria-disabled="true" for audit only and dims the wrapper visually.';
+          wrap.append(note);
 
-        const holder = document.createElement('div');
-        holder.style.opacity = '0.55';
-        holder.append(
-          buildDivider({
-            direction: 'horizontal',
-            sbId: `divider-a11y-${n}`,
-            sbAriaDisabled: true,
-          }),
-        );
-        wrap.append(holder);
-        return wrap;
+          const holder = document.createElement('div');
+          holder.style.opacity = '0.55';
+          holder.append(
+            buildDivider({
+              direction: 'horizontal',
+              sbId: `divider-a11y-${n}`,
+              sbAriaDisabled: true,
+            }),
+          );
+          wrap.append(holder);
+          return wrap;
+        },
       },
-    },
-  ];
+    ];
 
-  rows.forEach((r, idx) => root.appendChild(renderMatrixRow({ ...r, idSuffix: String(idx + 1) })));
+    rows.forEach((r, idx) => root.appendChild(renderMatrixRow({ ...r, idSuffix: String(idx + 1) })));
 
-  return root;
-};
-AccessibilityMatrix.storyName = 'Accessibility Matrix (computed)';
-AccessibilityMatrix.parameters = {
-  docs: {
-    description: {
-      story:
-        'Matrix of key divider variants and a live readout of computed role/aria/id/className to help verify ARIA/508 expectations.',
-    },
-    story: { height: '1100px' },
+    return root;
   },
-  controls: { disable: true },
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story: 'Matrix of key divider variants and a live readout of computed role/aria/id/className to help verify ARIA/508 expectations.',
+      },
+      source: {
+        language: 'html',
+        code: `<!-- Default (horizontal) -->
+<div>
+  <p>Content above</p>
+  <divider-component id="divider-a11y-1"></divider-component>
+  <p>Content below</p>
+</div>
+
+<!-- Inline (vertical separator in a row) -->
+<div style="display:inline-flex; align-items:center; gap:10px;">
+  Alpha
+  <divider-component id="divider-a11y-2" direction="vertical"></divider-component>
+  Beta
+</div>
+
+<!-- Horizontal (with text + aria-label) -->
+<div>
+  <p>Content above</p>
+  <divider-component
+    id="divider-a11y-3"
+    orientation="center"
+    aria-label="Section divider"
+  >
+    Section
+  </divider-component>
+  <p>Content below</p>
+</div>
+
+<!-- Error / Validation (audit demo) -->
+<div>
+  <divider-component
+    id="divider-a11y-4"
+    dashed
+    orientation="left"
+    aria-label="Error section divider"
+  >
+    Error section
+  </divider-component>
+</div>
+
+<!-- Disabled (audit demo via aria-disabled) -->
+<div>
+  <divider-component
+    id="divider-a11y-5"
+    aria-disabled="true"
+  ></divider-component>
+</div>`,
+      },
+    },
+  },
 };

@@ -1,12 +1,12 @@
-// src/components/form/form-component.tsx
+// src/components/form/form-wrapper-component.tsx
 import { Component, h, Prop, Element } from '@stencil/core';
 
 @Component({
-  tag: 'form-component',
+  tag: 'form-wrapper-component',
   styleUrls: ['../layout-styles.scss', '../form-styles.scss'],
   shadow: false,
 })
-export class FormComponent {
+export class FormWrapperComponent {
   @Element() host!: HTMLElement;
 
   /** Native form attributes */
@@ -28,7 +28,7 @@ export class FormComponent {
 
   /**
    * If true, do not render a <form>. Inputs placed outside the form can still
-   * read formId via closest('form-component') and set their own form attribute.
+   * read formId via closest('form-wrapper-component') and set their own form attribute.
    */
   @Prop() outsideOfForm: boolean = false;
 

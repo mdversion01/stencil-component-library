@@ -1,12 +1,41 @@
-// src/stories/timepicker-component.stories.js
-// UPDATED: adds aria-describedby control + Accessibility Matrix (computed) for new popover + spinbutton semantics
+import DocsPage from './timepicker-component.docs.mdx';
+import {
+  DocsWrapStyles,
+  Template,
+  buildDocsHtml,
+  getSnapshot,
+  normalizeHtml,
+} from './timepicker-component.story-helpers.js';
 
 export default {
   title: 'Components/Timepicker/Timepicker',
   tags: ['autodocs'],
+  decorators: [
+    (Story) => {
+      const wrap = document.createElement('div');
+      wrap.appendChild(DocsWrapStyles());
+
+      const out = Story();
+
+      if (typeof out === 'string') {
+        const mount = document.createElement('div');
+        mount.innerHTML = out;
+        wrap.appendChild(mount);
+      } else if (out instanceof Node) {
+        wrap.appendChild(out);
+      } else {
+        const mount = document.createElement('div');
+        mount.textContent = String(out ?? '');
+        wrap.appendChild(mount);
+      }
+
+      return wrap;
+    },
+  ],
   parameters: {
     layout: 'padded',
     docs: {
+      page: DocsPage,
       description: {
         component: `
 The **Timepicker Component** is a time selection input field that supports manual entry and an accessible popover “spinner” picker.
@@ -68,15 +97,11 @@ When the popover is open:
       source: {
         type: 'dynamic',
         language: 'html',
-        // ✅ Keep Docs "Code" tab in sync with Controls, and ensure HTML is shown cleanly
-        transform: (_code, ctx) => Template(ctx.args),
+        transform: (_code, ctx) => buildDocsHtml(ctx.args),
       },
     },
   },
   argTypes: {
-    /* -----------------------------
-     Accessibility
-    ------------------------------ */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -93,13 +118,11 @@ When the popover is open:
     ariaDescribedby: {
       control: 'text',
       name: 'aria-describedby',
-      description: 'ID(s) of external help/description elements (space-separated). The component may add its own ids when validation/warning are visible.',
+      description:
+        'ID(s) of external help/description elements (space-separated). The component may add its own ids when validation/warning are visible.',
       table: { category: 'Accessibility' },
     },
 
-    /* -----------------------------
-     Labeling
-    ------------------------------ */
     showLabel: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Labeling' },
@@ -119,9 +142,6 @@ When the popover is open:
       description: 'Show required indicator (label asterisk) where supported.',
     },
 
-    /* -----------------------------
-     Input Attributes
-    ------------------------------ */
     inputId: {
       control: 'text',
       name: 'input-id',
@@ -135,9 +155,6 @@ When the popover is open:
       table: { category: 'Input Attributes' },
     },
 
-    /* -----------------------------
-     Layout & Sizing
-    ------------------------------ */
     inputWidth: {
       control: { type: 'number', min: 0, step: 1 },
       name: 'input-width',
@@ -151,9 +168,6 @@ When the popover is open:
       table: { category: 'Layout & Sizing' },
     },
 
-    /* -----------------------------
-     Format & Options
-    ------------------------------ */
     isTwentyFourHourFormat: {
       control: 'boolean',
       table: { defaultValue: { summary: true }, category: 'Format & Options' },
@@ -179,9 +193,6 @@ When the popover is open:
       description: 'If true, seconds UI is hidden.',
     },
 
-    /* -----------------------------
-     UI Controls
-    ------------------------------ */
     hideTimepickerBtn: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'UI Controls' },
@@ -189,9 +200,6 @@ When the popover is open:
       description: 'If true, hides the button that opens the timepicker dropdown.',
     },
 
-    /* -----------------------------
-     State
-    ------------------------------ */
     disableTimepicker: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'State' },
@@ -205,9 +213,6 @@ When the popover is open:
       description: 'Indicates whether the current input value is valid.',
     },
 
-    /* -----------------------------
-     Validation
-    ------------------------------ */
     validation: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Validation' },
@@ -221,9 +226,6 @@ When the popover is open:
       table: { category: 'Validation' },
     },
 
-    /* -----------------------------
-     Storybook Only
-    ------------------------------ */
     wrapperWidth: {
       control: { type: 'number', min: 120, step: 10 },
       description: 'Demo wrapper width (px)',
@@ -233,10 +235,7 @@ When the popover is open:
   },
 
   args: {
-    // Demo wrapper only
     wrapperWidth: 260,
-
-    // Component defaults
     ariaLabel: 'Time Picker',
     ariaLabelledby: '',
     ariaDescribedby: '',
@@ -258,94 +257,6 @@ When the popover is open:
     validationMessage: '',
   },
 };
-
-/* ---------------------------------------------
-   Helpers
----------------------------------------------- */
-
-const normalizeHtml = html => {
-  const lines = String(html ?? '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map(l => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      out.push('');
-      prevBlank = true;
-      continue;
-    }
-    out.push(line);
-    prevBlank = false;
-  }
-
-  while (out.length && out[0] === '') out.shift();
-  while (out.length && out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-const normalizeIdList = v => {
-  const s = String(v ?? '').trim();
-  if (!s) return '';
-  return s.split(/\s+/).filter(Boolean).join(' ');
-};
-
-const boolAttr = (name, on) => (on ? name : null);
-const attr = (name, v) => (v === undefined || v === null || v === '' ? null : `${name}="${String(v)}"`);
-
-/* ---------------------------------------------
-   Template (UPDATED)
----------------------------------------------- */
-
-// One HTML template used by stories
-const Template = args => {
-  const width = Number.isFinite(args.wrapperWidth) ? `${args.wrapperWidth}px` : '';
-
-  const attrs = [
-    // a11y
-    attr('aria-label', args.ariaLabel),
-    attr('aria-labelledby', normalizeIdList(args.ariaLabelledby)),
-    attr('aria-describedby', normalizeIdList(args.ariaDescribedby)),
-
-    // state + behavior
-    boolAttr('disable-timepicker', args.disableTimepicker),
-    boolAttr('hide-seconds', args.hideSeconds),
-    boolAttr('hide-timepicker-btn', args.hideTimepickerBtn),
-    attr('input-id', args.inputId),
-    attr('input-name', args.inputName),
-    attr('input-width', args.inputWidth),
-    boolAttr('is-twenty-four-hour-format', args.isTwentyFourHourFormat),
-    boolAttr('is-valid', args.isValid),
-    attr('label-text', args.labelText),
-    boolAttr('required', args.required),
-    boolAttr('show-label', args.showLabel),
-    attr('size', args.size),
-    boolAttr('twelve-hour-only', args.twelveHourOnly),
-    boolAttr('twenty-four-hour-only', args.twentyFourHourOnly),
-    boolAttr('validation', args.validation),
-    attr('validation-message', args.validationMessage),
-  ]
-    .filter(Boolean)
-    .join('\n    ');
-
-  return normalizeHtml(`
-<div class="timepicker-wrapper"${width ? ` style="width:${width};"` : ''}>
-  <timepicker-component
-    ${attrs}
-  ></timepicker-component>
-</div>
-`);
-};
-
-/* =========================
-   Stories (existing, updated where needed)
-   ========================= */
 
 export const Default = {
   name: 'Default Timepicker',
@@ -378,7 +289,7 @@ export const Default = {
         story: 'Default configuration. With no visible label and no aria-labelledby, the input uses aria-label for its accessible name.',
       },
       story: { height: '220px' },
-      source: { transform: (_code, ctx) => Template(ctx.args) },
+      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
     },
   },
 };
@@ -395,7 +306,7 @@ export const Small = {
     docs: {
       description: { story: 'Small size variant (`size="sm"`). No visible label; uses aria-label.' },
       story: { height: '220px' },
-      source: { transform: (_code, ctx) => Template(ctx.args) },
+      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
     },
   },
 };
@@ -416,7 +327,7 @@ export const LargeWithVisibleLabel = {
         story: 'Large size (`size="lg"`) with visible label. When `show-label` is true, the component wires aria-labelledby to `${inputId}-label`.',
       },
       story: { height: '240px' },
-      source: { transform: (_code, ctx) => Template(ctx.args) },
+      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
     },
   },
 };
@@ -439,7 +350,7 @@ export const TwentyFourHourOnly = {
         story: 'Configured to only allow 24-hour time input (`twenty-four-hour-only`).',
       },
       story: { height: '240px' },
-      source: { transform: (_code, ctx) => Template(ctx.args) },
+      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
     },
   },
 };
@@ -462,7 +373,7 @@ export const TwelveHourOnly = {
         story: 'Configured to only allow 12-hour time input (`twelve-hour-only`).',
       },
       story: { height: '240px' },
-      source: { transform: (_code, ctx) => Template(ctx.args) },
+      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
     },
   },
 };
@@ -483,7 +394,7 @@ export const HideSeconds = {
         story: 'Hides the seconds UI (`hide-seconds`).',
       },
       story: { height: '240px' },
-      source: { transform: (_code, ctx) => Template(ctx.args) },
+      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
     },
   },
 };
@@ -504,7 +415,7 @@ export const NoDropdownButton = {
         story: 'Hides the dropdown trigger button (`hide-timepicker-btn`), allowing manual time entry only.',
       },
       story: { height: '220px' },
-      source: { transform: (_code, ctx) => Template(ctx.args) },
+      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
     },
   },
 };
@@ -528,7 +439,7 @@ export const WithValidationMessage = {
         story: 'Shows invalid styling + a validation message. The input will reference the validation container id via aria-describedby.',
       },
       story: { height: '260px' },
-      source: { transform: (_code, ctx) => Template(ctx.args) },
+      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
     },
   },
 };
@@ -547,134 +458,9 @@ export const CustomInputWidth = {
     docs: {
       description: { story: 'Sets a custom width using `input-width`.' },
       story: { height: '240px' },
-      source: { transform: (_code, ctx) => Template(ctx.args) },
+      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
     },
   },
-};
-
-/* ============================== Accessibility Matrix (computed) ============================== */
-
-const splitIds = v =>
-  String(v || '')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-
-const resolveId = (scopeRoot, id) => {
-  if (!id) return false;
-  try {
-    return !!scopeRoot.querySelector(`#${CSS.escape(id)}`);
-  } catch {
-    return false;
-  }
-};
-
-const getSnapshot = (host, scopeRoot) => {
-  const input = host?.querySelector?.('input.time-input');
-  const label = host?.querySelector?.('label');
-  const trigger = host?.querySelector?.('button.time-icon-btn');
-  const dropdown = host?.querySelector?.('.time-dropdown');
-  const validation = host?.querySelector?.('.validation-message');
-  const warning = host?.querySelector?.('.warning-message');
-
-  const hour = host?.querySelector?.('.hour-display');
-  const minute = host?.querySelector?.('.minute-display');
-  const second = host?.querySelector?.('.second-display');
-  const ampm = host?.querySelector?.('.ampm-display');
-
-  const labelledbyIds = splitIds(input?.getAttribute?.('aria-labelledby'));
-  const describedbyIds = splitIds(input?.getAttribute?.('aria-describedby'));
-
-  return {
-    hostTag: host?.tagName?.toLowerCase?.() ?? null,
-    ids: {
-      inputId: input?.getAttribute?.('id') ?? null,
-      labelId: label?.getAttribute?.('id') ?? null,
-      dropdownId: dropdown?.getAttribute?.('id') ?? null,
-      validationId: validation?.getAttribute?.('id') ?? null,
-      warningId: warning?.getAttribute?.('id') ?? null,
-    },
-    input: input
-      ? {
-          'role': input.getAttribute('role') ?? null,
-          'disabled': input.hasAttribute('disabled'),
-          'required': input.hasAttribute('required'),
-          'aria-label': input.getAttribute('aria-label'),
-          'aria-labelledby': input.getAttribute('aria-labelledby'),
-          'aria-describedby': input.getAttribute('aria-describedby'),
-          'aria-controls': input.getAttribute('aria-controls'),
-          'aria-expanded': input.getAttribute('aria-expanded'),
-          'aria-haspopup': input.getAttribute('aria-haspopup'),
-          'aria-invalid': input.getAttribute('aria-invalid'),
-          'aria-required': input.getAttribute('aria-required'),
-        }
-      : null,
-    trigger: trigger
-      ? {
-          'disabled': trigger.hasAttribute('disabled'),
-          'aria-controls': trigger.getAttribute('aria-controls'),
-          'aria-expanded': trigger.getAttribute('aria-expanded'),
-          'aria-haspopup': trigger.getAttribute('aria-haspopup'),
-        }
-      : null,
-    dropdown: dropdown
-      ? {
-          'role': dropdown.getAttribute('role'),
-          'hiddenClass': dropdown.classList.contains('hidden'),
-          'inert': dropdown.hasAttribute('inert'),
-          'aria-labelledby': dropdown.getAttribute('aria-labelledby'),
-          'aria-describedby': dropdown.getAttribute('aria-describedby'),
-        }
-      : null,
-    spinbuttons: {
-      hour: hour
-        ? {
-            'role': hour.getAttribute('role'),
-            'tabIndex': hour.getAttribute('tabindex'),
-            'aria-valuemin': hour.getAttribute('aria-valuemin'),
-            'aria-valuemax': hour.getAttribute('aria-valuemax'),
-            'aria-valuenow': hour.getAttribute('aria-valuenow'),
-            'aria-valuetext': hour.getAttribute('aria-valuetext'),
-          }
-        : null,
-      minute: minute
-        ? {
-            'role': minute.getAttribute('role'),
-            'tabIndex': minute.getAttribute('tabindex'),
-            'aria-valuemin': minute.getAttribute('aria-valuemin'),
-            'aria-valuemax': minute.getAttribute('aria-valuemax'),
-            'aria-valuenow': minute.getAttribute('aria-valuenow'),
-            'aria-valuetext': minute.getAttribute('aria-valuetext'),
-          }
-        : null,
-      second: second
-        ? {
-            'role': second.getAttribute('role'),
-            'tabIndex': second.getAttribute('tabindex'),
-            'aria-valuemin': second.getAttribute('aria-valuemin'),
-            'aria-valuemax': second.getAttribute('aria-valuemax'),
-            'aria-valuenow': second.getAttribute('aria-valuenow'),
-            'aria-valuetext': second.getAttribute('aria-valuetext'),
-          }
-        : null,
-      ampm: ampm
-        ? {
-            'role': ampm.getAttribute('role'),
-            'tabIndex': ampm.getAttribute('tabindex'),
-            'aria-valuemin': ampm.getAttribute('aria-valuemin'),
-            'aria-valuemax': ampm.getAttribute('aria-valuemax'),
-            'aria-valuenow': ampm.getAttribute('aria-valuenow'),
-            'aria-valuetext': ampm.getAttribute('aria-valuetext'),
-          }
-        : null,
-    },
-    resolves: {
-      labelledbyIds,
-      labelledbyAllResolve: labelledbyIds.every(id => resolveId(scopeRoot, id)),
-      describedbyIds,
-      describedbyAllResolve: describedbyIds.every(id => resolveId(scopeRoot, id)),
-    },
-  };
 };
 
 export const AccessibilityMatrix = {
@@ -751,7 +537,6 @@ export const AccessibilityMatrix = {
       return box;
     };
 
-    // Default (no visible label; aria-label used)
     wrap.appendChild(
       card('Default (aria-label)', {
         wrapperWidth: 280,
@@ -766,7 +551,6 @@ export const AccessibilityMatrix = {
       }),
     );
 
-    // Inline: external aria-labelledby + describedby
     wrap.appendChild(
       card(
         'Inline (external aria-labelledby + aria-describedby)',
@@ -788,7 +572,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Horizontal: label left, control right (simulated)
     wrap.appendChild(
       card(
         'Horizontal (simulated layout)',
@@ -809,7 +592,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Error / validation: external help + internal validation id should be present when message set
     wrap.appendChild(
       card(
         'Error / validation (validationMessage shown)',
@@ -834,7 +616,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Disabled
     wrap.appendChild(
       card('Disabled', {
         wrapperWidth: 320,

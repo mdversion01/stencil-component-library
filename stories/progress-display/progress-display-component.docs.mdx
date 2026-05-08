@@ -1,0 +1,35 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as FormStories from './progress-display-component.stories';
+import { reactExample, vueExample, angularExample } from './progress-display-component.examples';
+
+<Meta of={FormStories} />
+
+# Progress Display
+
+<Description of={FormStories} />
+
+## HTML
+
+```html
+<progress-display-component
+  label="Upload progress"
+  value="45"
+  max="100"
+  variant="primary"
+  show-progress
+>
+  Loading
+</progress-display-component>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

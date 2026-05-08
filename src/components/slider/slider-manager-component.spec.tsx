@@ -3,11 +3,6 @@ import { newSpecPage } from '@stencil/core/testing';
 import { Component, Prop, h } from '@stencil/core';
 import { SliderManagerComponent } from './slider-manager-component';
 
-/**
- * Lightweight stubs for child components. They expose the same props
- * the manager forwards, and render a <pre.props> JSON so tests can assert.
- */
-
 type Variant = '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
 
 @Component({ tag: 'slider-basic-component', shadow: false })
@@ -27,8 +22,8 @@ class BasicStub {
   @Prop() hideLeftTextBox: boolean;
   @Prop() hideRightTextBox: boolean;
   @Prop() disabled: boolean;
+  @Prop() orientation: 'horizontal' | 'vertical' = 'horizontal';
 
-  // a11y forwarded
   @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
   @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
@@ -51,10 +46,12 @@ class BasicStub {
       hideLeftTextBox: this.hideLeftTextBox,
       hideRightTextBox: this.hideRightTextBox,
       disabled: this.disabled,
+      orientation: this.orientation,
       'aria-label': this.ariaLabel ?? null,
       'aria-labelledby': this.ariaLabelledby ?? null,
       'aria-describedby': this.ariaDescribedby ?? null,
     };
+
     return (
       <div class="stub basic">
         <pre class="props">{JSON.stringify(props)}</pre>
@@ -81,8 +78,9 @@ class MultiStub {
   @Prop() hideLeftTextBox: boolean;
   @Prop() hideRightTextBox: boolean;
   @Prop() disabled: boolean;
+  @Prop() rangeFillMode: 'inside' | 'outside' = 'inside';
+  @Prop() orientation: 'horizontal' | 'vertical' = 'horizontal';
 
-  // a11y forwarded
   @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
   @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
@@ -106,10 +104,13 @@ class MultiStub {
       hideLeftTextBox: this.hideLeftTextBox,
       hideRightTextBox: this.hideRightTextBox,
       disabled: this.disabled,
+      rangeFillMode: this.rangeFillMode,
+      orientation: this.orientation,
       'aria-label': this.ariaLabel ?? null,
       'aria-labelledby': this.ariaLabelledby ?? null,
       'aria-describedby': this.ariaDescribedby ?? null,
     };
+
     return (
       <div class="stub multi">
         <pre class="props">{JSON.stringify(props)}</pre>
@@ -124,13 +125,16 @@ class DiscreteStub {
   @Prop() selectedIndex: number;
   @Prop() stringValues: string[] = [];
   @Prop() plumage: boolean;
+  @Prop() sliderThumbLabel: boolean;
   @Prop() tickLabels: boolean;
   @Prop() unit: string;
   @Prop() variant: Variant = '';
   @Prop() disabled: boolean;
+  @Prop() hideTextBoxes: boolean;
+  @Prop() hideLeftTextBox: boolean;
   @Prop() hideRightTextBox: boolean;
+  @Prop() orientation: 'horizontal' | 'vertical' = 'horizontal';
 
-  // a11y forwarded
   @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
   @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
@@ -142,15 +146,20 @@ class DiscreteStub {
       selectedIndex: this.selectedIndex,
       stringValues: this.stringValues,
       plumage: this.plumage,
+      sliderThumbLabel: this.sliderThumbLabel,
       tickLabels: this.tickLabels,
       unit: this.unit,
       variant: this.variant,
       disabled: this.disabled,
+      hideTextBoxes: this.hideTextBoxes,
+      hideLeftTextBox: this.hideLeftTextBox,
       hideRightTextBox: this.hideRightTextBox,
+      orientation: this.orientation,
       'aria-label': this.ariaLabel ?? null,
       'aria-labelledby': this.ariaLabelledby ?? null,
       'aria-describedby': this.ariaDescribedby ?? null,
     };
+
     return (
       <div class="stub discrete">
         <pre class="props">{JSON.stringify(props)}</pre>
@@ -159,10 +168,10 @@ class DiscreteStub {
   }
 }
 
-// Helper: parse the JSON the stub printed
 function readPropsJSON(root: HTMLElement) {
   const pre = root.querySelector('pre.props');
   if (!pre) return null;
+
   try {
     return JSON.parse(pre.textContent || '{}');
   } catch {
@@ -171,12 +180,11 @@ function readPropsJSON(root: HTMLElement) {
 }
 
 describe('slider-manager-component', () => {
-  test('renders BASIC by default and forwards props + aria-*', async () => {
+  test('renders BASIC by default and forwards props + aria-* + orientation', async () => {
     const page = await newSpecPage({
       components: [SliderManagerComponent, BasicStub, MultiStub, DiscreteStub],
       template: () => (
         <slider-manager-component
-          /* type omitted -> default 'basic' */
           label="Speed"
           value={42}
           min={0}
@@ -192,6 +200,7 @@ describe('slider-manager-component', () => {
           hideLeftTextBox={false}
           hideRightTextBox={true}
           disabled={false}
+          orientation="vertical"
           aria-label="Speed slider"
           aria-labelledby="speed-label"
           aria-describedby="speed-help"
@@ -201,8 +210,7 @@ describe('slider-manager-component', () => {
 
     expect(page.root).toMatchSnapshot('basic/default-snapshot');
 
-    const json = readPropsJSON(page.root as any);
-    expect(json).toBeTruthy();
+    const json = readPropsJSON(page.root as HTMLElement)!;
     expect(json.kind).toBe('basic');
     expect(json.label).toBe('Speed');
     expect(json.value).toBe(42);
@@ -215,14 +223,14 @@ describe('slider-manager-component', () => {
     expect(json.tickLabels).toBe(true);
     expect(json.tickValues).toEqual([0, 20, 40, 60, 80, 100, 120]);
     expect(json.hideRightTextBox).toBe(true);
+    expect(json.orientation).toBe('vertical');
 
-    // a11y forwarded
     expect(json['aria-label']).toBe('Speed slider');
     expect(json['aria-labelledby']).toBe('speed-label');
     expect(json['aria-describedby']).toBe('speed-help');
   });
 
-  test('switches to MULTI and forwards props + aria-*', async () => {
+  test('switches to MULTI and forwards props + aria-* + rangeFillMode + orientation', async () => {
     const page = await newSpecPage({
       components: [SliderManagerComponent, BasicStub, MultiStub, DiscreteStub],
       template: () => (
@@ -244,6 +252,8 @@ describe('slider-manager-component', () => {
           hideLeftTextBox={false}
           hideRightTextBox={false}
           disabled={false}
+          rangeFillMode="outside"
+          orientation="vertical"
           aria-label="Range slider"
           aria-describedby="range-help"
         />
@@ -252,8 +262,7 @@ describe('slider-manager-component', () => {
 
     expect(page.root).toMatchSnapshot('multi/snapshot');
 
-    const json = readPropsJSON(page.root as any);
-    expect(json).toBeTruthy();
+    const json = readPropsJSON(page.root as HTMLElement)!;
     expect(json.kind).toBe('multi');
     expect(json.label).toBe('Range');
     expect(json.lowerValue).toBe(10);
@@ -261,13 +270,14 @@ describe('slider-manager-component', () => {
     expect(json.snapToTicks).toBe(true);
     expect(json.tickValues).toEqual([0, 25, 50, 75, 100]);
     expect(json.hideTextBoxes).toBe(true);
+    expect(json.rangeFillMode).toBe('outside');
+    expect(json.orientation).toBe('vertical');
 
-    // a11y forwarded
     expect(json['aria-label']).toBe('Range slider');
     expect(json['aria-describedby']).toBe('range-help');
   });
 
-  test('renders DISCRETE and forwards props + unit + aria-*', async () => {
+  test('renders DISCRETE and forwards props + unit + aria-* + sliderThumbLabel + hide textboxes + orientation', async () => {
     const page = await newSpecPage({
       components: [SliderManagerComponent, BasicStub, MultiStub, DiscreteStub],
       template: () => (
@@ -280,8 +290,12 @@ describe('slider-manager-component', () => {
           unit="lvl"
           variant="success"
           plumage={true}
+          sliderThumbLabel={true}
           disabled={true}
+          hideTextBoxes={true}
+          hideLeftTextBox={true}
           hideRightTextBox={true}
+          orientation="vertical"
           aria-labelledby="quality-label"
         />
       ),
@@ -289,8 +303,7 @@ describe('slider-manager-component', () => {
 
     expect(page.root).toMatchSnapshot('discrete/snapshot');
 
-    const json = readPropsJSON(page.root as any);
-    expect(json).toBeTruthy();
+    const json = readPropsJSON(page.root as HTMLElement)!;
     expect(json.kind).toBe('discrete');
     expect(json.label).toBe('Quality');
     expect(json.selectedIndex).toBe(2);
@@ -299,10 +312,13 @@ describe('slider-manager-component', () => {
     expect(json.unit).toBe('lvl');
     expect(json.variant).toBe('success');
     expect(json.plumage).toBe(true);
+    expect(json.sliderThumbLabel).toBe(true);
     expect(json.disabled).toBe(true);
+    expect(json.hideTextBoxes).toBe(true);
+    expect(json.hideLeftTextBox).toBe(true);
     expect(json.hideRightTextBox).toBe(true);
+    expect(json.orientation).toBe('vertical');
 
-    // a11y forwarded
     expect(json['aria-labelledby']).toBe('quality-label');
   });
 
@@ -316,29 +332,44 @@ describe('slider-manager-component', () => {
           min={0}
           max={10}
           tickValues={[0, 5, 10]}
+          sliderThumbLabel={true}
+          orientation="vertical"
+          rangeFillMode="outside"
+          hideTextBoxes={true}
+          hideLeftTextBox={true}
+          hideRightTextBox={false}
           aria-describedby="dyn-help"
         />
       ),
     });
 
-    // Starts basic
-    let json = readPropsJSON(page.root as any);
+    let json = readPropsJSON(page.root as HTMLElement)!;
     expect(json.kind).toBe('basic');
     expect(json['aria-describedby']).toBe('dyn-help');
+    expect(json.orientation).toBe('vertical');
+    expect(json.sliderThumbLabel).toBe(true);
 
-    // Change to multi
     page.root!.setAttribute('type', 'multi');
     await page.waitForChanges();
-    json = readPropsJSON(page.root as any);
+    json = readPropsJSON(page.root as HTMLElement)!;
     expect(json.kind).toBe('multi');
     expect(json['aria-describedby']).toBe('dyn-help');
+    expect(json.orientation).toBe('vertical');
+    expect(json.rangeFillMode).toBe('outside');
+    expect(json.hideTextBoxes).toBe(true);
+    expect(json.hideLeftTextBox).toBe(true);
+    expect(json.hideRightTextBox).toBe(false);
 
-    // Change to discrete
     page.root!.setAttribute('type', 'discrete');
     await page.waitForChanges();
-    json = readPropsJSON(page.root as any);
+    json = readPropsJSON(page.root as HTMLElement)!;
     expect(json.kind).toBe('discrete');
     expect(json['aria-describedby']).toBe('dyn-help');
+    expect(json.orientation).toBe('vertical');
+    expect(json.sliderThumbLabel).toBe(true);
+    expect(json.hideTextBoxes).toBe(true);
+    expect(json.hideLeftTextBox).toBe(true);
+    expect(json.hideRightTextBox).toBe(false);
 
     expect(page.root).toMatchSnapshot('runtime-switch/snapshot');
   });
@@ -358,9 +389,30 @@ describe('slider-manager-component', () => {
       ),
     });
 
-    const json = readPropsJSON(page.root as any);
-    expect(json).toBeTruthy();
+    const json = readPropsJSON(page.root as HTMLElement)!;
     expect(json.kind).toBe('discrete');
     expect(json.stringValues).toEqual(['One', 'Two', 'Three']);
+  });
+
+  test('normalizes tickValues JSON string for basic child', async () => {
+    const page = await newSpecPage({
+      components: [SliderManagerComponent, BasicStub, MultiStub, DiscreteStub],
+      template: () => <slider-manager-component tickValues={'[5,10,15]'} value={10} />,
+    });
+
+    const json = readPropsJSON(page.root as HTMLElement)!;
+    expect(json.kind).toBe('basic');
+    expect(json.tickValues).toEqual([5, 10, 15]);
+  });
+
+  test('normalizes tickValues JSON string for multi child', async () => {
+    const page = await newSpecPage({
+      components: [SliderManagerComponent, BasicStub, MultiStub, DiscreteStub],
+      template: () => <slider-manager-component type="multi" tickValues={'[0,50,100]'} lowerValue={25} upperValue={75} />,
+    });
+
+    const json = readPropsJSON(page.root as HTMLElement)!;
+    expect(json.kind).toBe('multi');
+    expect(json.tickValues).toEqual([0, 50, 100]);
   });
 });

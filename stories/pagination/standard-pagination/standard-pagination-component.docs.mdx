@@ -1,0 +1,49 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as StandardPaginationStories from './standard-pagination-component.stories.js';
+import { reactExample, vueExample, angularExample } from './standard-pagination-component.examples.js';
+
+<Meta of={StandardPaginationStories} />
+
+# Standard Pagination
+
+<Description of={StandardPaginationStories} />
+
+## HTML
+
+```html
+<standard-pagination-component
+  current-page="1"
+  total-rows="100"
+  page-size="10"
+  pagination-layout="center"
+  pagination-aria-label="Pagination"
+></standard-pagination-component>
+
+<standard-pagination-component
+  id="stdpg-demo"
+  current-page="1"
+  total-rows="420"
+  page-size="10"
+  items-per-page
+  display-total-number-of-pages
+  pagination-layout="start"
+  page-size-label="Items per page:"
+  page-size-help-text="Use this control to change how many items are shown per page."
+></standard-pagination-component>
+
+<script>
+  document.getElementById('stdpg-demo').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
+</script>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

@@ -1,0 +1,45 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as PlumageSelectFieldStories from './plumage-select-field.stories.js';
+import { reactExample, vueExample, angularExample } from './plumage-select-field.examples.js';
+
+<Meta of={PlumageSelectFieldStories} />
+
+# Plumage Select Field
+
+<Description of={PlumageSelectFieldStories} />
+
+## HTML
+
+```html
+<plumage-select-field-component
+  label="Fruits"
+  select-field-id="fruit-example"
+  default-option-txt="Select a fruit"
+></plumage-select-field-component>
+
+<script>
+  const el = document.querySelector('plumage-select-field-component');
+
+  el.options = [
+    { value: 'apple', name: 'Apple' },
+    { value: 'banana', name: 'Banana' },
+    { value: 'cherry', name: 'Cherry' },
+  ];
+
+  el.addEventListener('valueChange', (event) => {
+    console.log('valueChange:', event.detail);
+  });
+</script>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

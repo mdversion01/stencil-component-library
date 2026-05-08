@@ -9,7 +9,7 @@
   "unpkg": "dist/stencil-component-library/stencil-component-library.esm.js",
   "type": "module",
   "types": "dist/types/index.d.ts",
-   "style": "dist/stencil-component-library/stencil-component-library.css",
+  "style": "dist/stencil-component-library/stencil-component-library.css",
   "exports": {
     ".": {
       "import": "./dist/stencil-component-library/stencil-component-library.esm.js",
@@ -43,35 +43,31 @@
   "files": [
     "dist/",
     "loader/",
+    "assets/",
     "www/build/",
     "www/assets/",
     "components.d.ts",
     "readme.md",
     "LICENSE"
   ],
-   "scripts": {
+  "scripts": {
     "clean": "rimraf www dist .stencil",
+    "copy:package-assets": "node scripts/copy-package-assets.mjs",
     "copy:mdi": "node scripts/copy-mdi.mjs",
     "postinstall": "npm run copy:mdi",
-
-    "build": "stencil build && node scripts/fix-style-paths.mjs",
-
+    "build": "stencil build && npm run copy:package-assets",
     "prestart": "rimraf www/assets && rimraf www/build",
     "start": "stencil build --dev --watch --serve",
-
     "test": "stencil test --spec",
     "test:u": "stencil test --spec --updateSnapshot",
     "test.watch": "stencil test --spec --watchAll",
     "test:watch": "jest --watch",
-
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "generate": "stencil generate",
-
     "dev:stencil": "cross-env STORYBOOK=true stencil build --dev --watch",
     "dev:storybook": "storybook dev -p 6006",
     "dev": "npm run build && concurrently -n STENCIL,SB -c green,cyan \"npm:dev:stencil\" \"npm:dev:storybook\"",
-
     "prestorybook": "npm run build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "npm run build && storybook build"

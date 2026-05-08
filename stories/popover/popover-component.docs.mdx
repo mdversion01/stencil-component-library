@@ -1,0 +1,34 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as FormStories from './popover-component.stories';
+import { reactExample, vueExample, angularExample } from './popover-component.examples.js';
+
+<Meta of={FormStories} />
+
+# Popover Component
+
+<Description of={FormStories} />
+
+## HTML
+
+```html
+<popover-component
+  title="Popover title"
+  content="This is a popover."
+  trigger="click"
+  placement="bottom"
+>
+  <button class="btn btn-primary">Open popover</button>
+</popover-component>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

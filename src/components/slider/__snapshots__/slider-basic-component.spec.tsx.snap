@@ -4,16 +4,16 @@ exports[`slider-basic-component applies variant class to moving track and thumb 
 <slider-basic-component>
   <div class="sc-slider">
     <div class="slider-wrapper">
-      <div class="slider" dir="ltr" role="presentation">
-        <div class="slider-container">
-          <div aria-labelledby="slider_p0914zsy9-label" aria-readonly="true" class="slider-value-left" role="textbox">
+      <div class="danger slider slider-horizontal" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-horizontal">
+          <div aria-labelledby="slider_nrwtdqtjh-label" aria-readonly="true" class="slider-value-left" role="textbox">
             20
           </div>
           <div aria-hidden="true" class="slider-min-value">
             0
           </div>
-          <div class="slider-controls" role="presentation">
-            <div aria-hidden="true" class="slider-background-track" style="width: 100%;"></div>
+          <div class="slider-controls slider-controls-horizontal" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
             <div aria-hidden="true" class="danger slider-moving-track" style="width: 20%;"></div>
             <div aria-label="Slider" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="20" aria-valuetext="20" class="danger slider-thumb-container" role="slider" tabindex="0" style="left: 20%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
               <div aria-hidden="true" class="danger slider-thumb" role="presentation"></div>
@@ -22,7 +22,7 @@ exports[`slider-basic-component applies variant class to moving track and thumb 
           <div aria-hidden="true" class="slider-max-value">
             100
           </div>
-          <div aria-labelledby="slider_p0914zsy9-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_nrwtdqtjh-label" aria-readonly="true" class="slider-value-right" role="textbox">
             20
           </div>
         </div>
@@ -36,16 +36,16 @@ exports[`slider-basic-component disabled: slider is not focusable and sets aria-
 <slider-basic-component>
   <div class="sc-slider">
     <div class="slider-wrapper">
-      <div class="slider" dir="ltr" role="presentation">
-        <div class="slider-container">
-          <div aria-labelledby="slider_97f01jb3i-label" aria-readonly="true" class="slider-value-left" role="textbox">
+      <div class="slider slider-horizontal" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-horizontal">
+          <div aria-labelledby="slider_ixjkwrnmf-label" aria-readonly="true" class="slider-value-left" role="textbox">
             5
           </div>
           <div aria-hidden="true" class="slider-min-value">
             0
           </div>
-          <div class="slider-controls" role="presentation">
-            <div aria-hidden="true" class="slider-background-track" style="width: 100%;"></div>
+          <div class="slider-controls slider-controls-horizontal" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
             <div aria-hidden="true" class="slider-moving-track" style="width: 5%;"></div>
             <div aria-disabled="true" aria-label="Slider" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="5" aria-valuetext="5" class="slider-thumb-container slider-thumb-container-disabled" role="slider" tabindex="-1" style="left: 5%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
               <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
@@ -54,40 +54,8 @@ exports[`slider-basic-component disabled: slider is not focusable and sets aria-
           <div aria-hidden="true" class="slider-max-value">
             100
           </div>
-          <div aria-labelledby="slider_97f01jb3i-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_ixjkwrnmf-label" aria-readonly="true" class="slider-value-right" role="textbox">
             5
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</slider-basic-component>
-`;
-
-exports[`slider-basic-component drag changes value (no snap), and snapToTicks snaps to nearest: drag-with-snap 1`] = `
-<slider-basic-component snap-to-ticks="" tick-values="[0,25,50,75,100]">
-  <div class="sc-slider">
-    <div class="slider-wrapper">
-      <div class="slider" dir="ltr" role="presentation">
-        <div class="slider-container">
-          <div aria-labelledby="slider_jhoxcyaw6-label" aria-readonly="true" class="slider-value-left" role="textbox">
-            50
-          </div>
-          <div aria-hidden="true" class="slider-min-value">
-            0
-          </div>
-          <div class="slider-controls" role="presentation">
-            <div aria-hidden="true" class="slider-background-track" style="width: 100%;"></div>
-            <div aria-hidden="true" class="slider-moving-track" style="width: 50%;"></div>
-            <div aria-label="Slider" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="50" aria-valuetext="50" class="slider-thumb-container" role="slider" tabindex="0" style="left: 50%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
-              <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
-            </div>
-          </div>
-          <div aria-hidden="true" class="slider-max-value">
-            100
-          </div>
-          <div aria-labelledby="slider_jhoxcyaw6-label" aria-readonly="true" class="slider-value-right" role="textbox">
-            50
           </div>
         </div>
       </div>
@@ -100,13 +68,13 @@ exports[`slider-basic-component hideTextBoxes hides both; individual flags hide 
 <slider-basic-component hide-text-boxes="">
   <div class="sc-slider">
     <div class="slider-wrapper">
-      <div class="slider" dir="ltr" role="presentation">
-        <div class="slider-container">
+      <div class="slider slider-horizontal" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-horizontal">
           <div aria-hidden="true" class="slider-min-value">
             0
           </div>
-          <div class="slider-controls" role="presentation">
-            <div aria-hidden="true" class="slider-background-track" style="width: 100%;"></div>
+          <div class="slider-controls slider-controls-horizontal" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
             <div aria-hidden="true" class="slider-moving-track" style="width: 33%;"></div>
             <div aria-label="Slider" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="33" aria-valuetext="33" class="slider-thumb-container" role="slider" tabindex="0" style="left: 33%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
               <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
@@ -126,13 +94,13 @@ exports[`slider-basic-component hideTextBoxes hides both; individual flags hide 
 <slider-basic-component hide-left-text-box="">
   <div class="sc-slider">
     <div class="slider-wrapper">
-      <div class="slider" dir="ltr" role="presentation">
-        <div class="slider-container">
+      <div class="slider slider-horizontal" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-horizontal">
           <div aria-hidden="true" class="slider-min-value">
             0
           </div>
-          <div class="slider-controls" role="presentation">
-            <div aria-hidden="true" class="slider-background-track" style="width: 100%;"></div>
+          <div class="slider-controls slider-controls-horizontal" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
             <div aria-hidden="true" class="slider-moving-track" style="width: 33%;"></div>
             <div aria-label="Slider" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="33" aria-valuetext="33" class="slider-thumb-container" role="slider" tabindex="0" style="left: 33%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
               <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
@@ -141,7 +109,7 @@ exports[`slider-basic-component hideTextBoxes hides both; individual flags hide 
           <div aria-hidden="true" class="slider-max-value">
             100
           </div>
-          <div aria-labelledby="slider_uehchcz5c-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_1gekvx72k-label" aria-readonly="true" class="slider-value-right" role="textbox">
             33
           </div>
         </div>
@@ -155,16 +123,16 @@ exports[`slider-basic-component hideTextBoxes hides both; individual flags hide 
 <slider-basic-component hide-right-text-box="">
   <div class="sc-slider">
     <div class="slider-wrapper">
-      <div class="slider" dir="ltr" role="presentation">
-        <div class="slider-container">
-          <div aria-labelledby="slider_hlrqodmaj-label" aria-readonly="true" class="slider-value-left" role="textbox">
+      <div class="slider slider-horizontal" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-horizontal">
+          <div aria-labelledby="slider_68vjnq03h-label" aria-readonly="true" class="slider-value-left" role="textbox">
             33
           </div>
           <div aria-hidden="true" class="slider-min-value">
             0
           </div>
-          <div class="slider-controls" role="presentation">
-            <div aria-hidden="true" class="slider-background-track" style="width: 100%;"></div>
+          <div class="slider-controls slider-controls-horizontal" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
             <div aria-hidden="true" class="slider-moving-track" style="width: 33%;"></div>
             <div aria-label="Slider" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="33" aria-valuetext="33" class="slider-thumb-container" role="slider" tabindex="0" style="left: 33%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
               <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
@@ -180,20 +148,46 @@ exports[`slider-basic-component hideTextBoxes hides both; individual flags hide 
 </slider-basic-component>
 `;
 
+exports[`slider-basic-component horizontal drag changes value (no snap), and snapToTicks snaps to nearest: drag-with-snap 1`] = `
+<slider-basic-component snap-to-ticks="" tick-values="[0,25,50,75,100]">
+  <div class="sc-slider">
+    <div class="slider-wrapper">
+      <div class="slider slider-horizontal" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-horizontal">
+          <div aria-labelledby="slider_2afeth0au-label" aria-readonly="true" class="slider-value-left" role="textbox">
+            50
+          </div>
+          <div class="slider-controls slider-controls-horizontal" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
+            <div aria-hidden="true" class="slider-moving-track" style="width: 50%;"></div>
+            <div aria-label="Slider" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="50" aria-valuetext="50" class="slider-thumb-container" role="slider" tabindex="0" style="left: 50%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+              <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
+            </div>
+          </div>
+          <div aria-labelledby="slider_2afeth0au-label" aria-readonly="true" class="slider-value-right" role="textbox">
+            50
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</slider-basic-component>
+`;
+
 exports[`slider-basic-component keyboard ArrowRight/ArrowLeft without snapToTicks increments by 1 step: keyboard-no-snap 1`] = `
 <slider-basic-component>
   <div class="sc-slider">
     <div class="slider-wrapper">
-      <div class="slider" dir="ltr" role="presentation">
-        <div class="slider-container">
-          <div aria-labelledby="slider_soas6o3w5-label" aria-readonly="true" class="slider-value-left" role="textbox">
+      <div class="slider slider-horizontal" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-horizontal">
+          <div aria-labelledby="slider_txvvnvv3g-label" aria-readonly="true" class="slider-value-left" role="textbox">
             5
           </div>
           <div aria-hidden="true" class="slider-min-value">
             0
           </div>
-          <div class="slider-controls" role="presentation">
-            <div aria-hidden="true" class="slider-background-track" style="width: 100%;"></div>
+          <div class="slider-controls slider-controls-horizontal" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
             <div aria-hidden="true" class="slider-moving-track" style="width: 50%;"></div>
             <div aria-label="Slider" aria-orientation="horizontal" aria-valuemax="10" aria-valuemin="0" aria-valuenow="5" aria-valuetext="5" class="slider-thumb-container slider-thumb-container-active" role="slider" tabindex="0" style="left: 50%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
               <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
@@ -202,7 +196,7 @@ exports[`slider-basic-component keyboard ArrowRight/ArrowLeft without snapToTick
           <div aria-hidden="true" class="slider-max-value">
             10
           </div>
-          <div aria-labelledby="slider_soas6o3w5-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_txvvnvv3g-label" aria-readonly="true" class="slider-value-right" role="textbox">
             5
           </div>
         </div>
@@ -216,25 +210,19 @@ exports[`slider-basic-component keyboard snapping to tickValues goes to next/pre
 <slider-basic-component snap-to-ticks="" tick-values="[0,20,40,60]">
   <div class="sc-slider">
     <div class="slider-wrapper">
-      <div class="slider" dir="ltr" role="presentation">
-        <div class="slider-container">
-          <div aria-labelledby="slider_olfgu6svx-label" aria-readonly="true" class="slider-value-left" role="textbox">
+      <div class="slider slider-horizontal" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-horizontal">
+          <div aria-labelledby="slider_9zo05dti7-label" aria-readonly="true" class="slider-value-left" role="textbox">
             20
           </div>
-          <div aria-hidden="true" class="slider-min-value">
-            0
-          </div>
-          <div class="slider-controls" role="presentation">
-            <div aria-hidden="true" class="slider-background-track" style="width: 100%;"></div>
-            <div aria-hidden="true" class="slider-moving-track" style="width: 33%;"></div>
-            <div aria-label="Slider" aria-orientation="horizontal" aria-valuemax="60" aria-valuemin="0" aria-valuenow="20" aria-valuetext="20" class="slider-thumb-container slider-thumb-container-active" role="slider" tabindex="0" style="left: 33%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div class="slider-controls slider-controls-horizontal" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
+            <div aria-hidden="true" class="slider-moving-track" style="width: 33.33333333333333%;"></div>
+            <div aria-label="Slider" aria-orientation="horizontal" aria-valuemax="60" aria-valuemin="0" aria-valuenow="20" aria-valuetext="20" class="slider-thumb-container slider-thumb-container-active" role="slider" tabindex="0" style="left: 33.33333333333333%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
               <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
             </div>
           </div>
-          <div aria-hidden="true" class="slider-max-value">
-            60
-          </div>
-          <div aria-labelledby="slider_olfgu6svx-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_9zo05dti7-label" aria-readonly="true" class="slider-value-right" role="textbox">
             20
           </div>
         </div>
@@ -248,16 +236,13 @@ exports[`slider-basic-component parses tickValues from JSON attribute and shows 
 <slider-basic-component tick-labels="" tick-values="[0,25,50,75,100]">
   <div class="sc-slider">
     <div class="slider-wrapper">
-      <div class="slider" dir="ltr" role="presentation">
-        <div class="slider-container">
-          <div aria-labelledby="slider_oequa7ga1-label" aria-readonly="true" class="slider-value-left" role="textbox">
+      <div class="slider slider-horizontal" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-horizontal">
+          <div aria-labelledby="slider_gzgautpsf-label" aria-readonly="true" class="slider-value-left" role="textbox">
             50%
           </div>
-          <div aria-hidden="true" class="slider-min-value">
-            0%
-          </div>
-          <div class="slider-controls" role="presentation">
-            <div aria-hidden="true" class="slider-background-track" style="width: 100%;"></div>
+          <div class="slider-controls slider-controls-horizontal" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
             <div aria-hidden="true" class="slider-moving-track" style="width: 50%;"></div>
             <div aria-label="Slider" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="50" aria-valuetext="50%" class="slider-thumb-container" role="slider" tabindex="0" style="left: 50%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
               <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
@@ -295,10 +280,7 @@ exports[`slider-basic-component parses tickValues from JSON attribute and shows 
               </div>
             </div>
           </div>
-          <div aria-hidden="true" class="slider-max-value">
-            100%
-          </div>
-          <div aria-labelledby="slider_oequa7ga1-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_gzgautpsf-label" aria-readonly="true" class="slider-value-right" role="textbox">
             50%
           </div>
         </div>
@@ -308,35 +290,35 @@ exports[`slider-basic-component parses tickValues from JSON attribute and shows 
 </slider-basic-component>
 `;
 
-exports[`slider-basic-component renders label and sliderThumbLabel modes (label id changed): label-no-thumb 1`] = `
+exports[`slider-basic-component renders label and sliderThumbLabel modes: label-no-thumb 1`] = `
 <slider-basic-component>
   <div class="sc-slider">
     <div class="slider-wrapper">
-      <div class="slider" dir="ltr" role="presentation">
-        <label class="form-control-label" id="slider_24qg0ejbv-label">
+      <div class="slider slider-horizontal" dir="ltr" role="presentation">
+        <label class="form-control-label" id="slider_e100z4jg9-label">
           Volume
-          <span id="slider_24qg0ejbv-value">
+          <span id="slider_e100z4jg9-value">
             7%
           </span>
         </label>
-        <div class="slider-container">
-          <div aria-labelledby="slider_24qg0ejbv-label" aria-readonly="true" class="slider-value-left" role="textbox">
+        <div class="slider-container slider-container-horizontal">
+          <div aria-labelledby="slider_e100z4jg9-label" aria-readonly="true" class="slider-value-left" role="textbox">
             7%
           </div>
           <div aria-hidden="true" class="slider-min-value">
             0%
           </div>
-          <div class="slider-controls" role="presentation">
-            <div aria-hidden="true" class="slider-background-track" style="width: 100%;"></div>
-            <div aria-hidden="true" class="slider-moving-track" style="width: 7%;"></div>
-            <div aria-labelledby="slider_24qg0ejbv-label" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="7" aria-valuetext="7%" class="slider-thumb-container" role="slider" tabindex="0" style="left: 7%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div class="slider-controls slider-controls-horizontal" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
+            <div aria-hidden="true" class="slider-moving-track" style="width: 7.000000000000001%;"></div>
+            <div aria-labelledby="slider_e100z4jg9-label" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="7" aria-valuetext="7%" class="slider-thumb-container" role="slider" tabindex="0" style="left: 7.000000000000001%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
               <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
             </div>
           </div>
           <div aria-hidden="true" class="slider-max-value">
             100%
           </div>
-          <div aria-labelledby="slider_24qg0ejbv-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_e100z4jg9-label" aria-readonly="true" class="slider-value-right" role="textbox">
             7%
           </div>
         </div>
@@ -346,24 +328,24 @@ exports[`slider-basic-component renders label and sliderThumbLabel modes (label 
 </slider-basic-component>
 `;
 
-exports[`slider-basic-component renders label and sliderThumbLabel modes (label id changed): thumb-label 1`] = `
+exports[`slider-basic-component renders label and sliderThumbLabel modes: thumb-label 1`] = `
 <slider-basic-component slider-thumb-label="">
   <div class="sc-slider">
     <div class="slider-wrapper">
-      <div class="slider" dir="ltr" role="presentation">
-        <div class="slider-container">
-          <div aria-labelledby="slider_6crrybfgf-label" aria-readonly="true" class="slider-value-left" role="textbox">
+      <div class="slider slider-horizontal" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-horizontal">
+          <div aria-labelledby="slider_akq1iccfo-label" aria-readonly="true" class="slider-value-left" role="textbox">
             7%
           </div>
           <div aria-hidden="true" class="slider-min-value">
             0%
           </div>
-          <div class="slider-controls" role="presentation">
-            <div aria-hidden="true" class="slider-background-track" style="width: 100%;"></div>
-            <div aria-hidden="true" class="slider-moving-track" style="width: 7%;"></div>
-            <div aria-label="Slider" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="7" aria-valuetext="7%" class="slider-thumb-container" role="slider" tabindex="0" style="left: 7%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+          <div class="slider-controls slider-controls-horizontal" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
+            <div aria-hidden="true" class="slider-moving-track" style="width: 7.000000000000001%;"></div>
+            <div aria-label="Slider" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="7" aria-valuetext="7%" class="slider-thumb-container" role="slider" tabindex="0" style="left: 7.000000000000001%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
               <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
-              <div aria-hidden="true" class="slider-thumb-label" style="position: absolute; left: 7%; transform: translateX(-50%) translateY(30%) translateY(-100%) rotate(45deg);">
+              <div aria-hidden="true" class="slider-thumb-label" style="position: absolute; left: 7.000000000000001%; transform: translateX(-50%) translateY(30%) translateY(-100%) rotate(45deg);">
                 <div>
                   <span>
                     7%
@@ -375,7 +357,7 @@ exports[`slider-basic-component renders label and sliderThumbLabel modes (label 
           <div aria-hidden="true" class="slider-max-value">
             100%
           </div>
-          <div aria-labelledby="slider_6crrybfgf-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_akq1iccfo-label" aria-readonly="true" class="slider-value-right" role="textbox">
             7%
           </div>
         </div>
@@ -389,16 +371,16 @@ exports[`slider-basic-component renders with defaults (snapshot) + a11y slider e
 <slider-basic-component>
   <div class="sc-slider">
     <div class="slider-wrapper">
-      <div class="slider" dir="ltr" role="presentation">
-        <div class="slider-container">
-          <div aria-labelledby="slider_lv0tolsah-label" aria-readonly="true" class="slider-value-left" role="textbox">
+      <div class="slider slider-horizontal" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-horizontal">
+          <div aria-labelledby="slider_57ss5d1kg-label" aria-readonly="true" class="slider-value-left" role="textbox">
             0
           </div>
           <div aria-hidden="true" class="slider-min-value">
             0
           </div>
-          <div class="slider-controls" role="presentation">
-            <div aria-hidden="true" class="slider-background-track" style="width: 100%;"></div>
+          <div class="slider-controls slider-controls-horizontal" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
             <div aria-hidden="true" class="slider-moving-track" style="width: 0%;"></div>
             <div aria-label="Slider" aria-orientation="horizontal" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" aria-valuetext="0" class="slider-thumb-container" role="slider" tabindex="0" style="left: 0%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
               <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
@@ -407,8 +389,143 @@ exports[`slider-basic-component renders with defaults (snapshot) + a11y slider e
           <div aria-hidden="true" class="slider-max-value">
             100
           </div>
-          <div aria-labelledby="slider_lv0tolsah-label" aria-readonly="true" class="slider-value-right" role="textbox">
+          <div aria-labelledby="slider_57ss5d1kg-label" aria-readonly="true" class="slider-value-right" role="textbox">
             0
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</slider-basic-component>
+`;
+
+exports[`slider-basic-component sliderThumbLabel renders in vertical orientation: thumb-label-vertical 1`] = `
+<slider-basic-component slider-thumb-label="">
+  <div class="sc-slider">
+    <div class="slider-wrapper">
+      <div class="slider slider-vertical" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-vertical">
+          <div aria-labelledby="slider_thgukv5z3-label" aria-readonly="true" class="slider-value-left" role="textbox">
+            70
+          </div>
+          <div aria-hidden="true" class="slider-min-value">
+            0
+          </div>
+          <div class="slider-controls slider-controls-vertical" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
+            <div aria-hidden="true" class="slider-moving-track" style="bottom: 0; height: 70%;"></div>
+            <div aria-label="Volume" aria-orientation="vertical" aria-valuemax="100" aria-valuemin="0" aria-valuenow="70" aria-valuetext="70" class="slider-thumb-container" role="slider" tabindex="0" style="bottom: 70%; left: 50%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+              <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
+              <div aria-hidden="true" class="slider-thumb-label" style="position: absolute; bottom: calc(70% - 18px); left: calc(100% + 18px); transform: translateY(50%) translateY(-50%) rotate(140deg);">
+                <div>
+                  <span>
+                    70
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div aria-hidden="true" class="slider-max-value">
+            100
+          </div>
+          <div aria-labelledby="slider_thgukv5z3-label" aria-readonly="true" class="slider-value-right" role="textbox">
+            70
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</slider-basic-component>
+`;
+
+exports[`slider-basic-component vertical drag changes value and moving track grows from bottom: drag-vertical 1`] = `
+<slider-basic-component>
+  <div class="sc-slider">
+    <div class="slider-wrapper">
+      <div class="slider slider-vertical" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-vertical">
+          <div aria-labelledby="slider_uc3pp3876-label" aria-readonly="true" class="slider-value-left" role="textbox">
+            100
+          </div>
+          <div aria-hidden="true" class="slider-min-value">
+            0
+          </div>
+          <div class="slider-controls slider-controls-vertical" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
+            <div aria-hidden="true" class="slider-moving-track" style="bottom: 0; height: 100%;"></div>
+            <div aria-label="Slider" aria-orientation="vertical" aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" aria-valuetext="100" class="slider-thumb-container" role="slider" tabindex="0" style="bottom: 100%; left: 50%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+              <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
+            </div>
+          </div>
+          <div aria-hidden="true" class="slider-max-value">
+            100
+          </div>
+          <div aria-labelledby="slider_uc3pp3876-label" aria-readonly="true" class="slider-value-right" role="textbox">
+            100
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</slider-basic-component>
+`;
+
+exports[`slider-basic-component vertical keyboard navigation ignores left/right and uses up/down: keyboard-vertical 1`] = `
+<slider-basic-component>
+  <div class="sc-slider">
+    <div class="slider-wrapper">
+      <div class="slider slider-vertical" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-vertical">
+          <div aria-labelledby="slider_y9bs4nh7v-label" aria-readonly="true" class="slider-value-left" role="textbox">
+            5
+          </div>
+          <div aria-hidden="true" class="slider-min-value">
+            0
+          </div>
+          <div class="slider-controls slider-controls-vertical" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
+            <div aria-hidden="true" class="slider-moving-track" style="bottom: 0; height: 50%;"></div>
+            <div aria-label="Slider" aria-orientation="vertical" aria-valuemax="10" aria-valuemin="0" aria-valuenow="5" aria-valuetext="5" class="slider-thumb-container slider-thumb-container-active" role="slider" tabindex="0" style="bottom: 50%; left: 50%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+              <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
+            </div>
+          </div>
+          <div aria-hidden="true" class="slider-max-value">
+            10
+          </div>
+          <div aria-labelledby="slider_y9bs4nh7v-label" aria-readonly="true" class="slider-value-right" role="textbox">
+            5
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</slider-basic-component>
+`;
+
+exports[`slider-basic-component vertical orientation sets vertical classes, aria-orientation, and bottom-anchored moving track: vertical-orientation 1`] = `
+<slider-basic-component>
+  <div class="sc-slider">
+    <div class="slider-wrapper">
+      <div class="slider slider-vertical" dir="ltr" role="presentation">
+        <div class="slider-container slider-container-vertical">
+          <div aria-labelledby="slider_8wg7dh1m0-label" aria-readonly="true" class="slider-value-left" role="textbox">
+            50
+          </div>
+          <div aria-hidden="true" class="slider-min-value">
+            0
+          </div>
+          <div class="slider-controls slider-controls-vertical" role="presentation">
+            <div aria-hidden="true" class="slider-background-track"></div>
+            <div aria-hidden="true" class="slider-moving-track" style="bottom: 0; height: 50%;"></div>
+            <div aria-label="Slider" aria-orientation="vertical" aria-valuemax="100" aria-valuemin="0" aria-valuenow="50" aria-valuetext="50" class="slider-thumb-container" role="slider" tabindex="0" style="bottom: 50%; left: 50%; transition: all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s;">
+              <div aria-hidden="true" class="slider-thumb" role="presentation"></div>
+            </div>
+          </div>
+          <div aria-hidden="true" class="slider-max-value">
+            100
+          </div>
+          <div aria-labelledby="slider_8wg7dh1m0-label" aria-readonly="true" class="slider-value-right" role="textbox">
+            50
           </div>
         </div>
       </div>

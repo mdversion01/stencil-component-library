@@ -1,4 +1,3 @@
-// scripts/copy-mdi.mjs
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import url from 'node:url';
@@ -14,39 +13,65 @@ async function copyFile(src, dest) {
   await fs.copyFile(src, dest);
 }
 
+async function copyDir(srcDir, destDir, filter = () => true) {
+  await ensureDir(destDir);
+  const entries = await fs.readdir(srcDir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const src = path.join(srcDir, entry.name);
+    const dest = path.join(destDir, entry.name);
+
+    if (entry.isDirectory()) {
+      await copyDir(src, dest, filter);
+      continue;
+    }
+
+    if (filter(entry.name, src, dest)) {
+      await copyFile(src, dest);
+    }
+  }
+}
+
+function stripSourceMapComments(css) {
+  return css
+    .replace(/\/\*# sourceMappingURL=.*?\*\//g, '')
+    .replace(/\/\*@ sourceMappingURL=.*?\*\//g, '')
+    .replace(/\/\/# sourceMappingURL=.*$/gm, '')
+    .replace(/\/\/@ sourceMappingURL=.*$/gm, '')
+    .trimEnd();
+}
+
 async function main() {
   const projectRoot = path.resolve(__dirname, '..');
   const mdiRoot = path.join(projectRoot, 'node_modules', '@mdi', 'font');
-  const outRoot = path.join(projectRoot, 'src', 'assets', 'mdi');
 
   const cssSrc = path.join(mdiRoot, 'css', 'materialdesignicons.min.css');
-  const cssDest = path.join(outRoot, 'materialdesignicons.min.css');
-
   const fontsSrc = path.join(mdiRoot, 'fonts');
-  const fontsDest = path.join(outRoot, 'fonts');
 
-  // Copy CSS
-  await copyFile(cssSrc, cssDest);
+  const vendoredRoot = path.join(projectRoot, 'src', 'assets', 'mdi');
+  const vendoredCssDest = path.join(vendoredRoot, 'materialdesignicons.min.css');
+  const vendoredFontsDest = path.join(vendoredRoot, 'fonts');
 
-  // Copy fonts
-  await ensureDir(fontsDest);
-  const fontFiles = await fs.readdir(fontsSrc);
-  for (const f of fontFiles) {
-    if (/\.(eot|ttf|woff2?|otf)$/i.test(f)) {
-      await copyFile(path.join(fontsSrc, f), path.join(fontsDest, f));
-    }
-  }
+  const packageRoot = path.join(projectRoot, 'assets', 'mdi');
+  const packageCssDest = path.join(packageRoot, 'materialdesignicons.min.css');
+  const packageFontsDest = path.join(packageRoot, 'fonts');
 
-  // Rewrite font URLs in the vendored CSS so they match where Stencil will copy them
-  // We’ll serve from /assets/mdi/fonts (see stencil.config.ts below)
-  let css = await fs.readFile(cssDest, 'utf8');
-  css = css.replace(/\.\.\/fonts\//g, '/assets/mdi/fonts/');
-  await fs.writeFile(cssDest, css, 'utf8');
+  await copyFile(cssSrc, vendoredCssDest);
+  await copyDir(fontsSrc, vendoredFontsDest, name => /\.(eot|ttf|woff2?|otf)$/i.test(name));
 
-  console.log('✔ Copied MDI CSS & fonts to src/global/vendor/mdi and rewrote URLs.');
+  let css = await fs.readFile(vendoredCssDest, 'utf8');
+  css = css.replace(/\.\.\/fonts\//g, '../../assets/mdi/fonts/');
+  css = stripSourceMapComments(css);
+  css += '\n';
+  await fs.writeFile(vendoredCssDest, css, 'utf8');
+
+  await copyFile(vendoredCssDest, packageCssDest);
+  await copyDir(vendoredFontsDest, packageFontsDest, name => /\.(eot|ttf|woff2?|otf)$/i.test(name));
+
+  console.log('✔ Copied MDI assets to src/assets/mdi and package assets/mdi');
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error('copy-mdi failed:', err);
   process.exit(1);
 });

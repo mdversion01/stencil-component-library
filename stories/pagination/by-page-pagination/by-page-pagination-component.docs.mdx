@@ -1,0 +1,51 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as ByPagePaginationStories from './by-page-pagination-component.stories.js';
+import { reactExample, vueExample, angularExample } from './by-page-pagination-component.examples.js';
+
+<Meta of={ByPagePaginationStories} />
+
+# By Page Pagination
+
+<Description of={ByPagePaginationStories} />
+
+## HTML
+
+```html
+<by-page-pagination-component
+  current-page="1"
+  total-rows="100"
+  page-size="10"
+  pagination-layout="center"
+  pagination-aria-label="Pagination"
+  page-input-help-text="Type a page number and press Enter, or use the navigation buttons."
+></by-page-pagination-component>
+
+<by-page-pagination-component
+  id="bypage-demo"
+  current-page="1"
+  total-rows="420"
+  page-size="10"
+  items-per-page
+  display-total-number-of-pages
+  pagination-layout="start"
+  page-size-label="Items per page:"
+  page-size-help-text="Use this control to change how many items are shown per page."
+  page-input-help-text="Type a page number and press Enter, or use the navigation buttons."
+></by-page-pagination-component>
+
+<script>
+  document.getElementById('bypage-demo').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
+</script>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

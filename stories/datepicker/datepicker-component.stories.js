@@ -1,11 +1,17 @@
-// stories/datepicker-component.stories.js
 import { action } from '@storybook/addon-actions';
+import DatepickerDocs from './datepicker-component.docs.mdx';
+import {
+  buildDocsHtml,
+  buildEl,
+  renderMatrixRow,
+} from './datepicker-component.story-helpers';
 
 export default {
   title: 'Form/Datepicker',
   tags: ['autodocs'],
   parameters: {
     docs: {
+      page: DatepickerDocs,
       description: {
         component:
           'A datepicker input with an optional attached calendar view. Supports Bootstrap-style layout and sizing, validation states, and custom formatting.',
@@ -17,7 +23,6 @@ export default {
     },
   },
   argTypes: {
-    // Core behaviour
     calendar: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Core' },
@@ -38,8 +43,6 @@ export default {
       table: { defaultValue: { summary: false }, category: 'Core' },
       description: 'Mark the input as required',
     },
-
-    // Autocomplete
     autocomplete: {
       control: { type: 'select' },
       options: ['off', 'bday', 'bday-day', 'bday-month', 'bday-year'],
@@ -47,8 +50,6 @@ export default {
       description:
         'HTML autocomplete value for the input. Use "bday" / "bday-*" when the date represents a birthday. Default is "off".',
     },
-
-    // IMPORTANT: validation visuals are gated by the *presence* of the attribute
     validationAttr: {
       control: 'boolean',
       name: 'validation-attr',
@@ -68,8 +69,6 @@ export default {
       table: { defaultValue: { summary: '' }, category: 'Validation' },
       description: 'Optional warning message (displays with warning visuals)',
     },
-
-    // Layout & sizing (Bootstrap-style grid + variants)
     formLayout: {
       control: { type: 'select' },
       options: ['', 'horizontal', 'inline'],
@@ -105,8 +104,6 @@ export default {
       table: { category: 'Layout' },
       description: 'Size variant for the label',
     },
-
-    // Grid cols
     labelCol: {
       control: 'number',
       min: 0,
@@ -137,8 +134,6 @@ export default {
       table: { category: 'Layout', subcategory: 'Grid' },
       description: 'e.g. "col-sm-9 col-md-8" or "xs-12 sm-6 md-8"',
     },
-
-    // Input adornments
     prepend: {
       control: 'boolean',
       table: { category: 'Layout', defaultValue: { summary: false } },
@@ -150,8 +145,6 @@ export default {
       description: 'Show calendar button after input',
     },
     icon: { control: 'text', table: { category: 'Layout' }, description: 'Icon class for the calendar button' },
-
-    // Formatting
     dateFormat: {
       control: { type: 'select' },
       options: ['YYYY-MM-DD', 'MM-DD-YYYY'],
@@ -164,8 +157,6 @@ export default {
       table: { category: 'Formatting', defaultValue: { summary: 'YYYY-MM-DD' } },
       description: 'Hint shown in the input (defaults to dateFormat if not provided)',
     },
-
-    // Identity
     inputId: {
       control: 'text',
       name: 'input-id',
@@ -173,8 +164,6 @@ export default {
       description:
         'ID for the input element. If you omit the input-id attribute entirely, the component will generate a unique ID per instance.',
     },
-
-    // Demo helpers
     dropdownOpen: {
       control: 'boolean',
       table: { disable: true, category: 'Demo Helpers', defaultValue: { summary: false } },
@@ -215,154 +204,10 @@ export default {
     validationMessage: 'Please select a date.',
     warningMessage: '',
   },
+  render: args => buildEl(args, action),
 };
 
-// ======================================================
-// Helpers (normalize + docs builder)
-// ======================================================
-
-const normalize = txt => {
-  const lines = String(txt)
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map(l => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      prevBlank = true;
-      out.push('');
-      continue;
-    }
-    prevBlank = false;
-    out.push(line);
-  }
-
-  while (out[0] === '') out.shift();
-  while (out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-const attrs = pairs =>
-  pairs
-    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
-    .map(([k, v]) => (v === true ? k : `${k}="${String(v).replaceAll('"', '&quot;')}"`))
-    .join('\n  ');
-
-const buildDocsHtml = args => {
-  const labelCol = Number.isFinite(Number(args.labelCol)) ? Number(args.labelCol) : 2;
-  const inputCol = Number.isFinite(Number(args.inputCol)) ? Number(args.inputCol) : 10;
-
-  const placeholder = (args.placeholder && String(args.placeholder).trim()) || args.dateFormat || 'YYYY-MM-DD';
-  const icon = (args.icon && String(args.icon).trim()) || 'fas fa-calendar-alt';
-
-  // Prefer showing explicit input-id only when the user set it or story provides it.
-  // (Leaving it out demonstrates the component’s auto-generated unique IDs.)
-  const shouldPrintInputId = args.inputId !== undefined && args.inputId !== null && String(args.inputId).trim() !== '';
-
-  const attributeBlock = attrs(
-    [
-      ['calendar', !!args.calendar],
-      ['plumage', !!args.plumage],
-      ['disabled', !!args.disabled],
-      ['required', !!args.required],
-      ['validation', !!args.validationAttr],
-      ['prepend', !!args.prepend],
-      ['append', !!args.append],
-
-      ['form-layout', args.formLayout],
-      ['size', args.size],
-      ['label-align', args.labelAlign],
-      ['label-hidden', !!args.labelHidden],
-      ['label', args.label],
-      ['label-size', args.labelSize],
-
-      ['label-col', args.formLayout === 'horizontal' ? labelCol : args.labelCol],
-      ['input-col', args.formLayout === 'horizontal' ? inputCol : args.inputCol],
-      ['label-cols', args.labelCols],
-      ['input-cols', args.inputCols],
-
-      ['date-format', args.dateFormat],
-      ['placeholder', placeholder],
-      ['autocomplete', args.autocomplete],
-      [shouldPrintInputId ? 'input-id' : '', shouldPrintInputId ? args.inputId : ''],
-      ['icon', icon],
-
-      ['validation-message', args.validationMessage],
-      ['warning-message', args.warningMessage],
-
-      ['display-context-examples', !!args.displayContextExamples],
-    ].filter(([k]) => !!k),
-  );
-
-  return normalize(`
-<datepicker-component
-  ${attributeBlock}
-></datepicker-component>
-`);
-};
-
-// ======================================================
-// Runtime element builder (actual story render)
-// ======================================================
-
-const setBoolAttr = (el, name, on) => {
-  if (on) el.setAttribute(name, '');
-  else el.removeAttribute(name);
-};
-
-const buildEl = args => {
-  const el = document.createElement('datepicker-component');
-
-  setBoolAttr(el, 'calendar', !!args.calendar);
-  setBoolAttr(el, 'plumage', !!args.plumage);
-  setBoolAttr(el, 'disabled', !!args.disabled);
-  setBoolAttr(el, 'required', !!args.required);
-  setBoolAttr(el, 'validation', !!args.validationAttr);
-  setBoolAttr(el, 'prepend', !!args.prepend);
-  setBoolAttr(el, 'append', !!args.append);
-
-  if (typeof args.formLayout === 'string') el.formLayout = args.formLayout;
-  if (typeof args.size === 'string') el.size = args.size;
-
-  // Only set inputId if provided; otherwise let component generate unique IDs.
-  if (args.inputId !== undefined && args.inputId !== null && String(args.inputId).trim() !== '') {
-    el.inputId = args.inputId;
-  }
-
-  el.label = args.label;
-  el.labelHidden = !!args.labelHidden;
-  el.labelAlign = args.labelAlign || '';
-  el.labelSize = args.labelSize || '';
-  el.icon = args.icon || 'fas fa-calendar-alt';
-
-  el.dateFormat = args.dateFormat;
-  el.placeholder = args.placeholder;
-  el.autocomplete = args.autocomplete || 'off';
-
-  el.labelCol = Number(args.labelCol ?? 2);
-  el.inputCol = Number(args.inputCol ?? 10);
-  el.labelCols = args.labelCols || '';
-  el.inputCols = args.inputCols || '';
-
-  el.validationMessage = args.validationMessage || '';
-  el.warningMessage = args.warningMessage || '';
-
-  el.displayContextExamples = !!args.displayContextExamples;
-
-  el.addEventListener('date-selected', e => action('date-selected')(e.detail));
-
-  return el;
-};
-
-const Template = args => buildEl(args);
-
-// ===== Stories =====
+const Template = args => buildEl(args, action);
 
 export const Basic = Template.bind({});
 Basic.args = {
@@ -375,7 +220,7 @@ Basic.parameters = {
     description: {
       story: 'A basic datepicker with default settings. Click the calendar button to select a date.',
     },
-    story: { height: '400px' },
+    story: { height: '430px' },
   },
 };
 
@@ -392,7 +237,7 @@ Plumage.parameters = {
     description: {
       story: 'Datepicker rendered with Plumage styling. Note the different colors and focus styles.',
     },
-    story: { height: '400px' },
+    story: { height: '430px' },
   },
 };
 
@@ -410,7 +255,7 @@ HorizontalLayout.parameters = {
     description: {
       story: 'Datepicker with a horizontal form layout. Labels and inputs are aligned side by side.',
     },
-    story: { height: '400px' },
+    story: { height: '430px' },
   },
 };
 
@@ -429,7 +274,7 @@ InlineLayout.parameters = {
     description: {
       story: 'Datepicker with an inline form layout. Labels and inputs are aligned inline.',
     },
-    story: { height: '400px' },
+    story: { height: '430px' },
   },
 };
 
@@ -447,7 +292,7 @@ WithValidation.parameters = {
     description: {
       story: 'Datepicker with validation enabled. Try leaving the field empty then blurring to see the validation message.',
     },
-    story: { height: '400px' },
+    story: { height: '430px' },
   },
 };
 
@@ -464,7 +309,7 @@ DateFormat.parameters = {
     description: {
       story: 'Datepicker using MM-DD-YYYY format. The input and calendar will use the specified format for displaying and parsing dates.',
     },
-    story: { height: '400px' },
+    story: { height: '430px' },
   },
 };
 
@@ -484,7 +329,7 @@ Disabled.parameters = {
 
 export const Sizes = Template.bind({});
 Sizes.args = {
-  size: 'sm', // try '', 'sm', 'lg'
+  size: 'sm',
   label: 'Small Date',
   labelCol: '',
   inputCol: '',
@@ -494,7 +339,7 @@ Sizes.parameters = {
     description: {
       story: 'Datepicker with different size options. Try changing the size to see the effect.',
     },
-    story: { height: '400px' },
+    story: { height: '430px' },
   },
 };
 
@@ -511,7 +356,7 @@ PrependIcon.parameters = {
     description: {
       story: 'Datepicker with a prepend icon. The icon appears before the input field.',
     },
-    story: { height: '400px' },
+    story: { height: '430px' },
   },
 };
 
@@ -530,171 +375,6 @@ StandaloneCalendar.parameters = {
     },
   },
 };
-
-// ======================================================
-// Accessibility matrix (updated for new structure)
-//  - help text is outside dialog
-//  - calendar grid role is "group" (not "grid")
-//  - validation feedback is aria-live polite + atomic
-//  - prints computed role + aria-* + ids AND validates aria-describedby references exist
-// ======================================================
-
-function pickAttrs(el, names) {
-  const out = {};
-  for (const n of names) {
-    const v = el.getAttribute(n);
-    if (v !== null && v !== '') out[n] = v;
-  }
-  return out;
-}
-
-function splitIds(v) {
-  return String(v || '')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-}
-
-function safeAttrSelectorValue(v) {
-  return String(v || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-}
-
-function resolveIdsWithin(host, ids) {
-  const res = {};
-  for (const id of ids) {
-    const node = host.querySelector(`[id="${safeAttrSelectorValue(id)}"]`);
-    res[id] = !!node;
-  }
-  return res;
-}
-
-function snapshotA11y(host) {
-  const input = host.querySelector('input.form-control');
-  const label = host.querySelector('label.form-control-label');
-  const toggle = host.querySelector('button.calendar-button');
-  const dialog = host.querySelector('.dropdown-content');
-  const grid = host.querySelector('.calendar-grid');
-  const help = host.querySelector('[id$="__desc"]');
-  const validation = host.querySelector('[id$="__validation"]');
-
-  const describedByIds = input ? splitIds(input.getAttribute('aria-describedby')) : [];
-  const labelledByIds = input ? splitIds(input.getAttribute('aria-labelledby')) : [];
-
-  return {
-    input: input
-      ? {
-          tag: input.tagName.toLowerCase(),
-          id: input.getAttribute('id') || '',
-          role: input.getAttribute('role') || '',
-          ...pickAttrs(input, ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid', 'required', 'autocomplete']),
-          resolves: {
-            'aria-labelledby': resolveIdsWithin(host, labelledByIds),
-            'aria-describedby': resolveIdsWithin(host, describedByIds),
-          },
-        }
-      : null,
-    label: label
-      ? {
-          tag: label.tagName.toLowerCase(),
-          id: label.getAttribute('id') || '',
-          for: label.getAttribute('for') || '',
-          role: label.getAttribute('role') || '',
-        }
-      : null,
-    helpText: help
-      ? {
-          id: help.getAttribute('id') || '',
-          insideDialog: !!(dialog && dialog.contains(help)),
-        }
-      : null,
-    validation: validation
-      ? {
-          id: validation.getAttribute('id') || '',
-          ...pickAttrs(validation, ['aria-live', 'aria-atomic']),
-          text: (validation.textContent || '').trim(),
-        }
-      : null,
-    toggle: toggle
-      ? {
-          tag: toggle.tagName.toLowerCase(),
-          id: toggle.getAttribute('id') || '',
-          role: toggle.getAttribute('role') || '',
-          ...pickAttrs(toggle, ['aria-label', 'aria-haspopup', 'aria-expanded', 'aria-controls', 'disabled']),
-        }
-      : null,
-    dialog: dialog
-      ? {
-          tag: dialog.tagName.toLowerCase(),
-          id: dialog.getAttribute('id') || '',
-          role: dialog.getAttribute('role') || '',
-          ...pickAttrs(dialog, ['aria-modal', 'aria-labelledby']),
-        }
-      : null,
-    calendarGrid: grid
-      ? {
-          tag: grid.tagName.toLowerCase(),
-          id: grid.getAttribute('id') || '',
-          role: grid.getAttribute('role') || '',
-          ...pickAttrs(grid, ['aria-label']),
-        }
-      : null,
-  };
-}
-
-function renderMatrixRow({ title, args, idSuffix, forceInvalid = false }) {
-  const wrap = document.createElement('div');
-  wrap.style.border = '1px solid #ddd';
-  wrap.style.borderRadius = '12px';
-  wrap.style.padding = '12px';
-  wrap.style.display = 'grid';
-  wrap.style.gap = '10px';
-
-  const heading = document.createElement('div');
-  heading.style.fontWeight = '700';
-  heading.textContent = title;
-
-  const el = buildEl({
-    ...args,
-    inputId: `datepicker-matrix-${idSuffix}`,
-  });
-
-  const stage = document.createElement('div');
-  stage.style.maxWidth = '560px';
-
-  const pre = document.createElement('pre');
-  pre.style.margin = '0';
-  pre.style.padding = '10px';
-  pre.style.background = '#f6f8fa';
-  pre.style.borderRadius = '10px';
-  pre.style.overflowX = 'auto';
-  pre.style.fontSize = '12px';
-  pre.textContent = 'Collecting aria/role/id…';
-
-  stage.appendChild(el);
-  wrap.appendChild(heading);
-  wrap.appendChild(stage);
-  wrap.appendChild(pre);
-
-  const update = () => {
-    const snap = snapshotA11y(el);
-    pre.textContent = JSON.stringify(snap, null, 2);
-  };
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      if (forceInvalid) {
-        const input = el.querySelector('input.form-control');
-        if (input) {
-          input.value = '';
-          input.dispatchEvent(new Event('blur', { bubbles: true }));
-        }
-      }
-      requestAnimationFrame(update);
-    });
-  });
-
-  return wrap;
-}
 
 export const AccessibilityMatrix = () => {
   const root = document.createElement('div');
@@ -739,17 +419,20 @@ export const AccessibilityMatrix = () => {
     },
   ];
 
-  rows.forEach((r, idx) =>
+  rows.forEach((row, idx) => {
     root.appendChild(
       renderMatrixRow({
-        ...r,
+        ...row,
         idSuffix: String(idx + 1),
+        buildEl,
+        action,
       }),
-    ),
-  );
+    );
+  });
 
   return root;
 };
+
 AccessibilityMatrix.storyName = 'Accessibility Matrix (computed)';
 AccessibilityMatrix.parameters = {
   docs: {

@@ -1,11 +1,41 @@
-// src/stories/plumage-timepicker-component.stories.js
+import DocsPage from './plumage-timepicker-component.docs.mdx';
+import {
+  DocsWrapStyles,
+  Template,
+  buildDocsHtml,
+  getComputedSnapshot,
+  normalizeHtml,
+} from './plumage-timepicker-component.story-helpers.js';
 
 export default {
   title: 'Components/Timepicker/Plumage Timepicker',
   tags: ['autodocs'],
+  decorators: [
+    (Story) => {
+      const wrap = document.createElement('div');
+      wrap.appendChild(DocsWrapStyles());
+
+      const out = Story();
+
+      if (typeof out === 'string') {
+        const mount = document.createElement('div');
+        mount.innerHTML = out;
+        wrap.appendChild(mount);
+      } else if (out instanceof Node) {
+        wrap.appendChild(out);
+      } else {
+        const mount = document.createElement('div');
+        mount.textContent = String(out ?? '');
+        wrap.appendChild(mount);
+      }
+
+      return wrap;
+    },
+  ],
   parameters: {
     layout: 'padded',
     docs: {
+      page: DocsPage,
       description: {
         component: `
 The **Plumage Timepicker Component** is a time selection input field styled to match the Plumage design system.
@@ -67,15 +97,12 @@ When the popover is open:
       source: {
         type: 'dynamic',
         language: 'html',
-        transform: (_code, ctx) => Template(ctx.args),
+        transform: (_code, ctx) => buildDocsHtml(ctx.args),
       },
     },
   },
 
   argTypes: {
-    /* -----------------------------
-     Storybook Only
-    ------------------------------ */
     wrapperWidth: {
       control: { type: 'number', min: 120, step: 10 },
       description: 'Demo wrapper width (px)',
@@ -83,9 +110,6 @@ When the popover is open:
       table: { category: 'Storybook Only' },
     },
 
-    /* -----------------------------
-     Accessibility
-    ------------------------------ */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -107,9 +131,6 @@ When the popover is open:
       table: { category: 'Accessibility' },
     },
 
-    /* -----------------------------
-     Labeling
-    ------------------------------ */
     showLabel: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Labeling' },
@@ -130,9 +151,6 @@ When the popover is open:
       description: 'Show required indicator (label asterisk).',
     },
 
-    /* -----------------------------
-     Input Attributes
-    ------------------------------ */
     inputId: {
       control: 'text',
       name: 'input-id',
@@ -147,9 +165,6 @@ When the popover is open:
       table: { category: 'Input Attributes' },
     },
 
-    /* -----------------------------
-     Controlled Value
-    ------------------------------ */
     value: {
       control: 'text',
       name: 'value',
@@ -158,9 +173,6 @@ When the popover is open:
       table: { category: 'Controlled Value' },
     },
 
-    /* -----------------------------
-     Layout & Sizing
-    ------------------------------ */
     inputWidth: {
       control: { type: 'number', min: 0, step: 1 },
       name: 'input-width',
@@ -176,9 +188,6 @@ When the popover is open:
       table: { category: 'Layout & Sizing' },
     },
 
-    /* -----------------------------
-     Format & Options
-    ------------------------------ */
     isTwentyFourHourFormat: {
       control: 'boolean',
       table: { defaultValue: { summary: true }, category: 'Format & Options' },
@@ -204,9 +213,6 @@ When the popover is open:
       description: 'If true, hides the seconds spinner/part.',
     },
 
-    /* -----------------------------
-     UI Controls
-    ------------------------------ */
     hideTimepickerBtn: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'UI Controls' },
@@ -215,9 +221,6 @@ When the popover is open:
         'If true, the button to open the timepicker dropdown is hidden (manual input only).',
     },
 
-    /* -----------------------------
-     Events / Throttling
-    ------------------------------ */
     timeInputThrottleMs: {
       control: { type: 'number', min: 0, step: 10 },
       name: 'time-input-throttle-ms',
@@ -226,9 +229,6 @@ When the popover is open:
       table: { category: 'Events' },
     },
 
-    /* -----------------------------
-     State
-    ------------------------------ */
     disabled: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'State' },
@@ -243,9 +243,6 @@ When the popover is open:
         'Indicates whether the current input value is valid (component updates this internally).',
     },
 
-    /* -----------------------------
-     Validation
-    ------------------------------ */
     validation: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Validation' },
@@ -287,111 +284,6 @@ When the popover is open:
   },
 };
 
-/* ---------------------------------------------
-   Helpers
----------------------------------------------- */
-
-const normalizeHtml = (html) => {
-  const lines = String(html ?? '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      out.push('');
-      prevBlank = true;
-      continue;
-    }
-    out.push(line);
-    prevBlank = false;
-  }
-
-  while (out.length && out[0] === '') out.shift();
-  while (out.length && out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-const normalizeIdList = (v) => {
-  const s = String(v ?? '').trim();
-  if (!s) return '';
-  return s.split(/\s+/).filter(Boolean).join(' ');
-};
-
-const attr = (name, v) => (v === undefined || v === null || v === '' ? null : `${name}="${String(v)}"`);
-
-// ✅ Stencil-safe boolean serialization:
-// - For booleans where "false" matters vs default, emit explicit "true"/"false"
-const boolStrAttr = (name, v) => (typeof v === 'boolean' ? `${name}="${v ? 'true' : 'false'}"` : null);
-
-// For boolean flags where presence is fine (default false)
-const boolPresenceAttr = (name, on) => (on ? name : null);
-
-/* ---------------------------------------------
-   Template (UPDATED)
----------------------------------------------- */
-
-const Template = (args) => {
-  const width = Number.isFinite(args.wrapperWidth) ? `${args.wrapperWidth}px` : '';
-
-  const attrs = [
-    // a11y
-    attr('aria-label', args.ariaLabel),
-    attr('aria-labelledby', normalizeIdList(args.ariaLabelledby)),
-    attr('aria-describedby', normalizeIdList(args.ariaDescribedby)),
-
-    // label + identity
-    boolPresenceAttr('show-label', args.showLabel),
-    attr('label-text', args.labelText),
-    attr('input-id', args.inputId),
-    attr('input-name', args.inputName),
-
-    // controlled value
-    attr('value', args.value),
-
-    // options (explicit bool strings where false must be representable)
-    boolStrAttr('is-twenty-four-hour-format', !!args.isTwentyFourHourFormat),
-    boolPresenceAttr('twenty-four-hour-only', args.twentyFourHourOnly),
-    boolPresenceAttr('twelve-hour-only', args.twelveHourOnly),
-    boolPresenceAttr('hide-seconds', args.hideSeconds),
-    boolPresenceAttr('hide-timepicker-btn', args.hideTimepickerBtn),
-
-    // state/validation (explicit bool strings to allow false)
-    boolStrAttr('is-valid', !!args.isValid),
-    attr('validation-message', args.validationMessage),
-    boolStrAttr('validation', !!args.validation),
-    boolStrAttr('required', !!args.required),
-    boolStrAttr('disabled', !!args.disabled),
-
-    // layout
-    attr('input-width', args.inputWidth),
-    attr('size', args.size),
-
-    // events
-    attr('time-input-throttle-ms', args.timeInputThrottleMs),
-  ]
-    .filter(Boolean)
-    .join('\n    ');
-
-  return normalizeHtml(`
-<div class="timepicker-wrapper"${width ? ` style="width:${width};"` : ''}>
-  <plumage-timepicker-component
-    ${attrs}
-  ></plumage-timepicker-component>
-</div>
-`);
-};
-
-/* =========================
-   Stories
-   ========================= */
-
 export const Default = Template.bind({});
 Default.args = {
   wrapperWidth: 280,
@@ -422,7 +314,7 @@ Default.parameters = {
   docs: {
     description: { story: 'Default configuration of the Plumage Timepicker.' },
     story: { height: '200px' },
-    source: { transform: (_code, ctx) => Template(ctx.args) },
+    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
   },
 };
 
@@ -437,7 +329,7 @@ Small.parameters = {
   docs: {
     description: { story: 'Small size variant (`size="sm"`). Label remains sr-only unless `show-label` is enabled.' },
     story: { height: '200px' },
-    source: { transform: (_code, ctx) => Template(ctx.args) },
+    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
   },
 };
 
@@ -455,7 +347,7 @@ LargeWithVisibleLabel.parameters = {
   docs: {
     description: { story: 'Large size variant (`size="lg"`) with visible label (`show-label`).' },
     story: { height: '200px' },
-    source: { transform: (_code, ctx) => Template(ctx.args) },
+    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
   },
 };
 
@@ -475,7 +367,7 @@ TwentyFourHourOnly.parameters = {
   docs: {
     description: { story: 'Restricts to 24-hour format only (`twenty-four-hour-only`).' },
     story: { height: '200px' },
-    source: { transform: (_code, ctx) => Template(ctx.args) },
+    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
   },
 };
 
@@ -495,7 +387,7 @@ TwelveHourOnly.parameters = {
   docs: {
     description: { story: 'Restricts to 12-hour format only (`twelve-hour-only`).' },
     story: { height: '200px' },
-    source: { transform: (_code, ctx) => Template(ctx.args) },
+    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
   },
 };
 
@@ -513,7 +405,7 @@ HideSeconds.parameters = {
   docs: {
     description: { story: 'Hides the seconds spinner/part (`hide-seconds`).' },
     story: { height: '200px' },
-    source: { transform: (_code, ctx) => Template(ctx.args) },
+    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
   },
 };
 
@@ -531,7 +423,7 @@ NoDropdownButton.parameters = {
   docs: {
     description: { story: 'Hides the dropdown trigger button (`hide-timepicker-btn`) so users type time manually.' },
     story: { height: '200px' },
-    source: { transform: (_code, ctx) => Template(ctx.args) },
+    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
   },
 };
 
@@ -555,7 +447,7 @@ WithValidationMessage.parameters = {
         'Shows Plumage invalid underline styling + a validation message. Clears when the user clears, types, or uses spinners. Format toggle does not clear validation.',
     },
     story: { height: '200px' },
-    source: { transform: (_code, ctx) => Template(ctx.args) },
+    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
   },
 };
 
@@ -573,7 +465,7 @@ CustomInputWidth.parameters = {
   docs: {
     description: { story: 'Custom input width via `input-width`.' },
     story: { height: '200px' },
-    source: { transform: (_code, ctx) => Template(ctx.args) },
+    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
   },
 };
 
@@ -595,122 +487,8 @@ ControlledValueExample.parameters = {
         'Demonstrates initializing the component with a controlled value. On commit actions, the component updates its mutable `value` prop and emits `timeChange`.',
     },
     story: { height: '200px' },
-    source: { transform: (_code, ctx) => Template(ctx.args) },
+    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
   },
-};
-
-/* ============================== Accessibility Matrix (computed) ============================== */
-
-const splitIds = (v) => String(v || '').trim().split(/\s+/).filter(Boolean);
-
-const resolveId = (scopeRoot, id) => {
-  if (!id) return false;
-  try {
-    return !!scopeRoot.querySelector(`#${CSS.escape(id)}`);
-  } catch {
-    return false;
-  }
-};
-
-const getComputedSnapshot = (cmp, scopeRoot) => {
-  const input = cmp?.querySelector?.('input.time-input') || null;
-  const label = cmp?.querySelector?.('label') || null;
-  const dropdown = cmp?.querySelector?.('.time-dropdown') || null;
-
-  const inputId = cmp?.inputId ?? cmp?.getAttribute?.('input-id') ?? null;
-  const derived = inputId
-    ? {
-        label: `${inputId}-label`,
-        dropdown: `${inputId}-dropdown`,
-        validation: `${inputId}-validation`,
-        warning: `${inputId}-warning`,
-      }
-    : null;
-
-  const validation = derived
-    ? cmp?.querySelector?.(`#${CSS.escape(derived.validation)}`) || null
-    : null;
-  const warning = derived
-    ? cmp?.querySelector?.(`#${CSS.escape(derived.warning)}`) || null
-    : null;
-
-  const ariaLabelledby = input?.getAttribute?.('aria-labelledby') ?? null;
-  const ariaDescribedby = input?.getAttribute?.('aria-describedby') ?? null;
-
-  const labelledIds = splitIds(ariaLabelledby);
-  const describedIds = splitIds(ariaDescribedby);
-
-  return {
-    component: {
-      tag: cmp?.tagName?.toLowerCase?.() ?? null,
-      inputId,
-      value: cmp?.value ?? cmp?.getAttribute?.('value') ?? null,
-      isOpen: cmp?._open ?? null,
-      activePart: cmp?._activePart ?? null,
-    },
-    derivedIds: derived,
-    dom: {
-      hasLabel: !!label,
-      hasInput: !!input,
-      hasDropdown: !!dropdown,
-      hasValidationEl: !!validation,
-      hasWarningEl: !!warning,
-    },
-    input: input
-      ? {
-          id: input.getAttribute('id'),
-          name: input.getAttribute('name'),
-          disabled: input.hasAttribute('disabled'),
-          role: input.getAttribute('role') || 'textbox (implicit)',
-          ariaLabel: input.getAttribute('aria-label'),
-          ariaLabelledby,
-          ariaDescribedby,
-          ariaControls: input.getAttribute('aria-controls'),
-          ariaExpanded: input.getAttribute('aria-expanded'),
-          ariaHaspopup: input.getAttribute('aria-haspopup'),
-          ariaInvalid: input.getAttribute('aria-invalid'),
-          ariaRequired: input.getAttribute('aria-required'),
-          required: input.hasAttribute('required'),
-        }
-      : null,
-    dropdown: dropdown
-      ? {
-          id: dropdown.getAttribute('id'),
-          role: dropdown.getAttribute('role'),
-          ariaLabelledby: dropdown.getAttribute('aria-labelledby'),
-          ariaDescribedby: dropdown.getAttribute('aria-describedby'),
-          hiddenClass: dropdown.classList.contains('hidden'),
-          inertAttr: dropdown.hasAttribute('inert'),
-          tabIndex: dropdown.getAttribute('tabindex'),
-        }
-      : null,
-    resolved: {
-      labelledbyIds: labelledIds,
-      labelledbyAllResolve: labelledIds.every((id) => resolveId(scopeRoot, id)),
-      describedbyIds: describedIds,
-      describedbyAllResolve: describedIds.every((id) => resolveId(scopeRoot, id)),
-      derivedResolves: derived
-        ? {
-            label: resolveId(scopeRoot, derived.label),
-            dropdown: resolveId(scopeRoot, derived.dropdown),
-            validation: resolveId(scopeRoot, derived.validation),
-            warning: resolveId(scopeRoot, derived.warning),
-          }
-        : null,
-    },
-    spinbuttons: (() => {
-      if (!dropdown) return null;
-      return Array.from(dropdown.querySelectorAll('[role="spinbutton"]')).map((el) => ({
-        class: el.getAttribute('class'),
-        tabIndex: el.getAttribute('tabindex'),
-        ariaLabel: el.getAttribute('aria-label'),
-        ariaValueNow: el.getAttribute('aria-valuenow'),
-        ariaValueText: el.getAttribute('aria-valuetext'),
-        ariaValueMin: el.getAttribute('aria-valuemin'),
-        ariaValueMax: el.getAttribute('aria-valuemax'),
-      }));
-    })(),
-  };
 };
 
 export const AccessibilityMatrix = {
@@ -739,7 +517,7 @@ export const AccessibilityMatrix = {
             const val = await fn();
             if (val) return resolve(val);
           } catch {
-            // keep retrying until timeout
+            // keep retrying
           }
           if (performance.now() - start > timeoutMs) return reject(new Error('Timed out waiting for component'));
           setTimeout(tick, intervalMs);

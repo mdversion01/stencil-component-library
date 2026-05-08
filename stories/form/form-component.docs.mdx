@@ -1,0 +1,57 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as FormStories from './form-component.stories.js';
+import { reactExample, vueExample, angularExample } from './form-component.examples.js';
+
+<Meta of={FormStories} />
+
+# Form Wrapper
+
+<Description of={FormStories} />
+
+## HTML
+
+```html
+<form-component
+  form-id="demo-form"
+  fieldset
+  legend
+  legend-txt="Profile Details"
+  legend-position="left"
+  legend-size="base"
+  bstyle="solid"
+  bwidth="1"
+  bradius="8"
+  bcolor="#1b2af5 !important"
+  styles="padding: 12px;"
+>
+  <input-field-component
+    slot="formField"
+    label="First Name"
+    input-id="first-name"
+    value=""
+  ></input-field-component>
+
+  <input-field-component
+    slot="formField"
+    label="Last Name"
+    input-id="last-name"
+    value=""
+  ></input-field-component>
+
+  <button-component slot="formField" variant="primary">
+    Submit
+  </button-component>
+</form-component>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

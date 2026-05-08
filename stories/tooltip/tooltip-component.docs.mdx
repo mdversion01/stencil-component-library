@@ -1,0 +1,131 @@
+import { Meta, Description, Source, Primary, Controls, Stories } from '@storybook/blocks';
+import * as TooltipStories from './tooltip-component.stories';
+import {
+  reactExample,
+  vueExample,
+  angularExample,
+  svelteExample,
+  reactManualExample,
+  vueManualExample,
+  angularManualExample,
+  svelteManualExample,
+} from './tooltip-component.examples';
+
+<Meta of={TooltipStories} />
+
+# Tooltip Component
+
+<Description of={TooltipStories} />
+
+## HTML
+
+<Source
+  language="html"
+  code={`
+<div style="display:inline-block">
+  <tooltip-component
+    position="top"
+    trigger="hover focus"
+    tooltip-title="Hello from HTML"
+    variant="primary"
+  >
+    <button-component
+      btn-text="Hover me"
+      size="sm"
+      variant="secondary"
+    ></button-component>
+  </tooltip-component>
+</div>
+`.trim()}
+/>
+
+### HTML manual control
+
+<Source
+  language="html"
+  code={`
+<div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+  <tooltip-component
+    id="manual-tooltip"
+    trigger="manual click"
+    position="bottom"
+    tooltip-title="Manually controlled tooltip"
+  >
+    <button-component
+      btn-text="Target"
+      size="sm"
+      variant="secondary"
+    ></button-component>
+  </tooltip-component>
+
+  <button-component btn-text="Show" size="sm" variant="primary" id="tooltip-show"></button-component>
+  <button-component btn-text="Hide" size="sm" variant="danger" id="tooltip-hide"></button-component>
+  <button-component btn-text="Toggle" size="sm" variant="info" id="tooltip-toggle"></button-component>
+</div>
+
+<script>
+  const tooltip = document.getElementById('manual-tooltip');
+  const showBtn = document.getElementById('tooltip-show');
+  const hideBtn = document.getElementById('tooltip-hide');
+  const toggleBtn = document.getElementById('tooltip-toggle');
+
+  let isOpen = false;
+
+  showBtn?.addEventListener('click', async () => {
+    await tooltip?.show?.();
+    isOpen = true;
+  });
+
+  hideBtn?.addEventListener('click', async () => {
+    await tooltip?.hide?.();
+    isOpen = false;
+  });
+
+  toggleBtn?.addEventListener('click', async () => {
+    if (isOpen) {
+      await tooltip?.hide?.();
+      isOpen = false;
+    } else {
+      await tooltip?.show?.();
+      isOpen = true;
+    }
+  });
+</script>
+`.trim()}
+/>
+
+## React
+
+<Source code={reactExample} language="tsx" />
+
+### React manual control
+
+<Source code={reactManualExample} language="tsx" />
+
+## Vue
+
+<Source code={vueExample} language="vue" />
+
+### Vue manual control
+
+<Source code={vueManualExample} language="vue" />
+
+## Angular
+
+<Source code={angularExample} language="ts" />
+
+### Angular manual control
+
+<Source code={angularManualExample} language="ts" />
+
+## Svelte
+
+<Source code={svelteExample} language="svelte" />
+
+### Svelte manual control
+
+<Source code={svelteManualExample} language="svelte" />
+
+<Primary />
+<Controls />
+<Stories />

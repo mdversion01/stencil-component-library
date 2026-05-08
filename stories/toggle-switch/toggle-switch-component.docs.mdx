@@ -1,0 +1,61 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as ToggleStories from './toggle-switch-component.stories';
+import { reactExample, vueExample, angularExample, svelteExample, svelteKitExample } from './toggle-switch-component.examples';
+
+<Meta of={ToggleStories} />
+
+# Toggle Switch Component
+
+<Description of={ToggleStories} />
+
+## HTML
+
+### Single Toggle
+
+```html
+<toggle-switch-component
+  input-id="html-toggle-single"
+  label-txt="Enable notifications"
+  toggle-txt
+  new-toggle-txt='{"on":"On","off":"Off"}'
+  value="notifications"
+></toggle-switch-component>
+
+<div id="html-toggle-group-label" style="font-weight:600; margin-bottom:8px;">Device settings</div>
+
+<toggle-switch-component id="html-toggle-group" input-id="html-toggle-group" switches inline aria-labelledby="html-toggle-group-label"></toggle-switch-component>
+
+<script>
+  (function () {
+    var el = document.getElementById('html-toggle-group');
+    if (!el) return;
+
+    el.switchesArray = [
+      { id: 'wifi', label: 'Wi-Fi', value: 'wifi', checked: true, toggleTxt: true, newToggleTxt: { on: 'On', off: 'Off' } },
+      { id: 'bt', label: 'Bluetooth', value: 'bt', checked: false, toggleTxt: true },
+      { id: 'air', label: 'Airplane Mode', value: 'air', disabled: true },
+    ];
+
+    el.addEventListener('checkedChanged', function (event) {
+      console.log('checkedChanged', event.detail);
+    });
+  })();
+</script>
+```
+
+## React
+
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+## Svelte
+<Source code={svelteExample} language="svelte" />
+## SvelteKit
+<Source code={svelteKitExample} language="svelte" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

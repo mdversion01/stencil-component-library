@@ -1,81 +1,10 @@
-// src/stories/by-page-pagination-component.stories.js
-
-const boolLine = (name, on) => (on ? `  ${name}` : null);
-const attrLine = (name, val) => (val === undefined || val === null || val === '' ? null : `  ${name}="${String(val)}"`);
-
-const normalizeHtml = html => {
-  const lines = String(html ?? '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map(l => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      out.push('');
-      prevBlank = true;
-      continue;
-    }
-    out.push(line);
-    prevBlank = false;
-  }
-
-  while (out.length && out[0] === '') out.shift();
-  while (out.length && out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-const shouldIncludeItemsPerPageOptions = a => Array.isArray(a?.itemsPerPageOptions) && a.itemsPerPageOptions.length > 0;
-
-const buildAttrsBlock = a => {
-  const lines = [
-    // a11y + ids
-    attrLine('control-id', a.controlId),
-    attrLine('pagination-aria-label', a.paginationAriaLabel),
-    attrLine('page-size-label', a.pageSizeLabel),
-    attrLine('page-size-help-text', a.pageSizeHelpText),
-    attrLine('page-input-help-text', a.pageInputHelpText),
-
-    // data
-    attrLine('current-page', a.currentPage),
-    attrLine('page-size', a.pageSize),
-    attrLine('total-rows', a.totalRows),
-
-    // options
-    boolLine('display-total-number-of-pages', a.displayTotalNumberOfPages),
-    attrLine('go-to-buttons', a.goToButtons),
-    boolLine('items-per-page', a.itemsPerPage),
-
-    // layout/styling
-    attrLine('pagination-layout', a.paginationLayout),
-    boolLine('plumage', a.plumage),
-    attrLine('size', a.size),
-  ].filter(Boolean);
-
-  return lines.length ? `\n${lines.join('\n')}` : '';
-};
-
-const buildComponentTag = (tagName, a, { id } = {}) => {
-  const idAttr = id ? ` id="${id}"` : '';
-  const attrs = buildAttrsBlock(a);
-  return `<${tagName}${idAttr}${attrs}\n></${tagName}>`;
-};
-
-const buildItemsPerPageOptionsScript = (hostId, itemsPerPageOptions) => {
-  const json = JSON.stringify(itemsPerPageOptions);
-  return `
-<script>
-  (() => {
-    const el = document.getElementById('${hostId}');
-    if (el) el.itemsPerPageOptions = ${json};
-  })();
-</script>`;
-};
+import DocsPage from './by-page-pagination-component.docs.mdx';
+import {
+  buildDocsTransform,
+  normalizeHtml,
+  renderMatrixRow,
+  template,
+} from './by-page-pagination-component.story-helpers.js';
 
 export default {
   title: 'Components/Pagination/By Page',
@@ -83,34 +12,11 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
+      page: DocsPage,
       source: {
         type: 'dynamic',
         language: 'html',
-        transform: (src, context) => {
-          const { name: storyName, args } = context;
-
-          const buildByPageDefaultCode = a => {
-            const needsArray = shouldIncludeItemsPerPageOptions(a);
-            const hostId = 'bypage-default';
-            const tag = buildComponentTag('by-page-pagination-component', a, { id: needsArray ? hostId : '' });
-
-            if (!needsArray) return normalizeHtml(tag);
-
-            return normalizeHtml(`${tag}\n${buildItemsPerPageOptionsScript(hostId, a.itemsPerPageOptions)}`);
-          };
-
-          switch (storyName) {
-            case 'ByPageDefault':
-              return buildByPageDefaultCode(args);
-
-            // Exact literal code is provided for this one
-            case 'StandaloneRangeAndSizer':
-              return src;
-
-            default:
-              return src;
-          }
-        },
+        transform: (src, context) => buildDocsTransform(src, context),
       },
       description: {
         component: ['The By Page pagination component provides a user interface for navigating through pages of content.', ''].join('\n'),
@@ -118,9 +24,6 @@ export default {
     },
   },
   argTypes: {
-    /* -----------------------------
-      Accessibility
-    ------------------------------ */
     controlId: {
       control: 'text',
       name: 'control-id',
@@ -152,9 +55,6 @@ export default {
       table: { category: 'Accessibility' },
     },
 
-    /* -----------------------------
-      Data & Paging
-    ------------------------------ */
     currentPage: {
       control: { type: 'number', min: 1 },
       name: 'current-page',
@@ -174,9 +74,6 @@ export default {
       table: { category: 'Data & Paging' },
     },
 
-    /* -----------------------------
-      Display Options
-    ------------------------------ */
     displayTotalNumberOfPages: {
       control: 'boolean',
       name: 'display-total-number-of-pages',
@@ -204,9 +101,6 @@ export default {
       table: { category: 'Display Options' },
     },
 
-    /* -----------------------------
-      Layout & Styling
-    ------------------------------ */
     paginationLayout: {
       control: { type: 'select' },
       options: ['', 'start', 'center', 'end'],
@@ -229,51 +123,22 @@ export default {
   },
 };
 
-/* ============================== Template (normalized output) ============================== */
-
-const Template = args => {
-  const hostId = `bypage-${Math.random().toString(36).slice(2, 9)}`;
-
-  const tag = buildComponentTag('by-page-pagination-component', args, { id: hostId });
-
-  const arrayScript = shouldIncludeItemsPerPageOptions(args) ? buildItemsPerPageOptionsScript(hostId, args.itemsPerPageOptions) : '';
-
-  const eventScript = `
-<script>
-  (() => {
-    const el = document.getElementById('${hostId}');
-    if (!el) return;
-    el.addEventListener('change-page', e => {
-      console.log('[by-page-pagination change-page]', e.detail);
-      if (e?.detail?.page != null) el.setAttribute('current-page', String(e.detail.page));
-    });
-  })();
-</script>`;
-
-  return normalizeHtml(`${tag}${arrayScript ? `\n${arrayScript}` : ''}\n${eventScript}`);
-};
+const Template = (args) => template(args);
 
 export const ByPageDefault = Template.bind({});
 ByPageDefault.args = {
-  // a11y
   controlId: 'orders-table',
   paginationAriaLabel: 'Pagination',
   pageSizeLabel: 'Items per page:',
   pageSizeHelpText: 'Use this control to change how many items are shown per page.',
   pageInputHelpText: 'Type a page number and press Enter, or use the navigation buttons.',
-
-  // data
   currentPage: 1,
   pageSize: 10,
   totalRows: 100,
-
-  // options
   displayTotalNumberOfPages: false,
-  goToButtons: '', // omit for default
+  goToButtons: '',
   itemsPerPage: false,
   itemsPerPageOptions: [10, 20, 50, 100, 'All'],
-
-  // layout/styling
   paginationLayout: 'center',
   plumage: false,
   size: '',
@@ -284,8 +149,6 @@ ByPageDefault.parameters = {
     story: 'Default By Page pagination component with center alignment.',
   },
 };
-
-/* ============================== Focused Examples ============================== */
 
 export const GoToButtonsText = () =>
   normalizeHtml(`
@@ -312,7 +175,7 @@ export const Layouts = () =>
   <by-page-pagination-component current-page="1" total-rows="100" page-size="10" pagination-layout="start"></by-page-pagination-component>
   <by-page-pagination-component current-page="1" total-rows="100" page-size="10" pagination-layout="center"></by-page-pagination-component>
   <by-page-pagination-component current-page="1" total-rows="100" page-size="10" pagination-layout="end"></by-page-pagination-component>
-  <by-page-pagination-component current-page="1" total-rows="100" page-size="10"  pagination-layout="start" display-total-number-of-pages></by-page-pagination-component>
+  <by-page-pagination-component current-page="1" total-rows="100" page-size="10" pagination-layout="start" display-total-number-of-pages></by-page-pagination-component>
   <by-page-pagination-component current-page="1" total-rows="100" page-size="10" pagination-layout="end" display-total-number-of-pages></by-page-pagination-component>
 </div>
 `);
@@ -430,23 +293,23 @@ ItemsPerPage.parameters = {
 
 export const WithRangeOnly = () =>
   normalizeHtml(`
-    <div style="margin-bottom: 20px">
-<by-page-pagination-component
-  current-page="1"
-  total-rows="100"
-  page-size="10"
-  display-total-number-of-pages
-  pagination-layout="start"
-></by-page-pagination-component>
+<div style="margin-bottom: 20px">
+  <by-page-pagination-component
+    current-page="1"
+    total-rows="100"
+    page-size="10"
+    display-total-number-of-pages
+    pagination-layout="start"
+  ></by-page-pagination-component>
 </div>
 <div style="margin-bottom: 20px">
-<by-page-pagination-component
-  current-page="1"
-  total-rows="100"
-  page-size="10"
-  display-total-number-of-pages
-  pagination-layout="end"
-></by-page-pagination-component>
+  <by-page-pagination-component
+    current-page="1"
+    total-rows="100"
+    page-size="10"
+    display-total-number-of-pages
+    pagination-layout="end"
+  ></by-page-pagination-component>
 </div>
 `);
 WithRangeOnly.storyName = 'With Range Only';
@@ -458,8 +321,6 @@ WithRangeOnly.parameters = {
     },
   },
 };
-
-/* ============================== Optional standalone-only demo ============================== */
 
 export const StandaloneRangeAndSizer = () => {
   const id = 'bypage-standalone';
@@ -487,171 +348,6 @@ StandaloneRangeAndSizer.parameters = {
   },
 };
 
-// ============================================================================
-// Accessibility matrix
-//  - Shows common variants and prints computed role + aria-* + ids
-//  - Validates that aria-describedby references exist
-//  - Uses stable IDs via control-id so ids are predictable
-// ============================================================================
-
-function pickAttrs(el, names) {
-  const out = {};
-  for (const n of names) {
-    const v = el.getAttribute(n);
-    if (v !== null && v !== '') out[n] = v;
-  }
-  return out;
-}
-
-function splitIds(v) {
-  return String(v || '')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-}
-
-function resolveIdsWithin(host, ids) {
-  const res = {};
-  for (const id of ids) {
-    const safe = String(id).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-    const node = host.querySelector(`[id="${safe}"]`);
-    res[id] = !!node;
-  }
-  return res;
-}
-
-function snapshotA11y(host) {
-  const nav = host.querySelector('nav');
-  const ul = host.querySelector('ul.pagination');
-  const range = host.querySelector('[id^="bppc-range-"]');
-  const pageInput = host.querySelector('input.page-input');
-  const pageLabel = pageInput ? host.querySelector(`[id="${pageInput.getAttribute('aria-labelledby') || ''}"]`) : null;
-
-  const sizeLabel = host.querySelector('.size-changer label');
-  const sizeSelect = host.querySelector('.size-changer select');
-
-  const pageDescIds = pageInput ? splitIds(pageInput.getAttribute('aria-describedby')) : [];
-  const sizeDescIds = sizeSelect ? splitIds(sizeSelect.getAttribute('aria-describedby')) : [];
-
-  return {
-    nav: nav
-      ? {
-          tag: nav.tagName.toLowerCase(),
-          ...pickAttrs(nav, ['aria-label']),
-        }
-      : null,
-    paginationList: ul
-      ? {
-          tag: ul.tagName.toLowerCase(),
-          ...pickAttrs(ul, ['class']),
-        }
-      : null,
-    range: range
-      ? {
-          id: range.getAttribute('id') || '',
-          role: range.getAttribute('role') || '',
-          ...pickAttrs(range, ['aria-live', 'aria-atomic']),
-          text: (range.textContent || '').trim(),
-        }
-      : null,
-    pageInput: pageInput
-      ? {
-          id: pageInput.getAttribute('id') || '',
-          tag: pageInput.tagName.toLowerCase(),
-          type: pageInput.getAttribute('type') || '',
-          min: pageInput.getAttribute('min') || '',
-          max: pageInput.getAttribute('max') || '',
-          ...pickAttrs(pageInput, ['aria-labelledby', 'aria-describedby']),
-          labelNodeExists: !!pageLabel,
-          resolves: {
-            'aria-describedby': resolveIdsWithin(host, pageDescIds),
-          },
-        }
-      : null,
-    pageSize: sizeSelect
-      ? {
-          label: sizeLabel
-            ? {
-                text: (sizeLabel.textContent || '').trim(),
-                for: sizeLabel.getAttribute('for') || '',
-              }
-            : null,
-          select: {
-            id: sizeSelect.getAttribute('id') || '',
-            tag: sizeSelect.tagName.toLowerCase(),
-            ...pickAttrs(sizeSelect, ['aria-describedby']),
-            resolves: {
-              'aria-describedby': resolveIdsWithin(host, sizeDescIds),
-            },
-          },
-        }
-      : null,
-  };
-}
-
-function buildMatrixEl(args) {
-  const el = document.createElement('by-page-pagination-component');
-
-  // assign properties (Stencil runtime behavior)
-  Object.assign(el, args);
-
-  // itemsPerPageOptions must be set as a property (not attribute)
-  if (Array.isArray(args.itemsPerPageOptions)) {
-    el.itemsPerPageOptions = args.itemsPerPageOptions;
-  }
-
-  // helpful: log events
-  el.addEventListener('change-page', e => console.log('[change-page]', e.detail));
-
-  return el;
-}
-
-function renderMatrixRow({ title, args, idSuffix }) {
-  const wrap = document.createElement('div');
-  wrap.style.border = '1px solid #ddd';
-  wrap.style.borderRadius = '12px';
-  wrap.style.padding = '12px';
-  wrap.style.display = 'grid';
-  wrap.style.gap = '10px';
-
-  const heading = document.createElement('div');
-  heading.style.fontWeight = '700';
-  heading.textContent = title;
-
-  const stage = document.createElement('div');
-  stage.style.maxWidth = '860px';
-
-  const pre = document.createElement('pre');
-  pre.style.margin = '0';
-  pre.style.padding = '10px';
-  pre.style.background = '#f6f8fa';
-  pre.style.borderRadius = '10px';
-  pre.style.overflowX = 'auto';
-  pre.style.fontSize = '12px';
-  pre.textContent = 'Collecting aria/role/id…';
-
-  const el = buildMatrixEl({
-    ...args,
-    // make ids deterministic via controlId (component uses it as baseId)
-    controlId: `bppc-matrix-${idSuffix}`,
-  });
-
-  stage.appendChild(el);
-
-  wrap.appendChild(heading);
-  wrap.appendChild(stage);
-  wrap.appendChild(pre);
-
-  const update = () => {
-    const snap = snapshotA11y(el);
-    pre.textContent = JSON.stringify(snap, null, 2);
-  };
-
-  requestAnimationFrame(() => requestAnimationFrame(update));
-
-  return wrap;
-}
-
 export const AccessibilityMatrix = () => {
   const root = document.createElement('div');
   root.style.display = 'grid';
@@ -678,7 +374,6 @@ export const AccessibilityMatrix = () => {
         plumage: false,
         size: '',
         goToButtons: '',
-        // NOTE: range is only rendered when displayTotalNumberOfPages=true
         displayTotalNumberOfPages: false,
         itemsPerPage: false,
         paginationAriaLabel: 'Pagination',

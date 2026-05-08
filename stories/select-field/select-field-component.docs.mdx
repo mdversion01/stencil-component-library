@@ -1,0 +1,36 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as SelectFieldStories from './select-field-component.stories';
+import { reactExample, vueExample, angularExample } from './select-field-component.examples';
+
+<Meta of={SelectFieldStories} />
+
+# Select Field
+
+<Description of={SelectFieldStories} />
+
+## HTML
+
+```html
+<select-field-component
+  label="Fruits"
+  select-field-id="fruit"
+  default-option-txt="Select a fruit"
+  value="banana"
+  options='[
+    { "value": "apple", "name": "Apple" },
+    { "value": "banana", "name": "Banana" },
+    { "value": "cherry", "name": "Cherry" }
+  ]'
+></select-field-component>
+```
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

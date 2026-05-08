@@ -30,24 +30,22 @@ export class DateRangeTimePickerComponent {
   private dropdownContentEl?: HTMLDivElement;
   private popper?: PopperInstance;
 
-  private draftSnapshot:
-    | {
-        value: string;
-        startDate: Date | null;
-        endDate: Date | null;
-        startTime: string;
-        endTime: string;
-        startAmPm: 'AM' | 'PM';
-        endAmPm: 'AM' | 'PM';
-        durationText: string;
-        currentStartMonth: number;
-        currentStartYear: number;
-        currentEndMonth: number;
-        currentEndYear: number;
-        validation: boolean;
-        validationMessage: string;
-      }
-    | null = null;
+  private draftSnapshot: {
+    value: string;
+    startDate: Date | null;
+    endDate: Date | null;
+    startTime: string;
+    endTime: string;
+    startAmPm: 'AM' | 'PM';
+    endAmPm: 'AM' | 'PM';
+    durationText: string;
+    currentStartMonth: number;
+    currentStartYear: number;
+    currentEndMonth: number;
+    currentEndYear: number;
+    validation: boolean;
+    validationMessage: string;
+  } | null = null;
 
   @Prop() ariaLabel: string = '';
   @Prop() dateFormat: 'YYYY-MM-DD' | 'MM-DD-YYYY' = 'YYYY-MM-DD';
@@ -218,7 +216,7 @@ export class DateRangeTimePickerComponent {
       this.inputEl.addEventListener('blur', this.removeFocusClass);
     }
     const calendarButtons = Array.from(this.el.querySelectorAll('.calendar-button'));
-    calendarButtons.forEach((btn) => {
+    calendarButtons.forEach(btn => {
       btn.addEventListener('focus', this.addFocusClass);
       btn.addEventListener('blur', this.removeFocusClass);
     });
@@ -227,7 +225,7 @@ export class DateRangeTimePickerComponent {
     if (calendarWrapper) {
       calendarWrapper.addEventListener('keydown', this.handleKeyDown as any);
       calendarWrapper.addEventListener('focus', this.handleWrapperFocus as any);
-      Array.from(this.el.querySelectorAll('.dp-calendar')).forEach((cal) => {
+      Array.from(this.el.querySelectorAll('.dp-calendar')).forEach(cal => {
         cal.addEventListener('focus', this.handleCalendarFocus as any);
         cal.addEventListener('focusout', this.handleCalendarFocusOut as any);
       });
@@ -251,7 +249,7 @@ export class DateRangeTimePickerComponent {
     }
 
     const calendarButtons = Array.from(this.el.querySelectorAll('.calendar-button'));
-    calendarButtons.forEach((btn) => {
+    calendarButtons.forEach(btn => {
       btn.removeEventListener('focus', this.addFocusClass);
       btn.removeEventListener('blur', this.removeFocusClass);
     });
@@ -260,7 +258,7 @@ export class DateRangeTimePickerComponent {
     if (calendarWrapper) {
       calendarWrapper.removeEventListener('keydown', this.handleKeyDown as any);
       calendarWrapper.removeEventListener('focus', this.handleWrapperFocus as any);
-      Array.from(this.el.querySelectorAll('.dp-calendar')).forEach((cal) => {
+      Array.from(this.el.querySelectorAll('.dp-calendar')).forEach(cal => {
         cal.removeEventListener('focus', this.handleCalendarFocus as any);
         cal.removeEventListener('focusout', this.handleCalendarFocusOut as any);
       });
@@ -293,7 +291,7 @@ export class DateRangeTimePickerComponent {
   }
 
   private waitForRender() {
-    return new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+    return new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
   }
 
   private cloneDate(date: Date | null): Date | null {
@@ -393,12 +391,12 @@ export class DateRangeTimePickerComponent {
       tokens.push(
         ...raw
           .split(/\s+/)
-          .map((t) => t.trim())
+          .map(t => t.trim())
           .filter(Boolean),
       );
     }
     const seen = new Set<string>();
-    const out = tokens.filter((t) => (seen.has(t) ? false : (seen.add(t), true)));
+    const out = tokens.filter(t => (seen.has(t) ? false : (seen.add(t), true)));
     return out.length ? out.join(' ') : undefined;
   }
 
@@ -412,7 +410,7 @@ export class DateRangeTimePickerComponent {
     if (wrapper) {
       wrapper.addEventListener('keydown', this.handleKeyDown as any);
       wrapper.addEventListener('focus', this.handleWrapperFocus as any);
-      Array.from(this.el.querySelectorAll('.dp-calendar')).forEach((cal) => {
+      Array.from(this.el.querySelectorAll('.dp-calendar')).forEach(cal => {
         cal.addEventListener('focus', this.handleCalendarFocus as any);
         cal.addEventListener('focusout', this.handleCalendarFocusOut as any);
       });
@@ -754,12 +752,12 @@ export class DateRangeTimePickerComponent {
   private parseNumericDate(dateStr: string): Date | null {
     const s = dateStr.trim();
     if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
-      const [y, m, d] = s.split('-').map((n) => parseInt(n, 10));
+      const [y, m, d] = s.split('-').map(n => parseInt(n, 10));
       const dt = new Date(Date.UTC(y, m - 1, d));
       return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d ? dt : null;
     }
     if (/^\d{2}-\d{2}-\d{4}$/.test(s)) {
-      const [mm, dd, yyyy] = s.split('-').map((n) => parseInt(n, 10));
+      const [mm, dd, yyyy] = s.split('-').map(n => parseInt(n, 10));
       const dt = new Date(Date.UTC(yyyy, mm - 1, dd));
       return dt.getUTCFullYear() === yyyy && dt.getUTCMonth() === mm - 1 && dt.getUTCDate() === dd ? dt : null;
     }
@@ -883,8 +881,8 @@ export class DateRangeTimePickerComponent {
         this.startTime = sHHMM;
         this.endTime = eHHMM;
       } else {
-        const [sh, sm] = sHHMM.split(':').map((n) => parseInt(n, 10));
-        const [eh, em] = eHHMM.split(':').map((n) => parseInt(n, 10));
+        const [sh, sm] = sHHMM.split(':').map(n => parseInt(n, 10));
+        const [eh, em] = eHHMM.split(':').map(n => parseInt(n, 10));
         const sh12 = ((sh + 11) % 12) + 1;
         const eh12 = ((eh + 11) % 12) + 1;
         this.startTime = `${String(sh12).padStart(2, '0')}:${String(sm).padStart(2, '0')}`;
@@ -1164,13 +1162,7 @@ export class DateRangeTimePickerComponent {
   };
 
   private showAsRequired() {
-    const haveAll =
-      !!this.startDate &&
-      !!this.endDate &&
-      !!this.startTime &&
-      !!this.endTime &&
-      this.isValidTimeValue(this.startTime) &&
-      this.isValidTimeValue(this.endTime);
+    const haveAll = !!this.startDate && !!this.endDate && !!this.startTime && !!this.endTime && this.isValidTimeValue(this.startTime) && this.isValidTimeValue(this.endTime);
     return this.required && !haveAll;
   }
 
@@ -1310,15 +1302,12 @@ export class DateRangeTimePickerComponent {
       this.activateFirstFocusableCell();
 
       const gridsNow = this.el.querySelectorAll('.calendar-grid');
-      const cellsNow = Array.from(gridsNow).flatMap((g) =>
-        Array.from(g.querySelectorAll('.calendar-grid-item:not(.previous-month-day):not(.next-month-day)')) as HTMLElement[],
-      );
+      const cellsNow = Array.from(gridsNow).flatMap(g => Array.from(g.querySelectorAll('.calendar-grid-item:not(.previous-month-day):not(.next-month-day)')) as HTMLElement[]);
 
       const focusEl = (this.el.getRootNode() as Document | ShadowRoot)['activeElement'] as HTMLElement | null;
       const startIndex = focusEl ? cellsNow.indexOf(focusEl) : -1;
       if (startIndex >= 0) {
-        const delta =
-          event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? +1 : event.key === 'ArrowUp' ? -7 : event.key === 'ArrowDown' ? +7 : 0;
+        const delta = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? +1 : event.key === 'ArrowUp' ? -7 : event.key === 'ArrowDown' ? +7 : 0;
         const nextIndex = Math.max(0, Math.min(cellsNow.length - 1, startIndex + delta));
         if (nextIndex !== startIndex) this.moveFocusToNewIndex(cellsNow, nextIndex);
       }
@@ -1330,7 +1319,7 @@ export class DateRangeTimePickerComponent {
     if (!currentFocus || !this.el.contains(currentFocus)) currentFocus = null;
 
     const calendarCells = Array.from(calendarGrids).flatMap(
-      (grid) => Array.from(grid.querySelectorAll('.calendar-grid-item:not(.previous-month-day):not(.next-month-day)')) as HTMLElement[],
+      grid => Array.from(grid.querySelectorAll('.calendar-grid-item:not(.previous-month-day):not(.next-month-day)')) as HTMLElement[],
     );
 
     if (event.key.startsWith('Arrow')) {
@@ -1407,7 +1396,7 @@ export class DateRangeTimePickerComponent {
 
   private clearAllFocus() {
     const focused = this.el.querySelectorAll('.calendar-grid-item span.focus');
-    focused.forEach((el) => el.classList.remove('focus'));
+    focused.forEach(el => el.classList.remove('focus'));
   }
 
   private handleEnterKeyPress = (_event: KeyboardEvent) => {
@@ -1493,9 +1482,7 @@ export class DateRangeTimePickerComponent {
   private preserveCursorAndSetValue(target: HTMLInputElement, nextValue: string, previousSelectionStart: number) {
     target.value = nextValue;
 
-    const digitsBeforeCaret = target.value
-      .slice(0, Math.max(0, previousSelectionStart))
-      .replace(/[^0-9]/g, '').length;
+    const digitsBeforeCaret = target.value.slice(0, Math.max(0, previousSelectionStart)).replace(/[^0-9]/g, '').length;
 
     let caret = 0;
     let seenDigits = 0;
@@ -1553,6 +1540,11 @@ export class DateRangeTimePickerComponent {
     this._validateTimePresence();
     this._updateDuration();
     this.updateOkButtonState();
+
+    if (this.startDate && this.endDate && this.startTime && this.endTime && !this.hasInvalidTimeFields()) {
+      this.syncInputFromState();
+      this.emitIfCompleteAndValid('time');
+    }
   };
 
   private onToggleAmPm = (e: MouseEvent) => {
@@ -1793,9 +1785,7 @@ export class DateRangeTimePickerComponent {
       }
 
       ariaLabel = day
-        ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(
-            new Date(Date.UTC(dataYear, dataMonth - 1, day)),
-          )
+        ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(Date.UTC(dataYear, dataMonth - 1, day)))
         : '';
 
       const dataDate = day ? `${dataYear}-${String(dataMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}` : '';
@@ -1938,14 +1928,7 @@ export class DateRangeTimePickerComponent {
                   )}
 
                   {!this.isTwentyFourHourFormat ? (
-                    <button
-                      type="button"
-                      class="am-pm-toggle"
-                      onClick={this.onToggleAmPm}
-                      data-type="start"
-                      aria-label="Toggle start time AM/PM"
-                      disabled={this.disabled}
-                    >
+                    <button type="button" class="am-pm-toggle" onClick={this.onToggleAmPm} data-type="start" aria-label="Toggle start time AM/PM" disabled={this.disabled}>
                       {this.startAmPm}
                     </button>
                   ) : null}
@@ -2032,7 +2015,7 @@ export class DateRangeTimePickerComponent {
 
   private renderDropdown() {
     return (
-      <div id={this.dropdownId} class={`dropdown${this.dropdownOpen ? ' open' : ''}`} ref={(el) => (this.dropdownEl = el as HTMLDivElement)}>
+      <div id={this.dropdownId} class={`dropdown${this.dropdownOpen ? ' open' : ''}`} ref={el => (this.dropdownEl = el as HTMLDivElement)}>
         <div
           class="dropdown-content"
           role="dialog"
@@ -2040,8 +2023,8 @@ export class DateRangeTimePickerComponent {
           aria-labelledby={this.dialogTitleId}
           aria-describedby={this.dialogDescId}
           tabIndex={-1}
-          ref={(el) => (this.dropdownContentEl = el as HTMLDivElement)}
-          onClick={(e) => e.stopPropagation()}
+          ref={el => (this.dropdownContentEl = el as HTMLDivElement)}
+          onClick={e => e.stopPropagation()}
         >
           <div id={this.dialogTitleId} class="sr-only visually-hidden">
             {this.ariaLabel || this.label || 'Date and time range picker'}
@@ -2060,11 +2043,7 @@ export class DateRangeTimePickerComponent {
     const isRow = this.isHorizontal() || this.isInline();
 
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass = this.isHorizontal()
-      ? this.buildColClass('input') || undefined
-      : this.isInline()
-        ? this.buildColClass('input') || undefined
-        : undefined;
+    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
 
@@ -2104,7 +2083,7 @@ export class DateRangeTimePickerComponent {
               <div class="drp-input-field">
                 <input
                   id={this.inputId}
-                  ref={(el) => (this.inputEl = el as HTMLInputElement)}
+                  ref={el => (this.inputEl = el as HTMLInputElement)}
                   type="text"
                   class={`form-control${this.validation ? ' is-invalid' : ''}`}
                   placeholder={this.placeholderText}
@@ -2169,11 +2148,7 @@ export class DateRangeTimePickerComponent {
     const isRow = this.isHorizontal() || this.isInline();
 
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass = this.isHorizontal()
-      ? this.buildColClass('input') || undefined
-      : this.isInline()
-        ? this.buildColClass('input') || undefined
-        : undefined;
+    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
 
@@ -2213,7 +2188,7 @@ export class DateRangeTimePickerComponent {
               <div class="drp-input-field">
                 <input
                   id={this.inputId}
-                  ref={(el) => (this.inputEl = el as HTMLInputElement)}
+                  ref={el => (this.inputEl = el as HTMLInputElement)}
                   type="text"
                   class={`form-control${this.validation ? ' is-invalid' : ''}`}
                   placeholder={this.placeholderText}

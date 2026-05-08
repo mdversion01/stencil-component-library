@@ -3,12 +3,12 @@
 exports[`accordion-container applies correct text size class from contentTxtSize prop: text size large 1`] = `
 <accordion-container icon="fas fa-angle-down">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-6-mb9zf">
+    <div class="accordion" id="acc-6-54e6h">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-6-mb9zf-header-0">
-          <button-component aria-controls="acc-6-mb9zf-collapse-0" aria-expanded="true" data-bs-target="#acc-6-mb9zf-collapse-0" data-bs-toggle="collapse" id="acc-6-mb9zf-trigger-0">
+        <h2 class="accordion-header" id="acc-6-54e6h-header-0">
+          <button-component aria-controls="acc-6-54e6h-collapse-0" aria-expanded="true" data-bs-target="#acc-6-54e6h-collapse-0" data-bs-toggle="collapse" id="acc-6-54e6h-trigger-0">
             <!---->
-            <button aria-controls="acc-6-mb9zf-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-6-mb9zf-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-6-54e6h-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-6-54e6h-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 1
                 <span aria-hidden="true" class="rotate-down">
@@ -18,17 +18,17 @@ exports[`accordion-container applies correct text size class from contentTxtSize
             </button>
           </button-component>
         </h2>
-        <div aria-labelledby="acc-6-mb9zf-trigger-0" class="accordion-collapse collapsing" id="acc-6-mb9zf-collapse-0" role="region" style="height: 0px;">
+        <div aria-labelledby="acc-6-54e6h-trigger-0" class="accordion-collapse collapsing" id="acc-6-54e6h-collapse-0" role="region" style="height: 0px;">
           <div class="accordion-body text-large">
             Content 1
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-6-mb9zf-header-1">
-          <button-component aria-controls="acc-6-mb9zf-collapse-1" aria-expanded="false" data-bs-target="#acc-6-mb9zf-collapse-1" data-bs-toggle="collapse" id="acc-6-mb9zf-trigger-1">
+        <h2 class="accordion-header" id="acc-6-54e6h-header-1">
+          <button-component aria-controls="acc-6-54e6h-collapse-1" aria-expanded="false" data-bs-target="#acc-6-54e6h-collapse-1" data-bs-toggle="collapse" id="acc-6-54e6h-trigger-1">
             <!---->
-            <button aria-controls="acc-6-mb9zf-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-6-mb9zf-collapse-1" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-6-54e6h-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-6-54e6h-collapse-1" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 2
                 <span aria-hidden="true" class="rotate-up">
@@ -38,7 +38,7 @@ exports[`accordion-container applies correct text size class from contentTxtSize
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-6-mb9zf-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-6-mb9zf-collapse-1" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-6-54e6h-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-6-54e6h-collapse-1" inert="" role="region">
           <div class="accordion-body text-large">
             Content 2
           </div>
@@ -52,12 +52,12 @@ exports[`accordion-container applies correct text size class from contentTxtSize
 exports[`accordion-container handles keyboard activation (simulate click on inner button): after activation close 1`] = `
 <accordion-container icon="fas fa-angle-down">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-4-v9rhv">
+    <div class="accordion" id="acc-4-fahfz">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-4-v9rhv-header-0">
-          <button-component aria-controls="acc-4-v9rhv-collapse-0" aria-expanded="false" data-bs-target="#acc-4-v9rhv-collapse-0" data-bs-toggle="collapse" id="acc-4-v9rhv-trigger-0">
+        <h2 class="accordion-header" id="acc-4-fahfz-header-0">
+          <button-component aria-controls="acc-4-fahfz-collapse-0" aria-expanded="false" data-bs-target="#acc-4-fahfz-collapse-0" data-bs-toggle="collapse" id="acc-4-fahfz-trigger-0">
             <!---->
-            <button aria-controls="acc-4-v9rhv-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-4-v9rhv-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-4-fahfz-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-4-fahfz-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 1
                 <span aria-hidden="true" class="rotate-up">
@@ -67,17 +67,17 @@ exports[`accordion-container handles keyboard activation (simulate click on inne
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-4-v9rhv-trigger-0" class="accordion-collapse collapsing" id="acc-4-v9rhv-collapse-0" inert="" role="region" style="height: 0px;">
+        <div aria-hidden="true" aria-labelledby="acc-4-fahfz-trigger-0" class="accordion-collapse collapsing" id="acc-4-fahfz-collapse-0" inert="" role="region" style="height: 0px;">
           <div class="accordion-body">
             Content 1
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-4-v9rhv-header-1">
-          <button-component aria-controls="acc-4-v9rhv-collapse-1" aria-expanded="false" data-bs-target="#acc-4-v9rhv-collapse-1" data-bs-toggle="collapse" id="acc-4-v9rhv-trigger-1">
+        <h2 class="accordion-header" id="acc-4-fahfz-header-1">
+          <button-component aria-controls="acc-4-fahfz-collapse-1" aria-expanded="false" data-bs-target="#acc-4-fahfz-collapse-1" data-bs-toggle="collapse" id="acc-4-fahfz-trigger-1">
             <!---->
-            <button aria-controls="acc-4-v9rhv-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-4-v9rhv-collapse-1" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-4-fahfz-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-4-fahfz-collapse-1" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 2
                 <span aria-hidden="true" class="rotate-up">
@@ -87,7 +87,7 @@ exports[`accordion-container handles keyboard activation (simulate click on inne
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-4-v9rhv-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-4-v9rhv-collapse-1" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-4-fahfz-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-4-fahfz-collapse-1" inert="" role="region">
           <div class="accordion-body">
             Content 2
           </div>
@@ -101,12 +101,12 @@ exports[`accordion-container handles keyboard activation (simulate click on inne
 exports[`accordion-container handles keyboard activation (simulate click on inner button): after activation open 1`] = `
 <accordion-container icon="fas fa-angle-down">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-4-v9rhv">
+    <div class="accordion" id="acc-4-fahfz">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-4-v9rhv-header-0">
-          <button-component aria-controls="acc-4-v9rhv-collapse-0" aria-expanded="true" data-bs-target="#acc-4-v9rhv-collapse-0" data-bs-toggle="collapse" id="acc-4-v9rhv-trigger-0">
+        <h2 class="accordion-header" id="acc-4-fahfz-header-0">
+          <button-component aria-controls="acc-4-fahfz-collapse-0" aria-expanded="true" data-bs-target="#acc-4-fahfz-collapse-0" data-bs-toggle="collapse" id="acc-4-fahfz-trigger-0">
             <!---->
-            <button aria-controls="acc-4-v9rhv-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-4-v9rhv-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-4-fahfz-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-4-fahfz-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 1
                 <span aria-hidden="true" class="rotate-down">
@@ -116,17 +116,17 @@ exports[`accordion-container handles keyboard activation (simulate click on inne
             </button>
           </button-component>
         </h2>
-        <div aria-labelledby="acc-4-v9rhv-trigger-0" class="accordion-collapse collapsing" id="acc-4-v9rhv-collapse-0" role="region" style="height: 0px;">
+        <div aria-labelledby="acc-4-fahfz-trigger-0" class="accordion-collapse collapsing" id="acc-4-fahfz-collapse-0" role="region" style="height: 0px;">
           <div class="accordion-body">
             Content 1
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-4-v9rhv-header-1">
-          <button-component aria-controls="acc-4-v9rhv-collapse-1" aria-expanded="false" data-bs-target="#acc-4-v9rhv-collapse-1" data-bs-toggle="collapse" id="acc-4-v9rhv-trigger-1">
+        <h2 class="accordion-header" id="acc-4-fahfz-header-1">
+          <button-component aria-controls="acc-4-fahfz-collapse-1" aria-expanded="false" data-bs-target="#acc-4-fahfz-collapse-1" data-bs-toggle="collapse" id="acc-4-fahfz-trigger-1">
             <!---->
-            <button aria-controls="acc-4-v9rhv-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-4-v9rhv-collapse-1" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-4-fahfz-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-4-fahfz-collapse-1" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 2
                 <span aria-hidden="true" class="rotate-up">
@@ -136,7 +136,7 @@ exports[`accordion-container handles keyboard activation (simulate click on inne
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-4-v9rhv-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-4-v9rhv-collapse-1" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-4-fahfz-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-4-fahfz-collapse-1" inert="" role="region">
           <div class="accordion-body">
             Content 2
           </div>
@@ -150,12 +150,12 @@ exports[`accordion-container handles keyboard activation (simulate click on inne
 exports[`accordion-container icon switching with snapshot: after icon toggle 1`] = `
 <accordion-container icon="icon-closed,icon-open">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-5-e9y12">
+    <div class="accordion" id="acc-5-qavvi">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-5-e9y12-header-0">
-          <button-component aria-controls="acc-5-e9y12-collapse-0" aria-expanded="true" data-bs-target="#acc-5-e9y12-collapse-0" data-bs-toggle="collapse" id="acc-5-e9y12-trigger-0">
+        <h2 class="accordion-header" id="acc-5-qavvi-header-0">
+          <button-component aria-controls="acc-5-qavvi-collapse-0" aria-expanded="true" data-bs-target="#acc-5-qavvi-collapse-0" data-bs-toggle="collapse" id="acc-5-qavvi-trigger-0">
             <!---->
-            <button aria-controls="acc-5-e9y12-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-5-e9y12-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-5-qavvi-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-5-qavvi-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 1
                 <span aria-hidden="true" class="rotate-down">
@@ -165,17 +165,17 @@ exports[`accordion-container icon switching with snapshot: after icon toggle 1`]
             </button>
           </button-component>
         </h2>
-        <div aria-labelledby="acc-5-e9y12-trigger-0" class="accordion-collapse collapsing" id="acc-5-e9y12-collapse-0" role="region" style="height: 0px;">
+        <div aria-labelledby="acc-5-qavvi-trigger-0" class="accordion-collapse collapsing" id="acc-5-qavvi-collapse-0" role="region" style="height: 0px;">
           <div class="accordion-body">
             Content 1
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-5-e9y12-header-1">
-          <button-component aria-controls="acc-5-e9y12-collapse-1" aria-expanded="false" data-bs-target="#acc-5-e9y12-collapse-1" data-bs-toggle="collapse" id="acc-5-e9y12-trigger-1">
+        <h2 class="accordion-header" id="acc-5-qavvi-header-1">
+          <button-component aria-controls="acc-5-qavvi-collapse-1" aria-expanded="false" data-bs-target="#acc-5-qavvi-collapse-1" data-bs-toggle="collapse" id="acc-5-qavvi-trigger-1">
             <!---->
-            <button aria-controls="acc-5-e9y12-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-5-e9y12-collapse-1" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-5-qavvi-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-5-qavvi-collapse-1" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 2
                 <span aria-hidden="true" class="rotate-up">
@@ -185,7 +185,7 @@ exports[`accordion-container icon switching with snapshot: after icon toggle 1`]
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-5-e9y12-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-5-e9y12-collapse-1" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-5-qavvi-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-5-qavvi-collapse-1" inert="" role="region">
           <div class="accordion-body">
             Content 2
           </div>
@@ -199,12 +199,12 @@ exports[`accordion-container icon switching with snapshot: after icon toggle 1`]
 exports[`accordion-container icon switching with snapshot: before icon toggle 1`] = `
 <accordion-container icon="icon-closed,icon-open">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-5-e9y12">
+    <div class="accordion" id="acc-5-qavvi">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-5-e9y12-header-0">
-          <button-component aria-controls="acc-5-e9y12-collapse-0" aria-expanded="false" data-bs-target="#acc-5-e9y12-collapse-0" data-bs-toggle="collapse" id="acc-5-e9y12-trigger-0">
+        <h2 class="accordion-header" id="acc-5-qavvi-header-0">
+          <button-component aria-controls="acc-5-qavvi-collapse-0" aria-expanded="false" data-bs-target="#acc-5-qavvi-collapse-0" data-bs-toggle="collapse" id="acc-5-qavvi-trigger-0">
             <!---->
-            <button aria-controls="acc-5-e9y12-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-5-e9y12-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-5-qavvi-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-5-qavvi-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 1
                 <span aria-hidden="true" class="rotate-up">
@@ -214,17 +214,17 @@ exports[`accordion-container icon switching with snapshot: before icon toggle 1`
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-5-e9y12-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-5-e9y12-collapse-0" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-5-qavvi-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-5-qavvi-collapse-0" inert="" role="region">
           <div class="accordion-body">
             Content 1
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-5-e9y12-header-1">
-          <button-component aria-controls="acc-5-e9y12-collapse-1" aria-expanded="false" data-bs-target="#acc-5-e9y12-collapse-1" data-bs-toggle="collapse" id="acc-5-e9y12-trigger-1">
+        <h2 class="accordion-header" id="acc-5-qavvi-header-1">
+          <button-component aria-controls="acc-5-qavvi-collapse-1" aria-expanded="false" data-bs-target="#acc-5-qavvi-collapse-1" data-bs-toggle="collapse" id="acc-5-qavvi-trigger-1">
             <!---->
-            <button aria-controls="acc-5-e9y12-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-5-e9y12-collapse-1" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-5-qavvi-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-5-qavvi-collapse-1" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 2
                 <span aria-hidden="true" class="rotate-up">
@@ -234,7 +234,7 @@ exports[`accordion-container icon switching with snapshot: before icon toggle 1`
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-5-e9y12-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-5-e9y12-collapse-1" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-5-qavvi-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-5-qavvi-collapse-1" inert="" role="region">
           <div class="accordion-body">
             Content 2
           </div>
@@ -248,12 +248,12 @@ exports[`accordion-container icon switching with snapshot: before icon toggle 1`
 exports[`accordion-container renders an item with empty header and content strings: empty header and content 1`] = `
 <accordion-container icon="fas fa-angle-down">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-16-akjao">
+    <div class="accordion" id="acc-16-ogpxw">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-16-akjao-header-0">
-          <button-component aria-controls="acc-16-akjao-collapse-0" aria-expanded="false" data-bs-target="#acc-16-akjao-collapse-0" data-bs-toggle="collapse" id="acc-16-akjao-trigger-0">
+        <h2 class="accordion-header" id="acc-16-ogpxw-header-0">
+          <button-component aria-controls="acc-16-ogpxw-collapse-0" aria-expanded="false" data-bs-target="#acc-16-ogpxw-collapse-0" data-bs-toggle="collapse" id="acc-16-ogpxw-trigger-0">
             <!---->
-            <button aria-controls="acc-16-akjao-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-16-akjao-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-16-ogpxw-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-16-ogpxw-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 <span aria-hidden="true" class="rotate-up">
                   <icon-component icon="fas fa-angle-down"></icon-component>
@@ -262,7 +262,7 @@ exports[`accordion-container renders an item with empty header and content strin
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-16-akjao-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-16-akjao-collapse-0" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-16-ogpxw-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-16-ogpxw-collapse-0" inert="" role="region">
           <div class="accordion-body"></div>
         </div>
       </div>
@@ -303,7 +303,7 @@ exports[`accordion-container renders correct ARIA attributes on accordion header
 exports[`accordion-container renders empty accordion when data is an empty array: empty array data 1`] = `
 <accordion-container icon="fas fa-angle-down">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-13-a7vs6"></div>
+    <div class="accordion" id="acc-13-u5ws9"></div>
   </div>
 </accordion-container>
 `;
@@ -311,12 +311,12 @@ exports[`accordion-container renders empty accordion when data is an empty array
 exports[`accordion-container renders fallback icon behavior for invalid or missing icon prop: empty string icon 1`] = `
 <accordion-container icon="">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-17-rpszq">
+    <div class="accordion" id="acc-17-kvzcf">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-17-rpszq-header-0">
-          <button-component aria-controls="acc-17-rpszq-collapse-0" aria-expanded="false" data-bs-target="#acc-17-rpszq-collapse-0" data-bs-toggle="collapse" id="acc-17-rpszq-trigger-0">
+        <h2 class="accordion-header" id="acc-17-kvzcf-header-0">
+          <button-component aria-controls="acc-17-kvzcf-collapse-0" aria-expanded="false" data-bs-target="#acc-17-kvzcf-collapse-0" data-bs-toggle="collapse" id="acc-17-kvzcf-trigger-0">
             <!---->
-            <button aria-controls="acc-17-rpszq-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-17-rpszq-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-17-kvzcf-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-17-kvzcf-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 H
                 <span aria-hidden="true" class="rotate-up">
@@ -326,7 +326,7 @@ exports[`accordion-container renders fallback icon behavior for invalid or missi
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-17-rpszq-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-17-rpszq-collapse-0" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-17-kvzcf-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-17-kvzcf-collapse-0" inert="" role="region">
           <div class="accordion-body">
             C
           </div>
@@ -340,12 +340,12 @@ exports[`accordion-container renders fallback icon behavior for invalid or missi
 exports[`accordion-container renders fallback icon behavior for invalid or missing icon prop: malformed icon string 1`] = `
 <accordion-container icon="  , , ,">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-19-0lsxx">
+    <div class="accordion" id="acc-19-tbxc9">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-19-0lsxx-header-0">
-          <button-component aria-controls="acc-19-0lsxx-collapse-0" aria-expanded="false" data-bs-target="#acc-19-0lsxx-collapse-0" data-bs-toggle="collapse" id="acc-19-0lsxx-trigger-0">
+        <h2 class="accordion-header" id="acc-19-tbxc9-header-0">
+          <button-component aria-controls="acc-19-tbxc9-collapse-0" aria-expanded="false" data-bs-target="#acc-19-tbxc9-collapse-0" data-bs-toggle="collapse" id="acc-19-tbxc9-trigger-0">
             <!---->
-            <button aria-controls="acc-19-0lsxx-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-19-0lsxx-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-19-tbxc9-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-19-tbxc9-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 H
                 <span aria-hidden="true" class="rotate-up">
@@ -355,7 +355,7 @@ exports[`accordion-container renders fallback icon behavior for invalid or missi
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-19-0lsxx-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-19-0lsxx-collapse-0" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-19-tbxc9-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-19-tbxc9-collapse-0" inert="" role="region">
           <div class="accordion-body">
             C
           </div>
@@ -369,12 +369,12 @@ exports[`accordion-container renders fallback icon behavior for invalid or missi
 exports[`accordion-container renders fallback icon behavior for invalid or missing icon prop: null icon 1`] = `
 <accordion-container>
   <div class="sc-accordion">
-    <div class="accordion" id="acc-18-2suqw">
+    <div class="accordion" id="acc-18-fylfw">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-18-2suqw-header-0">
-          <button-component aria-controls="acc-18-2suqw-collapse-0" aria-expanded="false" data-bs-target="#acc-18-2suqw-collapse-0" data-bs-toggle="collapse" id="acc-18-2suqw-trigger-0">
+        <h2 class="accordion-header" id="acc-18-fylfw-header-0">
+          <button-component aria-controls="acc-18-fylfw-collapse-0" aria-expanded="false" data-bs-target="#acc-18-fylfw-collapse-0" data-bs-toggle="collapse" id="acc-18-fylfw-trigger-0">
             <!---->
-            <button aria-controls="acc-18-2suqw-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-18-2suqw-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-18-fylfw-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-18-fylfw-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 H
                 <span aria-hidden="true" class="rotate-up">
@@ -384,7 +384,7 @@ exports[`accordion-container renders fallback icon behavior for invalid or missi
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-18-2suqw-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-18-2suqw-collapse-0" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-18-fylfw-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-18-fylfw-collapse-0" inert="" role="region">
           <div class="accordion-body">
             C
           </div>
@@ -398,7 +398,7 @@ exports[`accordion-container renders fallback icon behavior for invalid or missi
 exports[`accordion-container renders gracefully when data is undefined, null, or not an array: non-array data fallback 1`] = `
 <accordion-container icon="fas fa-angle-down">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-10-nqjyd"></div>
+    <div class="accordion" id="acc-10-jujjd"></div>
   </div>
 </accordion-container>
 `;
@@ -406,7 +406,7 @@ exports[`accordion-container renders gracefully when data is undefined, null, or
 exports[`accordion-container renders gracefully when data is undefined, null, or not an array: null data fallback 1`] = `
 <accordion-container icon="fas fa-angle-down">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-9-onmd4"></div>
+    <div class="accordion" id="acc-9-g59zt"></div>
   </div>
 </accordion-container>
 `;
@@ -414,7 +414,7 @@ exports[`accordion-container renders gracefully when data is undefined, null, or
 exports[`accordion-container renders gracefully when data is undefined, null, or not an array: undefined data fallback 1`] = `
 <accordion-container icon="fas fa-angle-down">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-8-2felk"></div>
+    <div class="accordion" id="acc-8-f9s0c"></div>
   </div>
 </accordion-container>
 `;
@@ -422,12 +422,12 @@ exports[`accordion-container renders gracefully when data is undefined, null, or
 exports[`accordion-container renders many accordion items and matches snapshot: long data array (12 items) 1`] = `
 <accordion-container icon="fas fa-angle-down">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-15-x2dz5">
+    <div class="accordion" id="acc-15-51tr6">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-15-x2dz5-header-0">
-          <button-component aria-controls="acc-15-x2dz5-collapse-0" aria-expanded="false" data-bs-target="#acc-15-x2dz5-collapse-0" data-bs-toggle="collapse" id="acc-15-x2dz5-trigger-0">
+        <h2 class="accordion-header" id="acc-15-51tr6-header-0">
+          <button-component aria-controls="acc-15-51tr6-collapse-0" aria-expanded="false" data-bs-target="#acc-15-51tr6-collapse-0" data-bs-toggle="collapse" id="acc-15-51tr6-trigger-0">
             <!---->
-            <button aria-controls="acc-15-x2dz5-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-x2dz5-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-15-51tr6-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-51tr6-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 1
                 <span aria-hidden="true" class="rotate-up">
@@ -437,17 +437,17 @@ exports[`accordion-container renders many accordion items and matches snapshot: 
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-15-x2dz5-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-15-x2dz5-collapse-0" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-15-51tr6-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-15-51tr6-collapse-0" inert="" role="region">
           <div class="accordion-body">
             Content 1
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-15-x2dz5-header-1">
-          <button-component aria-controls="acc-15-x2dz5-collapse-1" aria-expanded="false" data-bs-target="#acc-15-x2dz5-collapse-1" data-bs-toggle="collapse" id="acc-15-x2dz5-trigger-1">
+        <h2 class="accordion-header" id="acc-15-51tr6-header-1">
+          <button-component aria-controls="acc-15-51tr6-collapse-1" aria-expanded="false" data-bs-target="#acc-15-51tr6-collapse-1" data-bs-toggle="collapse" id="acc-15-51tr6-trigger-1">
             <!---->
-            <button aria-controls="acc-15-x2dz5-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-x2dz5-collapse-1" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-15-51tr6-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-51tr6-collapse-1" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 2
                 <span aria-hidden="true" class="rotate-up">
@@ -457,17 +457,17 @@ exports[`accordion-container renders many accordion items and matches snapshot: 
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-15-x2dz5-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-15-x2dz5-collapse-1" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-15-51tr6-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-15-51tr6-collapse-1" inert="" role="region">
           <div class="accordion-body">
             Content 2
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-15-x2dz5-header-2">
-          <button-component aria-controls="acc-15-x2dz5-collapse-2" aria-expanded="false" data-bs-target="#acc-15-x2dz5-collapse-2" data-bs-toggle="collapse" id="acc-15-x2dz5-trigger-2">
+        <h2 class="accordion-header" id="acc-15-51tr6-header-2">
+          <button-component aria-controls="acc-15-51tr6-collapse-2" aria-expanded="false" data-bs-target="#acc-15-51tr6-collapse-2" data-bs-toggle="collapse" id="acc-15-51tr6-trigger-2">
             <!---->
-            <button aria-controls="acc-15-x2dz5-collapse-2" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-x2dz5-collapse-2" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-15-51tr6-collapse-2" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-51tr6-collapse-2" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 3
                 <span aria-hidden="true" class="rotate-up">
@@ -477,17 +477,17 @@ exports[`accordion-container renders many accordion items and matches snapshot: 
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-15-x2dz5-trigger-2" class="accordion-collapse collapse" hidden="" id="acc-15-x2dz5-collapse-2" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-15-51tr6-trigger-2" class="accordion-collapse collapse" hidden="" id="acc-15-51tr6-collapse-2" inert="" role="region">
           <div class="accordion-body">
             Content 3
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-15-x2dz5-header-3">
-          <button-component aria-controls="acc-15-x2dz5-collapse-3" aria-expanded="false" data-bs-target="#acc-15-x2dz5-collapse-3" data-bs-toggle="collapse" id="acc-15-x2dz5-trigger-3">
+        <h2 class="accordion-header" id="acc-15-51tr6-header-3">
+          <button-component aria-controls="acc-15-51tr6-collapse-3" aria-expanded="false" data-bs-target="#acc-15-51tr6-collapse-3" data-bs-toggle="collapse" id="acc-15-51tr6-trigger-3">
             <!---->
-            <button aria-controls="acc-15-x2dz5-collapse-3" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-x2dz5-collapse-3" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-15-51tr6-collapse-3" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-51tr6-collapse-3" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 4
                 <span aria-hidden="true" class="rotate-up">
@@ -497,17 +497,17 @@ exports[`accordion-container renders many accordion items and matches snapshot: 
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-15-x2dz5-trigger-3" class="accordion-collapse collapse" hidden="" id="acc-15-x2dz5-collapse-3" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-15-51tr6-trigger-3" class="accordion-collapse collapse" hidden="" id="acc-15-51tr6-collapse-3" inert="" role="region">
           <div class="accordion-body">
             Content 4
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-15-x2dz5-header-4">
-          <button-component aria-controls="acc-15-x2dz5-collapse-4" aria-expanded="false" data-bs-target="#acc-15-x2dz5-collapse-4" data-bs-toggle="collapse" id="acc-15-x2dz5-trigger-4">
+        <h2 class="accordion-header" id="acc-15-51tr6-header-4">
+          <button-component aria-controls="acc-15-51tr6-collapse-4" aria-expanded="false" data-bs-target="#acc-15-51tr6-collapse-4" data-bs-toggle="collapse" id="acc-15-51tr6-trigger-4">
             <!---->
-            <button aria-controls="acc-15-x2dz5-collapse-4" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-x2dz5-collapse-4" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-15-51tr6-collapse-4" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-51tr6-collapse-4" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 5
                 <span aria-hidden="true" class="rotate-up">
@@ -517,17 +517,17 @@ exports[`accordion-container renders many accordion items and matches snapshot: 
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-15-x2dz5-trigger-4" class="accordion-collapse collapse" hidden="" id="acc-15-x2dz5-collapse-4" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-15-51tr6-trigger-4" class="accordion-collapse collapse" hidden="" id="acc-15-51tr6-collapse-4" inert="" role="region">
           <div class="accordion-body">
             Content 5
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-15-x2dz5-header-5">
-          <button-component aria-controls="acc-15-x2dz5-collapse-5" aria-expanded="false" data-bs-target="#acc-15-x2dz5-collapse-5" data-bs-toggle="collapse" id="acc-15-x2dz5-trigger-5">
+        <h2 class="accordion-header" id="acc-15-51tr6-header-5">
+          <button-component aria-controls="acc-15-51tr6-collapse-5" aria-expanded="false" data-bs-target="#acc-15-51tr6-collapse-5" data-bs-toggle="collapse" id="acc-15-51tr6-trigger-5">
             <!---->
-            <button aria-controls="acc-15-x2dz5-collapse-5" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-x2dz5-collapse-5" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-15-51tr6-collapse-5" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-51tr6-collapse-5" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 6
                 <span aria-hidden="true" class="rotate-up">
@@ -537,17 +537,17 @@ exports[`accordion-container renders many accordion items and matches snapshot: 
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-15-x2dz5-trigger-5" class="accordion-collapse collapse" hidden="" id="acc-15-x2dz5-collapse-5" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-15-51tr6-trigger-5" class="accordion-collapse collapse" hidden="" id="acc-15-51tr6-collapse-5" inert="" role="region">
           <div class="accordion-body">
             Content 6
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-15-x2dz5-header-6">
-          <button-component aria-controls="acc-15-x2dz5-collapse-6" aria-expanded="false" data-bs-target="#acc-15-x2dz5-collapse-6" data-bs-toggle="collapse" id="acc-15-x2dz5-trigger-6">
+        <h2 class="accordion-header" id="acc-15-51tr6-header-6">
+          <button-component aria-controls="acc-15-51tr6-collapse-6" aria-expanded="false" data-bs-target="#acc-15-51tr6-collapse-6" data-bs-toggle="collapse" id="acc-15-51tr6-trigger-6">
             <!---->
-            <button aria-controls="acc-15-x2dz5-collapse-6" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-x2dz5-collapse-6" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-15-51tr6-collapse-6" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-51tr6-collapse-6" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 7
                 <span aria-hidden="true" class="rotate-up">
@@ -557,17 +557,17 @@ exports[`accordion-container renders many accordion items and matches snapshot: 
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-15-x2dz5-trigger-6" class="accordion-collapse collapse" hidden="" id="acc-15-x2dz5-collapse-6" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-15-51tr6-trigger-6" class="accordion-collapse collapse" hidden="" id="acc-15-51tr6-collapse-6" inert="" role="region">
           <div class="accordion-body">
             Content 7
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-15-x2dz5-header-7">
-          <button-component aria-controls="acc-15-x2dz5-collapse-7" aria-expanded="false" data-bs-target="#acc-15-x2dz5-collapse-7" data-bs-toggle="collapse" id="acc-15-x2dz5-trigger-7">
+        <h2 class="accordion-header" id="acc-15-51tr6-header-7">
+          <button-component aria-controls="acc-15-51tr6-collapse-7" aria-expanded="false" data-bs-target="#acc-15-51tr6-collapse-7" data-bs-toggle="collapse" id="acc-15-51tr6-trigger-7">
             <!---->
-            <button aria-controls="acc-15-x2dz5-collapse-7" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-x2dz5-collapse-7" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-15-51tr6-collapse-7" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-51tr6-collapse-7" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 8
                 <span aria-hidden="true" class="rotate-up">
@@ -577,17 +577,17 @@ exports[`accordion-container renders many accordion items and matches snapshot: 
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-15-x2dz5-trigger-7" class="accordion-collapse collapse" hidden="" id="acc-15-x2dz5-collapse-7" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-15-51tr6-trigger-7" class="accordion-collapse collapse" hidden="" id="acc-15-51tr6-collapse-7" inert="" role="region">
           <div class="accordion-body">
             Content 8
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-15-x2dz5-header-8">
-          <button-component aria-controls="acc-15-x2dz5-collapse-8" aria-expanded="false" data-bs-target="#acc-15-x2dz5-collapse-8" data-bs-toggle="collapse" id="acc-15-x2dz5-trigger-8">
+        <h2 class="accordion-header" id="acc-15-51tr6-header-8">
+          <button-component aria-controls="acc-15-51tr6-collapse-8" aria-expanded="false" data-bs-target="#acc-15-51tr6-collapse-8" data-bs-toggle="collapse" id="acc-15-51tr6-trigger-8">
             <!---->
-            <button aria-controls="acc-15-x2dz5-collapse-8" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-x2dz5-collapse-8" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-15-51tr6-collapse-8" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-51tr6-collapse-8" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 9
                 <span aria-hidden="true" class="rotate-up">
@@ -597,17 +597,17 @@ exports[`accordion-container renders many accordion items and matches snapshot: 
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-15-x2dz5-trigger-8" class="accordion-collapse collapse" hidden="" id="acc-15-x2dz5-collapse-8" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-15-51tr6-trigger-8" class="accordion-collapse collapse" hidden="" id="acc-15-51tr6-collapse-8" inert="" role="region">
           <div class="accordion-body">
             Content 9
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-15-x2dz5-header-9">
-          <button-component aria-controls="acc-15-x2dz5-collapse-9" aria-expanded="false" data-bs-target="#acc-15-x2dz5-collapse-9" data-bs-toggle="collapse" id="acc-15-x2dz5-trigger-9">
+        <h2 class="accordion-header" id="acc-15-51tr6-header-9">
+          <button-component aria-controls="acc-15-51tr6-collapse-9" aria-expanded="false" data-bs-target="#acc-15-51tr6-collapse-9" data-bs-toggle="collapse" id="acc-15-51tr6-trigger-9">
             <!---->
-            <button aria-controls="acc-15-x2dz5-collapse-9" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-x2dz5-collapse-9" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-15-51tr6-collapse-9" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-51tr6-collapse-9" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 10
                 <span aria-hidden="true" class="rotate-up">
@@ -617,17 +617,17 @@ exports[`accordion-container renders many accordion items and matches snapshot: 
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-15-x2dz5-trigger-9" class="accordion-collapse collapse" hidden="" id="acc-15-x2dz5-collapse-9" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-15-51tr6-trigger-9" class="accordion-collapse collapse" hidden="" id="acc-15-51tr6-collapse-9" inert="" role="region">
           <div class="accordion-body">
             Content 10
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-15-x2dz5-header-10">
-          <button-component aria-controls="acc-15-x2dz5-collapse-10" aria-expanded="false" data-bs-target="#acc-15-x2dz5-collapse-10" data-bs-toggle="collapse" id="acc-15-x2dz5-trigger-10">
+        <h2 class="accordion-header" id="acc-15-51tr6-header-10">
+          <button-component aria-controls="acc-15-51tr6-collapse-10" aria-expanded="false" data-bs-target="#acc-15-51tr6-collapse-10" data-bs-toggle="collapse" id="acc-15-51tr6-trigger-10">
             <!---->
-            <button aria-controls="acc-15-x2dz5-collapse-10" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-x2dz5-collapse-10" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-15-51tr6-collapse-10" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-51tr6-collapse-10" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 11
                 <span aria-hidden="true" class="rotate-up">
@@ -637,17 +637,17 @@ exports[`accordion-container renders many accordion items and matches snapshot: 
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-15-x2dz5-trigger-10" class="accordion-collapse collapse" hidden="" id="acc-15-x2dz5-collapse-10" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-15-51tr6-trigger-10" class="accordion-collapse collapse" hidden="" id="acc-15-51tr6-collapse-10" inert="" role="region">
           <div class="accordion-body">
             Content 11
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-15-x2dz5-header-11">
-          <button-component aria-controls="acc-15-x2dz5-collapse-11" aria-expanded="false" data-bs-target="#acc-15-x2dz5-collapse-11" data-bs-toggle="collapse" id="acc-15-x2dz5-trigger-11">
+        <h2 class="accordion-header" id="acc-15-51tr6-header-11">
+          <button-component aria-controls="acc-15-51tr6-collapse-11" aria-expanded="false" data-bs-target="#acc-15-51tr6-collapse-11" data-bs-toggle="collapse" id="acc-15-51tr6-trigger-11">
             <!---->
-            <button aria-controls="acc-15-x2dz5-collapse-11" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-x2dz5-collapse-11" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-15-51tr6-collapse-11" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-15-51tr6-collapse-11" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 12
                 <span aria-hidden="true" class="rotate-up">
@@ -657,7 +657,7 @@ exports[`accordion-container renders many accordion items and matches snapshot: 
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-15-x2dz5-trigger-11" class="accordion-collapse collapse" hidden="" id="acc-15-x2dz5-collapse-11" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-15-51tr6-trigger-11" class="accordion-collapse collapse" hidden="" id="acc-15-51tr6-collapse-11" inert="" role="region">
           <div class="accordion-body">
             Content 12
           </div>
@@ -671,12 +671,12 @@ exports[`accordion-container renders many accordion items and matches snapshot: 
 exports[`accordion-container renders only first two icons from icon="a,b,c": icon prop with extra values (a,b,c) 1`] = `
 <accordion-container icon="a,b,c">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-21-tw8en">
+    <div class="accordion" id="acc-21-3qmss">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-21-tw8en-header-0">
-          <button-component aria-controls="acc-21-tw8en-collapse-0" aria-expanded="false" data-bs-target="#acc-21-tw8en-collapse-0" data-bs-toggle="collapse" id="acc-21-tw8en-trigger-0">
+        <h2 class="accordion-header" id="acc-21-3qmss-header-0">
+          <button-component aria-controls="acc-21-3qmss-collapse-0" aria-expanded="false" data-bs-target="#acc-21-3qmss-collapse-0" data-bs-toggle="collapse" id="acc-21-3qmss-trigger-0">
             <!---->
-            <button aria-controls="acc-21-tw8en-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-21-tw8en-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-21-3qmss-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-21-3qmss-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 H
                 <span aria-hidden="true" class="rotate-up">
@@ -686,7 +686,7 @@ exports[`accordion-container renders only first two icons from icon="a,b,c": ico
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-21-tw8en-trigger-0" class="accordion-collapse collapsing" id="acc-21-tw8en-collapse-0" inert="" role="region" style="height: 0px;">
+        <div aria-hidden="true" aria-labelledby="acc-21-3qmss-trigger-0" class="accordion-collapse collapsing" id="acc-21-3qmss-collapse-0" inert="" role="region" style="height: 0px;">
           <div class="accordion-body">
             C
           </div>
@@ -700,12 +700,12 @@ exports[`accordion-container renders only first two icons from icon="a,b,c": ico
 exports[`accordion-container renders outlined, block, and disabled props: outlined-block-disabled 1`] = `
 <accordion-container icon="fas fa-angle-down">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-2-p6rvy">
+    <div class="accordion" id="acc-2-wmoys">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-2-p6rvy-header-0">
-          <button-component aria-controls="acc-2-p6rvy-collapse-0" aria-expanded="false" data-bs-target="#acc-2-p6rvy-collapse-0" data-bs-toggle="collapse" id="acc-2-p6rvy-trigger-0">
+        <h2 class="accordion-header" id="acc-2-wmoys-header-0">
+          <button-component aria-controls="acc-2-wmoys-collapse-0" aria-expanded="false" data-bs-target="#acc-2-wmoys-collapse-0" data-bs-toggle="collapse" id="acc-2-wmoys-trigger-0">
             <!---->
-            <button aria-controls="acc-2-p6rvy-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn btn--block btn-outline- collapsed" data-bs-target="#acc-2-p6rvy-collapse-0" data-bs-toggle="collapse" disabled="" type="button">
+            <button aria-controls="acc-2-wmoys-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn btn--block btn-outline- collapsed" data-bs-target="#acc-2-wmoys-collapse-0" data-bs-toggle="collapse" disabled="" type="button">
               <span class="btn__content">
                 Header 1
                 <span aria-hidden="true" class="rotate-up">
@@ -715,17 +715,17 @@ exports[`accordion-container renders outlined, block, and disabled props: outlin
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-2-p6rvy-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-2-p6rvy-collapse-0" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-2-wmoys-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-2-wmoys-collapse-0" inert="" role="region">
           <div class="accordion-body">
             Content 1
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-2-p6rvy-header-1">
-          <button-component aria-controls="acc-2-p6rvy-collapse-1" aria-expanded="false" data-bs-target="#acc-2-p6rvy-collapse-1" data-bs-toggle="collapse" id="acc-2-p6rvy-trigger-1">
+        <h2 class="accordion-header" id="acc-2-wmoys-header-1">
+          <button-component aria-controls="acc-2-wmoys-collapse-1" aria-expanded="false" data-bs-target="#acc-2-wmoys-collapse-1" data-bs-toggle="collapse" id="acc-2-wmoys-trigger-1">
             <!---->
-            <button aria-controls="acc-2-p6rvy-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn btn--block btn-outline- collapsed" data-bs-target="#acc-2-p6rvy-collapse-1" data-bs-toggle="collapse" disabled="" type="button">
+            <button aria-controls="acc-2-wmoys-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn btn--block btn-outline- collapsed" data-bs-target="#acc-2-wmoys-collapse-1" data-bs-toggle="collapse" disabled="" type="button">
               <span class="btn__content">
                 Header 2
                 <span aria-hidden="true" class="rotate-up">
@@ -735,7 +735,7 @@ exports[`accordion-container renders outlined, block, and disabled props: outlin
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-2-p6rvy-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-2-p6rvy-collapse-1" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-2-wmoys-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-2-wmoys-collapse-1" inert="" role="region">
           <div class="accordion-body">
             Content 2
           </div>
@@ -749,12 +749,12 @@ exports[`accordion-container renders outlined, block, and disabled props: outlin
 exports[`accordion-container renders single static icon and does not change on toggle: static single icon toggle does not change 1`] = `
 <accordion-container icon="only-icon">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-22-v2ifg">
+    <div class="accordion" id="acc-22-xqa7z">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-22-v2ifg-header-0">
-          <button-component aria-controls="acc-22-v2ifg-collapse-0" aria-expanded="false" data-bs-target="#acc-22-v2ifg-collapse-0" data-bs-toggle="collapse" id="acc-22-v2ifg-trigger-0">
+        <h2 class="accordion-header" id="acc-22-xqa7z-header-0">
+          <button-component aria-controls="acc-22-xqa7z-collapse-0" aria-expanded="false" data-bs-target="#acc-22-xqa7z-collapse-0" data-bs-toggle="collapse" id="acc-22-xqa7z-trigger-0">
             <!---->
-            <button aria-controls="acc-22-v2ifg-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-22-v2ifg-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-22-xqa7z-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-22-xqa7z-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Static
                 <span aria-hidden="true" class="rotate-up">
@@ -764,7 +764,7 @@ exports[`accordion-container renders single static icon and does not change on t
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-22-v2ifg-trigger-0" class="accordion-collapse collapsing" id="acc-22-v2ifg-collapse-0" inert="" role="region" style="height: 0px;">
+        <div aria-hidden="true" aria-labelledby="acc-22-xqa7z-trigger-0" class="accordion-collapse collapsing" id="acc-22-xqa7z-collapse-0" inert="" role="region" style="height: 0px;">
           <div class="accordion-body">
             Content
           </div>
@@ -778,12 +778,12 @@ exports[`accordion-container renders single static icon and does not change on t
 exports[`accordion-container renders static icon with no toggle switch: static icon no switch 1`] = `
 <accordion-container icon="icon-static">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-7-zf0ui">
+    <div class="accordion" id="acc-7-pr20m">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-7-zf0ui-header-0">
-          <button-component aria-controls="acc-7-zf0ui-collapse-0" aria-expanded="false" data-bs-target="#acc-7-zf0ui-collapse-0" data-bs-toggle="collapse" id="acc-7-zf0ui-trigger-0">
+        <h2 class="accordion-header" id="acc-7-pr20m-header-0">
+          <button-component aria-controls="acc-7-pr20m-collapse-0" aria-expanded="false" data-bs-target="#acc-7-pr20m-collapse-0" data-bs-toggle="collapse" id="acc-7-pr20m-trigger-0">
             <!---->
-            <button aria-controls="acc-7-zf0ui-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-7-zf0ui-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-7-pr20m-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-7-pr20m-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 1
                 <span aria-hidden="true" class="rotate-up">
@@ -793,17 +793,17 @@ exports[`accordion-container renders static icon with no toggle switch: static i
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-7-zf0ui-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-7-zf0ui-collapse-0" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-7-pr20m-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-7-pr20m-collapse-0" inert="" role="region">
           <div class="accordion-body">
             Content 1
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-7-zf0ui-header-1">
-          <button-component aria-controls="acc-7-zf0ui-collapse-1" aria-expanded="false" data-bs-target="#acc-7-zf0ui-collapse-1" data-bs-toggle="collapse" id="acc-7-zf0ui-trigger-1">
+        <h2 class="accordion-header" id="acc-7-pr20m-header-1">
+          <button-component aria-controls="acc-7-pr20m-collapse-1" aria-expanded="false" data-bs-target="#acc-7-pr20m-collapse-1" data-bs-toggle="collapse" id="acc-7-pr20m-trigger-1">
             <!---->
-            <button aria-controls="acc-7-zf0ui-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-7-zf0ui-collapse-1" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-7-pr20m-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-7-pr20m-collapse-1" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 2
                 <span aria-hidden="true" class="rotate-up">
@@ -813,7 +813,7 @@ exports[`accordion-container renders static icon with no toggle switch: static i
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-7-zf0ui-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-7-zf0ui-collapse-1" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-7-pr20m-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-7-pr20m-collapse-1" inert="" role="region">
           <div class="accordion-body">
             Content 2
           </div>
@@ -827,12 +827,12 @@ exports[`accordion-container renders static icon with no toggle switch: static i
 exports[`accordion-container renders with given data and matches snapshot 1`] = `
 <accordion-container icon="fas fa-angle-down">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-1-9hmwr">
+    <div class="accordion" id="acc-1-dbqmo">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-1-9hmwr-header-0">
-          <button-component aria-controls="acc-1-9hmwr-collapse-0" aria-expanded="false" data-bs-target="#acc-1-9hmwr-collapse-0" data-bs-toggle="collapse" id="acc-1-9hmwr-trigger-0">
+        <h2 class="accordion-header" id="acc-1-dbqmo-header-0">
+          <button-component aria-controls="acc-1-dbqmo-collapse-0" aria-expanded="false" data-bs-target="#acc-1-dbqmo-collapse-0" data-bs-toggle="collapse" id="acc-1-dbqmo-trigger-0">
             <!---->
-            <button aria-controls="acc-1-9hmwr-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-1-9hmwr-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-1-dbqmo-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-1-dbqmo-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 1
                 <span aria-hidden="true" class="rotate-up">
@@ -842,17 +842,17 @@ exports[`accordion-container renders with given data and matches snapshot 1`] = 
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-1-9hmwr-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-1-9hmwr-collapse-0" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-1-dbqmo-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-1-dbqmo-collapse-0" inert="" role="region">
           <div class="accordion-body">
             Content 1
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-1-9hmwr-header-1">
-          <button-component aria-controls="acc-1-9hmwr-collapse-1" aria-expanded="false" data-bs-target="#acc-1-9hmwr-collapse-1" data-bs-toggle="collapse" id="acc-1-9hmwr-trigger-1">
+        <h2 class="accordion-header" id="acc-1-dbqmo-header-1">
+          <button-component aria-controls="acc-1-dbqmo-collapse-1" aria-expanded="false" data-bs-target="#acc-1-dbqmo-collapse-1" data-bs-toggle="collapse" id="acc-1-dbqmo-trigger-1">
             <!---->
-            <button aria-controls="acc-1-9hmwr-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-1-9hmwr-collapse-1" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-1-dbqmo-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-1-dbqmo-collapse-1" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 2
                 <span aria-hidden="true" class="rotate-up">
@@ -862,7 +862,7 @@ exports[`accordion-container renders with given data and matches snapshot 1`] = 
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-1-9hmwr-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-1-9hmwr-collapse-1" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-1-dbqmo-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-1-dbqmo-collapse-1" inert="" role="region">
           <div class="accordion-body">
             Content 2
           </div>
@@ -876,12 +876,12 @@ exports[`accordion-container renders with given data and matches snapshot 1`] = 
 exports[`accordion-container toggles accordion via click and matches snapshot: click toggle first open 1`] = `
 <accordion-container icon="fas fa-angle-down">
   <div class="sc-accordion">
-    <div class="accordion" id="acc-3-jywr4">
+    <div class="accordion" id="acc-3-fg99g">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-3-jywr4-header-0">
-          <button-component aria-controls="acc-3-jywr4-collapse-0" aria-expanded="true" data-bs-target="#acc-3-jywr4-collapse-0" data-bs-toggle="collapse" id="acc-3-jywr4-trigger-0">
+        <h2 class="accordion-header" id="acc-3-fg99g-header-0">
+          <button-component aria-controls="acc-3-fg99g-collapse-0" aria-expanded="true" data-bs-target="#acc-3-fg99g-collapse-0" data-bs-toggle="collapse" id="acc-3-fg99g-trigger-0">
             <!---->
-            <button aria-controls="acc-3-jywr4-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-3-jywr4-collapse-0" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-3-fg99g-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-3-fg99g-collapse-0" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 1
                 <span aria-hidden="true" class="rotate-down">
@@ -891,17 +891,17 @@ exports[`accordion-container toggles accordion via click and matches snapshot: c
             </button>
           </button-component>
         </h2>
-        <div aria-labelledby="acc-3-jywr4-trigger-0" class="accordion-collapse collapsing" id="acc-3-jywr4-collapse-0" role="region" style="height: 0px;">
+        <div aria-labelledby="acc-3-fg99g-trigger-0" class="accordion-collapse collapsing" id="acc-3-fg99g-collapse-0" role="region" style="height: 0px;">
           <div class="accordion-body">
             Content 1
           </div>
         </div>
       </div>
       <div class="accordion-item">
-        <h2 class="accordion-header" id="acc-3-jywr4-header-1">
-          <button-component aria-controls="acc-3-jywr4-collapse-1" aria-expanded="false" data-bs-target="#acc-3-jywr4-collapse-1" data-bs-toggle="collapse" id="acc-3-jywr4-trigger-1">
+        <h2 class="accordion-header" id="acc-3-fg99g-header-1">
+          <button-component aria-controls="acc-3-fg99g-collapse-1" aria-expanded="false" data-bs-target="#acc-3-fg99g-collapse-1" data-bs-toggle="collapse" id="acc-3-fg99g-trigger-1">
             <!---->
-            <button aria-controls="acc-3-jywr4-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-3-jywr4-collapse-1" data-bs-toggle="collapse" type="button">
+            <button aria-controls="acc-3-fg99g-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-3-fg99g-collapse-1" data-bs-toggle="collapse" type="button">
               <span class="btn__content">
                 Header 2
                 <span aria-hidden="true" class="rotate-up">
@@ -911,7 +911,7 @@ exports[`accordion-container toggles accordion via click and matches snapshot: c
             </button>
           </button-component>
         </h2>
-        <div aria-hidden="true" aria-labelledby="acc-3-jywr4-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-3-jywr4-collapse-1" inert="" role="region">
+        <div aria-hidden="true" aria-labelledby="acc-3-fg99g-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-3-fg99g-collapse-1" inert="" role="region">
           <div class="accordion-body">
             Content 2
           </div>

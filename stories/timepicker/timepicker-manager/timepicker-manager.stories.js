@@ -1,11 +1,42 @@
-// src/stories/timepicker-manager.stories.js
+import DocsPage from './timepicker-manager-component.docs.mdx';
+import {
+  DocsWrapStyles,
+  Template,
+  buildDocsHtml,
+  getChild,
+  getSnapshot,
+  normalizeHtml,
+} from './timepicker-manager-component.story-helpers.js';
 
 export default {
   title: 'Components/Timepicker/Timepicker Manager',
   tags: ['autodocs'],
+  decorators: [
+    Story => {
+      const wrap = document.createElement('div');
+      wrap.appendChild(DocsWrapStyles());
+
+      const out = Story();
+
+      if (typeof out === 'string') {
+        const mount = document.createElement('div');
+        mount.innerHTML = out;
+        wrap.appendChild(mount);
+      } else if (out instanceof Node) {
+        wrap.appendChild(out);
+      } else {
+        const mount = document.createElement('div');
+        mount.textContent = String(out ?? '');
+        wrap.appendChild(mount);
+      }
+
+      return wrap;
+    },
+  ],
   parameters: {
     layout: 'padded',
     docs: {
+      page: DocsPage,
       description: {
         component: `
 The **Timepicker Manager** wraps a timepicker input and forwards props to either:
@@ -61,14 +92,11 @@ When the popover is open (both implementations), the keyboard model is consisten
       source: {
         type: 'dynamic',
         language: 'html',
-        transform: (_code, ctx) => Template(ctx.args),
+        transform: (_code, ctx) => buildDocsHtml(ctx.args),
       },
     },
   },
   argTypes: {
-    /* -----------------------------
-     Accessibility
-    ------------------------------ */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -88,9 +116,6 @@ When the popover is open (both implementations), the keyboard model is consisten
       table: { category: 'Accessibility' },
     },
 
-    /* -----------------------------
-     Labeling
-    ------------------------------ */
     showLabel: {
       control: 'boolean',
       name: 'show-label',
@@ -110,9 +135,6 @@ When the popover is open (both implementations), the keyboard model is consisten
       description: 'Show required indicator (label asterisk) where supported.',
     },
 
-    /* -----------------------------
-     Input Attributes
-    ------------------------------ */
     inputId: {
       control: 'text',
       name: 'input-id',
@@ -126,9 +148,6 @@ When the popover is open (both implementations), the keyboard model is consisten
       table: { category: 'Input Attributes' },
     },
 
-    /* -----------------------------
-     Layout & Sizing
-    ------------------------------ */
     inputWidth: {
       control: { type: 'number', min: 0, step: 1 },
       name: 'input-width',
@@ -142,9 +161,6 @@ When the popover is open (both implementations), the keyboard model is consisten
       table: { category: 'Layout & Sizing' },
     },
 
-    /* -----------------------------
-     Format & Options
-    ------------------------------ */
     isTwentyFourHourFormat: {
       control: 'boolean',
       table: { defaultValue: { summary: true }, category: 'Format & Options' },
@@ -170,9 +186,6 @@ When the popover is open (both implementations), the keyboard model is consisten
       description: 'Hide seconds UI.',
     },
 
-    /* -----------------------------
-     UI Controls
-    ------------------------------ */
     hideTimepickerBtn: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'UI Controls' },
@@ -180,9 +193,6 @@ When the popover is open (both implementations), the keyboard model is consisten
       description: 'Hide the timepicker toggle button.',
     },
 
-    /* -----------------------------
-     State
-    ------------------------------ */
     disableTimepicker: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'State' },
@@ -196,9 +206,6 @@ When the popover is open (both implementations), the keyboard model is consisten
       description: 'Whether the current value is considered valid.',
     },
 
-    /* -----------------------------
-     Validation
-    ------------------------------ */
     validation: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Validation' },
@@ -213,9 +220,6 @@ When the popover is open (both implementations), the keyboard model is consisten
       table: { category: 'Validation' },
     },
 
-    /* -----------------------------
-     Rendering Mode
-    ------------------------------ */
     usePlTimepicker: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Rendering Mode' },
@@ -223,107 +227,55 @@ When the popover is open (both implementations), the keyboard model is consisten
       description: 'Render <plumage-timepicker-component> instead of <timepicker-component>.',
     },
 
-    /* -----------------------------
-     Storybook Only
-    ------------------------------ */
+    value: {
+      control: 'text',
+      table: { category: 'Controlled Value' },
+      description: 'Controlled time value forwarded to the child timepicker.',
+    },
+    timeInputThrottleMs: {
+      control: { type: 'number', min: 0, step: 10 },
+      name: 'time-input-throttle-ms',
+      description: 'Throttle window for timeInput events (ms).',
+      table: { category: 'Controlled Value' },
+    },
+
     wrapperWidth: {
       control: { type: 'number', min: 120, step: 10 },
       description: 'Demo wrapper width (px), for Storybook only.',
       table: { category: 'Storybook Only' },
     },
   },
+  args: {
+    ariaLabel: 'Time Picker',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
+    disableTimepicker: false,
+    hideSeconds: false,
+    hideTimepickerBtn: false,
+    inputId: 'default-time-input',
+    inputName: 'time',
+    inputWidth: null,
+    isTwentyFourHourFormat: true,
+    isValid: true,
+    labelText: 'Add Time',
+    required: false,
+    showLabel: true,
+    size: '',
+    twelveHourOnly: false,
+    twentyFourHourOnly: false,
+    usePlTimepicker: false,
+    validation: false,
+    validationMessage: '',
+    value: '',
+    timeInputThrottleMs: 50,
+    wrapperWidth: 240,
+  },
 };
-
-/* ---------------------------------------------
-   Helpers
----------------------------------------------- */
-
-const normalizeHtml = html => {
-  const lines = String(html ?? '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map(l => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      out.push('');
-      prevBlank = true;
-      continue;
-    }
-    out.push(line);
-    prevBlank = false;
-  }
-
-  while (out.length && out[0] === '') out.shift();
-  while (out.length && out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-const normalizeIdList = v => {
-  const s = String(v ?? '').trim();
-  if (!s) return '';
-  return s.split(/\s+/).filter(Boolean).join(' ');
-};
-
-const boolAttr = (name, on) => (on ? name : null);
-const attr = (name, v) => (v === undefined || v === null || v === '' ? null : `${name}="${String(v)}"`);
-
-/* ---------------------------------------------
-   Template
----------------------------------------------- */
-
-const Template = args => {
-  const width = Number.isFinite(args.wrapperWidth) ? `${args.wrapperWidth}px` : '';
-
-  const attrs = [
-    attr('aria-label', args.ariaLabel),
-    attr('aria-labelledby', normalizeIdList(args.ariaLabelledby)),
-    attr('aria-describedby', normalizeIdList(args.ariaDescribedby)),
-
-    boolAttr('disable-timepicker', args.disableTimepicker),
-    boolAttr('hide-seconds', args.hideSeconds),
-    boolAttr('hide-timepicker-btn', args.hideTimepickerBtn),
-    attr('input-id', args.inputId),
-    attr('input-name', args.inputName),
-    attr('input-width', args.inputWidth),
-    boolAttr('is-twenty-four-hour-format', args.isTwentyFourHourFormat),
-    boolAttr('is-valid', args.isValid),
-    attr('label-text', args.labelText),
-    boolAttr('required', args.required),
-    boolAttr('show-label', args.showLabel),
-    attr('size', args.size),
-    boolAttr('twelve-hour-only', args.twelveHourOnly),
-    boolAttr('twenty-four-hour-only', args.twentyFourHourOnly),
-    boolAttr('use-pl-timepicker', args.usePlTimepicker),
-    boolAttr('validation', args.validation),
-    attr('validation-message', args.validationMessage),
-  ]
-    .filter(Boolean)
-    .join('\n    ');
-
-  return normalizeHtml(`
-<div class="timepicker-wrapper"${width ? ` style="width:${width};"` : ''}>
-  <timepicker-manager
-    ${attrs}
-  ></timepicker-manager>
-</div>
-`);
-};
-
-/* =========================
-   Stories (existing, updated where needed)
-   ========================= */
 
 export const Default = Template.bind({});
 Default.args = {
   ariaLabel: 'Time Picker',
-  ariaLabelledby: '', // ✅ avoid pointing to non-existent default ids
+  ariaLabelledby: '',
   ariaDescribedby: '',
   disableTimepicker: false,
   hideSeconds: false,
@@ -342,6 +294,8 @@ Default.args = {
   usePlTimepicker: false,
   validation: false,
   validationMessage: '',
+  value: '',
+  timeInputThrottleMs: 50,
   wrapperWidth: 240,
 };
 Default.storyName = 'Default Timepicker Manager';
@@ -475,75 +429,6 @@ PlumageStyle.parameters = {
   },
 };
 
-/* ============================== Accessibility Matrix (computed) ============================== */
-
-const splitIds = v =>
-  String(v || '')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-
-const resolveId = (scopeRoot, id) => {
-  if (!id) return false;
-  try {
-    return !!scopeRoot.querySelector(`#${CSS.escape(id)}`);
-  } catch {
-    return false;
-  }
-};
-
-const getChild = mgr => mgr?.querySelector('plumage-timepicker-component') || mgr?.querySelector('timepicker-component') || null;
-
-const getSnapshot = (mgr, scopeRoot) => {
-  const child = getChild(mgr);
-
-  const childTag = child?.tagName?.toLowerCase?.() ?? null;
-
-  const childProps = child
-    ? {
-        tag: childTag,
-        ariaLabel: child.ariaLabel ?? null,
-        ariaLabelledby: child.ariaLabelledby ?? null,
-        ariaDescribedby: child.ariaDescribedby ?? null,
-        // state
-        disableTimepicker: childTag === 'plumage-timepicker-component' ? (child.disabled ?? null) : (child.disableTimepicker ?? null),
-        showLabel: child.showLabel ?? null,
-        inputId: child.inputId ?? null,
-      }
-    : null;
-
-  const labelledIds = splitIds(childProps?.ariaLabelledby);
-  const describedIds = splitIds(childProps?.ariaDescribedby);
-
-  // Manager (current implementation) appends `${inputId}-validation` when validationMessage is present.
-  const mgrInputId = mgr?.getAttribute?.('input-id') || '';
-  const inferredValidationId = mgrInputId ? `${mgrInputId}-validation` : null;
-
-  return {
-    managerTag: mgr?.tagName?.toLowerCase?.() ?? null,
-    managerAttrs: {
-      'aria-label': mgr?.getAttribute?.('aria-label') ?? null,
-      'aria-labelledby': mgr?.getAttribute?.('aria-labelledby') ?? null,
-      'aria-describedby': mgr?.getAttribute?.('aria-describedby') ?? null,
-      'input-id': mgrInputId || null,
-      'validation-message': mgr?.getAttribute?.('validation-message') ?? null,
-      'validation': mgr?.hasAttribute?.('validation') ?? null,
-      'is-valid': mgr?.getAttribute?.('is-valid') ?? null,
-      'use-pl-timepicker': mgr?.hasAttribute?.('use-pl-timepicker') ?? null,
-      'disable-timepicker': mgr?.hasAttribute?.('disable-timepicker') ?? null,
-    },
-    child: childProps,
-    resolved: {
-      labelledbyIds: labelledIds,
-      labelledbyAllResolve: labelledIds.every(id => resolveId(scopeRoot, id)),
-      describedbyIds: describedIds,
-      describedbyAllResolve: describedIds.every(id => resolveId(scopeRoot, id)),
-      inferredValidationId,
-      inferredValidationResolves: inferredValidationId ? resolveId(scopeRoot, inferredValidationId) : false,
-    },
-  };
-};
-
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: () => {
@@ -625,7 +510,6 @@ export const AccessibilityMatrix = {
       return box;
     };
 
-    // Default
     wrap.appendChild(
       card('Default (visible label)', {
         showLabel: true,
@@ -643,7 +527,6 @@ export const AccessibilityMatrix = {
       }),
     );
 
-    // Inline (simulated)
     wrap.appendChild(
       card(
         'Inline (external aria-labelledby + aria-describedby)',
@@ -667,7 +550,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Horizontal (simulated)
     wrap.appendChild(
       card(
         'Horizontal (simulated layout, external labelledby)',
@@ -690,7 +572,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Error/validation (simulated)
     wrap.appendChild(
       card(
         'Error / validation (simulated, describedby + inferred validation id)',
@@ -715,7 +596,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Disabled
     wrap.appendChild(
       card('Disabled (plumage)', {
         usePlTimepicker: true,

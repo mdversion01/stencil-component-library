@@ -1,0 +1,54 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as PlumageAutocompleteSingleStories from './plumage-autocomplete-single.stories.js';
+import { reactExample, vueExample, angularExample } from './plumage-autocomplete-single.examples.js';
+
+<Meta of={PlumageAutocompleteSingleStories} />
+
+# Plumage Autocomplete Single
+
+<Description of={PlumageAutocompleteSingleStories} />
+
+## HTML
+
+```html
+<plumage-autocomplete-single
+  input-id="acs-example"
+  label="Favorite fruit"
+  placeholder="Type to search"
+></plumage-autocomplete-single>
+
+<script>
+  const el = document.querySelector('plumage-autocomplete-single')
+
+  el.options = [
+    'Apple',
+    'Banana',
+    'Orange',
+    'Mango',
+    'Blueberry',
+    'Strawberry'
+  ]
+
+  el.value = 'Apple'
+
+  el.addEventListener('itemSelect', (event) => {
+    console.log('itemSelect:', event.detail)
+  })
+
+  el.addEventListener('valueChange', (event) => {
+    console.log('valueChange:', event.detail)
+  })
+</script>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

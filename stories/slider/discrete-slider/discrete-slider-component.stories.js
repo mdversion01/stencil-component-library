@@ -1,5 +1,5 @@
-// src/stories/discrete-slider-component.stories.js
-// UPDATED: adds aria-label / aria-labelledby / aria-describedby controls + Accessibility Matrix (computed)
+import DiscreteSliderDocs from './discrete-slider-component.docs.mdx';
+import { Template, normalizeHtml, getSnapshot } from './discrete-slider-component.story-helpers';
 
 export default {
   title: 'Components/Slider/Discrete Slider',
@@ -7,7 +7,11 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
-      description: { component: 'A discrete slider component allowing selection from predefined string values.' },
+      page: DiscreteSliderDocs,
+      description: {
+        component:
+          'A discrete slider component allowing selection from predefined string values, with support for horizontal and vertical orientation.',
+      },
       source: {
         type: 'dynamic',
         language: 'html',
@@ -15,10 +19,29 @@ export default {
       },
     },
   },
+  args: {
+    disabled: false,
+    hideTextBoxes: false,
+    hideLeftTextBox: false,
+    hideRightTextBox: false,
+    orientation: 'horizontal',
+
+    label: 'Rating',
+    plumage: false,
+    sliderThumbLabel: false,
+
+    selectedIndex: 2,
+    stringValues: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'],
+
+    tickLabels: true,
+    unit: '',
+    variant: 'primary',
+
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
+  },
   argTypes: {
-    /* -----------------------------
-     Accessibility
-  ------------------------------ */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -38,22 +61,28 @@ export default {
       table: { category: 'Accessibility' },
     },
 
-    /* -----------------------------
-     State
-  ------------------------------ */
     disabled: {
       control: 'boolean',
       description: 'Disables the slider when true.',
       table: { category: 'State', defaultValue: { summary: false } },
     },
 
-    /* -----------------------------
-     Layout & Labeling
-  ------------------------------ */
     label: {
       control: 'text',
       description: 'Label for the slider.',
       table: { category: 'Layout & Labeling' },
+    },
+    hideTextBoxes: {
+      control: 'boolean',
+      name: 'hide-text-boxes',
+      description: 'Hides both value text boxes when true.',
+      table: { category: 'Layout & Labeling', defaultValue: { summary: false } },
+    },
+    hideLeftTextBox: {
+      control: 'boolean',
+      name: 'hide-left-text-box',
+      description: 'Hides the left text box when true.',
+      table: { category: 'Layout & Labeling', defaultValue: { summary: false } },
     },
     hideRightTextBox: {
       control: 'boolean',
@@ -66,10 +95,13 @@ export default {
       description: 'Unit to display with values.',
       table: { category: 'Layout & Labeling' },
     },
+    orientation: {
+      control: { type: 'select' },
+      options: ['horizontal', 'vertical'],
+      description: 'Controls whether the slider is rendered horizontally or vertically.',
+      table: { category: 'Layout & Labeling' },
+    },
 
-    /* -----------------------------
-     Data & Selection
-  ------------------------------ */
     selectedIndex: {
       control: { type: 'number', min: 0, step: 1 },
       name: 'selected-index',
@@ -78,14 +110,11 @@ export default {
     },
     stringValues: {
       control: 'object',
-      description: 'Array of string values for discrete sliders.',
+      description: 'Array of string values for the discrete slider.',
       name: 'string-values',
       table: { category: 'Data & Selection' },
     },
 
-    /* -----------------------------
-     Ticks & Labels
-  ------------------------------ */
     tickLabels: {
       control: 'boolean',
       name: 'tick-labels',
@@ -93,9 +122,13 @@ export default {
       table: { category: 'Ticks & Labels', defaultValue: { summary: false } },
     },
 
-    /* -----------------------------
-     Styling
-  ------------------------------ */
+    sliderThumbLabel: {
+      control: 'boolean',
+      name: 'slider-thumb-label',
+      description: 'Shows the selected value in a label attached to the thumb.',
+      table: { category: 'Thumb', defaultValue: { summary: false } },
+    },
+
     plumage: {
       control: 'boolean',
       description: 'Enables plumage style when true.',
@@ -110,97 +143,6 @@ export default {
   },
 };
 
-/* helpers */
-const boolLine = (name, on) => (on ? ` ${name}` : '');
-const attrLine = (name, v) => {
-  if (v === undefined || v === null || v === '') return '';
-  const s = String(v);
-  const useSingle = s.includes('"');
-  const escaped = useSingle ? s.replace(/'/g, '&#39;') : s.replace(/"/g, '&quot;');
-  return ` ${name}=${useSingle ? `'${escaped}'` : `"${escaped}"`}`;
-};
-
-const serializeArray = (val) => {
-  if (!val) return '';
-  try {
-    return JSON.stringify(val);
-  } catch {
-    return '';
-  }
-};
-
-const normalizeHtml = (html) => {
-  const lines = String(html ?? '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      out.push('');
-      prevBlank = true;
-      continue;
-    }
-    out.push(line);
-    prevBlank = false;
-  }
-
-  while (out.length && out[0] === '') out.shift();
-  while (out.length && out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-const normalizeIdList = (v) => {
-  const s = String(v ?? '').trim();
-  if (!s) return '';
-  return s.split(/\s+/).filter(Boolean).join(' ');
-};
-
-/* template */
-const Template = (args) => {
-  const attrs = [
-    // a11y
-    attrLine('aria-label', args.ariaLabel),
-    attrLine('aria-labelledby', normalizeIdList(args.ariaLabelledby)),
-    attrLine('aria-describedby', normalizeIdList(args.ariaDescribedby)),
-
-    // state/layout
-    boolLine('disabled', args.disabled),
-    boolLine('hide-right-text-box', args.hideRightTextBox),
-    attrLine('label', args.label),
-    boolLine('plumage', args.plumage),
-
-    // data
-    attrLine('selected-index', args.selectedIndex),
-    attrLine('string-values', serializeArray(args.stringValues)),
-    boolLine('tick-labels', args.tickLabels),
-
-    // styling
-    attrLine('unit', args.unit),
-    attrLine('variant', args.variant),
-  ]
-    .filter(Boolean)
-    .join('');
-
-  return normalizeHtml(`
-  <div style="margin-top: 40px; margin-bottom: 40px;">
-    <!-- div wrapper is for better appearance in Storybook -->
-    <discrete-slider-component${attrs}>
-    </discrete-slider-component>
-  </div>
-`);
-};
-
-/**
- * Apply “dynamic source” ONLY to Template-driven stories
- * so Docs Source stays in sync with Controls.
- */
 const templateStoryParameters = {
   docs: {
     source: {
@@ -211,19 +153,21 @@ const templateStoryParameters = {
   },
 };
 
-/* stories */
 export const Basic = Template.bind({});
 Basic.args = {
   disabled: false,
+  hideTextBoxes: false,
+  hideLeftTextBox: false,
   hideRightTextBox: false,
+  orientation: 'horizontal',
   label: 'Rating',
   plumage: false,
+  sliderThumbLabel: false,
   selectedIndex: 2,
   stringValues: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'],
   tickLabels: true,
   unit: '',
   variant: 'primary',
-
   ariaLabel: '',
   ariaLabelledby: '',
   ariaDescribedby: '',
@@ -233,6 +177,22 @@ Basic.parameters = {
   docs: {
     description: {
       story: 'A basic discrete slider allowing selection from predefined string values.',
+    },
+  },
+};
+
+export const Vertical = Template.bind({});
+Vertical.args = {
+  ...Basic.args,
+  label: 'Rating',
+  orientation: 'vertical',
+  sliderThumbLabel: true,
+};
+Vertical.parameters = {
+  ...templateStoryParameters,
+  docs: {
+    description: {
+      story: 'A vertical discrete slider using `orientation="vertical"`.',
     },
   },
 };
@@ -297,7 +257,7 @@ JSONAttributeValues.parameters = {
 `.trim(),
     },
     description: {
-      story: 'Demonstrates passing `string-values` as a JSON string attribute (plain HTML usage).',
+      story: 'Demonstrates passing `string-values` as a JSON string attribute in plain HTML.',
     },
   },
 };
@@ -338,49 +298,6 @@ Disabled.parameters = {
   },
 };
 
-/* ============================== Accessibility Matrix (computed) ============================== */
-
-const splitIds = (v) => String(v || '').trim().split(/\s+/).filter(Boolean);
-
-const getSnapshot = (root) => {
-  const host = root?.querySelector?.('discrete-slider-component') || root;
-  const slider = host?.querySelector?.('[role="slider"]') || null;
-
-  const resolve = (id) => {
-    if (!id) return false;
-    try {
-      return !!root?.querySelector?.(`#${CSS.escape(id)}`);
-    } catch {
-      return false;
-    }
-  };
-
-  const labelledby = (slider?.getAttribute?.('aria-labelledby') || '').trim();
-  const describedby = (slider?.getAttribute?.('aria-describedby') || '').trim();
-
-  const labelledIds = splitIds(labelledby);
-  const describedIds = splitIds(describedby);
-
-  return {
-    host: host?.tagName?.toLowerCase?.() ?? null,
-    sliderRole: slider?.getAttribute?.('role') ?? null,
-    tabIndex: slider?.getAttribute?.('tabindex') ?? null,
-    disabled: slider?.getAttribute?.('aria-disabled') ?? null,
-    'aria-label': slider?.getAttribute?.('aria-label') ?? null,
-    'aria-labelledby': labelledby || null,
-    'aria-describedby': describedby || null,
-    'aria-valuemin': slider?.getAttribute?.('aria-valuemin') ?? null,
-    'aria-valuemax': slider?.getAttribute?.('aria-valuemax') ?? null,
-    'aria-valuenow': slider?.getAttribute?.('aria-valuenow') ?? null,
-    'aria-valuetext': slider?.getAttribute?.('aria-valuetext') ?? null,
-    labelledbyIds: labelledIds,
-    labelledbyAllResolve: labelledIds.every(resolve),
-    describedbyIds: describedIds,
-    describedbyAllResolve: describedIds.every(resolve),
-    labelElId: host?.querySelector?.('label.form-control-label')?.getAttribute?.('id') ?? null,
-  };
-};
-
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: () => {
@@ -393,7 +310,7 @@ export const AccessibilityMatrix = {
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
       <div style="opacity:.8">
-        Prints computed <code>role</code> + <code>aria-*</code> + ids for default / inline / horizontal, validation, and disabled.
+        Prints computed <code>role</code> + <code>aria-*</code> + ids for default / inline / horizontal / vertical / validation / disabled.
       </div>
     `;
     wrap.appendChild(header);
@@ -432,9 +349,13 @@ export const AccessibilityMatrix = {
         const host = mount.querySelector('discrete-slider-component');
 
         if (host?.componentOnReady) {
-          try { await host.componentOnReady(); } catch (_e) {}
+          try {
+            await host.componentOnReady();
+          } catch (_e) {}
         } else if (window.customElements?.whenDefined) {
-          try { await customElements.whenDefined('discrete-slider-component'); } catch (_e) {}
+          try {
+            await customElements.whenDefined('discrete-slider-component');
+          } catch (_e) {}
         }
 
         pre.textContent = JSON.stringify(getSnapshot(mount), null, 2);
@@ -448,7 +369,6 @@ export const AccessibilityMatrix = {
       return box;
     };
 
-    // Default
     wrap.appendChild(
       card('Default', {
         label: 'Default',
@@ -458,7 +378,6 @@ export const AccessibilityMatrix = {
       }),
     );
 
-    // Inline (simulated): external label id
     wrap.appendChild(
       card(
         'Inline (simulated, aria-labelledby external)',
@@ -472,7 +391,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Horizontal (simulated): grid label left + slider right
     wrap.appendChild(
       card(
         'Horizontal (simulated)',
@@ -480,6 +398,7 @@ export const AccessibilityMatrix = {
           label: '',
           stringValues: ['A', 'B', 'C', 'D'],
           selectedIndex: 3,
+          orientation: 'horizontal',
           ariaLabelledby: 'mx-horizontal-label',
         },
         `<div style="display:grid; grid-template-columns:220px 1fr; gap:12px; align-items:center; max-width:860px;">
@@ -488,7 +407,17 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Error/validation (simulated): describedby points to error/help
+    wrap.appendChild(
+      card('Vertical', {
+        label: 'Vertical discrete',
+        stringValues: ['A', 'B', 'C', 'D'],
+        selectedIndex: 2,
+        orientation: 'vertical',
+        sliderThumbLabel: true,
+        ariaLabel: 'Vertical discrete slider',
+      }),
+    );
+
     wrap.appendChild(
       card(
         'Error / validation (simulated via aria-describedby)',
@@ -502,7 +431,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Disabled
     wrap.appendChild(
       card('Disabled', {
         label: 'Disabled',
@@ -520,7 +448,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Prints computed accessibility wiring for the discrete slider: the focused element has `role="slider"` with `aria-valuemin/max/now/text`, and optional `aria-label` / `aria-labelledby` / `aria-describedby`. Includes simulated inline/horizontal layouts, simulated error describedby, and disabled state.',
+          'Prints computed accessibility wiring for the discrete slider: the focused element has `role="slider"` with `aria-valuemin/max/now/text`, optional `aria-label` / `aria-labelledby` / `aria-describedby`, and orientation support for horizontal and vertical layouts.',
       },
       source: {
         language: 'html',

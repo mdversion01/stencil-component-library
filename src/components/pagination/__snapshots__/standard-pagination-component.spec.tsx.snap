@@ -4,12 +4,12 @@ exports[`standard-pagination-component default snapshot with first/prev/next/las
 <standard-pagination-component current-page="3" page-size="10">
   <div class="sc-pagination">
     <div class="d-flex pagination-layout">
-      <div aria-atomic="true" aria-live="polite" class="pagination-cell row-display sr-only" id="spc-range-spc-7991df175da12-19d68a95d5e" role="status">
+      <div aria-atomic="true" aria-live="polite" class="pagination-cell row-display sr-only" id="spc-range-spc-0db751b1938c5-19dd016fdcc" role="status">
         21-30 of 90
       </div>
       <div class="center pagination-cell">
         <nav aria-label="Pagination">
-          <ul aria-describedby="spc-range-spc-7991df175da12-19d68a95d5e" class="b-pagination flex-fill50 justify-content-center pagination">
+          <ul aria-describedby="spc-range-spc-0db751b1938c5-19dd016fdcc" class="b-pagination flex-fill50 justify-content-center pagination">
             <li class="page-item" role="listitem">
               <button aria-label="Go to first page" class="page-link" tabindex="0" type="button">
                 First
@@ -77,12 +77,12 @@ exports[`standard-pagination-component hideGoToButtons removes first/prev/next/l
 <standard-pagination-component current-page="2" page-size="10">
   <div class="sc-pagination">
     <div class="d-flex pagination-layout">
-      <div aria-atomic="true" aria-live="polite" class="pagination-cell row-display sr-only" id="spc-range-spc-c2378e1c3f845-19d68a95d66" role="status">
+      <div aria-atomic="true" aria-live="polite" class="pagination-cell row-display sr-only" id="spc-range-spc-32a9a0492ef7b-19dd016fddf" role="status">
         11-20 of 50
       </div>
       <div>
         <nav aria-label="Pagination">
-          <ul aria-describedby="spc-range-spc-c2378e1c3f845-19d68a95d66" class="b-pagination pagination">
+          <ul aria-describedby="spc-range-spc-32a9a0492ef7b-19dd016fddf" class="b-pagination pagination">
             <li class="page-item" role="listitem">
               <button aria-label="Go to page 1" class="page-link" tabindex="0" type="button">
                 1

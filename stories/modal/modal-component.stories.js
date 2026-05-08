@@ -1,76 +1,17 @@
-// src/stories/modal-component.stories.js
+// File: src/stories/modal-component.stories.js
 
-// ---------- Docs-only portal decorator for fixed overlays ----------
-const portalizeModalInDocs = (root) => {
-  // No-op outside the Docs page
-  const inDocs = !!document.querySelector('.sbdocs, .docs-story');
-  if (!inDocs) return { destroy: () => {} };
-
-  // Track anything we re-parent so we can clean it up later
-  const portedNodes = new Set();
-
-  // Move a node to <body> and tag it for cleanup
-  const portToBody = (el, zIndex) => {
-    if (!el || el.__ported_to_body__) return;
-    el.__ported_to_body__ = true;
-    el.style.position = 'fixed';
-    if (zIndex != null) el.style.zIndex = String(zIndex);
-    document.body.appendChild(el);
-    portedNodes.add(el);
-  };
-
-  // Try to find the live modal/backdrop inside the story’s markup
-  const syncNow = () => {
-    const hostScope = root;
-    const modalEls = hostScope.querySelectorAll('.modal');
-    const backdropEls = hostScope.querySelectorAll('.modal-backdrop');
-
-    modalEls.forEach((m) => portToBody(m, 1060)); // modal above backdrop
-    backdropEls.forEach((b) => portToBody(b, 1050)); // backdrop below modal
-  };
-
-  // Observe changes while users open/close the modal
-  const mo = new MutationObserver(() => syncNow());
-  mo.observe(root, { childList: true, subtree: true, attributes: true });
-
-  queueMicrotask(syncNow);
-
-  return {
-    destroy: () => {
-      mo.disconnect();
-      portedNodes.forEach((el) => {
-        try {
-          el.remove(); // most robust for Storybook; component re-creates next open
-        } catch (_) {}
-      });
-      portedNodes.clear();
-    },
-  };
-};
-
-// Global (for this file) decorator that wraps each story result
-const docsPortalDecorator = (Story) => {
-  const wrapEl = document.createElement('div');
-
-  const out = Story();
-  if (typeof out === 'string') {
-    wrapEl.innerHTML = out;
-  } else if (out instanceof Node) {
-    wrapEl.appendChild(out);
-  }
-
-  const control = portalizeModalInDocs(wrapEl);
-
-  const removalObserver = new MutationObserver(() => {
-    if (!document.body.contains(wrapEl)) {
-      removalObserver.disconnect();
-      control.destroy();
-    }
-  });
-  removalObserver.observe(document.body, { childList: true, subtree: true });
-
-  return wrapEl;
-};
+import DocsPage from './modal-component.docs.mdx';
+import {
+  DOCS_FULLSCREEN,
+  DOCS_LONG_SCROLL,
+  DOCS_MATRIX,
+  DOCS_SCROLLABLE_BODY,
+  DOCS_SIZES,
+  buildDocsHtml,
+  buildMatrixRow,
+  docsPortalDecorator,
+  template,
+} from './modal-component.story-helpers.js';
 
 export default {
   title: 'Components/Modal',
@@ -79,6 +20,7 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
+      page: DocsPage,
       source: {
         type: 'dynamic',
         language: 'html',
@@ -91,9 +33,6 @@ export default {
     },
   },
   argTypes: {
-    /* -----------------------------
-     * Trigger button props
-     * ------------------------------ */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -181,9 +120,6 @@ export default {
       description: 'Whether the trigger button is disabled.',
     },
 
-    /* -----------------------------
-     * Modal props
-     * ------------------------------ */
     modalId: {
       control: 'text',
       name: 'modal-id',
@@ -243,9 +179,6 @@ export default {
       description: 'Text for the modal cancel/close button.',
     },
 
-    /* -----------------------------
-     * Slots (HTML strings)
-     * ------------------------------ */
     bodyHtml: {
       control: 'text',
       name: 'body-html',
@@ -261,7 +194,6 @@ export default {
     },
   },
   args: {
-    // Trigger
     ariaLabel: '',
     block: false,
     btnText: 'Launch demo modal',
@@ -275,7 +207,6 @@ export default {
     titleAttr: '',
     variant: 'primary',
 
-    // Modal
     modalId: '',
     modalTitle: 'Modal title',
     modalSize: undefined,
@@ -285,123 +216,12 @@ export default {
     verticallyCentered: false,
     cancelCloseBtn: 'Close',
 
-    // Slots
     bodyHtml: '',
     footerHtml: '',
   },
 };
 
-const normalize = (v) => {
-  if (v === '' || v == null) return undefined;
-  if (v === true) return true;
-  if (v === false) return false;
-  return v;
-};
-
-const esc = (s) =>
-  String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-
-const boolAttr = (name, on) => (on ? ` ${name}` : '');
-const attr = (name, val) => {
-  const v = normalize(val);
-  return v === undefined || v === false ? '' : v === true ? ` ${name}` : ` ${name}="${esc(v)}"`;
-};
-
-const buildDocsHtml = (args, storyName = '') => {
-  // For multi-instance stories, preserve their custom code blocks (defined below).
-  // For others, render an args-driven single instance.
-  const n = String(storyName || '').replace(/\s+/g, '');
-
-  if (n === 'ModalSizes') return DOCS_SIZES;
-  if (n === 'Fullscreenvariants') return DOCS_FULLSCREEN;
-  if (n === 'Scrollablebodymodal') return DOCS_SCROLLABLE_BODY;
-  if (n === 'Longcontent(windowscroll)') return DOCS_LONG_SCROLL;
-  if (n === 'AccessibilityMatrix') return DOCS_MATRIX;
-
-  return [
-    `<modal-component`,
-    `  ${attr('btn-text', args.btnText)}`,
-    `  ${attr('variant', args.variant)}`,
-    `  ${attr('size', args.size)}`,
-    `  ${attr('shape', args.shape)}`,
-    `  ${boolAttr('outlined', !!args.outlined)}`,
-    `  ${boolAttr('block', !!args.block)}`,
-    `  ${boolAttr('link', !!args.link)}`,
-    `  ${boolAttr('ripple', !!args.ripple)}`,
-    `  ${attr('class-names', args.classNames)}`,
-    `  ${boolAttr('disabled', !!args.disabled)}`,
-    `  ${attr('title-attr', args.titleAttr)}`,
-    `  ${attr('aria-label', args.ariaLabel)}`,
-    ``,
-    `  ${attr('modal-id', args.modalId)}`,
-    `  ${attr('modal-title', args.modalTitle)}`,
-    `  ${attr('modal-size', args.modalSize)}`,
-    `  ${attr('modal-full-screen', args.modalFullScreen)}`,
-    `  ${boolAttr('scrollable-body', !!args.scrollableBody)}`,
-    `  ${boolAttr('scroll-long-content', !!args.scrollLongContent)}`,
-    `  ${boolAttr('vertically-centered', !!args.verticallyCentered)}`,
-    ``,
-    `  ${attr('cancel-close-btn', args.cancelCloseBtn)}`,
-    `>`,
-    `  ${args.bodyHtml || `<p>Woohoo, you're reading this text in a modal!</p>\n  <p>This is the modal body. Add any markup you like here.</p>`}`,
-    ``,
-    `  ${
-      args.footerHtml
-        ? `<span slot="footer">${args.footerHtml}</span>`
-        : `<button-component slot="footer" variant="primary" ${attr('size', args.size)}>Save changes</button-component>`
-    }`,
-    `</modal-component>`,
-  ]
-    .filter((l) => l.trim() !== '')
-    .join('\n');
-};
-
-/** Interactive base */
-const Template = (args) => `
-<modal-component
-  ${attr('btn-text', args.btnText)}
-  ${attr('variant', args.variant)}
-  ${attr('size', args.size)}
-  ${attr('shape', args.shape)}
-  ${boolAttr('outlined', !!args.outlined)}
-  ${boolAttr('block', !!args.block)}
-  ${boolAttr('link', !!args.link)}
-  ${boolAttr('ripple', !!args.ripple)}
-  ${attr('class-names', args.classNames)}
-  ${boolAttr('disabled', !!args.disabled)}
-  ${attr('title-attr', args.titleAttr)}
-  ${attr('aria-label', args.ariaLabel)}
-
-  ${attr('modal-id', args.modalId)}
-  ${attr('modal-title', args.modalTitle)}
-  ${attr('modal-size', args.modalSize)}
-  ${attr('modal-full-screen', args.modalFullScreen)}
-  ${boolAttr('scrollable-body', !!args.scrollableBody)}
-  ${boolAttr('scroll-long-content', !!args.scrollLongContent)}
-  ${boolAttr('vertically-centered', !!args.verticallyCentered)}
-
-  ${attr('cancel-close-btn', args.cancelCloseBtn)}
->
-  ${
-    args.bodyHtml ||
-    `
-  <p>Woohoo, you're reading this text in a modal!</p>
-  <p>This is the modal body. Add any markup you like here.</p>`
-  }
-
-  ${
-    args.footerHtml
-      ? `<span slot="footer">${args.footerHtml}</span>`
-      : `<button-component slot="footer" variant="primary" ${attr('size', args.size)}>Save changes</button-component>`
-  }
-</modal-component>
-`;
-
-/* ------------------------- Stories ------------------------- */
+const Template = (args) => template(args);
 
 export const Basic = Template.bind({});
 Basic.storyName = 'Basic modal';
@@ -440,25 +260,6 @@ Basic.parameters = {
   },
 };
 
-const DOCS_SIZES = [
-  '<div style="display:grid; gap:16px;">',
-  '  <modal-component variant="secondary" btn-text="Small (sm)" modal-size="sm">',
-  '    <p>Small modal.</p>',
-  '    <button-component slot="footer" variant="primary">OK</button-component>',
-  '  </modal-component>',
-  '',
-  '  <modal-component variant="secondary" btn-text="Large (lg)" modal-size="lg">',
-  '    <p>Large modal.</p>',
-  '    <button-component slot="footer" variant="primary">OK</button-component>',
-  '  </modal-component>',
-  '',
-  '  <modal-component variant="secondary" btn-text="Extra Large (xl)" modal-size="xl">',
-  '    <p>Extra large modal.</p>',
-  '    <button-component slot="footer" variant="primary">OK</button-component>',
-  '  </modal-component>',
-  '</div>',
-].join('\n');
-
 export const Sizes = () => DOCS_SIZES;
 Sizes.storyName = 'Modal sizes';
 Sizes.parameters = {
@@ -467,18 +268,6 @@ Sizes.parameters = {
     description: { story: 'Demonstrates modal sizes: sm, lg, xl.' },
   },
 };
-
-const DOCS_FULLSCREEN = [
-  '<div style="display:grid; gap:16px;">',
-  '  <modal-component variant="dark" btn-text="Fullscreen" modal-full-screen="fullscreen">',
-  '    <p>Always fullscreen.</p>',
-  '  </modal-component>',
-  '',
-  '  <modal-component variant="dark" btn-text="md-down fullscreen" modal-full-screen="md-down">',
-  '    <p>Fullscreen at md and below.</p>',
-  '  </modal-component>',
-  '</div>',
-].join('\n');
 
 export const FullscreenVariants = () => DOCS_FULLSCREEN;
 FullscreenVariants.storyName = 'Fullscreen variants';
@@ -499,12 +288,6 @@ VerticallyCentered.parameters = {
   docs: { description: { story: 'A vertically centered modal.' } },
 };
 
-const DOCS_SCROLLABLE_BODY = `
-<modal-component variant="info" btn-text="Scrollable body" scrollable-body modal-size="lg">
-  ${Array.from({ length: 20 }, (_, i) => `<p>Scrollable content line ${i + 1}</p>`).join('')}
-</modal-component>
-`;
-
 export const ScrollableBody = () => DOCS_SCROLLABLE_BODY;
 ScrollableBody.storyName = 'Scrollable body modal';
 ScrollableBody.parameters = {
@@ -513,12 +296,6 @@ ScrollableBody.parameters = {
     description: { story: 'Modal with a scrollable body (modal-dialog-scrollable).' },
   },
 };
-
-const DOCS_LONG_SCROLL = `
-<modal-component variant="secondary" btn-text="Long content (window scroll)" scroll-long-content>
-  ${Array.from({ length: 30 }, (_, i) => `<p>Long content ${i + 1}</p>`).join('')}
-</modal-component>
-`;
 
 export const LongContentScroll = () => DOCS_LONG_SCROLL;
 LongContentScroll.storyName = 'Long content (window scroll)';
@@ -595,136 +372,6 @@ Playground.parameters = {
     description: { story: 'Interactive playground. Modal includes ARIA labelling/description ids and trigger aria-haspopup/controls/expanded.' },
   },
 };
-
-/* ======================================================
- * Accessibility matrix
- *  - Renders common variants and prints computed role + aria-* + ids.
- *  - Also reports whether aria-labelledby / aria-describedby resolve.
- * NOTE: "default/inline/horizontal, error/validation, disabled" are not modal props;
- *       we still include rows to match the requested matrix format:
- *       - default (base)
- *       - "inline" and "horizontal" rows are layout wrappers only (storybook-only)
- *       - "error/validation" is represented by an error-styled footer + body message
- *       - disabled is trigger disabled
- * ====================================================== */
-
-function pickAttrs(el, names) {
-  const out = {};
-  for (const n of names) {
-    const v = el.getAttribute(n);
-    if (v !== null && v !== '') out[n] = v;
-  }
-  return out;
-}
-
-function splitIds(v) {
-  return String(v || '')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-}
-
-function resolveIdsWithin(host, ids) {
-  const res = {};
-  for (const id of ids) {
-    const safe = String(id).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-    const node = host.querySelector(`[id="${safe}"]`);
-    res[id] = !!node;
-  }
-  return res;
-}
-
-function snapshotA11y(host) {
-  const trigger = host.querySelector('button[type="button"]');
-  const modal = host.querySelector('.modal');
-  const dialog = host.querySelector('.modal-dialog');
-  const title = modal ? host.querySelector(`#${modal.getAttribute('aria-labelledby') || ''}`) : null;
-  const desc = modal ? host.querySelector(`#${modal.getAttribute('aria-describedby') || ''}`) : null;
-
-  const labelledByIds = modal ? splitIds(modal.getAttribute('aria-labelledby')) : [];
-  const describedByIds = modal ? splitIds(modal.getAttribute('aria-describedby')) : [];
-
-  return {
-    trigger: trigger
-      ? {
-          tag: trigger.tagName.toLowerCase(),
-          text: (trigger.textContent || '').trim(),
-          ...pickAttrs(trigger, ['aria-label', 'aria-haspopup', 'aria-controls', 'aria-expanded', 'aria-disabled', 'disabled']),
-        }
-      : null,
-    modal: modal
-      ? {
-          tag: modal.tagName.toLowerCase(),
-          id: modal.getAttribute('id') || '',
-          ...pickAttrs(modal, ['role', 'aria-modal', 'aria-labelledby', 'aria-describedby', 'aria-hidden', 'tabindex']),
-          resolves: {
-            'aria-labelledby': resolveIdsWithin(host, labelledByIds),
-            'aria-describedby': resolveIdsWithin(host, describedByIds),
-          },
-          hasTitleEl: !!title,
-          hasDescEl: !!desc,
-        }
-      : null,
-    dialog: dialog
-      ? {
-          tag: dialog.tagName.toLowerCase(),
-          id: dialog.getAttribute('id') || '',
-          ...pickAttrs(dialog, ['role', 'tabindex', 'class']),
-        }
-      : null,
-  };
-}
-
-function buildMatrixRow({ title, args, wrapStyle = '', idSuffix }) {
-  const wrap = document.createElement('div');
-  wrap.style.border = '1px solid #ddd';
-  wrap.style.borderRadius = '12px';
-  wrap.style.padding = '12px';
-  wrap.style.display = 'grid';
-  wrap.style.gap = '10px';
-
-  const heading = document.createElement('div');
-  heading.style.fontWeight = '700';
-  heading.textContent = title;
-
-  const stage = document.createElement('div');
-  stage.style.maxWidth = '720px';
-  if (wrapStyle) stage.setAttribute('style', wrapStyle);
-
-  // Build node for this row (string -> node)
-  const container = document.createElement('div');
-  container.innerHTML = Template({
-    ...args,
-    modalId: args.modalId || `modal-a11y-${idSuffix}`,
-  });
-
-  stage.appendChild(container);
-
-  const pre = document.createElement('pre');
-  pre.style.margin = '0';
-  pre.style.padding = '10px';
-  pre.style.background = '#f6f8fa';
-  pre.style.borderRadius = '10px';
-  pre.style.overflowX = 'auto';
-  pre.style.fontSize = '12px';
-  pre.textContent = 'Collecting aria/role/id…';
-
-  wrap.appendChild(heading);
-  wrap.appendChild(stage);
-  wrap.appendChild(pre);
-
-  const update = () => {
-    const host = container.querySelector('modal-component');
-    if (!host) return;
-    pre.textContent = JSON.stringify(snapshotA11y(host), null, 2);
-  };
-
-  requestAnimationFrame(() => requestAnimationFrame(update));
-
-  return wrap;
-}
-
-const DOCS_MATRIX = `<!-- Accessibility matrix is rendered via DOM (see Canvas). -->`;
 
 export const AccessibilityMatrix = () => {
   const root = document.createElement('div');

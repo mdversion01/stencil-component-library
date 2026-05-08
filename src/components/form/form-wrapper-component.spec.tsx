@@ -1,6 +1,6 @@
-// src/components/form/form-component.spec.tsx
+// src/components/form/form-wrapper-component.spec.tsx
 import { newSpecPage } from '@stencil/core/testing';
-import { FormComponent } from './form-component';
+import { FormWrapperComponent } from './form-wrapper-component';
 
 // -------- style normalization helpers --------
 
@@ -34,11 +34,11 @@ function getFieldsetStyleText(fieldset: HTMLFieldSetElement): string {
   return decodeIndexedStyle(raw);
 }
 
-describe('<form-component>', () => {
+describe('<form-wrapper-component>', () => {
   it('renders a <form> with basic attributes', async () => {
     const page = await newSpecPage({
-      components: [FormComponent],
-      html: `<form-component action="/submit" method="post" form-id="contact"></form-component>`,
+      components: [FormWrapperComponent],
+      html: `<form-wrapper-component action="/submit" method="post" form-id="contact"></form-wrapper-component>`,
     });
 
     const root = page.root!;
@@ -53,22 +53,22 @@ describe('<form-component>', () => {
 
   it('applies layout classes (horizontal / inline)', async () => {
     const pageH = await newSpecPage({
-      components: [FormComponent],
-      html: `<form-component form-layout="horizontal"></form-component>`,
+      components: [FormWrapperComponent],
+      html: `<form-wrapper-component form-layout="horizontal"></form-wrapper-component>`,
     });
     expect(pageH.root!.querySelector('form')!.classList.contains('horizontal')).toBe(true);
 
     const pageI = await newSpecPage({
-      components: [FormComponent],
-      html: `<form-component form-layout="inline"></form-component>`,
+      components: [FormWrapperComponent],
+      html: `<form-wrapper-component form-layout="inline"></form-wrapper-component>`,
     });
     expect(pageI.root!.querySelector('form')!.classList.contains('inline')).toBe(true);
   });
 
   it('renders outsideOfForm container instead of <form>', async () => {
     const page = await newSpecPage({
-      components: [FormComponent],
-      html: `<form-component outside-of-form form-id="external"></form-component>`,
+      components: [FormWrapperComponent],
+      html: `<form-wrapper-component outside-of-form form-id="external"></form-wrapper-component>`,
     });
 
     const form = page.root!.querySelector('form');
@@ -81,8 +81,8 @@ describe('<form-component>', () => {
 
   it('renders fieldset + legend with defaults', async () => {
     const page = await newSpecPage({
-      components: [FormComponent],
-      html: `<form-component fieldset legend></form-component>`,
+      components: [FormWrapperComponent],
+      html: `<form-wrapper-component fieldset legend></form-wrapper-component>`,
     });
 
     const fieldset = page.root!.querySelector('fieldset') as HTMLFieldSetElement;
@@ -98,8 +98,8 @@ describe('<form-component>', () => {
 
   it('renders fieldset inside <form> when not outsideOfForm, with custom legend & styles', async () => {
     const page = await newSpecPage({
-      components: [FormComponent],
-      html: `<form-component
+      components: [FormWrapperComponent],
+      html: `<form-wrapper-component
              fieldset
              legend
              legend-txt="Profile"
@@ -109,7 +109,7 @@ describe('<form-component>', () => {
              bwidth="2"
              bradius="8"
              styles="margin: 4px;"
-           ></form-component>`,
+           ></form-wrapper-component>`,
     });
 
     const form = page.root!.querySelector('form')!;
@@ -138,11 +138,11 @@ describe('<form-component>', () => {
 
   it('renders slotted children in the "formField" slot', async () => {
     const page = await newSpecPage({
-      components: [FormComponent],
-      html: `<form-component>
+      components: [FormWrapperComponent],
+      html: `<form-wrapper-component>
                <div slot="formField" id="child-a">A</div>
                <div slot="formField" id="child-b">B</div>
-             </form-component>`,
+             </form-wrapper-component>`,
     });
 
     const formOrDiv = page.root!.querySelector('form, div')!;
@@ -157,8 +157,8 @@ describe('<form-component>', () => {
 
   it('matches snapshot (base form)', async () => {
     const page = await newSpecPage({
-      components: [FormComponent],
-      html: `<form-component action="/s" method="get" form-id="f1"></form-component>`,
+      components: [FormWrapperComponent],
+      html: `<form-wrapper-component action="/s" method="get" form-id="f1"></form-wrapper-component>`,
     });
     await page.waitForChanges();
     expect(page.root).toMatchSnapshot();
@@ -166,8 +166,8 @@ describe('<form-component>', () => {
 
   it('matches snapshot (fieldset + legend + styles, outsideOfForm)', async () => {
     const page = await newSpecPage({
-      components: [FormComponent],
-      html: `<form-component
+      components: [FormWrapperComponent],
+      html: `<form-wrapper-component
                fieldset
                legend
                legend-position="right"
@@ -181,7 +181,7 @@ describe('<form-component>', () => {
                styles="padding:2px;"
              >
                <div slot="formField">Inner field</div>
-             </form-component>`,
+             </form-wrapper-component>`,
     });
     await page.waitForChanges();
     expect(page.root).toMatchSnapshot();

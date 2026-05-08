@@ -1,0 +1,46 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as PlumageTimepickerStories from './plumage-timepicker-component.stories.js';
+import { reactExample, vueExample, angularExample } from './plumage-timepicker-component.examples.js';
+
+<Meta of={PlumageTimepickerStories} />
+
+# Plumage Timepicker
+
+<Description of={PlumageTimepickerStories} />
+
+## HTML
+
+```html
+<plumage-timepicker-component
+  show-label
+  label-text="Meeting time"
+  input-id="time-example"
+  input-name="meetingTime"
+  value="13:05:09"
+  is-twenty-four-hour-format="true"
+></plumage-timepicker-component>
+
+<script>
+  const el = document.querySelector('plumage-timepicker-component');
+
+  el.addEventListener('timeChange', (event) => {
+    console.log('timeChange:', event.detail);
+  });
+
+  el.addEventListener('timeInput', (event) => {
+    console.log('timeInput:', event.detail);
+  });
+</script>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

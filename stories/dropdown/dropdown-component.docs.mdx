@@ -1,0 +1,42 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as DropdownStories from './dropdown-component.stories.js';
+import { reactExample, vueExample, angularExample } from './dropdown-component.examples.js';
+
+<Meta of={DropdownStories} />
+
+# Dropdown
+
+<Description of={DropdownStories} />
+
+## HTML
+
+```html
+<dropdown-component id="dropdown-basic" button-text="Dropdown" variant="primary"></dropdown-component>
+
+<script>
+  function baseItems() {
+    return [
+      { name: 'Action', value: 'action' },
+      { name: 'Another action', value: 'another' },
+      { name: 'Something else here', value: 'else' },
+    ];
+  }
+
+  const el = document.getElementById('dropdown-basic');
+  if (el) {
+    el.options = baseItems();
+  }
+</script>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

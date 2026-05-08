@@ -22,21 +22,20 @@ export class SliderManagerComponent {
   @Prop() sliderThumbLabel = false;
   @Prop() snapToTicks = false;
   @Prop() tickLabels = false;
+  @Prop() orientation: 'horizontal' | 'vertical' = 'horizontal';
 
-  // ✅ allow JSON string OR array
   @Prop() tickValues: number[] | string = [];
 
   @Prop() value = 0;
 
   @Prop() lowerValue = 25;
   @Prop() upperValue = 75;
+  @Prop() rangeFillMode: 'inside' | 'outside' = 'inside';
 
   @Prop() selectedIndex = 0;
 
-  // ✅ allow JSON string OR array
   @Prop() stringValues: string[] | string = [];
 
-  // ----------------- a11y override props -----------------
   @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
   @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
@@ -78,7 +77,6 @@ export class SliderManagerComponent {
     const tickValues = this.normalizeNumberArray(this.tickValues);
     const stringValues = this.normalizeStringArray(this.stringValues);
 
-    // forward only if set (avoid stamping empty attrs)
     const ariaLabel = (this.ariaLabel ?? '').trim() || undefined;
     const ariaLabelledby = this.normalizeIdList(this.ariaLabelledby);
     const ariaDescribedby = this.normalizeIdList(this.ariaDescribedby);
@@ -102,6 +100,7 @@ export class SliderManagerComponent {
             hideLeftTextBox={this.hideLeftTextBox}
             hideRightTextBox={this.hideRightTextBox}
             disabled={this.disabled}
+            orientation={this.orientation}
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledby}
             aria-describedby={ariaDescribedby}
@@ -126,6 +125,8 @@ export class SliderManagerComponent {
             hideLeftTextBox={this.hideLeftTextBox}
             hideRightTextBox={this.hideRightTextBox}
             disabled={this.disabled}
+            rangeFillMode={this.rangeFillMode}
+            orientation={this.orientation}
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledby}
             aria-describedby={ariaDescribedby}
@@ -138,11 +139,15 @@ export class SliderManagerComponent {
             selectedIndex={this.selectedIndex}
             stringValues={stringValues}
             plumage={this.plumage}
+            sliderThumbLabel={this.sliderThumbLabel}
             tickLabels={this.tickLabels}
             unit={this.unit}
             variant={this.variant}
             disabled={this.disabled}
+            hideTextBoxes={this.hideTextBoxes}
+            hideLeftTextBox={this.hideLeftTextBox}
             hideRightTextBox={this.hideRightTextBox}
+            orientation={this.orientation}
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledby}
             aria-describedby={ariaDescribedby}

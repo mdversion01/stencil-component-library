@@ -1,0 +1,44 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as TimepickerManagerStories from './timepicker-manager.stories.js';
+import { reactExample, vueExample, angularExample, svelteExample, svelteKitExample } from './timepicker-manager-component.examples.js';
+
+<Meta of={TimepickerManagerStories} />
+
+# Timepicker Manager
+
+<Description of={TimepickerManagerStories} />
+
+## HTML
+
+```html
+<timepicker-manager show-label label-text="Meeting time" input-id="manager-time" input-name="meetingTime" value="13:05:09"></timepicker-manager>
+
+<script>
+  const el = document.querySelector('timepicker-manager');
+
+  el.addEventListener('managerTimeChange', event => {
+    console.log('managerTimeChange', event.detail);
+  });
+
+  el.addEventListener('managerTimeInput', event => {
+    console.log('managerTimeInput', event.detail);
+  });
+</script>
+```
+
+## React
+
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+## Svelte
+<Source code={svelteExample} language="svelte" />
+## SvelteKit
+<Source code={svelteKitExample} language="svelte" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

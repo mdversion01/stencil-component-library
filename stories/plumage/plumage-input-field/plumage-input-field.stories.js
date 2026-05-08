@@ -1,247 +1,37 @@
-// stories/plumage-input-field.stories.js
+import DocsPage from './plumage-input-field.docs.mdx';
+import {
+  TAG,
+  DocsWrapStyles,
+  buildDocsHtml,
+  buildDocsHtmlInlineLayout,
+  buildDocsHtmlReadOnlyAndDisabled,
+  buildDocsHtmlSizes,
+  cssEscapeIdent,
+  makeInput,
+  renderComponent,
+  wrapInForm,
+} from './plumage-input-field.story-helpers.js';
 
 /* ------------------------------------------------------------------
  * Storybook: Plumage Input Field (Web Component)
  * Component tag: <plumage-input-field-component>
  * ------------------------------------------------------------------ */
 
-const TAG = 'plumage-input-field-component';
-
-/* ---------------- Docs helpers ---------------- */
-
-const normalizeArg = (value) => {
-  if (value === '' || value == null) return undefined;
-  if (value === true) return true;
-  if (value === false) return false;
-  return value;
-};
-
-const esc = (s) =>
-  String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-
-/** Put each attribute on its own line (for Docs code previews) */
-const attrLines = (pairs) =>
-  pairs
-    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
-    .map(([k, v]) => (v === true ? `${k}` : `${k}="${esc(String(v))}"`))
-    .join('\n  ');
-
-/** Build docs HTML from CURRENT args (including controls changes) */
-const buildDocsHtml = (args) => {
-  const a = { ...args };
-
-  // Story-only args should not appear in the component tag preview
-  delete a.wrapWithForm;
-
-  const attrs = [
-    // core
-    ['label', normalizeArg(a.label)],
-    ['input-id', normalizeArg(a.inputId)],
-    ['type', normalizeArg(a.type)],
-    ['value', normalizeArg(a.value)],
-    ['placeholder', normalizeArg(a.placeholder)],
-    ['size', normalizeArg(a.size)],
-    ['label-size', normalizeArg(a.labelSize)],
-    ['label-align', normalizeArg(a.labelAlign)],
-    ['form-layout', normalizeArg(a.formLayout)],
-    ['form-id', normalizeArg(a.formId)],
-
-    // cols
-    ['label-col', Number.isFinite(a.labelCol) ? a.labelCol : undefined],
-    ['input-col', Number.isFinite(a.inputCol) ? a.inputCol : undefined],
-    ['label-cols', normalizeArg(a.labelCols)],
-    ['input-cols', normalizeArg(a.inputCols)],
-
-    // validation
-    ['validation-message', normalizeArg(a.validationMessage)],
-
-    // ✅ standard a11y
-    ['aria-label', normalizeArg(a.ariaLabel)],
-    ['aria-labelledby', normalizeArg(a.ariaLabelledby)],
-    ['aria-describedby', normalizeArg(a.ariaDescribedby)],
-
-    // ✅ legacy a11y (kept for parity w/ component)
-    ['arialabelled-by', normalizeArg(a.arialabelledBy)],
-
-    // boolean attrs (presence-based)
-    ['label-hidden', !!a.labelHidden],
-    ['disabled', !!a.disabled],
-    ['read-only', !!a.readOnly],
-    ['required', !!a.required],
-    ['validation', !!a.validation],
-  ];
-
-  const openTag = `<${TAG}\n  ${attrLines(attrs)}\n></${TAG}>`;
-
-  // If the story is wrapped in a form (story-only behavior), reflect that in docs
-  if (args.wrapWithForm) {
-    const formAttrs = [
-      ['form-id', normalizeArg(args.formId || 'demo-form')],
-      ['form-layout', normalizeArg(args.formLayout)],
-    ]
-      .filter(([, v]) => v !== undefined && v !== false)
-      .map(([k, v]) => `${k}="${esc(String(v))}"`)
-      .join(' ');
-
-    const formOpen = formAttrs ? `<form-component ${formAttrs}>` : `<form-component form-id="${esc(args.formId || 'demo-form')}">`;
-
-    // add slot in docs if wrapped
-    const slotted = openTag.replace(`<${TAG}`, `<${TAG} slot="formField"`);
-
-    return [formOpen, `  ${slotted.replace(/\n/g, '\n  ')}`, `</form-component>`].join('\n');
-  }
-
-  return openTag;
-};
-
-/**
- * Multi-render stories output more than one component,
- * so we override docs.source.transform per-story.
- */
-const buildDocsHtmlSizes = () => {
-  return [
-    '<div>',
-    `  <${TAG} label="Default" input-id="size-default"></${TAG}>`,
-    `  <${TAG} label="Small" input-id="size-sm" size="sm"></${TAG}>`,
-    `  <${TAG} label="Large" input-id="size-lg" size="lg"></${TAG}>`,
-    '</div>',
-  ].join('\n');
-};
-
-const buildDocsHtmlInlineLayout = () => {
-  return [
-    '<form-component form-layout="inline" form-id="inline-form">',
-    `  <${TAG}`,
-    '    slot="formField"',
-    '    label="City"',
-    '    input-id="city"',
-    '    form-layout="inline"',
-    `  ></${TAG}>`,
-    `  <${TAG}`,
-    '    slot="formField"',
-    '    label="State"',
-    '    input-id="state"',
-    '    form-layout="inline"',
-    `  ></${TAG}>`,
-    '</form-component>',
-  ].join('\n');
-};
-
-const buildDocsHtmlReadOnlyAndDisabled = () => {
-  const roArgs = {
-    label: 'Read-only',
-    inputId: 'ro',
-    readOnly: true,
-    value: 'Read only value',
-    validationMessage: '',
-    labelCol: '',
-    inputCol: '',
-    wrapWithForm: false,
-  };
-
-  const disArgs = {
-    label: 'Disabled',
-    inputId: 'dis',
-    disabled: true,
-    value: 'Disabled value',
-    validationMessage: '',
-    labelCol: '',
-    inputCol: '',
-    wrapWithForm: false,
-  };
-
-  return [
-    '<div>',
-    `  ${buildDocsHtml(roArgs).replace(/\n/g, '\n  ')}`,
-    `  ${buildDocsHtml(disArgs).replace(/\n/g, '\n  ')}`,
-    '</div>',
-  ].join('\n');
-};
-
-/* ---------------- Runtime helpers ---------------- */
-
-const setAttr = (el, name, value) => {
-  if (value === true) el.setAttribute(name, '');
-  else if (value === false || value == null || value === '') el.removeAttribute(name);
-  else el.setAttribute(name, String(value));
-};
-
-// minimal CSS selector escaping for ids (avoid CSS.escape in JSDOM/SB envs)
-const cssEscapeIdent = (value) => String(value).replace(/([ !"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~])/g, '\\$1');
-
-const makeInput = (args = {}) => {
-  const el = document.createElement(TAG);
-
-  // Props as properties (Stencil)
-  el.disabled = !!args.disabled;
-  el.formId = args.formId || '';
-  el.formLayout = args.formLayout || '';
-  el.inputId = args.inputId || '';
-  el.size = args.size || '';
-  el.label = args.label || '';
-  el.labelSize = args.labelSize || 'xs';
-  el.labelAlign = args.labelAlign || '';
-  el.labelHidden = !!args.labelHidden;
-  el.readOnly = !!args.readOnly;
-  el.required = !!args.required;
-  el.type = args.type || 'text';
-  el.validation = !!args.validation;
-  el.validationMessage = args.validationMessage || '';
-  el.value = args.value ?? '';
-  if (args.placeholder !== undefined) el.placeholder = args.placeholder;
-
-  el.labelCol = Number.isFinite(args.labelCol) ? args.labelCol : 2;
-  el.inputCol = Number.isFinite(args.inputCol) ? args.inputCol : 10;
-  el.labelCols = args.labelCols || '';
-  el.inputCols = args.inputCols || '';
-
-  // ✅ standard a11y attrs (attribute-mapped props)
-  setAttr(el, 'aria-label', args.ariaLabel);
-  setAttr(el, 'aria-labelledby', args.ariaLabelledby);
-  setAttr(el, 'aria-describedby', args.ariaDescribedby);
-
-  // ✅ legacy a11y attr
-  setAttr(el, 'arialabelled-by', args.arialabelledBy);
-
-  // Storybook action wiring
-  el.addEventListener('valueChange', (e) => {
-    // eslint-disable-next-line no-console
-    console.log('[valueChange]', e.detail);
-  });
-
-  return el;
-};
-
-const wrapInForm = (inputEl, { formLayout = '', formId = 'demo-form' } = {}) => {
-  const form = document.createElement('form-component');
-  form.setAttribute('style', 'display:block; padding:12px;');
-  form.formLayout = formLayout || '';
-  form.formId = formId;
-
-  inputEl.setAttribute('slot', 'formField');
-  form.appendChild(inputEl);
-  return form;
-};
-
-const Template = (args) => {
-  const input = makeInput(args);
-  return args.wrapWithForm ? wrapInForm(input, { formLayout: args.formLayout, formId: args.formId || 'demo-form' }) : input;
-};
-
-/* ------------------------------------------------------------------
- * Default export
- * ------------------------------------------------------------------ */
-
 export default {
   title: 'Form/Plumage Input Field',
   tags: ['autodocs'],
+  decorators: [
+    (Story) => {
+      const wrap = document.createElement('div');
+      wrap.appendChild(DocsWrapStyles());
+      wrap.appendChild(Story());
+      return wrap;
+    },
+  ],
   parameters: {
     layout: 'padded',
     docs: {
+      page: DocsPage,
       description: {
         component:
           'A customizable single Plumage-styled text input field component with various props for label, size, validation, layout, and standard ARIA naming hooks (aria-label/aria-labelledby/aria-describedby).',
@@ -253,12 +43,9 @@ export default {
     },
   },
 
-  render: (args) => Template(args),
+  render: (args) => renderComponent(args),
 
   argTypes: {
-    /* =========================
-     * Input Attributes
-     * ========================= */
     disabled: {
       control: 'boolean',
       name: 'disabled',
@@ -290,9 +77,6 @@ export default {
       table: { category: 'Input Attributes' },
     },
 
-    /* =========================
-     * Accessibility
-     * ========================= */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -318,9 +102,6 @@ export default {
       description: 'Legacy: id(s) of external label(s). Prefer aria-labelledby.',
     },
 
-    /* =========================
-     * Layout
-     * ========================= */
     formId: {
       control: 'text',
       name: 'form-id',
@@ -398,18 +179,12 @@ export default {
       description: 'Sets the size of the input field.',
     },
 
-    /* =========================
-     * Storybook Only
-     * ========================= */
     wrapWithForm: {
       control: 'boolean',
       description: 'When enabled, wraps the input in a <form-component> and slots it as formField. Story-only control.',
       table: { category: 'Storybook Only', defaultValue: { summary: false } },
     },
 
-    /* =========================
-     * Validation
-     * ========================= */
     required: {
       control: 'boolean',
       name: 'required',
@@ -430,27 +205,23 @@ export default {
     },
   },
 
-  // ✅ IMPORTANT: default (Primary) must NOT share ids with any story shown on the same docs page.
   args: {
-    // input
     disabled: false,
     placeholder: '',
     readOnly: false,
     type: 'text',
     value: '',
 
-    // a11y
     ariaLabel: '',
     ariaLabelledby: '',
     ariaDescribedby: '',
     arialabelledBy: '',
 
-    // layout
     formId: '',
     formLayout: '',
     inputCol: 10,
     inputCols: '',
-    inputId: 'plumage-if-default', // unique for the Primary/Default render
+    inputId: 'plumage-if-default',
     label: 'First Name',
     labelAlign: '',
     labelCol: 2,
@@ -459,12 +230,10 @@ export default {
     labelSize: 'xs',
     size: '',
 
-    // validation
     required: false,
     validation: false,
     validationMessage: 'This field is required.',
 
-    // storybook only
     wrapWithForm: false,
   },
 };
@@ -473,15 +242,16 @@ export default {
  * Stories
  * ------------------------------------------------------------------ */
 
-export const Basic = Template.bind({});
-Basic.args = {
-  label: 'First Name',
-  inputId: 'plumage-if-basic', // ✅ unique vs default args
-  placeholder: 'Enter your first name',
-  validationMessage: '',
-  labelCol: '',
-  inputCol: '',
-  labelSize: 'sm',
+export const Basic = {
+  args: {
+    label: 'First Name',
+    inputId: 'plumage-if-basic',
+    placeholder: 'Enter your first name',
+    validationMessage: '',
+    labelCol: '',
+    inputCol: '',
+    labelSize: 'sm',
+  },
 };
 Basic.storyName = 'Basic';
 Basic.parameters = {
@@ -492,17 +262,19 @@ Basic.parameters = {
   },
 };
 
-export const Sizes = () => {
-  const container = document.createElement('div');
-  container.style.display = 'grid';
-  container.style.gap = '12px';
+export const Sizes = {
+  render: () => {
+    const container = document.createElement('div');
+    container.style.display = 'grid';
+    container.style.gap = '12px';
 
-  container.append(
-    Template({ label: 'Default', inputId: 'size-default', size: '' }),
-    Template({ label: 'Small', inputId: 'size-sm', size: 'sm' }),
-    Template({ label: 'Large', inputId: 'size-lg', size: 'lg' }),
-  );
-  return container;
+    container.append(
+      renderComponent({ label: 'Default', inputId: 'size-default', size: '' }),
+      renderComponent({ label: 'Small', inputId: 'size-sm', size: 'sm' }),
+      renderComponent({ label: 'Large', inputId: 'size-lg', size: 'lg' }),
+    );
+    return container;
+  },
 };
 Sizes.parameters = {
   docs: {
@@ -528,7 +300,7 @@ export const HorizontalLayout = {
     formId: 'demo-form',
     wrapWithForm: true,
   },
-  render: (args) => Template(args),
+  render: (args) => renderComponent(args),
 };
 HorizontalLayout.storyName = 'Horizontal Layout';
 HorizontalLayout.parameters = {
@@ -539,34 +311,36 @@ HorizontalLayout.parameters = {
   },
 };
 
-export const InlineLayout = () => {
-  const row = document.createElement('form-component');
-  row.formLayout = 'inline';
-  row.formId = 'inline-form';
-  row.setAttribute('style', 'display:block; padding:12px; gap:12px;');
+export const InlineLayout = {
+  render: () => {
+    const row = document.createElement('form-component');
+    row.formLayout = 'inline';
+    row.formId = 'inline-form';
+    row.setAttribute('style', 'display:block; padding:12px; gap:12px;');
 
-  const first = makeInput({
-    label: 'City',
-    inputId: 'city',
-    formLayout: 'inline',
-    validationMessage: '',
-    labelCol: '',
-    inputCol: '',
-  });
-  first.setAttribute('slot', 'formField');
+    const first = makeInput({
+      label: 'City',
+      inputId: 'city',
+      formLayout: 'inline',
+      validationMessage: '',
+      labelCol: '',
+      inputCol: '',
+    });
+    first.setAttribute('slot', 'formField');
 
-  const second = makeInput({
-    label: 'State',
-    inputId: 'state',
-    formLayout: 'inline',
-    validationMessage: '',
-    labelCol: '',
-    inputCol: '',
-  });
-  second.setAttribute('slot', 'formField');
+    const second = makeInput({
+      label: 'State',
+      inputId: 'state',
+      formLayout: 'inline',
+      validationMessage: '',
+      labelCol: '',
+      inputCol: '',
+    });
+    second.setAttribute('slot', 'formField');
 
-  row.append(first, second);
-  return row;
+    row.append(first, second);
+    return row;
+  },
 };
 InlineLayout.storyName = 'Inline Layout';
 InlineLayout.parameters = {
@@ -581,16 +355,17 @@ InlineLayout.parameters = {
   },
 };
 
-export const RequiredWithValidation = Template.bind({});
-RequiredWithValidation.args = {
-  label: 'Username',
-  inputId: 'username',
-  required: true,
-  validation: true,
-  validationMessage: 'Please enter at least 3 characters.',
-  formLayout: '',
-  labelCol: '',
-  inputCol: '',
+export const RequiredWithValidation = {
+  args: {
+    label: 'Username',
+    inputId: 'username',
+    required: true,
+    validation: true,
+    validationMessage: 'Please enter at least 3 characters.',
+    formLayout: '',
+    labelCol: '',
+    inputCol: '',
+  },
 };
 RequiredWithValidation.storyName = 'Required with Validation';
 RequiredWithValidation.parameters = {
@@ -601,18 +376,18 @@ RequiredWithValidation.parameters = {
   },
 };
 
-export const LabelHidden = Template.bind({});
-LabelHidden.args = {
-  label: 'Search',
-  inputId: 'search',
-  labelHidden: true,
-  placeholder: 'Search…',
-  validationMessage: '',
-  labelCol: '',
-  inputCol: '',
-  labelSize: '',
-  // optional override name; component will still aria-labelledby to sr-only label unless external aria-labelledby set
-  ariaLabel: '',
+export const LabelHidden = {
+  args: {
+    label: 'Search',
+    inputId: 'search',
+    labelHidden: true,
+    placeholder: 'Search…',
+    validationMessage: '',
+    labelCol: '',
+    inputCol: '',
+    labelSize: '',
+    ariaLabel: '',
+  },
 };
 LabelHidden.storyName = 'Label Hidden';
 LabelHidden.parameters = {
@@ -630,7 +405,7 @@ export const ReadOnlyAndDisabled = {
     stack.style.gap = '12px';
 
     stack.append(
-      Template({
+      renderComponent({
         label: 'Read-only',
         inputId: 'ro',
         readOnly: true,
@@ -639,7 +414,7 @@ export const ReadOnlyAndDisabled = {
         labelCol: '',
         inputCol: '',
       }),
-      Template({
+      renderComponent({
         label: 'Disabled',
         inputId: 'dis',
         disabled: true,
@@ -680,7 +455,7 @@ export const ResponsiveCols = {
     labelCol: '',
     inputCol: '',
   },
-  render: (args) => Template(args),
+  render: (args) => renderComponent(args),
 };
 ResponsiveCols.storyName = 'Responsive Columns';
 ResponsiveCols.parameters = {
@@ -690,10 +465,6 @@ ResponsiveCols.parameters = {
     },
   },
 };
-
-/* ------------------------------------------------------------------
- * NEW: Accessibility matrix story
- * ------------------------------------------------------------------ */
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
@@ -744,7 +515,6 @@ export const AccessibilityMatrix = {
 
       const snapshot = () => {
         const host = demo.querySelector(TAG);
-
         const input = host?.querySelector('input') || null;
         const label = host?.querySelector('label') || null;
 
@@ -786,10 +556,9 @@ export const AccessibilityMatrix = {
       return card;
     };
 
-    // Default (stacked)
     wrap.appendChild(
       cardRow('Default (stacked)', () =>
-        Template({
+        renderComponent({
           label: 'Default A11y',
           inputId: 'mx-default',
           formLayout: '',
@@ -806,7 +575,6 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Inline
     wrap.appendChild(
       cardRow('Inline layout', () => {
         const input = makeInput({
@@ -819,10 +587,9 @@ export const AccessibilityMatrix = {
       }),
     );
 
-    // Horizontal
     wrap.appendChild(
       cardRow('Horizontal layout', () =>
-        Template({
+        renderComponent({
           wrapWithForm: true,
           formId: 'mx-form-horizontal',
           formLayout: 'horizontal',
@@ -835,10 +602,9 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Validation
     wrap.appendChild(
       cardRow('Validation (aria-invalid + describedby)', () =>
-        Template({
+        renderComponent({
           label: 'Messages',
           inputId: 'mx-msg',
           required: true,
@@ -849,10 +615,9 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    // Disabled
     wrap.appendChild(
       cardRow('Disabled (aria-disabled)', () =>
-        Template({
+        renderComponent({
           label: 'Disabled',
           inputId: 'mx-disabled',
           disabled: true,

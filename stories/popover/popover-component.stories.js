@@ -1,4 +1,12 @@
-// src/stories/popover-component.stories.js
+import PopoverDocs from './popover-component.docs.mdx';
+import {
+  normalizeHtml,
+  buildBasicPopoverHtml,
+  buildRenderMarkup,
+  getSnapshot,
+} from './popover-component.story-helpers';
+
+const Template = args => buildRenderMarkup(args);
 
 export default {
   title: 'Components/Popover',
@@ -6,6 +14,7 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
+      page: PopoverDocs,
       source: { type: 'dynamic', language: 'html' },
       description: {
         component: 'A popover component that displays contextual information when triggered by user interaction.',
@@ -13,9 +22,6 @@ export default {
     },
   },
   argTypes: {
-    /* -----------------------------
-     Accessibility
-  ------------------------------ */
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
@@ -36,9 +42,6 @@ export default {
       table: { category: 'Accessibility' },
     },
 
-    /* -----------------------------
-     Content
-  ------------------------------ */
     popoverTitle: {
       control: 'text',
       name: 'title',
@@ -57,9 +60,6 @@ export default {
       table: { category: 'Content' },
     },
 
-    /* -----------------------------
-     Trigger & Targeting
-  ------------------------------ */
     trigger: {
       control: { type: 'select' },
       options: ['click', 'hover', 'focus', 'click hover', 'click focus', 'hover focus'],
@@ -83,12 +83,25 @@ export default {
       table: { category: 'Trigger & Targeting', defaultValue: { summary: false } },
     },
 
-    /* -----------------------------
-     Positioning
-  ------------------------------ */
     placement: {
-      control: { type: 'select' },
-      options: ['auto', 'top', 'bottom', 'left', 'right', 'top-start', 'top-end', 'bottom-start', 'bottom-end', 'left-start', 'left-end', 'right-start', 'right-end'],
+      control: {
+        type: 'select',
+      },
+      options: [
+        'auto',
+        'top',
+        'bottom',
+        'left',
+        'right',
+        'top-start',
+        'top-end',
+        'bottom-start',
+        'bottom-end',
+        'left-start',
+        'left-end',
+        'right-start',
+        'right-end',
+      ],
       description: 'Preferred popover placement.',
       table: { category: 'Positioning' },
     },
@@ -110,9 +123,6 @@ export default {
       table: { category: 'Positioning' },
     },
 
-    /* -----------------------------
-     Styling
-  ------------------------------ */
     variant: {
       control: { type: 'select' },
       options: ['', 'primary', 'secondary', 'success', 'danger', 'info', 'warning', 'dark'],
@@ -131,9 +141,6 @@ export default {
       table: { category: 'Styling' },
     },
 
-    /* -----------------------------
-     Chrome
-  ------------------------------ */
     arrowOff: {
       control: 'boolean',
       name: 'arrow-off',
@@ -141,113 +148,6 @@ export default {
       table: { category: 'Chrome', defaultValue: { summary: false } },
     },
   },
-};
-
-const boolLine = (name, on) => (on ? `  ${name}` : null);
-const attrLine = (name, val) => (val === undefined || val === null || val === '' ? null : `  ${name}="${String(val)}"`);
-
-const normalizeHtml = html => {
-  const lines = String(html ?? '')
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map(l => l.replace(/[ \t]+$/g, ''));
-
-  const out = [];
-  let prevBlank = false;
-
-  for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      out.push('');
-      prevBlank = true;
-      continue;
-    }
-    out.push(line);
-    prevBlank = false;
-  }
-
-  while (out.length && out[0] === '') out.shift();
-  while (out.length && out[out.length - 1] === '') out.pop();
-
-  return out.join('\n');
-};
-
-const normalizeFallback = v => {
-  if (!v) return '';
-  if (Array.isArray(v)) return v.join(',');
-  return String(v);
-};
-
-const buildPopoverAttrsBlock = a => {
-  const fallback = normalizeFallback(a.fallbackPlacement);
-
-  const lines = [
-    // a11y overrides
-    attrLine('aria-label', a.ariaLabel),
-    attrLine('aria-labelledby', a.ariaLabelledby),
-    attrLine('aria-describedby', a.ariaDescribedby),
-
-    boolLine('arrow-off', a.arrowOff),
-    attrLine('content', a.content),
-    attrLine('custom-class', a.customClass),
-    attrLine('fallback-placement', fallback),
-    attrLine('offset', a.offset),
-    attrLine('placement', a.placement),
-    boolLine('plumage', a.plumage),
-    boolLine('super', a.superTooltip),
-    attrLine('target', a.target),
-    attrLine('title', a.popoverTitle),
-
-    // ✅ new prop
-    boolLine('no-header', a.noHeader),
-
-    attrLine('trigger', a.trigger),
-    attrLine('variant', a.variant),
-    boolLine('visible', a.visible),
-    attrLine('y-offset', a.yOffset),
-  ].filter(Boolean);
-
-  return lines.length ? `\n${lines.join('\n')}` : '';
-};
-
-const buildPopoverTagWithChild = (a, { id } = {}) => {
-  const idAttr = id ? ` id="${id}"` : '';
-  const attrs = buildPopoverAttrsBlock(a);
-  return `<popover-component${idAttr}${attrs}\n>
-  <button class="btn btn-primary">Popover trigger</button>
-</popover-component>`;
-};
-
-const buildPopoverTagExternal = (a, triggerId) => {
-  const patch = { ...a, target: triggerId };
-  const attrs = buildPopoverAttrsBlock(patch);
-  return `<popover-component${attrs}\n></popover-component>`;
-};
-
-/* ============================== BasicPopover ============================== */
-
-const Template = args => {
-  const id = `popover-${Math.random().toString(36).slice(2, 9)}`;
-  const triggerId = args.target?.trim() ? args.target.trim() : `${id}-btn`;
-  const useExternalTarget = !!args.target?.trim();
-
-  const html = `
-<div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
-  ${
-    useExternalTarget
-      ? `
-  <button id="${triggerId}" class="btn btn-primary">External trigger</button>
-  ${buildPopoverTagExternal(args, triggerId)}
-  `
-      : `
-  ${buildPopoverTagWithChild(args, { id })}
-  `
-  }
-</div>
-`;
-
-  return normalizeHtml(html);
 };
 
 export const BasicPopover = Template.bind({});
@@ -267,7 +167,6 @@ BasicPopover.args = {
   variant: 'primary',
   visible: false,
   yOffset: 0,
-
   ariaLabel: '',
   ariaLabelledby: '',
   ariaDescribedby: '',
@@ -278,35 +177,24 @@ BasicPopover.parameters = {
     source: {
       type: 'dynamic',
       language: 'html',
-      transform: (_src, ctx) => {
-        // Use stable ids so code doesn't change every render just because of Math.random()
-        const stableArgs = { ...ctx.args, target: ctx.args.target?.trim() ? ctx.args.target.trim() : 'basic-popover-btn' };
-
-        // Build using a stable id instead of Template() (Template uses Math.random)
-        const html = `
-<div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
-  ${
-    stableArgs.target
-      ? `
-  <button id="${stableArgs.target}" class="btn btn-primary">External trigger</button>
-  ${buildPopoverTagExternal(stableArgs, stableArgs.target)}
-  `
-      : `
-  ${buildPopoverTagWithChild(stableArgs, { id: 'basic-popover' })}
-  `
-  }
-</div>
-`;
-        return normalizeHtml(html);
-      },
+      transform: (_src, ctx) =>
+        buildBasicPopoverHtml(
+          {
+            ...ctx.args,
+            target: ctx.args.target?.trim() ? ctx.args.target.trim() : '',
+          },
+          {
+            id: 'basic-popover',
+            triggerId: 'basic-popover-btn',
+          },
+        ),
     },
     description: {
-      story: 'A basic popover example. Use the controls to customize its behavior and appearance. You can change the trigger event, placement, content, and more.',
+      story:
+        'A basic popover example. Use the controls to customize its behavior and appearance. You can change the trigger event, placement, content, and more.',
     },
   },
 };
-
-/* ============================== Focused Examples ============================== */
 
 export const ClickTrigger = () =>
   normalizeHtml(`
@@ -386,15 +274,15 @@ Variants.parameters = {
 
 export const SuperTooltipMode = () =>
   normalizeHtml(`
-    <div style="display:flex; gap:12px; flex-wrap:wrap;">
-      <popover-component title="Super tooltip" content="Denser visual style" super placement="auto">
-      <button-component id="btn-super-1" variant="primary">Super tooltip</button-component>
-      </popover-component>
+<div style="display:flex; gap:12px; flex-wrap:wrap;">
+  <popover-component title="Super tooltip" content="Denser visual style" super placement="auto">
+    <button-component id="btn-super-1" variant="primary">Super tooltip</button-component>
+  </popover-component>
 
-      <popover-component title="Plumage Super tooltip" content="Plumage styled Super tooltip" plumage super placement="right">
-        <button-component id="btn-super-2" size="plumage-size" variant="primary">Plumage Styled Super tooltip</button-component>
-      </popover-component>
-    </div>
+  <popover-component title="Plumage Super tooltip" content="Plumage styled Super tooltip" plumage super placement="right">
+    <button-component id="btn-super-2" size="plumage-size" variant="primary">Plumage Styled Super tooltip</button-component>
+  </popover-component>
+</div>
 `);
 SuperTooltipMode.storyName = 'Super Tooltip';
 SuperTooltipMode.parameters = {
@@ -403,8 +291,6 @@ SuperTooltipMode.parameters = {
     description: { story: 'Popover in super tooltip mode via the `super` attribute.' },
   },
 };
-
-/* ============================== Slot Content Example ============================== */
 
 export const SlotContent = () =>
   normalizeHtml(`
@@ -427,8 +313,6 @@ SlotContent.parameters = {
     },
   },
 };
-
-// Add this inside src/stories/popover-component.stories.js
 
 export const NoHeader = () =>
   normalizeHtml(`
@@ -461,7 +345,8 @@ NoHeader.parameters = {
   docs: {
     source: { code: NoHeader(), language: 'html' },
     description: {
-      story: 'Demonstrates `no-header` which suppresses rendering `.popover-header` even when `title` is set. Includes a second example using `plumage` + `super`.',
+      story:
+        'Demonstrates `no-header` which suppresses rendering `.popover-header` even when `title` is set. Includes a second example using `plumage` + `super`.',
     },
   },
 };
@@ -473,12 +358,10 @@ export const PositionsGrid = () =>
   <popover-component title="top-start" content="This is the top-start position" placement="top-start"><button-component variant="secondary" outlined>Top-start position</button-component></popover-component>
   <popover-component title="top-end" content="This is the top-end position" placement="top-end"><button-component variant="secondary" outlined>Top-end position</button-component></popover-component>
   <popover-component title="left" content="This is the left position" placement="left"><button-component variant="secondary" outlined>Left position</button-component></popover-component>
-
   <popover-component title="left-start" content="This is the left-start position" placement="left-start"><button-component variant="secondary" outlined>Left-start position</button-component></popover-component>
   <popover-component title="left-end" content="This is the left-end position" placement="left-end"><button-component variant="secondary" outlined>Left-end position</button-component></popover-component>
   <popover-component title="right-start" content="This is the right-start position" placement="right-start"><button-component variant="secondary" outlined>Right-start position</button-component></popover-component>
   <popover-component title="right-end" content="This is the right-end position" placement="right-end"><button-component variant="secondary" outlined>Right-end position</button-component></popover-component>
-
   <popover-component title="bottom" content="This is the bottom position" placement="bottom"><button-component variant="secondary" outlined>Bottom position</button-component></popover-component>
   <popover-component title="bottom-start" content="This is the bottom-start position" placement="bottom-start"><button-component variant="secondary" outlined>Bottom-start position</button-component></popover-component>
   <popover-component title="bottom-end" content="This is the bottom-end position" placement="bottom-end"><button-component variant="secondary" outlined>Bottom-end position</button-component></popover-component>
@@ -496,7 +379,7 @@ PositionsGrid.parameters = {
 export const OffsetAndY = () =>
   normalizeHtml(`
 <popover-component title="Offset demo" content="offset=16, y-offset=0" placement="auto" offset="16" y-offset="0">
-  <button class="btn btn-outline-primary">Offset Popover</button>
+  <button class="btn btn-outline-primary" type="button">Offset Popover</button>
 </popover-component>
 `);
 OffsetAndY.storyName = 'Offset + Y Offset';
@@ -509,7 +392,7 @@ OffsetAndY.parameters = {
 
 export const ExternalTarget = () =>
   normalizeHtml(`
-<button id="ext-popover-trigger" class="btn btn-primary">External trigger</button>
+<button id="ext-popover-trigger" class="btn btn-primary" type="button">External trigger</button>
 
 <popover-component
   title="External"
@@ -525,65 +408,6 @@ ExternalTarget.parameters = {
     source: { code: ExternalTarget(), language: 'html' },
     description: { story: 'Attach the popover to an external trigger element via `target`.' },
   },
-};
-
-/* ============================== Accessibility Matrix (computed) ============================== */
-
-const getSnapshot = host => {
-  const trigger = host?.querySelector('button') || host?.querySelector('button-component') || host?.querySelector('[role="button"]') || host?.querySelector('[tabindex]');
-
-  const describedby = (trigger?.getAttribute?.('aria-describedby') || '').trim();
-  const describedIds = describedby ? describedby.split(/\s+/).filter(Boolean) : [];
-
-  const resolve = id => {
-    if (!id) return false;
-    return !!document.querySelector(`#${CSS.escape(id)}`);
-  };
-
-  // Popover is appended to body
-  const popoverId = trigger?.getAttribute?.('aria-controls') || describedIds[0] || null;
-  const pop = popoverId ? document.getElementById(popoverId) : document.body.querySelector('.popover');
-
-  const popLabelledby = (pop?.getAttribute?.('aria-labelledby') || '').trim();
-  const popLabelledbyIds = popLabelledby ? popLabelledby.split(/\s+/).filter(Boolean) : [];
-
-  const popDescribedby = (pop?.getAttribute?.('aria-describedby') || '').trim();
-  const popDescribedbyIds = popDescribedby ? popDescribedby.split(/\s+/).filter(Boolean) : [];
-
-  return {
-    'host': host?.tagName?.toLowerCase() ?? null,
-    'triggerTag': trigger?.tagName?.toLowerCase() ?? null,
-    'triggerTabindex': trigger?.getAttribute?.('tabindex') ?? null,
-
-    'trigger aria-haspopup': trigger?.getAttribute?.('aria-haspopup') ?? null,
-    'trigger aria-expanded': trigger?.getAttribute?.('aria-expanded') ?? null,
-    'trigger aria-controls': trigger?.getAttribute?.('aria-controls') ?? null,
-    'trigger aria-describedby': describedby || null,
-
-    'triggerDescribedbyIds': describedIds,
-    'triggerDescribedbyAllResolve': describedIds.every(resolve),
-
-    'popoverFound': !!pop,
-    'popoverId': pop?.getAttribute?.('id') ?? null,
-    'popoverRole': pop?.getAttribute?.('role') ?? null,
-    'popoverTabindex': pop?.getAttribute?.('tabindex') ?? null,
-    'popover aria-hidden': pop?.getAttribute?.('aria-hidden') ?? null,
-    'popover aria-modal': pop?.getAttribute?.('aria-modal') ?? null,
-    'popover aria-label': pop?.getAttribute?.('aria-label') ?? null,
-    'popover aria-labelledby': popLabelledby || null,
-    'popover aria-describedby': popDescribedby || null,
-
-    'popoverLabelledbyIds': popLabelledbyIds,
-    'popoverLabelledbyAllResolve': popLabelledbyIds.every(resolve),
-
-    'popoverDescribedbyIds': popDescribedbyIds,
-    'popoverDescribedbyAllResolve': popDescribedbyIds.every(resolve),
-
-    'hasHeader': !!pop?.querySelector?.('.popover-header'),
-    'headerId': pop?.querySelector?.('.popover-header')?.getAttribute?.('id') ?? null,
-    'hasBody': !!pop?.querySelector?.('.popover-body'),
-    'bodyId': pop?.querySelector?.('.popover-body')?.getAttribute?.('id') ?? null,
-  };
 };
 
 export const AccessibilityMatrix = {
@@ -661,17 +485,25 @@ export const AccessibilityMatrix = {
     };
 
     const openClick = async host => {
-      const trigger = host?.querySelector('button') || host?.querySelector('button-component') || host?.querySelector('[role="button"]') || host?.querySelector('[tabindex]');
+      const trigger =
+        host?.querySelector('button') ||
+        host?.querySelector('button-component') ||
+        host?.querySelector('[role="button"]') ||
+        host?.querySelector('[tabindex]');
 
       trigger?.dispatchEvent?.(new MouseEvent('click', { bubbles: true }));
-      await new Promise(r => requestAnimationFrame(r));
+      await new Promise(resolve => requestAnimationFrame(resolve));
     };
 
     const openHover = async host => {
-      const trigger = host?.querySelector('button') || host?.querySelector('button-component') || host?.querySelector('[role="button"]') || host?.querySelector('[tabindex]');
+      const trigger =
+        host?.querySelector('button') ||
+        host?.querySelector('button-component') ||
+        host?.querySelector('[role="button"]') ||
+        host?.querySelector('[tabindex]');
 
       trigger?.dispatchEvent?.(new MouseEvent('mouseenter', { bubbles: true }));
-      await new Promise(r => requestAnimationFrame(r));
+      await new Promise(resolve => requestAnimationFrame(resolve));
     };
 
     wrap.appendChild(
@@ -739,7 +571,7 @@ export const AccessibilityMatrix = {
         async host => {
           const btn = host?.querySelector('button');
           if (btn) btn.setAttribute('disabled', '');
-          await new Promise(r => requestAnimationFrame(r));
+          await new Promise(resolve => requestAnimationFrame(resolve));
         },
       ),
     );

@@ -1,0 +1,38 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as ModalStories from './modal-component.stories.js';
+import { reactExample, vueExample, angularExample } from './modal-component.examples.js';
+
+<Meta of={ModalStories} />
+
+# Modal
+
+<Description of={ModalStories} />
+
+## HTML
+
+```html
+<modal-component
+  btn-text="Open modal"
+  variant="primary"
+  modal-title="Modal title"
+>
+  <p>Woohoo, you're reading this text in a modal!</p>
+  <p>This is the modal body. Add any markup you like here.</p>
+
+  <button-component slot="footer" variant="primary">
+    Save changes
+  </button-component>
+</modal-component>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

@@ -1,4 +1,3 @@
-// src/components/sliders/multi-range-slider-component.tsx
 import { Component, Prop, Event, EventEmitter, h, Element, State, Watch } from '@stencil/core';
 
 @Component({
@@ -24,32 +23,27 @@ export class MultiRangeSliderComponent {
   @Prop() sliderThumbLabel: boolean = false;
 
   @Prop() snapToTicks: boolean = false;
-  /** Accepts array or JSON string in HTML */
   @Prop() tickValues: number[] | string = [];
   @Prop() tickLabels: boolean = false;
 
   @Prop() unit: string = '';
   @Prop() variant: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark' = '';
 
-  // ----------------- a11y override props -----------------
+  @Prop() rangeFillMode: 'inside' | 'outside' = 'inside';
+  @Prop() orientation: 'horizontal' | 'vertical' = 'horizontal';
+
   @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
   @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
 
   @State() private _ticks: number[] = [];
 
-  private containerEl?: HTMLDivElement;
+  private controlsEl?: HTMLDivElement;
   private dragging: 'lower' | 'upper' | 'track' | null = null;
-
-  /**
-   * Used by keyboard handler to decide which thumb to move.
-   * IMPORTANT: updated on mouse down AND on focus so Tab navigation works.
-   */
   private activeThumb: 'lower' | 'upper' = 'lower';
-
   private a11yBaseId = `mslider_${Math.random().toString(36).slice(2, 11)}`;
 
-  @Event() rangeChange: EventEmitter<{ lowerValue: number; upperValue: number }>;
+  @Event() rangeChange!: EventEmitter<{ lowerValue: number; upperValue: number }>;
 
   componentWillLoad() {
     this._ticks = this.normalizeTicks(this.tickValues);
@@ -77,15 +71,16 @@ export class MultiRangeSliderComponent {
 
   private normalizeTicks(input: number[] | string): number[] {
     if (Array.isArray(input)) return input.map(n => Number(n)).filter(n => Number.isFinite(n));
+
     if (typeof input === 'string' && input.trim()) {
       try {
         const parsed = JSON.parse(input);
         return Array.isArray(parsed) ? parsed.map(n => Number(n)).filter(n => Number.isFinite(n)) : [];
       } catch {
-        // eslint-disable-next-line no-console
         console.warn('[multi-range-slider-component] Invalid JSON for tickValues');
       }
     }
+
     return [];
   }
 
@@ -111,7 +106,7 @@ export class MultiRangeSliderComponent {
   }
 
   private pctFromValue(v: number) {
-    return Math.round(((v - this.min) / Math.max(1e-9, this.max - this.min)) * 100);
+    return ((v - this.min) / Math.max(1e-9, this.max - this.min)) * 100;
   }
 
   private enforceOrder() {
@@ -122,10 +117,6 @@ export class MultiRangeSliderComponent {
     }
   }
 
-  /**
-   * Format numeric values with unit.
-   * If unit is "$", prefix it (e.g. $125). Otherwise suffix (e.g. 125°F).
-   */
   private formatWithUnit(n: number): string {
     const unit = String(this.unit ?? '').trim();
     const rounded = Math.round(n);
@@ -168,7 +159,6 @@ export class MultiRangeSliderComponent {
     return { ariaLabel, ariaLabelledBy, ariaDescribedBy: userDescribedBy };
   }
 
-  // Keyboard
   private calculateIncrement(): number {
     if (this.snapToTicks && this._ticks.length > 1) {
       return Math.abs(this._ticks[1] - this._ticks[0]) || 1;
@@ -203,32 +193,49 @@ export class MultiRangeSliderComponent {
 
     const inc = this.calculateIncrement();
     let changed = false;
-
     const which = this.activeThumb;
+    const currentValue = which === 'lower' ? this.lowerValue : this.upperValue;
+    const isVertical = this.orientation === 'vertical';
 
     switch (event.key) {
-      case 'ArrowRight':
       case 'ArrowUp':
-        this.applyChange(which, (which === 'lower' ? this.lowerValue : this.upperValue) + inc, inc);
+        this.applyChange(which, currentValue + inc, inc);
         changed = true;
         break;
-      case 'ArrowLeft':
+
       case 'ArrowDown':
-        this.applyChange(which, (which === 'lower' ? this.lowerValue : this.upperValue) - inc, inc);
+        this.applyChange(which, currentValue - inc, inc);
         changed = true;
         break;
+
+      case 'ArrowRight':
+        if (!isVertical) {
+          this.applyChange(which, currentValue + inc, inc);
+          changed = true;
+        }
+        break;
+
+      case 'ArrowLeft':
+        if (!isVertical) {
+          this.applyChange(which, currentValue - inc, inc);
+          changed = true;
+        }
+        break;
+
       case 'Home':
         this.lowerValue = this.min;
         this.upperValue = Math.max(this.min + inc, this.lowerValue + inc);
         this.activeThumb = 'lower';
         changed = true;
         break;
+
       case 'End':
         this.upperValue = this.max;
         this.lowerValue = Math.min(this.max - inc, this.upperValue - inc);
         this.activeThumb = 'upper';
         changed = true;
         break;
+
       default:
         return;
     }
@@ -244,11 +251,11 @@ export class MultiRangeSliderComponent {
     }
   };
 
-  // Drag
   private addDragListeners() {
     window.addEventListener('mousemove', this.onDragMove);
     window.addEventListener('mouseup', this.onDragStop);
   }
+
   private removeDragListeners() {
     window.removeEventListener('mousemove', this.onDragMove);
     window.removeEventListener('mouseup', this.onDragStop);
@@ -260,16 +267,33 @@ export class MultiRangeSliderComponent {
     this.dragging = which;
     this.activeThumb = which;
     this.addDragListeners();
+
     const el = this.host.querySelector(`.slider-thumb-container.${which}-thumb`);
     el?.classList.add('slider-thumb-container-active');
   };
 
-  private onDragMove = (e: MouseEvent) => {
-    if (!this.dragging || !this.containerEl) return;
-    const rect = this.containerEl.getBoundingClientRect();
+  private getValueFromPointer(e: MouseEvent): number | null {
+    if (!this.controlsEl) return null;
+
+    const rect = this.controlsEl.getBoundingClientRect();
+
+    if (this.orientation === 'vertical') {
+      const y = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
+      const pct = 1 - y / Math.max(1, rect.height);
+      return this.min + pct * (this.max - this.min);
+    }
+
     const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
     const pct = x / Math.max(1, rect.width);
-    let value = this.min + pct * (this.max - this.min);
+    return this.min + pct * (this.max - this.min);
+  }
+
+  private onDragMove = (e: MouseEvent) => {
+    if (!this.dragging || !this.controlsEl) return;
+
+    let value = this.getValueFromPointer(e);
+    if (value == null) return;
+
     if (this.snapToTicks) value = this.snapValueToTick(value);
 
     if (this.dragging === 'lower') {
@@ -277,14 +301,17 @@ export class MultiRangeSliderComponent {
     } else if (this.dragging === 'upper') {
       this.upperValue = this.clamp(Math.max(value, this.lowerValue), this.min, this.max);
     }
+
     this.emitRange();
   };
 
   private onDragStop = () => {
     const lower = this.host.querySelector('.slider-thumb-container.lower-thumb');
     const upper = this.host.querySelector('.slider-thumb-container.upper-thumb');
+
     lower?.classList.remove('slider-thumb-container-active');
     upper?.classList.remove('slider-thumb-container-active');
+
     this.dragging = null;
     this.removeDragListeners();
   };
@@ -293,10 +320,152 @@ export class MultiRangeSliderComponent {
     this.rangeChange.emit({ lowerValue: this.lowerValue, upperValue: this.upperValue });
   }
 
+  private getThumbPositionStyle(pct: number) {
+    if (this.orientation === 'vertical') {
+      return {
+        bottom: `${pct}%`,
+        left: '50%',
+        transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s',
+      };
+    }
+
+    return {
+      left: `${pct}%`,
+      transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s',
+    };
+  }
+
+  private getThumbLabelStyle(pct: number, which: 'lower' | 'upper') {
+    if (this.orientation === 'vertical') {
+      return {
+        position: 'absolute',
+        bottom: `calc(${pct}% - 18px)`,
+        left: 'calc(100% + 18px)',
+        transform: 'translateY(50%) translateY(-50%) rotate(140deg)',
+      };
+    }
+
+    if (which === 'upper') {
+      return {
+        position: 'absolute',
+        left: `calc(${pct}% + 3px)`,
+        transform: 'translateX(-62%) translateY(30%) translateY(-100%) rotate(45deg)',
+      };
+    }
+
+    return {
+      position: 'absolute',
+      left: `${pct}%`,
+      transform: 'translateX(-52%) translateY(30%) translateY(-100%) rotate(45deg)',
+    };
+  }
+
+  private getTickStyle(pos: number) {
+    if (this.orientation === 'vertical') {
+      return {
+        bottom: `${pos}%`,
+        left: '50%',
+      };
+    }
+
+    return {
+      left: `${pos}%`,
+      top: 'calc(50% - 10px)',
+    };
+  }
+
+  private getTickLabelStyle(pos: number) {
+    if (this.orientation === 'vertical') {
+      return {
+        bottom: `${pos}%`,
+        left: 'calc(50% + 8px)',
+        transform: 'translateY(50%)',
+      };
+    }
+
+    return {
+      left: `${pos}%`,
+      transform: 'translateX(-50%)',
+    };
+  }
+
+  private renderTrackSegments(color: string, lowerPct: number, upperPct: number) {
+    const baseTrackClass = ['slider-track', 'multi', color].filter(Boolean).join(' ');
+    const middleSize = Math.max(0, upperPct - lowerPct);
+    const rightOrTopSize = Math.max(0, 100 - upperPct);
+
+    if (this.orientation === 'vertical') {
+      if (this.rangeFillMode === 'inside') {
+        return (
+          <div
+            class={`${baseTrackClass} slider-track-inside`}
+            aria-hidden="true"
+            style={{
+              bottom: `${lowerPct}%`,
+              height: `${middleSize}%`,
+            }}
+          />
+        );
+      }
+
+      return [
+        <div
+          class={`${baseTrackClass} slider-track-outside-left`}
+          aria-hidden="true"
+          style={{
+            bottom: '0%',
+            height: `${Math.max(0, lowerPct)}%`,
+          }}
+        />,
+        <div
+          class={`${baseTrackClass} slider-track-outside-right`}
+          aria-hidden="true"
+          style={{
+            bottom: `${upperPct}%`,
+            height: `${rightOrTopSize}%`,
+          }}
+        />,
+      ];
+    }
+
+    if (this.rangeFillMode === 'inside') {
+      return (
+        <div
+          class={`${baseTrackClass} slider-track-inside`}
+          aria-hidden="true"
+          style={{
+            left: `${lowerPct}%`,
+            width: `${middleSize}%`,
+          }}
+        />
+      );
+    }
+
+    return [
+      <div
+        class={`${baseTrackClass} slider-track-outside-left`}
+        aria-hidden="true"
+        style={{
+          left: '0%',
+          width: `${Math.max(0, lowerPct)}%`,
+        }}
+      />,
+      <div
+        class={`${baseTrackClass} slider-track-outside-right`}
+        aria-hidden="true"
+        style={{
+          left: `${upperPct}%`,
+          width: `${rightOrTopSize}%`,
+        }}
+      />,
+    ];
+  }
+
   render() {
     const color = this.getColor(this.variant);
     const lowerPct = this.pctFromValue(this.lowerValue);
     const upperPct = this.pctFromValue(this.upperValue);
+    const showMinMaxLabels = this._ticks.length === 0;
     const hideLeft = this.hideTextBoxes || this.hideLeftTextBox;
     const hideRight = this.hideTextBoxes || this.hideRightTextBox;
 
@@ -310,39 +479,54 @@ export class MultiRangeSliderComponent {
     const upperText = this.formatWithUnit(this.upperValue);
     const rangeText = `${lowerText} – ${upperText}`;
 
-    const lowerThumbContainerClass = ['slider-thumb-container', 'lower-thumb', color, this.disabled ? 'slider-thumb-container-disabled' : ''].filter(Boolean).join(' ');
-    const upperThumbContainerClass = ['slider-thumb-container', 'upper-thumb', color, this.disabled ? 'slider-thumb-container-disabled' : ''].filter(Boolean).join(' ');
+    const lowerThumbContainerClass = ['slider-thumb-container', 'lower-thumb', color, this.disabled ? 'slider-thumb-container-disabled' : '']
+      .filter(Boolean)
+      .join(' ');
+
+    const upperThumbContainerClass = ['slider-thumb-container', 'upper-thumb', color, this.disabled ? 'slider-thumb-container-disabled' : '']
+      .filter(Boolean)
+      .join(' ');
+
+    const isVertical = this.orientation === 'vertical';
+    const sliderClass = ['slider', isVertical ? 'slider-vertical' : 'slider-horizontal'].filter(Boolean).join(' ');
+    const sliderContainerClass = ['slider-container', isVertical ? 'slider-container-vertical' : 'slider-container-horizontal']
+      .filter(Boolean)
+      .join(' ');
+    const sliderControlsClass = ['slider-controls', isVertical ? 'slider-controls-vertical' : 'slider-controls-horizontal']
+      .filter(Boolean)
+      .join(' ');
 
     return (
       <div class="sc-slider">
         <div class="slider-wrapper">
-          <div dir="ltr" class="slider" role="presentation">
+          <div dir="ltr" class={sliderClass} role="presentation">
             {hasVisibleLabel ? (
               <label id={labelId} class="form-control-label">
                 {this.label} <span id={valueId}>{rangeText}</span>
               </label>
             ) : null}
 
-            <div class="slider-container" ref={el => (this.containerEl = el as HTMLDivElement)}>
+            <div class={sliderContainerClass}>
               {!hideLeft && (
                 <div role="textbox" aria-readonly="true" aria-labelledby={hasVisibleLabel ? labelId : undefined} class="slider-value-left">
                   {lowerText}
                 </div>
               )}
 
-              <div class="slider-min-value" aria-hidden="true">
-                {this.formatWithUnit(this.min)}
-              </div>
+              {showMinMaxLabels ? (
+                <div class="slider-min-value" aria-hidden="true">
+                  {this.formatWithUnit(this.min)}
+                </div>
+              ) : null}
 
-              <div class="slider-controls" role="presentation">
-                <div class={`slider-track multi ${color}`} style={{ width: `${lowerPct}%` }} aria-hidden="true" />
-                <div class={`slider-track multi ${color}`} style={{ left: `${lowerPct}%`, right: `${100 - upperPct}%` }} aria-hidden="true" />
-                <div class={`slider-track multi ${color}`} style={{ width: `${100 - upperPct}%` }} aria-hidden="true" />
+              <div class={sliderControlsClass} role="presentation" ref={el => (this.controlsEl = el as HTMLDivElement)}>
+                <div class="slider-background-track" aria-hidden="true" />
 
-                {/* Lower thumb slider */}
+                {this.renderTrackSegments(color, lowerPct, upperPct)}
+
                 <div
                   class={lowerThumbContainerClass}
-                  style={{ left: `${lowerPct}%`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
+                  style={this.getThumbPositionStyle(lowerPct)}
                   onMouseDown={this.disabled ? undefined : e => this.onThumbMouseDown(e, 'lower')}
                   onFocus={() => (this.activeThumb = 'lower')}
                   onKeyDown={this.onKeyDown}
@@ -351,7 +535,7 @@ export class MultiRangeSliderComponent {
                   aria-label={ariaLabelledBy ? undefined : `${ariaLabel ?? 'Range'} lower`}
                   aria-labelledby={ariaLabelledBy}
                   aria-describedby={ariaDescribedBy}
-                  aria-orientation="horizontal"
+                  aria-orientation={this.orientation}
                   aria-disabled={this.disabled ? 'true' : undefined}
                   aria-valuemin={String(this.min)}
                   aria-valuemax={String(this.max)}
@@ -365,15 +549,7 @@ export class MultiRangeSliderComponent {
                   )}
 
                   {this.sliderThumbLabel ? (
-                    <div
-                      class={`slider-thumb-label ${color}`}
-                      style={{
-                        position: 'absolute',
-                        left: `${lowerPct}%`,
-                        transform: 'translateX(-52%) translateY(30%) translateY(-100%) rotate(45deg)',
-                      }}
-                      aria-hidden="true"
-                    >
+                    <div class={`slider-thumb-label ${color}`} style={this.getThumbLabelStyle(lowerPct, 'lower')} aria-hidden="true">
                       <div>
                         <span>{lowerText}</span>
                       </div>
@@ -381,10 +557,9 @@ export class MultiRangeSliderComponent {
                   ) : null}
                 </div>
 
-                {/* Upper thumb slider */}
                 <div
                   class={upperThumbContainerClass}
-                  style={{ left: `${upperPct}%`, transition: 'all 0.1s cubic-bezier(0.25, 0.8, 0.5, 1) 0s' }}
+                  style={this.getThumbPositionStyle(upperPct)}
                   onMouseDown={this.disabled ? undefined : e => this.onThumbMouseDown(e, 'upper')}
                   onFocus={() => (this.activeThumb = 'upper')}
                   onKeyDown={this.onKeyDown}
@@ -393,7 +568,7 @@ export class MultiRangeSliderComponent {
                   aria-label={ariaLabelledBy ? undefined : `${ariaLabel ?? 'Range'} upper`}
                   aria-labelledby={ariaLabelledBy}
                   aria-describedby={ariaDescribedBy}
-                  aria-orientation="horizontal"
+                  aria-orientation={this.orientation}
                   aria-disabled={this.disabled ? 'true' : undefined}
                   aria-valuemin={String(this.min)}
                   aria-valuemax={String(this.max)}
@@ -407,15 +582,7 @@ export class MultiRangeSliderComponent {
                   )}
 
                   {this.sliderThumbLabel ? (
-                    <div
-                      class={`slider-thumb-label ${color}`}
-                      style={{
-                        position: 'absolute',
-                        left: `calc(${upperPct}% + 3px)`,
-                        transform: 'translateX(-62%) translateY(30%) translateY(-100%) rotate(45deg)',
-                      }}
-                      aria-hidden="true"
-                    >
+                    <div class={`slider-thumb-label ${color}`} style={this.getThumbLabelStyle(upperPct, 'upper')} aria-hidden="true">
                       <div>
                         <span>{upperText}</span>
                       </div>
@@ -427,11 +594,12 @@ export class MultiRangeSliderComponent {
                   <div class="slider-ticks" aria-hidden="true">
                     {this._ticks.map(tick => {
                       const pos = ((tick - this.min) / Math.max(1e-9, this.max - this.min)) * 100;
+
                       return (
                         <div>
-                          <div class="slider-tick" style={{ left: `${pos}%`, top: 'calc(50% - 10px)' }} />
+                          <div class="slider-tick" style={this.getTickStyle(pos)} />
                           {this.tickLabels ? (
-                            <div class="slider-tick-label" style={{ left: `${pos}%`, transform: 'translateX(-50%)' }}>
+                            <div class="slider-tick-label" style={this.getTickLabelStyle(pos)}>
                               {this.formatWithUnit(tick)}
                             </div>
                           ) : null}
@@ -442,9 +610,11 @@ export class MultiRangeSliderComponent {
                 ) : null}
               </div>
 
-              <div class="slider-max-value" aria-hidden="true">
-                {this.formatWithUnit(this.max)}
-              </div>
+              {showMinMaxLabels ? (
+                <div class="slider-max-value" aria-hidden="true">
+                  {this.formatWithUnit(this.max)}
+                </div>
+              ) : null}
 
               {!hideRight && (
                 <div role="textbox" aria-readonly="true" aria-labelledby={hasVisibleLabel ? labelId : undefined} class="slider-value-right">

@@ -1,0 +1,94 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as TableStories from './table-component.stories';
+import { reactExample,
+  reactPlaygroundExample,
+  vueExample,
+  vuePlaygroundExample,
+  angularExample,
+  angularPlaygroundExample,
+  svelteExample,
+  sveltePlaygroundExample, } from './table-component.examples';
+
+<Meta of={TableStories} />
+
+# Table Component
+
+<Description of={TableStories} />
+
+## HTML
+
+```html
+<table-component
+  id="table-example"
+  table-id="table-example"
+  responsive
+  striped
+  sortable
+  pagination-enabled
+  pagination-variant="standard"
+  pagination-position="bottom"
+  rows-per-page="10"
+  size="sm"
+></table-component>
+
+<script>
+  (async () => {
+    await customElements.whenDefined('table-component');
+    const table = document.getElementById('table-example');
+
+    table.items = [
+      { last_name: 'MacDonald', first_name: 'Thor', age: 40 },
+      { last_name: 'Smith', first_name: 'Anna', age: 25 },
+      { last_name: 'Peterson', first_name: 'Zachary', age: 36 },
+    ];
+
+    table.originalItems = [...table.items];
+
+    table.fields = [
+      { key: 'last_name', label: 'Last Name', sortable: true },
+      { key: 'first_name', label: 'First Name', sortable: true },
+      { key: 'age', label: 'Age', sortable: true },
+    ];
+  })();
+</script>
+```
+## React
+<details>
+<summary>React Implementation (Basic)</summary>
+<Source code={reactExample} language="tsx" />
+</details>
+<details>
+<summary>React Implementation (w/ Sort, Filtering, Pagination)</summary>
+<Source code={reactPlaygroundExample} language="tsx" />
+</details>
+## Vue
+<details>
+<summary>Vue Implementation (Basic)</summary>
+<Source code={vueExample} language="vue" />
+</details>
+<details>
+<summary>Vue Implementation (w/ Sort, Filtering, Pagination)</summary>
+<Source code={vuePlaygroundExample} language="vue" />
+</details>
+## Angular
+<details>
+<summary>Angular Implementation (Basic)</summary>
+<Source code={angularExample} language="ts" />
+</details>
+<details>
+<summary>Angular Implementation (w/ Sort, Filtering, Pagination)</summary>
+<Source code={angularPlaygroundExample} language="ts" />
+</details>
+## Svelte
+<details>
+<summary>Svelte Implementation (Basic)</summary>
+<Source code={svelteExample} language="ts" />
+</details>
+<details>
+<summary>Svelte Implementation (w/ Sort, Filtering, Pagination)</summary>
+<Source code={sveltePlaygroundExample} language="ts" />
+</details>
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />
