@@ -102,11 +102,10 @@ onBeforeUnmount(() => {
 </script>
 `.trim();
 
-export const angularExample = `
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core'
+export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core'
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-autocomplete-single',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -120,7 +119,7 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy
     </main>
   \`,
 })
-export class AppComponent implements AfterViewInit, OnDestroy {
+export class AutocompleteSingleComponent implements AfterViewInit, OnDestroy {
   @ViewChild('autocompleteEl', { static: true }) autocompleteRef!: ElementRef
 
   private readonly onSelect = (event: Event) => {
@@ -156,4 +155,107 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.autocompleteRef.nativeElement.removeEventListener('valueChange', this.onValueChange)
   }
 }
+`.trim();
+
+export const svelteExample = `
+<script>
+  import { onMount } from 'svelte';
+
+  let autocompleteEl = null;
+
+  function onSelect(event) {
+    console.log('itemSelect:', event.detail);
+  }
+
+  function onValueChange(event) {
+    console.log('valueChange:', event.detail);
+  }
+
+  onMount(() => {
+    const el = autocompleteEl;
+    if (!el) return;
+
+    el.options = [
+      'Apple',
+      'Banana',
+      'Orange',
+      'Mango',
+      'Blueberry',
+      'Strawberry',
+    ];
+    el.value = 'Apple';
+    el.autoSort = true;
+
+    el.addEventListener('itemSelect', onSelect);
+    el.addEventListener('valueChange', onValueChange);
+
+    return () => {
+      el.removeEventListener('itemSelect', onSelect);
+      el.removeEventListener('valueChange', onValueChange);
+    };
+  });
+</script>
+
+<main>
+  <autocomplete-single
+    bind:this={autocompleteEl}
+    input-id="svelte-autocomplete-single"
+    label="Favorite fruit"
+    placeholder="Type to search"
+  ></autocomplete-single>
+</main>
+`.trim();
+
+export const svelteKitExample = `
+<script>
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+
+  let autocompleteEl = null;
+
+  function onSelect(event) {
+    console.log('itemSelect:', event.detail);
+  }
+
+  function onValueChange(event) {
+    console.log('valueChange:', event.detail);
+  }
+
+  onMount(() => {
+    if (!browser) return;
+
+    const el = autocompleteEl;
+    if (!el) return;
+
+    el.options = [
+      'Apple',
+      'Banana',
+      'Orange',
+      'Mango',
+      'Blueberry',
+      'Strawberry',
+    ];
+    el.value = 'Apple';
+    el.autoSort = true;
+
+    el.addEventListener('itemSelect', onSelect);
+    el.addEventListener('valueChange', onValueChange);
+
+    return () => {
+      el.removeEventListener('itemSelect', onSelect);
+      el.removeEventListener('valueChange', onValueChange);
+    };
+  });
+</script>
+
+{#if browser}
+  <main>
+    <autocomplete-single
+      bind:this={autocompleteEl}
+      input-id="sveltekit-autocomplete-single"
+      label="Favorite fruit"
+      placeholder="Type to search"
+    ></autocomplete-single>
+  </main>
+{/if}
 `.trim();

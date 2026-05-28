@@ -63,11 +63,10 @@ onBeforeUnmount(() => {
 </script>
 `.trim();
 
-export const angularExample = `
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-plumage-input-group',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -81,7 +80,7 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy
     ></plumage-input-group-component>
   \`,
 })
-export class AppComponent implements AfterViewInit, OnDestroy {
+export class PlumageInputGroupComponent implements AfterViewInit, OnDestroy {
   @ViewChild('inputGroup', { static: true }) inputGroupRef!: ElementRef;
 
   private readonly onValueChange = (event: Event) => {
@@ -98,3 +97,73 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 }
 `.trim();
+
+export const svelteExample = `
+<script>
+  import { onMount } from 'svelte';
+
+  let inputGroupRef = null;
+
+  function onValueChange(event) {
+    console.log('valueChange:', event.detail);
+  }
+
+  onMount(() => {
+    const el = inputGroupRef;
+    if (!el) return;
+
+    el.addEventListener('valueChange', onValueChange);
+
+    return () => {
+      el.removeEventListener('valueChange', onValueChange);
+    };
+  });
+</script>
+
+<plumage-input-group-component
+  bind:this={inputGroupRef}
+  label="Amount"
+  input-id="svelte-amount"
+  placeholder="Enter amount"
+  append
+  append-icon="fa-solid fa-dollar-sign"
+></plumage-input-group-component>
+`.trim();
+
+export const svelteKitExample = `
+<script>
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+
+  let inputGroupRef = null;
+
+  function onValueChange(event) {
+    console.log('valueChange:', event.detail);
+  }
+
+  onMount(() => {
+    if (!browser) return;
+
+    const el = inputGroupRef;
+    if (!el) return;
+
+    el.addEventListener('valueChange', onValueChange);
+
+    return () => {
+      el.removeEventListener('valueChange', onValueChange);
+    };
+  });
+</script>
+
+{#if browser}
+  <plumage-input-group-component
+    bind:this={inputGroupRef}
+    label="Amount"
+    input-id="sveltekit-amount"
+    placeholder="Enter amount"
+    append
+    append-icon="fa-solid fa-dollar-sign"
+  ></plumage-input-group-component>
+{/if}
+`.trim();
+

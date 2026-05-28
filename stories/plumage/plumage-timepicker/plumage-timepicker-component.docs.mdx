@@ -1,6 +1,6 @@
 import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
 import * as PlumageTimepickerStories from './plumage-timepicker-component.stories.js';
-import { reactExample, vueExample, angularExample } from './plumage-timepicker-component.examples.js';
+import { reactExample, vueExample, angularExample, svelteExample, svelteKitExample } from './plumage-timepicker-component.examples.js';
 
 <Meta of={PlumageTimepickerStories} />
 
@@ -16,7 +16,7 @@ import { reactExample, vueExample, angularExample } from './plumage-timepicker-c
   label-text="Meeting time"
   input-id="time-example"
   input-name="meetingTime"
-  value="13:05:09"
+  value="00:00:00"
   is-twenty-four-hour-format="true"
 ></plumage-timepicker-component>
 
@@ -39,6 +39,10 @@ import { reactExample, vueExample, angularExample } from './plumage-timepicker-c
 <Source code={vueExample} language="vue" />
 ## Angular
 <Source code={angularExample} language="ts" />
+## Svelte
+<Source code={svelteExample} language="svelte" />
+## SvelteKit
+<Source code={svelteKitExample} language="svelte" />
 
 {/* Show a live preview + controls table */}
 <Primary />

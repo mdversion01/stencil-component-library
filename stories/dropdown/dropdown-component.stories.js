@@ -228,6 +228,7 @@ export default {
   ------------------------------ */
     formLayout: {
       control: { type: 'select' },
+      name: 'form-layout',
       options: ['', 'inline', 'horizontal'],
       description: 'Storybook-only layout wrapper for matrix (does not affect component).',
       table: { category: 'Storybook Only', disable: true },
@@ -239,6 +240,7 @@ export default {
     },
     validationMessage: {
       control: 'text',
+      name: 'validation-message',
       description: 'Storybook-only message shown in invalid wrapper for matrix.',
       table: { category: 'Storybook Only', disable: true },
     },

@@ -241,6 +241,7 @@ When the popover is open (both implementations), the keyboard model is consisten
 
     wrapperWidth: {
       control: { type: 'number', min: 120, step: 10 },
+      name: 'wrapper-width',
       description: 'Demo wrapper width (px), for Storybook only.',
       table: { category: 'Storybook Only' },
     },

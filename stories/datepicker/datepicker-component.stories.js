@@ -71,6 +71,7 @@ export default {
     },
     formLayout: {
       control: { type: 'select' },
+      name: 'form-layout',
       options: ['', 'horizontal', 'inline'],
       description:
         'Form layout variant. "Horizontal" uses a grid layout with label and input side by side. "Inline" is similar but uses auto-width columns for a more compact display.',
@@ -166,6 +167,7 @@ export default {
     },
     dropdownOpen: {
       control: 'boolean',
+      name: 'dropdown-open',
       table: { disable: true, category: 'Demo Helpers', defaultValue: { summary: false } },
       description: 'Open the calendar dropdown (for demonstration purposes)',
     },

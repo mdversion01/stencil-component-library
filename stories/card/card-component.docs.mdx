@@ -1,6 +1,6 @@
 import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
 import * as CardStories from './card-component.stories.js';
-import { reactExample, vueExample, angularExample } from './card-component.examples.js';
+import { reactExample, vueExample, angularExample, svelteExample, svelteKitExample } from './card-component.examples.js';
 
 <Meta of={CardStories} />
 
@@ -51,6 +51,10 @@ import { reactExample, vueExample, angularExample } from './card-component.examp
 <Source code={vueExample} language="vue" />
 ## Angular
 <Source code={angularExample} language="ts" />
+## Svelte
+<Source code={svelteExample} language="ts" />
+## Svelte Kit
+<Source code={svelteKitExample} language="ts" />
 
 {/* Show a live preview + controls table */}
 <Primary />

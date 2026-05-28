@@ -3,6 +3,7 @@ import { Component, Prop, Event, EventEmitter, h, State, Watch, Element } from '
 
 @Component({
   tag: 'slider-basic-component',
+  styleUrl: 'slider-component-styles.scss',
   shadow: false,
 })
 export class SliderBasicComponent {

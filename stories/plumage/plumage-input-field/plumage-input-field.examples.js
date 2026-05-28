@@ -61,11 +61,10 @@ onBeforeUnmount(() => {
 </script>
 `.trim();
 
-export const angularExample = `
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-plumage-input-field',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -78,7 +77,7 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy
     ></plumage-input-field-component>
   \`,
 })
-export class AppComponent implements AfterViewInit, OnDestroy {
+export class PlumageInputFieldComponent implements AfterViewInit, OnDestroy {
   @ViewChild('inputField', { static: true }) inputFieldRef!: ElementRef;
 
   private readonly handleValueChange = (event: Event) => {
@@ -95,3 +94,71 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 }
 `.trim();
+
+export const svelteExample = `
+<script>
+  import { onMount } from 'svelte';
+
+  let inputRef = null;
+
+  function handleValueChange(event) {
+    console.log('valueChange:', event.detail);
+  }
+
+  onMount(() => {
+    const el = inputRef;
+    if (!el) return;
+
+    el.addEventListener('valueChange', handleValueChange);
+
+    return () => {
+      el.removeEventListener('valueChange', handleValueChange);
+    };
+  });
+</script>
+
+<plumage-input-field-component
+  bind:this={inputRef}
+  label="First Name"
+  input-id="svelte-first-name"
+  placeholder="Enter your first name"
+  value="Taylor"
+></plumage-input-field-component>
+`.trim();
+
+export const svelteKitExample = `
+<script>
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+
+  let inputRef = null;
+
+  function handleValueChange(event) {
+    console.log('valueChange:', event.detail);
+  }
+
+  onMount(() => {
+    if (!browser) return;
+
+    const el = inputRef;
+    if (!el) return;
+
+    el.addEventListener('valueChange', handleValueChange);
+
+    return () => {
+      el.removeEventListener('valueChange', handleValueChange);
+    };
+  });
+</script>
+
+{#if browser}
+  <plumage-input-field-component
+    bind:this={inputRef}
+    label="First Name"
+    input-id="sveltekit-first-name"
+    placeholder="Enter your first name"
+    value="Taylor"
+  ></plumage-input-field-component>
+{/if}
+`.trim();
+

@@ -138,6 +138,7 @@ export default {
     },
     formLayout: {
       control: { type: 'select' },
+      name: 'form-layout',
       options: ['', 'horizontal', 'inline'],
       table: { category: 'Layout' },
       description: 'Form layout variant. "Horizontal" uses grid. "Inline" uses compact inline layout.',
@@ -156,6 +157,7 @@ export default {
       step: 1,
       table: { category: 'Layout', subcategory: 'Grid' },
       description: 'Number of grid columns for the label (horizontal layout only)',
+      name: 'label-col',
     },
     inputCol: {
       control: 'number',
@@ -164,16 +166,19 @@ export default {
       step: 1,
       table: { category: 'Layout', subcategory: 'Grid' },
       description: 'Number of grid columns for the input (horizontal layout only)',
+      name: 'input-col',
     },
     labelCols: {
       control: 'text',
       table: { category: 'Layout', subcategory: 'Grid' },
       description: 'e.g. "col-sm-3 col-md-4" or "xs-12 sm-6 md-4"',
+      name: 'label-cols',
     },
     inputCols: {
       control: 'text',
       table: { category: 'Layout', subcategory: 'Grid' },
       description: 'e.g. "col-sm-9 col-md-8" or "xs-12 sm-6 md-8"',
+      name: 'input-cols',
     },
 
     validation: {

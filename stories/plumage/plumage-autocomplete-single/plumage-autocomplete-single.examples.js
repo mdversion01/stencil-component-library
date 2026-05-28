@@ -98,11 +98,10 @@ onBeforeUnmount(() => {
 </script>
 `.trim();
 
-export const angularExample = `
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core'
+export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core'
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-plumage-autocomplete-single',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -116,7 +115,7 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy
     </main>
   \`,
 })
-export class AppComponent implements AfterViewInit, OnDestroy {
+export class PlumageAutocompleteSingleComponent implements AfterViewInit, OnDestroy {
   @ViewChild('autocompleteEl', { static: true }) autocompleteRef!: ElementRef
 
   private readonly onItemSelect = (event: Event) => {
@@ -151,4 +150,105 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.autocompleteRef.nativeElement.removeEventListener('valueChange', this.onValueChange)
   }
 }
+`.trim();
+
+export const svelteExample = `
+<script>
+  import { onMount } from 'svelte'
+
+  let autocompleteEl = null
+
+  function onItemSelect(event) {
+    console.log('itemSelect:', event.detail)
+  }
+
+  function onValueChange(event) {
+    console.log('valueChange:', event.detail)
+  }
+
+  onMount(() => {
+    const el = autocompleteEl
+    if (!el) return
+
+    el.options = [
+      'Apple',
+      'Banana',
+      'Orange',
+      'Mango',
+      'Blueberry',
+      'Strawberry',
+    ]
+    el.value = 'Apple'
+
+    el.addEventListener('itemSelect', onItemSelect)
+    el.addEventListener('valueChange', onValueChange)
+
+    return () => {
+      el.removeEventListener('itemSelect', onItemSelect)
+      el.removeEventListener('valueChange', onValueChange)
+    }
+  })
+</script>
+
+<main>
+  <plumage-autocomplete-single
+    bind:this={autocompleteEl}
+    input-id="svelte-acs"
+    label="Favorite fruit"
+    placeholder="Type to search"
+  ></plumage-autocomplete-single>
+</main>
+`.trim();
+
+export const svelteKitExample = `
+<script>
+  import { browser } from '$app/environment'
+  import { onMount } from 'svelte'
+
+  let autocompleteEl = null
+
+  function onItemSelect(event) {
+    console.log('itemSelect:', event.detail)
+  }
+
+  function onValueChange(event) {
+    console.log('valueChange:', event.detail)
+  }
+
+  onMount(() => {
+    if (!browser) return
+
+    const el = autocompleteEl
+    if (!el) return
+
+    el.options = [
+      'Apple',
+      'Banana',
+      'Orange',
+      'Mango',
+      'Blueberry',
+      'Strawberry',
+    ]
+    el.value = 'Apple'
+
+    el.addEventListener('itemSelect', onItemSelect)
+    el.addEventListener('valueChange', onValueChange)
+
+    return () => {
+      el.removeEventListener('itemSelect', onItemSelect)
+      el.removeEventListener('valueChange', onValueChange)
+    }
+  })
+</script>
+
+{#if browser}
+  <main>
+    <plumage-autocomplete-single
+      bind:this={autocompleteEl}
+      input-id="sveltekit-acs"
+      label="Favorite fruit"
+      placeholder="Type to search"
+    ></plumage-autocomplete-single>
+  </main>
+{/if}
 `.trim();

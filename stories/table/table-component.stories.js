@@ -1,4 +1,3 @@
-// src/stories/table-component.stories.js
 import TableDocs from './table-component.docs.mdx';
 import {
   Template,

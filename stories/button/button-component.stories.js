@@ -7,7 +7,7 @@ export default {
   title: 'Components/Button',
   tags: ['autodocs'],
 
-  render: (args) => renderButton(args),
+  render: args => renderButton(args),
 
   parameters: {
     docs: {
@@ -36,7 +36,12 @@ export default {
     ariaDescribedby: { control: 'text', name: 'aria-describedby', description: 'References element(s) that describe the button.', table: { category: 'Accessibility' } },
     role: { control: 'text', description: 'Optional explicit role passthrough to the inner control.', table: { category: 'Accessibility' } },
     tabindex: { control: 'text', description: 'Optional tabindex passthrough to the inner control.', table: { category: 'Accessibility' } },
-    titleAttr: { control: 'text', name: 'title-attr', description: 'Title attribute (tooltip / fallback label when icon-only and no aria provided).', table: { category: 'Accessibility' } },
+    titleAttr: {
+      control: 'text',
+      name: 'title-attr',
+      description: 'Title attribute (tooltip / fallback label when icon-only and no aria provided).',
+      table: { category: 'Accessibility' },
+    },
 
     btnText: { control: 'text', name: 'btn-text', description: 'Text content of the button.', table: { category: 'Content' } },
     slotSide: {
@@ -104,8 +109,8 @@ export default {
 
     devMode: { control: 'boolean', name: 'dev-mode', description: 'Enable dev logging.', table: { category: 'Dev', defaultValue: { summary: false } } },
 
-    iconHtml: { table: { disable: true }, control: false },
-    sideIconHtml: { table: { disable: true }, control: false },
+    iconHtml: { name: 'icon-html', table: { disable: true }, control: false },
+    sideIconHtml: { name: 'side-icon-html', table: { disable: true }, control: false },
   },
 
   controls: {
@@ -196,10 +201,10 @@ export const BackgroundColors = {
     wrap.style.flexWrap = 'wrap';
     wrap.style.gap = '12px';
 
-    const title = (v) => v.charAt(0).toUpperCase() + v.slice(1);
+    const title = v => v.charAt(0).toUpperCase() + v.slice(1);
     const variants = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
 
-    variants.forEach((v) => {
+    variants.forEach(v => {
       const btn = document.createElement('button-component');
       setAttr(btn, 'variant', v);
       setAttr(btn, 'btn-text', title(v));
@@ -214,13 +219,12 @@ export const BackgroundColors = {
         language: 'html',
         code: buildDocsHtmlMany(
           ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'].map(
-            (v) => `<button-component variant="${v}" btn-text="${v.charAt(0).toUpperCase() + v.slice(1)}"></button-component>`,
+            v => `<button-component variant="${v}" btn-text="${v.charAt(0).toUpperCase() + v.slice(1)}"></button-component>`,
           ),
         ),
       },
       description: {
-        story:
-          'Filled buttons for all core variants. Each button sets `variant` to one of: `primary`, `secondary`, `success`, `danger`, `warning`, `info`, `light`, `dark`.',
+        story: 'Filled buttons for all core variants. Each button sets `variant` to one of: `primary`, `secondary`, `success`, `danger`, `warning`, `info`, `light`, `dark`.',
       },
     },
   },
@@ -234,10 +238,10 @@ export const OutlineColors = {
     wrap.style.flexWrap = 'wrap';
     wrap.style.gap = '12px';
 
-    const title = (v) => v.charAt(0).toUpperCase() + v.slice(1);
+    const title = v => v.charAt(0).toUpperCase() + v.slice(1);
     const variants = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
 
-    variants.forEach((v) => {
+    variants.forEach(v => {
       const btn = document.createElement('button-component');
       setAttr(btn, 'outlined', true);
       setAttr(btn, 'variant', v);
@@ -253,7 +257,7 @@ export const OutlineColors = {
         language: 'html',
         code: buildDocsHtmlMany(
           ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'].map(
-            (v) => `<button-component outlined variant="${v}" btn-text="Outlined ${v.charAt(0).toUpperCase() + v.slice(1)}"></button-component>`,
+            v => `<button-component outlined variant="${v}" btn-text="Outlined ${v.charAt(0).toUpperCase() + v.slice(1)}"></button-component>`,
           ),
         ),
       },
@@ -270,7 +274,7 @@ export const Sizes = {
   args: {
     variant: 'primary',
   },
-  render: (args) => {
+  render: args => {
     const wrap = document.createElement('div');
     wrap.style.display = 'flex';
     wrap.style.gap = '12px';
@@ -296,12 +300,12 @@ export const Shapes = {
   args: {
     variant: 'primary',
   },
-  render: (args) => {
+  render: args => {
     const wrap = document.createElement('div');
     wrap.style.display = 'flex';
     wrap.style.gap = '12px';
 
-    const mk = (opts) => {
+    const mk = opts => {
       const btn = document.createElement('button-component');
       setAttr(btn, 'variant', opts.variant ?? args.variant ?? 'primary');
       setAttr(btn, 'shape', opts.shape || '');
@@ -368,7 +372,7 @@ export const IconsLeftAndRightExamples = {
     variant: 'primary',
     btnText: 'Home',
   },
-  render: (args) => {
+  render: args => {
     const wrap = document.createElement('div');
     wrap.style.display = 'flex';
     wrap.style.gap = '12px';
@@ -444,8 +448,7 @@ export const DisabledLinkWithUrl = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Renders link-mode as an `<a>` but in a disabled state. Expected: **no `href`**, `aria-disabled="true"`, and `tabindex="-1"`.',
+        story: 'Renders link-mode as an `<a>` but in a disabled state. Expected: **no `href`**, `aria-disabled="true"`, and `tabindex="-1"`.',
       },
       source: {
         language: 'html',
@@ -571,10 +574,10 @@ export const AccessibilityMatrix = {
       const update = () => {
         const inner = host.querySelector('button, a');
         const attrs = {
-          tag: inner?.tagName ?? null,
-          href: inner?.getAttribute('href') ?? null,
-          role: inner?.getAttribute('role') ?? null,
-          tabindex: inner?.getAttribute('tabindex') ?? null,
+          'tag': inner?.tagName ?? null,
+          'href': inner?.getAttribute('href') ?? null,
+          'role': inner?.getAttribute('role') ?? null,
+          'tabindex': inner?.getAttribute('tabindex') ?? null,
           'aria-label': inner?.getAttribute('aria-label') ?? null,
           'aria-labelledby': inner?.getAttribute('aria-labelledby') ?? null,
           'aria-describedby': inner?.getAttribute('aria-describedby') ?? null,
@@ -582,7 +585,7 @@ export const AccessibilityMatrix = {
           'aria-pressed': inner?.getAttribute('aria-pressed') ?? null,
           'aria-expanded': inner?.getAttribute('aria-expanded') ?? null,
           'aria-controls': inner?.getAttribute('aria-controls') ?? null,
-          title: inner?.getAttribute('title') ?? null,
+          'title': inner?.getAttribute('title') ?? null,
         };
         pre.textContent = JSON.stringify(attrs, null, 2);
       };

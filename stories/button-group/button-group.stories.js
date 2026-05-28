@@ -68,6 +68,7 @@ export default {
     },
     showDisabledChild: {
       control: 'boolean',
+      name: 'show-disabled-child',
       description: 'Story-only: toggles disabled on the 3rd child button to demo mixed states (ignored when group disabled=true).',
       table: { category: 'Story-only', defaultValue: { summary: true } },
     },

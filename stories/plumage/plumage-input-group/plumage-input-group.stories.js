@@ -187,7 +187,7 @@ export default {
       table: { category: 'Layout', defaultValue: { summary: false } },
       description: 'Visually hide the label (but keep it accessible to screen readers)',
     },
-    labelSize: { control: { type: 'select' }, options: ['base', 'xs', 'sm', 'lg'], table: { category: 'Layout' } },
+    labelSize: { control: { type: 'select' }, name: 'label-size', options: ['base', 'xs', 'sm', 'lg'], table: { category: 'Layout' } },
     otherContent: {
       control: 'boolean',
       name: 'other-content',
@@ -219,10 +219,11 @@ export default {
       description: 'Size variant.',
     },
 
-    plumageSearch: { control: 'boolean', table: { category: 'Plumage Specific' } },
+    plumageSearch: { control: 'boolean', name: 'plumage-search', table: { category: 'Plumage Specific' } },
 
     required: {
       control: 'boolean',
+      name: 'required',
       table: { defaultValue: { summary: false }, category: 'Validation' },
       description: 'Mark the input as required',
     },

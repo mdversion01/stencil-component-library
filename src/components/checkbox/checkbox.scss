@@ -49,7 +49,7 @@
   .form-check-input.sm {
     width: 0.9rem;
     height: 0.9rem;
-    margin-top: 2px;
+    margin-top: 6px; // was 2px, but needed to be increased to align with label text
     margin-left: -1.25rem !important;
   }
 

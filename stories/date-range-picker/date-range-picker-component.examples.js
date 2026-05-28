@@ -66,11 +66,10 @@ onMounted(() => {
 </script>
 `.trim();
 
-export const angularExample = `
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core'
+export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core'
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-date-range-picker',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -86,7 +85,7 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild
     </main>
   \`,
 })
-export class AppComponent implements AfterViewInit {
+export class DateRangePickerComponent implements AfterViewInit {
   @ViewChild('pickerRef', { static: true }) pickerRef!: ElementRef
 
   ngAfterViewInit(): void {
@@ -97,4 +96,77 @@ export class AppComponent implements AfterViewInit {
     })
   }
 }
+`.trim();
+
+export const svelteExample = `
+<script>
+  import { onMount } from 'svelte';
+
+  let pickerRef;
+
+  onMount(() => {
+    const el = pickerRef;
+    if (!el) return;
+
+    const onUpdate = (event) => {
+      console.log('date-range-updated', event.detail);
+    };
+
+    el.addEventListener('date-range-updated', onUpdate);
+
+    return () => {
+      el.removeEventListener('date-range-updated', onUpdate);
+    };
+  });
+</script>
+
+<main>
+  <date-range-picker-component
+    bind:this={pickerRef}
+    input-id="svelte-date-range"
+    label="Select date range"
+    join-by=" - "
+    date-format="YYYY-MM-DD"
+    append-prop
+  ></date-range-picker-component>
+</main>
+`.trim();
+
+export const svelteKitExample = `
+<script>
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+
+  let pickerRef;
+
+  onMount(() => {
+    if (!browser) return;
+
+    const el = pickerRef;
+    if (!el) return;
+
+    const onUpdate = (event) => {
+      console.log('date-range-updated', event.detail);
+    };
+
+    el.addEventListener('date-range-updated', onUpdate);
+
+    return () => {
+      el.removeEventListener('date-range-updated', onUpdate);
+    };
+  });
+</script>
+
+{#if browser}
+  <main>
+    <date-range-picker-component
+      bind:this={pickerRef}
+      input-id="sveltekit-date-range"
+      label="Select date range"
+      join-by=" - "
+      date-format="YYYY-MM-DD"
+      append-prop
+    ></date-range-picker-component>
+  </main>
+{/if}
 `.trim();

@@ -76,11 +76,10 @@ export const vueExample = `
 </template>
 `.trim();
 
-export const angularExample = `
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
+export const angularExample = `import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-button',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -118,5 +117,81 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
     </main>
   \`,
 })
-export class AppComponent {}
+export class ButtonComponent {}
+`.trim();
+
+export const svelteExample = `
+<main style="display:flex; gap:12px; flex-wrap:wrap;">
+  <button-component
+    variant="primary"
+    btn-text="Primary Button"
+  ></button-component>
+
+  <button-component
+    outlined
+    variant="success"
+    btn-text="Outlined Success"
+  ></button-component>
+
+  <button-component
+    slot-side="left"
+    variant="secondary"
+    btn-text="With Left Icon"
+  >
+    <span>
+      <i class="fa-solid fa-house"></i>
+    </span>
+  </button-component>
+
+  <button-component
+    btn-icon
+    aria-label="Favorite"
+    title-attr="Favorite"
+  >
+    <span>
+      <i class="fa-solid fa-star"></i>
+    </span>
+  </button-component>
+</main>
+`.trim();
+
+export const svelteKitExample = `
+<script>
+  import { browser } from '$app/environment';
+</script>
+
+{#if browser}
+  <main style="display:flex; gap:12px; flex-wrap:wrap;">
+    <button-component
+      variant="primary"
+      btn-text="Primary Button"
+    ></button-component>
+
+    <button-component
+      outlined
+      variant="success"
+      btn-text="Outlined Success"
+    ></button-component>
+
+    <button-component
+      slot-side="left"
+      variant="secondary"
+      btn-text="With Left Icon"
+    >
+      <span>
+        <i class="fa-solid fa-house"></i>
+      </span>
+    </button-component>
+
+    <button-component
+      btn-icon
+      aria-label="Favorite"
+      title-attr="Favorite"
+    >
+      <span>
+        <i class="fa-solid fa-star"></i>
+      </span>
+    </button-component>
+  </main>
+{/if}
 `.trim();

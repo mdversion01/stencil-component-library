@@ -50,10 +50,12 @@ const handleDateSelected = (event) => {
 };
 </script>`;
 
-export const angularExample = `import { Component } from '@angular/core';
+export const angularExample = `import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
-  selector: 'app-datepicker-example',
+  selector: 'app-datepicker-component',
+  standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
     <datepicker-component
       label="Date Picker"
@@ -65,8 +67,68 @@ export const angularExample = `import { Component } from '@angular/core';
     </datepicker-component>
   \`,
 })
-export class DatepickerExampleComponent {
+export class DatepickerComponent {
   handleDateSelected(event: CustomEvent<{ formattedDate: string }>) {
     console.log('date-selected', event.detail);
   }
-}`;
+}
+`;
+
+export const svelteExample = `<script>
+  import { onMount } from 'svelte';
+
+  let datepickerEl = null;
+
+  onMount(() => {
+    const onDateSelected = (event) => {
+      console.log('date-selected', event.detail);
+    };
+
+    datepickerEl?.addEventListener('date-selected', onDateSelected);
+
+    return () => {
+      datepickerEl?.removeEventListener('date-selected', onDateSelected);
+    };
+  });
+</script>
+
+<datepicker-component
+  bind:this={datepickerEl}
+  label="Date Picker"
+  date-format="YYYY-MM-DD"
+  placeholder="YYYY-MM-DD"
+  append
+  input-id="svelte-datepicker"
+></datepicker-component>`;
+
+export const svelteKitExample = `<script>
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+
+  let datepickerEl = null;
+
+  onMount(() => {
+    if (!browser) return;
+
+    const onDateSelected = (event) => {
+      console.log('date-selected', event.detail);
+    };
+
+    datepickerEl?.addEventListener('date-selected', onDateSelected);
+
+    return () => {
+      datepickerEl?.removeEventListener('date-selected', onDateSelected);
+    };
+  });
+</script>
+
+{#if browser}
+  <datepicker-component
+    bind:this={datepickerEl}
+    label="Date Picker"
+    date-format="YYYY-MM-DD"
+    placeholder="YYYY-MM-DD"
+    append
+    input-id="sveltekit-datepicker"
+  ></datepicker-component>
+{/if}`;

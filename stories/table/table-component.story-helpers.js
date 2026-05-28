@@ -1,4 +1,5 @@
 // src/stories/table-component.story-helpers.js
+
 export const basicItems = [
   { name: 'John', age: 30, city: 'New York' },
   { name: 'Anna', age: 25, city: 'London' },
@@ -172,30 +173,116 @@ export async function whenReady(tagName, el) {
   await el?.componentOnReady?.();
 }
 
+export function getValueFromAnyEvent(ev) {
+  return (ev?.detail?.value ?? ev?.target?.value ?? '').toString();
+}
+
+export function setDropdownDisabled(dropdown, disabled) {
+  if (!dropdown) return;
+  if (disabled && typeof dropdown.closeDropdown === 'function') {
+    dropdown.closeDropdown();
+  }
+  dropdown.disabled = !!disabled;
+  dropdown.setAttribute?.('aria-disabled', String(!!disabled));
+}
+
+export async function clearDropdownSelections(dropdown) {
+  if (!dropdown) return;
+
+  if (typeof dropdown.componentOnReady === 'function') {
+    await dropdown.componentOnReady();
+  }
+
+  if (typeof dropdown.clearSelections === 'function') {
+    await dropdown.clearSelections();
+  }
+
+  const currentOptions = Array.isArray(dropdown.options) ? dropdown.options : [];
+  const resetOptions = currentOptions.map(option => ({
+    ...option,
+    checked: false,
+  }));
+
+  if (typeof dropdown.setOptions === 'function') {
+    dropdown.setOptions(resetOptions);
+  } else {
+    dropdown.options = resetOptions;
+  }
+
+  dropdown.dispatchEvent(
+    new CustomEvent('items-changed', {
+      detail: { items: resetOptions },
+      bubbles: true,
+      composed: true,
+    }),
+  );
+
+  dropdown.dispatchEvent(
+    new CustomEvent('selection-changed', {
+      detail: { items: [] },
+      bubbles: true,
+      composed: true,
+    }),
+  );
+
+  if (typeof dropdown.closeDropdown === 'function') {
+    dropdown.closeDropdown();
+  }
+}
+
 export function ensureGlobalHelpers() {
   if (window.__tableStoryHelpersInstalled) return;
   window.__tableStoryHelpersInstalled = true;
 
   window.resetTableSort = async (tableId, dropdownId) => {
     await customElements.whenDefined('table-component');
+
     const table = document.getElementById(tableId);
     await table?.componentOnReady?.();
-    await table?.resetSort?.();
+
+    if (typeof table?.resetSort === 'function') {
+      await table.resetSort();
+    } else if (table) {
+      table.sortCriteria = [];
+      table.sortField = 'none';
+      table.sortOrder = 'asc';
+      table.items = Array.isArray(table.originalItems) ? [...table.originalItems] : [];
+      table.dispatchEvent(new CustomEvent('sort-field-changed', { detail: { value: 'none' } }));
+      table.dispatchEvent(new CustomEvent('sort-order-changed', { detail: { value: 'asc' } }));
+    }
+
+    const input = document.querySelector(`[data-filter-input-for="${tableId}"]`);
+
+    if (input) {
+      input.value = '';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      input.dispatchEvent(
+        new CustomEvent('valueChange', {
+          detail: { value: '' },
+          bubbles: true,
+        }),
+      );
+    }
 
     if (dropdownId) {
       const drop = document.getElementById(dropdownId);
-      if (typeof drop?.clearSelections === 'function') await drop.clearSelections();
-
-      document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId, items: [] } }));
-      table?.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: '' } }));
-
-      const input = document.querySelector(`[data-filter-input-for="${tableId}"]`);
-      if (input) {
-        input.value = '';
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-        input.dispatchEvent(new CustomEvent('valueChange', { detail: { value: '' }, bubbles: true }));
-      }
+      await clearDropdownSelections(drop);
+      setDropdownDisabled(drop, true);
     }
+
+    document.dispatchEvent(
+      new CustomEvent('filter-fields-changed', {
+        detail: { tableId, items: [] },
+      }),
+    );
+
+    table?.dispatchEvent(
+      new CustomEvent('filter-changed', {
+        detail: { value: '' },
+        bubbles: true,
+      }),
+    );
   };
 
   window.clearFilter = async dropdownId => {
@@ -204,17 +291,35 @@ export function ensureGlobalHelpers() {
     if (!tableId) return;
 
     const input = document.querySelector(`[data-filter-input-for="${tableId}"]`);
+
     if (input) {
       input.value = '';
       input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new CustomEvent('valueChange', { detail: { value: '' }, bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      input.dispatchEvent(
+        new CustomEvent('valueChange', {
+          detail: { value: '' },
+          bubbles: true,
+        }),
+      );
     }
 
-    if (typeof drop?.clearSelections === 'function') await drop.clearSelections();
-    document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId, items: [] } }));
+    await clearDropdownSelections(drop);
+    setDropdownDisabled(drop, true);
+
+    document.dispatchEvent(
+      new CustomEvent('filter-fields-changed', {
+        detail: { tableId, items: [] },
+      }),
+    );
 
     const table = document.getElementById(tableId);
-    table?.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: '' } }));
+    table?.dispatchEvent(
+      new CustomEvent('filter-changed', {
+        detail: { value: '' },
+        bubbles: true,
+      }),
+    );
   };
 }
 
@@ -301,8 +406,7 @@ export function renderTableStory(args, { id, items, fields, extraAttrs = '' } = 
   wrapper.style.margin = '24px 0';
 
   const attrs = buildTableAttrs(args, id, extraAttrs);
-  const captionSlot =
-    args.caption === 'top' || args.caption === 'bottom' ? `<span slot="caption">This is an Example Caption</span>` : '';
+  const captionSlot = args.caption === 'top' || args.caption === 'bottom' ? `<span slot="caption">This is an Example Caption</span>` : '';
 
   wrapper.innerHTML = normalizeHtml(`
 <table-component ${attrs}>
@@ -432,20 +536,89 @@ export async function wireFilterControls({ root, tableId, inputId, dropdownId })
     index: i,
   }));
 
-  if (typeof dropdown?.setOptions === 'function') dropdown.setOptions(options);
-  else dropdown.options = options;
+  if (typeof dropdown.setOptions === 'function') {
+    dropdown.setOptions(options);
+  } else {
+    dropdown.options = options;
+  }
 
-  const forward = val => table.dispatchEvent(new CustomEvent('filter-changed', { detail: { value: String(val ?? '') } }));
+  dropdown.dispatchEvent(
+    new CustomEvent('items-changed', {
+      detail: { items: options },
+      bubbles: true,
+      composed: true,
+    }),
+  );
 
-  input?.addEventListener('input', e => forward(e?.detail?.value ?? e?.target?.value ?? ''));
-  input?.addEventListener('change', e => forward(e?.detail?.value ?? e?.target?.value ?? ''));
-  input?.addEventListener('valueChange', e => forward(e?.detail?.value ?? ''));
+  const forward = async rawValue => {
+    const value = String(rawValue ?? '');
+    const hasText = value.trim().length > 0;
 
-  dropdown?.addEventListener('selection-changed', ev => {
-    const checked = Array.isArray(ev?.detail?.items) ? ev.detail.items : [];
-    const payload = checked.map(o => ({ key: (o.key || o.value || o.name) ?? '', checked: true }));
-    document.dispatchEvent(new CustomEvent('filter-fields-changed', { detail: { tableId, items: payload } }));
+    table.dispatchEvent(
+      new CustomEvent('filter-changed', {
+        detail: { value },
+        bubbles: true,
+      }),
+    );
+
+    if (!hasText) {
+      await clearDropdownSelections(dropdown);
+      document.dispatchEvent(
+        new CustomEvent('filter-fields-changed', {
+          detail: { tableId, items: [] },
+        }),
+      );
+    }
+
+    setDropdownDisabled(dropdown, !hasText);
+  };
+
+  input.addEventListener('input', e => {
+    void forward(getValueFromAnyEvent(e));
   });
+
+  input.addEventListener('change', e => {
+    void forward(getValueFromAnyEvent(e));
+  });
+
+  input.addEventListener('valueChange', e => {
+    void forward(getValueFromAnyEvent(e));
+  });
+
+  const bindShadowInput = () => {
+    const inner = input.shadowRoot?.querySelector('input');
+    if (!inner || inner.__tableFilterBound) return;
+
+    inner.addEventListener('input', () => {
+      void forward(inner.value ?? '');
+    });
+
+    inner.__tableFilterBound = true;
+  };
+
+  if (input.shadowRoot) {
+    bindShadowInput();
+  } else {
+    input.addEventListener('ready', bindShadowInput);
+  }
+
+  dropdown.addEventListener('selection-changed', ev => {
+    const items = Array.isArray(ev?.detail?.items) ? ev.detail.items : [];
+    const payload = items
+      .filter(item => item?.checked)
+      .map(item => ({
+        key: (item.key || item.value || item.name || '').toString(),
+        checked: true,
+      }));
+
+    document.dispatchEvent(
+      new CustomEvent('filter-fields-changed', {
+        detail: { tableId, items: payload },
+      }),
+    );
+  });
+
+  setDropdownDisabled(dropdown, true);
 }
 
 export const SORT_RESET_STORY = {
@@ -656,7 +829,11 @@ export const PLAYGROUND_STORY = {
   },
 };
 
-const splitIds = v => String(v || '').trim().split(/\s+/).filter(Boolean);
+const splitIds = v =>
+  String(v || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
 
 export const pickTableA11y = (host, scopeRoot) => {
   const table = host?.querySelector('table') || null;

@@ -41,10 +41,12 @@ export const vueExample = `<template>
 </script>
 `;
 
-export const angularExample = `import { Component } from '@angular/core';
+export const angularExample = `import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
-  selector: 'app-tooltip-example',
+  selector: 'app-tooltip-component',
+  standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
     <div style="display:inline-block">
       <tooltip-component
@@ -62,7 +64,7 @@ export const angularExample = `import { Component } from '@angular/core';
     </div>
   \`,
 })
-export class TooltipExampleComponent {}
+export class TooltipComponent {}
 `;
 
 export const svelteExample = `<script>
@@ -178,10 +180,12 @@ const toggleTooltip = async () => {
 </script>
 `;
 
-export const angularManualExample = `import { Component, ElementRef, ViewChild } from '@angular/core';
+export const angularManualExample = `import { Component, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
-  selector: 'app-tooltip-manual-example',
+  selector: 'app-tooltip-manual-control',
+  standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
     <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
       <tooltip-component
@@ -203,7 +207,7 @@ export const angularManualExample = `import { Component, ElementRef, ViewChild }
     </div>
   \`,
 })
-export class TooltipManualExampleComponent {
+export class TooltipManualControlComponent {
   @ViewChild('tooltipRef', { static: true }) tooltipRef!: ElementRef;
   isOpen = false;
 

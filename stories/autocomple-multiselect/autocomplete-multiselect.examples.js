@@ -106,11 +106,10 @@ onBeforeUnmount(() => {
 </script>
 `.trim();
 
-export const angularExample = `
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core'
+export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core'
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-autocomplete-multiselect',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -127,7 +126,7 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy
     </main>
   \`,
 })
-export class AppComponent implements AfterViewInit, OnDestroy {
+export class AutocompleteMultiselectComponent implements AfterViewInit, OnDestroy {
   @ViewChild('autocompleteEl', { static: true }) autocompleteRef!: ElementRef
 
   private readonly onChange = (event: Event) => {
@@ -162,4 +161,111 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.autocompleteRef.nativeElement.removeEventListener('optionsChange', this.onOptionsChange)
   }
 }
+`.trim();
+
+export const svelteExample = `
+<script>
+  import { onMount } from 'svelte';
+
+  let autocompleteEl = null;
+
+  function onChange(event) {
+    console.log('multiSelectChange:', event.detail);
+  }
+
+  function onOptionsChange(event) {
+    console.log('optionsChange:', event.detail);
+  }
+
+  onMount(() => {
+    const el = autocompleteEl;
+    if (!el) return;
+
+    el.options = [
+      'Apple',
+      'Banana',
+      'Orange',
+      'Mango',
+      'Blueberry',
+      'Strawberry',
+    ];
+    el.value = ['Apple', 'Mango'];
+
+    el.addEventListener('multiSelectChange', onChange);
+    el.addEventListener('optionsChange', onOptionsChange);
+
+    return () => {
+      el.removeEventListener('multiSelectChange', onChange);
+      el.removeEventListener('optionsChange', onOptionsChange);
+    };
+  });
+</script>
+
+<main>
+  <autocomplete-multiselect
+    bind:this={autocompleteEl}
+    input-id="svelte-acm"
+    label="Favorite fruits"
+    placeholder="Type to search"
+    editable
+    add-btn
+    badge-variant="primary"
+  />
+</main>
+`.trim();
+
+export const svelteKitExample = `
+<script>
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+
+  let autocompleteEl = null;
+
+  function onChange(event) {
+    console.log('multiSelectChange:', event.detail);
+  }
+
+  function onOptionsChange(event) {
+    console.log('optionsChange:', event.detail);
+  }
+
+  onMount(() => {
+    if (!browser) return;
+
+    const el = autocompleteEl;
+    if (!el) return;
+
+    el.options = [
+      'Apple',
+      'Banana',
+      'Orange',
+      'Mango',
+      'Blueberry',
+      'Strawberry',
+    ];
+    el.value = ['Apple', 'Mango'];
+
+    el.addEventListener('multiSelectChange', onChange);
+    el.addEventListener('optionsChange', onOptionsChange);
+
+    return () => {
+      el.removeEventListener('multiSelectChange', onChange);
+      el.removeEventListener('optionsChange', onOptionsChange);
+    };
+  });
+</script>
+
+{#if browser}
+  <main>
+    <autocomplete-multiselect
+      bind:this={autocompleteEl}
+      input-id="sveltekit-acm"
+      label="Favorite fruits"
+      placeholder="Type to search"
+      editable
+      add-btn
+      badge-variant="primary"
+    />
+  </main>
+{/if}
 `.trim();

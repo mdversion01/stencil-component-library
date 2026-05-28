@@ -37,6 +37,7 @@ export default {
     },
     isOpen: {
       control: 'boolean',
+      name: 'is-open',
       description: 'If true, the accordion item is expanded by default when rendered.',
       table: { category: 'Behavior', defaultValue: { summary: false } },
     },
@@ -63,6 +64,7 @@ export default {
     },
     contentTxtSize: {
       control: { type: 'select' },
+      name: 'content-txt-size',
       options: ['xs', 'sm', 'default', 'lg', 'xl', 'xxl', ''],
       description: 'Change text size in content area.',
       table: { category: 'Appearance' },
@@ -79,6 +81,7 @@ export default {
     },
     classNames: {
       control: 'text',
+      name: 'class-names',
       description: 'Additional custom class names for the accordion container.',
       table: { category: 'Layout' },
     },
@@ -99,6 +102,7 @@ export default {
     },
     targetId: {
       control: 'text',
+      name: 'target-id',
       description: 'Base id for the collapsible region; Storybook will uniquify it per render.',
       table: { category: 'Targeting' },
     },
@@ -108,9 +112,9 @@ export default {
       description: 'Optional external label element id for the region.',
       table: { category: 'Accessibility' },
     },
-    headerText: { table: { disable: true }, control: false },
-    contentLine1: { table: { disable: true }, control: false },
-    contentLine2: { table: { disable: true }, control: false },
+    headerText: { name: 'header-text', table: { disable: true }, control: false },
+    contentLine1: { name: 'content-line-1', table: { disable: true }, control: false },
+    contentLine2: { name: 'content-line-2', table: { disable: true }, control: false },
   },
 
   controls: { exclude: ['headerText', 'contentLine1', 'contentLine2'] },

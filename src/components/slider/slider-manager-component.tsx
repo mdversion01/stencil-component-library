@@ -3,6 +3,7 @@ import { Component, Prop, h, Host } from '@stencil/core';
 
 @Component({
   tag: 'slider-manager-component',
+  styleUrl: 'slider-component-styles.scss',
   shadow: false,
 })
 export class SliderManagerComponent {

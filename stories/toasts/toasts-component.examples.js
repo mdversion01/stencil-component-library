@@ -131,13 +131,14 @@ async function showWarningToast() {
 </script>
 `;
 
-export const angularExample = `import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+export const angularExample = `import { AfterViewInit, Component, ElementRef, ViewChild, CUSTOM_ELEMENTS_SCHEMA, } from '@angular/core';
 
 @Component({
-  selector: 'app-toasts-component-example',
+  selector: 'app-toasts-component',
+  standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
     <section>
-      <h2>Toasts Component Example</h2>
 
       <div style="display:flex; gap:12px; margin-bottom:16px;">
         <button type="button" (click)="showDefaultToast()">Show Success Toast</button>
@@ -154,7 +155,7 @@ export const angularExample = `import { AfterViewInit, Component, ElementRef, Vi
     </section>
   \`,
 })
-export class ToastsComponentExampleComponent implements AfterViewInit {
+export class ToastsComponent implements AfterViewInit {
   @ViewChild('toastRef', { static: true }) toastRef!: ElementRef;
 
   async ngAfterViewInit(): Promise<void> {

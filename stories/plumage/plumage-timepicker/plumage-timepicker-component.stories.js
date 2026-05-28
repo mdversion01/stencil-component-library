@@ -1,17 +1,11 @@
 import DocsPage from './plumage-timepicker-component.docs.mdx';
-import {
-  DocsWrapStyles,
-  Template,
-  buildDocsHtml,
-  getComputedSnapshot,
-  normalizeHtml,
-} from './plumage-timepicker-component.story-helpers.js';
+import { DocsWrapStyles, Template, buildDocsHtml, getComputedSnapshot, normalizeHtml } from './plumage-timepicker-component.story-helpers.js';
 
 export default {
   title: 'Components/Timepicker/Plumage Timepicker',
   tags: ['autodocs'],
   decorators: [
-    (Story) => {
+    Story => {
       const wrap = document.createElement('div');
       wrap.appendChild(DocsWrapStyles());
 
@@ -113,8 +107,7 @@ When the popover is open:
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
-      description:
-        'Accessible label for the timepicker input (used when aria-labelledby is not provided and no visible label).',
+      description: 'Accessible label for the timepicker input (used when aria-labelledby is not provided and no visible label).',
       table: { category: 'Accessibility' },
     },
     ariaLabelledby: {
@@ -126,8 +119,7 @@ When the popover is open:
     ariaDescribedby: {
       control: 'text',
       name: 'aria-describedby',
-      description:
-        'ID(s) of external description/help elements (space-separated). Component may append -validation/-warning ids when shown.',
+      description: 'ID(s) of external description/help elements (space-separated). Component may append -validation/-warning ids when shown.',
       table: { category: 'Accessibility' },
     },
 
@@ -135,8 +127,7 @@ When the popover is open:
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Labeling' },
       name: 'show-label',
-      description:
-        'Whether to show the label visually. If false, label is sr-only (still available to AT).',
+      description: 'Whether to show the label visually. If false, label is sr-only (still available to AT).',
     },
     labelText: {
       control: 'text',
@@ -154,8 +145,7 @@ When the popover is open:
     inputId: {
       control: 'text',
       name: 'input-id',
-      description:
-        'ID for the timepicker input element. Used as the base for derived ids: -label/-dropdown/-validation/-warning.',
+      description: 'ID for the timepicker input element. Used as the base for derived ids: -label/-dropdown/-validation/-warning.',
       table: { category: 'Input Attributes' },
     },
     inputName: {
@@ -168,16 +158,14 @@ When the popover is open:
     value: {
       control: 'text',
       name: 'value',
-      description:
-        'Controlled value (optional). If non-empty, component parses/displays it. Updated on commits (blur/enter/spinner/clear/format).',
+      description: 'Controlled value (optional). If non-empty, component parses/displays it. Updated on commits (blur/enter/spinner/clear/format).',
       table: { category: 'Controlled Value' },
     },
 
     inputWidth: {
       control: { type: 'number', min: 0, step: 1 },
       name: 'input-width',
-      description:
-        'Custom width for the timepicker input (px). If not set, defaults to auto width.',
+      description: 'Custom width for the timepicker input (px). If not set, defaults to auto width.',
       table: { category: 'Layout & Sizing' },
     },
     size: {
@@ -217,15 +205,13 @@ When the popover is open:
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'UI Controls' },
       name: 'hide-timepicker-btn',
-      description:
-        'If true, the button to open the timepicker dropdown is hidden (manual input only).',
+      description: 'If true, the button to open the timepicker dropdown is hidden (manual input only).',
     },
 
     timeInputThrottleMs: {
       control: { type: 'number', min: 0, step: 10 },
       name: 'time-input-throttle-ms',
-      description:
-        'Throttle window for timeInput events (ms). Set 0 to disable throttling.',
+      description: 'Throttle window for timeInput events (ms). Set 0 to disable throttling.',
       table: { category: 'Events' },
     },
 
@@ -239,16 +225,14 @@ When the popover is open:
       control: 'boolean',
       table: { defaultValue: { summary: true }, category: 'State' },
       name: 'is-valid',
-      description:
-        'Indicates whether the current input value is valid (component updates this internally).',
+      description: 'Indicates whether the current input value is valid (component updates this internally).',
     },
 
     validation: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Validation' },
       name: 'validation',
-      description:
-        'If true, applies Plumage underline styles to indicate validation state.',
+      description: 'If true, applies Plumage underline styles to indicate validation state.',
     },
     validationMessage: {
       control: 'text',
@@ -443,8 +427,7 @@ WithValidationMessage.storyName = 'With Validation Message';
 WithValidationMessage.parameters = {
   docs: {
     description: {
-      story:
-        'Shows Plumage invalid underline styling + a validation message. Clears when the user clears, types, or uses spinners. Format toggle does not clear validation.',
+      story: 'Shows Plumage invalid underline styling + a validation message. Clears when the user clears, types, or uses spinners. Format toggle does not clear validation.',
     },
     story: { height: '200px' },
     source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
@@ -483,8 +466,7 @@ ControlledValueExample.storyName = 'Controlled Value (value="13:05:09")';
 ControlledValueExample.parameters = {
   docs: {
     description: {
-      story:
-        'Demonstrates initializing the component with a controlled value. On commit actions, the component updates its mutable `value` prop and emits `timeChange`.',
+      story: 'Demonstrates initializing the component with a controlled value. On commit actions, the component updates its mutable `value` prop and emits `timeChange`.',
     },
     story: { height: '200px' },
     source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },

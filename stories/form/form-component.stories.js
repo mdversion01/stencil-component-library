@@ -89,24 +89,28 @@ export default {
     },
     legendPosition: {
       control: { type: 'select' },
+      name: 'legend-position',
       options: ['left', 'center', 'right'],
       table: { category: 'Fieldset & Legend', defaultValue: 'left' },
       description: 'The position of the legend text within the fieldset.',
     },
     legendSize: {
       control: { type: 'select' },
+      name: 'legend-size',
       options: ['small', 'base', 'large', 'xlarge'],
       table: { category: 'Fieldset & Legend', defaultValue: 'base' },
       description: 'The size of the legend text.',
     },
     legendTxt: {
       control: 'text',
+      name: 'legend-txt',
       table: { category: 'Fieldset & Legend' },
       description: 'The text content of the legend.',
     },
 
     formLayout: {
       control: { type: 'select' },
+      name: 'form-layout',
       options: ['', 'horizontal', 'inline'],
       table: { category: 'Layout' },
       description:
@@ -114,12 +118,14 @@ export default {
     },
     formId: {
       control: 'text',
+      name: 'form-id',
       table: { category: 'Layout' },
       description: 'The id attribute for the form, useful for associating external buttons/inputs when outsideOfForm is true.',
     },
 
     outsideOfForm: {
       control: 'boolean',
+        name: 'outside-of-form',
       table: { category: 'Rendering Mode', defaultValue: false },
       description:
         'If true, the component will render without a native `<form>` element. Useful for custom layouts or when using with frameworks that handle forms differently.',
@@ -154,6 +160,7 @@ export default {
 
     numFields: {
       control: { type: 'number', min: 1, max: 6, step: 1 },
+      name: 'number-of-fields',
       table: { disable: true },
     },
     showValidation: {

@@ -32,11 +32,13 @@ export default {
   argTypes: {
     demoWidth: {
       control: { type: 'number', min: 180, step: 10 },
+      name: 'demo-width',
       table: { category: 'Storybook Only' },
       description: 'Wrapper width (px). Used for displaying in Storybook.',
     },
     showEventLog: {
       control: 'boolean',
+      name: 'show-event-log',
       table: { category: 'Storybook Only', defaultValue: { summary: false } },
       description: 'Show live event log for checkedChanged. Used for displaying in Storybook.',
     },
@@ -80,6 +82,7 @@ export default {
     labelTxt: { control: 'text', name: 'label-txt', table: { category: 'Toggle Switch Attribute' }, description: 'Label text for the toggle switch.' },
     newToggleTxt: {
       control: 'object',
+      name: 'new-toggle-txt',
       table: { category: 'Toggle Switch Attribute' },
       description: 'Toggle text to show changes when toggling. Also supported as attribute via `new-toggle-txt` (JSON).',
     },
@@ -96,6 +99,7 @@ export default {
     },
     switchesArray: {
       control: 'object',
+      name: 'switches-array',
       table: { category: 'Toggle Switch Attribute' },
       description: 'Multi mode items (property-only; set in JS).',
     },

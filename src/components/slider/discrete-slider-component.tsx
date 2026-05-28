@@ -3,6 +3,7 @@ import { Component, Prop, Event, EventEmitter, h, Element, State, Watch } from '
 
 @Component({
   tag: 'discrete-slider-component',
+  styleUrl: 'slider-component-styles.scss',
   shadow: false,
 })
 export class DiscreteSliderComponent {

@@ -130,11 +130,16 @@ onMounted(() => {
 </script>
 `.trim();
 
-export const angularExample = `
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core';
+export const angularExample = `import {
+  AfterViewInit,
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-dropdown',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -153,7 +158,7 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild
     </main>
   \`,
 })
-export class AppComponent implements AfterViewInit {
+export class DropdownComponent implements AfterViewInit {
   @ViewChild('basicDropdown', { static: true }) basicDropdown!: ElementRef;
   @ViewChild('submenuDropdown', { static: true }) submenuDropdown!: ElementRef;
 
@@ -192,4 +197,135 @@ export class AppComponent implements AfterViewInit {
     ];
   }
 }
+`.trim();
+
+export const svelteExample = `
+<script>
+  import { onMount } from 'svelte';
+
+  let basicDropdown;
+  let submenuDropdown;
+
+  onMount(() => {
+    const baseItems = [
+      { name: 'Action', value: 'action' },
+      { name: 'Another action', value: 'another' },
+      { name: 'Something else here', value: 'else' },
+    ];
+
+    const submenuItems = [
+      {
+        name: 'File',
+        submenu: [
+          { name: 'New', value: 'new' },
+          { name: 'Open…', value: 'open' },
+          { isDivider: true },
+          { name: 'Recent', value: 'recent' },
+        ],
+      },
+      {
+        name: 'View',
+        submenu: [
+          { name: 'Zoom In', value: 'zin' },
+          { name: 'Zoom Out', value: 'zout' },
+          { name: 'Reset Zoom', value: 'zreset' },
+        ],
+      },
+    ];
+
+    if (basicDropdown) {
+      basicDropdown.options = [...baseItems];
+    }
+
+    if (submenuDropdown) {
+      submenuDropdown.options = [
+        ...baseItems,
+        { isDivider: true },
+        ...submenuItems,
+      ];
+    }
+  });
+</script>
+
+<main style="display:grid; gap:16px;">
+  <dropdown-component
+    bind:this={basicDropdown}
+    button-text="Dropdown"
+    variant="primary"
+  ></dropdown-component>
+
+  <dropdown-component
+    bind:this={submenuDropdown}
+    button-text="More actions"
+    variant="secondary"
+  ></dropdown-component>
+</main>
+`.trim();
+
+export const svelteKitExample = `
+<script>
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+
+  let basicDropdown;
+  let submenuDropdown;
+
+  onMount(() => {
+    if (!browser) return;
+
+    const baseItems = [
+      { name: 'Action', value: 'action' },
+      { name: 'Another action', value: 'another' },
+      { name: 'Something else here', value: 'else' },
+    ];
+
+    const submenuItems = [
+      {
+        name: 'File',
+        submenu: [
+          { name: 'New', value: 'new' },
+          { name: 'Open…', value: 'open' },
+          { isDivider: true },
+          { name: 'Recent', value: 'recent' },
+        ],
+      },
+      {
+        name: 'View',
+        submenu: [
+          { name: 'Zoom In', value: 'zin' },
+          { name: 'Zoom Out', value: 'zout' },
+          { name: 'Reset Zoom', value: 'zreset' },
+        ],
+      },
+    ];
+
+    if (basicDropdown) {
+      basicDropdown.options = [...baseItems];
+    }
+
+    if (submenuDropdown) {
+      submenuDropdown.options = [
+        ...baseItems,
+        { isDivider: true },
+        ...submenuItems,
+      ];
+    }
+  });
+</script>
+
+{#if browser}
+  <main style="display:grid; gap:16px;">
+    <dropdown-component
+      bind:this={basicDropdown}
+      button-text="Dropdown"
+      variant="primary"
+    ></dropdown-component>
+
+    <dropdown-component
+      bind:this={submenuDropdown}
+      button-text="More actions"
+      variant="secondary"
+    ></dropdown-component>
+  </main>
+{/if}
 `.trim();

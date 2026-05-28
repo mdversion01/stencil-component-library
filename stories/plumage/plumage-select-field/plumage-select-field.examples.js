@@ -74,11 +74,10 @@ onBeforeUnmount(() => {
 </script>
 `.trim();
 
-export const angularExample = `
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-plumage-select-field',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -90,7 +89,7 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy
     ></plumage-select-field-component>
   \`,
 })
-export class AppComponent implements AfterViewInit, OnDestroy {
+export class PlumageSelectFieldComponent implements AfterViewInit, OnDestroy {
   @ViewChild('selectField', { static: true }) selectFieldRef!: ElementRef;
 
   private readonly onValueChange = (event: Event) => {
@@ -114,4 +113,84 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.selectFieldRef.nativeElement.removeEventListener('valueChange', this.onValueChange);
   }
 }
+
+`.trim();
+
+export const svelteExample = `
+<script>
+  import { onMount } from 'svelte';
+
+  let selectEl = null;
+
+  const options = [
+    { value: 'apple', name: 'Apple' },
+    { value: 'banana', name: 'Banana' },
+    { value: 'cherry', name: 'Cherry' },
+  ];
+
+  function onValueChange(event) {
+    console.log('valueChange:', event.detail);
+  }
+
+  onMount(() => {
+    const el = selectEl;
+    if (!el) return;
+
+    el.options = options;
+    el.addEventListener('valueChange', onValueChange);
+
+    return () => {
+      el.removeEventListener('valueChange', onValueChange);
+    };
+  });
+</script>
+
+<plumage-select-field-component
+  bind:this={selectEl}
+  label="Fruits"
+  select-field-id="svelte-fruit"
+  default-option-txt="Select a fruit"
+></plumage-select-field-component>
+`.trim();
+
+export const svelteKitExample = `
+<script>
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+
+  let selectEl = null;
+
+  const options = [
+    { value: 'apple', name: 'Apple' },
+    { value: 'banana', name: 'Banana' },
+    { value: 'cherry', name: 'Cherry' },
+  ];
+
+  function onValueChange(event) {
+    console.log('valueChange:', event.detail);
+  }
+
+  onMount(() => {
+    if (!browser) return;
+
+    const el = selectEl;
+    if (!el) return;
+
+    el.options = options;
+    el.addEventListener('valueChange', onValueChange);
+
+    return () => {
+      el.removeEventListener('valueChange', onValueChange);
+    };
+  });
+</script>
+
+{#if browser}
+  <plumage-select-field-component
+    bind:this={selectEl}
+    label="Fruits"
+    select-field-id="sveltekit-fruit"
+    default-option-txt="Select a fruit"
+  ></plumage-select-field-component>
+{/if}
 `.trim();

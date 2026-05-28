@@ -82,11 +82,10 @@ export const vueExample = `
 </template>
 `.trim();
 
-export const angularExample = `
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
+export const angularExample = `import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-badge',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -127,5 +126,87 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
     </main>
   \`,
 })
-export class AppComponent {}
+export class BadgeComponent {}
+`.trim();
+
+export const svelteExample = `
+<main style="display:flex; gap:12px; flex-wrap:wrap;">
+  <badge-component
+    variant="primary"
+    size="base"
+    aria-label="Primary badge"
+  >
+    New
+  </badge-component>
+
+  <badge-component
+    variant="success"
+    shape="pill"
+    aria-label="Success badge with icon"
+    icon
+  >
+    Active
+    <span slot="icon">
+      <icon-component icon="fas fa-check-circle"></icon-component>
+    </span>
+  </badge-component>
+
+  <badge-component
+    token
+    inset
+    variant="danger"
+    aria-label="Notification token badge"
+  >
+    <button-component variant="secondary" size="sm">
+      Messages
+    </button-component>
+    <span slot="token">
+      <i class="fa-solid fa-bell"></i>
+    </span>
+  </badge-component>
+</main>
+`.trim();
+
+export const svelteKitExample = `
+<script>
+  import { browser } from '$app/environment';
+</script>
+
+{#if browser}
+  <main style="display:flex; gap:12px; flex-wrap:wrap;">
+    <badge-component
+      variant="primary"
+      size="base"
+      aria-label="Primary badge"
+    >
+      New
+    </badge-component>
+
+    <badge-component
+      variant="success"
+      shape="pill"
+      aria-label="Success badge with icon"
+      icon
+    >
+      Active
+      <span slot="icon">
+        <icon-component icon="fas fa-check-circle"></icon-component>
+      </span>
+    </badge-component>
+
+    <badge-component
+      token
+      inset
+      variant="danger"
+      aria-label="Notification token badge"
+    >
+      <button-component variant="secondary" size="sm">
+        Messages
+      </button-component>
+      <span slot="token">
+        <i class="fa-solid fa-bell"></i>
+      </span>
+    </badge-component>
+  </main>
+{/if}
 `.trim();

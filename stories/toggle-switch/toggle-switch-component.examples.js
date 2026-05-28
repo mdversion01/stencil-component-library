@@ -125,13 +125,15 @@ onBeforeUnmount(() => {
 </script>
 `;
 
-export const angularExample = `import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+export const angularExample = `import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
-  selector: 'app-toggle-switch-component-example',
+  selector: 'app-toggle-switch',
+  standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
     <section>
-      <h2>Single Toggle</h2>
+      <h3>Single Toggle</h3>
       <toggle-switch-component
         #singleRef
         input-id="ng-toggle-single"
@@ -141,7 +143,7 @@ export const angularExample = `import { AfterViewInit, Component, ElementRef, On
         value="notifications"
       ></toggle-switch-component>
 
-      <h2 style="margin-top:24px;">Multi Toggle Group</h2>
+      <h3 style="margin-top:24px;">Multi Toggle Group</h3>
       <div id="ng-toggle-group-label" style="font-weight:600; margin-bottom:8px;">
         Device settings
       </div>
@@ -155,7 +157,7 @@ export const angularExample = `import { AfterViewInit, Component, ElementRef, On
     </section>
   \`,
 })
-export class ToggleSwitchComponentExampleComponent implements AfterViewInit, OnDestroy {
+export class ToggleSwitchComponent implements AfterViewInit, OnDestroy {
   @ViewChild('singleRef', { static: true }) singleRef!: ElementRef;
   @ViewChild('multiRef', { static: true }) multiRef!: ElementRef;
 
@@ -240,67 +242,6 @@ export const svelteExample = `<script>
   ></toggle-switch-component>
 </section>
 `;
-
-export const svelteExample = `<script>
-  import { onMount, onDestroy } from 'svelte';
-
-  let singleEl;
-  let multiEl;
-
-  const singleToggleText = { on: 'On', off: 'Off' };
-
-  const onCheckedChanged = (event) => {
-    console.log('checkedChanged', event.detail);
-  };
-
-  onMount(async () => {
-    await customElements.whenDefined('toggle-switch-component');
-
-    if (singleEl) {
-      singleEl.newToggleTxt = singleToggleText;
-    }
-
-    if (multiEl) {
-      multiEl.switchesArray = [
-        { id: 'wifi', label: 'Wi-Fi', value: 'wifi', checked: true, toggleTxt: true, newToggleTxt: { on: 'On', off: 'Off' } },
-        { id: 'bt', label: 'Bluetooth', value: 'bt', checked: false, toggleTxt: true },
-        { id: 'air', label: 'Airplane Mode', value: 'air', disabled: true },
-      ];
-    }
-
-    singleEl?.addEventListener('checkedChanged', onCheckedChanged);
-    multiEl?.addEventListener('checkedChanged', onCheckedChanged);
-  });
-
-  onDestroy(() => {
-    singleEl?.removeEventListener('checkedChanged', onCheckedChanged);
-    multiEl?.removeEventListener('checkedChanged', onCheckedChanged);
-  });
-</script>
-
-<section>
-  <h2>Single Toggle</h2>
-  <toggle-switch-component
-    bind:this={singleEl}
-    input-id="svelte-toggle-single"
-    label-txt="Enable notifications"
-    toggle-txt
-    value="notifications"
-  ></toggle-switch-component>
-
-  <h2 style="margin-top:24px;">Multi Toggle Group</h2>
-  <div id="svelte-toggle-group-label" style="font-weight:600; margin-bottom:8px;">
-    Device settings
-  </div>
-  <toggle-switch-component
-    bind:this={multiEl}
-    input-id="svelte-toggle-group"
-    switches
-    inline
-    aria-labelledby="svelte-toggle-group-label"
-  ></toggle-switch-component>
-</section>
-`.trim();
 
 export const svelteKitExample = `<script lang="ts">
   import { browser } from '$app/environment';

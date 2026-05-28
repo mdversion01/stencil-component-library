@@ -54,11 +54,10 @@ export const vueExample = `
 </template>
 `.trim();
 
-export const angularExample = `
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
+export const angularExample = `import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-divider',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -85,5 +84,59 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
     </main>
   \`,
 })
-export class AppComponent {}
+export class DividerComponent {}
+`.trim();
+
+export const svelteExample = `
+<main style="display:grid; gap:16px;">
+  <div>
+    <p>Content above</p>
+    <divider-component></divider-component>
+    <p>Content below</p>
+  </div>
+
+  <div>
+    <p>Content above</p>
+    <divider-component orientation="center" aria-label="Section divider">
+      Section Title
+    </divider-component>
+    <p>Content below</p>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:12px; height:48px;">
+    <span>Left</span>
+    <divider-component direction="vertical"></divider-component>
+    <span>Right</span>
+  </div>
+</main>
+`.trim();
+
+export const svelteKitExample = `
+<script>
+  import { browser } from '$app/environment';
+</script>
+
+{#if browser}
+  <main style="display:grid; gap:16px;">
+    <div>
+      <p>Content above</p>
+      <divider-component></divider-component>
+      <p>Content below</p>
+    </div>
+
+    <div>
+      <p>Content above</p>
+      <divider-component orientation="center" aria-label="Section divider">
+        Section Title
+      </divider-component>
+      <p>Content below</p>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:12px; height:48px;">
+      <span>Left</span>
+      <divider-component direction="vertical"></divider-component>
+      <span>Right</span>
+    </div>
+  </main>
+{/if}
 `.trim();

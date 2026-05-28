@@ -94,11 +94,10 @@ onMounted(() => {
 </script>
 `.trim();
 
-export const angularExample = `
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core'
+export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core'
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-checkbox',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -122,7 +121,7 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild
     </main>
   \`,
 })
-export class AppComponent implements AfterViewInit {
+export class CheckboxComponent implements AfterViewInit {
   @ViewChild('singleRef', { static: true }) singleRef!: ElementRef
   @ViewChild('groupRef', { static: true }) groupRef!: ElementRef
 
@@ -138,4 +137,111 @@ export class AppComponent implements AfterViewInit {
     })
   }
 }
+`.trim();
+
+export const svelteExample = `
+<script>
+  import { onMount } from 'svelte';
+
+  let singleRef;
+  let groupRef;
+
+  onMount(() => {
+    if (groupRef) {
+      groupRef.groupOptions = [
+        { inputId: 'svelte-opt-1', value: 'alpha', labelTxt: 'Alpha' },
+        { inputId: 'svelte-opt-2', value: 'beta', labelTxt: 'Beta', checked: true },
+        { inputId: 'svelte-opt-3', value: 'gamma', labelTxt: 'Gamma' },
+      ];
+    }
+
+    const single = singleRef;
+    if (!single) return;
+
+    const onToggle = (event) => {
+      console.log('toggle', event.detail);
+    };
+
+    single.addEventListener('toggle', onToggle);
+
+    return () => {
+      single.removeEventListener('toggle', onToggle);
+    };
+  });
+</script>
+
+<main style="display:grid; gap:16px;">
+  <checkbox-component
+    bind:this={singleRef}
+    input-id="svelte-single"
+    name="agree"
+    label-txt="I agree to the terms"
+    value="agree"
+  ></checkbox-component>
+
+  <checkbox-component
+    bind:this={groupRef}
+    checkbox-group
+    name="features"
+    group-title="Pick one or more"
+    validation
+    validation-msg="Select at least one option."
+  ></checkbox-component>
+</main>
+`.trim();
+
+export const svelteKitExample = `
+<script>
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+
+  let singleRef;
+  let groupRef;
+
+  onMount(() => {
+    if (!browser) return;
+
+    if (groupRef) {
+      groupRef.groupOptions = [
+        { inputId: 'sveltekit-opt-1', value: 'alpha', labelTxt: 'Alpha' },
+        { inputId: 'sveltekit-opt-2', value: 'beta', labelTxt: 'Beta', checked: true },
+        { inputId: 'sveltekit-opt-3', value: 'gamma', labelTxt: 'Gamma' },
+      ];
+    }
+
+    const single = singleRef;
+    if (!single) return;
+
+    const onToggle = (event) => {
+      console.log('toggle', event.detail);
+    };
+
+    single.addEventListener('toggle', onToggle);
+
+    return () => {
+      single.removeEventListener('toggle', onToggle);
+    };
+  });
+</script>
+
+{#if browser}
+  <main style="display:grid; gap:16px;">
+    <checkbox-component
+      bind:this={singleRef}
+      input-id="sveltekit-single"
+      name="agree"
+      label-txt="I agree to the terms"
+      value="agree"
+    ></checkbox-component>
+
+    <checkbox-component
+      bind:this={groupRef}
+      checkbox-group
+      name="features"
+      group-title="Pick one or more"
+      validation
+      validation-msg="Select at least one option."
+    ></checkbox-component>
+  </main>
+{/if}
 `.trim();

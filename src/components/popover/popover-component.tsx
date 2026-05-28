@@ -25,6 +25,7 @@ type PlacementU =
 
 @Component({
   tag: 'popover-component',
+  styleUrl: './popover-component-styles.scss',
   shadow: false,
 })
 export class PopoverComponent {

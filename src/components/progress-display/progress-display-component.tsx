@@ -17,6 +17,7 @@ type BarItem = {
 
 @Component({
   tag: 'progress-display-component',
+  styleUrl: './progress-display-styles.scss',
   shadow: false,
 })
 export class ProgressDisplayComponent {

@@ -80,7 +80,7 @@ export default {
       table: { category: 'Storybook Only', disable: true },
       control: false,
       description: 'Text content for the slot (used only in this Storybook preview).',
-      name: 'slot text',
+      name: 'slot-text',
     },
     sbId: {
       control: 'text',

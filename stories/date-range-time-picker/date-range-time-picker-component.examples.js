@@ -61,11 +61,10 @@ onMounted(() => {
 </script>
 `.trim();
 
-export const angularExample = `
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core';
+export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-date-range-time-picker-example',
+  selector: 'app-date-range-time-picker',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -80,7 +79,7 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild
     ></date-range-time-picker-component>
   \`,
 })
-export class DateRangeTimePickerExampleComponent implements AfterViewInit {
+export class DateRangeTimePickerComponent implements AfterViewInit {
   @ViewChild('pickerRef', { static: true }) pickerRef!: ElementRef<HTMLElement>;
 
   ngAfterViewInit(): void {
@@ -89,4 +88,69 @@ export class DateRangeTimePickerExampleComponent implements AfterViewInit {
     });
   }
 }
+`.trim();
+
+export const svelteExample = `
+<script>
+  import { onMount } from 'svelte';
+
+  let pickerEl;
+
+  onMount(() => {
+    const handleUpdate = (event) => {
+      console.log('date-time-updated', event.detail);
+    };
+
+    pickerEl?.addEventListener('date-time-updated', handleUpdate);
+
+    return () => {
+      pickerEl?.removeEventListener('date-time-updated', handleUpdate);
+    };
+  });
+</script>
+
+<date-range-time-picker-component
+  bind:this={pickerEl}
+  input-id="svelte-date-range-time"
+  label="Meeting time"
+  date-format="YYYY-MM-DD"
+  join-by=" - "
+  append-prop
+  show-duration
+/>
+`.trim();
+
+export const svelteKitExample = `
+<script>
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+
+  let pickerEl;
+
+  onMount(() => {
+    if (!browser) return;
+
+    const handleUpdate = (event) => {
+      console.log('date-time-updated', event.detail);
+    };
+
+    pickerEl?.addEventListener('date-time-updated', handleUpdate);
+
+    return () => {
+      pickerEl?.removeEventListener('date-time-updated', handleUpdate);
+    };
+  });
+</script>
+
+{#if browser}
+  <date-range-time-picker-component
+    bind:this={pickerEl}
+    input-id="sveltekit-date-range-time"
+    label="Meeting time"
+    date-format="YYYY-MM-DD"
+    join-by=" - "
+    append-prop
+    show-duration
+  />
+{/if}
 `.trim();

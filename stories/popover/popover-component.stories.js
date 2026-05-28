@@ -253,7 +253,7 @@ export const Variants = () =>
   <popover-component title="warning" content="Color: warning" variant="warning" trigger="hover" placement="auto">
     <button-component variant="warning">warning</button-component>
   </popover-component>
-  <popover-component title="danger" content="Color: danger" variant="danger" trigger="hover" placement="auto">
+  <popover-component popover-title="danger" content="Color: danger" variant="danger" trigger="hover" placement="auto">
     <button-component variant="danger">danger</button-component>
   </popover-component>
   <popover-component title="info" content="Color: info" variant="info" trigger="hover" placement="auto">

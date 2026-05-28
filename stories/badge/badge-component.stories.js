@@ -236,50 +236,62 @@ export default {
     },
     useButtonComponentChild: {
       table: { disable: true },
+      name: 'use-button-component-child',
       control: false,
     },
     buttonText: {
       table: { disable: true },
+      name: 'button-text',
       control: false,
     },
     buttonType: {
       table: { disable: true },
+      name: 'button-type',
       control: false,
     },
     buttonVariant: {
       table: { disable: true },
+      name: 'button-variant',
       control: false,
     },
     buttonOutlined: {
       table: { disable: true },
+      name: 'button-outlined',
       control: false,
     },
     buttonSize: {
       table: { disable: true },
+      name: 'button-size',
       control: false,
     },
     iconMode: {
       table: { disable: true },
+      name: 'icon-mode',
       control: false,
     },
     iconName: {
       table: { disable: true },
+      name: 'icon-name',
       control: false,
     },
     iconClass: {
       table: { disable: true },
+      name: 'icon-class',
       control: false,
     },
     tokenIconMode: {
       table: { disable: true },
+      name: 'token-icon-mode',
       control: false,
     },
     tokenIconName: {
       table: { disable: true },
+      name: 'token-icon-name',
       control: false,
     },
     tokenIconClass: {
       table: { disable: true },
+      name: 'token-icon-class',
       control: false,
     },
   },

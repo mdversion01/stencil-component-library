@@ -13,7 +13,8 @@
   "exports": {
     ".": {
       "import": "./dist/stencil-component-library/stencil-component-library.esm.js",
-      "require": "./dist/stencil-component-library/stencil-component-library.cjs.js"
+      "require": "./dist/stencil-component-library/stencil-component-library.cjs.js",
+      "types": "./dist/types/index.d.ts"
     },
     "./loader": {
       "import": "./loader/index.js",
@@ -21,8 +22,16 @@
       "types": "./loader/index.d.ts"
     },
     "./style.css": "./dist/stencil-component-library/stencil-component-library.css",
-    "./assets/*": "./www/assets/*"
+    "./assets/*": "./assets/*"
   },
+  "files": [
+    "dist/",
+    "loader/",
+    "assets/",
+    "components.d.ts",
+    "readme.md",
+    "LICENSE"
+  ],
   "typesVersions": {
     "*": {
       "my-component": [
@@ -40,22 +49,11 @@
     "type": "git",
     "url": "https://github.com/stenciljs/component-starter.git"
   },
-  "files": [
-    "dist/",
-    "loader/",
-    "assets/",
-    "www/build/",
-    "www/assets/",
-    "components.d.ts",
-    "readme.md",
-    "LICENSE"
-  ],
   "scripts": {
     "clean": "rimraf www dist .stencil",
     "copy:package-assets": "node scripts/copy-package-assets.mjs",
     "copy:mdi": "node scripts/copy-mdi.mjs",
-    "postinstall": "npm run copy:mdi",
-    "build": "stencil build && npm run copy:package-assets",
+    "build": "stencil build && npm run copy:mdi && npm run copy:package-assets",
     "prestart": "rimraf www/assets && rimraf www/build",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec",

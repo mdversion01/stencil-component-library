@@ -92,11 +92,10 @@ onMounted(() => {
 </script>
 `.trim();
 
-export const angularExample = `
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core'
+export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core'
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-minimized-pagination',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -131,11 +130,104 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild
     </main>
   \`,
 })
-export class AppComponent implements AfterViewInit {
+export class MinimizedPaginationComponent implements AfterViewInit {
   @ViewChild('standaloneRef', { static: true }) standaloneRef!: ElementRef;
 
   ngAfterViewInit() {
     this.standaloneRef.nativeElement.itemsPerPageOptions = [10, 20, 50, 100, 'All'];
   }
 }
+`.trim();
+
+export const svelteExample = `
+<script>
+  import { onMount } from 'svelte';
+
+  let standaloneRef = null;
+
+  onMount(() => {
+    if (standaloneRef) {
+      standaloneRef.itemsPerPageOptions = [10, 20, 50, 100, 'All'];
+    }
+  });
+</script>
+
+<main style="display:grid; gap:16px;">
+  <minimize-pagination-component
+    current-page="1"
+    total-rows="100"
+    page-size="10"
+    pagination-layout="center"
+    pagination-aria-label="Pagination"
+  ></minimize-pagination-component>
+
+  <minimize-pagination-component
+    bind:this={standaloneRef}
+    current-page="1"
+    total-rows="420"
+    page-size="10"
+    items-per-page
+    display-total-number-of-pages
+    pagination-layout="start"
+    page-size-label="Items per page:"
+    page-size-help-text="Use this control to change how many items are shown per page."
+  ></minimize-pagination-component>
+
+  <minimize-pagination-component
+    current-page="8"
+    total-rows="250"
+    page-size="10"
+    go-to-buttons="text"
+    plumage
+  ></minimize-pagination-component>
+</main>
+`.trim();
+
+export const svelteKitExample = `
+<script>
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+
+  let standaloneRef = null;
+
+  onMount(() => {
+    if (!browser) return;
+
+    if (standaloneRef) {
+      standaloneRef.itemsPerPageOptions = [10, 20, 50, 100, 'All'];
+    }
+  });
+</script>
+
+{#if browser}
+  <main style="display:grid; gap:16px;">
+    <minimize-pagination-component
+      current-page="1"
+      total-rows="100"
+      page-size="10"
+      pagination-layout="center"
+      pagination-aria-label="Pagination"
+    ></minimize-pagination-component>
+
+    <minimize-pagination-component
+      bind:this={standaloneRef}
+      current-page="1"
+      total-rows="420"
+      page-size="10"
+      items-per-page
+      display-total-number-of-pages
+      pagination-layout="start"
+      page-size-label="Items per page:"
+      page-size-help-text="Use this control to change how many items are shown per page."
+    ></minimize-pagination-component>
+
+    <minimize-pagination-component
+      current-page="8"
+      total-rows="250"
+      page-size="10"
+      go-to-buttons="text"
+      plumage
+    ></minimize-pagination-component>
+  </main>
+{/if}
 `.trim();

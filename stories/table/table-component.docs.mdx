@@ -7,7 +7,9 @@ import { reactExample,
   angularExample,
   angularPlaygroundExample,
   svelteExample,
-  sveltePlaygroundExample, } from './table-component.examples';
+  sveltePlaygroundExample,
+  svelteKitExample,
+  svelteKitPlaygroundExample } from './table-component.examples';
 
 <Meta of={TableStories} />
 
@@ -87,6 +89,15 @@ import { reactExample,
 <details>
 <summary>Svelte Implementation (w/ Sort, Filtering, Pagination)</summary>
 <Source code={sveltePlaygroundExample} language="ts" />
+</details>
+## Svelte Kit
+<details>
+<summary>Svelte Kit Implementation (Basic)</summary>
+<Source code={svelteKitExample} language="ts" />
+</details>
+<details>
+<summary>Svelte Kit Implementation (w/ Sort, Filtering, Pagination)</summary>
+<Source code={svelteKitPlaygroundExample} language="ts" />
 </details>
 {/* Show a live preview + controls table */}
 <Primary />

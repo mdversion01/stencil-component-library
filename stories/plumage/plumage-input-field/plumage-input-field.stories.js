@@ -181,6 +181,7 @@ export default {
 
     wrapWithForm: {
       control: 'boolean',
+      name: 'wrap-with-form',
       description: 'When enabled, wraps the input in a <form-component> and slots it as formField. Story-only control.',
       table: { category: 'Storybook Only', defaultValue: { summary: false } },
     },

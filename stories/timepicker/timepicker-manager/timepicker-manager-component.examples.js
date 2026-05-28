@@ -83,11 +83,10 @@ onBeforeUnmount(() => {
 </script>
 `.trim();
 
-export const angularExample = `
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-timepicker-manager',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -102,7 +101,7 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy
     ></timepicker-manager>
   \`,
 })
-export class AppComponent implements AfterViewInit, OnDestroy {
+export class TimepickerManagerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('managerEl', { static: true }) managerRef!: ElementRef<HTMLElement>;
 
   private readonly handleManagerTimeChange = (event: Event) => {

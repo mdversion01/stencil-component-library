@@ -101,6 +101,10 @@
   margin-right: 8px;
 }
 
+.form-inline .custom-control + .custom-checkbox:not(:first-child) {
+  margin-left: 8px;
+}
+
 .custom-control-label::after {
   position: absolute;
   top: 4px;

@@ -1,20 +1,14 @@
 // File: src/stories/card-component/card-component.stories.js
 
 import DocsPage from './card-component.docs.mdx';
-import {
-  DocsWrapStyles,
-  buildDocsHtml,
-  normalize,
-  renderCard,
-  wrapDocsHtml,
-} from './card-component.story-helpers.js';
+import { DocsWrapStyles, buildDocsHtml, normalize, renderCard, wrapDocsHtml } from './card-component.story-helpers.js';
 
 export default {
   title: 'Components/Card',
   tags: ['autodocs'],
 
   decorators: [
-    (Story) => {
+    Story => {
       const wrap = document.createElement('div');
       wrap.appendChild(DocsWrapStyles());
       wrap.appendChild(Story());
@@ -39,8 +33,7 @@ export default {
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
-      description:
-        'Accessible name. Used when landmark=true and aria-labelledby is not set; also used for clickable cards when no title slot is present.',
+      description: 'Accessible name. Used when landmark=true and aria-labelledby is not set; also used for clickable cards when no title slot is present.',
       table: { category: 'Accessibility' },
     },
     ariaLabelledby: {
@@ -214,7 +207,7 @@ export default {
   },
 };
 
-const Template = (args) => renderCard(args);
+const Template = args => renderCard(args);
 
 export const Basic = Template.bind({});
 Basic.args = {};
@@ -320,7 +313,7 @@ Elevated.parameters = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
-  render: (args) => {
+  render: args => {
     const wrap = document.createElement('div');
     wrap.style.display = 'grid';
     wrap.style.gap = '16px';
@@ -376,20 +369,20 @@ export const AccessibilityMatrix = {
 
         pre.textContent = JSON.stringify(
           {
-            hostTag: host?.tagName?.toLowerCase() ?? null,
-            rootTag: root?.tagName?.toLowerCase() ?? null,
-            role: root?.getAttribute('role') ?? null,
-            tabIndexAttr: root?.getAttribute('tabindex') ?? null,
+            'hostTag': host?.tagName?.toLowerCase() ?? null,
+            'rootTag': root?.tagName?.toLowerCase() ?? null,
+            'role': root?.getAttribute('role') ?? null,
+            'tabIndexAttr': root?.getAttribute('tabindex') ?? null,
             'aria-label': root?.getAttribute('aria-label') ?? null,
             'aria-labelledby': root?.getAttribute('aria-labelledby') ?? null,
             'aria-describedby': root?.getAttribute('aria-describedby') ?? null,
             'aria-disabled': root?.getAttribute('aria-disabled') ?? null,
-            headingTag: heading ? heading.tagName.toLowerCase() : null,
-            headingId: heading?.getAttribute('id') ?? null,
-            headingText: heading?.textContent?.trim() ?? null,
-            imgPresent: !!img,
-            imgAlt: img?.getAttribute('alt') ?? null,
-            imgAriaHidden: img?.getAttribute('aria-hidden') ?? null,
+            'headingTag': heading ? heading.tagName.toLowerCase() : null,
+            'headingId': heading?.getAttribute('id') ?? null,
+            'headingText': heading?.textContent?.trim() ?? null,
+            'imgPresent': !!img,
+            'imgAlt': img?.getAttribute('alt') ?? null,
+            'imgAriaHidden': img?.getAttribute('aria-hidden') ?? null,
           },
           null,
           2,

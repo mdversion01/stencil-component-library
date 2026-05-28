@@ -74,13 +74,16 @@ export default {
     storyLabel: {
       control: false,
       table: { disable: true },
+      name: 'story-label',
     },
     showAsRow: {
       control: false,
+      name: 'show-as-row',
       table: { disable: true },
     },
     matrixMode: {
       control: false,
+      name: 'matrix-mode',
       table: { disable: true },
     },
   },

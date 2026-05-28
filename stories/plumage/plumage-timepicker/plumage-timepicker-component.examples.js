@@ -80,11 +80,10 @@ onBeforeUnmount(() => {
 </script>
 `.trim();
 
-export const angularExample = `
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-plumage-timepicker',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
@@ -99,7 +98,7 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy
     ></plumage-timepicker-component>
   \`,
 })
-export class AppComponent implements AfterViewInit, OnDestroy {
+export class PlumageTimepickerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('timepickerEl', { static: true }) timepickerRef!: ElementRef;
 
   private readonly onTimeChange = (event: Event) => {
@@ -124,4 +123,96 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.timepickerRef.nativeElement.removeEventListener('timeInput', this.onTimeInput);
   }
 }
+`.trim();
+
+export const svelteExample = `
+<script>
+  import { onMount, onDestroy } from 'svelte';
+
+  let timepickerEl;
+
+  const handleTimeChange = (event) => {
+    console.log('timeChange:', event.detail);
+  };
+
+  const handleTimeInput = (event) => {
+    console.log('timeInput:', event.detail);
+  };
+
+  onMount(() => {
+    const el = timepickerEl;
+    if (!el) return;
+
+    el.addEventListener('timeChange', handleTimeChange);
+    el.addEventListener('timeInput', handleTimeInput);
+  });
+
+  onDestroy(() => {
+    const el = timepickerEl;
+    if (!el) return;
+
+    el.removeEventListener('timeChange', handleTimeChange);
+    el.removeEventListener('timeInput', handleTimeInput);
+  });
+</script>
+
+<plumage-timepicker-component
+  bind:this={timepickerEl}
+  show-label
+  label-text="Meeting time"
+  input-id="svelte-timepicker"
+  input-name="meetingTime"
+  value="00:00:00"
+  is-twenty-four-hour-format="true"
+></plumage-timepicker-component>
+`.trim();
+
+export const svelteKitExample = `
+<!-- File: src/lib/components/PlumageTimepickerExample.svelte -->
+<script>
+  import { onMount, onDestroy } from 'svelte';
+
+  let timepickerEl;
+
+  const handleTimeChange = (event) => {
+    console.log('timeChange:', event.detail);
+  };
+
+  const handleTimeInput = (event) => {
+    console.log('timeInput:', event.detail);
+  };
+
+  onMount(() => {
+    const el = timepickerEl;
+    if (!el) return;
+
+    el.addEventListener('timeChange', handleTimeChange);
+    el.addEventListener('timeInput', handleTimeInput);
+  });
+
+  onDestroy(() => {
+    const el = timepickerEl;
+    if (!el) return;
+
+    el.removeEventListener('timeChange', handleTimeChange);
+    el.removeEventListener('timeInput', handleTimeInput);
+  });
+</script>
+
+<plumage-timepicker-component
+  bind:this={timepickerEl}
+  show-label
+  label-text="Meeting time"
+  input-id="sveltekit-timepicker"
+  input-name="meetingTime"
+  value="00:00:00"
+  is-twenty-four-hour-format="true"
+></plumage-timepicker-component>
+
+<!-- File: src/routes/+page.svelte -->
+<script>
+  import PlumageTimepickerExample from '$lib/components/PlumageTimepickerExample.svelte';
+</script>
+
+<PlumageTimepickerExample />
 `.trim();

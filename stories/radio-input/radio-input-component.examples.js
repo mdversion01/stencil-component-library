@@ -46,10 +46,12 @@ const handleGroupChange = (event) => {
 </script>
 `;
 
-export const angularExample = `import { Component } from '@angular/core';
+export const angularExample = `import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
-  selector: 'app-radio-input-example',
+  selector: 'app-radio-input',
+  standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
     <radio-input-component
       bs-radio-group
@@ -60,7 +62,7 @@ export const angularExample = `import { Component } from '@angular/core';
     ></radio-input-component>
   \`,
 })
-export class RadioInputExampleComponent {
+export class RadioInputComponent {
   groupOptions = [
     { inputId: 'contact-email', value: 'email', labelTxt: 'Email', checked: true },
     { inputId: 'contact-sms', value: 'sms', labelTxt: 'SMS' },
@@ -73,4 +75,68 @@ export class RadioInputExampleComponent {
     console.log('Selected value:', event.detail);
   }
 }
+`;
+
+export const svelteExample = `<script>
+  let radioEl;
+
+  const groupOptions = [
+    { inputId: 'contact-email', value: 'email', labelTxt: 'Email', checked: true },
+    { inputId: 'contact-sms', value: 'sms', labelTxt: 'SMS' },
+    { inputId: 'contact-call', value: 'call', labelTxt: 'Phone Call' },
+  ];
+
+  const serializedOptions = JSON.stringify(groupOptions);
+
+  function handleGroupChange(event) {
+    console.log('Selected value:', event.detail);
+  }
+</script>
+
+<section>
+  <h2>Radio Input Example</h2>
+
+  <radio-input-component
+    bind:this={radioEl}
+    bs-radio-group
+    name="preferredContact"
+    group-title="Preferred Contact"
+    group-options={serializedOptions}
+    on:groupChange={handleGroupChange}
+  ></radio-input-component>
+</section>
+`;
+
+export const svelteKitExample = `<script>
+  import { browser } from '$app/environment';
+
+  let radioEl;
+
+  const groupOptions = [
+    { inputId: 'contact-email', value: 'email', labelTxt: 'Email', checked: true },
+    { inputId: 'contact-sms', value: 'sms', labelTxt: 'SMS' },
+    { inputId: 'contact-call', value: 'call', labelTxt: 'Phone Call' },
+  ];
+
+  const serializedOptions = JSON.stringify(groupOptions);
+
+  function handleGroupChange(event) {
+    console.log('Selected value:', event.detail);
+  }
+</script>
+
+<section>
+  <h2>Radio Input Example</h2>
+
+  {#if browser}
+    <radio-input-component
+      bind:this={radioEl}
+      bs-radio-group
+      name="preferredContact"
+      group-title="Preferred Contact"
+      group-options={serializedOptions}
+      on:groupChange={handleGroupChange}
+    ></radio-input-component>
+  {/if}
+</section>
 `;
