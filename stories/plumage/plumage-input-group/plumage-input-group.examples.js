@@ -1,3 +1,5 @@
+// File: src/stories/plumage-input-group.examples.js
+
 export const reactExample = `
 import { useEffect, useRef } from 'react';
 
@@ -8,25 +10,33 @@ export default function PlumageInputGroup() {
     const el = ref.current;
     if (!el) return;
 
-    const onValueChange = (event) => {
+    const onValueChange = event => {
       console.log('valueChange:', event.detail);
     };
 
+    const onAppendClick = event => {
+      console.log('appendClick:', event.detail);
+    };
+
     el.addEventListener('valueChange', onValueChange);
+    el.addEventListener('appendClick', onAppendClick);
 
     return () => {
       el.removeEventListener('valueChange', onValueChange);
+      el.removeEventListener('appendClick', onAppendClick);
     };
   }, []);
 
   return (
     <plumage-input-group-component
       ref={ref}
-      label="Amount"
-      input-id="react-amount"
-      placeholder="Enter amount"
-      append
-      append-icon="fa-solid fa-dollar-sign"
+      label="Search"
+      input-id="react-search"
+      has-append
+      append-button
+      append-text="Go"
+      append-button-variant="secondary"
+      append-button-id="react-search-append-btn"
     />
   );
 }
@@ -36,11 +46,13 @@ export const vueExample = `
 <template>
   <plumage-input-group-component
     ref="inputGroupRef"
-    label="Amount"
-    input-id="vue-amount"
-    placeholder="Enter amount"
-    append
-    append-icon="fa-solid fa-dollar-sign"
+    label="Search"
+    input-id="vue-search"
+    has-append
+    append-button
+    append-text="Go"
+    append-button-variant="secondary"
+    append-button-id="vue-search-append-btn"
   />
 </template>
 
@@ -49,16 +61,22 @@ import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const inputGroupRef = ref(null);
 
-const onValueChange = (event) => {
+const onValueChange = event => {
   console.log('valueChange:', event.detail);
+};
+
+const onAppendClick = event => {
+  console.log('appendClick:', event.detail);
 };
 
 onMounted(() => {
   inputGroupRef.value?.addEventListener('valueChange', onValueChange);
+  inputGroupRef.value?.addEventListener('appendClick', onAppendClick);
 });
 
 onBeforeUnmount(() => {
   inputGroupRef.value?.removeEventListener('valueChange', onValueChange);
+  inputGroupRef.value?.removeEventListener('appendClick', onAppendClick);
 });
 </script>
 `.trim();
@@ -72,11 +90,13 @@ export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENT
   template: \`
     <plumage-input-group-component
       #inputGroup
-      label="Amount"
-      input-id="angular-amount"
-      placeholder="Enter amount"
-      append
-      append-icon="fa-solid fa-dollar-sign"
+      label="Search"
+      input-id="angular-search"
+      has-append
+      append-button
+      append-text="Go"
+      append-button-variant="secondary"
+      append-button-id="angular-search-append-btn"
     ></plumage-input-group-component>
   \`,
 })
@@ -88,12 +108,19 @@ export class PlumageInputGroupComponent implements AfterViewInit, OnDestroy {
     console.log('valueChange:', customEvent.detail);
   };
 
+  private readonly onAppendClick = (event: Event) => {
+    const customEvent = event as CustomEvent<{ originalEvent: MouseEvent }>;
+    console.log('appendClick:', customEvent.detail);
+  };
+
   ngAfterViewInit(): void {
     this.inputGroupRef.nativeElement.addEventListener('valueChange', this.onValueChange);
+    this.inputGroupRef.nativeElement.addEventListener('appendClick', this.onAppendClick);
   }
 
   ngOnDestroy(): void {
     this.inputGroupRef.nativeElement.removeEventListener('valueChange', this.onValueChange);
+    this.inputGroupRef.nativeElement.removeEventListener('appendClick', this.onAppendClick);
   }
 }
 `.trim();
@@ -108,25 +135,33 @@ export const svelteExample = `
     console.log('valueChange:', event.detail);
   }
 
+  function onAppendClick(event) {
+    console.log('appendClick:', event.detail);
+  }
+
   onMount(() => {
     const el = inputGroupRef;
     if (!el) return;
 
     el.addEventListener('valueChange', onValueChange);
+    el.addEventListener('appendClick', onAppendClick);
 
     return () => {
       el.removeEventListener('valueChange', onValueChange);
+      el.removeEventListener('appendClick', onAppendClick);
     };
   });
 </script>
 
 <plumage-input-group-component
   bind:this={inputGroupRef}
-  label="Amount"
-  input-id="svelte-amount"
-  placeholder="Enter amount"
-  append
-  append-icon="fa-solid fa-dollar-sign"
+  label="Search"
+  input-id="svelte-search"
+  has-append
+  append-button
+  append-text="Go"
+  append-button-variant="secondary"
+  append-button-id="svelte-search-append-btn"
 ></plumage-input-group-component>
 `.trim();
 
@@ -141,6 +176,10 @@ export const svelteKitExample = `
     console.log('valueChange:', event.detail);
   }
 
+  function onAppendClick(event) {
+    console.log('appendClick:', event.detail);
+  }
+
   onMount(() => {
     if (!browser) return;
 
@@ -148,9 +187,11 @@ export const svelteKitExample = `
     if (!el) return;
 
     el.addEventListener('valueChange', onValueChange);
+    el.addEventListener('appendClick', onAppendClick);
 
     return () => {
       el.removeEventListener('valueChange', onValueChange);
+      el.removeEventListener('appendClick', onAppendClick);
     };
   });
 </script>
@@ -158,12 +199,13 @@ export const svelteKitExample = `
 {#if browser}
   <plumage-input-group-component
     bind:this={inputGroupRef}
-    label="Amount"
-    input-id="sveltekit-amount"
-    placeholder="Enter amount"
-    append
-    append-icon="fa-solid fa-dollar-sign"
+    label="Search"
+    input-id="sveltekit-search"
+    has-append
+    append-button
+    append-text="Go"
+    append-button-variant="secondary"
+    append-button-id="sveltekit-search-append-btn"
   ></plumage-input-group-component>
 {/if}
 `.trim();
-

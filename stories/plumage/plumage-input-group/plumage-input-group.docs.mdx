@@ -14,16 +14,29 @@ import { reactExample, vueExample, angularExample, svelteExample, svelteKitExamp
 <plumage-input-group-component
   label="Amount"
   input-id="amount-example"
-  placeholder="Enter amount"
-  append
+  has-append
   append-icon="fa-solid fa-dollar-sign"
+></plumage-input-group-component>
+
+<plumage-input-group-component
+  label="Search"
+  input-id="search-example"
+  has-append
+  append-button
+  append-text="Go"
+  append-button-variant="secondary"
+  append-button-id="search-example-append-btn"
 ></plumage-input-group-component>
 
 <script>
   const el = document.querySelector('plumage-input-group-component');
 
-  el.addEventListener('valueChange', (event) => {
+  el.addEventListener('valueChange', event => {
     console.log('valueChange:', event.detail);
+  });
+
+  el.addEventListener('appendClick', event => {
+    console.log('appendClick:', event.detail);
   });
 </script>
 ```

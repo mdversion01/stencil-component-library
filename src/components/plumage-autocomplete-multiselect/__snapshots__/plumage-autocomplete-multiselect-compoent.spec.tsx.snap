@@ -8,7 +8,7 @@ exports[`plumage-autocomplete-multiselect-component filters, navigates, selects 
     </div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label label-sm" htmlfor="fruit">
+        <label class="form-control-label label-sm" for="fruit">
           <span>
             Fruit
           </span>
@@ -58,7 +58,7 @@ exports[`plumage-autocomplete-multiselect-component renders (stacked) and matche
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="fruits-live"></div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label label-sm" htmlfor="fruits">
+        <label class="form-control-label label-sm" for="fruits">
           <span>
             Fruits
           </span>

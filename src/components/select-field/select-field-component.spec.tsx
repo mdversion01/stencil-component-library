@@ -278,7 +278,7 @@ describe('select-field-component', () => {
 <select-field-component default-option-txt="Pick one" select-field-id="fruit">
   <div>
     <div class="form-group">
-      <label class="form-control-label label-sm" htmlfor="fruit" id="fruit-label">
+      <label class="form-control-label label-sm" for="fruit" id="fruit-label">
         <span>
           Favorite Fruit
         </span>

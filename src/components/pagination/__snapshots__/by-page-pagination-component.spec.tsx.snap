@@ -20,7 +20,7 @@ exports[`by-page-pagination-component snapshot plumage + center (use stable cont
             <div class="pages">
               Page
               <div class="input-container page-input-wrapper" role="presentation">
-                <label class="sr-only" htmlfor="bppc-pageInput-byPageA11y" id="bppc-pageInput-byPageA11y__label">
+                <label class="sr-only" for="bppc-pageInput-byPageA11y" id="bppc-pageInput-byPageA11y__label">
                   Page number
                 </label>
                 <div class="sr-only" id="bppc-pageInput-byPageA11y__help">

@@ -9,8 +9,8 @@
     <script nomodule src="../../build/stencil-component-library.js"></script>
 
     <link rel="stylesheet" href="../../build/stencil-component-library.css" />
-
     <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="../../../node_modules/@fortawesome/fontawesome-free/css/all.min.css" />
 
     <style>
       .cwrapper {
@@ -29,8 +29,6 @@
     </style>
   </head>
   <body>
-    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
-     -->
     <app-wrapper>
       <div class="cwrapper">
         <form-component>
@@ -39,28 +37,35 @@
             input-id="pl-input-group-1"
             label="Test Label"
             label-size="xs"
-            other-content
-            append
-            prepend
+            has-append
+            has-prepend
             prepend-icon="fa-solid fa-dollar-sign"
+            append-button
+            append-text="Go"
+            append-button-variant="secondary"
+            append-id="pl-input-group-1-append-wrap"
+            append-button-id="pl-input-group-1-append-btn"
             form-layout="horizontal"
             label-align="right"
-          >
-            <button-component slot="append" type="button">Go</button-component>
-          </plumage-input-group-component>
+          ></plumage-input-group-component>
 
           <plumage-input-group-component
             slot="formField"
             input-id="pl-input-group-3"
             label="Test Label"
-            append
-            prepend
+            has-append
+            has-prepend
             prepend-icon="fa-solid fa-dollar-sign"
+            append-button
+            append-text="Go"
+            append-button-variant="secondary"
+            append-button-type="button"
+            append-aria-label="Run action"
+            append-id="pl-input-group-3-append-wrap"
+            append-button-id="pl-input-group-3-append-btn"
             form-layout="horizontal"
             label-align="right"
-          >
-            <button-component slot="append" outlined variant="secondary" size="sm" type="button">Go</button-component>
-          </plumage-input-group-component>
+          ></plumage-input-group-component>
 
           <plumage-input-group-component
             slot="formField"
@@ -68,20 +73,52 @@
             label="Test Label"
             size="lg"
             label-size="xs"
-            append
+            has-append
             append-icon="fa-solid fa-dollar-sign"
-            prepend
+            has-prepend
             prepend-icon="fa-solid fa-dollar-sign"
             form-layout="horizontal"
             label-align="right"
-          >
-          </plumage-input-group-component>
+          ></plumage-input-group-component>
 
-          <plumage-input-group-component slot="formField" label="Search" plumage-search> </plumage-input-group-component>
+          <plumage-input-group-component
+            slot="formField"
+            input-id="pl-input-group-4"
+            label="Code"
+            has-prepend
+            prepend-text="#"
+            has-append
+            append-text=".js"
+            form-layout="horizontal"
+            label-align="right"
+          ></plumage-input-group-component>
+
+          <plumage-input-group-component
+            slot="formField"
+            input-id="pl-input-group-5"
+            label="Search"
+            has-prepend
+            prepend-button
+            prepend-text="Go"
+            prepend-button-variant="secondary"
+            prepend-id="pl-input-group-5-prepend-wrap"
+            prepend-button-id="pl-input-group-5-prepend-btn"
+            has-append
+            append-button
+            append-text="Search"
+            append-button-variant="primary"
+            append-id="pl-input-group-5-append-wrap"
+            append-button-id="pl-input-group-5-append-btn"
+          ></plumage-input-group-component>
+
+          <plumage-input-group-component
+            slot="formField"
+            input-id="pl-search"
+            label="Search"
+            plumage-search
+          ></plumage-input-group-component>
         </form-component>
       </div>
     </app-wrapper>
-
-    <script type="module"></script>
   </body>
 </html>

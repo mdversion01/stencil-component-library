@@ -4,7 +4,7 @@ exports[`autocomplete-multiselect renders full DOM output snapshot for given pro
 <autocomplete-multiselect add-btn="" badge-inline-styles="background-color: red; color: white;" badge-shape="rounded" badge-variant="danger" editable="" error="" error-message="Invalid input" input-id="tag-input" label="Tags" required="" validation-message="Required field.">
   <div class="autocomplete-container form-group">
     <div>
-      <label class="form-control-label invalid label-sm" htmlfor="tagInput" id="tagInput-label">
+      <label class="form-control-label invalid label-sm" for="tagInput" id="tagInput-label">
         <span>
           Tags
         </span>

@@ -5,7 +5,7 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
   <div class="date-picker">
     <div class="dropdown-wrapper">
       <div class="form-group form-input-group-basic">
-        <label class="form-control-label" htmlfor="drp" id="drp-6-k7qd-label">
+        <label class="form-control-label" for="drp" id="drp-6-vx1x-label">
           <span>
             Date Range Picker
           </span>
@@ -13,7 +13,7 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
         <div>
           <div aria-label="Date picker group" class="input-group" role="group">
             <div class="drp-input-field">
-              <input aria-describedby="drp-6-k7qd-dialog-desc" aria-labelledby="drp-6-k7qd-label" class="form-control" id="drp" placeholder="YYYY-MM-DD  -  YYYY-MM-DD" type="text" value="">
+              <input aria-describedby="drp-6-vx1x-dialog-desc" aria-labelledby="drp-6-vx1x-label" class="form-control" id="drp" placeholder="YYYY-MM-DD  -  YYYY-MM-DD" type="text" value="">
             </div>
             <div class="input-group-append">
               <button aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text" type="button">
@@ -24,11 +24,11 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
         </div>
       </div>
       <div class="dropdown">
-        <div aria-describedby="drp-6-k7qd-dialog-desc" aria-labelledby="drp-6-k7qd-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
-          <div class="sr-only visually-hidden" id="drp-6-k7qd-dialog-title">
+        <div aria-describedby="drp-6-vx1x-dialog-desc" aria-labelledby="drp-6-vx1x-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
+          <div class="sr-only visually-hidden" id="drp-6-vx1x-dialog-title">
             Date Range Picker
           </div>
-          <div class="sr-only visually-hidden" id="drp-6-k7qd-dialog-desc">
+          <div class="sr-only visually-hidden" id="drp-6-vx1x-dialog-desc">
             Select a start date and an end date. Use arrow keys to navigate days. Press Enter to select.
           </div>
           <div class="date-picker">
@@ -40,10 +40,10 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                   </svg>
                 </button>
                 <div class="selectors">
-                  <label class="sr-only visually-hidden" htmlfor="drp-6-k7qd-months">
+                  <label class="sr-only visually-hidden" for="drp-6-vx1x-months">
                     Select month
                   </label>
-                  <select aria-label="Select month" class="form-control form-select months select-sm" id="drp-6-k7qd-months">
+                  <select aria-label="Select month" class="form-control form-select months select-sm" id="drp-6-vx1x-months">
                     <option value="0">
                       January
                     </option>
@@ -53,13 +53,13 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                     <option value="2">
                       March
                     </option>
-                    <option selected="" value="3">
+                    <option value="3">
                       April
                     </option>
                     <option value="4">
                       May
                     </option>
-                    <option value="5">
+                    <option selected="" value="5">
                       June
                     </option>
                     <option value="6">
@@ -81,10 +81,10 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                       December
                     </option>
                   </select>
-                  <label class="sr-only visually-hidden" htmlfor="drp-6-k7qd-year">
+                  <label class="sr-only visually-hidden" for="drp-6-vx1x-year">
                     Select year
                   </label>
-                  <select aria-label="Select year" class="form-control form-select select-sm years" id="drp-6-k7qd-year">
+                  <select aria-label="Select year" class="form-control form-select select-sm years" id="drp-6-vx1x-year">
                     <option value="2014">
                       2014
                     </option>
@@ -164,8 +164,8 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
               <div class="range-picker">
                 <div aria-label="Calendars" class="calendar-wrapper" tabindex="0">
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-6-k7qd-grid-start-caption">
-                      April 2026
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-6-vx1x-grid-start-caption">
+                      June 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
                       <small aria-label="Sunday" class="calendar-grid-day col" role="columnheader" title="Sunday">
@@ -190,234 +190,234 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                         Sat
                       </small>
                     </div>
-                    <div aria-labelledby="drp-6-k7qd-grid-start-caption" class="calendar-grid" id="drp-6-k7qd-grid-start" role="grid">
+                    <div aria-labelledby="drp-6-vx1x-grid-start-caption" class="calendar-grid" id="drp-6-vx1x-grid-start" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="March 29, 2026" class="calendar-grid-item previous-month-day" data-date="2026-03-29" data-day="29" data-month="3" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
-                            29
-                          </span>
-                        </div>
-                        <div aria-label="March 30, 2026" class="calendar-grid-item previous-month-day" data-date="2026-03-30" data-day="30" data-month="3" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
-                            30
-                          </span>
-                        </div>
-                        <div aria-label="March 31, 2026" class="calendar-grid-item previous-month-day" data-date="2026-03-31" data-day="31" data-month="3" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="May 31, 2026" class="calendar-grid-item previous-month-day" data-date="2026-05-31" data-day="31" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             31
                           </span>
                         </div>
-                        <div aria-label="April 1, 2026" class="calendar-grid-item csm-first-day" data-date="2026-04-01" data-day="1" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 1, 2026" class="calendar-grid-item csm-first-day" data-date="2026-06-01" data-day="1" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             1
                           </span>
                         </div>
-                        <div aria-label="April 2, 2026" class="calendar-grid-item" data-date="2026-04-02" data-day="2" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <div aria-label="June 2, 2026" class="calendar-grid-item" data-date="2026-06-02" data-day="2" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
                             2
                           </span>
                         </div>
-                        <div aria-label="April 3, 2026" class="calendar-grid-item" data-date="2026-04-03" data-day="3" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 3, 2026" class="calendar-grid-item" data-date="2026-06-03" data-day="3" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             3
                           </span>
                         </div>
-                        <div aria-label="April 4, 2026" class="calendar-grid-item" data-date="2026-04-04" data-day="4" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 4, 2026" class="calendar-grid-item" data-date="2026-06-04" data-day="4" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             4
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="April 5, 2026" class="calendar-grid-item" data-date="2026-04-05" data-day="5" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 5, 2026" class="calendar-grid-item" data-date="2026-06-05" data-day="5" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             5
                           </span>
                         </div>
-                        <div aria-label="April 6, 2026" class="calendar-grid-item" data-date="2026-04-06" data-day="6" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 6, 2026" class="calendar-grid-item" data-date="2026-06-06" data-day="6" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             6
                           </span>
                         </div>
-                        <div aria-label="April 7, 2026" class="calendar-grid-item" data-date="2026-04-07" data-day="7" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="June 7, 2026" class="calendar-grid-item" data-date="2026-06-07" data-day="7" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
-                        <div aria-label="April 8, 2026" class="calendar-grid-item" data-date="2026-04-08" data-day="8" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 8, 2026" class="calendar-grid-item" data-date="2026-06-08" data-day="8" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             8
                           </span>
                         </div>
-                        <div aria-label="April 9, 2026" class="calendar-grid-item" data-date="2026-04-09" data-day="9" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 9, 2026" class="calendar-grid-item" data-date="2026-06-09" data-day="9" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             9
                           </span>
                         </div>
-                        <div aria-label="April 10, 2026" class="calendar-grid-item" data-date="2026-04-10" data-day="10" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 10, 2026" class="calendar-grid-item" data-date="2026-06-10" data-day="10" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             10
                           </span>
                         </div>
-                        <div aria-label="April 11, 2026" class="calendar-grid-item" data-date="2026-04-11" data-day="11" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 11, 2026" class="calendar-grid-item" data-date="2026-06-11" data-day="11" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             11
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="April 12, 2026" class="calendar-grid-item" data-date="2026-04-12" data-day="12" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 12, 2026" class="calendar-grid-item" data-date="2026-06-12" data-day="12" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             12
                           </span>
                         </div>
-                        <div aria-label="April 13, 2026" class="calendar-grid-item" data-date="2026-04-13" data-day="13" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 13, 2026" class="calendar-grid-item" data-date="2026-06-13" data-day="13" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
-                        <div aria-label="April 14, 2026" class="calendar-grid-item" data-date="2026-04-14" data-day="14" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="June 14, 2026" class="calendar-grid-item" data-date="2026-06-14" data-day="14" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             14
                           </span>
                         </div>
-                        <div aria-label="April 15, 2026" class="calendar-grid-item" data-date="2026-04-15" data-day="15" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 15, 2026" class="calendar-grid-item" data-date="2026-06-15" data-day="15" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             15
                           </span>
                         </div>
-                        <div aria-label="April 16, 2026" class="calendar-grid-item" data-date="2026-04-16" data-day="16" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 16, 2026" class="calendar-grid-item" data-date="2026-06-16" data-day="16" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             16
                           </span>
                         </div>
-                        <div aria-label="April 17, 2026" class="calendar-grid-item" data-date="2026-04-17" data-day="17" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 17, 2026" class="calendar-grid-item" data-date="2026-06-17" data-day="17" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             17
                           </span>
                         </div>
-                        <div aria-label="April 18, 2026" class="calendar-grid-item" data-date="2026-04-18" data-day="18" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 18, 2026" class="calendar-grid-item" data-date="2026-06-18" data-day="18" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             18
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="April 19, 2026" class="calendar-grid-item" data-date="2026-04-19" data-day="19" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 19, 2026" class="calendar-grid-item" data-date="2026-06-19" data-day="19" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             19
                           </span>
                         </div>
-                        <div aria-label="April 20, 2026" class="calendar-grid-item" data-date="2026-04-20" data-day="20" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 20, 2026" class="calendar-grid-item" data-date="2026-06-20" data-day="20" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             20
                           </span>
                         </div>
-                        <div aria-label="April 21, 2026" class="calendar-grid-item" data-date="2026-04-21" data-day="21" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="June 21, 2026" class="calendar-grid-item" data-date="2026-06-21" data-day="21" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             21
                           </span>
                         </div>
-                        <div aria-label="April 22, 2026" class="calendar-grid-item" data-date="2026-04-22" data-day="22" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 22, 2026" class="calendar-grid-item" data-date="2026-06-22" data-day="22" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             22
                           </span>
                         </div>
-                        <div aria-label="April 23, 2026" class="calendar-grid-item" data-date="2026-04-23" data-day="23" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 23, 2026" class="calendar-grid-item" data-date="2026-06-23" data-day="23" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             23
                           </span>
                         </div>
-                        <div aria-label="April 24, 2026" class="calendar-grid-item" data-date="2026-04-24" data-day="24" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 24, 2026" class="calendar-grid-item" data-date="2026-06-24" data-day="24" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             24
                           </span>
                         </div>
-                        <div aria-label="April 25, 2026" class="calendar-grid-item" data-date="2026-04-25" data-day="25" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 25, 2026" class="calendar-grid-item" data-date="2026-06-25" data-day="25" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             25
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="April 26, 2026" class="calendar-grid-item" data-date="2026-04-26" data-day="26" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 26, 2026" class="calendar-grid-item" data-date="2026-06-26" data-day="26" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             26
                           </span>
                         </div>
-                        <div aria-label="April 27, 2026" class="calendar-grid-item" data-date="2026-04-27" data-day="27" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                        <div aria-label="June 27, 2026" class="calendar-grid-item" data-date="2026-06-27" data-day="27" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             27
-                          </span>
-                        </div>
-                        <div aria-label="April 28, 2026" class="calendar-grid-item" data-date="2026-04-28" data-day="28" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
-                            28
-                          </span>
-                        </div>
-                        <div aria-label="April 29, 2026" class="calendar-grid-item" data-date="2026-04-29" data-day="29" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
-                            29
-                          </span>
-                        </div>
-                        <div aria-label="April 30, 2026" class="calendar-grid-item csm-last-day" data-date="2026-04-30" data-day="30" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
-                            30
-                          </span>
-                        </div>
-                        <div aria-label="May 1, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-01" data-day="1" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
-                            1
-                          </span>
-                        </div>
-                        <div aria-label="May 2, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-02" data-day="2" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
-                            2
                           </span>
                         </div>
                       </div>
                       <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="May 3, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-03" data-day="3" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 28, 2026" class="calendar-grid-item" data-date="2026-06-28" data-day="28" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                            28
+                          </span>
+                        </div>
+                        <div aria-label="June 29, 2026" class="calendar-grid-item" data-date="2026-06-29" data-day="29" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                            29
+                          </span>
+                        </div>
+                        <div aria-label="June 30, 2026" class="calendar-grid-item csm-last-day" data-date="2026-06-30" data-day="30" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                            30
+                          </span>
+                        </div>
+                        <div aria-label="July 1, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-01" data-day="1" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
+                            1
+                          </span>
+                        </div>
+                        <div aria-label="July 2, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-02" data-day="2" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
+                            2
+                          </span>
+                        </div>
+                        <div aria-label="July 3, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-03" data-day="3" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             3
                           </span>
                         </div>
-                        <div aria-label="May 4, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-04" data-day="4" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 4, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-04" data-day="4" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             4
                           </span>
                         </div>
-                        <div aria-label="May 5, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-05" data-day="5" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="July 5, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-05" data-day="5" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             5
                           </span>
                         </div>
-                        <div aria-label="May 6, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-06" data-day="6" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 6, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-06" data-day="6" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             6
                           </span>
                         </div>
-                        <div aria-label="May 7, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-07" data-day="7" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 7, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-07" data-day="7" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             7
                           </span>
                         </div>
-                        <div aria-label="May 8, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-08" data-day="8" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 8, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-08" data-day="8" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             8
                           </span>
                         </div>
-                        <div aria-label="May 9, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-09" data-day="9" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 9, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-09" data-day="9" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             9
+                          </span>
+                        </div>
+                        <div aria-label="July 10, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-10" data-day="10" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
+                            10
+                          </span>
+                        </div>
+                        <div aria-label="July 11, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-11" data-day="11" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
+                            11
                           </span>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-6-k7qd-grid-end-caption">
-                      May 2026
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-6-vx1x-grid-end-caption">
+                      July 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
                       <small aria-label="Sunday" class="calendar-grid-day col" role="columnheader" title="Sunday">
@@ -442,226 +442,226 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                         Sat
                       </small>
                     </div>
-                    <div aria-labelledby="drp-6-k7qd-grid-end-caption" class="calendar-grid" id="drp-6-k7qd-grid-end" role="grid">
+                    <div aria-labelledby="drp-6-vx1x-grid-end-caption" class="calendar-grid" id="drp-6-vx1x-grid-end" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="April 26, 2026" class="calendar-grid-item previous-month-day" data-date="2026-04-26" data-day="26" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
-                            26
-                          </span>
-                        </div>
-                        <div aria-label="April 27, 2026" class="calendar-grid-item previous-month-day" data-date="2026-04-27" data-day="27" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
-                            27
-                          </span>
-                        </div>
-                        <div aria-label="April 28, 2026" class="calendar-grid-item previous-month-day" data-date="2026-04-28" data-day="28" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 28, 2026" class="calendar-grid-item previous-month-day" data-date="2026-06-28" data-day="28" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             28
                           </span>
                         </div>
-                        <div aria-label="April 29, 2026" class="calendar-grid-item previous-month-day" data-date="2026-04-29" data-day="29" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 29, 2026" class="calendar-grid-item previous-month-day" data-date="2026-06-29" data-day="29" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             29
                           </span>
                         </div>
-                        <div aria-label="April 30, 2026" class="calendar-grid-item previous-month-day" data-date="2026-04-30" data-day="30" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 30, 2026" class="calendar-grid-item previous-month-day" data-date="2026-06-30" data-day="30" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             30
                           </span>
                         </div>
-                        <div aria-label="May 1, 2026" class="calendar-grid-item cem-first-day" data-date="2026-05-01" data-day="1" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 1, 2026" class="calendar-grid-item cem-first-day" data-date="2026-07-01" data-day="1" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             1
                           </span>
                         </div>
-                        <div aria-label="May 2, 2026" class="calendar-grid-item" data-date="2026-05-02" data-day="2" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 2, 2026" class="calendar-grid-item" data-date="2026-07-02" data-day="2" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             2
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="May 3, 2026" class="calendar-grid-item" data-date="2026-05-03" data-day="3" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 3, 2026" class="calendar-grid-item" data-date="2026-07-03" data-day="3" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             3
                           </span>
                         </div>
-                        <div aria-label="May 4, 2026" class="calendar-grid-item" data-date="2026-05-04" data-day="4" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 4, 2026" class="calendar-grid-item" data-date="2026-07-04" data-day="4" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             4
                           </span>
                         </div>
-                        <div aria-label="May 5, 2026" class="calendar-grid-item" data-date="2026-05-05" data-day="5" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="July 5, 2026" class="calendar-grid-item" data-date="2026-07-05" data-day="5" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             5
                           </span>
                         </div>
-                        <div aria-label="May 6, 2026" class="calendar-grid-item" data-date="2026-05-06" data-day="6" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 6, 2026" class="calendar-grid-item" data-date="2026-07-06" data-day="6" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             6
                           </span>
                         </div>
-                        <div aria-label="May 7, 2026" class="calendar-grid-item" data-date="2026-05-07" data-day="7" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 7, 2026" class="calendar-grid-item" data-date="2026-07-07" data-day="7" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
-                        <div aria-label="May 8, 2026" class="calendar-grid-item" data-date="2026-05-08" data-day="8" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 8, 2026" class="calendar-grid-item" data-date="2026-07-08" data-day="8" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             8
                           </span>
                         </div>
-                        <div aria-label="May 9, 2026" class="calendar-grid-item" data-date="2026-05-09" data-day="9" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 9, 2026" class="calendar-grid-item" data-date="2026-07-09" data-day="9" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             9
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="May 10, 2026" class="calendar-grid-item" data-date="2026-05-10" data-day="10" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 10, 2026" class="calendar-grid-item" data-date="2026-07-10" data-day="10" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             10
                           </span>
                         </div>
-                        <div aria-label="May 11, 2026" class="calendar-grid-item" data-date="2026-05-11" data-day="11" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 11, 2026" class="calendar-grid-item" data-date="2026-07-11" data-day="11" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             11
                           </span>
                         </div>
-                        <div aria-label="May 12, 2026" class="calendar-grid-item" data-date="2026-05-12" data-day="12" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="July 12, 2026" class="calendar-grid-item" data-date="2026-07-12" data-day="12" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             12
                           </span>
                         </div>
-                        <div aria-label="May 13, 2026" class="calendar-grid-item" data-date="2026-05-13" data-day="13" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 13, 2026" class="calendar-grid-item" data-date="2026-07-13" data-day="13" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
-                        <div aria-label="May 14, 2026" class="calendar-grid-item" data-date="2026-05-14" data-day="14" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 14, 2026" class="calendar-grid-item" data-date="2026-07-14" data-day="14" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             14
                           </span>
                         </div>
-                        <div aria-label="May 15, 2026" class="calendar-grid-item" data-date="2026-05-15" data-day="15" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 15, 2026" class="calendar-grid-item" data-date="2026-07-15" data-day="15" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             15
                           </span>
                         </div>
-                        <div aria-label="May 16, 2026" class="calendar-grid-item" data-date="2026-05-16" data-day="16" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 16, 2026" class="calendar-grid-item" data-date="2026-07-16" data-day="16" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             16
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="May 17, 2026" class="calendar-grid-item" data-date="2026-05-17" data-day="17" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 17, 2026" class="calendar-grid-item" data-date="2026-07-17" data-day="17" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             17
                           </span>
                         </div>
-                        <div aria-label="May 18, 2026" class="calendar-grid-item" data-date="2026-05-18" data-day="18" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 18, 2026" class="calendar-grid-item" data-date="2026-07-18" data-day="18" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             18
                           </span>
                         </div>
-                        <div aria-label="May 19, 2026" class="calendar-grid-item" data-date="2026-05-19" data-day="19" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="July 19, 2026" class="calendar-grid-item" data-date="2026-07-19" data-day="19" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             19
                           </span>
                         </div>
-                        <div aria-label="May 20, 2026" class="calendar-grid-item" data-date="2026-05-20" data-day="20" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 20, 2026" class="calendar-grid-item" data-date="2026-07-20" data-day="20" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             20
                           </span>
                         </div>
-                        <div aria-label="May 21, 2026" class="calendar-grid-item" data-date="2026-05-21" data-day="21" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 21, 2026" class="calendar-grid-item" data-date="2026-07-21" data-day="21" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             21
                           </span>
                         </div>
-                        <div aria-label="May 22, 2026" class="calendar-grid-item" data-date="2026-05-22" data-day="22" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 22, 2026" class="calendar-grid-item" data-date="2026-07-22" data-day="22" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             22
                           </span>
                         </div>
-                        <div aria-label="May 23, 2026" class="calendar-grid-item" data-date="2026-05-23" data-day="23" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 23, 2026" class="calendar-grid-item" data-date="2026-07-23" data-day="23" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             23
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="May 24, 2026" class="calendar-grid-item" data-date="2026-05-24" data-day="24" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 24, 2026" class="calendar-grid-item" data-date="2026-07-24" data-day="24" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             24
                           </span>
                         </div>
-                        <div aria-label="May 25, 2026" class="calendar-grid-item" data-date="2026-05-25" data-day="25" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 25, 2026" class="calendar-grid-item" data-date="2026-07-25" data-day="25" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             25
                           </span>
                         </div>
-                        <div aria-label="May 26, 2026" class="calendar-grid-item" data-date="2026-05-26" data-day="26" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="July 26, 2026" class="calendar-grid-item" data-date="2026-07-26" data-day="26" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             26
                           </span>
                         </div>
-                        <div aria-label="May 27, 2026" class="calendar-grid-item" data-date="2026-05-27" data-day="27" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 27, 2026" class="calendar-grid-item" data-date="2026-07-27" data-day="27" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             27
                           </span>
                         </div>
-                        <div aria-label="May 28, 2026" class="calendar-grid-item" data-date="2026-05-28" data-day="28" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 28, 2026" class="calendar-grid-item" data-date="2026-07-28" data-day="28" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             28
                           </span>
                         </div>
-                        <div aria-label="May 29, 2026" class="calendar-grid-item" data-date="2026-05-29" data-day="29" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 29, 2026" class="calendar-grid-item" data-date="2026-07-29" data-day="29" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             29
                           </span>
                         </div>
-                        <div aria-label="May 30, 2026" class="calendar-grid-item" data-date="2026-05-30" data-day="30" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 30, 2026" class="calendar-grid-item" data-date="2026-07-30" data-day="30" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             30
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="May 31, 2026" class="calendar-grid-item cem-last-day" data-date="2026-05-31" data-day="31" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 31, 2026" class="calendar-grid-item cem-last-day" data-date="2026-07-31" data-day="31" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             31
                           </span>
                         </div>
-                        <div aria-label="June 1, 2026" class="calendar-grid-item next-month-day" data-date="2026-06-01" data-day="1" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="August 1, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-01" data-day="1" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             1
                           </span>
                         </div>
-                        <div aria-label="June 2, 2026" class="calendar-grid-item next-month-day" data-date="2026-06-02" data-day="2" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="August 2, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-02" data-day="2" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             2
                           </span>
                         </div>
-                        <div aria-label="June 3, 2026" class="calendar-grid-item next-month-day" data-date="2026-06-03" data-day="3" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="August 3, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-03" data-day="3" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             3
                           </span>
                         </div>
-                        <div aria-label="June 4, 2026" class="calendar-grid-item next-month-day" data-date="2026-06-04" data-day="4" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="August 4, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-04" data-day="4" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             4
                           </span>
                         </div>
-                        <div aria-label="June 5, 2026" class="calendar-grid-item next-month-day" data-date="2026-06-05" data-day="5" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="August 5, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-05" data-day="5" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             5
                           </span>
                         </div>
-                        <div aria-label="June 6, 2026" class="calendar-grid-item next-month-day" data-date="2026-06-06" data-day="6" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="August 6, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-06" data-day="6" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             6
+                          </span>
+                        </div>
+                        <div aria-label="August 7, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-07" data-day="7" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
+                            7
+                          </span>
+                        </div>
+                        <div aria-label="August 8, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-08" data-day="8" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
+                            8
                           </span>
                         </div>
                       </div>
@@ -673,8 +673,8 @@ exports[`date-range-picker-component (rangePicker mode) final snapshot (input-gr
                     Use cursor keys to navigate calendar dates
                   </div>
                 </footer>
-                <div aria-labelledby="drp-6-k7qd-date-ranges" class="date-range-display" role="region" tabindex="0">
-                  <div class="date-ranges" id="drp-6-k7qd-date-ranges">
+                <div aria-labelledby="drp-6-vx1x-date-ranges" class="date-range-display" role="region" tabindex="0">
+                  <div class="date-ranges" id="drp-6-vx1x-date-ranges">
                     <span class="start-end-ranges">
                       <span class="start-date">
                         N/A
@@ -708,7 +708,7 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
   <div class="date-picker">
     <div class="dropdown-wrapper">
       <div class="form-group form-input-group-basic">
-        <label class="form-control-label" htmlfor="drp" id="drp-1-ovkh-label">
+        <label class="form-control-label" for="drp" id="drp-1-0afi-label">
           <span>
             Date Range Picker
           </span>
@@ -716,7 +716,7 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
         <div>
           <div aria-label="Date picker group" class="input-group" role="group">
             <div class="drp-input-field">
-              <input aria-describedby="drp-1-ovkh-dialog-desc" aria-labelledby="drp-1-ovkh-label" class="form-control" id="drp" placeholder="YYYY-MM-DD  -  YYYY-MM-DD" type="text" value="">
+              <input aria-describedby="drp-1-0afi-dialog-desc" aria-labelledby="drp-1-0afi-label" class="form-control" id="drp" placeholder="YYYY-MM-DD  -  YYYY-MM-DD" type="text" value="">
             </div>
             <div class="input-group-append">
               <button aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text" type="button">
@@ -727,11 +727,11 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
         </div>
       </div>
       <div class="dropdown">
-        <div aria-describedby="drp-1-ovkh-dialog-desc" aria-labelledby="drp-1-ovkh-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
-          <div class="sr-only visually-hidden" id="drp-1-ovkh-dialog-title">
+        <div aria-describedby="drp-1-0afi-dialog-desc" aria-labelledby="drp-1-0afi-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
+          <div class="sr-only visually-hidden" id="drp-1-0afi-dialog-title">
             Date Range Picker
           </div>
-          <div class="sr-only visually-hidden" id="drp-1-ovkh-dialog-desc">
+          <div class="sr-only visually-hidden" id="drp-1-0afi-dialog-desc">
             Select a start date and an end date. Use arrow keys to navigate days. Press Enter to select.
           </div>
           <div class="date-picker">
@@ -743,10 +743,10 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                   </svg>
                 </button>
                 <div class="selectors">
-                  <label class="sr-only visually-hidden" htmlfor="drp-1-ovkh-months">
+                  <label class="sr-only visually-hidden" for="drp-1-0afi-months">
                     Select month
                   </label>
-                  <select aria-label="Select month" class="form-control form-select months select-sm" id="drp-1-ovkh-months">
+                  <select aria-label="Select month" class="form-control form-select months select-sm" id="drp-1-0afi-months">
                     <option value="0">
                       January
                     </option>
@@ -756,13 +756,13 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                     <option value="2">
                       March
                     </option>
-                    <option selected="" value="3">
+                    <option value="3">
                       April
                     </option>
                     <option value="4">
                       May
                     </option>
-                    <option value="5">
+                    <option selected="" value="5">
                       June
                     </option>
                     <option value="6">
@@ -784,10 +784,10 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                       December
                     </option>
                   </select>
-                  <label class="sr-only visually-hidden" htmlfor="drp-1-ovkh-year">
+                  <label class="sr-only visually-hidden" for="drp-1-0afi-year">
                     Select year
                   </label>
-                  <select aria-label="Select year" class="form-control form-select select-sm years" id="drp-1-ovkh-year">
+                  <select aria-label="Select year" class="form-control form-select select-sm years" id="drp-1-0afi-year">
                     <option value="2014">
                       2014
                     </option>
@@ -867,8 +867,8 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
               <div class="range-picker">
                 <div aria-label="Calendars" class="calendar-wrapper" tabindex="0">
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-1-ovkh-grid-start-caption">
-                      April 2026
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-1-0afi-grid-start-caption">
+                      June 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
                       <small aria-label="Sunday" class="calendar-grid-day col" role="columnheader" title="Sunday">
@@ -893,234 +893,234 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                         Sat
                       </small>
                     </div>
-                    <div aria-labelledby="drp-1-ovkh-grid-start-caption" class="calendar-grid" id="drp-1-ovkh-grid-start" role="grid">
+                    <div aria-labelledby="drp-1-0afi-grid-start-caption" class="calendar-grid" id="drp-1-0afi-grid-start" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="March 29, 2026" class="calendar-grid-item previous-month-day" data-date="2026-03-29" data-day="29" data-month="3" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
-                            29
-                          </span>
-                        </div>
-                        <div aria-label="March 30, 2026" class="calendar-grid-item previous-month-day" data-date="2026-03-30" data-day="30" data-month="3" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
-                            30
-                          </span>
-                        </div>
-                        <div aria-label="March 31, 2026" class="calendar-grid-item previous-month-day" data-date="2026-03-31" data-day="31" data-month="3" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="May 31, 2026" class="calendar-grid-item previous-month-day" data-date="2026-05-31" data-day="31" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             31
                           </span>
                         </div>
-                        <div aria-label="April 1, 2026" class="calendar-grid-item csm-first-day" data-date="2026-04-01" data-day="1" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 1, 2026" class="calendar-grid-item csm-first-day" data-date="2026-06-01" data-day="1" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             1
                           </span>
                         </div>
-                        <div aria-label="April 2, 2026" class="calendar-grid-item" data-date="2026-04-02" data-day="2" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <div aria-label="June 2, 2026" class="calendar-grid-item" data-date="2026-06-02" data-day="2" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
                             2
                           </span>
                         </div>
-                        <div aria-label="April 3, 2026" class="calendar-grid-item" data-date="2026-04-03" data-day="3" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 3, 2026" class="calendar-grid-item" data-date="2026-06-03" data-day="3" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             3
                           </span>
                         </div>
-                        <div aria-label="April 4, 2026" class="calendar-grid-item" data-date="2026-04-04" data-day="4" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 4, 2026" class="calendar-grid-item" data-date="2026-06-04" data-day="4" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             4
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="April 5, 2026" class="calendar-grid-item" data-date="2026-04-05" data-day="5" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 5, 2026" class="calendar-grid-item" data-date="2026-06-05" data-day="5" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             5
                           </span>
                         </div>
-                        <div aria-label="April 6, 2026" class="calendar-grid-item" data-date="2026-04-06" data-day="6" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 6, 2026" class="calendar-grid-item" data-date="2026-06-06" data-day="6" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             6
                           </span>
                         </div>
-                        <div aria-label="April 7, 2026" class="calendar-grid-item" data-date="2026-04-07" data-day="7" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="June 7, 2026" class="calendar-grid-item" data-date="2026-06-07" data-day="7" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
-                        <div aria-label="April 8, 2026" class="calendar-grid-item" data-date="2026-04-08" data-day="8" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 8, 2026" class="calendar-grid-item" data-date="2026-06-08" data-day="8" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             8
                           </span>
                         </div>
-                        <div aria-label="April 9, 2026" class="calendar-grid-item" data-date="2026-04-09" data-day="9" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 9, 2026" class="calendar-grid-item" data-date="2026-06-09" data-day="9" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             9
                           </span>
                         </div>
-                        <div aria-label="April 10, 2026" class="calendar-grid-item" data-date="2026-04-10" data-day="10" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 10, 2026" class="calendar-grid-item" data-date="2026-06-10" data-day="10" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             10
                           </span>
                         </div>
-                        <div aria-label="April 11, 2026" class="calendar-grid-item" data-date="2026-04-11" data-day="11" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 11, 2026" class="calendar-grid-item" data-date="2026-06-11" data-day="11" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             11
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="April 12, 2026" class="calendar-grid-item" data-date="2026-04-12" data-day="12" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 12, 2026" class="calendar-grid-item" data-date="2026-06-12" data-day="12" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             12
                           </span>
                         </div>
-                        <div aria-label="April 13, 2026" class="calendar-grid-item" data-date="2026-04-13" data-day="13" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 13, 2026" class="calendar-grid-item" data-date="2026-06-13" data-day="13" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
-                        <div aria-label="April 14, 2026" class="calendar-grid-item" data-date="2026-04-14" data-day="14" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="June 14, 2026" class="calendar-grid-item" data-date="2026-06-14" data-day="14" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             14
                           </span>
                         </div>
-                        <div aria-label="April 15, 2026" class="calendar-grid-item" data-date="2026-04-15" data-day="15" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 15, 2026" class="calendar-grid-item" data-date="2026-06-15" data-day="15" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             15
                           </span>
                         </div>
-                        <div aria-label="April 16, 2026" class="calendar-grid-item" data-date="2026-04-16" data-day="16" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 16, 2026" class="calendar-grid-item" data-date="2026-06-16" data-day="16" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             16
                           </span>
                         </div>
-                        <div aria-label="April 17, 2026" class="calendar-grid-item" data-date="2026-04-17" data-day="17" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 17, 2026" class="calendar-grid-item" data-date="2026-06-17" data-day="17" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             17
                           </span>
                         </div>
-                        <div aria-label="April 18, 2026" class="calendar-grid-item" data-date="2026-04-18" data-day="18" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 18, 2026" class="calendar-grid-item" data-date="2026-06-18" data-day="18" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             18
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="April 19, 2026" class="calendar-grid-item" data-date="2026-04-19" data-day="19" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 19, 2026" class="calendar-grid-item" data-date="2026-06-19" data-day="19" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             19
                           </span>
                         </div>
-                        <div aria-label="April 20, 2026" class="calendar-grid-item" data-date="2026-04-20" data-day="20" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 20, 2026" class="calendar-grid-item" data-date="2026-06-20" data-day="20" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             20
                           </span>
                         </div>
-                        <div aria-label="April 21, 2026" class="calendar-grid-item" data-date="2026-04-21" data-day="21" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="June 21, 2026" class="calendar-grid-item" data-date="2026-06-21" data-day="21" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             21
                           </span>
                         </div>
-                        <div aria-label="April 22, 2026" class="calendar-grid-item" data-date="2026-04-22" data-day="22" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 22, 2026" class="calendar-grid-item" data-date="2026-06-22" data-day="22" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             22
                           </span>
                         </div>
-                        <div aria-label="April 23, 2026" class="calendar-grid-item" data-date="2026-04-23" data-day="23" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 23, 2026" class="calendar-grid-item" data-date="2026-06-23" data-day="23" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             23
                           </span>
                         </div>
-                        <div aria-label="April 24, 2026" class="calendar-grid-item" data-date="2026-04-24" data-day="24" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 24, 2026" class="calendar-grid-item" data-date="2026-06-24" data-day="24" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             24
                           </span>
                         </div>
-                        <div aria-label="April 25, 2026" class="calendar-grid-item" data-date="2026-04-25" data-day="25" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 25, 2026" class="calendar-grid-item" data-date="2026-06-25" data-day="25" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             25
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="April 26, 2026" class="calendar-grid-item" data-date="2026-04-26" data-day="26" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 26, 2026" class="calendar-grid-item" data-date="2026-06-26" data-day="26" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             26
                           </span>
                         </div>
-                        <div aria-label="April 27, 2026" class="calendar-grid-item" data-date="2026-04-27" data-day="27" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                        <div aria-label="June 27, 2026" class="calendar-grid-item" data-date="2026-06-27" data-day="27" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             27
-                          </span>
-                        </div>
-                        <div aria-label="April 28, 2026" class="calendar-grid-item" data-date="2026-04-28" data-day="28" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
-                            28
-                          </span>
-                        </div>
-                        <div aria-label="April 29, 2026" class="calendar-grid-item" data-date="2026-04-29" data-day="29" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
-                            29
-                          </span>
-                        </div>
-                        <div aria-label="April 30, 2026" class="calendar-grid-item csm-last-day" data-date="2026-04-30" data-day="30" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
-                            30
-                          </span>
-                        </div>
-                        <div aria-label="May 1, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-01" data-day="1" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
-                            1
-                          </span>
-                        </div>
-                        <div aria-label="May 2, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-02" data-day="2" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
-                            2
                           </span>
                         </div>
                       </div>
                       <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="May 3, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-03" data-day="3" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 28, 2026" class="calendar-grid-item" data-date="2026-06-28" data-day="28" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                            28
+                          </span>
+                        </div>
+                        <div aria-label="June 29, 2026" class="calendar-grid-item" data-date="2026-06-29" data-day="29" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                            29
+                          </span>
+                        </div>
+                        <div aria-label="June 30, 2026" class="calendar-grid-item csm-last-day" data-date="2026-06-30" data-day="30" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                            30
+                          </span>
+                        </div>
+                        <div aria-label="July 1, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-01" data-day="1" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
+                            1
+                          </span>
+                        </div>
+                        <div aria-label="July 2, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-02" data-day="2" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
+                            2
+                          </span>
+                        </div>
+                        <div aria-label="July 3, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-03" data-day="3" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             3
                           </span>
                         </div>
-                        <div aria-label="May 4, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-04" data-day="4" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 4, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-04" data-day="4" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             4
                           </span>
                         </div>
-                        <div aria-label="May 5, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-05" data-day="5" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="July 5, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-05" data-day="5" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             5
                           </span>
                         </div>
-                        <div aria-label="May 6, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-06" data-day="6" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 6, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-06" data-day="6" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             6
                           </span>
                         </div>
-                        <div aria-label="May 7, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-07" data-day="7" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 7, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-07" data-day="7" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             7
                           </span>
                         </div>
-                        <div aria-label="May 8, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-08" data-day="8" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 8, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-08" data-day="8" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             8
                           </span>
                         </div>
-                        <div aria-label="May 9, 2026" class="calendar-grid-item next-month-day" data-date="2026-05-09" data-day="9" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 9, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-09" data-day="9" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             9
+                          </span>
+                        </div>
+                        <div aria-label="July 10, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-10" data-day="10" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
+                            10
+                          </span>
+                        </div>
+                        <div aria-label="July 11, 2026" class="calendar-grid-item next-month-day" data-date="2026-07-11" data-day="11" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
+                            11
                           </span>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-1-ovkh-grid-end-caption">
-                      May 2026
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-1-0afi-grid-end-caption">
+                      July 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
                       <small aria-label="Sunday" class="calendar-grid-day col" role="columnheader" title="Sunday">
@@ -1145,226 +1145,226 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                         Sat
                       </small>
                     </div>
-                    <div aria-labelledby="drp-1-ovkh-grid-end-caption" class="calendar-grid" id="drp-1-ovkh-grid-end" role="grid">
+                    <div aria-labelledby="drp-1-0afi-grid-end-caption" class="calendar-grid" id="drp-1-0afi-grid-end" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="April 26, 2026" class="calendar-grid-item previous-month-day" data-date="2026-04-26" data-day="26" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
-                            26
-                          </span>
-                        </div>
-                        <div aria-label="April 27, 2026" class="calendar-grid-item previous-month-day" data-date="2026-04-27" data-day="27" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
-                            27
-                          </span>
-                        </div>
-                        <div aria-label="April 28, 2026" class="calendar-grid-item previous-month-day" data-date="2026-04-28" data-day="28" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 28, 2026" class="calendar-grid-item previous-month-day" data-date="2026-06-28" data-day="28" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             28
                           </span>
                         </div>
-                        <div aria-label="April 29, 2026" class="calendar-grid-item previous-month-day" data-date="2026-04-29" data-day="29" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 29, 2026" class="calendar-grid-item previous-month-day" data-date="2026-06-29" data-day="29" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             29
                           </span>
                         </div>
-                        <div aria-label="April 30, 2026" class="calendar-grid-item previous-month-day" data-date="2026-04-30" data-day="30" data-month="4" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="June 30, 2026" class="calendar-grid-item previous-month-day" data-date="2026-06-30" data-day="30" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             30
                           </span>
                         </div>
-                        <div aria-label="May 1, 2026" class="calendar-grid-item cem-first-day" data-date="2026-05-01" data-day="1" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 1, 2026" class="calendar-grid-item cem-first-day" data-date="2026-07-01" data-day="1" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             1
                           </span>
                         </div>
-                        <div aria-label="May 2, 2026" class="calendar-grid-item" data-date="2026-05-02" data-day="2" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 2, 2026" class="calendar-grid-item" data-date="2026-07-02" data-day="2" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             2
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="May 3, 2026" class="calendar-grid-item" data-date="2026-05-03" data-day="3" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 3, 2026" class="calendar-grid-item" data-date="2026-07-03" data-day="3" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             3
                           </span>
                         </div>
-                        <div aria-label="May 4, 2026" class="calendar-grid-item" data-date="2026-05-04" data-day="4" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 4, 2026" class="calendar-grid-item" data-date="2026-07-04" data-day="4" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             4
                           </span>
                         </div>
-                        <div aria-label="May 5, 2026" class="calendar-grid-item" data-date="2026-05-05" data-day="5" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="July 5, 2026" class="calendar-grid-item" data-date="2026-07-05" data-day="5" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             5
                           </span>
                         </div>
-                        <div aria-label="May 6, 2026" class="calendar-grid-item" data-date="2026-05-06" data-day="6" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 6, 2026" class="calendar-grid-item" data-date="2026-07-06" data-day="6" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             6
                           </span>
                         </div>
-                        <div aria-label="May 7, 2026" class="calendar-grid-item" data-date="2026-05-07" data-day="7" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 7, 2026" class="calendar-grid-item" data-date="2026-07-07" data-day="7" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
-                        <div aria-label="May 8, 2026" class="calendar-grid-item" data-date="2026-05-08" data-day="8" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 8, 2026" class="calendar-grid-item" data-date="2026-07-08" data-day="8" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             8
                           </span>
                         </div>
-                        <div aria-label="May 9, 2026" class="calendar-grid-item" data-date="2026-05-09" data-day="9" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 9, 2026" class="calendar-grid-item" data-date="2026-07-09" data-day="9" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             9
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="May 10, 2026" class="calendar-grid-item" data-date="2026-05-10" data-day="10" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 10, 2026" class="calendar-grid-item" data-date="2026-07-10" data-day="10" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             10
                           </span>
                         </div>
-                        <div aria-label="May 11, 2026" class="calendar-grid-item" data-date="2026-05-11" data-day="11" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 11, 2026" class="calendar-grid-item" data-date="2026-07-11" data-day="11" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             11
                           </span>
                         </div>
-                        <div aria-label="May 12, 2026" class="calendar-grid-item" data-date="2026-05-12" data-day="12" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="July 12, 2026" class="calendar-grid-item" data-date="2026-07-12" data-day="12" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             12
                           </span>
                         </div>
-                        <div aria-label="May 13, 2026" class="calendar-grid-item" data-date="2026-05-13" data-day="13" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 13, 2026" class="calendar-grid-item" data-date="2026-07-13" data-day="13" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
-                        <div aria-label="May 14, 2026" class="calendar-grid-item" data-date="2026-05-14" data-day="14" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 14, 2026" class="calendar-grid-item" data-date="2026-07-14" data-day="14" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             14
                           </span>
                         </div>
-                        <div aria-label="May 15, 2026" class="calendar-grid-item" data-date="2026-05-15" data-day="15" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 15, 2026" class="calendar-grid-item" data-date="2026-07-15" data-day="15" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             15
                           </span>
                         </div>
-                        <div aria-label="May 16, 2026" class="calendar-grid-item" data-date="2026-05-16" data-day="16" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 16, 2026" class="calendar-grid-item" data-date="2026-07-16" data-day="16" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             16
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="May 17, 2026" class="calendar-grid-item" data-date="2026-05-17" data-day="17" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 17, 2026" class="calendar-grid-item" data-date="2026-07-17" data-day="17" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             17
                           </span>
                         </div>
-                        <div aria-label="May 18, 2026" class="calendar-grid-item" data-date="2026-05-18" data-day="18" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 18, 2026" class="calendar-grid-item" data-date="2026-07-18" data-day="18" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             18
                           </span>
                         </div>
-                        <div aria-label="May 19, 2026" class="calendar-grid-item" data-date="2026-05-19" data-day="19" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="July 19, 2026" class="calendar-grid-item" data-date="2026-07-19" data-day="19" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             19
                           </span>
                         </div>
-                        <div aria-label="May 20, 2026" class="calendar-grid-item" data-date="2026-05-20" data-day="20" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 20, 2026" class="calendar-grid-item" data-date="2026-07-20" data-day="20" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             20
                           </span>
                         </div>
-                        <div aria-label="May 21, 2026" class="calendar-grid-item" data-date="2026-05-21" data-day="21" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 21, 2026" class="calendar-grid-item" data-date="2026-07-21" data-day="21" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             21
                           </span>
                         </div>
-                        <div aria-label="May 22, 2026" class="calendar-grid-item" data-date="2026-05-22" data-day="22" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 22, 2026" class="calendar-grid-item" data-date="2026-07-22" data-day="22" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             22
                           </span>
                         </div>
-                        <div aria-label="May 23, 2026" class="calendar-grid-item" data-date="2026-05-23" data-day="23" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 23, 2026" class="calendar-grid-item" data-date="2026-07-23" data-day="23" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             23
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="May 24, 2026" class="calendar-grid-item" data-date="2026-05-24" data-day="24" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 24, 2026" class="calendar-grid-item" data-date="2026-07-24" data-day="24" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             24
                           </span>
                         </div>
-                        <div aria-label="May 25, 2026" class="calendar-grid-item" data-date="2026-05-25" data-day="25" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 25, 2026" class="calendar-grid-item" data-date="2026-07-25" data-day="25" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             25
                           </span>
                         </div>
-                        <div aria-label="May 26, 2026" class="calendar-grid-item" data-date="2026-05-26" data-day="26" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="July 26, 2026" class="calendar-grid-item" data-date="2026-07-26" data-day="26" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             26
                           </span>
                         </div>
-                        <div aria-label="May 27, 2026" class="calendar-grid-item" data-date="2026-05-27" data-day="27" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 27, 2026" class="calendar-grid-item" data-date="2026-07-27" data-day="27" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             27
                           </span>
                         </div>
-                        <div aria-label="May 28, 2026" class="calendar-grid-item" data-date="2026-05-28" data-day="28" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 28, 2026" class="calendar-grid-item" data-date="2026-07-28" data-day="28" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             28
                           </span>
                         </div>
-                        <div aria-label="May 29, 2026" class="calendar-grid-item" data-date="2026-05-29" data-day="29" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 29, 2026" class="calendar-grid-item" data-date="2026-07-29" data-day="29" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             29
                           </span>
                         </div>
-                        <div aria-label="May 30, 2026" class="calendar-grid-item" data-date="2026-05-30" data-day="30" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 30, 2026" class="calendar-grid-item" data-date="2026-07-30" data-day="30" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             30
                           </span>
                         </div>
-                      </div>
-                      <div class="calendar-grid-row" role="row" style="display: contents;">
-                        <div aria-label="May 31, 2026" class="calendar-grid-item cem-last-day" data-date="2026-05-31" data-day="31" data-month="5" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="July 31, 2026" class="calendar-grid-item cem-last-day" data-date="2026-07-31" data-day="31" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             31
                           </span>
                         </div>
-                        <div aria-label="June 1, 2026" class="calendar-grid-item next-month-day" data-date="2026-06-01" data-day="1" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="August 1, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-01" data-day="1" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             1
                           </span>
                         </div>
-                        <div aria-label="June 2, 2026" class="calendar-grid-item next-month-day" data-date="2026-06-02" data-day="2" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                      </div>
+                      <div class="calendar-grid-row" role="row" style="display: contents;">
+                        <div aria-label="August 2, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-02" data-day="2" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             2
                           </span>
                         </div>
-                        <div aria-label="June 3, 2026" class="calendar-grid-item next-month-day" data-date="2026-06-03" data-day="3" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="August 3, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-03" data-day="3" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             3
                           </span>
                         </div>
-                        <div aria-label="June 4, 2026" class="calendar-grid-item next-month-day" data-date="2026-06-04" data-day="4" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="August 4, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-04" data-day="4" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             4
                           </span>
                         </div>
-                        <div aria-label="June 5, 2026" class="calendar-grid-item next-month-day" data-date="2026-06-05" data-day="5" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="August 5, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-05" data-day="5" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             5
                           </span>
                         </div>
-                        <div aria-label="June 6, 2026" class="calendar-grid-item next-month-day" data-date="2026-06-06" data-day="6" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
+                        <div aria-label="August 6, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-06" data-day="6" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
                             6
+                          </span>
+                        </div>
+                        <div aria-label="August 7, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-07" data-day="7" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
+                            7
+                          </span>
+                        </div>
+                        <div aria-label="August 8, 2026" class="calendar-grid-item next-month-day" data-date="2026-08-08" data-day="8" data-month="8" data-year="2026" role="gridcell" tabindex="-1">
+                          <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
+                            8
                           </span>
                         </div>
                       </div>
@@ -1376,8 +1376,8 @@ exports[`date-range-picker-component (rangePicker mode) renders and matches snap
                     Use cursor keys to navigate calendar dates
                   </div>
                 </footer>
-                <div aria-labelledby="drp-1-ovkh-date-ranges" class="date-range-display" role="region" tabindex="0">
-                  <div class="date-ranges" id="drp-1-ovkh-date-ranges">
+                <div aria-labelledby="drp-1-0afi-date-ranges" class="date-range-display" role="region" tabindex="0">
+                  <div class="date-ranges" id="drp-1-0afi-date-ranges">
                     <span class="start-end-ranges">
                       <span class="start-date">
                         N/A

@@ -5,7 +5,7 @@ exports[`plumage-timepicker-component disabled: disables input/buttons and dropd
   <div class="plumage">
     <div class="time-picker-container">
       <div class="mr-2 time-picker">
-        <label class="sr-only" htmlfor="tp5">
+        <label class="sr-only" for="tp5">
           Enter Time
         </label>
         <div class="timepicker-group">
@@ -106,7 +106,7 @@ exports[`plumage-timepicker-component hides the label (sr-only) when "show-label
   <div class="plumage">
     <div class="time-picker-container">
       <div class="mr-2 time-picker">
-        <label class="sr-only" htmlfor="a1">
+        <label class="sr-only" for="a1">
           Hidden label test
         </label>
         <div class="timepicker-group">
@@ -207,7 +207,7 @@ exports[`plumage-timepicker-component required + invalid: sets aria-required + r
   <div class="plumage">
     <div class="time-picker-container">
       <div class="mr-2 time-picker">
-        <label class="invalid sr-only" htmlfor="tp4">
+        <label class="invalid sr-only" for="tp4">
           Enter Time
           <span class="required">
             *
@@ -313,7 +313,7 @@ exports[`plumage-timepicker-component shows the label when "show-label" is prese
   <div class="plumage">
     <div class="time-picker-container">
       <div class="mr-2 time-picker">
-        <label htmlfor="my-time" id="my-time-label">
+        <label for="my-time" id="my-time-label">
           Pick a time
         </label>
         <div class="timepicker-group">

@@ -1,3 +1,5 @@
+// File: src/stories/plumage-input-group.story-helpers.js
+
 export const TAG = 'plumage-input-group-component';
 
 export const DocsWrapStyles = () => {
@@ -31,9 +33,16 @@ export const buildDocsHtml = args => {
   const a = { ...args };
 
   const attrs = [
-    ['append', !!a.append],
+    ['has-append', !!a.append],
     ['append-icon', normalize(a.appendIcon)],
     ['append-id', normalize(a.appendId)],
+    ['append-button-id', normalize(a.appendButtonId)],
+    ['append-text', normalize(a.appendText)],
+    ['append-button', !!a.appendButton],
+    ['append-button-type', normalize(a.appendButtonType)],
+    ['append-button-variant', normalize(a.appendButtonVariant)],
+    ['append-aria-label', normalize(a.appendAriaLabel)],
+
     ['disabled', !!a.disabled],
     ['form-id', normalize(a.formId)],
     ['form-layout', normalize(a.formLayout)],
@@ -47,12 +56,19 @@ export const buildDocsHtml = args => {
     ['label-cols', normalize(a.labelCols)],
     ['label-hidden', !!a.labelHidden],
     ['label-size', normalize(a.labelSize)],
-    ['other-content', !!a.otherContent],
     ['placeholder', normalize(a.placeholder)],
     ['plumage-search', !!a.plumageSearch],
-    ['prepend', !!a.prepend],
+
+    ['has-prepend', !!a.prepend],
     ['prepend-icon', normalize(a.prependIcon)],
     ['prepend-id', normalize(a.prependId)],
+    ['prepend-button-id', normalize(a.prependButtonId)],
+    ['prepend-text', normalize(a.prependText)],
+    ['prepend-button', !!a.prependButton],
+    ['prepend-button-type', normalize(a.prependButtonType)],
+    ['prepend-button-variant', normalize(a.prependButtonVariant)],
+    ['prepend-aria-label', normalize(a.prependAriaLabel)],
+
     ['required', !!a.required],
     ['size', normalize(a.size)],
     ['type', normalize(a.type)],
@@ -69,17 +85,7 @@ export const buildDocsHtml = args => {
     .map(([k, v]) => (v === true ? k : `${k}="${esc(v)}"`))
     .join(' ');
 
-  const openTag = attrStr ? `<${TAG} ${attrStr}>` : `<${TAG}>`;
-
-  const slotLines = [];
-  if (a.otherContent && a.prepend) {
-    slotLines.push(`  <button-component slot="prepend" type="button" variant="secondary">Go</button-component>`);
-  }
-  if (a.otherContent && a.append) {
-    slotLines.push(`  <button-component slot="append" type="button" variant="secondary">Go</button-component>`);
-  }
-
-  return [openTag, ...slotLines, `</${TAG}>`].join('\n');
+  return attrStr ? `<${TAG} ${attrStr}></${TAG}>` : `<${TAG}></${TAG}>`;
 };
 
 export const boolAttr = (name, on) => (on ? ` ${name}` : '');
@@ -90,14 +96,17 @@ export const attr = (name, val) => {
 };
 
 export const renderComponent = args => {
-  const usePrependSlot = !!args.otherContent && !!args.prepend;
-  const useAppendSlot = !!args.otherContent && !!args.append;
-
   return `
 <${TAG}
-${boolAttr('append', !!args.append)}
-${useAppendSlot ? '' : attr('append-icon', args.appendIcon)}
+${boolAttr('has-append', !!args.append)}
+${attr('append-icon', args.appendIcon)}
 ${attr('append-id', args.appendId)}
+${attr('append-button-id', args.appendButtonId)}
+${attr('append-text', args.appendText)}
+${boolAttr('append-button', !!args.appendButton)}
+${attr('append-button-type', args.appendButtonType)}
+${attr('append-button-variant', args.appendButtonVariant)}
+${attr('append-aria-label', args.appendAriaLabel)}
 ${boolAttr('disabled', !!args.disabled)}
 ${attr('form-id', args.formId)}
 ${attr('form-layout', args.formLayout)}
@@ -111,12 +120,17 @@ ${attr('label-col', args.labelCol)}
 ${attr('label-cols', args.labelCols)}
 ${boolAttr('label-hidden', !!args.labelHidden)}
 ${attr('label-size', args.labelSize)}
-${boolAttr('other-content', !!args.otherContent)}
 ${attr('placeholder', args.placeholder)}
 ${boolAttr('plumage-search', !!args.plumageSearch)}
-${boolAttr('prepend', !!args.prepend)}
-${usePrependSlot ? '' : attr('prepend-icon', args.prependIcon)}
+${boolAttr('has-prepend', !!args.prepend)}
+${attr('prepend-icon', args.prependIcon)}
 ${attr('prepend-id', args.prependId)}
+${attr('prepend-button-id', args.prependButtonId)}
+${attr('prepend-text', args.prependText)}
+${boolAttr('prepend-button', !!args.prependButton)}
+${attr('prepend-button-type', args.prependButtonType)}
+${attr('prepend-button-variant', args.prependButtonVariant)}
+${attr('prepend-aria-label', args.prependAriaLabel)}
 ${boolAttr('required', !!args.required)}
 ${attr('size', args.size)}
 ${attr('type', args.type)}
@@ -127,14 +141,79 @@ ${boolAttr('validation', !!args.validation)}
 ${attr('validation-message', args.validationMessage)}
 ${attr('value', args.value)}
 >
-${usePrependSlot ? `<button-component slot="prepend" type="button" text styles="margin-right: 10px;" variant="secondary">Go</button-component>` : ''}
-${useAppendSlot ? `<button-component slot="append" type="button" text styles="margin-left: 10px;" variant="secondary">Go</button-component>` : ''}
 </${TAG}>
 `;
 };
 
+export const buildEl = args => {
+  const el = document.createElement(TAG);
+
+  const setBool = (name, on) => {
+    if (on) el.setAttribute(name, '');
+    else el.removeAttribute(name);
+  };
+
+  const set = (name, v) => {
+    const n = normalize(v);
+    if (n === undefined || n === false) el.removeAttribute(name);
+    else if (n === true) el.setAttribute(name, '');
+    else el.setAttribute(name, String(n));
+  };
+
+  setBool('has-append', !!args.append);
+  set('append-icon', args.appendIcon);
+  set('append-id', args.appendId);
+  set('append-button-id', args.appendButtonId);
+  set('append-text', args.appendText);
+  setBool('append-button', !!args.appendButton);
+  set('append-button-type', args.appendButtonType);
+  set('append-button-variant', args.appendButtonVariant);
+  set('append-aria-label', args.appendAriaLabel);
+
+  setBool('disabled', !!args.disabled);
+  set('form-id', args.formId);
+  set('form-layout', args.formLayout);
+  set('icon', args.icon);
+  set('input-col', args.inputCol);
+  set('input-cols', args.inputCols);
+  set('input-id', args.inputId);
+  set('label', args.label);
+  set('label-align', args.labelAlign);
+  set('label-col', args.labelCol);
+  set('label-cols', args.labelCols);
+  setBool('label-hidden', !!args.labelHidden);
+  set('label-size', args.labelSize);
+  set('placeholder', args.placeholder);
+  setBool('plumage-search', !!args.plumageSearch);
+
+  setBool('has-prepend', !!args.prepend);
+  set('prepend-icon', args.prependIcon);
+  set('prepend-id', args.prependId);
+  set('prepend-button-id', args.prependButtonId);
+  set('prepend-text', args.prependText);
+  setBool('prepend-button', !!args.prependButton);
+  set('prepend-button-type', args.prependButtonType);
+  set('prepend-button-variant', args.prependButtonVariant);
+  set('prepend-aria-label', args.prependAriaLabel);
+
+  setBool('required', !!args.required);
+  set('size', args.size);
+  set('type', args.type);
+  set('aria-label', args.ariaLabel);
+  set('aria-labelledby', args.ariaLabelledby);
+  set('aria-describedby', args.ariaDescribedby);
+  setBool('validation', !!args.validation);
+  set('validation-message', args.validationMessage);
+  set('value', args.value);
+
+  return el;
+};
+
 export const getSnapshot = host => {
-  const input = host?.querySelector('input.form-control') || host?.querySelector('input.search-bar') || host?.querySelector('input');
+  const input =
+    host?.querySelector('input.form-control') ||
+    host?.querySelector('input.search-bar') ||
+    host?.querySelector('input');
   const label = host?.querySelector('label');
   const describedby = (input?.getAttribute('aria-describedby') || '').trim();
   const describedIds = describedby ? describedby.split(/\s+/).filter(Boolean) : [];
@@ -143,6 +222,8 @@ export const getSnapshot = host => {
     if (!id) return false;
     return !!host?.querySelector(`#${id}`);
   };
+
+  const nativeButtons = Array.from(host?.querySelectorAll('.prepend-btn button, .append-btn button') || []);
 
   return {
     host: host?.tagName?.toLowerCase() ?? null,
@@ -154,14 +235,22 @@ export const getSnapshot = host => {
     'aria-label': input?.getAttribute('aria-label') ?? null,
     'aria-labelledby': input?.getAttribute('aria-labelledby') ?? null,
     'aria-describedby': describedby || null,
-    'aria-required': input?.getAttribute('aria-required') ?? null,
+    'aria-required': input?.getAttribute('aria-required') ?? input?.getAttribute('required') ?? null,
     'aria-invalid': input?.getAttribute('aria-invalid') ?? null,
-    'aria-disabled': input?.getAttribute('aria-disabled') ?? null,
+    'aria-disabled': input?.getAttribute('aria-disabled') ?? input?.getAttribute('disabled') ?? null,
     describedbyIds: describedIds,
     describedbyAllResolve: describedIds.every(resolve),
     hasValidationMessage: !!host?.querySelector('.invalid-feedback'),
-    prependElId: host?.querySelector('[id$="-prepend"]')?.getAttribute('id') ?? null,
-    appendElId: host?.querySelector('[id$="-append"]')?.getAttribute('id') ?? null,
+    prependElId: host?.querySelector('.prepend-btn, [id$="-prepend"]')?.getAttribute('id') ?? null,
+    appendElId: host?.querySelector('.append-btn, [id$="-append"]')?.getAttribute('id') ?? null,
+    affixButtons: nativeButtons.map(button => ({
+      id: button.getAttribute('id') ?? null,
+      type: button.getAttribute('type') ?? null,
+      class: button.getAttribute('class') ?? null,
+      text: (button.textContent || '').trim(),
+      ariaLabel: button.getAttribute('aria-label') ?? null,
+      disabled: button.hasAttribute('disabled'),
+    })),
     isSearchVariant: !!host?.querySelector('input.search-bar'),
   };
 };

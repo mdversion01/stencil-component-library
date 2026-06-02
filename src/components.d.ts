@@ -1916,6 +1916,26 @@ export namespace Components {
     }
     interface InputGroupComponent {
         /**
+          * @default ''
+         */
+        "appendAriaLabel": string;
+        /**
+          * @default false
+         */
+        "appendButton": boolean;
+        /**
+          * @default ''
+         */
+        "appendButtonId": string;
+        /**
+          * @default 'button'
+         */
+        "appendButtonType": ButtonType;
+        /**
+          * @default 'secondary'
+         */
+        "appendButtonVariant": string;
+        /**
           * @default false
          */
         "appendField": boolean;
@@ -1924,6 +1944,10 @@ export namespace Components {
           * @default ''
          */
         "appendId": string;
+        /**
+          * @default ''
+         */
+        "appendText": string;
         /**
           * @default false
          */
@@ -1953,7 +1977,6 @@ export namespace Components {
          */
         "inputId": string;
         /**
-          * Kept for API parity; use `size` for visual sizing
           * @default ''
          */
         "inputSize": string;
@@ -1966,12 +1989,10 @@ export namespace Components {
          */
         "labelAlign": '' | 'right';
         /**
-          * Legacy numeric cols (fallback)
           * @default 2
          */
         "labelCol": number;
         /**
-          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
           * @default ''
          */
         "labelCols": string;
@@ -1984,13 +2005,29 @@ export namespace Components {
          */
         "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         /**
-          * @default false
-         */
-        "otherContent": boolean;
-        /**
           * @default ''
          */
         "placeholder": string;
+        /**
+          * @default ''
+         */
+        "prependAriaLabel": string;
+        /**
+          * @default false
+         */
+        "prependButton": boolean;
+        /**
+          * @default ''
+         */
+        "prependButtonId": string;
+        /**
+          * @default 'button'
+         */
+        "prependButtonType": ButtonType;
+        /**
+          * @default 'secondary'
+         */
+        "prependButtonVariant": string;
         /**
           * @default false
          */
@@ -2000,6 +2037,10 @@ export namespace Components {
           * @default ''
          */
         "prependId": string;
+        /**
+          * @default ''
+         */
+        "prependText": string;
         /**
           * @default false
          */
@@ -2013,7 +2054,6 @@ export namespace Components {
          */
         "type": string;
         /**
-          * External validation flag (rendered with UX overrides)
           * @default false
          */
         "validation": boolean;
@@ -2022,7 +2062,6 @@ export namespace Components {
          */
         "validationMessage": string;
         /**
-          * External value (mutable for back-compat)
           * @default ''
          */
         "value": string;
@@ -2871,6 +2910,26 @@ export namespace Components {
     }
     interface PlumageInputGroupComponent {
         /**
+          * @default ''
+         */
+        "appendAriaLabel": string;
+        /**
+          * @default false
+         */
+        "appendButton": boolean;
+        /**
+          * @default ''
+         */
+        "appendButtonId": string;
+        /**
+          * @default 'button'
+         */
+        "appendButtonType": ButtonType;
+        /**
+          * @default 'secondary'
+         */
+        "appendButtonVariant": string;
+        /**
           * @default false
          */
         "appendField": boolean;
@@ -2879,10 +2938,11 @@ export namespace Components {
           * @default ''
          */
         "appendId": string;
-        "ariaDescribedby"?: string;
         /**
-          * ✅ Standard ARIA naming hooks (recommended)
+          * @default ''
          */
+        "appendText": string;
+        "ariaDescribedby"?: string;
         "ariaLabel"?: string;
         "ariaLabelledby"?: string;
         /**
@@ -2898,7 +2958,6 @@ export namespace Components {
          */
         "formLayout": '' | 'horizontal' | 'inline';
         /**
-          * Side options
           * @default ''
          */
         "icon": string;
@@ -2923,12 +2982,10 @@ export namespace Components {
          */
         "labelAlign": '' | 'right';
         /**
-          * Legacy numeric cols (fallback)
           * @default 2
          */
         "labelCol": number;
         /**
-          * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
           * @default ''
          */
         "labelCols": string;
@@ -2946,10 +3003,29 @@ export namespace Components {
         "otherContent": boolean;
         "placeholder"?: string;
         /**
-          * Search variant
           * @default false
          */
         "plumageSearch": boolean;
+        /**
+          * @default ''
+         */
+        "prependAriaLabel": string;
+        /**
+          * @default false
+         */
+        "prependButton": boolean;
+        /**
+          * @default ''
+         */
+        "prependButtonId": string;
+        /**
+          * @default 'button'
+         */
+        "prependButtonType": ButtonType;
+        /**
+          * @default 'secondary'
+         */
+        "prependButtonVariant": string;
         /**
           * @default false
          */
@@ -2959,6 +3035,10 @@ export namespace Components {
           * @default ''
          */
         "prependId": string;
+        /**
+          * @default ''
+         */
+        "prependText": string;
         /**
           * @default false
          */
@@ -2972,7 +3052,6 @@ export namespace Components {
          */
         "type": string;
         /**
-          * Validation controlled externally (don’t mutate)
           * @default false
          */
         "validation": boolean;
@@ -2981,7 +3060,6 @@ export namespace Components {
          */
         "validationMessage": string;
         /**
-          * Value controlled externally (don’t mutate)
           * @default ''
          */
         "value": string;
@@ -4972,6 +5050,8 @@ declare global {
     };
     interface HTMLInputGroupComponentElementEventMap {
         "valueChange": { value: string };
+        "prependClick": { originalEvent: MouseEvent };
+        "appendClick": { originalEvent: MouseEvent };
     }
     interface HTMLInputGroupComponentElement extends Components.InputGroupComponent, HTMLStencilElement {
         addEventListener<K extends keyof HTMLInputGroupComponentElementEventMap>(type: K, listener: (this: HTMLInputGroupComponentElement, ev: InputGroupComponentCustomEvent<HTMLInputGroupComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5134,6 +5214,8 @@ declare global {
     };
     interface HTMLPlumageInputGroupComponentElementEventMap {
         "valueChange": string;
+        "prependClick": { originalEvent: MouseEvent };
+        "appendClick": { originalEvent: MouseEvent };
     }
     interface HTMLPlumageInputGroupComponentElement extends Components.PlumageInputGroupComponent, HTMLStencilElement {
         addEventListener<K extends keyof HTMLPlumageInputGroupComponentElementEventMap>(type: K, listener: (this: HTMLPlumageInputGroupComponentElement, ev: PlumageInputGroupComponentCustomEvent<HTMLPlumageInputGroupComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -7352,6 +7434,26 @@ declare namespace LocalJSX {
     }
     interface InputGroupComponent {
         /**
+          * @default ''
+         */
+        "appendAriaLabel"?: string;
+        /**
+          * @default false
+         */
+        "appendButton"?: boolean;
+        /**
+          * @default ''
+         */
+        "appendButtonId"?: string;
+        /**
+          * @default 'button'
+         */
+        "appendButtonType"?: ButtonType;
+        /**
+          * @default 'secondary'
+         */
+        "appendButtonVariant"?: string;
+        /**
           * @default false
          */
         "appendField"?: boolean;
@@ -7360,6 +7462,10 @@ declare namespace LocalJSX {
           * @default ''
          */
         "appendId"?: string;
+        /**
+          * @default ''
+         */
+        "appendText"?: string;
         /**
           * @default false
          */
@@ -7389,7 +7495,6 @@ declare namespace LocalJSX {
          */
         "inputId"?: string;
         /**
-          * Kept for API parity; use `size` for visual sizing
           * @default ''
          */
         "inputSize"?: string;
@@ -7402,12 +7507,10 @@ declare namespace LocalJSX {
          */
         "labelAlign"?: '' | 'right';
         /**
-          * Legacy numeric cols (fallback)
           * @default 2
          */
         "labelCol"?: number;
         /**
-          * NEW: responsive column class specs (e.g., "col", "col-sm-3 col-md-4", or "xs-12 sm-6 md-4")
           * @default ''
          */
         "labelCols"?: string;
@@ -7419,15 +7522,33 @@ declare namespace LocalJSX {
           * @default 'sm'
          */
         "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
+        "onAppendClick"?: (event: InputGroupComponentCustomEvent<{ originalEvent: MouseEvent }>) => void;
+        "onPrependClick"?: (event: InputGroupComponentCustomEvent<{ originalEvent: MouseEvent }>) => void;
         "onValueChange"?: (event: InputGroupComponentCustomEvent<{ value: string }>) => void;
-        /**
-          * @default false
-         */
-        "otherContent"?: boolean;
         /**
           * @default ''
          */
         "placeholder"?: string;
+        /**
+          * @default ''
+         */
+        "prependAriaLabel"?: string;
+        /**
+          * @default false
+         */
+        "prependButton"?: boolean;
+        /**
+          * @default ''
+         */
+        "prependButtonId"?: string;
+        /**
+          * @default 'button'
+         */
+        "prependButtonType"?: ButtonType;
+        /**
+          * @default 'secondary'
+         */
+        "prependButtonVariant"?: string;
         /**
           * @default false
          */
@@ -7437,6 +7558,10 @@ declare namespace LocalJSX {
           * @default ''
          */
         "prependId"?: string;
+        /**
+          * @default ''
+         */
+        "prependText"?: string;
         /**
           * @default false
          */
@@ -7450,7 +7575,6 @@ declare namespace LocalJSX {
          */
         "type"?: string;
         /**
-          * External validation flag (rendered with UX overrides)
           * @default false
          */
         "validation"?: boolean;
@@ -7459,7 +7583,6 @@ declare namespace LocalJSX {
          */
         "validationMessage"?: string;
         /**
-          * External value (mutable for back-compat)
           * @default ''
          */
         "value"?: string;
@@ -8316,6 +8439,26 @@ declare namespace LocalJSX {
     }
     interface PlumageInputGroupComponent {
         /**
+          * @default ''
+         */
+        "appendAriaLabel"?: string;
+        /**
+          * @default false
+         */
+        "appendButton"?: boolean;
+        /**
+          * @default ''
+         */
+        "appendButtonId"?: string;
+        /**
+          * @default 'button'
+         */
+        "appendButtonType"?: ButtonType;
+        /**
+          * @default 'secondary'
+         */
+        "appendButtonVariant"?: string;
+        /**
           * @default false
          */
         "appendField"?: boolean;
@@ -8324,10 +8467,11 @@ declare namespace LocalJSX {
           * @default ''
          */
         "appendId"?: string;
-        "ariaDescribedby"?: string;
         /**
-          * ✅ Standard ARIA naming hooks (recommended)
+          * @default ''
          */
+        "appendText"?: string;
+        "ariaDescribedby"?: string;
         "ariaLabel"?: string;
         "ariaLabelledby"?: string;
         /**
@@ -8343,7 +8487,6 @@ declare namespace LocalJSX {
          */
         "formLayout"?: '' | 'horizontal' | 'inline';
         /**
-          * Side options
           * @default ''
          */
         "icon"?: string;
@@ -8368,12 +8511,10 @@ declare namespace LocalJSX {
          */
         "labelAlign"?: '' | 'right';
         /**
-          * Legacy numeric cols (fallback)
           * @default 2
          */
         "labelCol"?: number;
         /**
-          * NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8")
           * @default ''
          */
         "labelCols"?: string;
@@ -8385,6 +8526,8 @@ declare namespace LocalJSX {
           * @default 'sm'
          */
         "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
+        "onAppendClick"?: (event: PlumageInputGroupComponentCustomEvent<{ originalEvent: MouseEvent }>) => void;
+        "onPrependClick"?: (event: PlumageInputGroupComponentCustomEvent<{ originalEvent: MouseEvent }>) => void;
         "onValueChange"?: (event: PlumageInputGroupComponentCustomEvent<string>) => void;
         /**
           * @default false
@@ -8392,10 +8535,29 @@ declare namespace LocalJSX {
         "otherContent"?: boolean;
         "placeholder"?: string;
         /**
-          * Search variant
           * @default false
          */
         "plumageSearch"?: boolean;
+        /**
+          * @default ''
+         */
+        "prependAriaLabel"?: string;
+        /**
+          * @default false
+         */
+        "prependButton"?: boolean;
+        /**
+          * @default ''
+         */
+        "prependButtonId"?: string;
+        /**
+          * @default 'button'
+         */
+        "prependButtonType"?: ButtonType;
+        /**
+          * @default 'secondary'
+         */
+        "prependButtonVariant"?: string;
         /**
           * @default false
          */
@@ -8405,6 +8567,10 @@ declare namespace LocalJSX {
           * @default ''
          */
         "prependId"?: string;
+        /**
+          * @default ''
+         */
+        "prependText"?: string;
         /**
           * @default false
          */
@@ -8418,7 +8584,6 @@ declare namespace LocalJSX {
          */
         "type"?: string;
         /**
-          * Validation controlled externally (don’t mutate)
           * @default false
          */
         "validation"?: boolean;
@@ -8427,7 +8592,6 @@ declare namespace LocalJSX {
          */
         "validationMessage"?: string;
         /**
-          * Value controlled externally (don’t mutate)
           * @default ''
          */
         "value"?: string;
@@ -9961,110 +10125,1359 @@ declare namespace LocalJSX {
          */
         "visible"?: boolean;
     }
+
+    interface AccordionComponentAttributes {
+        "accordion": boolean;
+        "contentTxtSize": string;
+        "targetId": string;
+        "classNames": string;
+        "flush": boolean;
+        "outlined": boolean;
+        "block": boolean;
+        "variant": string;
+        "size": '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
+        "disabled": boolean;
+        "ripple": boolean;
+        "link": boolean;
+        "icon": string;
+        "isOpen": boolean;
+        "regionLabelledby": string;
+    }
+    interface AccordionContainerAttributes {
+        "parentId": string;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "flush": boolean;
+        "variant": string;
+        "size": '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
+        "outlined": boolean;
+        "block": boolean;
+        "disabled": boolean;
+        "ripple": boolean;
+        "classNames": string;
+        "contentTxtSize": string;
+        "icon": string;
+        "singleOpen": boolean;
+    }
+    interface AppWrapperAttributes {
+        "classNames": string;
+    }
+    interface AutocompleteMultipleSelectionsAttributes {
+        "addBtn": boolean;
+        "addIcon": string;
+        "arialabelledBy": string;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+        "clearIcon": string;
+        "placeholder": string;
+        "devMode": boolean;
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "error": boolean;
+        "errorMessage": string;
+        "inputId": string;
+        "label": string;
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "removeClearBtn": boolean;
+        "size": '' | 'sm' | 'lg';
+        "removeBtnBorder": boolean;
+        "required": boolean;
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "clearInputOnBlurOutside": boolean;
+        "name": string;
+        "rawInputName": string;
+        "preserveInputOnSelect": boolean;
+        "addNewOnEnter": boolean;
+        "autoSort": boolean;
+        "editable": boolean;
+        "badgeVariant": string;
+        "badgeShape": string;
+        "badgeInlineStyles": string;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+    }
+    interface AutocompleteMultiselectAttributes {
+        "addBtn": boolean;
+        "addIcon": string;
+        "arialabelledBy": string;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+        "clearIcon": string;
+        "placeholder": string;
+        "devMode": boolean;
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "error": boolean;
+        "errorMessage": string;
+        "inputId": string;
+        "label": string;
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "removeClearBtn": boolean;
+        "removeBtnBorder": boolean;
+        "size": '' | 'sm' | 'lg';
+        "required": boolean;
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "clearInputOnBlurOutside": boolean;
+        "name": string;
+        "rawInputName": string;
+        "preserveInputOnSelect": boolean;
+        "addNewOnEnter": boolean;
+        "autoSort": boolean;
+        "editable": boolean;
+        "badgeVariant": string;
+        "badgeShape": string;
+        "badgeInlineStyles": string;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+    }
+    interface AutocompleteSingleAttributes {
+        "autoSort": boolean;
+        "arialabelledBy": string;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+        "clearIcon": string;
+        "placeholder": string;
+        "devMode": boolean;
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "error": boolean;
+        "errorMessage": string;
+        "inputId": string;
+        "label": string;
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "removeClearBtn": boolean;
+        "size": '' | 'sm' | 'lg';
+        "required": boolean;
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+    }
+    interface BadgeComponentAttributes {
+        "absolute": boolean;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+        "bdgPosition": string;
+        "badgeId": string;
+        "backgroundColor": string;
+        "bordered": boolean;
+        "bottom": string;
+        "classNames": string;
+        "color": string;
+        "disabled": boolean;
+        "dot": boolean;
+        "elevation": string;
+        "icon": boolean;
+        "styles": string;
+        "inlineStyles": string;
+        "inset": boolean;
+        "left": string;
+        "offsetX": string;
+        "offsetY": string;
+        "outlined": boolean;
+        "pulse": boolean;
+        "right": string;
+        "shape": string;
+        "size": string;
+        "token": boolean;
+        "top": string;
+        "variant": string;
+        "zIndex": string;
+        "devMode": boolean;
+    }
+    interface ButtonComponentAttributes {
+        "absolute": boolean;
+        "active": boolean;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+        "block": boolean;
+        "bottom": string;
+        "btnIcon": boolean;
+        "btnText": string;
+        "classNames": string;
+        "disabled": boolean;
+        "end": boolean;
+        "elevation": string;
+        "fixed": boolean;
+        "groupBtn": boolean;
+        "iconBtn": boolean;
+        "slotSide": 'left' | 'right';
+        "styles": string;
+        "left": string;
+        "link": boolean;
+        "outlined": boolean;
+        "toggle": boolean;
+        "pressed": boolean;
+        "right": string;
+        "ripple": boolean;
+        "shape": string;
+        "size": '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
+        "start": boolean;
+        "stripped": boolean;
+        "text": boolean;
+        "textBtn": boolean;
+        "titleAttr": string;
+        "top": string;
+        "url": string;
+        "variant": string;
+        "vertical": boolean;
+        "zIndex": string;
+        "type": ButtonType;
+        "isOpen": boolean;
+        "targetId": string;
+        "accordion": boolean;
+        "allowFocusableChildren": boolean;
+        "devMode": boolean;
+    }
+    interface ButtonGroupAttributes {
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+        "disabled": boolean;
+        "classNames": string;
+        "vertical": boolean;
+    }
+    interface ByPagePaginationComponentAttributes {
+        "currentPage": number;
+        "pageSize": number;
+        "totalRows": number;
+        "itemsPerPage": boolean;
+        "displayTotalNumberOfPages": boolean;
+        "goToButtons": string;
+        "size": '' | 'sm' | 'lg';
+        "paginationLayout": '' | 'start' | 'center' | 'end';
+        "plumage": boolean;
+        "controlId": string;
+        "paginationAriaLabel": string;
+        "pageSizeLabel": string;
+        "pageSizeHelpText": string;
+        "pageInputHelpText": string;
+    }
+    interface CardComponentAttributes {
+        "actions": boolean;
+        "altText": string;
+        "cardMaxWidth": string;
+        "classNames": string;
+        "elevation": string;
+        "img": boolean;
+        "imgSrc": string;
+        "inlineStyles": string;
+        "noFooter": boolean;
+        "noHeader": boolean;
+        "imgHeight": string;
+        "clickable": boolean;
+        "disabled": boolean;
+        "landmark": boolean;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+        "headingLevel": number;
+        "decorativeImage": boolean;
+    }
+    interface CheckboxComponentAttributes {
+        "checkboxGroup": boolean;
+        "customCheckbox": boolean;
+        "customCheckboxGroup": boolean;
+        "groupOptions": string;
+        "groupTitle": string;
+        "groupTitleSize": string;
+        "inline": boolean;
+        "inputId": string;
+        "name": string;
+        "noPadding": boolean;
+        "labelTxt": string;
+        "required": boolean;
+        "size": string;
+        "checked": boolean;
+        "disabled": boolean;
+        "validation": boolean;
+        "validationMsg": string;
+        "value": string;
+    }
+    interface DateRangePickerComponentAttributes {
+        "ariaLabel": string;
+        "dateFormat": 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        "plumage": boolean;
+        "value": string;
+        "joinBy": string;
+        "inputId": string;
+        "appendProp": boolean;
+        "appendId": string;
+        "prependProp": boolean;
+        "prependId": string;
+        "disabled": boolean;
+        "label": string;
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "icon": string;
+        "placeholder": string;
+        "required": boolean;
+        "size": '' | 'sm' | 'lg';
+        "validation": boolean;
+        "validationMessage": string;
+        "warningMessage": string;
+        "rangePicker": boolean;
+        "showOkButton": boolean;
+        "showYmd": boolean;
+        "showLong": boolean;
+        "showIso": boolean;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+    }
+    interface DateRangeTimePickerComponentAttributes {
+        "ariaLabel": string;
+        "dateFormat": 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        "plumage": boolean;
+        "value": string;
+        "joinBy": string;
+        "inputId": string;
+        "appendProp": boolean;
+        "appendId": string;
+        "prependProp": boolean;
+        "prependId": string;
+        "disabled": boolean;
+        "label": string;
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "icon": string;
+        "placeholder": string;
+        "required": boolean;
+        "size": '' | 'sm' | 'lg';
+        "validation": boolean;
+        "validationMessage": string;
+        "warningMessage": string;
+        "rangeTimePicker": boolean;
+        "showOkButton": boolean;
+        "isTwentyFourHourFormat": boolean;
+        "showDuration": boolean;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+        "showYmd": boolean;
+        "showLong": boolean;
+        "showIso": boolean;
+    }
+    interface DatepickerComponentAttributes {
+        "appendProp": boolean;
+        "appendId": string;
+        "calendar": boolean;
+        "currentMonth": number;
+        "currentYear": number;
+        "dateFormat": DateFormat;
+        "disabled": boolean;
+        "displayContextExamples": boolean;
+        "dropdownOpen": boolean;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "size": '' | 'sm' | 'lg';
+        "icon": string;
+        "inputId": string;
+        "label": string;
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "labelSize": '' | 'sm' | 'lg';
+        "placeholder": string;
+        "autocomplete": AutocompleteValue;
+        "plumage": boolean;
+        "prependProp": boolean;
+        "prependId": string;
+        "required": boolean;
+        "validation": boolean;
+        "validationMessage": string;
+        "warningMessage": string;
+        "value": string;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+        "isCalendarFocused": boolean;
+    }
+    interface DiscreteSliderComponentAttributes {
+        "disabled": boolean;
+        "hideTextBoxes": boolean;
+        "hideLeftTextBox": boolean;
+        "hideRightTextBox": boolean;
+        "orientation": 'horizontal' | 'vertical';
+        "label": string;
+        "plumage": boolean;
+        "sliderThumbLabel": boolean;
+        "selectedIndex": number;
+        "stringValues": string[] | string;
+        "tickLabels": boolean;
+        "unit": string;
+        "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+    }
+    interface DividerComponentAttributes {
+        "dashed": boolean;
+        "plain": boolean;
+        "orientation": 'left' | 'right' | 'center';
+        "removeOrientationMargin": string;
+        "direction": 'horizontal' | 'vertical';
+        "styles": string;
+        "ariaLabel": string;
+    }
+    interface DropdownComponentAttributes {
+        "buttonText": string;
+        "disabled": boolean;
+        "iconDropdown": boolean;
+        "alignMenuRight": boolean;
+        "shape": string;
+        "size": '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
+        "outlined": boolean;
+        "ripple": boolean;
+        "variant": string;
+        "listType": string;
+        "subMenuListType": string;
+        "inputId": string;
+        "tableId": string;
+        "titleAttr": string;
+        "icon": string;
+        "iconSize": number;
+        "autoFocusSubmenu": boolean;
+        "menuOffsetY": number;
+        "submenuOffsetX": number;
+        "name": string;
+        "value": string;
+    }
+    interface FormWrapperComponentAttributes {
+        "action": string;
+        "method": string;
+        "fieldset": boolean;
+        "legend": boolean;
+        "legendPosition": 'left' | 'center' | 'right' | string;
+        "legendTxt": string;
+        "legendSize": 'small' | 'base' | 'large' | 'xlarge' | string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "formId": string;
+        "outsideOfForm": boolean;
+        "bcolor": string;
+        "bradius": number;
+        "bstyle": string;
+        "bwidth": number;
+        "styles": string;
+        "formAriaLabel": string;
+        "formAriaLabelledby": string;
+        "formAriaDescribedby": string;
+        "fieldsetAriaLabel": string;
+        "fieldsetAriaLabelledby": string;
+        "fieldsetAriaDescribedby": string;
+    }
+    interface IconComponentAttributes {
+        "icon": string;
+        "iconMargin": string;
+        "size": string;
+        "tokenIcon": boolean;
+        "iconSize": number;
+        "color": string;
+        "iconAriaLabel": string;
+        "iconAriaHidden": boolean;
+    }
+    interface InputFieldComponentAttributes {
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "inputId": string;
+        "size": '' | 'sm' | 'lg';
+        "label": string;
+        "labelSize": '' | 'xs' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "readOnly": boolean;
+        "required": boolean;
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
+        "placeholder": string;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+    }
+    interface InputGroupComponentAttributes {
+        "appendField": boolean;
+        "appendId": string;
+        "appendButtonId": string;
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "icon": string;
+        "prependIcon": string;
+        "appendIcon": string;
+        "inputId": string;
+        "inputSize": string;
+        "label": string;
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "placeholder": string;
+        "prependField": boolean;
+        "prependId": string;
+        "prependButtonId": string;
+        "required": boolean;
+        "size": '' | 'sm' | 'lg';
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+        "prependText": string;
+        "appendText": string;
+        "prependButton": boolean;
+        "appendButton": boolean;
+        "prependButtonType": ButtonType;
+        "appendButtonType": ButtonType;
+        "prependButtonVariant": string;
+        "appendButtonVariant": string;
+        "prependAriaLabel": string;
+        "appendAriaLabel": string;
+    }
+    interface MinimizePaginationComponentAttributes {
+        "currentPage": number;
+        "pageSize": number;
+        "totalRows": number;
+        "itemsPerPage": boolean;
+        "displayTotalNumberOfPages": boolean;
+        "goToButtons": string;
+        "size": '' | 'sm' | 'lg';
+        "paginationLayout": '' | 'start' | 'center' | 'end';
+        "plumage": boolean;
+        "controlId": string;
+        "paginationAriaLabel": string;
+        "pageSizeLabel": string;
+        "pageSizeHelpText": string;
+    }
+    interface ModalComponentAttributes {
+        "ariaLabel": string;
+        "block": boolean;
+        "btnText": string;
+        "cancelCloseBtn": string;
+        "classNames": string;
+        "disabled": boolean;
+        "link": boolean;
+        "outlined": boolean;
+        "ripple": boolean;
+        "size": string;
+        "shape": string;
+        "titleAttr": string;
+        "variant": string;
+        "modalId": string;
+        "modalTitle": string;
+        "modalSize": 'sm' | 'lg' | 'xl';
+        "modalFullScreen": 'fullscreen' | 'sm-down' | 'md-down' | 'lg-down' | 'xl-down' | 'xxl-down';
+        "scrollableBody": boolean;
+        "scrollLongContent": boolean;
+        "verticallyCentered": boolean;
+    }
+    interface MultiRangeSliderComponentAttributes {
+        "disabled": boolean;
+        "hideTextBoxes": boolean;
+        "hideLeftTextBox": boolean;
+        "hideRightTextBox": boolean;
+        "label": string;
+        "lowerValue": number;
+        "upperValue": number;
+        "min": number;
+        "max": number;
+        "plumage": boolean;
+        "sliderThumbLabel": boolean;
+        "snapToTicks": boolean;
+        "tickValues": number[] | string;
+        "tickLabels": boolean;
+        "unit": string;
+        "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+        "rangeFillMode": 'inside' | 'outside';
+        "orientation": 'horizontal' | 'vertical';
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+    }
+    interface PaginationComponentAttributes {
+        "currentPage": number;
+        "pageSize": number;
+        "totalRows": number;
+        "limit": number;
+        "goToButtons": string;
+        "hideEllipsis": boolean;
+        "hideGoToButtons": boolean;
+        "itemsPerPage": boolean;
+        "displayTotalNumberOfPages": boolean;
+        "size": '' | 'sm' | 'lg';
+        "paginationLayout": '' | 'start' | 'center' | 'end' | 'fill' | 'fill-left' | 'fill-right';
+        "paginationVariantColor": string;
+        "plumage": boolean;
+        "tableId": string;
+        "position": 'top' | 'bottom' | 'both';
+        "variant": 'standard' | 'minimize' | 'by-page';
+        "useMinimizePagination": boolean;
+        "useByPagePagination": boolean;
+        "paginationAriaLabel": string;
+        "pageSizeLabel": string;
+        "pageSizeHelpText": string;
+    }
+    interface PlumageAutocompleteMultipleSelectionsComponentAttributes {
+        "addBtn": boolean;
+        "addIcon": string;
+        "arialabelledBy": string;
+        "clearIcon": string;
+        "placeholder": string;
+        "devMode": boolean;
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "error": boolean;
+        "errorMessage": string;
+        "inputId": string;
+        "label": string;
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "removeClearBtn": boolean;
+        "size": '' | 'sm' | 'lg';
+        "removeBtnBorder": boolean;
+        "required": boolean;
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "name": string;
+        "rawInputName": string;
+        "preserveInputOnSelect": boolean;
+        "clearInputOnBlurOutside": boolean;
+        "addNewOnEnter": boolean;
+        "autoSort": boolean;
+        "editable": boolean;
+        "badgeVariant": string;
+        "badgeShape": string;
+        "badgeInlineStyles": string;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+    }
+    interface PlumageAutocompleteMultiselectComponentAttributes {
+        "addBtn": boolean;
+        "addIcon": string;
+        "arialabelledBy": string;
+        "clearIcon": string;
+        "placeholder": string;
+        "devMode": boolean;
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "error": boolean;
+        "errorMessage": string;
+        "inputId": string;
+        "label": string;
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "removeClearBtn": boolean;
+        "size": '' | 'sm' | 'lg';
+        "required": boolean;
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "name": string;
+        "rawInputName": string;
+        "preserveInputOnSelect": boolean;
+        "clearInputOnBlurOutside": boolean;
+        "addNewOnEnter": boolean;
+        "autoSort": boolean;
+        "editable": boolean;
+        "badgeVariant": string;
+        "badgeShape": string;
+        "badgeInlineStyles": string;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+    }
+    interface PlumageAutocompleteSingleAttributes {
+        "autoSort": boolean;
+        "arialabelledBy": string;
+        "clearIcon": string;
+        "placeholder": string;
+        "devMode": boolean;
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "error": boolean;
+        "errorMessage": string;
+        "inputId": string;
+        "label": string;
+        "labelHidden": boolean;
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "removeClearBtn": boolean;
+        "size": '' | 'sm' | 'lg';
+        "required": boolean;
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+    }
+    interface PlumageInputFieldComponentAttributes {
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "inputId": string;
+        "size": '' | 'sm' | 'lg';
+        "label": string;
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "readOnly": boolean;
+        "required": boolean;
+        "type": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
+        "placeholder": string;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+        "arialabelledBy": string;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+    }
+    interface PlumageInputGroupComponentAttributes {
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "inputId": string;
+        "label": string;
+        "labelHidden": boolean;
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "required": boolean;
+        "size": '' | 'sm' | 'lg';
+        "type": string;
+        "placeholder": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
+        "icon": string;
+        "otherContent": boolean;
+        "appendField": boolean;
+        "prependField": boolean;
+        "appendId": string;
+        "prependId": string;
+        "appendButtonId": string;
+        "prependButtonId": string;
+        "appendIcon": string;
+        "prependIcon": string;
+        "appendText": string;
+        "prependText": string;
+        "appendButton": boolean;
+        "prependButton": boolean;
+        "appendButtonType": ButtonType;
+        "prependButtonType": ButtonType;
+        "appendButtonVariant": string;
+        "prependButtonVariant": string;
+        "appendAriaLabel": string;
+        "prependAriaLabel": string;
+        "plumageSearch": boolean;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+    }
+    interface PlumageSelectFieldComponentAttributes {
+        "classes": string;
+        "custom": boolean;
+        "defaultTxt": string;
+        "defaultOptionTxt": string;
+        "disabled": boolean;
+        "fieldHeight": number;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "formId": string;
+        "selectFieldId": string;
+        "options": Array<{ value: string; name: string }> | string;
+        "selected": boolean;
+        "size": '' | 'sm' | 'lg';
+        "label": string;
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "multiple": boolean;
+        "required": boolean;
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string | string[];
+        "withTable": boolean;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+    }
+    interface PlumageTimepickerComponentAttributes {
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+        "showLabel": boolean;
+        "labelText": string;
+        "inputId": string;
+        "inputName": string;
+        "value": string;
+        "isTwentyFourHourFormat": boolean;
+        "size": string;
+        "validationMessage": string;
+        "twentyFourHourOnly": boolean;
+        "twelveHourOnly": boolean;
+        "hideTimepickerBtn": boolean;
+        "isValid": boolean;
+        "hideSeconds": boolean;
+        "inputWidth": string;
+        "required": boolean;
+        "validation": boolean;
+        "disabled": boolean;
+        "timeInputThrottleMs": number;
+    }
+    interface PopoverComponentAttributes {
+        "arrowOff": boolean;
+        "customClass": string;
+        "popoverTitle": string;
+        "content": string;
+        "noHeader": boolean;
+        "placement": | 'auto'
+    | 'top'
+    | 'bottom'
+    | 'left'
+    | 'right'
+    | 'top-end'
+    | 'top-start'
+    | 'bottom-end'
+    | 'bottom-start'
+    | 'left-start'
+    | 'left-end'
+    | 'right-start'
+    | 'right-end';
+        "plumage": boolean;
+        "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+        "visible": boolean;
+        "superTooltip": boolean;
+        "trigger": 'click' | 'hover' | 'focus' | `${'click' | 'hover' | 'focus'} ${'click' | 'hover' | 'focus'}`;
+        "fallbackPlacement": | 'flip'
+    | 'clockwise'
+    | 'counterclockwise'
+    | 'auto'
+    | 'top'
+    | 'bottom'
+    | 'left'
+    | 'right'
+    | 'top-end'
+    | 'top-start'
+    | 'bottom-end'
+    | 'bottom-start'
+    | 'left-start'
+    | 'left-end'
+    | 'right-start'
+    | 'right-end'
+    | Array<
+        | 'flip'
+        | 'clockwise'
+        | 'counterclockwise'
+        | 'auto'
+        | 'top'
+        | 'bottom'
+        | 'left'
+        | 'right'
+        | 'top-end'
+        | 'top-start'
+        | 'bottom-end'
+        | 'bottom-start'
+        | 'left-start'
+        | 'left-end'
+        | 'right-start'
+        | 'right-end'
+      >;
+        "offset": number;
+        "yOffset": number;
+        "target": string | HTMLElement;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+    }
+    interface ProgressDisplayComponentAttributes {
+        "animated": boolean;
+        "bars": | Array<{
+        value: number;
+        max?: number;
+        variant?: '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+        striped?: boolean;
+        animated?: boolean;
+        precision?: number;
+        progressAlign?: '' | 'left' | 'right';
+        showProgress?: boolean;
+        showValue?: boolean;
+      }>
+    | string;
+        "circular": boolean;
+        "height": number;
+        "label": string;
+        "lineCap": boolean;
+        "max": number;
+        "multi": boolean;
+        "precision": number;
+        "progressAlign": '' | 'left' | 'right';
+        "rotate": number;
+        "showProgress": boolean;
+        "showValue": boolean;
+        "size": number;
+        "indeterminate": boolean;
+        "striped": boolean;
+        "styles": string;
+        "useNamedBar0": boolean;
+        "value": number;
+        "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+        "strokeWidth": number;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+    }
+    interface RadioInputComponentAttributes {
+        "bsRadio": boolean;
+        "bsRadioGroup": boolean;
+        "basicRadio": boolean;
+        "basicRadioGroup": boolean;
+        "groupOptions": string;
+        "groupTitle": string;
+        "groupTitleSize": string;
+        "inline": boolean;
+        "inputId": string;
+        "name": string;
+        "labelTxt": string;
+        "required": boolean;
+        "size": string;
+        "disabled": boolean;
+        "validation": boolean;
+        "validationMsg": string;
+        "value": string;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+    }
+    interface SelectFieldComponentAttributes {
+        "classes": string;
+        "custom": boolean;
+        "defaultTxt": string;
+        "defaultOptionTxt": string;
+        "disabled": boolean;
+        "fieldHeight": number;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "formId": string;
+        "selectFieldId": string;
+        "options": Array<{ value: string; name: string }> | string;
+        "selected": boolean;
+        "size": '' | 'sm' | 'lg';
+        "label": string;
+        "labelSize": '' | 'xs' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "multiple": boolean;
+        "required": boolean;
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string | string[];
+        "withTable": boolean;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+    }
+    interface SliderBasicComponentAttributes {
+        "label": string;
+        "value": number;
+        "disabled": boolean;
+        "hideTextBoxes": boolean;
+        "hideLeftTextBox": boolean;
+        "hideRightTextBox": boolean;
+        "min": number;
+        "max": number;
+        "plumage": boolean;
+        "sliderThumbLabel": boolean;
+        "snapToTicks": boolean;
+        "tickValues": number[] | string;
+        "tickLabels": boolean;
+        "ticks": string;
+        "unit": string;
+        "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+        "orientation": 'horizontal' | 'vertical';
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+    }
+    interface SliderManagerComponentAttributes {
+        "type": 'basic' | 'multi' | 'discrete';
+        "label": string;
+        "variant": '' | 'primary' | 'secondary' | 'success' | 'danger' | 'info' | 'warning' | 'dark';
+        "plumage": boolean;
+        "disabled": boolean;
+        "hideTextBoxes": boolean;
+        "hideLeftTextBox": boolean;
+        "hideRightTextBox": boolean;
+        "min": number;
+        "max": number;
+        "unit": string;
+        "sliderThumbLabel": boolean;
+        "snapToTicks": boolean;
+        "tickLabels": boolean;
+        "orientation": 'horizontal' | 'vertical';
+        "tickValues": number[] | string;
+        "value": number;
+        "lowerValue": number;
+        "upperValue": number;
+        "rangeFillMode": 'inside' | 'outside';
+        "selectedIndex": number;
+        "stringValues": string[] | string;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+    }
+    interface StandardPaginationComponentAttributes {
+        "currentPage": number;
+        "pageSize": number;
+        "totalRows": number;
+        "itemsPerPage": boolean;
+        "displayTotalNumberOfPages": boolean;
+        "hideGoToButtons": boolean;
+        "goToButtons": string;
+        "size": '' | 'sm' | 'lg';
+        "paginationLayout": '' | 'start' | 'fill' | 'center' | 'end' | 'fill-left' | 'fill-right';
+        "hideEllipsis": boolean;
+        "limit": number;
+        "paginationVariantColor": string;
+        "plumage": boolean;
+        "controlId": string;
+        "paginationAriaLabel": string;
+        "pageSizeLabel": string;
+        "pageSizeHelpText": string;
+    }
+    interface SvgComponentAttributes {
+        "fill": string;
+        "width": number;
+        "height": number;
+        "viewBox": string;
+        "path": string;
+        "svgMargin": '' | 'left' | 'right' | 'both';
+        "svgAriaHidden": 'true' | 'false';
+        "svgAriaLabel": string;
+        "svgAriaLabelledby": string;
+        "svgAriaDescribedby": string;
+        "svgTitle": string;
+        "svgDesc": string;
+        "decorative": boolean;
+        "focusable": boolean;
+    }
+    interface TableComponentAttributes {
+        "addBorder": boolean;
+        "removeBorder": boolean;
+        "darkTableTheme": boolean;
+        "darkHeader": boolean;
+        "lightHeader": boolean;
+        "rowHover": boolean;
+        "plumage": boolean;
+        "noBorderCollapsed": boolean;
+        "selectedVariant": string;
+        "size": '' | 'sm';
+        "striped": boolean;
+        "tableVariant": Variant | 'table';
+        "caption": '' | 'top' | 'bottom';
+        "cloneFooter": boolean;
+        "fixedTableHeader": boolean;
+        "responsive": boolean;
+        "stacked": boolean;
+        "sticky": boolean;
+        "dropdownId": string;
+        "filterText": string;
+        "sortField": string;
+        "sortable": boolean;
+        "sortOrder": SortOrder;
+        "sortOrderDisabled": boolean;
+        "selectMode": SelectMode;
+        "tableId": string;
+        "currentPage": number;
+        "goToButtons": string;
+        "hideEllipsis": boolean;
+        "hideGotoEndButtons": boolean;
+        "paginationLayout": string;
+        "paginationSize": '' | 'sm' | 'lg';
+        "paginationLimit": number;
+        "paginationPosition": 'top' | 'bottom' | 'both';
+        "paginationVariantColor": string;
+        "rowsPerPage": number;
+        "showDisplayRange": boolean;
+        "showSizeChanger": boolean;
+        "totalRows": number;
+        "paginationEnabled": boolean;
+        "paginationVariant": 'standard' | 'minimize' | 'by-page';
+        "usePagination": boolean;
+        "useByPagePagination": boolean;
+        "useMinimizePagination": boolean;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+    }
+    interface TimepickerComponentAttributes {
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+        "showLabel": boolean;
+        "labelText": string;
+        "inputId": string;
+        "inputName": string;
+        "value": string;
+        "isTwentyFourHourFormat": boolean;
+        "size": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "twentyFourHourOnly": boolean;
+        "twelveHourOnly": boolean;
+        "hideTimepickerBtn": boolean;
+        "isValid": boolean;
+        "hideSeconds": boolean;
+        "inputWidth": string;
+        "required": boolean;
+        "disableTimepicker": boolean;
+        "timeInputThrottleMs": number;
+    }
+    interface TimepickerManagerAttributes {
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+        "showLabel": boolean;
+        "labelText": string;
+        "inputId": string;
+        "inputName": string;
+        "value": string;
+        "isTwentyFourHourFormat": boolean;
+        "size": string;
+        "twentyFourHourOnly": boolean;
+        "twelveHourOnly": boolean;
+        "hideTimepickerBtn": boolean;
+        "hideSeconds": boolean;
+        "usePlTimepicker": boolean;
+        "inputWidth": string;
+        "required": boolean;
+        "disableTimepicker": boolean;
+        "timeInputThrottleMs": number;
+        "validationMessage": string;
+        "validation": boolean;
+        "isValid": boolean;
+    }
+    interface ToastsComponentAttributes {
+        "toastId": string;
+        "position": ToastPosition;
+        "variant": ToastVariant;
+        "solidToast": boolean;
+        "plumageToast": boolean;
+        "plumageToastMax": boolean;
+        "appendToast": boolean;
+        "duration": number;
+        "noAnimation": boolean;
+        "noHoverPause": boolean;
+        "persistent": boolean;
+        "svgIcon": string;
+        "headerClass": string;
+        "bodyClass": string;
+        "isStatus": boolean;
+        "noCloseButton": boolean;
+        "iconPlumageStyle": boolean;
+        "toastTitle": string;
+        "message": string;
+        "additionalHeaderContent": string;
+        "customContent": string;
+        "time": string;
+        "ariaLabel": string;
+        "focusOnShow": boolean;
+    }
+    interface ToggleSwitchComponentAttributes {
+        "inputId": string;
+        "checked": boolean;
+        "disabled": boolean;
+        "required": boolean;
+        "labelTxt": string;
+        "size": string;
+        "inline": boolean;
+        "value": string;
+        "toggleTxt": boolean;
+        "newToggleTxtAttr": string;
+        "validation": boolean;
+        "validationMessage": string;
+        "switches": boolean;
+        "customSwitch": boolean;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+    }
+    interface TooltipComponentAttributes {
+        "message": string;
+        "position": TooltipPosition;
+        "visible": boolean;
+        "htmlContent": boolean;
+        "tooltipTitle": string;
+        "trigger": string;
+        "animation": boolean;
+        "container": string | null;
+        "customClass": string;
+        "variant": TooltipVariant;
+        "tooltipId": string;
+    }
+
     interface IntrinsicElements {
-        "accordion-component": AccordionComponent;
-        "accordion-container": AccordionContainer;
-        "app-wrapper": AppWrapper;
-        "autocomplete-multiple-selections": AutocompleteMultipleSelections;
-        "autocomplete-multiselect": AutocompleteMultiselect;
-        "autocomplete-single": AutocompleteSingle;
-        "badge-component": BadgeComponent;
-        "button-component": ButtonComponent;
-        "button-group": ButtonGroup;
-        "by-page-pagination-component": ByPagePaginationComponent;
-        "card-component": CardComponent;
-        "checkbox-component": CheckboxComponent;
-        "date-range-picker-component": DateRangePickerComponent;
-        "date-range-time-picker-component": DateRangeTimePickerComponent;
-        "datepicker-component": DatepickerComponent;
-        "discrete-slider-component": DiscreteSliderComponent;
-        "divider-component": DividerComponent;
-        "dropdown-component": DropdownComponent;
-        "form-wrapper-component": FormWrapperComponent;
-        "icon-component": IconComponent;
-        "input-field-component": InputFieldComponent;
-        "input-group-component": InputGroupComponent;
-        "minimize-pagination-component": MinimizePaginationComponent;
-        "modal-component": ModalComponent;
-        "multi-range-slider-component": MultiRangeSliderComponent;
-        "pagination-component": PaginationComponent;
-        "plumage-autocomplete-multiple-selections-component": PlumageAutocompleteMultipleSelectionsComponent;
-        "plumage-autocomplete-multiselect-component": PlumageAutocompleteMultiselectComponent;
-        "plumage-autocomplete-single": PlumageAutocompleteSingle;
-        "plumage-input-field-component": PlumageInputFieldComponent;
-        "plumage-input-group-component": PlumageInputGroupComponent;
-        "plumage-select-field-component": PlumageSelectFieldComponent;
-        "plumage-timepicker-component": PlumageTimepickerComponent;
-        "popover-component": PopoverComponent;
-        "progress-display-component": ProgressDisplayComponent;
-        "radio-input-component": RadioInputComponent;
-        "select-field-component": SelectFieldComponent;
-        "slider-basic-component": SliderBasicComponent;
-        "slider-manager-component": SliderManagerComponent;
-        "standard-pagination-component": StandardPaginationComponent;
-        "svg-component": SvgComponent;
-        "table-component": TableComponent;
-        "timepicker-component": TimepickerComponent;
-        "timepicker-manager": TimepickerManager;
-        "toasts-component": ToastsComponent;
-        "toggle-switch-component": ToggleSwitchComponent;
-        "tooltip-component": TooltipComponent;
+        "accordion-component": Omit<AccordionComponent, keyof AccordionComponentAttributes> & { [K in keyof AccordionComponent & keyof AccordionComponentAttributes]?: AccordionComponent[K] } & { [K in keyof AccordionComponent & keyof AccordionComponentAttributes as `attr:${K}`]?: AccordionComponentAttributes[K] } & { [K in keyof AccordionComponent & keyof AccordionComponentAttributes as `prop:${K}`]?: AccordionComponent[K] };
+        "accordion-container": Omit<AccordionContainer, keyof AccordionContainerAttributes> & { [K in keyof AccordionContainer & keyof AccordionContainerAttributes]?: AccordionContainer[K] } & { [K in keyof AccordionContainer & keyof AccordionContainerAttributes as `attr:${K}`]?: AccordionContainerAttributes[K] } & { [K in keyof AccordionContainer & keyof AccordionContainerAttributes as `prop:${K}`]?: AccordionContainer[K] };
+        "app-wrapper": Omit<AppWrapper, keyof AppWrapperAttributes> & { [K in keyof AppWrapper & keyof AppWrapperAttributes]?: AppWrapper[K] } & { [K in keyof AppWrapper & keyof AppWrapperAttributes as `attr:${K}`]?: AppWrapperAttributes[K] } & { [K in keyof AppWrapper & keyof AppWrapperAttributes as `prop:${K}`]?: AppWrapper[K] };
+        "autocomplete-multiple-selections": Omit<AutocompleteMultipleSelections, keyof AutocompleteMultipleSelectionsAttributes> & { [K in keyof AutocompleteMultipleSelections & keyof AutocompleteMultipleSelectionsAttributes]?: AutocompleteMultipleSelections[K] } & { [K in keyof AutocompleteMultipleSelections & keyof AutocompleteMultipleSelectionsAttributes as `attr:${K}`]?: AutocompleteMultipleSelectionsAttributes[K] } & { [K in keyof AutocompleteMultipleSelections & keyof AutocompleteMultipleSelectionsAttributes as `prop:${K}`]?: AutocompleteMultipleSelections[K] };
+        "autocomplete-multiselect": Omit<AutocompleteMultiselect, keyof AutocompleteMultiselectAttributes> & { [K in keyof AutocompleteMultiselect & keyof AutocompleteMultiselectAttributes]?: AutocompleteMultiselect[K] } & { [K in keyof AutocompleteMultiselect & keyof AutocompleteMultiselectAttributes as `attr:${K}`]?: AutocompleteMultiselectAttributes[K] } & { [K in keyof AutocompleteMultiselect & keyof AutocompleteMultiselectAttributes as `prop:${K}`]?: AutocompleteMultiselect[K] };
+        "autocomplete-single": Omit<AutocompleteSingle, keyof AutocompleteSingleAttributes> & { [K in keyof AutocompleteSingle & keyof AutocompleteSingleAttributes]?: AutocompleteSingle[K] } & { [K in keyof AutocompleteSingle & keyof AutocompleteSingleAttributes as `attr:${K}`]?: AutocompleteSingleAttributes[K] } & { [K in keyof AutocompleteSingle & keyof AutocompleteSingleAttributes as `prop:${K}`]?: AutocompleteSingle[K] };
+        "badge-component": Omit<BadgeComponent, keyof BadgeComponentAttributes> & { [K in keyof BadgeComponent & keyof BadgeComponentAttributes]?: BadgeComponent[K] } & { [K in keyof BadgeComponent & keyof BadgeComponentAttributes as `attr:${K}`]?: BadgeComponentAttributes[K] } & { [K in keyof BadgeComponent & keyof BadgeComponentAttributes as `prop:${K}`]?: BadgeComponent[K] };
+        "button-component": Omit<ButtonComponent, keyof ButtonComponentAttributes> & { [K in keyof ButtonComponent & keyof ButtonComponentAttributes]?: ButtonComponent[K] } & { [K in keyof ButtonComponent & keyof ButtonComponentAttributes as `attr:${K}`]?: ButtonComponentAttributes[K] } & { [K in keyof ButtonComponent & keyof ButtonComponentAttributes as `prop:${K}`]?: ButtonComponent[K] };
+        "button-group": Omit<ButtonGroup, keyof ButtonGroupAttributes> & { [K in keyof ButtonGroup & keyof ButtonGroupAttributes]?: ButtonGroup[K] } & { [K in keyof ButtonGroup & keyof ButtonGroupAttributes as `attr:${K}`]?: ButtonGroupAttributes[K] } & { [K in keyof ButtonGroup & keyof ButtonGroupAttributes as `prop:${K}`]?: ButtonGroup[K] };
+        "by-page-pagination-component": Omit<ByPagePaginationComponent, keyof ByPagePaginationComponentAttributes> & { [K in keyof ByPagePaginationComponent & keyof ByPagePaginationComponentAttributes]?: ByPagePaginationComponent[K] } & { [K in keyof ByPagePaginationComponent & keyof ByPagePaginationComponentAttributes as `attr:${K}`]?: ByPagePaginationComponentAttributes[K] } & { [K in keyof ByPagePaginationComponent & keyof ByPagePaginationComponentAttributes as `prop:${K}`]?: ByPagePaginationComponent[K] };
+        "card-component": Omit<CardComponent, keyof CardComponentAttributes> & { [K in keyof CardComponent & keyof CardComponentAttributes]?: CardComponent[K] } & { [K in keyof CardComponent & keyof CardComponentAttributes as `attr:${K}`]?: CardComponentAttributes[K] } & { [K in keyof CardComponent & keyof CardComponentAttributes as `prop:${K}`]?: CardComponent[K] };
+        "checkbox-component": Omit<CheckboxComponent, keyof CheckboxComponentAttributes> & { [K in keyof CheckboxComponent & keyof CheckboxComponentAttributes]?: CheckboxComponent[K] } & { [K in keyof CheckboxComponent & keyof CheckboxComponentAttributes as `attr:${K}`]?: CheckboxComponentAttributes[K] } & { [K in keyof CheckboxComponent & keyof CheckboxComponentAttributes as `prop:${K}`]?: CheckboxComponent[K] };
+        "date-range-picker-component": Omit<DateRangePickerComponent, keyof DateRangePickerComponentAttributes> & { [K in keyof DateRangePickerComponent & keyof DateRangePickerComponentAttributes]?: DateRangePickerComponent[K] } & { [K in keyof DateRangePickerComponent & keyof DateRangePickerComponentAttributes as `attr:${K}`]?: DateRangePickerComponentAttributes[K] } & { [K in keyof DateRangePickerComponent & keyof DateRangePickerComponentAttributes as `prop:${K}`]?: DateRangePickerComponent[K] };
+        "date-range-time-picker-component": Omit<DateRangeTimePickerComponent, keyof DateRangeTimePickerComponentAttributes> & { [K in keyof DateRangeTimePickerComponent & keyof DateRangeTimePickerComponentAttributes]?: DateRangeTimePickerComponent[K] } & { [K in keyof DateRangeTimePickerComponent & keyof DateRangeTimePickerComponentAttributes as `attr:${K}`]?: DateRangeTimePickerComponentAttributes[K] } & { [K in keyof DateRangeTimePickerComponent & keyof DateRangeTimePickerComponentAttributes as `prop:${K}`]?: DateRangeTimePickerComponent[K] };
+        "datepicker-component": Omit<DatepickerComponent, keyof DatepickerComponentAttributes> & { [K in keyof DatepickerComponent & keyof DatepickerComponentAttributes]?: DatepickerComponent[K] } & { [K in keyof DatepickerComponent & keyof DatepickerComponentAttributes as `attr:${K}`]?: DatepickerComponentAttributes[K] } & { [K in keyof DatepickerComponent & keyof DatepickerComponentAttributes as `prop:${K}`]?: DatepickerComponent[K] };
+        "discrete-slider-component": Omit<DiscreteSliderComponent, keyof DiscreteSliderComponentAttributes> & { [K in keyof DiscreteSliderComponent & keyof DiscreteSliderComponentAttributes]?: DiscreteSliderComponent[K] } & { [K in keyof DiscreteSliderComponent & keyof DiscreteSliderComponentAttributes as `attr:${K}`]?: DiscreteSliderComponentAttributes[K] } & { [K in keyof DiscreteSliderComponent & keyof DiscreteSliderComponentAttributes as `prop:${K}`]?: DiscreteSliderComponent[K] };
+        "divider-component": Omit<DividerComponent, keyof DividerComponentAttributes> & { [K in keyof DividerComponent & keyof DividerComponentAttributes]?: DividerComponent[K] } & { [K in keyof DividerComponent & keyof DividerComponentAttributes as `attr:${K}`]?: DividerComponentAttributes[K] } & { [K in keyof DividerComponent & keyof DividerComponentAttributes as `prop:${K}`]?: DividerComponent[K] };
+        "dropdown-component": Omit<DropdownComponent, keyof DropdownComponentAttributes> & { [K in keyof DropdownComponent & keyof DropdownComponentAttributes]?: DropdownComponent[K] } & { [K in keyof DropdownComponent & keyof DropdownComponentAttributes as `attr:${K}`]?: DropdownComponentAttributes[K] } & { [K in keyof DropdownComponent & keyof DropdownComponentAttributes as `prop:${K}`]?: DropdownComponent[K] };
+        "form-wrapper-component": Omit<FormWrapperComponent, keyof FormWrapperComponentAttributes> & { [K in keyof FormWrapperComponent & keyof FormWrapperComponentAttributes]?: FormWrapperComponent[K] } & { [K in keyof FormWrapperComponent & keyof FormWrapperComponentAttributes as `attr:${K}`]?: FormWrapperComponentAttributes[K] } & { [K in keyof FormWrapperComponent & keyof FormWrapperComponentAttributes as `prop:${K}`]?: FormWrapperComponent[K] };
+        "icon-component": Omit<IconComponent, keyof IconComponentAttributes> & { [K in keyof IconComponent & keyof IconComponentAttributes]?: IconComponent[K] } & { [K in keyof IconComponent & keyof IconComponentAttributes as `attr:${K}`]?: IconComponentAttributes[K] } & { [K in keyof IconComponent & keyof IconComponentAttributes as `prop:${K}`]?: IconComponent[K] };
+        "input-field-component": Omit<InputFieldComponent, keyof InputFieldComponentAttributes> & { [K in keyof InputFieldComponent & keyof InputFieldComponentAttributes]?: InputFieldComponent[K] } & { [K in keyof InputFieldComponent & keyof InputFieldComponentAttributes as `attr:${K}`]?: InputFieldComponentAttributes[K] } & { [K in keyof InputFieldComponent & keyof InputFieldComponentAttributes as `prop:${K}`]?: InputFieldComponent[K] };
+        "input-group-component": Omit<InputGroupComponent, keyof InputGroupComponentAttributes> & { [K in keyof InputGroupComponent & keyof InputGroupComponentAttributes]?: InputGroupComponent[K] } & { [K in keyof InputGroupComponent & keyof InputGroupComponentAttributes as `attr:${K}`]?: InputGroupComponentAttributes[K] } & { [K in keyof InputGroupComponent & keyof InputGroupComponentAttributes as `prop:${K}`]?: InputGroupComponent[K] };
+        "minimize-pagination-component": Omit<MinimizePaginationComponent, keyof MinimizePaginationComponentAttributes> & { [K in keyof MinimizePaginationComponent & keyof MinimizePaginationComponentAttributes]?: MinimizePaginationComponent[K] } & { [K in keyof MinimizePaginationComponent & keyof MinimizePaginationComponentAttributes as `attr:${K}`]?: MinimizePaginationComponentAttributes[K] } & { [K in keyof MinimizePaginationComponent & keyof MinimizePaginationComponentAttributes as `prop:${K}`]?: MinimizePaginationComponent[K] };
+        "modal-component": Omit<ModalComponent, keyof ModalComponentAttributes> & { [K in keyof ModalComponent & keyof ModalComponentAttributes]?: ModalComponent[K] } & { [K in keyof ModalComponent & keyof ModalComponentAttributes as `attr:${K}`]?: ModalComponentAttributes[K] } & { [K in keyof ModalComponent & keyof ModalComponentAttributes as `prop:${K}`]?: ModalComponent[K] };
+        "multi-range-slider-component": Omit<MultiRangeSliderComponent, keyof MultiRangeSliderComponentAttributes> & { [K in keyof MultiRangeSliderComponent & keyof MultiRangeSliderComponentAttributes]?: MultiRangeSliderComponent[K] } & { [K in keyof MultiRangeSliderComponent & keyof MultiRangeSliderComponentAttributes as `attr:${K}`]?: MultiRangeSliderComponentAttributes[K] } & { [K in keyof MultiRangeSliderComponent & keyof MultiRangeSliderComponentAttributes as `prop:${K}`]?: MultiRangeSliderComponent[K] };
+        "pagination-component": Omit<PaginationComponent, keyof PaginationComponentAttributes> & { [K in keyof PaginationComponent & keyof PaginationComponentAttributes]?: PaginationComponent[K] } & { [K in keyof PaginationComponent & keyof PaginationComponentAttributes as `attr:${K}`]?: PaginationComponentAttributes[K] } & { [K in keyof PaginationComponent & keyof PaginationComponentAttributes as `prop:${K}`]?: PaginationComponent[K] };
+        "plumage-autocomplete-multiple-selections-component": Omit<PlumageAutocompleteMultipleSelectionsComponent, keyof PlumageAutocompleteMultipleSelectionsComponentAttributes> & { [K in keyof PlumageAutocompleteMultipleSelectionsComponent & keyof PlumageAutocompleteMultipleSelectionsComponentAttributes]?: PlumageAutocompleteMultipleSelectionsComponent[K] } & { [K in keyof PlumageAutocompleteMultipleSelectionsComponent & keyof PlumageAutocompleteMultipleSelectionsComponentAttributes as `attr:${K}`]?: PlumageAutocompleteMultipleSelectionsComponentAttributes[K] } & { [K in keyof PlumageAutocompleteMultipleSelectionsComponent & keyof PlumageAutocompleteMultipleSelectionsComponentAttributes as `prop:${K}`]?: PlumageAutocompleteMultipleSelectionsComponent[K] };
+        "plumage-autocomplete-multiselect-component": Omit<PlumageAutocompleteMultiselectComponent, keyof PlumageAutocompleteMultiselectComponentAttributes> & { [K in keyof PlumageAutocompleteMultiselectComponent & keyof PlumageAutocompleteMultiselectComponentAttributes]?: PlumageAutocompleteMultiselectComponent[K] } & { [K in keyof PlumageAutocompleteMultiselectComponent & keyof PlumageAutocompleteMultiselectComponentAttributes as `attr:${K}`]?: PlumageAutocompleteMultiselectComponentAttributes[K] } & { [K in keyof PlumageAutocompleteMultiselectComponent & keyof PlumageAutocompleteMultiselectComponentAttributes as `prop:${K}`]?: PlumageAutocompleteMultiselectComponent[K] };
+        "plumage-autocomplete-single": Omit<PlumageAutocompleteSingle, keyof PlumageAutocompleteSingleAttributes> & { [K in keyof PlumageAutocompleteSingle & keyof PlumageAutocompleteSingleAttributes]?: PlumageAutocompleteSingle[K] } & { [K in keyof PlumageAutocompleteSingle & keyof PlumageAutocompleteSingleAttributes as `attr:${K}`]?: PlumageAutocompleteSingleAttributes[K] } & { [K in keyof PlumageAutocompleteSingle & keyof PlumageAutocompleteSingleAttributes as `prop:${K}`]?: PlumageAutocompleteSingle[K] };
+        "plumage-input-field-component": Omit<PlumageInputFieldComponent, keyof PlumageInputFieldComponentAttributes> & { [K in keyof PlumageInputFieldComponent & keyof PlumageInputFieldComponentAttributes]?: PlumageInputFieldComponent[K] } & { [K in keyof PlumageInputFieldComponent & keyof PlumageInputFieldComponentAttributes as `attr:${K}`]?: PlumageInputFieldComponentAttributes[K] } & { [K in keyof PlumageInputFieldComponent & keyof PlumageInputFieldComponentAttributes as `prop:${K}`]?: PlumageInputFieldComponent[K] };
+        "plumage-input-group-component": Omit<PlumageInputGroupComponent, keyof PlumageInputGroupComponentAttributes> & { [K in keyof PlumageInputGroupComponent & keyof PlumageInputGroupComponentAttributes]?: PlumageInputGroupComponent[K] } & { [K in keyof PlumageInputGroupComponent & keyof PlumageInputGroupComponentAttributes as `attr:${K}`]?: PlumageInputGroupComponentAttributes[K] } & { [K in keyof PlumageInputGroupComponent & keyof PlumageInputGroupComponentAttributes as `prop:${K}`]?: PlumageInputGroupComponent[K] };
+        "plumage-select-field-component": Omit<PlumageSelectFieldComponent, keyof PlumageSelectFieldComponentAttributes> & { [K in keyof PlumageSelectFieldComponent & keyof PlumageSelectFieldComponentAttributes]?: PlumageSelectFieldComponent[K] } & { [K in keyof PlumageSelectFieldComponent & keyof PlumageSelectFieldComponentAttributes as `attr:${K}`]?: PlumageSelectFieldComponentAttributes[K] } & { [K in keyof PlumageSelectFieldComponent & keyof PlumageSelectFieldComponentAttributes as `prop:${K}`]?: PlumageSelectFieldComponent[K] };
+        "plumage-timepicker-component": Omit<PlumageTimepickerComponent, keyof PlumageTimepickerComponentAttributes> & { [K in keyof PlumageTimepickerComponent & keyof PlumageTimepickerComponentAttributes]?: PlumageTimepickerComponent[K] } & { [K in keyof PlumageTimepickerComponent & keyof PlumageTimepickerComponentAttributes as `attr:${K}`]?: PlumageTimepickerComponentAttributes[K] } & { [K in keyof PlumageTimepickerComponent & keyof PlumageTimepickerComponentAttributes as `prop:${K}`]?: PlumageTimepickerComponent[K] };
+        "popover-component": Omit<PopoverComponent, keyof PopoverComponentAttributes> & { [K in keyof PopoverComponent & keyof PopoverComponentAttributes]?: PopoverComponent[K] } & { [K in keyof PopoverComponent & keyof PopoverComponentAttributes as `attr:${K}`]?: PopoverComponentAttributes[K] } & { [K in keyof PopoverComponent & keyof PopoverComponentAttributes as `prop:${K}`]?: PopoverComponent[K] };
+        "progress-display-component": Omit<ProgressDisplayComponent, keyof ProgressDisplayComponentAttributes> & { [K in keyof ProgressDisplayComponent & keyof ProgressDisplayComponentAttributes]?: ProgressDisplayComponent[K] } & { [K in keyof ProgressDisplayComponent & keyof ProgressDisplayComponentAttributes as `attr:${K}`]?: ProgressDisplayComponentAttributes[K] } & { [K in keyof ProgressDisplayComponent & keyof ProgressDisplayComponentAttributes as `prop:${K}`]?: ProgressDisplayComponent[K] };
+        "radio-input-component": Omit<RadioInputComponent, keyof RadioInputComponentAttributes> & { [K in keyof RadioInputComponent & keyof RadioInputComponentAttributes]?: RadioInputComponent[K] } & { [K in keyof RadioInputComponent & keyof RadioInputComponentAttributes as `attr:${K}`]?: RadioInputComponentAttributes[K] } & { [K in keyof RadioInputComponent & keyof RadioInputComponentAttributes as `prop:${K}`]?: RadioInputComponent[K] };
+        "select-field-component": Omit<SelectFieldComponent, keyof SelectFieldComponentAttributes> & { [K in keyof SelectFieldComponent & keyof SelectFieldComponentAttributes]?: SelectFieldComponent[K] } & { [K in keyof SelectFieldComponent & keyof SelectFieldComponentAttributes as `attr:${K}`]?: SelectFieldComponentAttributes[K] } & { [K in keyof SelectFieldComponent & keyof SelectFieldComponentAttributes as `prop:${K}`]?: SelectFieldComponent[K] };
+        "slider-basic-component": Omit<SliderBasicComponent, keyof SliderBasicComponentAttributes> & { [K in keyof SliderBasicComponent & keyof SliderBasicComponentAttributes]?: SliderBasicComponent[K] } & { [K in keyof SliderBasicComponent & keyof SliderBasicComponentAttributes as `attr:${K}`]?: SliderBasicComponentAttributes[K] } & { [K in keyof SliderBasicComponent & keyof SliderBasicComponentAttributes as `prop:${K}`]?: SliderBasicComponent[K] };
+        "slider-manager-component": Omit<SliderManagerComponent, keyof SliderManagerComponentAttributes> & { [K in keyof SliderManagerComponent & keyof SliderManagerComponentAttributes]?: SliderManagerComponent[K] } & { [K in keyof SliderManagerComponent & keyof SliderManagerComponentAttributes as `attr:${K}`]?: SliderManagerComponentAttributes[K] } & { [K in keyof SliderManagerComponent & keyof SliderManagerComponentAttributes as `prop:${K}`]?: SliderManagerComponent[K] };
+        "standard-pagination-component": Omit<StandardPaginationComponent, keyof StandardPaginationComponentAttributes> & { [K in keyof StandardPaginationComponent & keyof StandardPaginationComponentAttributes]?: StandardPaginationComponent[K] } & { [K in keyof StandardPaginationComponent & keyof StandardPaginationComponentAttributes as `attr:${K}`]?: StandardPaginationComponentAttributes[K] } & { [K in keyof StandardPaginationComponent & keyof StandardPaginationComponentAttributes as `prop:${K}`]?: StandardPaginationComponent[K] };
+        "svg-component": Omit<SvgComponent, keyof SvgComponentAttributes> & { [K in keyof SvgComponent & keyof SvgComponentAttributes]?: SvgComponent[K] } & { [K in keyof SvgComponent & keyof SvgComponentAttributes as `attr:${K}`]?: SvgComponentAttributes[K] } & { [K in keyof SvgComponent & keyof SvgComponentAttributes as `prop:${K}`]?: SvgComponent[K] };
+        "table-component": Omit<TableComponent, keyof TableComponentAttributes> & { [K in keyof TableComponent & keyof TableComponentAttributes]?: TableComponent[K] } & { [K in keyof TableComponent & keyof TableComponentAttributes as `attr:${K}`]?: TableComponentAttributes[K] } & { [K in keyof TableComponent & keyof TableComponentAttributes as `prop:${K}`]?: TableComponent[K] };
+        "timepicker-component": Omit<TimepickerComponent, keyof TimepickerComponentAttributes> & { [K in keyof TimepickerComponent & keyof TimepickerComponentAttributes]?: TimepickerComponent[K] } & { [K in keyof TimepickerComponent & keyof TimepickerComponentAttributes as `attr:${K}`]?: TimepickerComponentAttributes[K] } & { [K in keyof TimepickerComponent & keyof TimepickerComponentAttributes as `prop:${K}`]?: TimepickerComponent[K] };
+        "timepicker-manager": Omit<TimepickerManager, keyof TimepickerManagerAttributes> & { [K in keyof TimepickerManager & keyof TimepickerManagerAttributes]?: TimepickerManager[K] } & { [K in keyof TimepickerManager & keyof TimepickerManagerAttributes as `attr:${K}`]?: TimepickerManagerAttributes[K] } & { [K in keyof TimepickerManager & keyof TimepickerManagerAttributes as `prop:${K}`]?: TimepickerManager[K] };
+        "toasts-component": Omit<ToastsComponent, keyof ToastsComponentAttributes> & { [K in keyof ToastsComponent & keyof ToastsComponentAttributes]?: ToastsComponent[K] } & { [K in keyof ToastsComponent & keyof ToastsComponentAttributes as `attr:${K}`]?: ToastsComponentAttributes[K] } & { [K in keyof ToastsComponent & keyof ToastsComponentAttributes as `prop:${K}`]?: ToastsComponent[K] };
+        "toggle-switch-component": Omit<ToggleSwitchComponent, keyof ToggleSwitchComponentAttributes> & { [K in keyof ToggleSwitchComponent & keyof ToggleSwitchComponentAttributes]?: ToggleSwitchComponent[K] } & { [K in keyof ToggleSwitchComponent & keyof ToggleSwitchComponentAttributes as `attr:${K}`]?: ToggleSwitchComponentAttributes[K] } & { [K in keyof ToggleSwitchComponent & keyof ToggleSwitchComponentAttributes as `prop:${K}`]?: ToggleSwitchComponent[K] };
+        "tooltip-component": Omit<TooltipComponent, keyof TooltipComponentAttributes> & { [K in keyof TooltipComponent & keyof TooltipComponentAttributes]?: TooltipComponent[K] } & { [K in keyof TooltipComponent & keyof TooltipComponentAttributes as `attr:${K}`]?: TooltipComponentAttributes[K] } & { [K in keyof TooltipComponent & keyof TooltipComponentAttributes as `prop:${K}`]?: TooltipComponent[K] };
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "accordion-component": LocalJSX.AccordionComponent & JSXBase.HTMLAttributes<HTMLAccordionComponentElement>;
-            "accordion-container": LocalJSX.AccordionContainer & JSXBase.HTMLAttributes<HTMLAccordionContainerElement>;
-            "app-wrapper": LocalJSX.AppWrapper & JSXBase.HTMLAttributes<HTMLAppWrapperElement>;
-            "autocomplete-multiple-selections": LocalJSX.AutocompleteMultipleSelections & JSXBase.HTMLAttributes<HTMLAutocompleteMultipleSelectionsElement>;
-            "autocomplete-multiselect": LocalJSX.AutocompleteMultiselect & JSXBase.HTMLAttributes<HTMLAutocompleteMultiselectElement>;
-            "autocomplete-single": LocalJSX.AutocompleteSingle & JSXBase.HTMLAttributes<HTMLAutocompleteSingleElement>;
-            "badge-component": LocalJSX.BadgeComponent & JSXBase.HTMLAttributes<HTMLBadgeComponentElement>;
-            "button-component": LocalJSX.ButtonComponent & JSXBase.HTMLAttributes<HTMLButtonComponentElement>;
-            "button-group": LocalJSX.ButtonGroup & JSXBase.HTMLAttributes<HTMLButtonGroupElement>;
-            "by-page-pagination-component": LocalJSX.ByPagePaginationComponent & JSXBase.HTMLAttributes<HTMLByPagePaginationComponentElement>;
-            "card-component": LocalJSX.CardComponent & JSXBase.HTMLAttributes<HTMLCardComponentElement>;
-            "checkbox-component": LocalJSX.CheckboxComponent & JSXBase.HTMLAttributes<HTMLCheckboxComponentElement>;
-            "date-range-picker-component": LocalJSX.DateRangePickerComponent & JSXBase.HTMLAttributes<HTMLDateRangePickerComponentElement>;
+            "accordion-component": LocalJSX.IntrinsicElements["accordion-component"] & JSXBase.HTMLAttributes<HTMLAccordionComponentElement>;
+            "accordion-container": LocalJSX.IntrinsicElements["accordion-container"] & JSXBase.HTMLAttributes<HTMLAccordionContainerElement>;
+            "app-wrapper": LocalJSX.IntrinsicElements["app-wrapper"] & JSXBase.HTMLAttributes<HTMLAppWrapperElement>;
+            "autocomplete-multiple-selections": LocalJSX.IntrinsicElements["autocomplete-multiple-selections"] & JSXBase.HTMLAttributes<HTMLAutocompleteMultipleSelectionsElement>;
+            "autocomplete-multiselect": LocalJSX.IntrinsicElements["autocomplete-multiselect"] & JSXBase.HTMLAttributes<HTMLAutocompleteMultiselectElement>;
+            "autocomplete-single": LocalJSX.IntrinsicElements["autocomplete-single"] & JSXBase.HTMLAttributes<HTMLAutocompleteSingleElement>;
+            "badge-component": LocalJSX.IntrinsicElements["badge-component"] & JSXBase.HTMLAttributes<HTMLBadgeComponentElement>;
+            "button-component": LocalJSX.IntrinsicElements["button-component"] & JSXBase.HTMLAttributes<HTMLButtonComponentElement>;
+            "button-group": LocalJSX.IntrinsicElements["button-group"] & JSXBase.HTMLAttributes<HTMLButtonGroupElement>;
+            "by-page-pagination-component": LocalJSX.IntrinsicElements["by-page-pagination-component"] & JSXBase.HTMLAttributes<HTMLByPagePaginationComponentElement>;
+            "card-component": LocalJSX.IntrinsicElements["card-component"] & JSXBase.HTMLAttributes<HTMLCardComponentElement>;
+            "checkbox-component": LocalJSX.IntrinsicElements["checkbox-component"] & JSXBase.HTMLAttributes<HTMLCheckboxComponentElement>;
+            "date-range-picker-component": LocalJSX.IntrinsicElements["date-range-picker-component"] & JSXBase.HTMLAttributes<HTMLDateRangePickerComponentElement>;
             /**
              * <date-range-time-picker-component>
              * Date+time range picker with free-typing, calendar navigation,
              * ISO / numeric / long display modes, and synchronized dropdown.
              */
-            "date-range-time-picker-component": LocalJSX.DateRangeTimePickerComponent & JSXBase.HTMLAttributes<HTMLDateRangeTimePickerComponentElement>;
-            "datepicker-component": LocalJSX.DatepickerComponent & JSXBase.HTMLAttributes<HTMLDatepickerComponentElement>;
-            "discrete-slider-component": LocalJSX.DiscreteSliderComponent & JSXBase.HTMLAttributes<HTMLDiscreteSliderComponentElement>;
-            "divider-component": LocalJSX.DividerComponent & JSXBase.HTMLAttributes<HTMLDividerComponentElement>;
-            "dropdown-component": LocalJSX.DropdownComponent & JSXBase.HTMLAttributes<HTMLDropdownComponentElement>;
-            "form-wrapper-component": LocalJSX.FormWrapperComponent & JSXBase.HTMLAttributes<HTMLFormWrapperComponentElement>;
-            "icon-component": LocalJSX.IconComponent & JSXBase.HTMLAttributes<HTMLIconComponentElement>;
-            "input-field-component": LocalJSX.InputFieldComponent & JSXBase.HTMLAttributes<HTMLInputFieldComponentElement>;
-            "input-group-component": LocalJSX.InputGroupComponent & JSXBase.HTMLAttributes<HTMLInputGroupComponentElement>;
-            "minimize-pagination-component": LocalJSX.MinimizePaginationComponent & JSXBase.HTMLAttributes<HTMLMinimizePaginationComponentElement>;
-            "modal-component": LocalJSX.ModalComponent & JSXBase.HTMLAttributes<HTMLModalComponentElement>;
-            "multi-range-slider-component": LocalJSX.MultiRangeSliderComponent & JSXBase.HTMLAttributes<HTMLMultiRangeSliderComponentElement>;
-            "pagination-component": LocalJSX.PaginationComponent & JSXBase.HTMLAttributes<HTMLPaginationComponentElement>;
-            "plumage-autocomplete-multiple-selections-component": LocalJSX.PlumageAutocompleteMultipleSelectionsComponent & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteMultipleSelectionsComponentElement>;
-            "plumage-autocomplete-multiselect-component": LocalJSX.PlumageAutocompleteMultiselectComponent & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteMultiselectComponentElement>;
-            "plumage-autocomplete-single": LocalJSX.PlumageAutocompleteSingle & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteSingleElement>;
-            "plumage-input-field-component": LocalJSX.PlumageInputFieldComponent & JSXBase.HTMLAttributes<HTMLPlumageInputFieldComponentElement>;
-            "plumage-input-group-component": LocalJSX.PlumageInputGroupComponent & JSXBase.HTMLAttributes<HTMLPlumageInputGroupComponentElement>;
-            "plumage-select-field-component": LocalJSX.PlumageSelectFieldComponent & JSXBase.HTMLAttributes<HTMLPlumageSelectFieldComponentElement>;
-            "plumage-timepicker-component": LocalJSX.PlumageTimepickerComponent & JSXBase.HTMLAttributes<HTMLPlumageTimepickerComponentElement>;
-            "popover-component": LocalJSX.PopoverComponent & JSXBase.HTMLAttributes<HTMLPopoverComponentElement>;
-            "progress-display-component": LocalJSX.ProgressDisplayComponent & JSXBase.HTMLAttributes<HTMLProgressDisplayComponentElement>;
-            "radio-input-component": LocalJSX.RadioInputComponent & JSXBase.HTMLAttributes<HTMLRadioInputComponentElement>;
-            "select-field-component": LocalJSX.SelectFieldComponent & JSXBase.HTMLAttributes<HTMLSelectFieldComponentElement>;
-            "slider-basic-component": LocalJSX.SliderBasicComponent & JSXBase.HTMLAttributes<HTMLSliderBasicComponentElement>;
-            "slider-manager-component": LocalJSX.SliderManagerComponent & JSXBase.HTMLAttributes<HTMLSliderManagerComponentElement>;
-            "standard-pagination-component": LocalJSX.StandardPaginationComponent & JSXBase.HTMLAttributes<HTMLStandardPaginationComponentElement>;
-            "svg-component": LocalJSX.SvgComponent & JSXBase.HTMLAttributes<HTMLSvgComponentElement>;
-            "table-component": LocalJSX.TableComponent & JSXBase.HTMLAttributes<HTMLTableComponentElement>;
-            "timepicker-component": LocalJSX.TimepickerComponent & JSXBase.HTMLAttributes<HTMLTimepickerComponentElement>;
-            "timepicker-manager": LocalJSX.TimepickerManager & JSXBase.HTMLAttributes<HTMLTimepickerManagerElement>;
-            "toasts-component": LocalJSX.ToastsComponent & JSXBase.HTMLAttributes<HTMLToastsComponentElement>;
+            "date-range-time-picker-component": LocalJSX.IntrinsicElements["date-range-time-picker-component"] & JSXBase.HTMLAttributes<HTMLDateRangeTimePickerComponentElement>;
+            "datepicker-component": LocalJSX.IntrinsicElements["datepicker-component"] & JSXBase.HTMLAttributes<HTMLDatepickerComponentElement>;
+            "discrete-slider-component": LocalJSX.IntrinsicElements["discrete-slider-component"] & JSXBase.HTMLAttributes<HTMLDiscreteSliderComponentElement>;
+            "divider-component": LocalJSX.IntrinsicElements["divider-component"] & JSXBase.HTMLAttributes<HTMLDividerComponentElement>;
+            "dropdown-component": LocalJSX.IntrinsicElements["dropdown-component"] & JSXBase.HTMLAttributes<HTMLDropdownComponentElement>;
+            "form-wrapper-component": LocalJSX.IntrinsicElements["form-wrapper-component"] & JSXBase.HTMLAttributes<HTMLFormWrapperComponentElement>;
+            "icon-component": LocalJSX.IntrinsicElements["icon-component"] & JSXBase.HTMLAttributes<HTMLIconComponentElement>;
+            "input-field-component": LocalJSX.IntrinsicElements["input-field-component"] & JSXBase.HTMLAttributes<HTMLInputFieldComponentElement>;
+            "input-group-component": LocalJSX.IntrinsicElements["input-group-component"] & JSXBase.HTMLAttributes<HTMLInputGroupComponentElement>;
+            "minimize-pagination-component": LocalJSX.IntrinsicElements["minimize-pagination-component"] & JSXBase.HTMLAttributes<HTMLMinimizePaginationComponentElement>;
+            "modal-component": LocalJSX.IntrinsicElements["modal-component"] & JSXBase.HTMLAttributes<HTMLModalComponentElement>;
+            "multi-range-slider-component": LocalJSX.IntrinsicElements["multi-range-slider-component"] & JSXBase.HTMLAttributes<HTMLMultiRangeSliderComponentElement>;
+            "pagination-component": LocalJSX.IntrinsicElements["pagination-component"] & JSXBase.HTMLAttributes<HTMLPaginationComponentElement>;
+            "plumage-autocomplete-multiple-selections-component": LocalJSX.IntrinsicElements["plumage-autocomplete-multiple-selections-component"] & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteMultipleSelectionsComponentElement>;
+            "plumage-autocomplete-multiselect-component": LocalJSX.IntrinsicElements["plumage-autocomplete-multiselect-component"] & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteMultiselectComponentElement>;
+            "plumage-autocomplete-single": LocalJSX.IntrinsicElements["plumage-autocomplete-single"] & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteSingleElement>;
+            "plumage-input-field-component": LocalJSX.IntrinsicElements["plumage-input-field-component"] & JSXBase.HTMLAttributes<HTMLPlumageInputFieldComponentElement>;
+            "plumage-input-group-component": LocalJSX.IntrinsicElements["plumage-input-group-component"] & JSXBase.HTMLAttributes<HTMLPlumageInputGroupComponentElement>;
+            "plumage-select-field-component": LocalJSX.IntrinsicElements["plumage-select-field-component"] & JSXBase.HTMLAttributes<HTMLPlumageSelectFieldComponentElement>;
+            "plumage-timepicker-component": LocalJSX.IntrinsicElements["plumage-timepicker-component"] & JSXBase.HTMLAttributes<HTMLPlumageTimepickerComponentElement>;
+            "popover-component": LocalJSX.IntrinsicElements["popover-component"] & JSXBase.HTMLAttributes<HTMLPopoverComponentElement>;
+            "progress-display-component": LocalJSX.IntrinsicElements["progress-display-component"] & JSXBase.HTMLAttributes<HTMLProgressDisplayComponentElement>;
+            "radio-input-component": LocalJSX.IntrinsicElements["radio-input-component"] & JSXBase.HTMLAttributes<HTMLRadioInputComponentElement>;
+            "select-field-component": LocalJSX.IntrinsicElements["select-field-component"] & JSXBase.HTMLAttributes<HTMLSelectFieldComponentElement>;
+            "slider-basic-component": LocalJSX.IntrinsicElements["slider-basic-component"] & JSXBase.HTMLAttributes<HTMLSliderBasicComponentElement>;
+            "slider-manager-component": LocalJSX.IntrinsicElements["slider-manager-component"] & JSXBase.HTMLAttributes<HTMLSliderManagerComponentElement>;
+            "standard-pagination-component": LocalJSX.IntrinsicElements["standard-pagination-component"] & JSXBase.HTMLAttributes<HTMLStandardPaginationComponentElement>;
+            "svg-component": LocalJSX.IntrinsicElements["svg-component"] & JSXBase.HTMLAttributes<HTMLSvgComponentElement>;
+            "table-component": LocalJSX.IntrinsicElements["table-component"] & JSXBase.HTMLAttributes<HTMLTableComponentElement>;
+            "timepicker-component": LocalJSX.IntrinsicElements["timepicker-component"] & JSXBase.HTMLAttributes<HTMLTimepickerComponentElement>;
+            "timepicker-manager": LocalJSX.IntrinsicElements["timepicker-manager"] & JSXBase.HTMLAttributes<HTMLTimepickerManagerElement>;
+            "toasts-component": LocalJSX.IntrinsicElements["toasts-component"] & JSXBase.HTMLAttributes<HTMLToastsComponentElement>;
             /**
              * Accessibility / 508 notes (high level):
              * - Single switch:
@@ -10078,8 +11491,8 @@ declare module "@stencil/core" {
              *   - each invalid item input also uses aria-invalid + aria-describedby -> its own validation message id
              *   - all ids are derived from inputId/item.id (no random ids needed for wiring)
              */
-            "toggle-switch-component": LocalJSX.ToggleSwitchComponent & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;
-            "tooltip-component": LocalJSX.TooltipComponent & JSXBase.HTMLAttributes<HTMLTooltipComponentElement>;
+            "toggle-switch-component": LocalJSX.IntrinsicElements["toggle-switch-component"] & JSXBase.HTMLAttributes<HTMLToggleSwitchComponentElement>;
+            "tooltip-component": LocalJSX.IntrinsicElements["tooltip-component"] & JSXBase.HTMLAttributes<HTMLTooltipComponentElement>;
         }
     }
 }

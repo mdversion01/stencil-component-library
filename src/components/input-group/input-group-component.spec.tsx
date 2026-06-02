@@ -1,4 +1,4 @@
-// src/components/input-group/input-group-component.spec.tsx
+// File: src/components/input-group/input-group-component.spec.tsx
 import { newSpecPage } from '@stencil/core/testing';
 import { InputGroupComponent } from './input-group-component';
 
@@ -6,6 +6,10 @@ import { InputGroupComponent } from './input-group-component';
 
 function q<T extends Element = HTMLElement>(root: ParentNode, sel: string): T | null {
   return root.querySelector(sel) as T | null;
+}
+
+function qa<T extends Element = HTMLElement>(root: ParentNode, sel: string): T[] {
+  return Array.from(root.querySelectorAll(sel)) as T[];
 }
 
 /**
@@ -50,17 +54,12 @@ describe('<input-group-component>', () => {
     expect(label).toBeTruthy();
     expect(input).toBeTruthy();
 
-    // Stacked label has no trailing colon
     expect(label.textContent || '').toContain('Username');
-
-    // Placeholder falls back to label when placeholder not provided
     expect(input.placeholder).toBe('Username');
 
-    // A11y: input is labelled by the label element id
     expect(input.getAttribute('aria-labelledby')).toBe('user__label');
     expect(byId(root, 'user__label')).toBeTruthy();
 
-    // A11y: aria-describedby always includes help text (__desc) and resolves
     const describedBy = input.getAttribute('aria-describedby');
     expect(describedBy).toContain('user__desc');
     expect(byId(root, 'user__desc')).toBeTruthy();
@@ -69,23 +68,22 @@ describe('<input-group-component>', () => {
     expect(page.root).toMatchSnapshot();
   });
 
-  it('renders horizontal layout with responsive cols, prepend slot and append icon', async () => {
+  it('renders horizontal layout with responsive cols, prepend text and append icon', async () => {
     const page = await newSpecPage({
       components: [InputGroupComponent],
       html: `
-      <input-group-component
-        label="Amount"
-        input-id="amount"
-        form-layout="horizontal"
-        label-cols="xs-12 sm-4"
-        input-cols="xs-12 sm-8"
-        prepend
-        append
-        append-icon="fa-solid fa-dollar-sign"
-      >
-        <span slot="prepend">Total</span>
-      </input-group-component>
-    `,
+        <input-group-component
+          label="Amount"
+          input-id="amount"
+          form-layout="horizontal"
+          label-cols="xs-12 sm-4"
+          input-cols="xs-12 sm-8"
+          has-prepend
+          prepend-text="Total"
+          has-append
+          append-icon="fa-solid fa-dollar-sign"
+        ></input-group-component>
+      `,
     });
 
     await page.waitForChanges();
@@ -94,18 +92,13 @@ describe('<input-group-component>', () => {
     const input = q<HTMLInputElement>(root, 'input')!;
     expect(input).toBeTruthy();
 
-    // ID strategy: uses input-id as base
     expect(input.id).toBe('amount');
-
-    // A11y: labelled by label id
     expect(input.getAttribute('aria-labelledby')).toBe('amount__label');
     expect(byId(root, 'amount__label')).toBeTruthy();
 
-    // A11y: described by always includes help text
     expect(input.getAttribute('aria-describedby')).toContain('amount__desc');
     expect(byId(root, 'amount__desc')).toBeTruthy();
 
-    // Horizontal layout: label + input col classes applied
     const row = q<HTMLElement>(root, '.form-group.row.horizontal')!;
     expect(row).toBeTruthy();
 
@@ -113,38 +106,35 @@ describe('<input-group-component>', () => {
     expect(labelEl.className).toContain('col-12');
     expect(labelEl.className).toContain('col-sm-4');
 
-    // input column wrapper is the next element sibling of the label in horizontal render
     const inputCol = labelEl.nextElementSibling as HTMLElement | null;
     expect(inputCol).toBeTruthy();
     expect((inputCol as HTMLElement).className).toContain('col-12');
     expect((inputCol as HTMLElement).className).toContain('col-sm-8');
 
-    // Accept either a wrapper OR the slotted node itself (depending on implementation)
-    const prependWrapper = q(root, '.input-group-prepend, .pl-input-group-prepend, .prepend, [data-prepend]');
-    const prependSlotEl = q(root, '[slot="prepend"]');
-    expect(!!(prependWrapper || prependSlotEl)).toBe(true);
+    const textAffixes = qa<HTMLElement>(root, '.input-group-text');
+    expect(textAffixes.length).toBeGreaterThanOrEqual(2);
+    expect(root.textContent || '').toContain('Total');
 
-    // Icon may appear anywhere on the append side; just ensure it exists
     const dollarIcon = q(root, '.fa-dollar-sign, .fa-solid.fa-dollar-sign, i[class*="fa-dollar-sign"]');
     expect(dollarIcon).toBeTruthy();
 
     expect(page.root).toMatchSnapshot();
   });
 
-  it('mixes slot on append and icon on prepend using side-specific props', async () => {
+  it('mixes append button and prepend icon using side-specific props', async () => {
     const page = await newSpecPage({
       components: [InputGroupComponent],
       html: `
         <input-group-component
           label="Search"
           input-id="q"
-          prepend
-          append
+          has-prepend
+          has-append
           prepend-icon="fa-solid fa-magnifying-glass"
-          other-content
-        >
-          <button slot="append" type="button" class="btn btn-outline-secondary">Go</button>
-        </input-group-component>
+          append-button
+          append-text="Go"
+          append-button-variant="secondary"
+        ></input-group-component>
       `,
     });
 
@@ -152,15 +142,16 @@ describe('<input-group-component>', () => {
 
     const root = page.root as HTMLElement;
 
-    // Prepend icon (don’t over-constrain the container class)
     const searchIcon = q(root, '.fa-magnifying-glass, .fa-solid.fa-magnifying-glass, i[class*="fa-magnifying-glass"]');
     expect(searchIcon).toBeTruthy();
 
-    // Append slot content should be projected
-    const appendButton = q(root, 'button[slot="append"]');
+    const appendButton = q<HTMLButtonElement>(root, '.append-btn button');
     expect(appendButton).toBeTruthy();
+    expect(appendButton?.getAttribute('type')).toBe('button');
+    expect(appendButton?.className).toContain('btn');
+    expect(appendButton?.className).toContain('btn-secondary');
+    expect((appendButton?.textContent || '').trim()).toBe('Go');
 
-    // A11y: describedby includes help id and resolves
     const input = q<HTMLInputElement>(root, 'input')!;
     expect(input.getAttribute('aria-describedby')).toContain('q__desc');
     expectIdRefsResolve(root, input.getAttribute('aria-describedby'));
@@ -168,7 +159,7 @@ describe('<input-group-component>', () => {
     expect(page.root).toMatchSnapshot();
   });
 
-  it('shows validation message and invalid classes when validation=true (uses __validation id, live region, describedby includes it)', async () => {
+  it('shows validation message and invalid classes when validation=true', async () => {
     const page = await newSpecPage({
       components: [InputGroupComponent],
       html: `
@@ -187,11 +178,9 @@ describe('<input-group-component>', () => {
     const input = q<HTMLInputElement>(root, 'input')!;
     expect(input).toBeTruthy();
 
-    // Since value is empty, meetsTypingThreshold=false -> invalid
     expect(input.classList.contains('is-invalid')).toBe(true);
     expect(input.getAttribute('aria-invalid')).toBe('true');
 
-    // Validation element should exist and be referenced by aria-describedby
     const validationEl = byId(root, 'email__validation') as HTMLElement | null;
     expect(validationEl).toBeTruthy();
     expect(validationEl?.textContent || '').toContain('Required field.');
@@ -212,6 +201,32 @@ describe('<input-group-component>', () => {
 
     const input = (page.root as HTMLElement).querySelector('input')!;
     expect(input.hasAttribute('disabled')).toBe(true);
+  });
+
+  it('disables native affix buttons when disabled=true', async () => {
+    const page = await newSpecPage({
+      components: [InputGroupComponent],
+      html: `
+        <input-group-component
+          label="Search"
+          input-id="search"
+          has-prepend
+          has-append
+          prepend-button
+          prepend-text="Go"
+          append-button
+          append-text="Go"
+          disabled
+        ></input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root as HTMLElement;
+    const buttons = qa<HTMLButtonElement>(root, '.prepend-btn button, .append-btn button');
+    expect(buttons.length).toBe(2);
+    buttons.forEach(btn => expect(btn.hasAttribute('disabled')).toBe(true));
   });
 
   it('emits valueChange and bubbles "change" CustomEvent on input', async () => {
@@ -272,7 +287,7 @@ describe('<input-group-component>', () => {
     expect(row).toBeTruthy();
   });
 
-  it('horizontal with numeric fallback cols (labelCol/inputCol) snapshots correctly', async () => {
+  it('horizontal with numeric fallback cols and prop-driven text affixes snapshots correctly', async () => {
     const page = await newSpecPage({
       components: [InputGroupComponent],
       html: `
@@ -282,24 +297,117 @@ describe('<input-group-component>', () => {
           form-layout="horizontal"
           label-col="3"
           input-col="9"
-          prepend
-          append
-        >
-          <span slot="prepend">#</span>
-          <span slot="append">.js</span>
-        </input-group-component>
+          has-prepend
+          prepend-text="#"
+          has-append
+          append-text=".js"
+        ></input-group-component>
       `,
     });
 
     await page.waitForChanges();
 
-    // Sanity: a11y ids exist
     const root = page.root as HTMLElement;
     const input = q<HTMLInputElement>(root, 'input')!;
     expect(input.getAttribute('aria-labelledby')).toBe('code__label');
     expect(input.getAttribute('aria-describedby')).toContain('code__desc');
     expectIdRefsResolve(root, input.getAttribute('aria-describedby'));
 
+    const affixes = qa<HTMLElement>(root, '.input-group-text');
+    expect(affixes.length).toBeGreaterThanOrEqual(2);
+    expect(root.textContent || '').toContain('#');
+    expect(root.textContent || '').toContain('.js');
+
     expect(page.root).toMatchSnapshot();
+  });
+
+  it('renders prepend and append native buttons from props', async () => {
+    const page = await newSpecPage({
+      components: [InputGroupComponent],
+      html: `
+        <input-group-component
+          label="Search"
+          input-id="search"
+          has-prepend
+          has-append
+          prepend-button
+          prepend-text="Go"
+          prepend-button-variant="secondary"
+          append-button
+          append-text="Go"
+          append-button-variant="secondary"
+        ></input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root as HTMLElement;
+
+    const prependButton = q<HTMLButtonElement>(root, '.prepend-btn button');
+    const appendButton = q<HTMLButtonElement>(root, '.append-btn button');
+
+    expect(prependButton).toBeTruthy();
+    expect(appendButton).toBeTruthy();
+
+    expect(prependButton?.className).toContain('btn');
+    expect(prependButton?.className).toContain('btn-secondary');
+    expect(appendButton?.className).toContain('btn');
+    expect(appendButton?.className).toContain('btn-secondary');
+
+    expect((prependButton?.textContent || '').trim()).toBe('Go');
+    expect((appendButton?.textContent || '').trim()).toBe('Go');
+
+    expect(page.root).toMatchSnapshot();
+  });
+
+  it('renders custom native button type and aria-label from props', async () => {
+    const page = await newSpecPage({
+      components: [InputGroupComponent],
+      html: `
+        <input-group-component
+          label="Search"
+          input-id="search-advanced"
+          has-append
+          append-button
+          append-text="Run"
+          append-button-type="submit"
+          append-button-variant="primary"
+          append-aria-label="Run search"
+        ></input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root as HTMLElement;
+    const appendButton = q<HTMLButtonElement>(root, '.append-btn button');
+
+    expect(appendButton).toBeTruthy();
+    expect(appendButton?.getAttribute('type')).toBe('submit');
+    expect(appendButton?.className).toContain('btn-primary');
+    expect(appendButton?.getAttribute('aria-label')).toBe('Run search');
+    expect((appendButton?.textContent || '').trim()).toBe('Run');
+  });
+
+  it('does not render empty affix wrappers when side is enabled but no content props are provided', async () => {
+    const page = await newSpecPage({
+      components: [InputGroupComponent],
+      html: `
+        <input-group-component
+          label="Empty"
+          input-id="empty"
+          has-prepend
+          has-append
+        ></input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root as HTMLElement;
+    expect(q(root, '.prepend-btn')).toBeNull();
+    expect(q(root, '.append-btn')).toBeNull();
+    expect(qa(root, '.input-group-text').length).toBe(0);
   });
 });

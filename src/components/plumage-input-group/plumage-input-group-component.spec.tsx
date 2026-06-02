@@ -1,4 +1,4 @@
-// src/components/plumage-input-group/plumage-input-group-component.spec.tsx
+// File: src/components/plumage-input-group/plumage-input-group-component.spec.tsx
 import { newSpecPage } from '@stencil/core/testing';
 import { PlumageInputGroupComponent } from './plumage-input-group-component';
 
@@ -11,24 +11,35 @@ function normalize(html: string) {
     .trim();
 }
 
-function q(root: ParentNode, selectors: string[]) {
+function q<T extends Element = HTMLElement>(root: ParentNode, selectors: string[]): T | null {
   for (const s of selectors) {
     const n = root.querySelector(s);
-    if (n) return n;
+    if (n) return n as T;
   }
   return null;
 }
 
+function qa<T extends Element = HTMLElement>(root: ParentNode, sel: string): T[] {
+  return Array.from(root.querySelectorAll(sel)) as T[];
+}
+
 function getLabelFor(label: HTMLLabelElement) {
-  // Stencil snapshots can serialize htmlFor as htmlfor
   return label.getAttribute('for') || (label as any).htmlFor || label.getAttribute('htmlfor') || '';
 }
 
 function idRefs(v: string | null | undefined): string[] {
   return String(v || '')
     .split(/\s+/)
-    .map((t) => t.trim())
+    .map(t => t.trim())
     .filter(Boolean);
+}
+
+function escapeAttrValue(v: string): string {
+  return v.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+function byId(root: ParentNode, id: string): Element | null {
+  return root.querySelector(`[id="${escapeAttrValue(id)}"]`);
 }
 
 describe('<plumage-input-group-component>', () => {
@@ -47,21 +58,16 @@ describe('<plumage-input-group-component>', () => {
     expect(label).toBeTruthy();
     expect(input).toBeTruthy();
 
-    // visible text / base wiring
     expect((label.textContent || '').trim()).toContain('Username');
     expect(input.id).toBe('user');
     expect(input.placeholder).toBe('Username');
 
-    // label association (native)
     expect(label.id).toBe('user-label');
     expect(getLabelFor(label)).toBe('user');
 
-    // a11y wiring (new)
     expect(input.getAttribute('aria-labelledby')).toBe('user-label');
-    // aria-label should be absent because aria-labelledby exists (spec)
     expect(input.getAttribute('aria-label')).toBeNull();
 
-    // state wiring defaults
     expect(input.getAttribute('aria-invalid')).toBe('false');
     expect(input.getAttribute('aria-required')).toBeNull();
     expect(input.getAttribute('aria-disabled')).toBeNull();
@@ -69,7 +75,7 @@ describe('<plumage-input-group-component>', () => {
     expect(normalize(root.outerHTML)).toMatchSnapshot('stacked-default');
   });
 
-  it('renders horizontal layout with responsive cols, prepend slot + append icon (snapshot) and describes prepend/append', async () => {
+  it('renders horizontal layout with responsive cols, prepend text and append icon', async () => {
     const page = await newSpecPage({
       components: [PlumageInputGroupComponent],
       html: `
@@ -79,12 +85,11 @@ describe('<plumage-input-group-component>', () => {
           form-layout="horizontal"
           label-cols="xs-12 sm-4"
           input-cols="xs-12 sm-8"
-          prepend
-          append
+          has-prepend
+          prepend-text="Total"
+          has-append
           append-icon="fa-solid fa-dollar-sign"
-        >
-          <span slot="prepend">Total</span>
-        </plumage-input-group-component>
+        ></plumage-input-group-component>
       `,
     });
 
@@ -95,38 +100,28 @@ describe('<plumage-input-group-component>', () => {
     expect(input).toBeTruthy();
     expect(input.id).toBe('amount');
 
-    // label should include colon in horizontal mode
     const label = root.querySelector('label') as HTMLLabelElement;
     expect(label).toBeTruthy();
     expect((label.textContent || '').trim()).toContain('Amount:');
 
-    // responsive cols converted to bootstrap-like cols
     const horizontalLabel = root.querySelector('label.col-12.col-sm-4') as HTMLElement | null;
     const horizontalInputWrap = root.querySelector('.col-12.col-sm-8') as HTMLElement | null;
     expect(horizontalLabel).toBeTruthy();
     expect(horizontalInputWrap).toBeTruthy();
 
-    // prepend slot should render
-    const prepend = q(root, [
-      '.input-group [slot="prepend"]',
-      '.input-group .input-group-text',
-      '.input-group-text',
-    ]);
+    const prepend = q(root, ['#amount-prepend.input-group-text', '#amount-prepend']);
     expect(prepend).toBeTruthy();
+    expect((prepend?.textContent || '').trim()).toContain('Total');
 
-    // append icon should exist
     const dollarIcon = q(root, ['.fa-dollar-sign', '.fa-solid.fa-dollar-sign', 'i[class*="fa-dollar-sign"]']);
     expect(dollarIcon).toBeTruthy();
 
-    // a11y describedby should include prepend + append ids when those regions exist
     const described = idRefs(input.getAttribute('aria-describedby'));
     expect(described).toEqual(expect.arrayContaining(['amount-prepend', 'amount-append']));
+    expect(byId(root, 'amount-prepend')).toBeTruthy();
+    expect(byId(root, 'amount-append')).toBeTruthy();
 
-    // ids exist
-    expect(root.querySelector('#amount-prepend')).toBeTruthy();
-    expect(root.querySelector('#amount-append')).toBeTruthy();
-
-    expect(normalize(root.outerHTML)).toMatchSnapshot('horizontal-prepend-append-icon');
+    expect(normalize(root.outerHTML)).toMatchSnapshot('horizontal-prepend-text-append-icon');
   });
 
   it('size="lg" applies the input-group-lg class', async () => {
@@ -161,7 +156,6 @@ describe('<plumage-input-group-component>', () => {
     expect(input.classList.contains('is-invalid')).toBe(true);
     expect(input.getAttribute('aria-invalid')).toBe('true');
 
-    // validation id is computed off input-id now
     const described = idRefs(input.getAttribute('aria-describedby'));
     expect(described).toContain('email-validation');
 
@@ -169,15 +163,13 @@ describe('<plumage-input-group-component>', () => {
     expect(feedback).toBeTruthy();
     expect(feedback!.className).toContain('invalid-feedback');
     expect(feedback!.textContent).toContain('Required field.');
-
-    // polite live region for validation
     expect((feedback!.getAttribute('aria-live') || '').toLowerCase()).toBe('polite');
   });
 
   it('underline expands on focus/click and collapses on outside click', async () => {
     const page = await newSpecPage({
       components: [PlumageInputGroupComponent],
-      html: `<plumage-input-group-component label="Phone" input-id="phone" prepend><span slot="prepend">+1</span></plumage-input-group-component>`,
+      html: `<plumage-input-group-component label="Phone" input-id="phone" has-prepend prepend-text="+1"></plumage-input-group-component>`,
     });
 
     const root = page.root!;
@@ -185,7 +177,6 @@ describe('<plumage-input-group-component>', () => {
     const focusBar = root.querySelector('.b-focus') as HTMLDivElement;
     expect(focusBar).toBeTruthy();
 
-    // expand
     input.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
     input.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await page.waitForChanges();
@@ -193,7 +184,6 @@ describe('<plumage-input-group-component>', () => {
     expect(['100%', '100']).toContain(focusBar.style.width);
     expect(['0', '0px']).toContain(focusBar.style.left);
 
-    // collapse via outside click
     document.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await page.waitForChanges();
 
@@ -215,7 +205,6 @@ describe('<plumage-input-group-component>', () => {
 
     root.setAttribute('form-id', 'formA');
     await page.waitForChanges();
-    // Stencil may re-render; re-query
     input = root.querySelector('input.form-control') as HTMLInputElement;
     expect(input.getAttribute('form')).toBe('formA');
 
@@ -246,9 +235,111 @@ describe('<plumage-input-group-component>', () => {
 
     expect(stencilSpy).toHaveBeenCalled();
     expect(domSpy).toHaveBeenCalled();
-
-    // sanitized
     expect((root.querySelector('input.form-control') as HTMLInputElement).value).toBe('USA');
+  });
+
+  it('renders append native button from props with ids and emits appendClick', async () => {
+    const page = await newSpecPage({
+      components: [PlumageInputGroupComponent],
+      html: `
+        <plumage-input-group-component
+          label="Search"
+          input-id="search"
+          has-append
+          append-button
+          append-text="Go"
+          append-button-variant="secondary"
+          append-id="search-append-wrap"
+          append-button-id="search-append-btn"
+        ></plumage-input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root!;
+    const appendWrap = root.querySelector('#search-append-wrap') as HTMLElement | null;
+    const appendButton = root.querySelector('#search-append-btn') as HTMLButtonElement | null;
+    const appendSpy = jest.fn();
+
+    root.addEventListener('appendClick', appendSpy as any);
+
+    expect(appendWrap).toBeTruthy();
+    expect(appendButton).toBeTruthy();
+    expect(appendButton?.className).toContain('btn');
+    expect(appendButton?.className).toContain('btn-secondary');
+    expect(appendButton?.getAttribute('type')).toBe('button');
+    expect((appendButton?.textContent || '').trim()).toBe('Go');
+
+    appendButton!.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(appendSpy).toHaveBeenCalled();
+  });
+
+  it('renders prepend native button from props with ids and emits prependClick', async () => {
+    const page = await newSpecPage({
+      components: [PlumageInputGroupComponent],
+      html: `
+        <plumage-input-group-component
+          label="Search"
+          input-id="search-prepend"
+          has-prepend
+          prepend-button
+          prepend-text="Back"
+          prepend-button-variant="primary"
+          prepend-id="search-prepend-wrap"
+          prepend-button-id="search-prepend-btn"
+        ></plumage-input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root!;
+    const prependWrap = root.querySelector('#search-prepend-wrap') as HTMLElement | null;
+    const prependButton = root.querySelector('#search-prepend-btn') as HTMLButtonElement | null;
+    const prependSpy = jest.fn();
+
+    root.addEventListener('prependClick', prependSpy as any);
+
+    expect(prependWrap).toBeTruthy();
+    expect(prependButton).toBeTruthy();
+    expect(prependButton?.className).toContain('btn');
+    expect(prependButton?.className).toContain('btn-primary');
+    expect((prependButton?.textContent || '').trim()).toBe('Back');
+
+    prependButton!.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(prependSpy).toHaveBeenCalled();
+  });
+
+  it('renders plain text affixes without button wrappers', async () => {
+    const page = await newSpecPage({
+      components: [PlumageInputGroupComponent],
+      html: `
+        <plumage-input-group-component
+          label="Code"
+          input-id="code"
+          has-prepend
+          prepend-text="#"
+          has-append
+          append-text=".js"
+        ></plumage-input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root!;
+    expect(root.querySelector('.prepend-btn')).toBeNull();
+    expect(root.querySelector('.append-btn')).toBeNull();
+
+    const affixes = qa<HTMLElement>(root, '.input-group-text');
+    expect(affixes.length).toBe(2);
+    expect(root.textContent || '').toContain('#');
+    expect(root.textContent || '').toContain('.js');
   });
 
   it('search variant renders and clear button clears value + emits change', async () => {
@@ -265,7 +356,6 @@ describe('<plumage-input-group-component>', () => {
     const domSpy = jest.fn();
     root.addEventListener('change', domSpy as any);
 
-    // clear icon is now a button.clear-icon
     const clearBtn = root.querySelector('button.clear-icon') as HTMLButtonElement | null;
     expect(clearBtn).toBeTruthy();
 

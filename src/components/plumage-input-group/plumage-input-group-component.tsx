@@ -1,5 +1,8 @@
-// src/components/plumage-input-group/plumage-input-group-component.tsx
-import { Component, h, Prop, Element, State, Watch, Event, EventEmitter } from '@stencil/core';
+// File: src/components/plumage-input-group/plumage-input-group-component.tsx
+import { Component, h, Prop, Element, State, Watch, Event, EventEmitter, Fragment } from '@stencil/core';
+
+type AffixSide = 'prepend' | 'append';
+type ButtonType = 'button' | 'submit' | 'reset';
 
 @Component({
   tag: 'plumage-input-group-component',
@@ -31,38 +34,50 @@ export class PlumageInputGroupComponent {
   @Prop() type: string = 'text';
   @Prop() placeholder?: string;
 
-  /** Validation controlled externally (don’t mutate) */
   @Prop() validation: boolean = false;
   @Prop() validationMessage: string = '';
 
-  /** Value controlled externally (don’t mutate) */
   @Prop() value: string = '';
 
-  /** Side options */
-  @Prop() icon: string = ''; // e.g. "fa-solid fa-dollar-sign"
-  @Prop() otherContent: boolean = false; // when true, raw slot is used without wrapper span
+  @Prop() icon: string = '';
+  @Prop() otherContent: boolean = false;
 
-  @Prop({ attribute: 'append' }) appendField: boolean = false;
-  @Prop({ attribute: 'prepend' }) prependField: boolean = false;
+  @Prop({ attribute: 'has-append' }) appendField: boolean = false;
+  @Prop({ attribute: 'has-prepend' }) prependField: boolean = false;
 
   @Prop() appendId: string = '';
   @Prop() prependId: string = '';
+
+  @Prop() appendButtonId: string = '';
+  @Prop() prependButtonId: string = '';
+
   @Prop() appendIcon?: string;
   @Prop() prependIcon?: string;
 
-  /** Search variant */
+  @Prop() appendText: string = '';
+  @Prop() prependText: string = '';
+
+  @Prop() appendButton: boolean = false;
+  @Prop() prependButton: boolean = false;
+
+  @Prop() appendButtonType: ButtonType = 'button';
+  @Prop() prependButtonType: ButtonType = 'button';
+
+  @Prop() appendButtonVariant: string = 'secondary';
+  @Prop() prependButtonVariant: string = 'secondary';
+
+  @Prop() appendAriaLabel: string = '';
+  @Prop() prependAriaLabel: string = '';
+
   @Prop() plumageSearch: boolean = false;
 
-  /** ✅ Standard ARIA naming hooks (recommended) */
   @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
   @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
 
-  /** Legacy numeric cols (fallback) */
   @Prop() labelCol: number = 2;
   @Prop() inputCol: number = 10;
 
-  /** NEW: responsive column class specs (e.g., "col-sm-3 col-md-4" or "xs-12 sm-8") */
   @Prop() labelCols: string = '';
   @Prop() inputCols: string = '';
 
@@ -70,13 +85,14 @@ export class PlumageInputGroupComponent {
   @State() private validationState: boolean = false;
   @State() private valueState: string = '';
   @State() _resolvedFormId: string = '';
-  private inputEl?: HTMLInputElement;
 
-  // ✅ Stable fallback id for ARIA wiring (prevents collisions)
-  private _fallbackId: string = `plumage-ig-${Math.random().toString(36).slice(2, 10)}`;
+  private inputEl?: HTMLInputElement;
+  private _fallbackId = `plumage-ig-${Math.random().toString(36).slice(2, 10)}`;
 
   // Events
   @Event() valueChange!: EventEmitter<string>;
+  @Event() prependClick!: EventEmitter<{ originalEvent: MouseEvent }>;
+  @Event() appendClick!: EventEmitter<{ originalEvent: MouseEvent }>;
 
   // ----- Watchers -----
   @Watch('value')
@@ -100,7 +116,6 @@ export class PlumageInputGroupComponent {
 
   // ----- Lifecycle -----
   connectedCallback() {
-    // Inherit from nearest <form-component> if present and not already set
     const formComponent = this.host.closest('form-component') as any;
     const fcFormId = formComponent?.formId;
     const fcLayout = formComponent?.formLayout;
@@ -114,11 +129,9 @@ export class PlumageInputGroupComponent {
       }
     }
 
-    // Seed mirrors
     this.valueState = this.value ?? '';
     this.validationState = !!this.validation;
 
-    // Outside click collapses underline — bubble phase
     document.addEventListener('click', this.handleDocumentClick);
   }
 
@@ -169,7 +182,6 @@ export class PlumageInputGroupComponent {
     const raw = (this.inputId || '').trim();
     const base = this.camelCase(raw).replace(/ /g, '') || this._fallbackId;
 
-    // reserve stable ids for wiring
     return {
       base,
       inputId: base,
@@ -177,10 +189,11 @@ export class PlumageInputGroupComponent {
       validationId: `${base}-validation`,
       prependId: (this.prependId || `${base}-prepend`).trim(),
       appendId: (this.appendId || `${base}-append`).trim(),
+      prependButtonId: (this.prependButtonId || '').trim(),
+      appendButtonId: (this.appendButtonId || '').trim(),
     };
   }
 
-  /** Sanitize user-typed input: strip tags, remove control chars, trim, cap length. */
   private sanitizeInput(value: string): string {
     if (typeof value !== 'string') return '';
     let v = value.replace(/[<>]/g, '');
@@ -191,16 +204,14 @@ export class PlumageInputGroupComponent {
     return v;
   }
 
-  /** Sanitize an IDREF list (space-separated). Keeps only valid ID tokens. */
   private sanitizeIdRefList(v?: string | null): string | undefined {
     const raw = String(v ?? '').trim();
     if (!raw) return undefined;
-    const tokens = raw.split(/\s+/).map((t) => t.trim()).filter(Boolean);
-    const valid = tokens.filter((t) => /^[A-Za-z_][\w:\-\.]*$/.test(t));
+    const tokens = raw.split(/\s+/).map(t => t.trim()).filter(Boolean);
+    const valid = tokens.filter(t => /^[A-Za-z_][\w:\-.]*$/.test(t));
     return valid.length ? valid.join(' ') : undefined;
   }
 
-  /** Join multiple IDREF lists into a single de-duped list. */
   private joinIdRefLists(...vals: Array<string | undefined | null>) {
     const tokens: string[] = [];
     for (const v of vals) {
@@ -208,7 +219,7 @@ export class PlumageInputGroupComponent {
       if (cleaned) tokens.push(...cleaned.split(/\s+/));
     }
     const seen = new Set<string>();
-    const out = tokens.filter((t) => (seen.has(t) ? false : (seen.add(t), true)));
+    const out = tokens.filter(t => (seen.has(t) ? false : (seen.add(t), true)));
     return out.length ? out.join(' ') : undefined;
   }
 
@@ -220,7 +231,7 @@ export class PlumageInputGroupComponent {
     return this.required && !this.meetsTypingThreshold();
   }
 
-  // ----- Input handlers (mutate *state*, not @Prop) -----
+  // ----- Input handlers -----
   private handleInput = (ev: Event) => {
     const target = ev.target as HTMLInputElement;
 
@@ -240,28 +251,31 @@ export class PlumageInputGroupComponent {
   };
 
   private handleBlur = () => {
-    // collapse underline on blur
     const bFocusDiv = this.host.querySelector<HTMLDivElement>('.b-focus');
     if (bFocusDiv) {
       bFocusDiv.style.width = '0';
       bFocusDiv.style.left = '50%';
     }
 
-    // required/threshold validation on blur (parity with input-field)
     if (this.required) {
       this.validationState = !this.meetsTypingThreshold();
     }
+  };
+
+  private handleAffixClick = (side: AffixSide, ev: MouseEvent) => {
+    if (side === 'prepend') this.prependClick.emit({ originalEvent: ev });
+    else this.appendClick.emit({ originalEvent: ev });
   };
 
   // ----- Layout helpers -----
   private isHorizontal() {
     return this.formLayout === 'horizontal';
   }
+
   private isInline() {
     return this.formLayout === 'inline';
   }
 
-  /** Parse responsive column spec into Bootstrap-like classes. */
   private parseColsSpec(spec?: string): string {
     if (!spec) return '';
     const tokens = spec.trim().split(/\s+/);
@@ -291,7 +305,6 @@ export class PlumageInputGroupComponent {
     return Array.from(new Set(out)).join(' ');
   }
 
-  /** Build final col class (string spec > numeric fallback > special cases). */
   private buildColClass(kind: 'label' | 'input'): string {
     const spec = (kind === 'label' ? this.labelCols : this.inputCols)?.trim();
 
@@ -336,17 +349,13 @@ export class PlumageInputGroupComponent {
 
   // ----- A11y builders -----
   private buildLabelledBy(ids: ReturnType<typeof this.resolveIds>) {
-    // external wins; otherwise connect to our label
     const external = this.sanitizeIdRefList(this.ariaLabelledby);
     return external || ids.labelId;
   }
 
   private buildDescribedBy(ids: ReturnType<typeof this.resolveIds>) {
     const external = this.sanitizeIdRefList(this.ariaDescribedby);
-
     const validation = this.validationState && this.validationMessage ? ids.validationId : undefined;
-
-    // If prepend/append have ids, include them so SR announces extra context
     const prepend = this.prependField ? ids.prependId : undefined;
     const append = this.appendField ? ids.appendId : undefined;
 
@@ -355,7 +364,6 @@ export class PlumageInputGroupComponent {
 
   // ----- Render bits -----
   private renderLabel(ids: ReturnType<typeof this.resolveIds>, labelColClass?: string) {
-    // Always render a label (sr-only if hidden) to guarantee native label association.
     const labelText = (this.label || '').trim() || 'Input';
 
     const classes = [
@@ -364,6 +372,7 @@ export class PlumageInputGroupComponent {
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
+      this.isInline() ? 'col-form-label' : '',
       this.validationState ? 'invalid' : '',
     ]
       .filter(Boolean)
@@ -379,59 +388,84 @@ export class PlumageInputGroupComponent {
     );
   }
 
-  private renderPrepend(ids: ReturnType<typeof this.resolveIds>) {
-    if (!this.prependField) return null;
-
-    const invalidClass = this.validationState ? 'is-invalid' : '';
-
-    if (this.prependIcon) {
-      return (
-        <span class={`input-group-text ${invalidClass}`} id={ids.prependId}>
-          <i class={this.prependIcon} aria-hidden="true" />
-        </span>
-      );
-    }
-
-    if (this.otherContent) {
-      // if consumer provides their own accessible content, still wrap with an id so we can reference it
-      return (
-        <div id={ids.prependId} class={invalidClass}>
-          <slot name="prepend" />
-        </div>
-      );
-    }
-
-    return (
-      <span class={`input-group-text ${invalidClass}`} id={ids.prependId}>
-        <slot name="prepend" />
-      </span>
-    );
+  private getAffixIcon(side: AffixSide) {
+    return side === 'prepend' ? this.prependIcon || this.icon : this.appendIcon || this.icon;
   }
 
-  private renderAppend(ids: ReturnType<typeof this.resolveIds>) {
-    if (!this.appendField) return null;
+  private getAffixText(side: AffixSide) {
+    return side === 'prepend' ? this.prependText : this.appendText;
+  }
 
+  private getAffixId(side: AffixSide, ids: ReturnType<typeof this.resolveIds>) {
+    return side === 'prepend' ? ids.prependId : ids.appendId;
+  }
+
+  private getAffixButtonId(side: AffixSide, ids: ReturnType<typeof this.resolveIds>) {
+    return side === 'prepend' ? ids.prependButtonId || undefined : ids.appendButtonId || undefined;
+  }
+
+  private getAffixButton(side: AffixSide) {
+    return side === 'prepend' ? this.prependButton : this.appendButton;
+  }
+
+  private getAffixButtonType(side: AffixSide) {
+    return side === 'prepend' ? this.prependButtonType : this.appendButtonType;
+  }
+
+  // private getAffixButtonVariant(side: AffixSide) {
+  //   return side === 'prepend' ? this.prependButtonVariant : this.appendButtonVariant;
+  // }
+
+  private getAffixAriaLabel(side: AffixSide) {
+    return side === 'prepend' ? this.prependAriaLabel : this.appendAriaLabel;
+  }
+
+  // private getNativeButtonClass(variant: string) {
+  //   // const safe = (variant || 'secondary').trim();
+  //   return `input-group-btn`;
+  // }
+
+  private renderAffix(side: AffixSide, ids: ReturnType<typeof this.resolveIds>) {
+    const icon = this.getAffixIcon(side);
+    const text = this.getAffixText(side);
+    const id = this.getAffixId(side, ids);
+    const buttonId = this.getAffixButtonId(side, ids);
+    const isButton = this.getAffixButton(side);
+    const buttonType = this.getAffixButtonType(side);
+    // const buttonVariant = this.getAffixButtonVariant(side);
+    const ariaLabel = this.getAffixAriaLabel(side);
     const invalidClass = this.validationState ? 'is-invalid' : '';
 
-    if (this.appendIcon) {
+    if (icon) {
       return (
-        <span class={`input-group-text ${invalidClass}`} id={ids.appendId}>
-          <i class={this.appendIcon} aria-hidden="true" />
+        <span class={`input-group-text ${invalidClass}`.trim()} id={id}>
+          <i class={icon} aria-hidden="true" />
         </span>
       );
     }
 
-    if (this.otherContent) {
+    if (!text) return null;
+
+    if (isButton) {
       return (
-        <div id={ids.appendId} class={invalidClass}>
-          <slot name="append" />
-        </div>
+        <span class={side === 'prepend' ? 'prepend-btn' : 'append-btn'} id={id}>
+          <button
+            id={buttonId}
+            type={buttonType}
+            class="input-group-btn"
+            aria-label={ariaLabel || undefined}
+            disabled={this.disabled}
+            onClick={ev => this.handleAffixClick(side, ev)}
+          >
+            {text}
+          </button>
+        </span>
       );
     }
 
     return (
-      <span id={ids.appendId} class={invalidClass}>
-        <slot name="append" />
+      <span class={`input-group-text ${invalidClass}`.trim()} id={id}>
+        {text}
       </span>
     );
   }
@@ -446,50 +480,52 @@ export class PlumageInputGroupComponent {
 
     const labelledBy = this.buildLabelledBy(ids);
     const describedBy = this.buildDescribedBy(ids);
-
-    // aria-label only when aria-labelledby absent (spec)
     const computedAriaLabel = labelledBy ? undefined : (this.ariaLabel || placeholder || 'Input').trim();
 
     return (
-      <div class={groupClasses} onClick={this.handleInteraction} onMouseDown={this.handleInteraction}>
-        {this.renderPrepend(ids)}
+      <Fragment>
+        <div class={groupClasses} onClick={this.handleInteraction} onMouseDown={this.handleInteraction}>
+          {this.prependField ? this.renderAffix('prepend', ids) : null}
 
-        <input
-          ref={(el) => (this.inputEl = el as HTMLInputElement)}
-          type={this.type || 'text'}
-          class={inputClasses}
-          placeholder={placeholder}
-          id={ids.inputId || undefined}
-          name={ids.inputId || undefined}
-          value={this.valueState || ''}
-          aria-labelledby={labelledBy}
-          aria-label={computedAriaLabel}
-          aria-describedby={describedBy}
-          aria-required={this.required ? 'true' : undefined}
-          aria-invalid={this.validationState ? 'true' : 'false'}
-          aria-disabled={this.disabled ? 'true' : undefined}
-          disabled={this.disabled}
-          onInput={this.handleInput}
-          onFocus={this.handleInteraction}
-          onClick={this.handleInteraction}
-          onMouseDown={this.handleInteraction}
-          onBlur={this.handleBlur}
-          form={this._resolvedFormId || undefined}
-          autoComplete="off"
-          spellcheck={false}
-          inputMode="text"
-        />
-
-        {this.renderAppend(ids)}
-
-        {/* Underline/focus bar */}
-        <div class={`b-underline${this.validationState ? ' invalid' : ''}`} role="presentation" aria-hidden="true">
-          <div
-            class={`b-focus${this.disabled ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`}
-            role="presentation"
-            aria-hidden="true"
-            style={{ width: '0', left: '50%' } as any}
+          <input
+            ref={el => {
+              this.inputEl = el as HTMLInputElement;
+              this.applyFormAttribute();
+            }}
+            type={this.type || 'text'}
+            class={inputClasses}
+            placeholder={placeholder}
+            id={ids.inputId || undefined}
+            name={ids.inputId || undefined}
+            value={this.valueState || ''}
+            aria-labelledby={labelledBy}
+            aria-label={computedAriaLabel}
+            aria-describedby={describedBy}
+            aria-required={this.required ? 'true' : undefined}
+            aria-invalid={this.validationState ? 'true' : 'false'}
+            aria-disabled={this.disabled ? 'true' : undefined}
+            disabled={this.disabled}
+            onInput={this.handleInput}
+            onFocus={this.handleInteraction}
+            onClick={this.handleInteraction}
+            onMouseDown={this.handleInteraction}
+            onBlur={this.handleBlur}
+            form={this._resolvedFormId || undefined}
+            autoComplete="off"
+            spellcheck={false}
+            inputMode="text"
           />
+
+          {this.appendField ? this.renderAffix('append', ids) : null}
+
+          <div class={`b-underline${this.validationState ? ' invalid' : ''}`} role="presentation" aria-hidden="true">
+            <div
+              class={`b-focus${this.disabled ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`}
+              role="presentation"
+              aria-hidden="true"
+              style={{ width: '0', left: '50%' } as any}
+            />
+          </div>
         </div>
 
         {this.validationState && this.validationMessage ? (
@@ -497,7 +533,7 @@ export class PlumageInputGroupComponent {
             {this.validationMessage}
           </div>
         ) : null}
-      </div>
+      </Fragment>
     );
   }
 
@@ -522,26 +558,18 @@ export class PlumageInputGroupComponent {
   private renderPlumageSearch(ids: ReturnType<typeof this.resolveIds>) {
     const labelText = (this.label || '').trim() || 'Search';
     const placeholder = (this.placeholder || '').trim() || 'Search';
-
-    // search icon id so aria-describedby can reference it
     const searchIconId = `${ids.base}-search-icon`;
 
-    // aria-labelledby: external wins, else label id
     const labelledBy = this.sanitizeIdRefList(this.ariaLabelledby) || ids.labelId;
-
-    // described: external + icon + validation
     const describedBy = this.joinIdRefLists(
       this.ariaDescribedby,
       searchIconId,
       this.validationState && this.validationMessage ? ids.validationId : undefined,
     );
-
-    // aria-label only when aria-labelledby absent
     const computedAriaLabel = labelledBy ? undefined : (this.ariaLabel || labelText).trim();
 
     return (
       <div class="plumage">
-        {/* still render label for native association (sr-only if hidden) */}
         {this.renderLabel(ids, '')}
 
         <div class="input-group search-bar-container mb-3" onClick={this.handleInteraction} onMouseDown={this.handleInteraction}>
@@ -579,15 +607,6 @@ export class PlumageInputGroupComponent {
             </button>
           ) : null}
 
-          {/* <div class={`b-underline${this.validationState ? ' invalid' : ''}`} role="presentation" aria-hidden="true">
-            <div
-              class={`b-focus${this.disabled ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`}
-              role="presentation"
-              aria-hidden="true"
-              style={{ width: '0', left: '50%' } as any}
-            />
-          </div> */}
-
           {this.validationState && this.validationMessage ? (
             <div id={ids.validationId} class="invalid-feedback form-text" aria-live="polite">
               {this.validationMessage}
@@ -607,18 +626,17 @@ export class PlumageInputGroupComponent {
 
     const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
     const groupClasses = ['form-group', 'form-input-group'];
-    if (this.isHorizontal()) groupClasses.push('row');
+    if (this.isHorizontal()) groupClasses.push('row', 'horizontal');
     else if (this.isInline()) groupClasses.push('row', 'inline');
 
-    // numeric validation fallback if no string specs
     this.getComputedCols();
 
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
     const inputColClass = this.isHorizontal()
       ? this.buildColClass('input') || undefined
       : this.isInline()
-      ? this.buildColClass('input') || undefined
-      : undefined;
+        ? this.buildColClass('input') || undefined
+        : undefined;
 
     return (
       <div class={`plumage${outerClass}`}>

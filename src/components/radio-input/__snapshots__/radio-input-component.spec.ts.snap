@@ -6,7 +6,7 @@ exports[`radio-input-component a11y overrides: aria-label used when no labelTxt 
     <div class="form-group radios">
       <div class="form-check">
         <input aria-label="Accept terms" class="form-check-input" id="single-a11y" name="singleA11y" type="radio" value="">
-        <label class="form-check-label" htmlfor="single-a11y" id="radio-single-label-singleA11y"></label>
+        <label class="form-check-label" for="single-a11y" id="radio-single-label-singleA11y"></label>
       </div>
     </div>
   </div>
@@ -27,13 +27,13 @@ exports[`radio-input-component removes validation message when an option is sele
         <div class="form-group">
           <div class="form-check">
             <input checked="" class="form-check-input" id="radio-x" name="group2" required="" type="radio" value="x">
-            <label class="form-check-label" htmlfor="radio-x">
+            <label class="form-check-label" for="radio-x">
               X
             </label>
           </div>
           <div class="form-check">
             <input class="form-check-input" id="radio-y" name="group2" required="" type="radio" value="y">
-            <label class="form-check-label" htmlfor="radio-y">
+            <label class="form-check-label" for="radio-y">
               Y
             </label>
           </div>
@@ -55,13 +55,13 @@ exports[`radio-input-component renders radio group with options (Basic styling) 
         <div class="form-group">
           <div class="basic-control basic-radio">
             <input class="basic-control-input" id="radio-alpha" name="customGroup" type="radio" value="alpha">
-            <label class="basic-control-label" htmlfor="radio-alpha">
+            <label class="basic-control-label" for="radio-alpha">
               Alpha
             </label>
           </div>
           <div class="basic-control basic-radio">
             <input class="basic-control-input" id="radio-beta" name="customGroup" type="radio" value="beta">
-            <label class="basic-control-label" htmlfor="radio-beta">
+            <label class="basic-control-label" for="radio-beta">
               Beta
             </label>
           </div>
@@ -83,19 +83,19 @@ exports[`radio-input-component renders radio group with options (Bootstrap styli
         <div class="form-group">
           <div class="form-check">
             <input class="form-check-input" id="radio-one" name="group" type="radio" value="one">
-            <label class="form-check-label" htmlfor="radio-one">
+            <label class="form-check-label" for="radio-one">
               Option One
             </label>
           </div>
           <div class="form-check">
             <input checked="" class="form-check-input" id="radio-two" name="group" type="radio" value="two">
-            <label class="form-check-label" htmlfor="radio-two">
+            <label class="form-check-label" for="radio-two">
               Option Two
             </label>
           </div>
           <div class="form-check">
             <input class="form-check-input" disabled="" id="radio-three" name="group" type="radio" value="three">
-            <label class="form-check-label" htmlfor="radio-three">
+            <label class="form-check-label" for="radio-three">
               Option Three
             </label>
           </div>
@@ -112,7 +112,7 @@ exports[`radio-input-component renders single radio (Basic styling) 1`] = `
     <div class="form-group radios">
       <div class="basic-control basic-radio">
         <input aria-labelledby="radio-single-label-basic" class="basic-control-input" id="basic-radio" name="basic" type="radio" value="">
-        <label class="basic-control-label" htmlfor="basic-radio" id="radio-single-label-basic">
+        <label class="basic-control-label" for="basic-radio" id="radio-single-label-basic">
           Basic Radio
         </label>
       </div>
@@ -127,7 +127,7 @@ exports[`radio-input-component renders single radio (Bootstrap styling) with acc
     <div class="form-group radios">
       <div class="form-check">
         <input aria-labelledby="radio-single-label-test" class="form-check-input" id="single-radio" name="test" type="radio" value="">
-        <label class="form-check-label" htmlfor="single-radio" id="radio-single-label-test">
+        <label class="form-check-label" for="single-radio" id="radio-single-label-test">
           Single Radio
         </label>
       </div>
@@ -150,13 +150,13 @@ exports[`radio-input-component shows validation message when no selection is mad
         <div class="form-group">
           <div class="form-check">
             <input aria-describedby="radio-group-error-group1" aria-invalid="true" class="form-check-input" id="radio-x" name="group1" required="" type="radio" value="x">
-            <label class="form-check-label" htmlfor="radio-x">
+            <label class="form-check-label" for="radio-x">
               X
             </label>
           </div>
           <div class="form-check">
             <input aria-describedby="radio-group-error-group1" aria-invalid="true" class="form-check-input" id="radio-y" name="group1" required="" type="radio" value="y">
-            <label class="form-check-label" htmlfor="radio-y">
+            <label class="form-check-label" for="radio-y">
               Y
             </label>
           </div>

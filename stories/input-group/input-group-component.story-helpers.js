@@ -1,38 +1,49 @@
 // File: src/stories/input-group-component/input-group-component.story-helpers.js
 
-export const normalize = (value) => {
+export const normalize = value => {
   if (value === '' || value == null) return undefined;
   if (value === true) return true;
   if (value === false) return false;
   return value;
 };
 
-export const esc = (s) =>
+export const esc = s =>
   String(s)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 
-export const buildDocsHtml = (args) => {
+export const buildDocsHtml = args => {
   const a = { ...args };
 
-  const usePrependSlot = !!a.otherContent && !!a.prepend;
-  const useAppendSlot = !!a.otherContent && !!a.append;
-
   const attrs = [
-    ['append', !!a.append],
-    ['prepend', !!a.prepend],
+    ['has-append', !!a.append],
+    ['has-prepend', !!a.prepend],
     ['disabled', !!a.disabled],
     ['label-hidden', !!a.labelHidden],
-    ['other-content', !!a.otherContent],
     ['required', !!a.required],
     ['validation', !!a.validation],
 
-    ['append-icon', useAppendSlot ? undefined : normalize(a.appendIcon)],
+    ['append-icon', normalize(a.appendIcon)],
     ['append-id', normalize(a.appendId)],
-    ['prepend-icon', usePrependSlot ? undefined : normalize(a.prependIcon)],
+    ['append-button-id', normalize(a.appendButtonId)],
+    ['append-text', normalize(a.appendText)],
+    ['append-button', !!a.appendButton],
+    ['append-button-type', normalize(a.appendButtonType)],
+    ['append-button-variant', normalize(a.appendButtonVariant)],
+    ['append-aria-label', normalize(a.appendAriaLabel)],
+
+    ['prepend-icon', normalize(a.prependIcon)],
     ['prepend-id', normalize(a.prependId)],
+    ['prepend-button-id', normalize(a.prependButtonId)],
+    ['prepend-text', normalize(a.prependText)],
+    ['prepend-button', !!a.prependButton],
+    ['prepend-button-type', normalize(a.prependButtonType)],
+    ['prepend-button-variant', normalize(a.prependButtonVariant)],
+    ['prepend-aria-label', normalize(a.prependAriaLabel)],
+
+    ['form-id', normalize(a.formId)],
     ['form-layout', normalize(a.formLayout)],
     ['size', normalize(a.size)],
     ['type', normalize(a.type)],
@@ -55,17 +66,9 @@ export const buildDocsHtml = (args) => {
     .map(([k, v]) => (v === true ? k : `${k}="${esc(v)}"`))
     .join(' ');
 
-  const openTag = attrStr ? `<input-group-component ${attrStr}>` : '<input-group-component>';
-
-  const slotLines = [];
-  if (usePrependSlot) {
-    slotLines.push(`  <button-component slot="prepend" type="button" variant="secondary">Go</button-component>`);
-  }
-  if (useAppendSlot) {
-    slotLines.push(`  <button-component slot="append" type="button" variant="secondary">Go</button-component>`);
-  }
-
-  return [openTag, ...slotLines, '</input-group-component>'].join('\n');
+  return attrStr
+    ? `<input-group-component ${attrStr}></input-group-component>`
+    : '<input-group-component></input-group-component>';
 };
 
 export const boolAttr = (name, on) => (on ? ` ${name}` : '');
@@ -75,23 +78,32 @@ export const attr = (name, val) => {
   return v === undefined || v === false ? '' : v === true ? ` ${name}` : ` ${name}="${esc(v)}"`;
 };
 
-export const template = (args) => {
-  const usePrependSlot = !!args.otherContent && !!args.prepend;
-  const useAppendSlot = !!args.otherContent && !!args.append;
-
+export const template = args => {
   return `
 <input-group-component
-${boolAttr('append', !!args.append)}
-${boolAttr('prepend', !!args.prepend)}
+${boolAttr('has-append', !!args.append)}
+${boolAttr('has-prepend', !!args.prepend)}
 ${boolAttr('disabled', !!args.disabled)}
 ${boolAttr('label-hidden', !!args.labelHidden)}
-${boolAttr('other-content', !!args.otherContent)}
 ${boolAttr('required', !!args.required)}
 ${boolAttr('validation', !!args.validation)}
-${useAppendSlot ? '' : attr('append-icon', args.appendIcon)}
+${attr('append-icon', args.appendIcon)}
 ${attr('append-id', args.appendId)}
-${usePrependSlot ? '' : attr('prepend-icon', args.prependIcon)}
+${attr('append-button-id', args.appendButtonId)}
+${attr('append-text', args.appendText)}
+${boolAttr('append-button', !!args.appendButton)}
+${attr('append-button-type', args.appendButtonType)}
+${attr('append-button-variant', args.appendButtonVariant)}
+${attr('append-aria-label', args.appendAriaLabel)}
+${attr('prepend-icon', args.prependIcon)}
 ${attr('prepend-id', args.prependId)}
+${attr('prepend-button-id', args.prependButtonId)}
+${attr('prepend-text', args.prependText)}
+${boolAttr('prepend-button', !!args.prependButton)}
+${attr('prepend-button-type', args.prependButtonType)}
+${attr('prepend-button-variant', args.prependButtonVariant)}
+${attr('prepend-aria-label', args.prependAriaLabel)}
+${attr('form-id', args.formId)}
 ${attr('form-layout', args.formLayout)}
 ${attr('size', args.size)}
 ${attr('type', args.type)}
@@ -108,8 +120,6 @@ ${attr('input-cols', args.inputCols)}
 ${attr('icon', args.icon)}
 ${attr('validation-message', args.validationMessage)}
 >
-${usePrependSlot ? `<button-component slot="prepend" type="button" variant="secondary">Go</button-component>` : ''}
-${useAppendSlot ? `<button-component slot="append" type="button" variant="secondary">Go</button-component>` : ''}
 </input-group-component>
 `;
 };
@@ -136,7 +146,7 @@ export function escAttr(v) {
 
 export function resolveIdsWithin(host, ids) {
   const res = {};
-  ids.forEach((id) => {
+  ids.forEach(id => {
     const node = host.querySelector(`[id="${escAttr(id)}"]`);
     res[id] = !!node;
   });
@@ -148,6 +158,7 @@ export function snapshotA11y(host) {
   const label = host.querySelector('label');
   const feedback = host.querySelector('.invalid-feedback');
   const group = host.querySelector('.input-group');
+  const nativeButtons = Array.from(host.querySelectorAll('.prepend-btn button, .append-btn button'));
 
   const describedByIds = input ? splitIds(input.getAttribute('aria-describedby')) : [];
   const labelledByIds = input ? splitIds(input.getAttribute('aria-labelledby')) : [];
@@ -181,6 +192,14 @@ export function snapshotA11y(host) {
           role: group.getAttribute('role') || '',
         }
       : null,
+    affixButtons: nativeButtons.map(button => ({
+      tag: button.tagName.toLowerCase(),
+      id: button.getAttribute('id') || '',
+      type: button.getAttribute('type') || '',
+      class: button.getAttribute('class') || '',
+      text: (button.textContent || '').trim(),
+      ...pickAttrs(button, ['aria-label', 'disabled']),
+    })),
     validation: feedback
       ? {
           tag: feedback.tagName.toLowerCase(),
@@ -208,18 +227,32 @@ export function buildEl(args) {
     else el.setAttribute(name, String(n));
   };
 
-  setBool('append', !!args.append);
-  setBool('prepend', !!args.prepend);
+  setBool('has-append', !!args.append);
+  setBool('has-prepend', !!args.prepend);
   setBool('disabled', !!args.disabled);
   setBool('label-hidden', !!args.labelHidden);
-  setBool('other-content', !!args.otherContent);
   setBool('required', !!args.required);
   setBool('validation', !!args.validation);
 
   set('append-icon', args.appendIcon);
   set('append-id', args.appendId);
+  set('append-button-id', args.appendButtonId);
+  set('append-text', args.appendText);
+  setBool('append-button', !!args.appendButton);
+  set('append-button-type', args.appendButtonType);
+  set('append-button-variant', args.appendButtonVariant);
+  set('append-aria-label', args.appendAriaLabel);
+
   set('prepend-icon', args.prependIcon);
   set('prepend-id', args.prependId);
+  set('prepend-button-id', args.prependButtonId);
+  set('prepend-text', args.prependText);
+  setBool('prepend-button', !!args.prependButton);
+  set('prepend-button-type', args.prependButtonType);
+  set('prepend-button-variant', args.prependButtonVariant);
+  set('prepend-aria-label', args.prependAriaLabel);
+
+  set('form-id', args.formId);
   set('form-layout', args.formLayout);
   set('size', args.size);
   set('type', args.type);
@@ -235,24 +268,6 @@ export function buildEl(args) {
   set('input-cols', args.inputCols);
   set('icon', args.icon);
   set('validation-message', args.validationMessage);
-
-  if (args.otherContent && args.prepend) {
-    const btn = document.createElement('button-component');
-    btn.setAttribute('slot', 'prepend');
-    btn.setAttribute('type', 'button');
-    btn.setAttribute('variant', 'secondary');
-    btn.textContent = 'Go';
-    el.appendChild(btn);
-  }
-
-  if (args.otherContent && args.append) {
-    const btn = document.createElement('button-component');
-    btn.setAttribute('slot', 'append');
-    btn.setAttribute('type', 'button');
-    btn.setAttribute('variant', 'secondary');
-    btn.textContent = 'Go';
-    el.appendChild(btn);
-  }
 
   return el;
 }

@@ -88,7 +88,7 @@ describe('<date-range-time-picker-component>', () => {
           </svg>
         </button>
         <div class="selectors">
-          <label class="sr-only visually-hidden" htmlfor="date-range-time-1-4fzz-months" id="date-range-time-1-4fzz-month-label">
+          <label class="sr-only visually-hidden" for="date-range-time-1-4fzz-months" id="date-range-time-1-4fzz-month-label">
             Select month
           </label>
           <select aria-labelledby="date-range-time-1-4fzz-month-label" class="form-control form-select months select-sm" id="date-range-time-1-4fzz-months">
@@ -129,7 +129,7 @@ describe('<date-range-time-picker-component>', () => {
               December
             </option>
           </select>
-          <label class="sr-only visually-hidden" htmlfor="date-range-time-1-4fzz-year" id="date-range-time-1-4fzz-year-label">
+          <label class="sr-only visually-hidden" for="date-range-time-1-4fzz-year" id="date-range-time-1-4fzz-year-label">
             Select year
           </label>
           <select aria-labelledby="date-range-time-1-4fzz-year-label" class="form-control form-select select-sm years" id="date-range-time-1-4fzz-year">
@@ -730,7 +730,7 @@ describe('<date-range-time-picker-component>', () => {
               <span class="start-date">
                 N/A
               </span>
-              <label class="sr-only visually-hidden" htmlfor="date-range-time-1-4fzz-start-time" id="date-range-time-1-4fzz-start-time-label">
+              <label class="sr-only visually-hidden" for="date-range-time-1-4fzz-start-time" id="date-range-time-1-4fzz-start-time-label">
                 Start time
               </label>
               <input aria-describedby="date-range-time-1-4fzz-warning" aria-labelledby="date-range-time-1-4fzz-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" id="date-range-time-1-4fzz-start-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
@@ -740,7 +740,7 @@ describe('<date-range-time-picker-component>', () => {
               <span class="end-date">
                 N/A
               </span>
-              <label class="sr-only visually-hidden" htmlfor="date-range-time-1-4fzz-end-time" id="date-range-time-1-4fzz-end-time-label">
+              <label class="sr-only visually-hidden" for="date-range-time-1-4fzz-end-time" id="date-range-time-1-4fzz-end-time-label">
                 End time
               </label>
               <input aria-describedby="date-range-time-1-4fzz-warning" aria-labelledby="date-range-time-1-4fzz-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="date-range-time-1-4fzz-end-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
@@ -775,7 +775,7 @@ describe('<date-range-time-picker-component>', () => {
   <div class="date-picker">
     <div class="dropdown-wrapper">
       <div class="form-group form-input-group-basic">
-        <label class="form-control-label" htmlfor="date-range-time" id="date-range-time-2-4fzz-label">
+        <label class="form-control-label" for="date-range-time" id="date-range-time-2-4fzz-label">
           <span>
             Date and Time Picker
           </span>
@@ -810,7 +810,7 @@ describe('<date-range-time-picker-component>', () => {
                   </svg>
                 </button>
                 <div class="selectors">
-                  <label class="sr-only visually-hidden" htmlfor="date-range-time-2-4fzz-months" id="date-range-time-2-4fzz-month-label">
+                  <label class="sr-only visually-hidden" for="date-range-time-2-4fzz-months" id="date-range-time-2-4fzz-month-label">
                     Select month
                   </label>
                   <select aria-labelledby="date-range-time-2-4fzz-month-label" class="form-control form-select months select-sm" id="date-range-time-2-4fzz-months">
@@ -851,7 +851,7 @@ describe('<date-range-time-picker-component>', () => {
                       December
                     </option>
                   </select>
-                  <label class="sr-only visually-hidden" htmlfor="date-range-time-2-4fzz-year" id="date-range-time-2-4fzz-year-label">
+                  <label class="sr-only visually-hidden" for="date-range-time-2-4fzz-year" id="date-range-time-2-4fzz-year-label">
                     Select year
                   </label>
                   <select aria-labelledby="date-range-time-2-4fzz-year-label" class="form-control form-select select-sm years" id="date-range-time-2-4fzz-year">
@@ -1452,7 +1452,7 @@ describe('<date-range-time-picker-component>', () => {
                       <span class="start-date">
                         N/A
                       </span>
-                      <label class="sr-only visually-hidden" htmlfor="date-range-time-2-4fzz-start-time" id="date-range-time-2-4fzz-start-time-label">
+                      <label class="sr-only visually-hidden" for="date-range-time-2-4fzz-start-time" id="date-range-time-2-4fzz-start-time-label">
                         Start time
                       </label>
                       <input aria-describedby="date-range-time-2-4fzz-warning" aria-labelledby="date-range-time-2-4fzz-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" id="date-range-time-2-4fzz-start-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
@@ -1462,7 +1462,7 @@ describe('<date-range-time-picker-component>', () => {
                       <span class="end-date">
                         N/A
                       </span>
-                      <label class="sr-only visually-hidden" htmlfor="date-range-time-2-4fzz-end-time" id="date-range-time-2-4fzz-end-time-label">
+                      <label class="sr-only visually-hidden" for="date-range-time-2-4fzz-end-time" id="date-range-time-2-4fzz-end-time-label">
                         End time
                       </label>
                       <input aria-describedby="date-range-time-2-4fzz-warning" aria-labelledby="date-range-time-2-4fzz-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="date-range-time-2-4fzz-end-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
@@ -1483,7 +1483,7 @@ describe('<date-range-time-picker-component>', () => {
     </div>
   </div>
 </date-range-time-picker-component>
-`) /* keep your existing snapshot here */ /* keep your existing snapshot here */;
+`) /* keep your existing snapshot here */ /* keep your existing snapshot here */ /* keep your existing snapshot here */ /* keep your existing snapshot here */;
   });
 
   test('REGRESSION: picker-only should not shove summary into Start Time input', async () => {

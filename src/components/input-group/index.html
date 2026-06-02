@@ -9,8 +9,8 @@
     <script nomodule src="../../build/stencil-component-library.js"></script>
 
     <link rel="stylesheet" href="../../build/stencil-component-library.css" />
-
     <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="../../../node_modules/@fortawesome/fontawesome-free/css/all.min.css" />
 
     <style>
       .cwrapper {
@@ -29,8 +29,6 @@
     </style>
   </head>
   <body>
-    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
-     -->
     <app-wrapper>
       <div class="cwrapper">
         <form-component>
@@ -40,42 +38,55 @@
             label-size="lg"
             size="sm"
             input-id="amount1"
-            other-content
-            append
-            prepend
+            has-append
+            has-prepend
             prepend-icon="fa-solid fa-dollar-sign"
+            append-button
+            append-button-id="amounta-btn"
+            append-text="Go"
+            append-button-variant="secondary"
             form-layout="horizontal"
             label-align="right"
-          >
-            <button-component slot="append" type="button" variant="secondary">Go</button-component>
-          </input-group-component>
+          ></input-group-component>
 
-          <input-group-component slot="formField" label="Amount" input-id="amount" other-content append form-layout="horizontal" label-align="right">
-            <button-component slot="append" type="button" variant="secondary">Go</button-component>
-          </input-group-component>
+          <input-group-component
+            slot="formField"
+            label="Amount"
+            input-id="amount"
+            has-append
+            append-button
+            append-button-id="amountb-btn"
+            append-text="Go"
+            append-button-variant="secondary"
+            form-layout="horizontal"
+            label-align="right"
+          ></input-group-component>
 
           <input-group-component
             slot="formField"
             label="Amount"
             size="lg"
             input-id="amount2"
-            append
+            has-append
             append-icon="fa-solid fa-dollar-sign"
-            prepend
+            has-prepend
             prepend-icon="fa-solid fa-dollar-sign"
             form-layout="horizontal"
             label-align="right"
-          >
-          </input-group-component>
+          ></input-group-component>
 
-          <input-group-component slot="formField" label="Search" input-id="q" append prepend other-content>
-          <button-component slot="prepend" type="button" variant="secondary">Go</button-component>
-            <button-component slot="append" type="button" variant="secondary">Go</button-component>
-          </input-group-component>
+          <input-group-component
+            slot="formField"
+            label="Search"
+            input-id="search-q"
+            has-append
+            append-button
+            append-text="Go"
+            append-id="search-affix-wrap"
+            append-button-id="search-affix-btn"
+          ></input-group-component>
         </form-component>
       </div>
     </app-wrapper>
-
-    <script type="module"></script>
   </body>
 </html>

@@ -1,21 +1,17 @@
+// File: src/stories/plumage-input-group.stories.js
+
 import DocsPage from './plumage-input-group.docs.mdx';
 import {
   DocsWrapStyles,
   buildDocsHtml,
+  buildEl,
   getSnapshot,
-  renderComponent as Template,
 } from './plumage-input-group.story-helpers.js';
-
-/* ------------------------------------------------------------------
- * Storybook: Plumage Input Group (Web Component)
- * Goal: Match input-group-component.stories.js exactly (same props,
- *       same args, same stories) — only the tag + styling differ.
- * Component tag: <plumage-input-group-component>
- * ------------------------------------------------------------------ */
 
 export default {
   title: 'Form/Plumage Input Group',
   tags: ['autodocs'],
+  render: args => buildEl(args),
 
   decorators: [
     Story => {
@@ -24,12 +20,12 @@ export default {
 
       const out = Story();
 
-      if (typeof out === 'string') {
+      if (out instanceof Node) {
+        wrap.appendChild(out);
+      } else if (typeof out === 'string') {
         const mount = document.createElement('div');
         mount.innerHTML = out;
         wrap.appendChild(mount);
-      } else if (out instanceof Node) {
-        wrap.appendChild(out);
       } else {
         const mount = document.createElement('div');
         mount.textContent = String(out ?? '');
@@ -46,7 +42,7 @@ export default {
       page: DocsPage,
       description: {
         component:
-          'The `plumage-input-group-component` is a Plumage-styled wrapper for an input field that allows you to easily add prepend and append content, such as icons or buttons. It also supports various form layouts and validation states.',
+          'The `plumage-input-group-component` is a Plumage-styled wrapper for an input field that allows you to add prepend and append content such as icons, text, or native buttons. It also supports various form layouts, accessibility hooks, and validation states.',
       },
       source: {
         language: 'html',
@@ -81,7 +77,7 @@ export default {
     },
     value: {
       control: 'text',
-      description: 'The value of the input field',
+      description: 'The value of the input field.',
       table: { category: 'Input Attributes' },
     },
 
@@ -89,7 +85,7 @@ export default {
       control: 'text',
       name: 'aria-label',
       table: { category: 'Accessibility' },
-      description: 'Optional accessible name (used only when aria-labelledby is not set).',
+      description: 'Optional accessible name. Used only when aria-labelledby is not set.',
     },
     ariaLabelledby: {
       control: 'text',
@@ -102,28 +98,65 @@ export default {
       name: 'aria-describedby',
       table: { category: 'Accessibility' },
       description:
-        'Optional external description idref(s). Component appends prepend/append ids (when used) and validation id (when invalid).',
+        'Optional external description idref(s). Component appends prepend/append ids and validation id when applicable.',
     },
 
     append: {
       control: 'boolean',
+      name: 'has-append',
       table: { category: 'Layout', defaultValue: { summary: true } },
-      description:
-        'When enabled, the append slot is available for adding content after the input field. This can be used for buttons, icons, or other elements that should appear on the right side of the input.',
+      description: 'When enabled, renders content after the input field.',
     },
     appendIcon: {
       control: 'text',
       name: 'append-icon',
       table: { category: 'Layout' },
-      description:
-        'Specify an icon class (e.g., from Font Awesome) to display an icon on the right side of the input field. This is a quick way to add an icon without needing to use the append slot.',
+      description: 'Specify an icon class to display an icon on the append side.',
     },
     appendId: {
       control: 'text',
       name: 'append-id',
       table: { category: 'Layout' },
-      description: 'ID for the append element, used for accessibility or targeting with JavaScript.',
+      description: 'ID for the append wrapper element.',
     },
+    appendButtonId: {
+      control: 'text',
+      name: 'append-button-id',
+      table: { category: 'Layout' },
+      description: 'ID applied directly to the native append button when append-button is enabled.',
+    },
+    appendText: {
+      control: 'text',
+      name: 'append-text',
+      table: { category: 'Layout' },
+      description: 'Text content rendered on the append side when no icon is used.',
+    },
+    appendButton: {
+      control: 'boolean',
+      name: 'append-button',
+      table: { category: 'Layout', defaultValue: { summary: false } },
+      description: 'Render the append side as a native button.',
+    },
+    appendButtonType: {
+      control: { type: 'select' },
+      options: ['button', 'submit', 'reset'],
+      name: 'append-button-type',
+      table: { category: 'Layout' },
+      description: 'Native button type used when append-button is enabled.',
+    },
+    appendButtonVariant: {
+      control: 'text',
+      name: 'append-button-variant',
+      table: { category: 'Layout' },
+      description: 'Bootstrap-style button variant used when append-button is enabled.',
+    },
+    appendAriaLabel: {
+      control: 'text',
+      name: 'append-aria-label',
+      table: { category: 'Layout' },
+      description: 'Accessible label applied to the append button when rendered as a button.',
+    },
+
     formId: {
       control: 'text',
       name: 'form-id',
@@ -135,13 +168,13 @@ export default {
       options: ['', 'horizontal', 'inline'],
       name: 'form-layout',
       description:
-        'Form layout variant. "Horizontal" uses a grid layout with label and input side by side. "Inline" is similar but uses auto-width columns for a more compact display.',
+        'Form layout variant. "horizontal" uses a grid layout with label and input side by side. "inline" uses compact inline spacing.',
       table: { category: 'Layout' },
     },
     icon: {
       control: 'text',
       table: { category: 'Layout' },
-      description: 'Specify an icon class (e.g., from Font Awesome) to display an icon inside the input group.',
+      description: 'Global icon class used as a fallback on prepend/append when side-specific icons are not provided.',
     },
     inputCol: {
       control: 'number',
@@ -150,21 +183,21 @@ export default {
       step: 1,
       name: 'input-col',
       table: { category: 'Layout' },
-      description: 'Number of grid columns for the input (horizontal layout only)',
+      description: 'Number of grid columns for the input (horizontal layout only).',
     },
     inputCols: {
       control: 'text',
       table: { category: 'Layout' },
       name: 'input-cols',
-      description: 'e.g. "col-sm-9 col-md-8" or "xs-12 sm-6 md-8"',
+      description: 'e.g. "col-sm-9 col-md-8" or "xs-12 sm-6 md-8".',
     },
-    label: { control: 'text', table: { category: 'Layout' }, description: 'Label text for the input' },
+    label: { control: 'text', table: { category: 'Layout' }, description: 'Label text for the input.' },
     labelAlign: {
       control: { type: 'select' },
       options: ['', 'right'],
       name: 'label-align',
       table: { category: 'Layout' },
-      description: 'Alignment for the label text (only applies when label is visible)',
+      description: 'Alignment for the label text (only applies when label is visible).',
     },
     labelCol: {
       control: 'number',
@@ -173,45 +206,83 @@ export default {
       step: 1,
       name: 'label-col',
       table: { category: 'Layout' },
-      description: 'Number of grid columns for the label (horizontal layout only)',
+      description: 'Number of grid columns for the label (horizontal layout only).',
     },
     labelCols: {
       control: 'text',
       table: { category: 'Layout' },
       name: 'label-cols',
-      description: 'e.g. "col-sm-3 col-md-4" or "xs-12 sm-6 md-4"',
+      description: 'e.g. "col-sm-3 col-md-4" or "xs-12 sm-6 md-4".',
     },
     labelHidden: {
       control: 'boolean',
       name: 'label-hidden',
       table: { category: 'Layout', defaultValue: { summary: false } },
-      description: 'Visually hide the label (but keep it accessible to screen readers)',
+      description: 'Visually hide the label while keeping it accessible to screen readers.',
     },
-    labelSize: { control: { type: 'select' }, name: 'label-size', options: ['base', 'xs', 'sm', 'lg'], table: { category: 'Layout' } },
-    otherContent: {
-      control: 'boolean',
-      name: 'other-content',
-      table: { category: 'Layout', defaultValue: { summary: false } },
-      description:
-        'When enabled, the story will include example content in the prepend and append slots to demonstrate how they work.',
+    labelSize: {
+      control: { type: 'select' },
+      name: 'label-size',
+      options: ['base', 'xs', 'sm', 'lg'],
+      table: { category: 'Layout' },
     },
+
     prepend: {
       control: 'boolean',
+      name: 'has-prepend',
       table: { category: 'Layout', defaultValue: { summary: false } },
-      description: 'When enabled, the prepend slot is available for adding content before the input field.',
+      description: 'When enabled, renders content before the input field.',
     },
     prependIcon: {
       control: 'text',
       name: 'prepend-icon',
       table: { category: 'Layout' },
-      description: 'Specify an icon class to display an icon inside the prepend slot.',
+      description: 'Specify an icon class to display an icon on the prepend side.',
     },
     prependId: {
       control: 'text',
       name: 'prepend-id',
       table: { category: 'Layout' },
-      description: 'ID for the prepend element, used for accessibility or targeting with JavaScript.',
+      description: 'ID for the prepend wrapper element.',
     },
+    prependButtonId: {
+      control: 'text',
+      name: 'prepend-button-id',
+      table: { category: 'Layout' },
+      description: 'ID applied directly to the native prepend button when prepend-button is enabled.',
+    },
+    prependText: {
+      control: 'text',
+      name: 'prepend-text',
+      table: { category: 'Layout' },
+      description: 'Text content rendered on the prepend side when no icon is used.',
+    },
+    prependButton: {
+      control: 'boolean',
+      name: 'prepend-button',
+      table: { category: 'Layout', defaultValue: { summary: false } },
+      description: 'Render the prepend side as a native button.',
+    },
+    prependButtonType: {
+      control: { type: 'select' },
+      options: ['button', 'submit', 'reset'],
+      name: 'prepend-button-type',
+      table: { category: 'Layout' },
+      description: 'Native button type used when prepend-button is enabled.',
+    },
+    prependButtonVariant: {
+      control: 'text',
+      name: 'prepend-button-variant',
+      table: { category: 'Layout' },
+      description: 'Bootstrap-style button variant used when prepend-button is enabled.',
+    },
+    prependAriaLabel: {
+      control: 'text',
+      name: 'prepend-aria-label',
+      table: { category: 'Layout' },
+      description: 'Accessible label applied to the prepend button when rendered as a button.',
+    },
+
     size: {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
@@ -219,220 +290,292 @@ export default {
       description: 'Size variant.',
     },
 
-    plumageSearch: { control: 'boolean', name: 'plumage-search', table: { category: 'Plumage Specific' } },
+    plumageSearch: {
+      control: 'boolean',
+      name: 'plumage-search',
+      table: { category: 'Plumage Specific' },
+    },
 
     required: {
       control: 'boolean',
       name: 'required',
       table: { defaultValue: { summary: false }, category: 'Validation' },
-      description: 'Mark the input as required',
+      description: 'Mark the input as required.',
     },
     validation: {
       control: 'boolean',
       name: 'validation',
       table: { category: 'Validation', defaultValue: { summary: false } },
-      description: 'Enable or disable validation state',
+      description: 'Enable or disable validation state.',
     },
     validationMessage: {
       control: 'text',
       name: 'validation-message',
       table: { category: 'Validation' },
-      description: 'Message to display when validation fails',
+      description: 'Message to display when validation fails.',
     },
   },
 };
 
-export const Basic = Template.bind({});
-Basic.args = {
-  label: 'Amount',
-  inputId: 'amount-play',
-  placeholder: 'Enter amount',
-  size: '',
-  formId: '',
-  formLayout: '',
-  labelHidden: false,
-  labelAlign: '',
-  labelSize: 'sm',
-  required: false,
-  disabled: false,
+export const Basic = {
+  name: 'Basic Usage',
+  args: {
+    label: 'Amount',
+    inputId: 'amount-play',
+    placeholder: 'Enter amount',
+    size: '',
+    formId: '',
+    formLayout: '',
+    labelHidden: false,
+    labelAlign: '',
+    labelSize: 'sm',
+    required: false,
+    disabled: false,
 
-  prepend: false,
-  append: true,
-  otherContent: false,
-  icon: '',
-  prependIcon: '',
-  appendIcon: 'fa-solid fa-dollar-sign',
-  appendId: '',
-  prependId: '',
+    prepend: false,
+    append: true,
+    icon: '',
+    prependIcon: '',
+    appendIcon: 'fa-solid fa-dollar-sign',
+    prependId: '',
+    appendId: '',
+    prependButtonId: '',
+    appendButtonId: '',
+    prependText: '',
+    appendText: '',
+    prependButton: false,
+    appendButton: false,
+    prependButtonType: 'button',
+    appendButtonType: 'button',
+    prependButtonVariant: 'secondary',
+    appendButtonVariant: 'secondary',
+    prependAriaLabel: '',
+    appendAriaLabel: '',
 
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
 
-  validation: false,
-  validationMessage: '',
-  value: '',
+    validation: false,
+    validationMessage: '',
+    value: '',
 
-  labelCols: '',
-  inputCols: '',
-  labelCol: '',
-  inputCol: '',
-  type: 'text',
-};
-Basic.storyName = 'Basic Usage';
-Basic.parameters = {
-  docs: {
-    description: {
-      story: 'This is a basic example of the input group component with an append icon. You can customize the label, placeholder, and icons using the controls.',
+    labelCols: '',
+    inputCols: '',
+    labelCol: 2,
+    inputCol: 10,
+    type: 'text',
+    plumageSearch: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'This is a basic example of the Plumage input group component with an append icon.',
+      },
     },
   },
 };
 
-export const RequiredWithValidation = Template.bind({});
-RequiredWithValidation.storyName = 'Required + Validation';
-RequiredWithValidation.args = {
-  ...Basic.args,
-  required: true,
-  validation: true,
-  validationMessage: 'Please provide a value.',
-  value: '',
-  appendIcon: 'fa-solid fa-dollar-sign',
-  append: true,
-  prependIcon: '',
-  prepend: false,
-};
-RequiredWithValidation.parameters = {
-  docs: {
-    description: {
-      story:
-        'This example demonstrates the required and validation states. The input is marked as required, and validation is enabled. If you try to submit without entering a value, the validation message will appear.',
+export const RequiredWithValidation = {
+  name: 'Required + Validation',
+  args: {
+    ...Basic.args,
+    required: true,
+    validation: true,
+    validationMessage: 'Please provide a value.',
+    value: '',
+    appendIcon: 'fa-solid fa-dollar-sign',
+    append: true,
+    prependIcon: '',
+    prepend: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'This example demonstrates the required and validation states.',
+      },
     },
   },
 };
 
-export const DisabledState = Template.bind({});
-DisabledState.storyName = 'Disabled';
-DisabledState.args = {
-  ...Basic.args,
-  inputId: 'amount-disabled',
-  label: 'Amount',
-  disabled: true,
-  prepend: false,
-  append: true,
-  otherContent: false,
-  prependIcon: '',
-  appendIcon: 'fa-solid fa-dollar-sign',
-};
-DisabledState.parameters = {
-  docs: {
-    description: {
-      story:
-        'This example shows the disabled state of the input group. When disabled, the input and any content in the prepend and append slots will be non-interactive and styled accordingly.',
+export const DisabledState = {
+  name: 'Disabled',
+  args: {
+    ...Basic.args,
+    inputId: 'amount-disabled',
+    label: 'Amount',
+    disabled: true,
+    prepend: false,
+    append: true,
+    prependIcon: '',
+    appendIcon: 'fa-solid fa-dollar-sign',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'This example shows the disabled state of the Plumage input group.',
+      },
     },
   },
 };
 
-export const AppendAndPrependWithSlots = Template.bind({});
-AppendAndPrependWithSlots.storyName = 'Append + Prepend (Slots)';
-AppendAndPrependWithSlots.args = {
-  ...Basic.args,
-  inputId: 'amount1',
-  label: 'Amount',
-  prepend: true,
-  append: true,
-  otherContent: true,
-  prependIcon: 'fa-solid fa-dollar-sign',
-  appendIcon: '',
-};
-AppendAndPrependWithSlots.parameters = {
-  docs: {
-    description: {
-      story:
-        'This example shows both prepend and append content using slots. The prepend slot contains a dollar sign icon, and the append slot contains a button. This demonstrates how you can use the slots to add more complex content on either side of the input.',
+export const AppendAndPrependButtons = {
+  name: 'Append + Prepend Buttons',
+  args: {
+    ...Basic.args,
+    inputId: 'amount1',
+    label: 'Amount',
+    prepend: true,
+    append: true,
+    prependIcon: '',
+    appendIcon: '',
+    prependText: 'Go',
+    appendText: 'Go',
+    prependButton: true,
+    appendButton: true,
+    prependButtonVariant: 'secondary',
+    appendButtonVariant: 'secondary',
+    prependButtonId: 'amount1-prepend-btn',
+    appendButtonId: 'amount1-append-btn',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'This example shows both prepend and append rendered as native buttons using the prop-driven API.',
+      },
     },
   },
 };
 
-export const AppendSlotOnly = Template.bind({});
-AppendSlotOnly.storyName = 'Append Slot Only';
-AppendSlotOnly.args = {
-  ...Basic.args,
-  inputId: 'amount-append',
-  prepend: false,
-  append: true,
-  otherContent: true,
-};
-AppendSlotOnly.parameters = {
-  docs: {
-    description: {
-      story:
-        'This example demonstrates using only the append slot. The append slot contains a button, while the prepend side is left empty. This shows how you can choose to use only one of the slots if needed.',
+export const AppendButtonOnly = {
+  name: 'Append Button Only',
+  args: {
+    ...Basic.args,
+    inputId: 'amount-append',
+    prepend: false,
+    append: true,
+    appendIcon: '',
+    appendText: 'Go',
+    appendButton: true,
+    appendButtonVariant: 'secondary',
+    appendButtonId: 'amount-append-btn',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'This example demonstrates using only the append side as a native button.',
+      },
     },
   },
 };
 
-export const PrependSlotOnly = Template.bind({});
-PrependSlotOnly.storyName = 'Prepend Slot Only';
-PrependSlotOnly.args = {
-  ...Basic.args,
-  inputId: 'amount-prepend',
-  prepend: true,
-  append: false,
-  otherContent: true,
-  icon: '',
-  prependIcon: '',
-  appendIcon: '',
-};
-PrependSlotOnly.parameters = {
-  docs: {
-    description: {
-      story:
-        'This example demonstrates using only the prepend slot. The prepend slot contains a dollar sign icon, while the append side is left empty. This shows how you can choose to use only one of the slots if needed.',
+export const PrependButtonOnly = {
+  name: 'Prepend Button Only',
+  args: {
+    ...Basic.args,
+    inputId: 'amount-prepend',
+    prepend: true,
+    append: false,
+    icon: '',
+    prependIcon: '',
+    appendIcon: '',
+    prependText: 'Go',
+    prependButton: true,
+    prependButtonVariant: 'secondary',
+    prependButtonId: 'amount-prepend-btn',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'This example demonstrates using only the prepend side as a native button.',
+      },
     },
   },
 };
 
-export const IconsBothSides = Template.bind({});
-IconsBothSides.storyName = 'Icons on Both Sides (No Slots)';
-IconsBothSides.args = {
-  ...Basic.args,
-  inputId: 'amount2',
-  otherContent: false,
-  prepend: true,
-  append: true,
-  prependIcon: 'fa-solid fa-dollar-sign',
-  appendIcon: 'fa-solid fa-dollar-sign',
-};
-IconsBothSides.parameters = {
-  docs: {
-    description: {
-      story:
-        'This example shows how to use icons on both sides of the input without using the slots. By setting the prependIcon and appendIcon properties, you can easily add icons to either side of the input field.',
+export const IconsBothSides = {
+  name: 'Icons on Both Sides',
+  args: {
+    ...Basic.args,
+    inputId: 'amount2',
+    prepend: true,
+    append: true,
+    prependIcon: 'fa-solid fa-dollar-sign',
+    appendIcon: 'fa-solid fa-dollar-sign',
+    prependText: '',
+    appendText: '',
+    prependButton: false,
+    appendButton: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'This example shows how to use icons on both sides of the input without rendering button content.',
+      },
     },
   },
 };
 
-export const PlumageSearchField = Template.bind({});
-PlumageSearchField.storyName = 'Plumage Search Field';
-PlumageSearchField.args = {
-  ...Basic.args,
-  inputId: 'search1',
-  plumageSearch: true,
-  placeholder: 'Search datasets',
-  prependIcon: '',
-  appendIcon: '',
-  label: '',
-  labelCols: '',
-  inputCols: '',
-  labelCol: '',
-  inputCol: '',
-  validationMessage: '',
+export const TextAffixes = {
+  name: 'Text Affixes',
+  args: {
+    ...Basic.args,
+    label: 'Code',
+    inputId: 'code',
+    prepend: true,
+    append: true,
+    prependIcon: '',
+    appendIcon: '',
+    prependText: '#',
+    appendText: '.js',
+    prependButton: false,
+    appendButton: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'This example demonstrates plain text affixes rendered with the standard input-group-text styling.',
+      },
+    },
+  },
 };
-PlumageSearchField.parameters = {
-  docs: {
-    description: {
-      story:
-        'This example demonstrates the "plumage-search" variant of the input group. When the "plumage-search" attribute is set to true, the component applies specific styles to create a search field appearance, which may include rounded edges and a different background color. This variant is ideal for search inputs.',
+
+export const PlumageSearchField = {
+  name: 'Plumage Search Field',
+  args: {
+    ...Basic.args,
+    inputId: 'search1',
+    plumageSearch: true,
+    placeholder: 'Search datasets',
+    prepend: false,
+    append: false,
+    prependIcon: '',
+    appendIcon: '',
+    prependText: '',
+    appendText: '',
+    prependButton: false,
+    appendButton: false,
+    label: '',
+    labelCols: '',
+    inputCols: '',
+    labelCol: 2,
+    inputCol: 10,
+    validationMessage: '',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'This example demonstrates the `plumage-search` variant of the input group.',
+      },
     },
   },
 };
@@ -449,7 +592,7 @@ export const AccessibilityMatrix = {
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
       <div style="opacity:.8">
-        Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal, validation, and disabled.
+        Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal, validation, disabled, and button affixes.
       </div>
     `;
     wrap.appendChild(header);
@@ -476,11 +619,8 @@ export const AccessibilityMatrix = {
       pre.style.background = '#fafafa';
       pre.textContent = 'Loading…';
 
-      const mount = document.createElement('div');
-      mount.innerHTML = Template({ ...Basic.args, ...args, ...storyArgs });
-      const host = mount.querySelector('plumage-input-group-component');
-
-      demo.appendChild(mount);
+      const host = buildEl({ ...Basic.args, ...args, ...storyArgs });
+      demo.appendChild(host);
 
       const update = async () => {
         if (host?.componentOnReady) {
@@ -511,7 +651,7 @@ export const AccessibilityMatrix = {
         formLayout: '',
         prepend: false,
         append: true,
-        otherContent: false,
+        appendIcon: 'fa-solid fa-dollar-sign',
         validation: false,
         disabled: false,
         value: '',
@@ -523,9 +663,10 @@ export const AccessibilityMatrix = {
         inputId: 'mx-ig-inline',
         label: 'Inline A11y',
         formLayout: 'inline',
-        prepend: false,
+        prepend: true,
         append: true,
-        otherContent: false,
+        prependIcon: 'fa-solid fa-dollar-sign',
+        appendIcon: 'fa-solid fa-dollar-sign',
         validation: false,
         disabled: false,
         value: '',
@@ -541,7 +682,6 @@ export const AccessibilityMatrix = {
         labelCols: 'xs-12 sm-4',
         inputCols: 'xs-12 sm-8',
         prepend: true,
-        otherContent: false,
         prependIcon: 'fa-solid fa-dollar-sign',
         append: true,
         appendIcon: 'fa-solid fa-dollar-sign',
@@ -580,6 +720,24 @@ export const AccessibilityMatrix = {
       }),
     );
 
+    wrap.appendChild(
+      card('Buttons Both Sides', {
+        inputId: 'mx-ig-buttons',
+        label: 'Buttons',
+        prepend: true,
+        append: true,
+        prependText: 'Go',
+        appendText: 'Go',
+        prependButton: true,
+        appendButton: true,
+        prependButtonVariant: 'secondary',
+        appendButtonVariant: 'secondary',
+        prependButtonId: 'mx-ig-buttons-prepend-btn',
+        appendButtonId: 'mx-ig-buttons-append-btn',
+        validation: false,
+      }),
+    );
+
     return wrap;
   },
   parameters: {
@@ -587,7 +745,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Prints computed accessibility wiring for the input: `role` (when present), `aria-labelledby`, `aria-describedby` (including prepend/append ids and validation id), `aria-required`, `aria-invalid`, and `aria-disabled` across default / inline / horizontal, validation, and disabled.',
+          'Prints computed accessibility wiring for the input: `aria-labelledby`, `aria-describedby`, `aria-required`, `aria-invalid`, and `aria-disabled` across default / inline / horizontal, validation, disabled, and button-affix examples.',
       },
       source: {
         language: 'html',

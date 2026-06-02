@@ -1,11 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<input-group-component> horizontal with numeric fallback cols (labelCol/inputCol) snapshots correctly 1`] = `
-<input-group-component append="" form-layout="horizontal" input-col="9" input-id="code" label="Code" label-col="3" prepend="">
-  <!---->
+exports[`<input-group-component> horizontal with numeric fallback cols and prop-driven text affixes snapshots correctly 1`] = `
+<input-group-component append-text=".js" form-layout="horizontal" has-append="" has-prepend="" input-col="9" input-id="code" label="Code" label-col="3" prepend-text="#">
   <div class="horizontal">
     <div class="form-group horizontal row">
-      <label class="col-3 col-form-label form-control-label label-sm no-padding" htmlfor="code" id="code__label">
+      <label class="col-3 col-form-label form-control-label label-sm no-padding" for="code" id="code__label">
         <span>
           Code:
         </span>
@@ -16,15 +15,11 @@ exports[`<input-group-component> horizontal with numeric fallback cols (labelCol
         </div>
         <div class="input-group">
           <span class="input-group-text">
-            <span slot="prepend">
-              #
-            </span>
+            #
           </span>
           <input aria-describedby="code__desc" aria-labelledby="code__label" class="form-control" id="code" name="code" placeholder="Code" type="text" value="">
           <span class="input-group-text">
-            <span slot="append">
-              .js
-            </span>
+            .js
           </span>
         </div>
       </div>
@@ -33,12 +28,11 @@ exports[`<input-group-component> horizontal with numeric fallback cols (labelCol
 </input-group-component>
 `;
 
-exports[`<input-group-component> mixes slot on append and icon on prepend using side-specific props 1`] = `
-<input-group-component append="" input-id="q" label="Search" other-content="" prepend="" prepend-icon="fa-solid fa-magnifying-glass">
-  <!---->
+exports[`<input-group-component> mixes append button and prepend icon using side-specific props 1`] = `
+<input-group-component append-button="" append-button-variant="secondary" append-text="Go" has-append="" has-prepend="" input-id="q" label="Search" prepend-icon="fa-solid fa-magnifying-glass">
   <div>
     <div class="form-group">
-      <label class="form-control-label label-sm" htmlfor="q" id="q__label">
+      <label class="form-control-label label-sm" for="q" id="q__label">
         <span>
           Search
         </span>
@@ -53,7 +47,7 @@ exports[`<input-group-component> mixes slot on append and icon on prepend using 
           </span>
           <input aria-describedby="q__desc" aria-labelledby="q__label" class="form-control" id="q" name="search" placeholder="Search" type="text" value="">
           <span class="append-btn">
-            <button class="btn btn-outline-secondary" slot="append" type="button">
+            <button class="btn btn-secondary" type="button">
               Go
             </button>
           </span>
@@ -66,10 +60,9 @@ exports[`<input-group-component> mixes slot on append and icon on prepend using 
 
 exports[`<input-group-component> renders (stacked) with default props and keeps aria-describedby resolvable 1`] = `
 <input-group-component input-id="user" label="Username">
-  <!---->
   <div>
     <div class="form-group">
-      <label class="form-control-label label-sm" htmlfor="user" id="user__label">
+      <label class="form-control-label label-sm" for="user" id="user__label">
         <span>
           Username
         </span>
@@ -87,12 +80,11 @@ exports[`<input-group-component> renders (stacked) with default props and keeps 
 </input-group-component>
 `;
 
-exports[`<input-group-component> renders horizontal layout with responsive cols, prepend slot and append icon 1`] = `
-<input-group-component append="" append-icon="fa-solid fa-dollar-sign" form-layout="horizontal" input-cols="xs-12 sm-8" input-id="amount" label="Amount" label-cols="xs-12 sm-4" prepend="">
-  <!---->
+exports[`<input-group-component> renders horizontal layout with responsive cols, prepend text and append icon 1`] = `
+<input-group-component append-icon="fa-solid fa-dollar-sign" form-layout="horizontal" has-append="" has-prepend="" input-cols="xs-12 sm-8" input-id="amount" label="Amount" label-cols="xs-12 sm-4" prepend-text="Total">
   <div class="horizontal">
     <div class="form-group horizontal row">
-      <label class="col-12 col-form-label col-sm-4 form-control-label label-sm no-padding" htmlfor="amount" id="amount__label">
+      <label class="col-12 col-form-label col-sm-4 form-control-label label-sm no-padding" for="amount" id="amount__label">
         <span>
           Amount:
         </span>
@@ -103,13 +95,43 @@ exports[`<input-group-component> renders horizontal layout with responsive cols,
         </div>
         <div class="input-group">
           <span class="input-group-text">
-            <span slot="prepend">
-              Total
-            </span>
+            Total
           </span>
           <input aria-describedby="amount__desc" aria-labelledby="amount__label" class="form-control" id="amount" name="amount" placeholder="Amount" type="text" value="">
           <span class="input-group-text">
             <i aria-hidden="true" class="fa-dollar-sign fa-solid"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</input-group-component>
+`;
+
+exports[`<input-group-component> renders prepend and append native buttons from props 1`] = `
+<input-group-component append-button="" append-button-variant="secondary" append-text="Go" has-append="" has-prepend="" input-id="search" label="Search" prepend-button="" prepend-button-variant="secondary" prepend-text="Go">
+  <div>
+    <div class="form-group">
+      <label class="form-control-label label-sm" for="search" id="search__label">
+        <span>
+          Search
+        </span>
+      </label>
+      <div>
+        <div class="sr-only" id="search__desc">
+          Enter Search. Type: text.
+        </div>
+        <div class="input-group">
+          <span class="prepend-btn">
+            <button class="btn btn-secondary" type="button">
+              Go
+            </button>
+          </span>
+          <input aria-describedby="search__desc" aria-labelledby="search__label" class="form-control" id="search" name="search" placeholder="Search" type="text" value="">
+          <span class="append-btn">
+            <button class="btn btn-secondary" type="button">
+              Go
+            </button>
           </span>
         </div>
       </div>

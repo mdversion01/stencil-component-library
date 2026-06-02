@@ -5,7 +5,7 @@ export default function InputGroupComponent() {
   return (
     <main style={{ display: 'grid', gap: '16px' }}>
       <input-group-component
-        append
+        has-append
         label="Amount"
         input-id="amount-play"
         placeholder="Enter amount"
@@ -13,8 +13,8 @@ export default function InputGroupComponent() {
       ></input-group-component>
 
       <input-group-component
-        prepend
-        append
+        has-prepend
+        has-append
         label="Amount"
         input-id="amount-both-icons"
         prepend-icon="fa-solid fa-dollar-sign"
@@ -22,19 +22,14 @@ export default function InputGroupComponent() {
       ></input-group-component>
 
       <input-group-component
-        prepend
-        append
-        other-content
+        has-append
         label="Search"
         input-id="search-q"
-      >
-        <button-component slot="prepend" type="button" variant="secondary">
-          Go
-        </button-component>
-        <button-component slot="append" type="button" variant="secondary">
-          Go
-        </button-component>
-      </input-group-component>
+        append-button
+        append-text="Go"
+        append-button-variant="secondary"
+        append-button-id="search-q-append-btn"
+      ></input-group-component>
     </main>
   )
 }
@@ -44,7 +39,7 @@ export const vueExample = `
 <template>
   <main style="display:grid; gap:16px;">
     <input-group-component
-      append
+      has-append
       label="Amount"
       input-id="amount-play"
       placeholder="Enter amount"
@@ -52,8 +47,8 @@ export const vueExample = `
     ></input-group-component>
 
     <input-group-component
-      prepend
-      append
+      has-prepend
+      has-append
       label="Amount"
       input-id="amount-both-icons"
       prepend-icon="fa-solid fa-dollar-sign"
@@ -61,19 +56,14 @@ export const vueExample = `
     ></input-group-component>
 
     <input-group-component
-      prepend
-      append
-      other-content
+      has-append
       label="Search"
       input-id="search-q"
-    >
-      <button-component slot="prepend" type="button" variant="secondary">
-        Go
-      </button-component>
-      <button-component slot="append" type="button" variant="secondary">
-        Go
-      </button-component>
-    </input-group-component>
+      append-button
+      append-text="Go"
+      append-button-variant="secondary"
+      append-button-id="search-q-append-btn"
+    ></input-group-component>
   </main>
 </template>
 `.trim();
@@ -87,7 +77,7 @@ export const angularExample = `import { Component, CUSTOM_ELEMENTS_SCHEMA } from
   template: \`
     <main style="display:grid; gap:16px;">
       <input-group-component
-        append
+        has-append
         label="Amount"
         input-id="amount-play"
         placeholder="Enter amount"
@@ -95,8 +85,8 @@ export const angularExample = `import { Component, CUSTOM_ELEMENTS_SCHEMA } from
       ></input-group-component>
 
       <input-group-component
-        prepend
-        append
+        has-prepend
+        has-append
         label="Amount"
         input-id="amount-both-icons"
         prepend-icon="fa-solid fa-dollar-sign"
@@ -104,19 +94,14 @@ export const angularExample = `import { Component, CUSTOM_ELEMENTS_SCHEMA } from
       ></input-group-component>
 
       <input-group-component
-        prepend
-        append
-        other-content
+        has-append
         label="Search"
         input-id="search-q"
-      >
-        <button-component slot="prepend" type="button" variant="secondary">
-          Go
-        </button-component>
-        <button-component slot="append" type="button" variant="secondary">
-          Go
-        </button-component>
-      </input-group-component>
+        append-button
+        append-text="Go"
+        append-button-variant="secondary"
+        append-button-id="search-q-append-btn"
+      ></input-group-component>
     </main>
   \`,
 })
@@ -126,7 +111,7 @@ export class InputGroupComponent {}
 export const svelteExample = `
 <main style="display:grid; gap:16px;">
   <input-group-component
-    append
+    has-append
     label="Amount"
     input-id="amount-play"
     placeholder="Enter amount"
@@ -134,8 +119,8 @@ export const svelteExample = `
   ></input-group-component>
 
   <input-group-component
-    prepend
-    append
+    has-prepend
+    has-append
     label="Amount"
     input-id="amount-both-icons"
     prepend-icon="fa-solid fa-dollar-sign"
@@ -143,19 +128,14 @@ export const svelteExample = `
   ></input-group-component>
 
   <input-group-component
-    prepend
-    append
-    other-content
+    has-append
     label="Search"
     input-id="search-q"
-  >
-    <button-component slot="prepend" type="button" variant="secondary">
-      Go
-    </button-component>
-    <button-component slot="append" type="button" variant="secondary">
-      Go
-    </button-component>
-  </input-group-component>
+    append-button
+    append-text="Go"
+    append-button-variant="secondary"
+    append-button-id="search-q-append-btn"
+  ></input-group-component>
 </main>
 `.trim();
 
@@ -167,7 +147,7 @@ export const svelteKitExample = `
 {#if browser}
   <main style="display:grid; gap:16px;">
     <input-group-component
-      append
+      has-append
       label="Amount"
       input-id="amount-play"
       placeholder="Enter amount"
@@ -175,8 +155,8 @@ export const svelteKitExample = `
     ></input-group-component>
 
     <input-group-component
-      prepend
-      append
+      has-prepend
+      has-append
       label="Amount"
       input-id="amount-both-icons"
       prepend-icon="fa-solid fa-dollar-sign"
@@ -184,19 +164,14 @@ export const svelteKitExample = `
     ></input-group-component>
 
     <input-group-component
-      prepend
-      append
-      other-content
+      has-append
       label="Search"
       input-id="search-q"
-    >
-      <button-component slot="prepend" type="button" variant="secondary">
-        Go
-      </button-component>
-      <button-component slot="append" type="button" variant="secondary">
-        Go
-      </button-component>
-    </input-group-component>
+      append-button
+      append-text="Go"
+      append-button-variant="secondary"
+      append-button-id="search-q-append-btn"
+    ></input-group-component>
   </main>
 {/if}
 `.trim();

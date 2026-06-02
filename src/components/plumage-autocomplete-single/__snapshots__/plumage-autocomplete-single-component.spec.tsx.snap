@@ -6,7 +6,7 @@ exports[`plumage-autocomplete-single error state sets aria-invalid and error mes
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="acs-live"></div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label label-sm" htmlfor="acs" id="acs-label">
+        <label class="form-control-label label-sm" for="acs" id="acs-label">
           <span>
             City
           </span>
@@ -36,7 +36,7 @@ exports[`plumage-autocomplete-single filters on input and selects an option; dro
     </div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label label-sm" htmlfor="acs" id="acs-label">
+        <label class="form-control-label label-sm" for="acs" id="acs-label">
           <span>
             City
           </span>
@@ -78,7 +78,7 @@ exports[`plumage-autocomplete-single label-hidden uses aria-label fallback when 
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="acs-live"></div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label label-sm sr-only" htmlfor="acs" id="acs-label">
+        <label class="form-control-label label-sm sr-only" for="acs" id="acs-label">
           <span class="sr-only">
             City
           </span>
@@ -103,7 +103,7 @@ exports[`plumage-autocomplete-single renders stacked layout with underline prese
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="acs-live"></div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label label-sm" htmlfor="acs" id="acs-label">
+        <label class="form-control-label label-sm" for="acs" id="acs-label">
           <span>
             City
           </span>
@@ -128,7 +128,7 @@ exports[`plumage-autocomplete-single required + blur marks invalid and shows val
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="acs-live"></div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label invalid label-sm" htmlfor="acs" id="acs-label">
+        <label class="form-control-label invalid label-sm" for="acs" id="acs-label">
           <span class="required">
             City
           </span>

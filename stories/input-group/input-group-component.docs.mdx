@@ -12,7 +12,7 @@ import { reactExample, vueExample, angularExample, svelteExample, svelteKitExamp
 
 ```html
 <input-group-component
-  append
+  has-append
   label="Amount"
   input-id="amount-play"
   placeholder="Enter amount"
@@ -20,8 +20,8 @@ import { reactExample, vueExample, angularExample, svelteExample, svelteKitExamp
 ></input-group-component>
 
 <input-group-component
-  prepend
-  append
+  has-prepend
+  has-append
   label="Amount"
   input-id="amount-both-icons"
   prepend-icon="fa-solid fa-dollar-sign"
@@ -29,15 +29,14 @@ import { reactExample, vueExample, angularExample, svelteExample, svelteKitExamp
 ></input-group-component>
 
 <input-group-component
-  prepend
-  append
-  other-content
+  has-append
   label="Search"
   input-id="search-q"
->
-  <button-component slot="prepend" type="button" variant="secondary">Go</button-component>
-  <button-component slot="append" type="button" variant="secondary">Go</button-component>
-</input-group-component>
+  append-button
+  append-text="Go"
+  append-button-variant="secondary"
+  append-button-id="search-q-append-btn"
+></input-group-component>
 ```
 
 ## React

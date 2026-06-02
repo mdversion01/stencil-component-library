@@ -13,13 +13,13 @@ exports[`<checkbox-component> removes validation message when at least one group
       <div class="form-group no-pad">
         <div class="form-check">
           <input class="form-check-input" id="val1" name="group4" required="" type="checkbox" value="val1">
-          <label class="form-check-label" htmlfor="val1">
+          <label class="form-check-label" for="val1">
             Val 1
           </label>
         </div>
         <div class="form-check">
           <input checked="" class="form-check-input" id="val2" name="group4" required="" type="checkbox" value="val2">
-          <label class="form-check-label" htmlfor="val2">
+          <label class="form-check-label" for="val2">
             Val 2
           </label>
         </div>
@@ -42,13 +42,13 @@ exports[`<checkbox-component> renders checkbox group with options (fieldset/lege
       <div class="form-group no-pad">
         <div class="form-check">
           <input checked="" class="form-check-input" id="opt1" name="group1" required="" type="checkbox" value="opt1">
-          <label class="form-check-label" htmlfor="opt1">
+          <label class="form-check-label" for="opt1">
             Option 1
           </label>
         </div>
         <div class="form-check">
           <input class="form-check-input" id="opt2" name="group1" required="" type="checkbox" value="opt2">
-          <label class="form-check-label" htmlfor="opt2">
+          <label class="form-check-label" for="opt2">
             Option 2
           </label>
         </div>
@@ -68,13 +68,13 @@ exports[`<checkbox-component> renders custom checkbox group with options 1`] = `
       <div class="form-group no-pad">
         <div class="custom-checkbox custom-control">
           <input class="custom-control-input" id="optA" name="group2" type="checkbox" value="optA">
-          <label class="custom-control-label" htmlfor="optA">
+          <label class="custom-control-label" for="optA">
             Custom A
           </label>
         </div>
         <div class="custom-checkbox custom-control">
           <input class="custom-control-input" disabled="" id="optB" name="group2" type="checkbox" value="optB">
-          <label class="custom-control-label" htmlfor="optB">
+          <label class="custom-control-label" for="optB">
             Custom B
           </label>
         </div>
@@ -89,7 +89,7 @@ exports[`<checkbox-component> renders single custom checkbox 1`] = `
   <div class="check-box form-group no-pad">
     <div class="custom-checkbox custom-control">
       <input class="custom-control-input" id="check2" name="custom" type="checkbox" value="">
-      <label class="custom-control-label" htmlfor="check2">
+      <label class="custom-control-label" for="check2">
         Custom Option
       </label>
     </div>
@@ -102,7 +102,7 @@ exports[`<checkbox-component> renders single standard checkbox 1`] = `
   <div class="check-box form-group no-pad">
     <div class="form-check">
       <input class="form-check-input" id="check1" name="test" type="checkbox" value="">
-      <label class="form-check-label" htmlfor="check1">
+      <label class="form-check-label" for="check1">
         Accept terms
       </label>
     </div>
@@ -123,13 +123,13 @@ exports[`<checkbox-component> shows validation message when no group option is s
       <div class="form-group no-pad">
         <div class="form-check">
           <input aria-describedby="group3-validation" aria-invalid="true" class="form-check-input" id="val1" name="group3" required="" type="checkbox" value="val1">
-          <label class="form-check-label" htmlfor="val1">
+          <label class="form-check-label" for="val1">
             Val 1
           </label>
         </div>
         <div class="form-check">
           <input aria-describedby="group3-validation" aria-invalid="true" class="form-check-input" id="val2" name="group3" required="" type="checkbox" value="val2">
-          <label class="form-check-label" htmlfor="val2">
+          <label class="form-check-label" for="val2">
             Val 2
           </label>
         </div>

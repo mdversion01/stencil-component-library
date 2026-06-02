@@ -6,7 +6,7 @@ exports[`plumage-autocomplete-multiple-selections-component closes dropdown on o
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="pets-live"></div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label label-sm" htmlfor="pets">
+        <label class="form-control-label label-sm" for="pets">
           <span>
             Pets
           </span>
@@ -41,7 +41,7 @@ exports[`plumage-autocomplete-multiple-selections-component keeps dropdown open 
     </div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label label-sm" htmlfor="pets">
+        <label class="form-control-label label-sm" for="pets">
           <span>
             Pets
           </span>
@@ -129,7 +129,7 @@ exports[`plumage-autocomplete-multiple-selections-component opens dropdown on ty
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="pets-live"></div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label label-sm" htmlfor="pets">
+        <label class="form-control-label label-sm" for="pets">
           <span>
             Pets
           </span>
@@ -201,7 +201,7 @@ exports[`plumage-autocomplete-multiple-selections-component renders and matches 
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="pets-live"></div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label label-sm" htmlfor="pets">
+        <label class="form-control-label label-sm" for="pets">
           <span>
             Pets
           </span>
@@ -233,7 +233,7 @@ exports[`plumage-autocomplete-multiple-selections-component typing after a selec
     </div>
     <div class="autocomplete-container form-group">
       <div>
-        <label class="form-control-label label-sm" htmlfor="pets">
+        <label class="form-control-label label-sm" for="pets">
           <span>
             Pets
           </span>
