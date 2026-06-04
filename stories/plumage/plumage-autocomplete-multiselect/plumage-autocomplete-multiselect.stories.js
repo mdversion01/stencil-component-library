@@ -361,7 +361,7 @@ export const Basic = {
     value: [],
   },
 };
-Basic.storyName = 'Basic Setup';
+Basic.name = 'Basic Setup';
 Basic.parameters = {
   docs: {
     description: {
@@ -392,7 +392,7 @@ export const HorizontalLayout = {
     value: [],
   },
 };
-HorizontalLayout.storyName = 'Horizontal Layout';
+HorizontalLayout.name = 'Horizontal Layout';
 HorizontalLayout.parameters = {
   docs: {
     description: {
@@ -419,7 +419,7 @@ export const InlineLayout = {
   },
   render: (args) => renderComponent(args, { idOverride: 'ams_inline1' }),
 };
-InlineLayout.storyName = 'Inline Layout';
+InlineLayout.name = 'Inline Layout';
 InlineLayout.parameters = {
   docs: {
     description: {
@@ -603,7 +603,7 @@ export const FieldValidation = {
     value: [],
   },
 };
-FieldValidation.storyName = 'Required with Validation Message';
+FieldValidation.name = 'Required with Validation Message';
 FieldValidation.parameters = {
   docs: {
     description: {
@@ -630,7 +630,7 @@ export const Disabled = {
     value: ['Banana', 'Cherry'],
   },
 };
-Disabled.storyName = 'Disabled';
+Disabled.name = 'Disabled';
 Disabled.parameters = {
   docs: {
     description: {
@@ -652,7 +652,7 @@ export const BadgeStyling = {
     value: ['Apple', 'Orange'],
   },
 };
-BadgeStyling.storyName = 'Custom Badge Styling';
+BadgeStyling.name = 'Custom Badge Styling';
 BadgeStyling.parameters = {
   docs: {
     description: {

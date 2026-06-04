@@ -1,5 +1,3 @@
-// File: src/stories/input-group-component.stories.js
-
 import DocsPage from './input-group-component.docs.mdx';
 import {
   buildDocsHtml,
@@ -17,7 +15,7 @@ export default {
       page: DocsPage,
       description: {
         component:
-          'The `input-group-component` is a wrapper for an input field that allows you to add prepend and append content such as icons, text, or native buttons. It also supports various form layouts, affix button IDs, emitted click events, and validation states.',
+          'The `input-group-component` is a wrapper for an input field that allows you to add prepend and append content such as icons, text, or native buttons. It also supports various form layouts, affix button IDs, emitted click events, validation states, and read-only mode.',
       },
       source: {
         language: 'html',
@@ -31,6 +29,13 @@ export default {
       table: { defaultValue: { summary: false }, category: 'Input Attributes' },
       description:
         'When enabled, the input group and its child input field will be disabled, preventing user interaction and applying appropriate disabled styles.',
+    },
+    readOnly: {
+      control: 'boolean',
+      name: 'read-only',
+      table: { defaultValue: { summary: false }, category: 'Input Attributes' },
+      description:
+        'When enabled, the input field is read-only. Users can focus and select text, but cannot modify the value.',
     },
     formId: {
       control: 'text',
@@ -270,6 +275,7 @@ export default {
     type: 'text',
     value: '',
     disabled: false,
+    readOnly: false,
     formId: '',
 
     formLayout: '',
@@ -320,6 +326,7 @@ export const Basic = {
     labelAlign: '',
     required: false,
     disabled: false,
+    readOnly: false,
     formId: '',
 
     prepend: false,
@@ -407,6 +414,29 @@ export const DisabledState = {
   },
 };
 
+export const ReadOnlyState = {
+  name: 'Read Only',
+  args: {
+    ...Basic.args,
+    inputId: 'amount-readonly',
+    label: 'Amount',
+    value: '123.45',
+    readOnly: true,
+    prepend: false,
+    append: true,
+    prependIcon: '',
+    appendIcon: 'fa-solid fa-dollar-sign',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'This example shows the read-only state. The field can receive focus and its value can be selected, but the user cannot edit it.',
+      },
+    },
+  },
+};
+
 export const AppendAndPrependButtons = {
   name: 'Append + Prepend Buttons',
   args: {
@@ -479,6 +509,84 @@ export const PrependButtonOnly = {
       description: {
         story:
           'This example demonstrates using only the prepend side as a native button.',
+      },
+    },
+  },
+};
+
+export const ButtonClickEvents = {
+  name: 'Button Click Events',
+  render: args => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
+    wrap.style.maxWidth = '640px';
+
+    const helperText = document.createElement('div');
+    helperText.style.fontSize = '14px';
+    helperText.style.color = '#444';
+    helperText.innerHTML =
+      'Use <code>appendClick</code> and <code>prependClick</code> on the component host to respond to native affix button clicks.';
+
+    const output = document.createElement('div');
+    output.style.padding = '10px 12px';
+    output.style.border = '1px solid #ddd';
+    output.style.borderRadius = '8px';
+    output.style.background = '#fafafa';
+    output.textContent = 'Click an affix button to see the event output.';
+
+    const el = buildEl({
+      ...args,
+      inputId: args.inputId || 'igc-button-events',
+      label: args.label || 'Search',
+      prepend: true,
+      append: true,
+      prependButton: true,
+      appendButton: true,
+      prependIcon: '',
+      appendIcon: '',
+      prependText: args.prependText || 'Back',
+      appendText: args.appendText || 'Go',
+      prependButtonId: args.prependButtonId || 'igc-button-events-prepend-btn',
+      appendButtonId: args.appendButtonId || 'igc-button-events-append-btn',
+      placeholder: args.placeholder || 'Enter a value',
+    });
+
+    const updateOutput = side => {
+      const input = el.querySelector('input');
+      const value = input ? input.value : '';
+      output.textContent = `${side} button clicked. Current value: ${value || '(empty)'}`;
+    };
+
+    el.addEventListener('prependClick', () => updateOutput('Prepend'));
+    el.addEventListener('appendClick', () => updateOutput('Append'));
+
+    wrap.appendChild(helperText);
+    wrap.appendChild(el);
+    wrap.appendChild(output);
+
+    return wrap;
+  },
+  args: {
+    ...Basic.args,
+    label: 'Search',
+    inputId: 'igc-button-events',
+    prepend: true,
+    append: true,
+    prependButton: true,
+    appendButton: true,
+    prependText: 'Back',
+    appendText: 'Go',
+    prependButtonId: 'igc-button-events-prepend-btn',
+    appendButtonId: 'igc-button-events-append-btn',
+    prependIcon: '',
+    appendIcon: '',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'This example shows the correct event pattern for native affix buttons. Listen for `prependClick` or `appendClick` on the component host instead of attaching a generic click handler to the whole component.',
       },
     },
   },
@@ -667,6 +775,23 @@ export const AccessibilityMatrix = {
         },
       },
       {
+        title: 'Read Only',
+        args: {
+          label: 'Amount',
+          inputId: 'igc-a11y-readonly',
+          readOnly: true,
+          value: '123.45',
+          formLayout: '',
+          prepend: false,
+          append: true,
+          appendIcon: 'fa-solid fa-dollar-sign',
+          appendText: '',
+          appendButton: false,
+          validation: false,
+          validationMessage: 'Please provide a value.',
+        },
+      },
+      {
         title: 'Buttons Both Sides',
         args: {
           label: 'Search',
@@ -696,9 +821,9 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Matrix of key states (default/inline/horizontal, error/validation, disabled, button affixes). Each row prints computed role/aria/ids and whether ARIA references resolve.',
+          'Matrix of key states (default/inline/horizontal, error/validation, disabled, read-only, button affixes). Each row prints computed role/aria/ids and whether ARIA references resolve.',
       },
-      story: { height: '1200px' },
+      story: { height: '1400px' },
     },
     controls: { disable: true },
   },

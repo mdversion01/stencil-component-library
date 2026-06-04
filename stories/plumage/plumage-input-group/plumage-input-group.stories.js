@@ -42,7 +42,7 @@ export default {
       page: DocsPage,
       description: {
         component:
-          'The `plumage-input-group-component` is a Plumage-styled wrapper for an input field that allows you to add prepend and append content such as icons, text, or native buttons. It also supports various form layouts, accessibility hooks, and validation states.',
+          'The `plumage-input-group-component` is a Plumage-styled wrapper for an input field that allows you to add prepend and append content such as icons, text, or native buttons. It also supports various form layouts, accessibility hooks, validation states, read-only mode, and emitted append/prepend button click events.',
       },
       source: {
         language: 'html',
@@ -57,6 +57,13 @@ export default {
       table: { defaultValue: { summary: false }, category: 'Input Attributes' },
       description:
         'When enabled, the input group and its child input field will be disabled, preventing user interaction and applying appropriate disabled styles.',
+    },
+    readOnly: {
+      control: 'boolean',
+      name: 'read-only',
+      table: { defaultValue: { summary: false }, category: 'Input Attributes' },
+      description:
+        'Makes the input read-only. The user can focus and select text but cannot edit the value. Native prepend/append buttons are disabled when used with readOnly.',
     },
     inputId: {
       control: 'text',
@@ -148,7 +155,7 @@ export default {
       control: 'text',
       name: 'append-button-variant',
       table: { category: 'Layout' },
-      description: 'Bootstrap-style button variant used when append-button is enabled.',
+      description: 'Variant prop for the append button. Plumage native buttons currently render with Plumage button styling.',
     },
     appendAriaLabel: {
       control: 'text',
@@ -191,7 +198,11 @@ export default {
       name: 'input-cols',
       description: 'e.g. "col-sm-9 col-md-8" or "xs-12 sm-6 md-8".',
     },
-    label: { control: 'text', table: { category: 'Layout' }, description: 'Label text for the input.' },
+    label: {
+      control: 'text',
+      table: { category: 'Layout' },
+      description: 'Label text for the input.',
+    },
     labelAlign: {
       control: { type: 'select' },
       options: ['', 'right'],
@@ -274,7 +285,7 @@ export default {
       control: 'text',
       name: 'prepend-button-variant',
       table: { category: 'Layout' },
-      description: 'Bootstrap-style button variant used when prepend-button is enabled.',
+      description: 'Variant prop for the prepend button. Plumage native buttons currently render with Plumage button styling.',
     },
     prependAriaLabel: {
       control: 'text',
@@ -315,6 +326,56 @@ export default {
       description: 'Message to display when validation fails.',
     },
   },
+
+  args: {
+    label: 'Amount',
+    inputId: 'amount-play',
+    placeholder: 'Enter amount',
+    size: '',
+    formId: '',
+    formLayout: '',
+    labelHidden: false,
+    labelAlign: '',
+    labelSize: 'sm',
+    required: false,
+    disabled: false,
+    readOnly: false,
+
+    prepend: false,
+    append: true,
+    icon: '',
+    prependIcon: '',
+    appendIcon: 'fa-solid fa-dollar-sign',
+    prependId: '',
+    appendId: '',
+    prependButtonId: '',
+    appendButtonId: '',
+    prependText: '',
+    appendText: '',
+    prependButton: false,
+    appendButton: false,
+    prependButtonType: 'button',
+    appendButtonType: 'button',
+    prependButtonVariant: 'secondary',
+    appendButtonVariant: 'secondary',
+    prependAriaLabel: '',
+    appendAriaLabel: '',
+
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
+
+    validation: false,
+    validationMessage: '',
+    value: '',
+
+    labelCols: '',
+    inputCols: '',
+    labelCol: 2,
+    inputCol: 10,
+    type: 'text',
+    plumageSearch: false,
+  },
 };
 
 export const Basic = {
@@ -331,6 +392,7 @@ export const Basic = {
     labelSize: 'sm',
     required: false,
     disabled: false,
+    readOnly: false,
 
     prepend: false,
     append: true,
@@ -417,6 +479,28 @@ export const DisabledState = {
       description: {
         story:
           'This example shows the disabled state of the Plumage input group.',
+      },
+    },
+  },
+};
+
+export const ReadOnlyState = {
+  name: 'Read Only',
+  args: {
+    ...Basic.args,
+    inputId: 'amount-readonly',
+    label: 'Amount',
+    readOnly: true,
+    value: '12345',
+    prepend: false,
+    append: true,
+    appendIcon: 'fa-solid fa-dollar-sign',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'This example shows the read-only state. The input can be focused and selected, but the value cannot be edited.',
       },
     },
   },
@@ -580,6 +664,84 @@ export const PlumageSearchField = {
   },
 };
 
+export const AppendButtonAction = {
+  name: 'Append Button Action',
+  render: args => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
+    wrap.style.maxWidth = '640px';
+
+    const host = buildEl({
+      ...Basic.args,
+      ...args,
+      label: args.label || 'Search Users',
+      inputId: args.inputId || 'search-users',
+      placeholder: args.placeholder || 'Type a username',
+      append: true,
+      appendButton: true,
+      appendText: args.appendText || 'Search',
+      appendButtonId: args.appendButtonId || 'search-users-append-btn',
+      appendId: args.appendId || 'search-users-append-wrap',
+      appendIcon: '',
+      prepend: false,
+      prependButton: false,
+      prependIcon: '',
+    });
+
+    const result = document.createElement('div');
+    result.style.fontSize = '14px';
+    result.style.padding = '8px 0';
+    result.textContent = 'Click the append button to run the action.';
+
+    host.addEventListener('appendClick', event => {
+      const input = host.querySelector('input');
+      const value = input ? input.value : '';
+
+      // eslint-disable-next-line no-console
+      console.log('appendClick fired:', event.detail);
+      // eslint-disable-next-line no-console
+      console.log('Current input value:', value);
+
+      result.textContent = value
+        ? `Append button clicked. Current value: "${value}"`
+        : 'Append button clicked. Input is empty.';
+    });
+
+    host.addEventListener('valueChange', event => {
+      // eslint-disable-next-line no-console
+      console.log('valueChange:', event.detail);
+    });
+
+    wrap.appendChild(host);
+    wrap.appendChild(result);
+    return wrap;
+  },
+  args: {
+    ...Basic.args,
+    label: 'Search Users',
+    inputId: 'search-users',
+    placeholder: 'Type a username',
+    append: true,
+    appendButton: true,
+    appendText: 'Search',
+    appendButtonId: 'search-users-append-btn',
+    appendId: 'search-users-append-wrap',
+    appendIcon: '',
+    prepend: false,
+    prependButton: false,
+    prependIcon: '',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Shows the correct event-driven pattern for appended button actions. Listen for the component `appendClick` event, then read the current inner input value from the host element.',
+      },
+    },
+  },
+};
+
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: args => {
@@ -592,7 +754,7 @@ export const AccessibilityMatrix = {
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
       <div style="opacity:.8">
-        Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal, validation, disabled, and button affixes.
+        Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal, validation, disabled, readOnly, and button affixes.
       </div>
     `;
     wrap.appendChild(header);
@@ -654,6 +816,7 @@ export const AccessibilityMatrix = {
         appendIcon: 'fa-solid fa-dollar-sign',
         validation: false,
         disabled: false,
+        readOnly: false,
         value: '',
       }),
     );
@@ -669,6 +832,7 @@ export const AccessibilityMatrix = {
         appendIcon: 'fa-solid fa-dollar-sign',
         validation: false,
         disabled: false,
+        readOnly: false,
         value: '',
       }),
     );
@@ -687,6 +851,7 @@ export const AccessibilityMatrix = {
         appendIcon: 'fa-solid fa-dollar-sign',
         validation: false,
         disabled: false,
+        readOnly: false,
         value: '',
       }),
     );
@@ -702,6 +867,7 @@ export const AccessibilityMatrix = {
         prependIcon: 'fa-solid fa-dollar-sign',
         append: true,
         appendIcon: 'fa-solid fa-dollar-sign',
+        readOnly: false,
         value: '',
       }),
     );
@@ -717,6 +883,22 @@ export const AccessibilityMatrix = {
         appendIcon: 'fa-solid fa-dollar-sign',
         value: '123',
         validation: false,
+        readOnly: false,
+      }),
+    );
+
+    wrap.appendChild(
+      card('Read Only', {
+        inputId: 'mx-ig-readonly',
+        label: 'Read Only',
+        readOnly: true,
+        prepend: true,
+        prependIcon: 'fa-solid fa-dollar-sign',
+        append: true,
+        appendIcon: 'fa-solid fa-dollar-sign',
+        value: '123',
+        validation: false,
+        disabled: false,
       }),
     );
 
@@ -735,6 +917,7 @@ export const AccessibilityMatrix = {
         prependButtonId: 'mx-ig-buttons-prepend-btn',
         appendButtonId: 'mx-ig-buttons-append-btn',
         validation: false,
+        readOnly: false,
       }),
     );
 
@@ -745,7 +928,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Prints computed accessibility wiring for the input: `aria-labelledby`, `aria-describedby`, `aria-required`, `aria-invalid`, and `aria-disabled` across default / inline / horizontal, validation, disabled, and button-affix examples.',
+          'Prints computed accessibility wiring for the input: `aria-labelledby`, `aria-describedby`, `aria-required`, `aria-invalid`, `aria-disabled`, and `readOnly` across default / inline / horizontal, validation, disabled, readOnly, and button-affix examples.',
       },
       source: {
         language: 'html',

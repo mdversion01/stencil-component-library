@@ -254,7 +254,7 @@ export const Basic = {
     labelSize: 'sm',
   },
 };
-Basic.storyName = 'Basic';
+Basic.name = 'Basic';
 Basic.parameters = {
   docs: {
     description: {
@@ -303,7 +303,7 @@ export const HorizontalLayout = {
   },
   render: (args) => renderComponent(args),
 };
-HorizontalLayout.storyName = 'Horizontal Layout';
+HorizontalLayout.name = 'Horizontal Layout';
 HorizontalLayout.parameters = {
   docs: {
     description: {
@@ -343,7 +343,7 @@ export const InlineLayout = {
     return row;
   },
 };
-InlineLayout.storyName = 'Inline Layout';
+InlineLayout.name = 'Inline Layout';
 InlineLayout.parameters = {
   docs: {
     source: {
@@ -368,7 +368,7 @@ export const RequiredWithValidation = {
     inputCol: '',
   },
 };
-RequiredWithValidation.storyName = 'Required with Validation';
+RequiredWithValidation.name = 'Required with Validation';
 RequiredWithValidation.parameters = {
   docs: {
     description: {
@@ -390,7 +390,7 @@ export const LabelHidden = {
     ariaLabel: '',
   },
 };
-LabelHidden.storyName = 'Label Hidden';
+LabelHidden.name = 'Label Hidden';
 LabelHidden.parameters = {
   docs: {
     description: {
@@ -441,7 +441,7 @@ export const ReadOnlyAndDisabled = {
     },
   },
 };
-ReadOnlyAndDisabled.storyName = 'Read-Only and Disabled';
+ReadOnlyAndDisabled.name = 'Read-Only and Disabled';
 
 export const ResponsiveCols = {
   args: {
@@ -458,7 +458,7 @@ export const ResponsiveCols = {
   },
   render: (args) => renderComponent(args),
 };
-ResponsiveCols.storyName = 'Responsive Columns';
+ResponsiveCols.name = 'Responsive Columns';
 ResponsiveCols.parameters = {
   docs: {
     description: {

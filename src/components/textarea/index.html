@@ -1,0 +1,77 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <textarea-component label="Comments" label-size="xs" disabled textarea-text-size="sm" value="" input-id="textarea-comments" form-layout="horizontal" label-align="right"></textarea-component>
+
+        <textarea-component label="Details" value="" read-only max-length="500" input-id="textarea-details" label-size="base" size="" form-layout="horizontal" label-align="right"></textarea-component>
+
+        <textarea-component label="Thoughts" value="" max-length="500" input-id="textarea-thoughts" textarea-text-size="lg" form-layout="inline" label-size="xs" label-align="right"></textarea-component>
+      </div>
+      <div class="cwrapper">
+        <form-component>
+          <textarea-component
+            required
+            validation
+            validation-message="Please enter comments"
+            label="Comments"
+            label-size="sm"
+            textarea-text-size="sm"
+            value=""
+            input-id="textarea-input-5"
+            slot="formField"
+            rows="1"
+            max-length="500"
+            form-layout="inline"
+          ></textarea-component>
+
+          <textarea-component
+            required
+            validation
+            validation-message="Please enter details"
+            label="Details"
+            value=""
+            input-id="textarea-input-6"
+            slot="formField"
+            rows="2"
+          ></textarea-component>
+
+          <textarea-component
+            required
+            validation
+            validation-message="Please enter thoughts"
+            label="Thoughts"
+            value=""
+            input-id="textarea-input-6"
+            slot="formField"
+            textarea-text-size="lg"
+            label-size="lg"
+          ></textarea-component>
+        </form-component>
+      </div>
+    </app-wrapper>
+
+    <script type="module"></script>
+  </body>
+</html>

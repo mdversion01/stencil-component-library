@@ -30,6 +30,7 @@
 | `labelSize`         | `label-size`         |             | `"base" \| "lg" \| "sm" \| "xs"`               | `'sm'`               |
 | `multiple`          | `multiple`           |             | `boolean`                                      | `false`              |
 | `options`           | `options`            |             | `string \| { value: string; name: string; }[]` | `[]`                 |
+| `readOnly`          | `read-only`          |             | `boolean`                                      | `false`              |
 | `required`          | `required`           |             | `boolean`                                      | `false`              |
 | `selectFieldId`     | `select-field-id`    |             | `string`                                       | `''`                 |
 | `selected`          | `selected`           |             | `boolean`                                      | `false`              |

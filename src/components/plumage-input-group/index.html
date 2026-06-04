@@ -26,11 +26,33 @@
         background-color: purple !important;
         color: white !important;
       }
+
+      .example-result {
+        margin-top: 8px;
+        font-size: 14px;
+      }
     </style>
   </head>
   <body>
     <app-wrapper>
       <div class="cwrapper">
+        <plumage-input-group-component
+          has-append
+          append-icon="fa-solid fa-dollar-sign"
+          append-button-type="button"
+          input-col="10"
+          input-id="amount-play"
+          label="Amount"
+          label-col="2"
+          label-size="sm"
+          placeholder="Enter amount"
+          prepend-button-type="button"
+          required
+          type="text"
+          validation
+          validation-message="Test"
+        ></plumage-input-group-component>
+
         <form-component>
           <plumage-input-group-component
             slot="formField"
@@ -42,7 +64,6 @@
             prepend-icon="fa-solid fa-dollar-sign"
             append-button
             append-text="Go"
-            append-button-variant="secondary"
             append-id="pl-input-group-1-append-wrap"
             append-button-id="pl-input-group-1-append-btn"
             form-layout="horizontal"
@@ -58,7 +79,6 @@
             prepend-icon="fa-solid fa-dollar-sign"
             append-button
             append-text="Go"
-            append-button-variant="secondary"
             append-button-type="button"
             append-aria-label="Run action"
             append-id="pl-input-group-3-append-wrap"
@@ -100,15 +120,31 @@
             has-prepend
             prepend-button
             prepend-text="Go"
-            prepend-button-variant="secondary"
             prepend-id="pl-input-group-5-prepend-wrap"
             prepend-button-id="pl-input-group-5-prepend-btn"
             has-append
             append-button
             append-text="Search"
-            append-button-variant="primary"
             append-id="pl-input-group-5-append-wrap"
             append-button-id="pl-input-group-5-append-btn"
+          ></plumage-input-group-component>
+
+          <plumage-input-group-component
+            slot="formField"
+            input-id="pl-input-group-6"
+            label="Read Only Search"
+            read-only
+            value="Locked value"
+            has-prepend
+            prepend-button
+            prepend-text="Back"
+            prepend-id="pl-input-group-6-prepend-wrap"
+            prepend-button-id="pl-input-group-6-prepend-btn"
+            has-append
+            append-button
+            append-text="Go"
+            append-id="pl-input-group-6-append-wrap"
+            append-button-id="pl-input-group-6-append-btn"
           ></plumage-input-group-component>
 
           <plumage-input-group-component
@@ -117,8 +153,43 @@
             label="Search"
             plumage-search
           ></plumage-input-group-component>
+
+          <plumage-input-group-component
+            slot="formField"
+            input-id="search-users"
+            label="Search Users"
+            placeholder="Type a username"
+            has-append
+            append-button
+            append-text="Search"
+            append-id="search-users-append-wrap"
+            append-button-id="search-users-append-btn"
+            form-layout="horizontal"
+            label-align="right"
+          ></plumage-input-group-component>
+
+          <div id="search-users-result" class="example-result" slot="formField"></div>
         </form-component>
       </div>
     </app-wrapper>
+
+    <script>
+      const searchUsersField = document.querySelector('plumage-input-group-component[input-id="search-users"]');
+      const searchUsersResult = document.getElementById('search-users-result');
+
+      if (searchUsersField) {
+        searchUsersField.addEventListener('appendClick', event => {
+          const input = searchUsersField.querySelector('input');
+          const value = input ? input.value : '';
+
+          console.log('appendClick fired:', event.detail);
+          console.log('Current input value:', value);
+
+          searchUsersResult.textContent = value
+            ? `Append button clicked. Current value: "${value}"`
+            : 'Append button clicked. Input is empty.';
+        });
+      }
+    </script>
   </body>
 </html>

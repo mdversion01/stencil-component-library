@@ -26,6 +26,12 @@
         background-color: purple !important;
         color: white !important;
       }
+
+      .example-note {
+        margin: 8px 0 16px;
+        font-size: 14px;
+        color: #555;
+      }
     </style>
   </head>
   <body>
@@ -86,7 +92,47 @@
             append-button-id="search-affix-btn"
           ></input-group-component>
         </form-component>
+
+        <hr />
+
+        <h3>Append button click example</h3>
+        <p class="example-note">
+          Use the component's <code>appendClick</code> event. Do not attach a click handler to the host
+          <code>&lt;input-group-component&gt;</code> when you only want the appended button action.
+        </p>
+
+        <input-group-component
+          label="Search Users"
+          input-id="search-users"
+          has-append
+          append-button
+          append-text="Search"
+          append-button-id="search-users-btn"
+          append-button-variant="primary"
+          placeholder="Enter a name"
+        ></input-group-component>
+
+        <div id="search-users-result" class="example-note"></div>
       </div>
     </app-wrapper>
+
+    <script>
+      const searchUsersField = document.querySelector('input-group-component[input-id="search-users"]');
+      const searchUsersResult = document.getElementById('search-users-result');
+
+      if (searchUsersField) {
+        searchUsersField.addEventListener('appendClick', event => {
+          const input = searchUsersField.querySelector('input');
+          const value = input ? input.value : '';
+
+          console.log('appendClick fired:', event.detail);
+          console.log('Current input value:', value);
+
+          searchUsersResult.textContent = value
+            ? `Append button clicked. Current value: "${value}"`
+            : 'Append button clicked. Input is empty.';
+        });
+      }
+    </script>
   </body>
 </html>

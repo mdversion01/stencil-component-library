@@ -17,7 +17,6 @@ type ButtonType = 'button' | 'submit' | 'reset';
 export class PlumageInputGroupComponent {
   @Element() host!: HTMLElement;
 
-  // ----- Public props -----
   @Prop() disabled: boolean = false;
 
   @Prop({ mutable: true }) formId: string = '';
@@ -29,6 +28,7 @@ export class PlumageInputGroupComponent {
   @Prop() labelSize: 'base' | 'xs' | 'sm' | 'lg' = 'sm';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() required: boolean = false;
+  @Prop() readOnly: boolean = false;
 
   @Prop() size: '' | 'sm' | 'lg' = '';
   @Prop() type: string = 'text';
@@ -81,7 +81,6 @@ export class PlumageInputGroupComponent {
   @Prop() labelCols: string = '';
   @Prop() inputCols: string = '';
 
-  // ----- Internal state -----
   @State() private validationState: boolean = false;
   @State() private valueState: string = '';
   @State() _resolvedFormId: string = '';
@@ -89,12 +88,10 @@ export class PlumageInputGroupComponent {
   private inputEl?: HTMLInputElement;
   private _fallbackId = `plumage-ig-${Math.random().toString(36).slice(2, 10)}`;
 
-  // Events
   @Event() valueChange!: EventEmitter<string>;
   @Event() prependClick!: EventEmitter<{ originalEvent: MouseEvent }>;
   @Event() appendClick!: EventEmitter<{ originalEvent: MouseEvent }>;
 
-  // ----- Watchers -----
   @Watch('value')
   onValuePropChange(v: string) {
     this.valueState = v ?? '';
@@ -114,7 +111,6 @@ export class PlumageInputGroupComponent {
     this.applyFormAttribute();
   }
 
-  // ----- Lifecycle -----
   connectedCallback() {
     const formComponent = this.host.closest('form-component') as any;
     const fcFormId = formComponent?.formId;
@@ -150,8 +146,18 @@ export class PlumageInputGroupComponent {
     else this.inputEl.removeAttribute('form');
   }
 
-  // ----- Focus underline interactions -----
+  private isAffixButtonTarget(target: EventTarget | null) {
+    if (!(target instanceof HTMLElement)) return false;
+    return !!target.closest('.prepend-btn button, .append-btn button');
+  }
+
+  private isAffixButtonDisabled() {
+    return this.disabled || this.readOnly;
+  }
+
   private handleInteraction = (event: Event) => {
+    if (this.isAffixButtonTarget(event.target)) return;
+
     event.stopPropagation();
 
     const bFocusDiv = this.host.querySelector<HTMLDivElement>('.b-focus');
@@ -172,7 +178,6 @@ export class PlumageInputGroupComponent {
     bFocusDiv.style.left = '50%';
   };
 
-  // ----- Utils -----
   private camelCase(str: string) {
     if (!str) return '';
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase())).replace(/\s+/g, '');
@@ -231,7 +236,6 @@ export class PlumageInputGroupComponent {
     return this.required && !this.meetsTypingThreshold();
   }
 
-  // ----- Input handlers -----
   private handleInput = (ev: Event) => {
     const target = ev.target as HTMLInputElement;
 
@@ -263,11 +267,15 @@ export class PlumageInputGroupComponent {
   };
 
   private handleAffixClick = (side: AffixSide, ev: MouseEvent) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    if (this.isAffixButtonDisabled()) return;
+
     if (side === 'prepend') this.prependClick.emit({ originalEvent: ev });
     else this.appendClick.emit({ originalEvent: ev });
   };
 
-  // ----- Layout helpers -----
   private isHorizontal() {
     return this.formLayout === 'horizontal';
   }
@@ -347,7 +355,6 @@ export class PlumageInputGroupComponent {
     return { label, input };
   }
 
-  // ----- A11y builders -----
   private buildLabelledBy(ids: ReturnType<typeof this.resolveIds>) {
     const external = this.sanitizeIdRefList(this.ariaLabelledby);
     return external || ids.labelId;
@@ -362,7 +369,6 @@ export class PlumageInputGroupComponent {
     return this.joinIdRefLists(external, prepend, append, validation);
   }
 
-  // ----- Render bits -----
   private renderLabel(ids: ReturnType<typeof this.resolveIds>, labelColClass?: string) {
     const labelText = (this.label || '').trim() || 'Input';
 
@@ -412,18 +418,9 @@ export class PlumageInputGroupComponent {
     return side === 'prepend' ? this.prependButtonType : this.appendButtonType;
   }
 
-  // private getAffixButtonVariant(side: AffixSide) {
-  //   return side === 'prepend' ? this.prependButtonVariant : this.appendButtonVariant;
-  // }
-
   private getAffixAriaLabel(side: AffixSide) {
     return side === 'prepend' ? this.prependAriaLabel : this.appendAriaLabel;
   }
-
-  // private getNativeButtonClass(variant: string) {
-  //   // const safe = (variant || 'secondary').trim();
-  //   return `input-group-btn`;
-  // }
 
   private renderAffix(side: AffixSide, ids: ReturnType<typeof this.resolveIds>) {
     const icon = this.getAffixIcon(side);
@@ -432,7 +429,6 @@ export class PlumageInputGroupComponent {
     const buttonId = this.getAffixButtonId(side, ids);
     const isButton = this.getAffixButton(side);
     const buttonType = this.getAffixButtonType(side);
-    // const buttonVariant = this.getAffixButtonVariant(side);
     const ariaLabel = this.getAffixAriaLabel(side);
     const invalidClass = this.validationState ? 'is-invalid' : '';
 
@@ -454,8 +450,9 @@ export class PlumageInputGroupComponent {
             type={buttonType}
             class="input-group-btn"
             aria-label={ariaLabel || undefined}
-            disabled={this.disabled}
+            disabled={this.isAffixButtonDisabled()}
             onClick={ev => this.handleAffixClick(side, ev)}
+            onMouseDown={ev => ev.stopPropagation()}
           >
             {text}
           </button>
@@ -472,7 +469,7 @@ export class PlumageInputGroupComponent {
 
   private renderInput(ids: ReturnType<typeof this.resolveIds>) {
     const sizeClass = this.size === 'sm' ? 'input-group-sm' : this.size === 'lg' ? 'input-group-lg' : '';
-    const groupClasses = ['input-group', sizeClass, this.disabled ? 'disabled' : ''].filter(Boolean).join(' ');
+    const groupClasses = ['input-group', this.validationState ? 'is-invalid' : '', sizeClass, this.disabled ? 'disabled' : ''].filter(Boolean).join(' ');
     const inputClasses = ['form-control', this.validationState ? 'is-invalid' : ''].filter(Boolean).join(' ');
 
     const labelText = (this.label || '').trim();
@@ -505,6 +502,7 @@ export class PlumageInputGroupComponent {
             aria-invalid={this.validationState ? 'true' : 'false'}
             aria-disabled={this.disabled ? 'true' : undefined}
             disabled={this.disabled}
+            readOnly={this.readOnly}
             onInput={this.handleInput}
             onFocus={this.handleInteraction}
             onClick={this.handleInteraction}
@@ -537,7 +535,6 @@ export class PlumageInputGroupComponent {
     );
   }
 
-  // ----- Search variant -----
   private handleInputChange = (ev: Event) => {
     const target = ev.target as HTMLInputElement;
     const clean = this.sanitizeInput(target.value);

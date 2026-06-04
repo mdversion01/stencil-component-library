@@ -15,38 +15,47 @@ const LABEL_SIZE_VARIANTS = [
   { key: 'lg', label: 'Large', size: 'lg' },
 ];
 
+const defaultArgs = {
+  basicRadio: false,
+  bsRadio: false,
+  basicRadioGroup: false,
+  bsRadioGroup: false,
+
+  inputId: '',
+  labelTxt: '',
+  value: '',
+
+  name: '',
+  size: '',
+  disabled: false,
+  required: false,
+
+  groupTitle: '',
+  groupTitleSize: '',
+  inline: false,
+
+  validation: false,
+  validationMsg: '',
+
+  ariaLabel: '',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
+
+  groupOptions: '[]',
+};
+
+const groupPlay = async ({ canvasElement, args }) => {
+  const el = canvasElement.querySelector('radio-input-component');
+  if (el) {
+    el.addEventListener('groupChange', e => args.groupChange?.(e.detail));
+  }
+};
+
 export default {
   title: 'Form/Radio Input',
   tags: ['autodocs'],
 
-  args: {
-    basicRadio: false,
-    bsRadio: false,
-    basicRadioGroup: false,
-    bsRadioGroup: false,
-
-    inputId: '',
-    labelTxt: '',
-    value: '',
-
-    name: '',
-    size: '',
-    disabled: false,
-    required: false,
-
-    groupTitle: '',
-    groupTitleSize: '',
-    inline: false,
-
-    validation: false,
-    validationMsg: '',
-
-    ariaLabel: '',
-    ariaLabelledby: '',
-    ariaDescribedby: '',
-
-    groupOptions: '[]',
-  },
+  args: defaultArgs,
 
   parameters: {
     docs: {
@@ -195,108 +204,114 @@ export default {
   },
 };
 
-export const SingleBasic = SingleTemplate.bind({});
-SingleBasic.args = {
-  bsRadio: true,
-  basicRadio: false,
-  bsRadioGroup: false,
-  basicRadioGroup: false,
+export const SingleBasic = {
+  name: 'Single (Bootstrap styling)',
+  render: args => SingleTemplate(args),
+  args: {
+    bsRadio: true,
+    basicRadio: false,
+    bsRadioGroup: false,
+    basicRadioGroup: false,
 
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
 
-  inputId: 'r-basic',
-  name: 'newsletter',
-  labelTxt: 'Subscribe to newsletter',
-  value: 'yes',
-  required: false,
-  disabled: false,
-  size: '',
-  validation: false,
-  validationMsg: '',
+    inputId: 'r-basic',
+    name: 'newsletter',
+    labelTxt: 'Subscribe to newsletter',
+    value: 'yes',
+    required: false,
+    disabled: false,
+    size: '',
+    validation: false,
+    validationMsg: '',
 
-  groupTitle: '',
-  groupTitleSize: '',
-  inline: false,
-  groupOptions: '[]',
-};
-SingleBasic.storyName = 'Single (Bootstrap styling)';
-SingleBasic.parameters = {
-  docs: { description: { story: 'A single radio input with Bootstrap styling.' } },
-};
-
-export const SingleRequiredInvalid = SingleTemplate.bind({});
-SingleRequiredInvalid.args = {
-  bsRadio: true,
-  basicRadio: false,
-  bsRadioGroup: false,
-  basicRadioGroup: false,
-
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
-
-  inputId: 'r-required',
-  name: 'tos',
-  labelTxt: 'I agree to Terms',
-  value: 'agree',
-  required: true,
-  disabled: false,
-  size: '',
-  validation: true,
-  validationMsg: 'You must agree before continuing.',
-
-  groupTitle: '',
-  groupTitleSize: '',
-  inline: false,
-  groupOptions: '[]',
-};
-SingleRequiredInvalid.storyName = 'Single Required with Validation (Bootstrap styling)';
-SingleRequiredInvalid.parameters = {
-  docs: { description: { story: 'A single required radio input with validation enabled.' } },
+    groupTitle: '',
+    groupTitleSize: '',
+    inline: false,
+    groupOptions: '[]',
+  },
+  parameters: {
+    docs: { description: { story: 'A single radio input with Bootstrap styling.' } },
+  },
 };
 
-export const SingleBasicStyled = SingleTemplate.bind({});
-SingleBasicStyled.args = {
-  basicRadio: true,
-  bsRadio: false,
-  bsRadioGroup: false,
-  basicRadioGroup: false,
+export const SingleRequiredInvalid = {
+  name: 'Single Required with Validation (Bootstrap styling)',
+  render: args => SingleTemplate(args),
+  args: {
+    bsRadio: true,
+    basicRadio: false,
+    bsRadioGroup: false,
+    basicRadioGroup: false,
 
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
 
-  inputId: 'r-basic-basic',
-  name: 'marketing',
-  labelTxt: 'Email me product updates',
-  value: 'optin',
-  required: false,
-  disabled: false,
-  size: '',
-  validation: false,
-  validationMsg: '',
+    inputId: 'r-required',
+    name: 'tos',
+    labelTxt: 'I agree to Terms',
+    value: 'agree',
+    required: true,
+    disabled: false,
+    size: '',
+    validation: true,
+    validationMsg: 'You must agree before continuing.',
 
-  groupTitle: '',
-  groupTitleSize: '',
-  inline: false,
-  groupOptions: '[]',
+    groupTitle: '',
+    groupTitleSize: '',
+    inline: false,
+    groupOptions: '[]',
+  },
+  parameters: {
+    docs: { description: { story: 'A single required radio input with validation enabled.' } },
+  },
 };
-SingleBasicStyled.storyName = 'Single (Basic styling)';
-SingleBasicStyled.parameters = {
-  docs: { description: { story: 'A single radio input with basic styling.' } },
+
+export const SingleBasicStyled = {
+  name: 'Single (Basic styling)',
+  render: args => SingleTemplate(args),
+  args: {
+    basicRadio: true,
+    bsRadio: false,
+    bsRadioGroup: false,
+    basicRadioGroup: false,
+
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
+
+    inputId: 'r-basic-basic',
+    name: 'marketing',
+    labelTxt: 'Email me product updates',
+    value: 'optin',
+    required: false,
+    disabled: false,
+    size: '',
+    validation: false,
+    validationMsg: '',
+
+    groupTitle: '',
+    groupTitleSize: '',
+    inline: false,
+    groupOptions: '[]',
+  },
+  parameters: {
+    docs: { description: { story: 'A single radio input with basic styling.' } },
+  },
 };
 
 export const LabelSizes = {
   name: 'Label Sizes (Basic + Bootstrap)',
-  render: (args) => {
+  render: args => {
     const container = document.createElement('div');
     container.style.display = 'grid';
     container.style.gap = '16px';
     container.style.maxWidth = '760px';
 
-    const section = (title) => {
+    const section = title => {
       const wrap = document.createElement('div');
       const h = document.createElement('div');
       h.textContent = title;
@@ -306,7 +321,7 @@ export const LabelSizes = {
       return wrap;
     };
 
-    const mk = (storyArgs) => {
+    const mk = storyArgs => {
       const host = document.createElement('div');
       host.innerHTML = SingleTemplate(storyArgs);
       return host.firstElementChild;
@@ -399,7 +414,7 @@ export const LabelSizes = {
   <div>
     <div style="font-weight:600; margin:0 0 6px;">Basic radio (basic-radio)</div>
     <div style="display:grid; gap:10px;">
-${LABEL_SIZE_VARIANTS.map((v) =>
+${LABEL_SIZE_VARIANTS.map(v =>
   normalize(
     SingleTemplate({
       ...ctx.args,
@@ -413,7 +428,7 @@ ${LABEL_SIZE_VARIANTS.map((v) =>
     }),
   )
     .split('\n')
-    .map((line) => `      ${line}`)
+    .map(line => `      ${line}`)
     .join('\n'),
 ).join('\n')}
     </div>
@@ -422,7 +437,7 @@ ${LABEL_SIZE_VARIANTS.map((v) =>
   <div>
     <div style="font-weight:600; margin:0 0 6px;">Bootstrap radio (bs-radio)</div>
     <div style="display:grid; gap:10px;">
-${LABEL_SIZE_VARIANTS.map((v) =>
+${LABEL_SIZE_VARIANTS.map(v =>
   normalize(
     SingleTemplate({
       ...ctx.args,
@@ -436,7 +451,7 @@ ${LABEL_SIZE_VARIANTS.map((v) =>
     }),
   )
     .split('\n')
-    .map((line) => `      ${line}`)
+    .map(line => `      ${line}`)
     .join('\n'),
 ).join('\n')}
     </div>
@@ -449,213 +464,219 @@ ${LABEL_SIZE_VARIANTS.map((v) =>
   },
 };
 
-export const GroupBasic = GroupTemplate.bind({});
-GroupBasic.args = {
-  bsRadioGroup: true,
-  basicRadioGroup: false,
-  bsRadio: false,
-  basicRadio: false,
+export const GroupBasic = {
+  name: 'Group (Bootstrap styling)',
+  render: args => GroupTemplate(args),
+  args: {
+    bsRadioGroup: true,
+    basicRadioGroup: false,
+    bsRadio: false,
+    basicRadio: false,
 
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
 
-  name: 'color',
-  groupTitle: 'Favorite Color',
-  groupTitleSize: 'h6',
-  inline: false,
-  required: false,
-  validation: false,
-  validationMsg: '',
+    name: 'color',
+    groupTitle: 'Favorite Color',
+    groupTitleSize: 'h6',
+    inline: false,
+    required: false,
+    validation: false,
+    validationMsg: '',
 
-  groupOptions: JSON.stringify(
-    [
-      { inputId: 'color-red', value: 'red', labelTxt: 'Red', checked: true },
-      { inputId: 'color-green', value: 'green', labelTxt: 'Green' },
-      { inputId: 'color-blue', value: 'blue', labelTxt: 'Blue' },
-    ],
-    null,
-    0,
-  ),
+    groupOptions: JSON.stringify(
+      [
+        { inputId: 'color-red', value: 'red', labelTxt: 'Red', checked: true },
+        { inputId: 'color-green', value: 'green', labelTxt: 'Green' },
+        { inputId: 'color-blue', value: 'blue', labelTxt: 'Blue' },
+      ],
+      null,
+      0,
+    ),
 
-  inputId: '',
-  labelTxt: '',
-  value: '',
-  size: '',
-  disabled: false,
-};
-GroupBasic.storyName = 'Group (Bootstrap styling)';
-GroupBasic.parameters = {
-  docs: { description: { story: 'A group of radio inputs with Bootstrap styling.' } },
-};
-
-export const GroupInline = GroupTemplate.bind({});
-GroupInline.args = {
-  bsRadioGroup: true,
-  basicRadioGroup: false,
-  bsRadio: false,
-  basicRadio: false,
-
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
-
-  name: 'size',
-  groupTitle: 'T-Shirt Size',
-  groupTitleSize: '',
-  inline: true,
-  required: false,
-  validation: false,
-  validationMsg: '',
-
-  groupOptions: JSON.stringify(
-    [
-      { inputId: 'sz-s', value: 'S', labelTxt: 'Small' },
-      { inputId: 'sz-m', value: 'M', labelTxt: 'Medium', checked: true },
-      { inputId: 'sz-l', value: 'L', labelTxt: 'Large' },
-    ],
-    null,
-    0,
-  ),
-
-  inputId: '',
-  labelTxt: '',
-  value: '',
-  size: '',
-  disabled: false,
-};
-GroupInline.storyName = 'Group Inline (Bootstrap styling)';
-GroupInline.parameters = {
-  docs: { description: { story: 'A group of inline radio inputs with Bootstrap styling.' } },
+    inputId: '',
+    labelTxt: '',
+    value: '',
+    size: '',
+    disabled: false,
+  },
+  parameters: {
+    docs: { description: { story: 'A group of radio inputs with Bootstrap styling.' } },
+  },
+  play: groupPlay,
 };
 
-export const GroupBasicStyled = GroupTemplate.bind({});
-GroupBasicStyled.args = {
-  basicRadioGroup: true,
-  bsRadioGroup: false,
-  bsRadio: false,
-  basicRadio: false,
+export const GroupInline = {
+  name: 'Group Inline (Bootstrap styling)',
+  render: args => GroupTemplate(args),
+  args: {
+    bsRadioGroup: true,
+    basicRadioGroup: false,
+    bsRadio: false,
+    basicRadio: false,
 
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
 
-  name: 'delivery',
-  groupTitle: 'Delivery Method',
-  groupTitleSize: 'h6',
-  inline: false,
-  required: false,
-  validation: false,
-  validationMsg: '',
+    name: 'size',
+    groupTitle: 'T-Shirt Size',
+    groupTitleSize: '',
+    inline: true,
+    required: false,
+    validation: false,
+    validationMsg: '',
 
-  groupOptions: JSON.stringify(
-    [
-      { inputId: 'del-standard', value: 'standard', labelTxt: 'Standard (3–5 days)', checked: true },
-      { inputId: 'del-express', value: 'express', labelTxt: 'Express (1–2 days)' },
-    ],
-    null,
-    0,
-  ),
+    groupOptions: JSON.stringify(
+      [
+        { inputId: 'sz-s', value: 'S', labelTxt: 'Small' },
+        { inputId: 'sz-m', value: 'M', labelTxt: 'Medium', checked: true },
+        { inputId: 'sz-l', value: 'L', labelTxt: 'Large' },
+      ],
+      null,
+      0,
+    ),
 
-  inputId: '',
-  labelTxt: '',
-  value: '',
-  size: '',
-  disabled: false,
-};
-GroupBasicStyled.storyName = 'Group (Basic styling)';
-GroupBasicStyled.parameters = {
-  docs: { description: { story: 'A group of radio inputs with Basic styling.' } },
-};
-
-export const GroupWithValidation = GroupTemplate.bind({});
-GroupWithValidation.args = {
-  bsRadioGroup: true,
-  basicRadioGroup: false,
-  bsRadio: false,
-  basicRadio: false,
-
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
-
-  name: 'contact',
-  groupTitle: 'Preferred Contact',
-  groupTitleSize: '',
-  inline: false,
-  required: true,
-  validation: true,
-  validationMsg: 'Select one contact method.',
-
-  groupOptions: JSON.stringify(
-    [
-      { inputId: 'ct-email', value: 'email', labelTxt: 'Email' },
-      { inputId: 'ct-sms', value: 'sms', labelTxt: 'SMS' },
-      { inputId: 'ct-call', value: 'call', labelTxt: 'Phone Call' },
-    ],
-    null,
-    0,
-  ),
-
-  inputId: '',
-  labelTxt: '',
-  value: '',
-  size: '',
-  disabled: false,
-};
-GroupWithValidation.storyName = 'Group with Validation (Bootstrap styling)';
-GroupWithValidation.parameters = {
-  docs: { description: { story: 'A group of radio inputs with validation (Bootstrap styling).' } },
+    inputId: '',
+    labelTxt: '',
+    value: '',
+    size: '',
+    disabled: false,
+  },
+  parameters: {
+    docs: { description: { story: 'A group of inline radio inputs with Bootstrap styling.' } },
+  },
+  play: groupPlay,
 };
 
-export const GroupDisabledOptions = GroupTemplate.bind({});
-GroupDisabledOptions.args = {
-  bsRadioGroup: true,
-  basicRadioGroup: false,
-  bsRadio: false,
-  basicRadio: false,
+export const GroupBasicStyled = {
+  name: 'Group (Basic styling)',
+  render: args => GroupTemplate(args),
+  args: {
+    basicRadioGroup: true,
+    bsRadioGroup: false,
+    bsRadio: false,
+    basicRadio: false,
 
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
 
-  name: 'seat',
-  groupTitle: 'Seat Preference',
-  groupTitleSize: '',
-  inline: true,
-  required: false,
-  validation: false,
-  validationMsg: '',
+    name: 'delivery',
+    groupTitle: 'Delivery Method',
+    groupTitleSize: 'h6',
+    inline: false,
+    required: false,
+    validation: false,
+    validationMsg: '',
 
-  groupOptions: JSON.stringify(
-    [
-      { inputId: 'seat-window', value: 'window', labelTxt: 'Window', disabled: true },
-      { inputId: 'seat-middle', value: 'middle', labelTxt: 'Middle' },
-      { inputId: 'seat-aisle', value: 'aisle', checked: true, disabled: true },
-    ],
-    null,
-    0,
-  ),
+    groupOptions: JSON.stringify(
+      [
+        { inputId: 'del-standard', value: 'standard', labelTxt: 'Standard (3–5 days)', checked: true },
+        { inputId: 'del-express', value: 'express', labelTxt: 'Express (1–2 days)' },
+      ],
+      null,
+      0,
+    ),
 
-  inputId: '',
-  labelTxt: '',
-  value: '',
-  size: '',
-  disabled: false,
+    inputId: '',
+    labelTxt: '',
+    value: '',
+    size: '',
+    disabled: false,
+  },
+  parameters: {
+    docs: { description: { story: 'A group of radio inputs with Basic styling.' } },
+  },
+  play: groupPlay,
 };
-GroupDisabledOptions.storyName = 'Group with Disabled Options (Bootstrap styling)';
-GroupDisabledOptions.parameters = {
-  docs: { description: { story: 'A group of radio inputs with some options disabled (Bootstrap styling).' } },
+
+export const GroupWithValidation = {
+  name: 'Group with Validation (Bootstrap styling)',
+  render: args => GroupTemplate(args),
+  args: {
+    bsRadioGroup: true,
+    basicRadioGroup: false,
+    bsRadio: false,
+    basicRadio: false,
+
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
+
+    name: 'contact',
+    groupTitle: 'Preferred Contact',
+    groupTitleSize: '',
+    inline: false,
+    required: true,
+    validation: true,
+    validationMsg: 'Select one contact method.',
+
+    groupOptions: JSON.stringify(
+      [
+        { inputId: 'ct-email', value: 'email', labelTxt: 'Email' },
+        { inputId: 'ct-sms', value: 'sms', labelTxt: 'SMS' },
+        { inputId: 'ct-call', value: 'call', labelTxt: 'Phone Call' },
+      ],
+      null,
+      0,
+    ),
+
+    inputId: '',
+    labelTxt: '',
+    value: '',
+    size: '',
+    disabled: false,
+  },
+  parameters: {
+    docs: { description: { story: 'A group of radio inputs with validation (Bootstrap styling).' } },
+  },
+  play: groupPlay,
 };
 
-GroupBasic.play = async ({ canvasElement, args }) => {
-  const el = canvasElement.querySelector('radio-input-component');
-  if (el) el.addEventListener('groupChange', (e) => args.groupChange?.(e.detail));
+export const GroupDisabledOptions = {
+  name: 'Group with Disabled Options (Bootstrap styling)',
+  render: args => GroupTemplate(args),
+  args: {
+    bsRadioGroup: true,
+    basicRadioGroup: false,
+    bsRadio: false,
+    basicRadio: false,
+
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
+
+    name: 'seat',
+    groupTitle: 'Seat Preference',
+    groupTitleSize: '',
+    inline: true,
+    required: false,
+    validation: false,
+    validationMsg: '',
+
+    groupOptions: JSON.stringify(
+      [
+        { inputId: 'seat-window', value: 'window', labelTxt: 'Window', disabled: true },
+        { inputId: 'seat-middle', value: 'middle', labelTxt: 'Middle' },
+        { inputId: 'seat-aisle', value: 'aisle', checked: true, disabled: true },
+      ],
+      null,
+      0,
+    ),
+
+    inputId: '',
+    labelTxt: '',
+    value: '',
+    size: '',
+    disabled: false,
+  },
+  parameters: {
+    docs: { description: { story: 'A group of radio inputs with some options disabled (Bootstrap styling).' } },
+  },
+  play: groupPlay,
 };
-GroupInline.play = GroupBasic.play;
-GroupBasicStyled.play = GroupBasic.play;
-GroupWithValidation.play = GroupBasic.play;
-GroupDisabledOptions.play = GroupBasic.play;
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
@@ -768,7 +789,8 @@ export const AccessibilityMatrix = {
 
         const left = document.createElement('div');
         left.id = 'mx-horizontal-label';
-        left.innerHTML = `<div style="font-weight:600">Horizontal label area</div><div style="opacity:.8; font-size:12px;">Simulates a horizontal form row.</div>`;
+        left.innerHTML =
+          '<div style="font-weight:600">Horizontal label area</div><div style="opacity:.8; font-size:12px;">Simulates a horizontal form row.</div>';
 
         const el = document.createElement('radio-input-component');
         el.setAttribute('bs-radio-group', '');

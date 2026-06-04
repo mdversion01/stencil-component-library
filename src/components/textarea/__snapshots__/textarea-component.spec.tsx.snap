@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`textarea-component renders horizontal layout snapshot 1`] = `
+<textarea-component form-layout="horizontal" input-col="9" label="Address" label-col="3" value="123 Main St">
+  <div class="horizontal">
+    <div class="form-group row">
+      <label class="col-3 col-form-label form-control-label label-sm no-padding" for="address" id="address__label">
+        <span>
+          Address:
+        </span>
+      </label>
+      <div class="col-9">
+        <div class="sr-only" id="address__desc">
+          Enter Address. This is a multiline text area.
+        </div><textarea aria-describedby="address__desc" aria-labelledby="address__label" class="form-control" id="address" name="address" placeholder="Address" rows="3" value="123 Main St"></textarea>
+      </div>
+    </div>
+  </div>
+</textarea-component>
+`;
+
+exports[`textarea-component renders validation + counter snapshot 1`] = `
+<textarea-component label="Description" max-length="20" required="" rows="4" validation="" validation-message="Please enter a description." value="Hello">
+  <div>
+    <div class="form-group">
+      <label class="form-control-label invalid label-sm" for="description" id="description__label">
+        <span>
+          Description
+        </span>
+        <span class="required">
+          *
+        </span>
+      </label>
+      <div>
+        <div class="sr-only" id="description__desc">
+          Enter Description. This is a multiline text area.
+        </div><textarea aria-describedby="description__desc description__validation description__counter" aria-invalid="true" aria-labelledby="description__label" class="form-control is-invalid" id="description" maxlength="20" name="description" placeholder="Description" required="" rows="4" value="Hello"></textarea>
+        <div aria-atomic="true" aria-live="polite" class="form-text textarea-counter" id="description__counter">
+          5 / 20
+        </div>
+        <div aria-atomic="true" aria-live="polite" class="form-text invalid-feedback" id="description__validation">
+          Please enter a description.
+        </div>
+      </div>
+    </div>
+  </div>
+</textarea-component>
+`;
+
+exports[`textarea-component renders with default props 1`] = `
+<textarea-component label="Comments">
+  <div>
+    <div class="form-group">
+      <label class="form-control-label label-sm" for="comments" id="comments__label">
+        <span>
+          Comments
+        </span>
+      </label>
+      <div>
+        <div class="sr-only" id="comments__desc">
+          Enter Comments. This is a multiline text area.
+        </div><textarea aria-describedby="comments__desc" aria-labelledby="comments__label" class="form-control" id="comments" name="comments" placeholder="Comments" rows="3" value=""></textarea>
+      </div>
+    </div>
+  </div>
+</textarea-component>
+`;
+
+exports[`textarea-component updates internal value state when value prop changes 1`] = `
+<textarea-component label="Notes" value="first">
+  <div>
+    <div class="form-group">
+      <label class="form-control-label label-sm" for="notes" id="notes__label">
+        <span>
+          Notes
+        </span>
+      </label>
+      <div>
+        <div class="sr-only" id="notes__desc">
+          Enter Notes. This is a multiline text area.
+        </div><textarea aria-describedby="notes__desc" aria-labelledby="notes__label" class="form-control" id="notes" name="notes" placeholder="Notes" rows="3" value="first"></textarea>
+      </div>
+    </div>
+  </div>
+</textarea-component>
+`;
+
+exports[`textarea-component updates internal value state when value prop changes 2`] = `
+<textarea-component label="Notes" value="second">
+  <div>
+    <div class="form-group">
+      <label class="form-control-label label-sm" for="notes" id="notes__label">
+        <span>
+          Notes
+        </span>
+      </label>
+      <div>
+        <div class="sr-only" id="notes__desc">
+          Enter Notes. This is a multiline text area.
+        </div><textarea aria-describedby="notes__desc" aria-labelledby="notes__label" class="form-control" id="notes" name="notes" placeholder="Notes" rows="3" value="second"></textarea>
+      </div>
+    </div>
+  </div>
+</textarea-component>
+`;

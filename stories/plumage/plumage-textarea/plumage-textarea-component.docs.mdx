@@ -1,0 +1,74 @@
+// File: src/stories/plumage-textarea-component.docs.mdx
+
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as PlumageTextareaStories from './plumage-textarea-component.stories.js';
+import {
+  reactExample,
+  vueExample,
+  angularExample,
+  svelteExample,
+  svelteKitExample,
+} from './plumage-textarea-component.examples.js';
+
+<Meta of={PlumageTextareaStories} />
+
+# Plumage Textarea Component
+
+<Description of={PlumageTextareaStories} />
+
+## HTML
+
+```html
+<plumage-textarea-component
+  label="Message"
+  input-id="message-example"
+  placeholder="Enter your message"
+  rows="4"
+></plumage-textarea-component>
+
+<plumage-textarea-component
+  label="Description"
+  input-id="description-example"
+  rows="5"
+  max-length="250"
+  value="Initial textarea value"
+></plumage-textarea-component>
+
+<plumage-textarea-component
+  label="Read Only Notes"
+  input-id="readonly-notes-example"
+  read-only
+  value="This field is read only."
+  rows="4"
+></plumage-textarea-component>
+
+<script>
+  const examples = document.querySelectorAll('plumage-textarea-component');
+
+  examples.forEach(el => {
+    el.addEventListener('valueChange', event => {
+      console.log('valueChange:', event.detail);
+    });
+
+    el.addEventListener('blurChange', event => {
+      console.log('blurChange:', event.detail);
+    });
+  });
+</script>
+```
+
+## React
+<Source code={reactExample} language="tsx" />
+## Vue
+<Source code={vueExample} language="vue" />
+## Angular
+<Source code={angularExample} language="ts" />
+## Svelte
+<Source code={svelteExample} language="ts" />
+## Svelte Kit
+<Source code={svelteKitExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

@@ -1,3 +1,5 @@
+// File: src/stories/popover-component.stories.js
+
 import PopoverDocs from './popover-component.docs.mdx';
 import {
   normalizeHtml,
@@ -7,6 +9,27 @@ import {
 } from './popover-component.story-helpers';
 
 const Template = args => buildRenderMarkup(args);
+
+const baseArgs = {
+  arrowOff: false,
+  content: 'This is a popover. Use controls to change me!',
+  customClass: '',
+  fallbackPlacement: 'flip',
+  offset: 0,
+  placement: 'bottom',
+  plumage: false,
+  popoverTitle: 'Popover title',
+  noHeader: false,
+  superTooltip: false,
+  target: '',
+  trigger: 'click',
+  variant: 'primary',
+  visible: false,
+  yOffset: 0,
+  ariaLabel: '',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
+};
 
 export default {
   title: 'Components/Popover',
@@ -150,96 +173,110 @@ export default {
   },
 };
 
-export const BasicPopover = Template.bind({});
-BasicPopover.args = {
-  arrowOff: false,
-  content: 'This is a popover. Use controls to change me!',
-  customClass: '',
-  fallbackPlacement: 'flip',
-  offset: 0,
-  placement: 'bottom',
-  plumage: false,
-  popoverTitle: 'Popover title',
-  noHeader: false,
-  superTooltip: false,
-  target: '',
-  trigger: 'click',
-  variant: 'primary',
-  visible: false,
-  yOffset: 0,
-  ariaLabel: '',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
-};
-BasicPopover.storyName = 'Basic Popover';
-BasicPopover.parameters = {
-  docs: {
-    source: {
-      type: 'dynamic',
-      language: 'html',
-      transform: (_src, ctx) =>
-        buildBasicPopoverHtml(
-          {
-            ...ctx.args,
-            target: ctx.args.target?.trim() ? ctx.args.target.trim() : '',
-          },
-          {
-            id: 'basic-popover',
-            triggerId: 'basic-popover-btn',
-          },
-        ),
-    },
-    description: {
-      story:
-        'A basic popover example. Use the controls to customize its behavior and appearance. You can change the trigger event, placement, content, and more.',
+export const BasicPopover = {
+  name: 'Basic Popover',
+  render: args => Template(args),
+  args: {
+    ...baseArgs,
+  },
+  parameters: {
+    docs: {
+      source: {
+        type: 'dynamic',
+        language: 'html',
+        transform: (_src, ctx) =>
+          buildBasicPopoverHtml(
+            {
+              ...ctx.args,
+              target: ctx.args.target?.trim() ? ctx.args.target.trim() : '',
+            },
+            {
+              id: 'basic-popover',
+              triggerId: 'basic-popover-btn',
+            },
+          ),
+      },
+      description: {
+        story:
+          'A basic popover example. Use the controls to customize its behavior and appearance. You can change the trigger event, placement, content, and more.',
+      },
     },
   },
 };
 
-export const ClickTrigger = () =>
-  normalizeHtml(`
+export const ClickTrigger = {
+  name: 'Click Trigger',
+  render: () =>
+    normalizeHtml(`
 <popover-component title="Hello" content="This pops on click." placement="auto">
   <button-component id="btn-a" variant="primary" btn-text="Click me"></button-component>
 </popover-component>
-`);
-ClickTrigger.storyName = 'Click Trigger';
-ClickTrigger.parameters = {
-  docs: {
-    source: { code: ClickTrigger(), language: 'html' },
-    description: { story: 'A popover that appears when the button is clicked. This is the default trigger behavior.' },
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
+<popover-component title="Hello" content="This pops on click." placement="auto">
+  <button-component id="btn-a" variant="primary" btn-text="Click me"></button-component>
+</popover-component>
+`),
+        language: 'html',
+      },
+      description: { story: 'A popover that appears when the button is clicked. This is the default trigger behavior.' },
+    },
   },
 };
 
-export const HoverTrigger = () =>
-  normalizeHtml(`
+export const HoverTrigger = {
+  name: 'Hover Over Trigger',
+  render: () =>
+    normalizeHtml(`
 <popover-component trigger="hover" title="Hover title" content="Shown while hovering." placement="auto">
   <button-component id="btn-b" variant="secondary">Hover Over Me</button-component>
 </popover-component>
-`);
-HoverTrigger.storyName = 'Hover Over Trigger';
-HoverTrigger.parameters = {
-  docs: {
-    source: { code: HoverTrigger(), language: 'html' },
-    description: { story: 'A popover that appears when the button is hovered over with the mouse.' },
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
+<popover-component trigger="hover" title="Hover title" content="Shown while hovering." placement="auto">
+  <button-component id="btn-b" variant="secondary">Hover Over Me</button-component>
+</popover-component>
+`),
+        language: 'html',
+      },
+      description: { story: 'A popover that appears when the button is hovered over with the mouse.' },
+    },
   },
 };
 
-export const FocusTrigger = () =>
-  normalizeHtml(`
+export const FocusTrigger = {
+  name: 'Tab to Focus Trigger',
+  render: () =>
+    normalizeHtml(`
 <popover-component title="Focus trap" content="Appears on focus; Tab to close or blur" trigger="focus" placement="auto">
   <button-component id="btn-c" variant="secondary">Tab to me</button-component>
 </popover-component>
-`);
-FocusTrigger.storyName = 'Tab to Focus Trigger';
-FocusTrigger.parameters = {
-  docs: {
-    source: { code: FocusTrigger(), language: 'html' },
-    description: { story: 'A popover that appears when the button receives focus (e.g., via keyboard navigation).' },
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
+<popover-component title="Focus trap" content="Appears on focus; Tab to close or blur" trigger="focus" placement="auto">
+  <button-component id="btn-c" variant="secondary">Tab to me</button-component>
+</popover-component>
+`),
+        language: 'html',
+      },
+      description: { story: 'A popover that appears when the button receives focus (e.g., via keyboard navigation).' },
+    },
   },
 };
 
-export const Variants = () =>
-  normalizeHtml(`
+export const Variants = {
+  name: 'Color Variants',
+  render: () =>
+    normalizeHtml(`
 <div style="display:flex; gap:12px; flex-wrap:wrap;">
   <popover-component title="primary" content="Color: primary" variant="primary" trigger="hover" placement="auto">
     <button-component variant="primary">primary</button-component>
@@ -263,17 +300,46 @@ export const Variants = () =>
     <button-component variant="dark">dark</button-component>
   </popover-component>
 </div>
-`);
-Variants.storyName = 'Color Variants';
-Variants.parameters = {
-  docs: {
-    source: { code: Variants(), language: 'html' },
-    description: { story: 'Popovers can have different color variants. Hover over the buttons to see them in action.' },
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
+<div style="display:flex; gap:12px; flex-wrap:wrap;">
+  <popover-component title="primary" content="Color: primary" variant="primary" trigger="hover" placement="auto">
+    <button-component variant="primary">primary</button-component>
+  </popover-component>
+  <popover-component title="secondary" content="Color: secondary" variant="secondary" trigger="hover" placement="auto">
+    <button-component variant="secondary">secondary</button-component>
+  </popover-component>
+  <popover-component title="success" content="Color: success" variant="success" trigger="hover" placement="auto">
+    <button-component variant="success">success</button-component>
+  </popover-component>
+  <popover-component title="warning" content="Color: warning" variant="warning" trigger="hover" placement="auto">
+    <button-component variant="warning">warning</button-component>
+  </popover-component>
+  <popover-component popover-title="danger" content="Color: danger" variant="danger" trigger="hover" placement="auto">
+    <button-component variant="danger">danger</button-component>
+  </popover-component>
+  <popover-component title="info" content="Color: info" variant="info" trigger="hover" placement="auto">
+    <button-component variant="info">info</button-component>
+  </popover-component>
+  <popover-component title="dark" content="Color: dark" variant="dark" trigger="hover" placement="auto">
+    <button-component variant="dark">dark</button-component>
+  </popover-component>
+</div>
+`),
+        language: 'html',
+      },
+      description: { story: 'Popovers can have different color variants. Hover over the buttons to see them in action.' },
+    },
   },
 };
 
-export const SuperTooltipMode = () =>
-  normalizeHtml(`
+export const SuperTooltipMode = {
+  name: 'Super Tooltip',
+  render: () =>
+    normalizeHtml(`
 <div style="display:flex; gap:12px; flex-wrap:wrap;">
   <popover-component title="Super tooltip" content="Denser visual style" super placement="auto">
     <button-component id="btn-super-1" variant="primary">Super tooltip</button-component>
@@ -283,17 +349,32 @@ export const SuperTooltipMode = () =>
     <button-component id="btn-super-2" size="plumage-size" variant="primary">Plumage Styled Super tooltip</button-component>
   </popover-component>
 </div>
-`);
-SuperTooltipMode.storyName = 'Super Tooltip';
-SuperTooltipMode.parameters = {
-  docs: {
-    source: { code: SuperTooltipMode(), language: 'html' },
-    description: { story: 'Popover in super tooltip mode via the `super` attribute.' },
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
+<div style="display:flex; gap:12px; flex-wrap:wrap;">
+  <popover-component title="Super tooltip" content="Denser visual style" super placement="auto">
+    <button-component id="btn-super-1" variant="primary">Super tooltip</button-component>
+  </popover-component>
+
+  <popover-component title="Plumage Super tooltip" content="Plumage styled Super tooltip" plumage super placement="right">
+    <button-component id="btn-super-2" size="plumage-size" variant="primary">Plumage Styled Super tooltip</button-component>
+  </popover-component>
+</div>
+`),
+        language: 'html',
+      },
+      description: { story: 'Popover in super tooltip mode via the `super` attribute.' },
+    },
   },
 };
 
-export const SlotContent = () =>
-  normalizeHtml(`
+export const SlotContent = {
+  name: 'Slot Content',
+  render: () =>
+    normalizeHtml(`
 <popover-component title="Title" placement="bottom">
   <button-component id="btn-slot-content" variant="primary">Slotted Popover Content</button-component>
 
@@ -302,20 +383,34 @@ export const SlotContent = () =>
     <a href="#">Focusable link</a>
   </template>
 </popover-component>
-`);
-SlotContent.storyName = 'Slot Content';
-SlotContent.parameters = {
-  docs: {
-    source: { code: SlotContent(), language: 'html' },
-    description: {
-      story:
-        'Use a `<template slot="content">` to provide rich HTML content for the popover body. Using `<template>` avoids rendering the content in the page while still allowing the component to inject it into the popover.',
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
+<popover-component title="Title" placement="bottom">
+  <button-component id="btn-slot-content" variant="primary">Slotted Popover Content</button-component>
+
+  <template slot="content">
+    <p><strong>Rich</strong> content with HTML.</p>
+    <a href="#">Focusable link</a>
+  </template>
+</popover-component>
+`),
+        language: 'html',
+      },
+      description: {
+        story:
+          'Use a `<template slot="content">` to provide rich HTML content for the popover body. Using `<template>` avoids rendering the content in the page while still allowing the component to inject it into the popover.',
+      },
     },
   },
 };
 
-export const NoHeader = () =>
-  normalizeHtml(`
+export const NoHeader = {
+  name: 'No Header',
+  render: () =>
+    normalizeHtml(`
 <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
   <popover-component
     title="Header suppressed"
@@ -339,20 +434,49 @@ export const NoHeader = () =>
     </button-component>
   </popover-component>
 </div>
-`);
-NoHeader.storyName = 'No Header';
-NoHeader.parameters = {
-  docs: {
-    source: { code: NoHeader(), language: 'html' },
-    description: {
-      story:
-        'Demonstrates `no-header` which suppresses rendering `.popover-header` even when `title` is set. Includes a second example using `plumage` + `super`.',
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
+<div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+  <popover-component
+    title="Header suppressed"
+    no-header
+    content="This popover has no header (even though title is set)."
+    placement="bottom"
+  >
+    <button-component id="btn-no-header" variant="primary">No Header</button-component>
+  </popover-component>
+
+  <popover-component
+    title="Plumage + Super (no header)"
+    no-header
+    plumage
+    super
+    content="No header + plumage styling + super mode."
+    placement="right"
+  >
+    <button-component id="btn-no-header-plumage-super" variant="primary" size="plumage-size">
+      No Header (Plumage + Super)
+    </button-component>
+  </popover-component>
+</div>
+`),
+        language: 'html',
+      },
+      description: {
+        story:
+          'Demonstrates `no-header` which suppresses rendering `.popover-header` even when `title` is set. Includes a second example using `plumage` + `super`.',
+      },
     },
   },
 };
 
-export const PositionsGrid = () =>
-  normalizeHtml(`
+export const PositionsGrid = {
+  name: 'Placements Grid',
+  render: () =>
+    normalizeHtml(`
 <div style="display:flex; gap:12px; flex-wrap:wrap;">
   <popover-component title="top" content="This is the top position" placement="top"><button-component variant="secondary" outlined>Top position</button-component></popover-component>
   <popover-component title="top-start" content="This is the top-start position" placement="top-start"><button-component variant="secondary" outlined>Top-start position</button-component></popover-component>
@@ -367,31 +491,60 @@ export const PositionsGrid = () =>
   <popover-component title="bottom-end" content="This is the bottom-end position" placement="bottom-end"><button-component variant="secondary" outlined>Bottom-end position</button-component></popover-component>
   <popover-component title="right" content="This is the right position" placement="right"><button-component variant="secondary" outlined>Right position</button-component></popover-component>
 </div>
-`);
-PositionsGrid.storyName = 'Placements Grid';
-PositionsGrid.parameters = {
-  docs: {
-    source: { code: PositionsGrid(), language: 'html' },
-    description: { story: 'Quick visual grid of supported Popper-style placements (start/end).' },
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
+<div style="display:flex; gap:12px; flex-wrap:wrap;">
+  <popover-component title="top" content="This is the top position" placement="top"><button-component variant="secondary" outlined>Top position</button-component></popover-component>
+  <popover-component title="top-start" content="This is the top-start position" placement="top-start"><button-component variant="secondary" outlined>Top-start position</button-component></popover-component>
+  <popover-component title="top-end" content="This is the top-end position" placement="top-end"><button-component variant="secondary" outlined>Top-end position</button-component></popover-component>
+  <popover-component title="left" content="This is the left position" placement="left"><button-component variant="secondary" outlined>Left position</button-component></popover-component>
+  <popover-component title="left-start" content="This is the left-start position" placement="left-start"><button-component variant="secondary" outlined>Left-start position</button-component></popover-component>
+  <popover-component title="left-end" content="This is the left-end position" placement="left-end"><button-component variant="secondary" outlined>Left-end position</button-component></popover-component>
+  <popover-component title="right-start" content="This is the right-start position" placement="right-start"><button-component variant="secondary" outlined>Right-start position</button-component></popover-component>
+  <popover-component title="right-end" content="This is the right-end position" placement="right-end"><button-component variant="secondary" outlined>Right-end position</button-component></popover-component>
+  <popover-component title="bottom" content="This is the bottom position" placement="bottom"><button-component variant="secondary" outlined>Bottom position</button-component></popover-component>
+  <popover-component title="bottom-start" content="This is the bottom-start position" placement="bottom-start"><button-component variant="secondary" outlined>Bottom-start position</button-component></popover-component>
+  <popover-component title="bottom-end" content="This is the bottom-end position" placement="bottom-end"><button-component variant="secondary" outlined>Bottom-end position</button-component></popover-component>
+  <popover-component title="right" content="This is the right position" placement="right"><button-component variant="secondary" outlined>Right position</button-component></popover-component>
+</div>
+`),
+        language: 'html',
+      },
+      description: { story: 'Quick visual grid of supported Popper-style placements (start/end).' },
+    },
   },
 };
 
-export const OffsetAndY = () =>
-  normalizeHtml(`
+export const OffsetAndY = {
+  name: 'Offset + Y Offset',
+  render: () =>
+    normalizeHtml(`
 <popover-component title="Offset demo" content="offset=16, y-offset=0" placement="auto" offset="16" y-offset="0">
   <button class="btn btn-outline-primary" type="button">Offset Popover</button>
 </popover-component>
-`);
-OffsetAndY.storyName = 'Offset + Y Offset';
-OffsetAndY.parameters = {
-  docs: {
-    source: { code: OffsetAndY(), language: 'html' },
-    description: { story: 'Demonstrates main-axis offset and cross-axis y-offset.' },
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
+<popover-component title="Offset demo" content="offset=16, y-offset=0" placement="auto" offset="16" y-offset="0">
+  <button class="btn btn-outline-primary" type="button">Offset Popover</button>
+</popover-component>
+`),
+        language: 'html',
+      },
+      description: { story: 'Demonstrates main-axis offset and cross-axis y-offset.' },
+    },
   },
 };
 
-export const ExternalTarget = () =>
-  normalizeHtml(`
+export const ExternalTarget = {
+  name: 'External Target',
+  render: () =>
+    normalizeHtml(`
 <button id="ext-popover-trigger" class="btn btn-primary" type="button">External trigger</button>
 
 <popover-component
@@ -401,12 +554,25 @@ export const ExternalTarget = () =>
   trigger="click"
   target="ext-popover-trigger"
 ></popover-component>
-`);
-ExternalTarget.storyName = 'External Target';
-ExternalTarget.parameters = {
-  docs: {
-    source: { code: ExternalTarget(), language: 'html' },
-    description: { story: 'Attach the popover to an external trigger element via `target`.' },
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
+<button id="ext-popover-trigger" class="btn btn-primary" type="button">External trigger</button>
+
+<popover-component
+  title="External"
+  content="I am attached via target id"
+  placement="bottom"
+  trigger="click"
+  target="ext-popover-trigger"
+></popover-component>
+`),
+        language: 'html',
+      },
+      description: { story: 'Attach the popover to an external trigger element via `target`.' },
+    },
   },
 };
 
@@ -451,7 +617,7 @@ export const AccessibilityMatrix = {
       pre.textContent = 'Loading…';
 
       const mount = document.createElement('div');
-      mount.innerHTML = Template({ ...BasicPopover.args, ...args, ...storyArgs });
+      mount.innerHTML = Template({ ...baseArgs, ...args, ...storyArgs });
       const host = mount.querySelector('popover-component');
 
       demo.appendChild(mount);

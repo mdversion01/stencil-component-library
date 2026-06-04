@@ -386,7 +386,7 @@ export const Basic = {
     value: [],
   },
 };
-Basic.storyName = 'Basic';
+Basic.name = 'Basic';
 Basic.parameters = {
   docs: {
     description: { story: 'The default configuration of the component with basic args.' },
@@ -402,7 +402,7 @@ export const HorizontalLayout = {
     inputCol: '8',
   },
 };
-HorizontalLayout.storyName = 'Horizontal Layout';
+HorizontalLayout.name = 'Horizontal Layout';
 HorizontalLayout.parameters = {
   docs: {
     description: {
@@ -419,7 +419,7 @@ export const InlineLayout = {
     labelAlign: '',
   },
 };
-InlineLayout.storyName = 'Inline Layout';
+InlineLayout.name = 'Inline Layout';
 InlineLayout.parameters = {
   docs: {
     description: { story: 'Applies an inline layout where the label and input are displayed in a single line.' },
@@ -434,7 +434,7 @@ export const EditableDropdown = {
     clearInputOnBlurOutside: false,
   },
 };
-EditableDropdown.storyName = 'Adding new items to the dropdown list (Editable)';
+EditableDropdown.name = 'Adding new items to the dropdown list (Editable)';
 EditableDropdown.parameters = {
   docs: {
     description: {
@@ -518,7 +518,7 @@ export const ControlledValue = {
     },
   },
 };
-ControlledValue.storyName = 'Controlled Value (array)';
+ControlledValue.name = 'Controlled Value (array)';
 
 export const Sizes = {
   render: (args) => {
@@ -566,7 +566,7 @@ export const Sizes = {
     },
   },
 };
-Sizes.storyName = 'Sizes';
+Sizes.name = 'Sizes';
 
 export const FieldValidation = {
   args: {
@@ -575,7 +575,7 @@ export const FieldValidation = {
     required: true,
   },
 };
-FieldValidation.storyName = 'Required with Validation Message';
+FieldValidation.name = 'Required with Validation Message';
 FieldValidation.parameters = {
   docs: {
     description: {
@@ -600,7 +600,7 @@ export const Disabled = {
     value: ['Banana', 'Cherry'],
   },
 };
-Disabled.storyName = 'Disabled';
+Disabled.name = 'Disabled';
 Disabled.parameters = {
   docs: {
     description: {
@@ -620,7 +620,7 @@ export const BadgeStyling = {
     badgeInlineStyles: 'border-radius:14px; font-weight:600;',
   },
 };
-BadgeStyling.storyName = 'Custom Badge Styling';
+BadgeStyling.name = 'Custom Badge Styling';
 BadgeStyling.parameters = {
   docs: {
     description: {

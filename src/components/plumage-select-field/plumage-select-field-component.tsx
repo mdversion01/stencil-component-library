@@ -11,12 +11,12 @@ type _SelectOption = { value: string; name: string };
 export class PlumageSelectFieldComponent {
   @Element() host!: HTMLElement;
 
-  // ----------------- props (unchanged) -----------------
   @Prop() classes: string = '';
   @Prop() custom: boolean = false;
   @Prop() defaultTxt: string = '';
   @Prop() defaultOptionTxt: string = 'Select an option';
   @Prop() disabled: boolean = false;
+  @Prop() readOnly: boolean = false;
   @Prop() fieldHeight: number = null;
   @Prop({ mutable: true }) formLayout: '' | 'horizontal' | 'inline' = '';
   @Prop({ mutable: true }) formId: string = '';
@@ -39,12 +39,10 @@ export class PlumageSelectFieldComponent {
   @Prop() labelCols: string = '';
   @Prop() inputCols: string = '';
 
-  // ----------------- a11y override props -----------------
   @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
   @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
 
-  // ----------------- state -----------------
   @State() private valueState: string | string[] = '';
   @State() private validationState: boolean = false;
   @State() private _resolvedFormId: string = '';
@@ -55,7 +53,6 @@ export class PlumageSelectFieldComponent {
 
   @Event() valueChange!: EventEmitter<string | string[]>;
 
-  // ----------------- watchers -----------------
   @Watch('value')
   onValuePropChange(v: string | string[]) {
     this.valueState = v ?? (this.multiple ? [] : '');
@@ -99,7 +96,6 @@ export class PlumageSelectFieldComponent {
     this._safeDefaultOptionTxt = this.sanitizeText(trimmed || 'Select an option');
   }
 
-  // ----------------- lifecycle -----------------
   connectedCallback() {
     const formComponent = this.host.closest('form-component') as any;
     const fcFormId = formComponent?.formId;
@@ -150,7 +146,6 @@ export class PlumageSelectFieldComponent {
     }
   }
 
-  // ----------------- table interop -----------------
   private updateSortField = (event: any) => {
     if ((this.host.id || '').includes('sortField')) {
       this.valueState = event?.detail?.value || 'none';
@@ -175,7 +170,6 @@ export class PlumageSelectFieldComponent {
     }
   };
 
-  // ----------------- interactions -----------------
   private expandUnderline = () => {
     const bFocusDiv = this.host.querySelector<HTMLDivElement>('.b-focus');
     if (bFocusDiv) {
@@ -183,6 +177,7 @@ export class PlumageSelectFieldComponent {
       bFocusDiv.style.left = '0';
     }
   };
+
   private collapseUnderline = () => {
     const bFocusDiv = this.host.querySelector<HTMLDivElement>('.b-focus');
     if (bFocusDiv) {
@@ -190,29 +185,44 @@ export class PlumageSelectFieldComponent {
       bFocusDiv.style.left = '50%';
     }
   };
+
   private handleInteraction = (event: Event) => {
     event.stopPropagation();
+    if (this.disabled || this.readOnly) return;
     this.expandUnderline();
   };
-  private handleFocus = (e: Event) => this.handleInteraction(e);
+
+  private handleFocus = (event: Event) => {
+    if (this.disabled || this.readOnly) return;
+    this.handleInteraction(event);
+  };
+
   private handleBlur = () => this.collapseUnderline();
+
   private handleDocumentClick = (e: MouseEvent) => {
     if (!this.host.contains(e.target as Node)) this.collapseUnderline();
   };
 
-  // ----------------- form attribute -----------------
   private applyFormAttribute() {
     if (!this.selectEl) return;
     if (this._resolvedFormId) this.selectEl.setAttribute('form', this._resolvedFormId);
     else this.selectEl.removeAttribute('form');
   }
+
   private handleInput = (ev: Event) => {
     const target = ev.target as HTMLSelectElement;
     if (this._resolvedFormId) target.setAttribute('form', this._resolvedFormId);
     else target.removeAttribute('form');
+
+    if (this.readOnly) {
+      if (this.multiple && Array.isArray(this.valueState)) {
+        this.applyMultiSelection(target, this.valueState);
+      } else if (typeof this.valueState === 'string') {
+        target.value = this.valueState;
+      }
+    }
   };
 
-  // ----------------- validation helpers -----------------
   private showAsRequired(): boolean {
     return !!this.required && this.isEmptySelection();
   }
@@ -284,6 +294,15 @@ export class PlumageSelectFieldComponent {
   private handleChange = (ev: Event) => {
     const sel = ev.target as HTMLSelectElement;
 
+    if (this.readOnly) {
+      if (this.multiple && Array.isArray(this.valueState)) {
+        this.applyMultiSelection(sel, this.valueState);
+      } else if (typeof this.valueState === 'string') {
+        sel.value = this.valueState;
+      }
+      return;
+    }
+
     let next: string | string[] = this.multiple
       ? Array.from(sel.querySelectorAll('option'))
           .filter(o => (o as HTMLOptionElement).selected)
@@ -307,14 +326,15 @@ export class PlumageSelectFieldComponent {
     this.reflectInvalidClass();
   };
 
-  // ----------------- utils & layout helpers -----------------
   private camelCase(str: string) {
     if (!str) return '';
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase())).replace(/\s+/g, '');
   }
+
   private sanitizeText(v: string): string {
     return (v ?? '').replace(/[<>]/g, '');
   }
+
   private normalizeOptions(input: Array<{ value: string; name: string }> | string): _SelectOption[] {
     if (Array.isArray(input)) return input.map(o => ({ value: String(o?.value ?? ''), name: String(o?.name ?? '') }));
     if (typeof input !== 'string') return [];
@@ -326,6 +346,7 @@ export class PlumageSelectFieldComponent {
       return [];
     }
   }
+
   private applyMultiSelection(sel?: HTMLSelectElement, v?: string[] | string) {
     if (!sel || !Array.isArray(v)) return;
     const set = new Set(v);
@@ -335,9 +356,11 @@ export class PlumageSelectFieldComponent {
   private isHorizontal() {
     return this.formLayout === 'horizontal';
   }
+
   private isInline() {
     return this.formLayout === 'inline';
   }
+
   private parseColsSpec(spec?: string): string {
     if (!spec) return '';
     const tokens = spec.trim().split(/\s+/);
@@ -363,6 +386,7 @@ export class PlumageSelectFieldComponent {
     }
     return Array.from(new Set(out)).join(' ');
   }
+
   private buildColClass(kind: 'label' | 'input'): string {
     const spec = (kind === 'label' ? this.labelCols : this.inputCols)?.trim();
     if (this.isHorizontal()) {
@@ -375,6 +399,7 @@ export class PlumageSelectFieldComponent {
     if (this.isInline()) return spec ? this.parseColsSpec(spec) : '';
     return '';
   }
+
   private getComputedCols() {
     const DEFAULT_LABEL = 2;
     const DEFAULT_INPUT = 10;
@@ -393,7 +418,6 @@ export class PlumageSelectFieldComponent {
     return { label, input };
   }
 
-  // ----------------- accessibility id helpers -----------------
   private buildA11yBaseId(selectId: string, nameId: string): string {
     const fallback = this.host?.id || 'plumageSelect';
     return selectId || nameId || fallback;
@@ -424,7 +448,6 @@ export class PlumageSelectFieldComponent {
     return Array.from(new Set(merged)).join(' ');
   }
 
-  // ----------------- render -----------------
   private renderSelectLabel(selectId: string, nameId: string, labelColClass?: string) {
     if (this.labelHidden) return null;
 
@@ -490,6 +513,7 @@ export class PlumageSelectFieldComponent {
           aria-labelledby={ariaLabelledBy}
           aria-describedby={describedByWithValidation}
           aria-required={this.required ? 'true' : null}
+          aria-readonly={this.readOnly ? 'true' : undefined}
           required={this.required}
           aria-invalid={isInvalidNow ? 'true' : null}
           size={this.fieldHeight || undefined}
@@ -526,7 +550,7 @@ export class PlumageSelectFieldComponent {
         </select>
 
         <div class={`b-underline${isInvalidNow ? ' invalid' : ''}`} role="presentation">
-          <div class={`b-focus${this.disabled ? ' disabled' : ''}${isInvalidNow ? ' invalid' : ''}`} role="presentation" aria-hidden="true" />
+          <div class={`b-focus${this.disabled || this.readOnly ? ' disabled' : ''}${isInvalidNow ? ' invalid' : ''}`} role="presentation" aria-hidden="true" />
         </div>
 
         {isInvalidNow && this.validationMessage ? (

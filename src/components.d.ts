@@ -2044,6 +2044,10 @@ export namespace Components {
         /**
           * @default false
          */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
         /**
           * @default ''
@@ -3042,6 +3046,10 @@ export namespace Components {
         /**
           * @default false
          */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
         /**
           * @default ''
@@ -3143,6 +3151,10 @@ export namespace Components {
         /**
           * @default false
          */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
         /**
           * @default ''
@@ -3172,6 +3184,100 @@ export namespace Components {
           * @default false
          */
         "withTable": boolean;
+    }
+    interface PlumageTextareaComponent {
+        "ariaDescribedby"?: string;
+        /**
+          * Standard ARIA naming hooks
+         */
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
+        /**
+          * Legacy: matches other components in this library.
+          * @deprecated Prefer `ariaLabelledby` (mapped to aria-labelledby).
+          * @default ''
+         */
+        "arialabelledBy": string;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default ''
+         */
+        "formId": string;
+        /**
+          * @default ''
+         */
+        "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
+        "inputCol": number;
+        /**
+          * @default ''
+         */
+        "inputCols": string;
+        /**
+          * @default ''
+         */
+        "inputId": string;
+        /**
+          * @default ''
+         */
+        "label": string;
+        /**
+          * @default ''
+         */
+        "labelAlign": '' | 'right';
+        /**
+          * Legacy numeric cols (fallback)
+          * @default 2
+         */
+        "labelCol": number;
+        /**
+          * Responsive column class specs
+          * @default ''
+         */
+        "labelCols": string;
+        /**
+          * @default false
+         */
+        "labelHidden": boolean;
+        /**
+          * @default 'sm'
+         */
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        "maxLength"?: number;
+        "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        /**
+          * @default 3
+         */
+        "rows": number;
+        /**
+          * @default ''
+         */
+        "textareaTextSize": '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
+        "validation": boolean;
+        /**
+          * @default ''
+         */
+        "validationMessage": string;
+        /**
+          * @default ''
+         */
+        "value": string;
     }
     interface PlumageTimepickerComponent {
         /**
@@ -4186,6 +4292,88 @@ export namespace Components {
          */
         "usePagination": boolean;
     }
+    interface TextareaComponent {
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default ''
+         */
+        "formId": string;
+        /**
+          * @default ''
+         */
+        "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
+        "inputCol": number;
+        /**
+          * @default ''
+         */
+        "inputCols": string;
+        /**
+          * @default ''
+         */
+        "inputId": string;
+        /**
+          * @default ''
+         */
+        "label": string;
+        /**
+          * @default ''
+         */
+        "labelAlign": '' | 'right';
+        /**
+          * Legacy numeric cols (fallback)
+          * @default 2
+         */
+        "labelCol": number;
+        /**
+          * Responsive column class specs
+          * @default ''
+         */
+        "labelCols": string;
+        /**
+          * @default false
+         */
+        "labelHidden": boolean;
+        /**
+          * @default 'sm'
+         */
+        "labelSize": '' | 'xs' | 'sm' | 'lg';
+        "maxLength"?: number;
+        "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        /**
+          * @default 3
+         */
+        "rows": number;
+        /**
+          * @default ''
+         */
+        "textareaTextSize": '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
+        "validation": boolean;
+        /**
+          * @default ''
+         */
+        "validationMessage": string;
+        /**
+          * @default ''
+         */
+        "value": string;
+    }
     interface TimepickerComponent {
         /**
           * @default ''
@@ -4683,6 +4871,10 @@ export interface PlumageSelectFieldComponentCustomEvent<T> extends CustomEvent<T
     detail: T;
     target: HTMLPlumageSelectFieldComponentElement;
 }
+export interface PlumageTextareaComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPlumageTextareaComponentElement;
+}
 export interface PlumageTimepickerComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLPlumageTimepickerComponentElement;
@@ -4706,6 +4898,10 @@ export interface StandardPaginationComponentCustomEvent<T> extends CustomEvent<T
 export interface TableComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLTableComponentElement;
+}
+export interface TextareaComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLTextareaComponentElement;
 }
 export interface TimepickerComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -5248,6 +5444,24 @@ declare global {
         prototype: HTMLPlumageSelectFieldComponentElement;
         new (): HTMLPlumageSelectFieldComponentElement;
     };
+    interface HTMLPlumageTextareaComponentElementEventMap {
+        "valueChange": string;
+        "blurChange": string;
+    }
+    interface HTMLPlumageTextareaComponentElement extends Components.PlumageTextareaComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLPlumageTextareaComponentElementEventMap>(type: K, listener: (this: HTMLPlumageTextareaComponentElement, ev: PlumageTextareaComponentCustomEvent<HTMLPlumageTextareaComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLPlumageTextareaComponentElementEventMap>(type: K, listener: (this: HTMLPlumageTextareaComponentElement, ev: PlumageTextareaComponentCustomEvent<HTMLPlumageTextareaComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLPlumageTextareaComponentElement: {
+        prototype: HTMLPlumageTextareaComponentElement;
+        new (): HTMLPlumageTextareaComponentElement;
+    };
     interface HTMLPlumageTimepickerComponentElementEventMap {
         "timeChange": TimeChangeDetail;
         "timeInput": TimeInputDetail;
@@ -5378,6 +5592,24 @@ declare global {
         prototype: HTMLTableComponentElement;
         new (): HTMLTableComponentElement;
     };
+    interface HTMLTextareaComponentElementEventMap {
+        "valueChange": string;
+        "blurChange": string;
+    }
+    interface HTMLTextareaComponentElement extends Components.TextareaComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLTextareaComponentElementEventMap>(type: K, listener: (this: HTMLTextareaComponentElement, ev: TextareaComponentCustomEvent<HTMLTextareaComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLTextareaComponentElementEventMap>(type: K, listener: (this: HTMLTextareaComponentElement, ev: TextareaComponentCustomEvent<HTMLTextareaComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLTextareaComponentElement: {
+        prototype: HTMLTextareaComponentElement;
+        new (): HTMLTextareaComponentElement;
+    };
     interface HTMLTimepickerComponentElementEventMap {
         "timeChange": TimeChangeDetail1;
         "timeInput": TimeInputDetail1;
@@ -5491,6 +5723,7 @@ declare global {
         "plumage-input-field-component": HTMLPlumageInputFieldComponentElement;
         "plumage-input-group-component": HTMLPlumageInputGroupComponentElement;
         "plumage-select-field-component": HTMLPlumageSelectFieldComponentElement;
+        "plumage-textarea-component": HTMLPlumageTextareaComponentElement;
         "plumage-timepicker-component": HTMLPlumageTimepickerComponentElement;
         "popover-component": HTMLPopoverComponentElement;
         "progress-display-component": HTMLProgressDisplayComponentElement;
@@ -5501,6 +5734,7 @@ declare global {
         "standard-pagination-component": HTMLStandardPaginationComponentElement;
         "svg-component": HTMLSvgComponentElement;
         "table-component": HTMLTableComponentElement;
+        "textarea-component": HTMLTextareaComponentElement;
         "timepicker-component": HTMLTimepickerComponentElement;
         "timepicker-manager": HTMLTimepickerManagerElement;
         "toasts-component": HTMLToastsComponentElement;
@@ -7565,6 +7799,10 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
         /**
           * @default ''
@@ -8574,6 +8812,10 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
         /**
           * @default ''
@@ -8676,6 +8918,10 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
         /**
           * @default ''
@@ -8705,6 +8951,102 @@ declare namespace LocalJSX {
           * @default false
          */
         "withTable"?: boolean;
+    }
+    interface PlumageTextareaComponent {
+        "ariaDescribedby"?: string;
+        /**
+          * Standard ARIA naming hooks
+         */
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
+        /**
+          * Legacy: matches other components in this library.
+          * @deprecated Prefer `ariaLabelledby` (mapped to aria-labelledby).
+          * @default ''
+         */
+        "arialabelledBy"?: string;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default ''
+         */
+        "formId"?: string;
+        /**
+          * @default ''
+         */
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
+        "inputCol"?: number;
+        /**
+          * @default ''
+         */
+        "inputCols"?: string;
+        /**
+          * @default ''
+         */
+        "inputId"?: string;
+        /**
+          * @default ''
+         */
+        "label"?: string;
+        /**
+          * @default ''
+         */
+        "labelAlign"?: '' | 'right';
+        /**
+          * Legacy numeric cols (fallback)
+          * @default 2
+         */
+        "labelCol"?: number;
+        /**
+          * Responsive column class specs
+          * @default ''
+         */
+        "labelCols"?: string;
+        /**
+          * @default false
+         */
+        "labelHidden"?: boolean;
+        /**
+          * @default 'sm'
+         */
+        "labelSize"?: 'base' | 'xs' | 'sm' | 'lg';
+        "maxLength"?: number;
+        "onBlurChange"?: (event: PlumageTextareaComponentCustomEvent<string>) => void;
+        "onValueChange"?: (event: PlumageTextareaComponentCustomEvent<string>) => void;
+        "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * @default 3
+         */
+        "rows"?: number;
+        /**
+          * @default ''
+         */
+        "textareaTextSize"?: '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
+        "validation"?: boolean;
+        /**
+          * @default ''
+         */
+        "validationMessage"?: string;
+        /**
+          * @default ''
+         */
+        "value"?: string;
     }
     interface PlumageTimepickerComponent {
         /**
@@ -9727,6 +10069,90 @@ declare namespace LocalJSX {
          */
         "usePagination"?: boolean;
     }
+    interface TextareaComponent {
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default ''
+         */
+        "formId"?: string;
+        /**
+          * @default ''
+         */
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 10
+         */
+        "inputCol"?: number;
+        /**
+          * @default ''
+         */
+        "inputCols"?: string;
+        /**
+          * @default ''
+         */
+        "inputId"?: string;
+        /**
+          * @default ''
+         */
+        "label"?: string;
+        /**
+          * @default ''
+         */
+        "labelAlign"?: '' | 'right';
+        /**
+          * Legacy numeric cols (fallback)
+          * @default 2
+         */
+        "labelCol"?: number;
+        /**
+          * Responsive column class specs
+          * @default ''
+         */
+        "labelCols"?: string;
+        /**
+          * @default false
+         */
+        "labelHidden"?: boolean;
+        /**
+          * @default 'sm'
+         */
+        "labelSize"?: '' | 'xs' | 'sm' | 'lg';
+        "maxLength"?: number;
+        "onBlurChange"?: (event: TextareaComponentCustomEvent<string>) => void;
+        "onValueChange"?: (event: TextareaComponentCustomEvent<string>) => void;
+        "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * @default 3
+         */
+        "rows"?: number;
+        /**
+          * @default ''
+         */
+        "textareaTextSize"?: '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
+        "validation"?: boolean;
+        /**
+          * @default ''
+         */
+        "validationMessage"?: string;
+        /**
+          * @default ''
+         */
+        "value"?: string;
+    }
     interface TimepickerComponent {
         /**
           * @default ''
@@ -10644,6 +11070,7 @@ declare namespace LocalJSX {
         "labelAlign": '' | 'right';
         "labelHidden": boolean;
         "placeholder": string;
+        "readOnly": boolean;
         "prependField": boolean;
         "prependId": string;
         "prependButtonId": string;
@@ -10892,6 +11319,7 @@ declare namespace LocalJSX {
         "labelSize": 'base' | 'xs' | 'sm' | 'lg';
         "labelAlign": '' | 'right';
         "required": boolean;
+        "readOnly": boolean;
         "size": '' | 'sm' | 'lg';
         "type": string;
         "placeholder": string;
@@ -10933,6 +11361,7 @@ declare namespace LocalJSX {
         "defaultTxt": string;
         "defaultOptionTxt": string;
         "disabled": boolean;
+        "readOnly": boolean;
         "fieldHeight": number;
         "formLayout": '' | 'horizontal' | 'inline';
         "formId": string;
@@ -10957,6 +11386,33 @@ declare namespace LocalJSX {
         "ariaLabel": string;
         "ariaLabelledby": string;
         "ariaDescribedby": string;
+    }
+    interface PlumageTextareaComponentAttributes {
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "inputId": string;
+        "textareaTextSize": '' | 'sm' | 'lg';
+        "label": string;
+        "labelSize": 'base' | 'xs' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "readOnly": boolean;
+        "required": boolean;
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
+        "placeholder": string;
+        "rows": number;
+        "maxLength": number;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+        "arialabelledBy": string;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
     }
     interface PlumageTimepickerComponentAttributes {
         "ariaLabel": string;
@@ -11269,6 +11725,29 @@ declare namespace LocalJSX {
         "ariaLabelledby": string;
         "ariaDescribedby": string;
     }
+    interface TextareaComponentAttributes {
+        "disabled": boolean;
+        "formId": string;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "inputId": string;
+        "textareaTextSize": '' | 'sm' | 'lg';
+        "label": string;
+        "labelSize": '' | 'xs' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "readOnly": boolean;
+        "required": boolean;
+        "validation": boolean;
+        "validationMessage": string;
+        "value": string;
+        "placeholder": string;
+        "rows": number;
+        "maxLength": number;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+    }
     interface TimepickerComponentAttributes {
         "ariaLabel": string;
         "ariaLabelledby": string;
@@ -11407,6 +11886,7 @@ declare namespace LocalJSX {
         "plumage-input-field-component": Omit<PlumageInputFieldComponent, keyof PlumageInputFieldComponentAttributes> & { [K in keyof PlumageInputFieldComponent & keyof PlumageInputFieldComponentAttributes]?: PlumageInputFieldComponent[K] } & { [K in keyof PlumageInputFieldComponent & keyof PlumageInputFieldComponentAttributes as `attr:${K}`]?: PlumageInputFieldComponentAttributes[K] } & { [K in keyof PlumageInputFieldComponent & keyof PlumageInputFieldComponentAttributes as `prop:${K}`]?: PlumageInputFieldComponent[K] };
         "plumage-input-group-component": Omit<PlumageInputGroupComponent, keyof PlumageInputGroupComponentAttributes> & { [K in keyof PlumageInputGroupComponent & keyof PlumageInputGroupComponentAttributes]?: PlumageInputGroupComponent[K] } & { [K in keyof PlumageInputGroupComponent & keyof PlumageInputGroupComponentAttributes as `attr:${K}`]?: PlumageInputGroupComponentAttributes[K] } & { [K in keyof PlumageInputGroupComponent & keyof PlumageInputGroupComponentAttributes as `prop:${K}`]?: PlumageInputGroupComponent[K] };
         "plumage-select-field-component": Omit<PlumageSelectFieldComponent, keyof PlumageSelectFieldComponentAttributes> & { [K in keyof PlumageSelectFieldComponent & keyof PlumageSelectFieldComponentAttributes]?: PlumageSelectFieldComponent[K] } & { [K in keyof PlumageSelectFieldComponent & keyof PlumageSelectFieldComponentAttributes as `attr:${K}`]?: PlumageSelectFieldComponentAttributes[K] } & { [K in keyof PlumageSelectFieldComponent & keyof PlumageSelectFieldComponentAttributes as `prop:${K}`]?: PlumageSelectFieldComponent[K] };
+        "plumage-textarea-component": Omit<PlumageTextareaComponent, keyof PlumageTextareaComponentAttributes> & { [K in keyof PlumageTextareaComponent & keyof PlumageTextareaComponentAttributes]?: PlumageTextareaComponent[K] } & { [K in keyof PlumageTextareaComponent & keyof PlumageTextareaComponentAttributes as `attr:${K}`]?: PlumageTextareaComponentAttributes[K] } & { [K in keyof PlumageTextareaComponent & keyof PlumageTextareaComponentAttributes as `prop:${K}`]?: PlumageTextareaComponent[K] };
         "plumage-timepicker-component": Omit<PlumageTimepickerComponent, keyof PlumageTimepickerComponentAttributes> & { [K in keyof PlumageTimepickerComponent & keyof PlumageTimepickerComponentAttributes]?: PlumageTimepickerComponent[K] } & { [K in keyof PlumageTimepickerComponent & keyof PlumageTimepickerComponentAttributes as `attr:${K}`]?: PlumageTimepickerComponentAttributes[K] } & { [K in keyof PlumageTimepickerComponent & keyof PlumageTimepickerComponentAttributes as `prop:${K}`]?: PlumageTimepickerComponent[K] };
         "popover-component": Omit<PopoverComponent, keyof PopoverComponentAttributes> & { [K in keyof PopoverComponent & keyof PopoverComponentAttributes]?: PopoverComponent[K] } & { [K in keyof PopoverComponent & keyof PopoverComponentAttributes as `attr:${K}`]?: PopoverComponentAttributes[K] } & { [K in keyof PopoverComponent & keyof PopoverComponentAttributes as `prop:${K}`]?: PopoverComponent[K] };
         "progress-display-component": Omit<ProgressDisplayComponent, keyof ProgressDisplayComponentAttributes> & { [K in keyof ProgressDisplayComponent & keyof ProgressDisplayComponentAttributes]?: ProgressDisplayComponent[K] } & { [K in keyof ProgressDisplayComponent & keyof ProgressDisplayComponentAttributes as `attr:${K}`]?: ProgressDisplayComponentAttributes[K] } & { [K in keyof ProgressDisplayComponent & keyof ProgressDisplayComponentAttributes as `prop:${K}`]?: ProgressDisplayComponent[K] };
@@ -11417,6 +11897,7 @@ declare namespace LocalJSX {
         "standard-pagination-component": Omit<StandardPaginationComponent, keyof StandardPaginationComponentAttributes> & { [K in keyof StandardPaginationComponent & keyof StandardPaginationComponentAttributes]?: StandardPaginationComponent[K] } & { [K in keyof StandardPaginationComponent & keyof StandardPaginationComponentAttributes as `attr:${K}`]?: StandardPaginationComponentAttributes[K] } & { [K in keyof StandardPaginationComponent & keyof StandardPaginationComponentAttributes as `prop:${K}`]?: StandardPaginationComponent[K] };
         "svg-component": Omit<SvgComponent, keyof SvgComponentAttributes> & { [K in keyof SvgComponent & keyof SvgComponentAttributes]?: SvgComponent[K] } & { [K in keyof SvgComponent & keyof SvgComponentAttributes as `attr:${K}`]?: SvgComponentAttributes[K] } & { [K in keyof SvgComponent & keyof SvgComponentAttributes as `prop:${K}`]?: SvgComponent[K] };
         "table-component": Omit<TableComponent, keyof TableComponentAttributes> & { [K in keyof TableComponent & keyof TableComponentAttributes]?: TableComponent[K] } & { [K in keyof TableComponent & keyof TableComponentAttributes as `attr:${K}`]?: TableComponentAttributes[K] } & { [K in keyof TableComponent & keyof TableComponentAttributes as `prop:${K}`]?: TableComponent[K] };
+        "textarea-component": Omit<TextareaComponent, keyof TextareaComponentAttributes> & { [K in keyof TextareaComponent & keyof TextareaComponentAttributes]?: TextareaComponent[K] } & { [K in keyof TextareaComponent & keyof TextareaComponentAttributes as `attr:${K}`]?: TextareaComponentAttributes[K] } & { [K in keyof TextareaComponent & keyof TextareaComponentAttributes as `prop:${K}`]?: TextareaComponent[K] };
         "timepicker-component": Omit<TimepickerComponent, keyof TimepickerComponentAttributes> & { [K in keyof TimepickerComponent & keyof TimepickerComponentAttributes]?: TimepickerComponent[K] } & { [K in keyof TimepickerComponent & keyof TimepickerComponentAttributes as `attr:${K}`]?: TimepickerComponentAttributes[K] } & { [K in keyof TimepickerComponent & keyof TimepickerComponentAttributes as `prop:${K}`]?: TimepickerComponent[K] };
         "timepicker-manager": Omit<TimepickerManager, keyof TimepickerManagerAttributes> & { [K in keyof TimepickerManager & keyof TimepickerManagerAttributes]?: TimepickerManager[K] } & { [K in keyof TimepickerManager & keyof TimepickerManagerAttributes as `attr:${K}`]?: TimepickerManagerAttributes[K] } & { [K in keyof TimepickerManager & keyof TimepickerManagerAttributes as `prop:${K}`]?: TimepickerManager[K] };
         "toasts-component": Omit<ToastsComponent, keyof ToastsComponentAttributes> & { [K in keyof ToastsComponent & keyof ToastsComponentAttributes]?: ToastsComponent[K] } & { [K in keyof ToastsComponent & keyof ToastsComponentAttributes as `attr:${K}`]?: ToastsComponentAttributes[K] } & { [K in keyof ToastsComponent & keyof ToastsComponentAttributes as `prop:${K}`]?: ToastsComponent[K] };
@@ -11465,6 +11946,7 @@ declare module "@stencil/core" {
             "plumage-input-field-component": LocalJSX.IntrinsicElements["plumage-input-field-component"] & JSXBase.HTMLAttributes<HTMLPlumageInputFieldComponentElement>;
             "plumage-input-group-component": LocalJSX.IntrinsicElements["plumage-input-group-component"] & JSXBase.HTMLAttributes<HTMLPlumageInputGroupComponentElement>;
             "plumage-select-field-component": LocalJSX.IntrinsicElements["plumage-select-field-component"] & JSXBase.HTMLAttributes<HTMLPlumageSelectFieldComponentElement>;
+            "plumage-textarea-component": LocalJSX.IntrinsicElements["plumage-textarea-component"] & JSXBase.HTMLAttributes<HTMLPlumageTextareaComponentElement>;
             "plumage-timepicker-component": LocalJSX.IntrinsicElements["plumage-timepicker-component"] & JSXBase.HTMLAttributes<HTMLPlumageTimepickerComponentElement>;
             "popover-component": LocalJSX.IntrinsicElements["popover-component"] & JSXBase.HTMLAttributes<HTMLPopoverComponentElement>;
             "progress-display-component": LocalJSX.IntrinsicElements["progress-display-component"] & JSXBase.HTMLAttributes<HTMLProgressDisplayComponentElement>;
@@ -11475,6 +11957,7 @@ declare module "@stencil/core" {
             "standard-pagination-component": LocalJSX.IntrinsicElements["standard-pagination-component"] & JSXBase.HTMLAttributes<HTMLStandardPaginationComponentElement>;
             "svg-component": LocalJSX.IntrinsicElements["svg-component"] & JSXBase.HTMLAttributes<HTMLSvgComponentElement>;
             "table-component": LocalJSX.IntrinsicElements["table-component"] & JSXBase.HTMLAttributes<HTMLTableComponentElement>;
+            "textarea-component": LocalJSX.IntrinsicElements["textarea-component"] & JSXBase.HTMLAttributes<HTMLTextareaComponentElement>;
             "timepicker-component": LocalJSX.IntrinsicElements["timepicker-component"] & JSXBase.HTMLAttributes<HTMLTimepickerComponentElement>;
             "timepicker-manager": LocalJSX.IntrinsicElements["timepicker-manager"] & JSXBase.HTMLAttributes<HTMLTimepickerManagerElement>;
             "toasts-component": LocalJSX.IntrinsicElements["toasts-component"] & JSXBase.HTMLAttributes<HTMLToastsComponentElement>;

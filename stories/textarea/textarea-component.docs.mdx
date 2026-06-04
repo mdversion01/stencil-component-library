@@ -1,0 +1,46 @@
+import { Meta, Title, Subtitle, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import * as TextareaStories from './textarea-component.stories';
+import {
+  htmlExample,
+  reactExample,
+  vueExample,
+  angularExample,
+  svelteExample,
+  svelteKitExample,
+} from './textarea-component.examples';
+
+<Meta of={TextareaStories} />
+
+<Title />
+<Subtitle>Multiline form textarea with Bootstrap-style layout, validation, counter, and form events.</Subtitle>
+
+## HTML
+
+Use the component directly in HTML. The counter is shown automatically when `max-length` is provided.
+
+
+<Source code={htmlExample} language="html" />
+
+## React
+
+<Source code={reactExample} language="tsx" />
+
+## Vue
+
+<Source code={vueExample} language="html" />
+
+## Angular
+
+<Source code={angularExample} language="ts" />
+
+## Svelte
+
+<Source code={svelteExample} language="html" />
+
+## SvelteKit
+
+<Source code={svelteKitExample} language="html" />
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

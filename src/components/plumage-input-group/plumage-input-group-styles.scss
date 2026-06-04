@@ -176,6 +176,12 @@ $radius: 0.25rem;
     &:focus {
       background-color: $gray-100;
     }
+
+    &:disabled:hover,
+    &:disabled:focus {
+      background-color: transparent;
+      cursor: not-allowed;
+    }
   }
 
   // -----------------------------

@@ -29,8 +29,24 @@ export const esc = s =>
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 
-export const buildDocsHtml = args => {
-  const a = { ...args };
+const getStorySafeArgs = rawArgs => {
+  const args = { ...rawArgs };
+
+  if (args.prependButton) {
+    args.prependIcon = '';
+    if (!String(args.prependText ?? '').trim()) args.prependText = 'Go';
+  }
+
+  if (args.appendButton) {
+    args.appendIcon = '';
+    if (!String(args.appendText ?? '').trim()) args.appendText = 'Go';
+  }
+
+  return args;
+};
+
+export const buildDocsHtml = rawArgs => {
+  const a = getStorySafeArgs(rawArgs);
 
   const attrs = [
     ['has-append', !!a.append],
@@ -44,6 +60,7 @@ export const buildDocsHtml = args => {
     ['append-aria-label', normalize(a.appendAriaLabel)],
 
     ['disabled', !!a.disabled],
+    ['read-only', !!a.readOnly],
     ['form-id', normalize(a.formId)],
     ['form-layout', normalize(a.formLayout)],
     ['icon', normalize(a.icon)],
@@ -95,7 +112,9 @@ export const attr = (name, val) => {
   return v === undefined || v === false ? '' : v === true ? ` ${name}` : ` ${name}="${esc(v)}"`;
 };
 
-export const renderComponent = args => {
+export const renderComponent = rawArgs => {
+  const args = getStorySafeArgs(rawArgs);
+
   return `
 <${TAG}
 ${boolAttr('has-append', !!args.append)}
@@ -108,6 +127,7 @@ ${attr('append-button-type', args.appendButtonType)}
 ${attr('append-button-variant', args.appendButtonVariant)}
 ${attr('append-aria-label', args.appendAriaLabel)}
 ${boolAttr('disabled', !!args.disabled)}
+${boolAttr('read-only', !!args.readOnly)}
 ${attr('form-id', args.formId)}
 ${attr('form-layout', args.formLayout)}
 ${attr('icon', args.icon)}
@@ -145,7 +165,8 @@ ${attr('value', args.value)}
 `;
 };
 
-export const buildEl = args => {
+export const buildEl = rawArgs => {
+  const args = getStorySafeArgs(rawArgs);
   const el = document.createElement(TAG);
 
   const setBool = (name, on) => {
@@ -171,6 +192,7 @@ export const buildEl = args => {
   set('append-aria-label', args.appendAriaLabel);
 
   setBool('disabled', !!args.disabled);
+  setBool('read-only', !!args.readOnly);
   set('form-id', args.formId);
   set('form-layout', args.formLayout);
   set('icon', args.icon);
@@ -232,12 +254,14 @@ export const getSnapshot = host => {
     labelFor: label?.getAttribute('for') ?? label?.getAttribute('htmlfor') ?? null,
     role: input?.getAttribute('role') ?? null,
     type: input?.getAttribute('type') ?? null,
+    readOnly: input?.readOnly ?? null,
     'aria-label': input?.getAttribute('aria-label') ?? null,
     'aria-labelledby': input?.getAttribute('aria-labelledby') ?? null,
     'aria-describedby': describedby || null,
     'aria-required': input?.getAttribute('aria-required') ?? input?.getAttribute('required') ?? null,
     'aria-invalid': input?.getAttribute('aria-invalid') ?? null,
     'aria-disabled': input?.getAttribute('aria-disabled') ?? input?.getAttribute('disabled') ?? null,
+    'aria-readonly': input?.getAttribute('aria-readonly') ?? null,
     describedbyIds: describedIds,
     describedbyAllResolve: describedIds.every(resolve),
     hasValidationMessage: !!host?.querySelector('.invalid-feedback'),

@@ -1,5 +1,44 @@
+// File: src/stories/plumage-timepicker-component.stories.js
+
 import DocsPage from './plumage-timepicker-component.docs.mdx';
-import { DocsWrapStyles, Template, buildDocsHtml, getComputedSnapshot, normalizeHtml } from './plumage-timepicker-component.story-helpers.js';
+import {
+  DocsWrapStyles,
+  Template,
+  buildDocsHtml,
+  getComputedSnapshot,
+  normalizeHtml,
+} from './plumage-timepicker-component.story-helpers.js';
+
+const baseArgs = {
+  wrapperWidth: 280,
+  ariaLabel: 'Time Picker',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
+  showLabel: false,
+  labelText: 'Enter Time',
+  inputId: 'time-input',
+  inputName: 'time',
+  value: '',
+  isTwentyFourHourFormat: true,
+  required: false,
+  size: '',
+  validationMessage: '',
+  twentyFourHourOnly: false,
+  twelveHourOnly: false,
+  hideTimepickerBtn: false,
+  isValid: true,
+  hideSeconds: false,
+  inputWidth: null,
+  validation: false,
+  disabled: false,
+  timeInputThrottleMs: 50,
+};
+
+const renderTemplate = args => Template(args);
+
+const docsSource = {
+  transform: (_code, ctx) => buildDocsHtml(ctx.args),
+};
 
 export default {
   title: 'Components/Timepicker/Plumage Timepicker',
@@ -243,233 +282,211 @@ When the popover is open:
   },
 
   args: {
-    wrapperWidth: 280,
-    ariaLabel: 'Time Picker',
-    ariaLabelledby: '',
-    ariaDescribedby: '',
-    showLabel: false,
+    ...baseArgs,
+  },
+};
+
+export const Default = {
+  name: 'Default Plumage Styled Timepicker',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+  },
+  parameters: {
+    docs: {
+      description: { story: 'Default configuration of the Plumage Timepicker.' },
+      story: { height: '200px' },
+      source: docsSource,
+    },
+  },
+};
+
+export const Small = {
+  name: 'Small Size (no label)',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    wrapperWidth: 220,
+    size: 'sm',
+  },
+  parameters: {
+    docs: {
+      description: { story: 'Small size variant (`size="sm"`). Label remains sr-only unless `show-label` is enabled.' },
+      story: { height: '200px' },
+      source: docsSource,
+    },
+  },
+};
+
+export const LargeWithVisibleLabel = {
+  name: 'Large Size (with label)',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    wrapperWidth: 340,
+    size: 'lg',
+    showLabel: true,
     labelText: 'Enter Time',
-    inputId: 'time-input',
-    inputName: 'time',
-    value: '',
-    isTwentyFourHourFormat: true,
-    required: false,
-    size: '',
-    validationMessage: '',
-    twentyFourHourOnly: false,
+    inputId: 'pl-lg',
+  },
+  parameters: {
+    docs: {
+      description: { story: 'Large size variant (`size="lg"`) with visible label (`show-label`).' },
+      story: { height: '200px' },
+      source: docsSource,
+    },
+  },
+};
+
+export const TwentyFourHourOnly = {
+  name: '24-Hour Format Only',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    wrapperWidth: 320,
+    twentyFourHourOnly: true,
     twelveHourOnly: false,
-    hideTimepickerBtn: false,
-    isValid: true,
-    hideSeconds: false,
-    inputWidth: null,
-    validation: false,
-    disabled: false,
-    timeInputThrottleMs: 50,
+    isTwentyFourHourFormat: true,
+    showLabel: true,
+    labelText: '24-hour Time',
+    inputId: 'pl-24h',
   },
-};
-
-export const Default = Template.bind({});
-Default.args = {
-  wrapperWidth: 280,
-  ariaLabel: 'Time Picker',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
-  showLabel: false,
-  labelText: 'Enter Time',
-  inputId: 'time-input',
-  inputName: 'time',
-  value: '',
-  isTwentyFourHourFormat: true,
-  required: false,
-  size: '',
-  validationMessage: '',
-  twentyFourHourOnly: false,
-  twelveHourOnly: false,
-  hideTimepickerBtn: false,
-  isValid: true,
-  hideSeconds: false,
-  inputWidth: null,
-  validation: false,
-  disabled: false,
-  timeInputThrottleMs: 50,
-};
-Default.storyName = 'Default Plumage Styled Timepicker';
-Default.parameters = {
-  docs: {
-    description: { story: 'Default configuration of the Plumage Timepicker.' },
-    story: { height: '200px' },
-    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
-  },
-};
-
-export const Small = Template.bind({});
-Small.args = {
-  ...Default.args,
-  wrapperWidth: 220,
-  size: 'sm',
-};
-Small.storyName = 'Small Size (no label)';
-Small.parameters = {
-  docs: {
-    description: { story: 'Small size variant (`size="sm"`). Label remains sr-only unless `show-label` is enabled.' },
-    story: { height: '200px' },
-    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
-  },
-};
-
-export const LargeWithVisibleLabel = Template.bind({});
-LargeWithVisibleLabel.args = {
-  ...Default.args,
-  wrapperWidth: 340,
-  size: 'lg',
-  showLabel: true,
-  labelText: 'Enter Time',
-  inputId: 'pl-lg',
-};
-LargeWithVisibleLabel.storyName = 'Large Size (with label)';
-LargeWithVisibleLabel.parameters = {
-  docs: {
-    description: { story: 'Large size variant (`size="lg"`) with visible label (`show-label`).' },
-    story: { height: '200px' },
-    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
-  },
-};
-
-export const TwentyFourHourOnly = Template.bind({});
-TwentyFourHourOnly.args = {
-  ...Default.args,
-  wrapperWidth: 320,
-  twentyFourHourOnly: true,
-  twelveHourOnly: false,
-  isTwentyFourHourFormat: true,
-  showLabel: true,
-  labelText: '24-hour Time',
-  inputId: 'pl-24h',
-};
-TwentyFourHourOnly.storyName = '24-Hour Format Only';
-TwentyFourHourOnly.parameters = {
-  docs: {
-    description: { story: 'Restricts to 24-hour format only (`twenty-four-hour-only`).' },
-    story: { height: '200px' },
-    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
-  },
-};
-
-export const TwelveHourOnly = Template.bind({});
-TwelveHourOnly.args = {
-  ...Default.args,
-  wrapperWidth: 320,
-  twentyFourHourOnly: false,
-  twelveHourOnly: true,
-  isTwentyFourHourFormat: false,
-  showLabel: true,
-  labelText: '12-hour Time',
-  inputId: 'pl-12h',
-};
-TwelveHourOnly.storyName = '12-Hour Format Only';
-TwelveHourOnly.parameters = {
-  docs: {
-    description: { story: 'Restricts to 12-hour format only (`twelve-hour-only`).' },
-    story: { height: '200px' },
-    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
-  },
-};
-
-export const HideSeconds = Template.bind({});
-HideSeconds.args = {
-  ...Default.args,
-  wrapperWidth: 280,
-  hideSeconds: true,
-  showLabel: true,
-  labelText: 'HH:mm (no seconds)',
-  inputId: 'pl-nosec',
-};
-HideSeconds.storyName = 'Hide Seconds';
-HideSeconds.parameters = {
-  docs: {
-    description: { story: 'Hides the seconds spinner/part (`hide-seconds`).' },
-    story: { height: '200px' },
-    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
-  },
-};
-
-export const NoDropdownButton = Template.bind({});
-NoDropdownButton.args = {
-  ...Default.args,
-  wrapperWidth: 260,
-  hideTimepickerBtn: true,
-  showLabel: true,
-  labelText: 'Manual Entry Only',
-  inputId: 'pl-nodrop',
-};
-NoDropdownButton.storyName = 'No Dropdown Button';
-NoDropdownButton.parameters = {
-  docs: {
-    description: { story: 'Hides the dropdown trigger button (`hide-timepicker-btn`) so users type time manually.' },
-    story: { height: '200px' },
-    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
-  },
-};
-
-export const WithValidationMessage = Template.bind({});
-WithValidationMessage.args = {
-  ...Default.args,
-  wrapperWidth: 320,
-  showLabel: true,
-  labelText: 'Time with Validation',
-  required: true,
-  inputId: 'pl-validation',
-  isValid: false,
-  validation: true,
-  validationMessage: 'Please enter a valid time.',
-};
-WithValidationMessage.storyName = 'With Validation Message';
-WithValidationMessage.parameters = {
-  docs: {
-    description: {
-      story: 'Shows Plumage invalid underline styling + a validation message. Clears when the user clears, types, or uses spinners. Format toggle does not clear validation.',
+  parameters: {
+    docs: {
+      description: { story: 'Restricts to 24-hour format only (`twenty-four-hour-only`).' },
+      story: { height: '200px' },
+      source: docsSource,
     },
-    story: { height: '200px' },
-    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
   },
 };
 
-export const CustomInputWidth = Template.bind({});
-CustomInputWidth.args = {
-  ...Default.args,
-  wrapperWidth: 460,
-  inputWidth: 320,
-  showLabel: true,
-  labelText: 'Custom Width',
-  inputId: 'pl-width',
-};
-CustomInputWidth.storyName = 'Custom Input Width';
-CustomInputWidth.parameters = {
-  docs: {
-    description: { story: 'Custom input width via `input-width`.' },
-    story: { height: '200px' },
-    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
+export const TwelveHourOnly = {
+  name: '12-Hour Format Only',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    wrapperWidth: 320,
+    twentyFourHourOnly: false,
+    twelveHourOnly: true,
+    isTwentyFourHourFormat: false,
+    showLabel: true,
+    labelText: '12-hour Time',
+    inputId: 'pl-12h',
   },
-};
-
-export const ControlledValueExample = Template.bind({});
-ControlledValueExample.args = {
-  ...Default.args,
-  wrapperWidth: 320,
-  showLabel: true,
-  labelText: 'Controlled Value',
-  inputId: 'pl-controlled',
-  value: '13:05:09',
-  isTwentyFourHourFormat: true,
-};
-ControlledValueExample.storyName = 'Controlled Value (value="13:05:09")';
-ControlledValueExample.parameters = {
-  docs: {
-    description: {
-      story: 'Demonstrates initializing the component with a controlled value. On commit actions, the component updates its mutable `value` prop and emits `timeChange`.',
+  parameters: {
+    docs: {
+      description: { story: 'Restricts to 12-hour format only (`twelve-hour-only`).' },
+      story: { height: '200px' },
+      source: docsSource,
     },
-    story: { height: '200px' },
-    source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
+  },
+};
+
+export const HideSeconds = {
+  name: 'Hide Seconds',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    wrapperWidth: 280,
+    hideSeconds: true,
+    showLabel: true,
+    labelText: 'HH:mm (no seconds)',
+    inputId: 'pl-nosec',
+  },
+  parameters: {
+    docs: {
+      description: { story: 'Hides the seconds spinner/part (`hide-seconds`).' },
+      story: { height: '200px' },
+      source: docsSource,
+    },
+  },
+};
+
+export const NoDropdownButton = {
+  name: 'No Dropdown Button',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    wrapperWidth: 260,
+    hideTimepickerBtn: true,
+    showLabel: true,
+    labelText: 'Manual Entry Only',
+    inputId: 'pl-nodrop',
+  },
+  parameters: {
+    docs: {
+      description: { story: 'Hides the dropdown trigger button (`hide-timepicker-btn`) so users type time manually.' },
+      story: { height: '200px' },
+      source: docsSource,
+    },
+  },
+};
+
+export const WithValidationMessage = {
+  name: 'With Validation Message',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    wrapperWidth: 320,
+    showLabel: true,
+    labelText: 'Time with Validation',
+    required: true,
+    inputId: 'pl-validation',
+    isValid: false,
+    validation: true,
+    validationMessage: 'Please enter a valid time.',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows Plumage invalid underline styling + a validation message. Clears when the user clears, types, or uses spinners. Format toggle does not clear validation.',
+      },
+      story: { height: '200px' },
+      source: docsSource,
+    },
+  },
+};
+
+export const CustomInputWidth = {
+  name: 'Custom Input Width',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    wrapperWidth: 460,
+    inputWidth: 320,
+    showLabel: true,
+    labelText: 'Custom Width',
+    inputId: 'pl-width',
+  },
+  parameters: {
+    docs: {
+      description: { story: 'Custom input width via `input-width`.' },
+      story: { height: '200px' },
+      source: docsSource,
+    },
+  },
+};
+
+export const ControlledValueExample = {
+  name: 'Controlled Value (value="13:05:09")',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    wrapperWidth: 320,
+    showLabel: true,
+    labelText: 'Controlled Value',
+    inputId: 'pl-controlled',
+    value: '13:05:09',
+    isTwentyFourHourFormat: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates initializing the component with a controlled value. On commit actions, the component updates its mutable `value` prop and emits `timeChange`.',
+      },
+      story: { height: '200px' },
+      source: docsSource,
+    },
   },
 };
 
@@ -535,7 +552,7 @@ export const AccessibilityMatrix = {
       const mount = document.createElement('div');
       mount.innerHTML = normalizeHtml(`
         ${extraHtml}
-        ${Template({ ...Default.args, ...storyArgs })}
+        ${Template({ ...baseArgs, ...storyArgs })}
       `);
 
       demo.appendChild(mount);

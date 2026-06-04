@@ -9,6 +9,44 @@ import {
   DEFAULT_VIEWBOX,
 } from './svg-component.story-helpers';
 
+const baseArgs = {
+  fill: 'currentColor',
+  height: 32,
+  path: DEFAULT_PATH,
+  svgMargin: '',
+  viewBox: DEFAULT_VIEWBOX,
+  width: 32,
+
+  decorative: undefined,
+  focusable: undefined,
+  svgAriaHidden: undefined,
+  svgAriaLabel: '',
+  svgAriaLabelledby: '',
+  svgAriaDescribedby: '',
+  svgTitle: '',
+  svgDesc: '',
+};
+
+const templateStoryParameters = {
+  docs: {
+    source: {
+      type: 'dynamic',
+      language: 'html',
+      transform: (_code, ctx) => Template(ctx.args),
+    },
+  },
+};
+
+const inlineTemplateStoryParameters = {
+  docs: {
+    source: {
+      type: 'dynamic',
+      language: 'html',
+      transform: (_code, ctx) => InlineWithTextTemplate(ctx.args),
+    },
+  },
+};
+
 export default {
   title: 'Components/SVG',
   tags: ['autodocs'],
@@ -119,160 +157,141 @@ export default {
   },
 };
 
-const templateStoryParameters = {
-  docs: {
-    source: {
-      type: 'dynamic',
-      language: 'html',
-      transform: (_code, ctx) => Template(ctx.args),
+export const Basic = {
+  render: args => Template(args),
+  args: {
+    ...baseArgs,
+  },
+  parameters: {
+    ...templateStoryParameters,
+    docs: {
+      ...templateStoryParameters.docs,
+      description: {
+        story: 'A basic SVG icon. With no accessible name, the component defaults to decorative (aria-hidden="true").',
+      },
     },
   },
 };
 
-export const Basic = Template.bind({});
-Basic.args = {
-  fill: 'currentColor',
-  height: 32,
-  path: DEFAULT_PATH,
-  svgMargin: '',
-  viewBox: DEFAULT_VIEWBOX,
-  width: 32,
-
-  decorative: undefined,
-  focusable: undefined,
-  svgAriaHidden: undefined,
-  svgAriaLabel: '',
-  svgAriaLabelledby: '',
-  svgAriaDescribedby: '',
-  svgTitle: '',
-  svgDesc: '',
-};
-Basic.parameters = {
-  ...templateStoryParameters,
-  docs: {
-    ...templateStoryParameters.docs,
-    description: {
-      story: 'A basic SVG icon. With no accessible name, the component defaults to decorative (aria-hidden="true").',
+export const WithDimensions = {
+  render: args => Template(args),
+  args: {
+    ...baseArgs,
+    fill: '#10B981',
+    height: 48,
+    width: 48,
+  },
+  parameters: {
+    ...templateStoryParameters,
+    docs: {
+      ...templateStoryParameters.docs,
+      description: {
+        story: 'An SVG icon with custom width and height.',
+      },
     },
   },
 };
 
-export const WithDimensions = Template.bind({});
-WithDimensions.args = {
-  ...Basic.args,
-  fill: '#10B981',
-  height: 48,
-  width: 48,
-};
-WithDimensions.parameters = {
-  ...templateStoryParameters,
-  docs: {
-    ...templateStoryParameters.docs,
-    description: {
-      story: 'An SVG icon with custom width and height.',
+export const WithAriaLabel = {
+  render: args => Template(args),
+  args: {
+    ...baseArgs,
+    fill: '#111827',
+    height: 24,
+    width: 24,
+    svgAriaHidden: 'false',
+    svgAriaLabel: 'Status: online',
+  },
+  parameters: {
+    ...templateStoryParameters,
+    docs: {
+      ...templateStoryParameters.docs,
+      description: {
+        story: 'A meaningful SVG icon with an aria-label (role="img", not aria-hidden).',
+      },
     },
   },
 };
 
-export const WithAriaLabel = Template.bind({});
-WithAriaLabel.args = {
-  ...Basic.args,
-  fill: '#111827',
-  height: 24,
-  width: 24,
-  svgAriaHidden: 'false',
-  svgAriaLabel: 'Status: online',
-};
-WithAriaLabel.parameters = {
-  ...templateStoryParameters,
-  docs: {
-    ...templateStoryParameters.docs,
-    description: {
-      story: 'A meaningful SVG icon with an aria-label (role="img", not aria-hidden).',
+export const WithTitleAndDesc = {
+  name: 'With Title + Desc',
+  render: args => Template(args),
+  args: {
+    ...baseArgs,
+    svgAriaHidden: 'false',
+    svgTitle: 'Settings',
+    svgDesc: 'Opens settings',
+  },
+  parameters: {
+    ...templateStoryParameters,
+    docs: {
+      ...templateStoryParameters.docs,
+      description: {
+        story: 'Uses `<title>/<desc>`. When no aria-label/labelledby is provided, title becomes the accessible name.',
+      },
     },
   },
 };
 
-export const WithTitleAndDesc = Template.bind({});
-WithTitleAndDesc.args = {
-  ...Basic.args,
-  svgAriaHidden: 'false',
-  svgTitle: 'Settings',
-  svgDesc: 'Opens settings',
-};
-WithTitleAndDesc.storyName = 'With Title + Desc';
-WithTitleAndDesc.parameters = {
-  ...templateStoryParameters,
-  docs: {
-    ...templateStoryParameters.docs,
-    description: {
-      story: 'Uses `<title>/<desc>`. When no aria-label/labelledby is provided, title becomes the accessible name.',
+export const InlineMarginLeft = {
+  render: args => InlineWithTextTemplate(args),
+  args: {
+    ...baseArgs,
+    fill: '#EF4444',
+    height: 20,
+    width: 20,
+    svgMargin: 'left',
+    svgAriaHidden: 'true',
+  },
+  parameters: {
+    ...inlineTemplateStoryParameters,
+    docs: {
+      ...inlineTemplateStoryParameters.docs,
+      description: {
+        story: 'An SVG icon with margin on the left side, displayed inline with text (decorative).',
+      },
     },
   },
 };
 
-export const InlineMarginLeft = InlineWithTextTemplate.bind({});
-InlineMarginLeft.args = {
-  ...Basic.args,
-  fill: '#EF4444',
-  height: 20,
-  width: 20,
-  svgMargin: 'left',
-  svgAriaHidden: 'true',
-};
-InlineMarginLeft.parameters = {
-  docs: {
-    source: {
-      type: 'dynamic',
-      language: 'html',
-      transform: (_code, ctx) => InlineWithTextTemplate(ctx.args),
-    },
-    description: {
-      story: 'An SVG icon with margin on the left side, displayed inline with text (decorative).',
+export const InlineMarginRight = {
+  render: args => InlineWithTextTemplate(args),
+  args: {
+    ...baseArgs,
+    fill: '#6366F1',
+    height: 20,
+    width: 20,
+    svgMargin: 'right',
+    svgAriaHidden: 'true',
+  },
+  parameters: {
+    ...inlineTemplateStoryParameters,
+    docs: {
+      ...inlineTemplateStoryParameters.docs,
+      description: {
+        story: 'An SVG icon with margin on the right side, displayed inline with text (decorative).',
+      },
     },
   },
 };
 
-export const InlineMarginRight = InlineWithTextTemplate.bind({});
-InlineMarginRight.args = {
-  ...Basic.args,
-  fill: '#6366F1',
-  height: 20,
-  width: 20,
-  svgMargin: 'right',
-  svgAriaHidden: 'true',
-};
-InlineMarginRight.parameters = {
-  docs: {
-    source: {
-      type: 'dynamic',
-      language: 'html',
-      transform: (_code, ctx) => InlineWithTextTemplate(ctx.args),
-    },
-    description: {
-      story: 'An SVG icon with margin on the right side, displayed inline with text (decorative).',
-    },
+export const InlineMarginBoth = {
+  render: args => InlineWithTextTemplate(args),
+  args: {
+    ...baseArgs,
+    fill: '#111827',
+    height: 20,
+    width: 20,
+    svgMargin: 'both',
+    svgAriaHidden: 'true',
   },
-};
-
-export const InlineMarginBoth = InlineWithTextTemplate.bind({});
-InlineMarginBoth.args = {
-  ...Basic.args,
-  fill: '#111827',
-  height: 20,
-  width: 20,
-  svgMargin: 'both',
-  svgAriaHidden: 'true',
-};
-InlineMarginBoth.parameters = {
-  docs: {
-    source: {
-      type: 'dynamic',
-      language: 'html',
-      transform: (_code, ctx) => InlineWithTextTemplate(ctx.args),
-    },
-    description: {
-      story: 'An SVG icon with margin on both sides, displayed inline with text (decorative).',
+  parameters: {
+    ...inlineTemplateStoryParameters,
+    docs: {
+      ...inlineTemplateStoryParameters.docs,
+      description: {
+        story: 'An SVG icon with margin on both sides, displayed inline with text (decorative).',
+      },
     },
   },
 };
@@ -319,7 +338,7 @@ export const AccessibilityMatrix = {
       const mount = document.createElement('div');
       mount.innerHTML = normalizeHtml(`
         ${extraHtml}
-        ${Template({ ...Basic.args, ...storyArgs })}
+        ${Template({ ...baseArgs, ...storyArgs })}
       `);
 
       demo.appendChild(mount);

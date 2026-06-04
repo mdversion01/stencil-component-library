@@ -266,10 +266,11 @@ describe('<plumage-input-group-component>', () => {
 
     expect(appendWrap).toBeTruthy();
     expect(appendButton).toBeTruthy();
-    expect(appendButton?.className).toContain('btn');
-    expect(appendButton?.className).toContain('btn-secondary');
+    expect(appendButton?.className).toContain('input-group-btn');
+    expect(appendButton?.className).not.toContain('btn-secondary');
     expect(appendButton?.getAttribute('type')).toBe('button');
     expect((appendButton?.textContent || '').trim()).toBe('Go');
+    expect(appendButton?.hasAttribute('disabled')).toBe(false);
 
     appendButton!.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
     await page.waitForChanges();
@@ -305,14 +306,219 @@ describe('<plumage-input-group-component>', () => {
 
     expect(prependWrap).toBeTruthy();
     expect(prependButton).toBeTruthy();
-    expect(prependButton?.className).toContain('btn');
-    expect(prependButton?.className).toContain('btn-primary');
+    expect(prependButton?.className).toContain('input-group-btn');
+    expect(prependButton?.className).not.toContain('btn-primary');
     expect((prependButton?.textContent || '').trim()).toBe('Back');
+    expect(prependButton?.hasAttribute('disabled')).toBe(false);
 
     prependButton!.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
     await page.waitForChanges();
 
     expect(prependSpy).toHaveBeenCalled();
+  });
+
+  it('does not treat affix button click as generic group interaction', async () => {
+    const page = await newSpecPage({
+      components: [PlumageInputGroupComponent],
+      html: `
+      <plumage-input-group-component
+        label="Search"
+        input-id="search-click-scope"
+        has-append
+        append-button
+        append-text="Go"
+        append-button-id="search-click-scope-btn"
+      ></plumage-input-group-component>
+    `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root!;
+    const appendButton = root.querySelector('#search-click-scope-btn') as HTMLButtonElement;
+    const focusBar = root.querySelector('.b-focus') as HTMLDivElement;
+
+    expect(appendButton).toBeTruthy();
+    expect(focusBar).toBeTruthy();
+
+    expect(['0', '0px']).toContain(focusBar.style.width);
+    expect(['50%', '50']).toContain(focusBar.style.left);
+
+    appendButton.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(['0', '0px']).toContain(focusBar.style.width);
+    expect(['50%', '50']).toContain(focusBar.style.left);
+  });
+
+  it('renders readOnly + append/prepend buttons and matches snapshot', async () => {
+    const page = await newSpecPage({
+      components: [PlumageInputGroupComponent],
+      html: `
+        <plumage-input-group-component
+          label="Readonly Search"
+          input-id="readonly-search"
+          read-only
+          has-prepend
+          prepend-button
+          prepend-text="Back"
+          prepend-button-id="readonly-prepend-btn"
+          has-append
+          append-button
+          append-text="Go"
+          append-button-id="readonly-append-btn"
+          value="Locked value"
+        ></plumage-input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    expect(normalize(page.root!.outerHTML)).toMatchSnapshot('readonly-prepend-append-buttons');
+  });
+
+  it('disables affix buttons when readOnly is true', async () => {
+    const page = await newSpecPage({
+      components: [PlumageInputGroupComponent],
+      html: `
+        <plumage-input-group-component
+          label="Readonly Search"
+          input-id="readonly-search"
+          read-only
+          has-prepend
+          prepend-button
+          prepend-text="Back"
+          prepend-button-id="readonly-prepend-btn"
+          has-append
+          append-button
+          append-text="Go"
+          append-button-id="readonly-append-btn"
+        ></plumage-input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root!;
+    const prependButton = root.querySelector('#readonly-prepend-btn') as HTMLButtonElement | null;
+    const appendButton = root.querySelector('#readonly-append-btn') as HTMLButtonElement | null;
+    const input = root.querySelector('input.form-control') as HTMLInputElement;
+
+    expect(input.hasAttribute('readonly')).toBe(true);
+    expect(prependButton).toBeTruthy();
+    expect(appendButton).toBeTruthy();
+    expect(prependButton?.hasAttribute('disabled')).toBe(true);
+    expect(appendButton?.hasAttribute('disabled')).toBe(true);
+  });
+
+  it('does not emit affix click events when readOnly is true', async () => {
+    const page = await newSpecPage({
+      components: [PlumageInputGroupComponent],
+      html: `
+        <plumage-input-group-component
+          label="Readonly Search"
+          input-id="readonly-search-events"
+          read-only
+          has-prepend
+          prepend-button
+          prepend-text="Back"
+          prepend-button-id="readonly-search-events-prepend-btn"
+          has-append
+          append-button
+          append-text="Go"
+          append-button-id="readonly-search-events-append-btn"
+        ></plumage-input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root!;
+    const prependButton = root.querySelector('#readonly-search-events-prepend-btn') as HTMLButtonElement;
+    const appendButton = root.querySelector('#readonly-search-events-append-btn') as HTMLButtonElement;
+    const prependSpy = jest.fn();
+    const appendSpy = jest.fn();
+
+    root.addEventListener('prependClick', prependSpy as any);
+    root.addEventListener('appendClick', appendSpy as any);
+
+    prependButton.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    appendButton.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(prependSpy).not.toHaveBeenCalled();
+    expect(appendSpy).not.toHaveBeenCalled();
+  });
+
+  it('disables affix buttons when disabled is true', async () => {
+    const page = await newSpecPage({
+      components: [PlumageInputGroupComponent],
+      html: `
+        <plumage-input-group-component
+          label="Disabled Search"
+          input-id="disabled-search"
+          disabled
+          has-prepend
+          prepend-button
+          prepend-text="Back"
+          prepend-button-id="disabled-prepend-btn"
+          has-append
+          append-button
+          append-text="Go"
+          append-button-id="disabled-append-btn"
+        ></plumage-input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root!;
+    const prependButton = root.querySelector('#disabled-prepend-btn') as HTMLButtonElement | null;
+    const appendButton = root.querySelector('#disabled-append-btn') as HTMLButtonElement | null;
+    const input = root.querySelector('input.form-control') as HTMLInputElement;
+
+    expect(input.hasAttribute('disabled')).toBe(true);
+    expect(prependButton?.hasAttribute('disabled')).toBe(true);
+    expect(appendButton?.hasAttribute('disabled')).toBe(true);
+  });
+
+  it('does not emit affix click events when disabled is true', async () => {
+    const page = await newSpecPage({
+      components: [PlumageInputGroupComponent],
+      html: `
+        <plumage-input-group-component
+          label="Disabled Search"
+          input-id="disabled-search-events"
+          disabled
+          has-prepend
+          prepend-button
+          prepend-text="Back"
+          prepend-button-id="disabled-search-events-prepend-btn"
+          has-append
+          append-button
+          append-text="Go"
+          append-button-id="disabled-search-events-append-btn"
+        ></plumage-input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root!;
+    const prependButton = root.querySelector('#disabled-search-events-prepend-btn') as HTMLButtonElement;
+    const appendButton = root.querySelector('#disabled-search-events-append-btn') as HTMLButtonElement;
+    const prependSpy = jest.fn();
+    const appendSpy = jest.fn();
+
+    root.addEventListener('prependClick', prependSpy as any);
+    root.addEventListener('appendClick', appendSpy as any);
+
+    prependButton.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    appendButton.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(prependSpy).not.toHaveBeenCalled();
+    expect(appendSpy).not.toHaveBeenCalled();
   });
 
   it('renders plain text affixes without button wrappers', async () => {

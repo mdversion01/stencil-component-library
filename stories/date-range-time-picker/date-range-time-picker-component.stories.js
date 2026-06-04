@@ -7,6 +7,42 @@ import {
   renderDRTPMatrixRow,
 } from './date-range-time-picker-component.story-helpers.js';
 
+const baseArgs = {
+  appendProp: true,
+  ariaLabel: '',
+  dateFormat: 'YYYY-MM-DD',
+  disabled: false,
+  formLayout: '',
+  icon: 'fas fa-calendar-alt',
+  inputCol: 10,
+  inputCols: '',
+  inputId: 'date-range-time',
+  isTwentyFourHourFormat: true,
+  joinBy: ' - ',
+  label: 'Date and Time Picker',
+  labelAlign: '',
+  labelCol: 2,
+  labelCols: '',
+  labelHidden: false,
+  placeholder: '',
+  plumage: false,
+  prependProp: false,
+  rangeTimePicker: false,
+  required: false,
+  showDuration: false,
+  showIso: false,
+  showLong: false,
+  showOkButton: true,
+  showYmd: false,
+  size: '',
+  validation: false,
+  validationMessage: 'Required field',
+  warningMessage: '',
+  value: '',
+};
+
+const renderTemplate = args => Template(args);
+
 export default {
   title: 'Form/Date Range + Time Picker',
   tags: ['autodocs'],
@@ -219,349 +255,353 @@ export default {
     },
   },
   args: {
+    ...baseArgs,
+  },
+  render: renderTemplate,
+};
+
+export const Basic = {
+  name: 'Basic Usage',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    label: 'Meeting Time',
+    placeholder: 'Select a date and time range',
+    labelCol: '',
+    inputCol: '',
+    inputId: 'meeting-time',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'A basic date and time range picker with default settings.',
+      },
+      story: { height: '525px' },
+    },
+  },
+};
+
+export const DateFormat12hWithDuration = {
+  name: 'Date Format + 12h Time + Duration',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    dateFormat: 'MM-DD-YYYY',
+    isTwentyFourHourFormat: false,
+    showDuration: true,
+    placeholder: 'MM-DD-YYYY hh:mm A to MM-DD-YYYY hh:mm A',
+    labelCol: '',
+    inputCol: '',
+    label: 'Event Time',
+    inputId: 'event-time',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Date format with 12-hour time and duration display.',
+      },
+      story: { height: '525px' },
+    },
+  },
+};
+
+export const Plumage = {
+  name: 'Plumage Styling',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    plumage: true,
     appendProp: true,
-    ariaLabel: '',
-    dateFormat: 'YYYY-MM-DD',
-    disabled: false,
-    formLayout: '',
-    icon: 'fas fa-calendar-alt',
-    inputCol: 10,
-    inputCols: '',
-    inputId: 'date-range-time',
-    isTwentyFourHourFormat: true,
-    joinBy: ' - ',
-    label: 'Date and Time Picker',
-    labelAlign: '',
-    labelCol: 2,
+    labelCol: '',
+    inputCol: '',
+    inputId: 'plumage-drtp',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Render the component using Plumage styling.',
+      },
+      story: { height: '525px' },
+    },
+  },
+};
+
+export const HorizontalLayout = {
+  name: 'Horizontal Layout',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    formLayout: 'horizontal',
+    labelCol: 3,
+    inputCol: 9,
+    label: 'Meeting Window',
+    labelAlign: 'right',
+    inputId: 'meeting-window',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Use horizontal form layout with label and input side by side.',
+      },
+      story: { height: '525px' },
+    },
+  },
+};
+
+export const InlineLayout = {
+  name: 'Inline Layout',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    formLayout: 'inline',
+    label: 'Inline Date/Time Range',
     labelCols: '',
-    labelHidden: false,
+    inputCols: '',
+    labelCol: '',
+    inputCol: '',
+    inputId: 'inline-drtp',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Use inline form layout for a more compact display.',
+      },
+      story: { height: '525px' },
+    },
+  },
+};
+
+export const ISOInputOutput = {
+  name: 'ISO Input/Output',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    showIso: true,
+    joinBy: ' to ',
     placeholder: '',
-    plumage: false,
-    prependProp: false,
-    rangeTimePicker: false,
-    required: false,
-    showDuration: false,
-    showIso: false,
-    showLong: false,
-    showOkButton: true,
-    showYmd: false,
-    size: '',
-    validation: false,
-    validationMessage: 'Required field',
-    warningMessage: '',
-    value: '',
+    labelCol: '',
+    inputCol: '',
+    inputId: 'iso-drtp',
+    label: 'ISO Date/Time Range',
   },
-  render: (args) => Template(args),
-};
-
-export const Basic = Template.bind({});
-Basic.args = {
-  label: 'Meeting Time',
-  placeholder: 'Select a date and time range',
-  labelCol: '',
-  inputCol: '',
-  inputId: 'meeting-time',
-};
-Basic.storyName = 'Basic Usage';
-Basic.parameters = {
-  docs: {
-    description: {
-      story: 'A basic date and time range picker with default settings.',
-    },
-    story: { height: '525px' },
-  },
-};
-
-export const DateFormat_12h_WithDuration = Template.bind({});
-DateFormat_12h_WithDuration.args = {
-  dateFormat: 'MM-DD-YYYY',
-  isTwentyFourHourFormat: false,
-  showDuration: true,
-  placeholder: 'MM-DD-YYYY hh:mm A to MM-DD-YYYY hh:mm A',
-  labelCol: '',
-  inputCol: '',
-  label: 'Event Time',
-  inputId: 'event-time',
-};
-DateFormat_12h_WithDuration.storyName = 'Date Format + 12h Time + Duration';
-DateFormat_12h_WithDuration.parameters = {
-  docs: {
-    description: {
-      story: 'Date format with 12-hour time and duration display.',
-    },
-    story: { height: '525px' },
-  },
-};
-
-export const Plumage = Template.bind({});
-Plumage.args = {
-  plumage: true,
-  appendProp: true,
-  labelCol: '',
-  inputCol: '',
-  inputId: 'plumage-drtp',
-};
-Plumage.storyName = 'Plumage Styling';
-Plumage.parameters = {
-  docs: {
-    description: {
-      story: 'Render the component using Plumage styling.',
-    },
-    story: { height: '525px' },
-  },
-};
-
-export const HorizontalLayout = Template.bind({});
-HorizontalLayout.args = {
-  formLayout: 'horizontal',
-  labelCol: 3,
-  inputCol: 9,
-  label: 'Meeting Window',
-  labelAlign: 'right',
-  inputId: 'meeting-window',
-};
-HorizontalLayout.storyName = 'Horizontal Layout';
-HorizontalLayout.parameters = {
-  docs: {
-    description: {
-      story: 'Use horizontal form layout with label and input side by side.',
-    },
-    story: { height: '525px' },
-  },
-};
-
-export const InlineLayout = Template.bind({});
-InlineLayout.args = {
-  formLayout: 'inline',
-  label: 'Inline Date/Time Range',
-  labelCols: '',
-  inputCols: '',
-  labelCol: '',
-  inputCol: '',
-  inputId: 'inline-drtp',
-};
-InlineLayout.storyName = 'Inline Layout';
-InlineLayout.parameters = {
-  docs: {
-    description: {
-      story: 'Use inline form layout for a more compact display.',
-    },
-    story: { height: '525px' },
-  },
-};
-
-export const ISOInputOutput = Template.bind({});
-ISOInputOutput.args = {
-  showIso: true,
-  joinBy: ' to ',
-  placeholder: '',
-  labelCol: '',
-  inputCol: '',
-  inputId: 'iso-drtp',
-  label: 'ISO Date/Time Range',
-};
-ISOInputOutput.storyName = 'ISO Input/Output';
-ISOInputOutput.parameters = {
-  docs: {
-    description: {
-      story: 'Show ISO input and output format.',
-    },
-    story: { height: '525px' },
-  },
-};
-
-export const LongDateDisplay = Template.bind({});
-LongDateDisplay.args = {
-  showLong: true,
-  joinBy: ' — ',
-  labelCol: '',
-  inputCol: '',
-  inputId: 'long-date-drtp',
-  label: 'Long Date/Time Range',
-};
-LongDateDisplay.storyName = 'Long Date Display';
-LongDateDisplay.parameters = {
-  docs: {
-    description: {
-      story: 'Display dates in a long format (e.g. Wednesday, January 1, 2025).',
-    },
-    story: { height: '525px' },
-  },
-};
-
-export const RequiredWithValidation = Template.bind({});
-RequiredWithValidation.args = {
-  labelCol: '',
-  inputCol: '',
-  inputId: 'required-validation-drtp',
-  label: 'Required Date/Time Range',
-  required: true,
-  validation: true,
-  validationMessage: 'Please enter a valid date/time range.',
-};
-RequiredWithValidation.storyName = 'Required with Validation';
-RequiredWithValidation.parameters = {
-  docs: {
-    description: {
-      story: 'A required date/time range picker that shows validation state when the input is invalid.',
-    },
-    story: { height: '525px' },
-  },
-};
-
-export const Disabled = Template.bind({});
-Disabled.args = {
-  disabled: true,
-  labelCol: '',
-  inputCol: '',
-  inputId: 'disabled-drtp',
-  label: 'Disabled Date/Time Range',
-};
-Disabled.storyName = 'Disabled State';
-Disabled.parameters = {
-  docs: {
-    description: {
-      story: 'A disabled date/time range picker.',
+  parameters: {
+    docs: {
+      description: {
+        story: 'Show ISO input and output format.',
+      },
+      story: { height: '525px' },
     },
   },
 };
 
-export const Sizes = Template.bind({});
-Sizes.args = {
-  size: 'sm',
-  labelCol: '',
-  inputCol: '',
-  inputId: 'size-drtp',
-};
-Sizes.storyName = 'Sizes';
-Sizes.parameters = {
-  docs: {
-    description: {
-      story: 'Size variants for the date/time range picker. Sizes are "", "sm", and "lg".',
+export const LongDateDisplay = {
+  name: 'Long Date Display',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    showLong: true,
+    joinBy: ' — ',
+    labelCol: '',
+    inputCol: '',
+    inputId: 'long-date-drtp',
+    label: 'Long Date/Time Range',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Display dates in a long format (e.g. Wednesday, January 1, 2025).',
+      },
+      story: { height: '525px' },
     },
-    story: { height: '525px' },
   },
 };
 
-export const PickerOnly_NoInput = Template.bind({});
-PickerOnly_NoInput.args = {
-  rangeTimePicker: true,
-  showOkButton: false,
-};
-PickerOnly_NoInput.storyName = 'Picker Only (No Input)';
-PickerOnly_NoInput.parameters = {
-  docs: {
-    description: {
-      story: 'A date/time range picker in picker-only mode without an input field.',
+export const RequiredWithValidation = {
+  name: 'Required with Validation',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    labelCol: '',
+    inputCol: '',
+    inputId: 'required-validation-drtp',
+    label: 'Required Date/Time Range',
+    required: true,
+    validation: true,
+    validationMessage: 'Please enter a valid date/time range.',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'A required date/time range picker that shows validation state when the input is invalid.',
+      },
+      story: { height: '525px' },
     },
-    story: { height: '425px' },
   },
 };
 
-export const AccessibilityMatrix = (args) => {
-  const root = document.createElement('div');
-  root.style.display = 'grid';
-  root.style.gap = '16px';
-
-  const intro = document.createElement('div');
-  intro.innerHTML = `
-    <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
-    <div style="font-size:13px; color:#444;">
-      Date Range + Time Picker: common variants + computed <code>role</code>, <code>aria-*</code>, IDs.
-    </div>
-  `;
-  root.appendChild(intro);
-
-  const base = { ...args };
-  const rows = [
-    {
-      title: 'Default',
-      args: {
-        ...base,
-        formLayout: '',
-        disabled: false,
-        required: false,
-        validation: false,
-        rangeTimePicker: false,
-        labelHidden: false,
+export const Disabled = {
+  name: 'Disabled State',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    disabled: true,
+    labelCol: '',
+    inputCol: '',
+    inputId: 'disabled-drtp',
+    label: 'Disabled Date/Time Range',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'A disabled date/time range picker.',
       },
     },
-    {
-      title: 'Inline',
-      args: {
-        ...base,
-        formLayout: 'inline',
-        disabled: false,
-        required: false,
-        validation: false,
-        rangeTimePicker: false,
-        labelHidden: false,
-        labelCol: '',
-        inputCol: '',
-      },
-    },
-    {
-      title: 'Horizontal',
-      args: {
-        ...base,
-        formLayout: 'horizontal',
-        labelAlign: 'right',
-        labelCol: 3,
-        inputCol: 9,
-        disabled: false,
-        required: false,
-        validation: false,
-        rangeTimePicker: false,
-        labelHidden: false,
-      },
-    },
-    {
-      title: 'Validation / Error (required + validation=true)',
-      args: {
-        ...base,
-        formLayout: '',
-        required: true,
-        validation: true,
-        validationMessage: 'Please enter a valid date/time range.',
-        disabled: false,
-        rangeTimePicker: false,
-        labelHidden: false,
-      },
-    },
-    {
-      title: 'Disabled',
-      args: {
-        ...base,
-        formLayout: '',
-        disabled: true,
-        required: false,
-        validation: false,
-        rangeTimePicker: false,
-        labelHidden: false,
-      },
-    },
-  ];
-
-  rows.forEach((row, idx) => {
-    root.appendChild(
-      renderDRTPMatrixRow({
-        ...row,
-        idSuffix: String(idx + 1),
-      }),
-    );
-  });
-
-  return root;
+  },
 };
 
-AccessibilityMatrix.storyName = 'Accessibility Matrix (computed)';
-AccessibilityMatrix.parameters = {
-  controls: { disable: true },
-  docs: {
-    description: {
-      story:
-        'Matrix of common Date Range + Time Picker states (default/inline/horizontal, validation/error, disabled) with computed roles, aria-* attributes, and IDs.',
+export const Sizes = {
+  name: 'Sizes',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    size: 'sm',
+    labelCol: '',
+    inputCol: '',
+    inputId: 'size-drtp',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Size variants for the date/time range picker. Sizes are "", "sm", and "lg".',
+      },
+      story: { height: '525px' },
     },
-    story: { height: '1200px' },
+  },
+};
+
+export const PickerOnlyNoInput = {
+  name: 'Picker Only (No Input)',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    rangeTimePicker: true,
+    showOkButton: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'A date/time range picker in picker-only mode without an input field.',
+      },
+      story: { height: '425px' },
+    },
+  },
+};
+
+export const AccessibilityMatrix = {
+  name: 'Accessibility Matrix (computed)',
+  render: args => {
+    const root = document.createElement('div');
+    root.style.display = 'grid';
+    root.style.gap = '16px';
+
+    const intro = document.createElement('div');
+    intro.innerHTML = `
+      <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
+      <div style="font-size:13px; color:#444;">
+        Date Range + Time Picker: common variants + computed <code>role</code>, <code>aria-*</code>, IDs.
+      </div>
+    `;
+    root.appendChild(intro);
+
+    const base = { ...args };
+    const rows = [
+      {
+        title: 'Default',
+        args: {
+          ...base,
+          formLayout: '',
+          disabled: false,
+          required: false,
+          validation: false,
+          rangeTimePicker: false,
+          labelHidden: false,
+        },
+      },
+      {
+        title: 'Inline',
+        args: {
+          ...base,
+          formLayout: 'inline',
+          disabled: false,
+          required: false,
+          validation: false,
+          rangeTimePicker: false,
+          labelHidden: false,
+          labelCol: '',
+          inputCol: '',
+        },
+      },
+      {
+        title: 'Horizontal',
+        args: {
+          ...base,
+          formLayout: 'horizontal',
+          labelAlign: 'right',
+          labelCol: 3,
+          inputCol: 9,
+          disabled: false,
+          required: false,
+          validation: false,
+          rangeTimePicker: false,
+          labelHidden: false,
+        },
+      },
+      {
+        title: 'Validation / Error (required + validation=true)',
+        args: {
+          ...base,
+          formLayout: '',
+          required: true,
+          validation: true,
+          validationMessage: 'Please enter a valid date/time range.',
+          disabled: false,
+          rangeTimePicker: false,
+          labelHidden: false,
+        },
+      },
+      {
+        title: 'Disabled',
+        args: {
+          ...base,
+          formLayout: '',
+          disabled: true,
+          required: false,
+          validation: false,
+          rangeTimePicker: false,
+          labelHidden: false,
+        },
+      },
+    ];
+
+    rows.forEach((row, idx) => {
+      root.appendChild(
+        renderDRTPMatrixRow({
+          ...row,
+          idSuffix: String(idx + 1),
+        }),
+      );
+    });
+
+    return root;
+  },
+  parameters: {
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Matrix of common Date Range + Time Picker states (default/inline/horizontal, validation/error, disabled) with computed roles, aria-* attributes, and IDs.',
+      },
+      story: { height: '1200px' },
+    },
   },
 };

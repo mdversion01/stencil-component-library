@@ -1,3 +1,5 @@
+// File: src/stories/minimize-pagination-component.stories.js
+
 import DocsPage from './minimize-pagination-component.docs.mdx';
 import {
   buildDocsTransform,
@@ -5,6 +7,23 @@ import {
   renderMatrixRow,
   template,
 } from './minimize-pagination-component.story-helpers.js';
+
+const minimizedArgs = {
+  controlId: 'orders-table',
+  currentPage: 1,
+  displayTotalNumberOfPages: false,
+  goToButtons: '',
+  itemsPerPage: false,
+  itemsPerPageOptions: [10, 20, 50, 100, 'All'],
+  pageSize: 10,
+  paginationLayout: 'center',
+  plumage: false,
+  size: '',
+  totalRows: 100,
+  paginationAriaLabel: 'Pagination',
+  pageSizeLabel: 'Items per page:',
+  pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+};
 
 export default {
   title: 'Components/Pagination/Minimized',
@@ -104,8 +123,8 @@ export default {
       options: ['', 'icon', 'text'],
       labels: {
         '': '(default / omit)',
-        'icon': 'Icon',
-        'text': 'Text',
+        icon: 'Icon',
+        text: 'Text',
       },
       name: 'go-to-buttons',
       description: 'Go-to buttons. Omit to use component default.',
@@ -150,36 +169,26 @@ export default {
   },
 };
 
-const Template = (args) => template(args);
-
-export const Minimized = Template.bind({});
-Minimized.args = {
-  controlId: 'orders-table',
-  currentPage: 1,
-  displayTotalNumberOfPages: false,
-  goToButtons: '',
-  itemsPerPage: false,
-  itemsPerPageOptions: [10, 20, 50, 100, 'All'],
-  pageSize: 10,
-  paginationLayout: 'center',
-  plumage: false,
-  size: '',
-  totalRows: 100,
-  paginationAriaLabel: 'Pagination',
-  pageSizeLabel: 'Items per page:',
-  pageSizeHelpText: 'Use this control to change how many items are shown per page.',
-};
-Minimized.parameters = {
-  docs: {
-    description: {
-      story:
-        'Minimized pagination component with default settings. This example shows basic usage and configuration options. It does not display page number buttons, focusing instead on essential navigation controls, such as first/previous/next/last buttons.',
+export const Minimized = {
+  name: 'Minimized',
+  render: args => template(args),
+  args: {
+    ...minimizedArgs,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Minimized pagination component with default settings. This example shows basic usage and configuration options. It does not display page number buttons, focusing instead on essential navigation controls, such as first/previous/next/last buttons.',
+      },
     },
   },
 };
 
-export const GoToButtonsText = () =>
-  normalizeHtml(`
+export const GoToButtonsText = {
+  name: 'Go-To Buttons: Text',
+  render: () =>
+    normalizeHtml(`
 <minimize-pagination-component
   current-page="6"
   total-rows="200"
@@ -187,18 +196,20 @@ export const GoToButtonsText = () =>
   go-to-buttons="text"
   pagination-layout="center"
 ></minimize-pagination-component>
-`);
-GoToButtonsText.storyName = 'Go-To Buttons: Text';
-GoToButtonsText.parameters = {
-  docs: {
-    description: {
-      story: 'Minimized pagination component with "text" go-to buttons and centered layout. "icon" is the default if go-to-buttons is omitted.',
+`),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Minimized pagination component with "text" go-to buttons and centered layout. "icon" is the default if go-to-buttons is omitted.',
+      },
     },
   },
 };
 
-export const Layouts = () =>
-  normalizeHtml(`
+export const Layouts = {
+  name: 'Layouts',
+  render: () =>
+    normalizeHtml(`
 <div style="display:grid; gap:16px;">
   <minimize-pagination-component current-page="1" total-rows="100" page-size="10" pagination-layout="start"></minimize-pagination-component>
   <minimize-pagination-component current-page="1" total-rows="100" page-size="10" pagination-layout="center"></minimize-pagination-component>
@@ -206,33 +217,59 @@ export const Layouts = () =>
   <minimize-pagination-component current-page="1" total-rows="100" page-size="10" pagination-layout="start" display-total-number-of-pages></minimize-pagination-component>
   <minimize-pagination-component current-page="1" total-rows="100" page-size="10" pagination-layout="end" display-total-number-of-pages></minimize-pagination-component>
 </div>
-`);
-Layouts.parameters = {
-  docs: {
-    source: { code: Layouts(), language: 'html' },
-    description: { story: 'Pagination component showing different layout options including start, center, and end.' },
-  },
-};
-
-export const SmallAndLargeSizes = () =>
-  normalizeHtml(`
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
 <div style="display:grid; gap:16px;">
-  <minimize-pagination-component current-page="1" total-rows="80" page-size="10" size="sm"></minimize-pagination-component>
-  <minimize-pagination-component current-page="1" total-rows="120" page-size="10" size="lg"></minimize-pagination-component>
+  <minimize-pagination-component current-page="1" total-rows="100" page-size="10" pagination-layout="start"></minimize-pagination-component>
+  <minimize-pagination-component current-page="1" total-rows="100" page-size="10" pagination-layout="center"></minimize-pagination-component>
+  <minimize-pagination-component current-page="1" total-rows="100" page-size="10" pagination-layout="end"></minimize-pagination-component>
+  <minimize-pagination-component current-page="1" total-rows="100" page-size="10" pagination-layout="start" display-total-number-of-pages></minimize-pagination-component>
+  <minimize-pagination-component current-page="1" total-rows="100" page-size="10" pagination-layout="end" display-total-number-of-pages></minimize-pagination-component>
 </div>
-`);
-SmallAndLargeSizes.storyName = 'Small and Large Sizes';
-SmallAndLargeSizes.parameters = {
-  docs: {
-    source: { code: SmallAndLargeSizes(), language: 'html' },
-    description: {
-      story: 'Pagination component demonstrating small (`size="sm"`) and large (`size="lg"`) sizes. If the size is not set, the default size is used.',
+`),
+        language: 'html',
+      },
+      description: {
+        story: 'Pagination component showing different layout options including start, center, and end.',
+      },
     },
   },
 };
 
-export const PlumageStyling = () =>
-  normalizeHtml(`
+export const SmallAndLargeSizes = {
+  name: 'Small and Large Sizes',
+  render: () =>
+    normalizeHtml(`
+<div style="display:grid; gap:16px;">
+  <minimize-pagination-component current-page="1" total-rows="80" page-size="10" size="sm"></minimize-pagination-component>
+  <minimize-pagination-component current-page="1" total-rows="120" page-size="10" size="lg"></minimize-pagination-component>
+</div>
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
+<div style="display:grid; gap:16px;">
+  <minimize-pagination-component current-page="1" total-rows="80" page-size="10" size="sm"></minimize-pagination-component>
+  <minimize-pagination-component current-page="1" total-rows="120" page-size="10" size="lg"></minimize-pagination-component>
+</div>
+`),
+        language: 'html',
+      },
+      description: {
+        story: 'Pagination component demonstrating small (`size="sm"`) and large (`size="lg"`) sizes. If the size is not set, the default size is used.',
+      },
+    },
+  },
+};
+
+export const PlumageStyling = {
+  name: 'Plumage Styling',
+  render: () =>
+    normalizeHtml(`
 <minimize-pagination-component
   current-page="8"
   total-rows="250"
@@ -240,18 +277,32 @@ export const PlumageStyling = () =>
   size="lg"
   plumage
 ></minimize-pagination-component>
-`);
-PlumageStyling.parameters = {
-  docs: {
-    source: { code: PlumageStyling(), language: 'html' },
-    description: {
-      story: 'Pagination component with Plumage styling enabled (`plumage` attribute set). This applies the Plumage design system styles to the component.',
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
+<minimize-pagination-component
+  current-page="8"
+  total-rows="250"
+  page-size="10"
+  size="lg"
+  plumage
+></minimize-pagination-component>
+`),
+        language: 'html',
+      },
+      description: {
+        story: 'Pagination component with Plumage styling enabled (`plumage` attribute set). This applies the Plumage design system styles to the component.',
+      },
     },
   },
 };
 
-export const WithControlId = () =>
-  normalizeHtml(`
+export const WithControlId = {
+  name: 'With Control Id',
+  render: () =>
+    normalizeHtml(`
 <div>
   <div id="results-region" style="margin-bottom: 8px; font: 14px/1.2 system-ui;">
     Results region controlled by the paginator below.
@@ -265,20 +316,40 @@ export const WithControlId = () =>
     control-id="results-region"
   ></minimize-pagination-component>
 </div>
-`);
-WithControlId.parameters = {
-  docs: {
-    source: { code: WithControlId(), language: 'html' },
-    description: {
-      story: 'Pagination component with `control-id` set to link it to a specific results region for accessibility.',
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
+<div>
+  <div id="results-region" style="margin-bottom: 8px; font: 14px/1.2 system-ui;">
+    Results region controlled by the paginator below.
+  </div>
+
+  <minimize-pagination-component
+    current-page="10"
+    total-rows="400"
+    page-size="10"
+    go-to-buttons="text"
+    control-id="results-region"
+  ></minimize-pagination-component>
+</div>
+`),
+        language: 'html',
+      },
+      description: {
+        story: 'Pagination component with `control-id` set to link it to a specific results region for accessibility.',
+      },
     },
   },
 };
 
-export const ItemsPerPage = () => {
-  const idEnd = 'minipg-sizechanger-end';
-  const idStart = 'minipg-sizechanger-start';
-  return normalizeHtml(`
+export const ItemsPerPage = {
+  name: 'Items Per Page',
+  render: () => {
+    const idEnd = 'minipg-sizechanger-end';
+    const idStart = 'minipg-sizechanger-start';
+    return normalizeHtml(`
 <div style="margin-bottom: 20px">
   <div style="font-size: 12px">Pagination on the end.</div>
   <minimize-pagination-component
@@ -308,19 +379,57 @@ export const ItemsPerPage = () => {
   document.getElementById('${idStart}').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
 </script>
 `);
-};
-ItemsPerPage.storyName = 'Items Per Page';
-ItemsPerPage.parameters = {
-  docs: {
-    source: { code: ItemsPerPage(), language: 'html' },
-    description: {
-      story: 'Pagination component with an items-per-page dropdown. Adding `items-per-page` allows users to select how many rows are displayed per page.',
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: (() => {
+          const idEnd = 'minipg-sizechanger-end';
+          const idStart = 'minipg-sizechanger-start';
+          return normalizeHtml(`
+<div style="margin-bottom: 20px">
+  <div style="font-size: 12px">Pagination on the end.</div>
+  <minimize-pagination-component
+    id="${idEnd}"
+    current-page="1"
+    total-rows="420"
+    page-size="20"
+    items-per-page
+    pagination-layout="end"
+  ></minimize-pagination-component>
+</div>
+
+<div style="margin-bottom: 20px">
+  <div style="font-size: 12px">Pagination at the start.</div>
+  <minimize-pagination-component
+    id="${idStart}"
+    current-page="1"
+    total-rows="420"
+    page-size="20"
+    items-per-page
+    pagination-layout="start"
+  ></minimize-pagination-component>
+</div>
+
+<script>
+  document.getElementById('${idEnd}').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
+  document.getElementById('${idStart}').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
+</script>
+`);
+        })(),
+        language: 'html',
+      },
+      description: {
+        story: 'Pagination component with an items-per-page dropdown. Adding `items-per-page` allows users to select how many rows are displayed per page.',
+      },
     },
   },
 };
 
-export const WithRangeOnly = () =>
-  normalizeHtml(`
+export const WithRangeOnly = {
+  name: 'With Range Only',
+  render: () =>
+    normalizeHtml(`
 <div style="margin-bottom: 20px">
   <minimize-pagination-component
     current-page="1"
@@ -340,20 +449,45 @@ export const WithRangeOnly = () =>
     pagination-layout="end"
   ></minimize-pagination-component>
 </div>
-`);
-WithRangeOnly.storyName = 'With Range Only';
-WithRangeOnly.parameters = {
-  docs: {
-    source: { code: WithRangeOnly(), language: 'html' },
-    description: {
-      story: 'Minimized pagination component in range-only mode (no size changer) with total number of pages displayed and layout aligned to the end.',
+`),
+  parameters: {
+    docs: {
+      source: {
+        code: normalizeHtml(`
+<div style="margin-bottom: 20px">
+  <minimize-pagination-component
+    current-page="1"
+    total-rows="100"
+    page-size="10"
+    display-total-number-of-pages
+    pagination-layout="start"
+  ></minimize-pagination-component>
+</div>
+
+<div style="margin-bottom: 20px">
+  <minimize-pagination-component
+    current-page="1"
+    total-rows="100"
+    page-size="10"
+    display-total-number-of-pages
+    pagination-layout="end"
+  ></minimize-pagination-component>
+</div>
+`),
+        language: 'html',
+      },
+      description: {
+        story: 'Minimized pagination component in range-only mode (no size changer) with total number of pages displayed and layout aligned to the end.',
+      },
     },
   },
 };
 
-export const StandaloneRangeAndSizer = () => {
-  const id = 'minipg-standalone';
-  return normalizeHtml(`
+export const StandaloneRangeAndSizer = {
+  name: 'Standalone Range and Items Per Page selector',
+  render: () => {
+    const id = 'minipg-standalone';
+    return normalizeHtml(`
 <minimize-pagination-component
   id="${id}"
   current-page="1"
@@ -368,157 +502,184 @@ export const StandaloneRangeAndSizer = () => {
   document.getElementById('${id}').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
 </script>
 `);
-};
-StandaloneRangeAndSizer.storyName = 'Standalone Range and Items Per Page selector';
-StandaloneRangeAndSizer.parameters = {
-  docs: {
-    source: { code: StandaloneRangeAndSizer(), language: 'html' },
-    description: { story: 'Pagination component demonstrating both range display and items-per-page selector.' },
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: (() => {
+          const id = 'minipg-standalone';
+          return normalizeHtml(`
+<minimize-pagination-component
+  id="${id}"
+  current-page="1"
+  total-rows="420"
+  page-size="10"
+  items-per-page
+  display-total-number-of-pages
+  pagination-layout="start"
+></minimize-pagination-component>
+
+<script>
+  document.getElementById('${id}').itemsPerPageOptions = [10, 20, 50, 100, 'All'];
+</script>
+`);
+        })(),
+        language: 'html',
+      },
+      description: {
+        story: 'Pagination component demonstrating both range display and items-per-page selector.',
+      },
+    },
   },
 };
 
-export const Playground = Template.bind({});
-Playground.args = {
-  controlId: 'orders-table',
-  currentPage: 1,
-  displayTotalNumberOfPages: true,
-  goToButtons: '',
-  itemsPerPage: true,
-  itemsPerPageOptions: [10, 20, 50, 100, 'All'],
-  pageSize: 10,
-  paginationLayout: 'center',
-  plumage: false,
-  size: '',
-  totalRows: 420,
-  paginationAriaLabel: 'Pagination',
-  pageSizeLabel: 'Items per page:',
-  pageSizeHelpText: 'Use this control to change how many items are shown per page.',
-};
-Playground.storyName = 'Playground';
-Playground.parameters = {
-  docs: {
-    description: { story: 'Interactive playground. itemsPerPageOptions is applied via property assignment in the docs source transform.' },
+export const Playground = {
+  name: 'Playground',
+  render: args => template(args),
+  args: {
+    controlId: 'orders-table',
+    currentPage: 1,
+    displayTotalNumberOfPages: true,
+    goToButtons: '',
+    itemsPerPage: true,
+    itemsPerPageOptions: [10, 20, 50, 100, 'All'],
+    pageSize: 10,
+    paginationLayout: 'center',
+    plumage: false,
+    size: '',
+    totalRows: 420,
+    paginationAriaLabel: 'Pagination',
+    pageSizeLabel: 'Items per page:',
+    pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Interactive playground. itemsPerPageOptions is applied via property assignment in the docs source transform.',
+      },
+    },
   },
 };
 
-export const AccessibilityMatrix = () => {
-  const root = document.createElement('div');
-  root.style.display = 'grid';
-  root.style.gap = '16px';
+export const AccessibilityMatrix = {
+  name: 'Accessibility Matrix (computed)',
+  render: () => {
+    const root = document.createElement('div');
+    root.style.display = 'grid';
+    root.style.gap = '16px';
 
-  const intro = document.createElement('div');
-  intro.innerHTML = `
+    const intro = document.createElement('div');
+    intro.innerHTML = `
     <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
     <div style="font-size:13px; color:#444;">
       Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs.
       Also reports whether <code>aria-describedby</code> resolves to real elements and shows the live range region.
     </div>
   `;
-  root.appendChild(intro);
+    root.appendChild(intro);
 
-  const rows = [
-    {
-      title: 'Default (center)',
-      args: {
-        currentPage: 1,
-        totalRows: 100,
-        pageSize: 10,
-        paginationLayout: 'center',
-        displayTotalNumberOfPages: true,
-        itemsPerPage: false,
-        plumage: false,
-        paginationAriaLabel: 'Pagination',
+    const rows = [
+      {
+        title: 'Default (center)',
+        args: {
+          currentPage: 1,
+          totalRows: 100,
+          pageSize: 10,
+          paginationLayout: 'center',
+          displayTotalNumberOfPages: true,
+          itemsPerPage: false,
+          plumage: false,
+          paginationAriaLabel: 'Pagination',
+        },
       },
-    },
-    {
-      title: '“Inline” (start, no range)',
-      args: {
-        currentPage: 2,
-        totalRows: 90,
-        pageSize: 10,
-        paginationLayout: 'start',
-        displayTotalNumberOfPages: false,
-        itemsPerPage: false,
-        plumage: false,
-        paginationAriaLabel: 'Pagination',
+      {
+        title: '“Inline” (start, no range)',
+        args: {
+          currentPage: 2,
+          totalRows: 90,
+          pageSize: 10,
+          paginationLayout: 'start',
+          displayTotalNumberOfPages: false,
+          itemsPerPage: false,
+          plumage: false,
+          paginationAriaLabel: 'Pagination',
+        },
       },
-    },
-    {
-      title: '“Horizontal-ish” (items-per-page + range, start)',
-      args: {
-        currentPage: 1,
-        totalRows: 420,
-        pageSize: 20,
-        paginationLayout: 'start',
-        displayTotalNumberOfPages: true,
-        itemsPerPage: true,
-        itemsPerPageOptions: [10, 20, 50, 100, 'All'],
-        plumage: true,
-        pageSizeLabel: 'Items per page:',
-        pageSizeHelpText: 'Use this control to change how many items are shown per page.',
-        paginationAriaLabel: 'Pagination',
+      {
+        title: '“Horizontal-ish” (items-per-page + range, start)',
+        args: {
+          currentPage: 1,
+          totalRows: 420,
+          pageSize: 20,
+          paginationLayout: 'start',
+          displayTotalNumberOfPages: true,
+          itemsPerPage: true,
+          itemsPerPageOptions: [10, 20, 50, 100, 'All'],
+          plumage: true,
+          pageSizeLabel: 'Items per page:',
+          pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+          paginationAriaLabel: 'Pagination',
+        },
       },
-    },
-    {
-      title: 'Error/Validation-ish (no rows: “All” disabled, range shows 0-0 of 0)',
-      args: {
-        currentPage: 1,
-        totalRows: 0,
-        pageSize: 10,
-        paginationLayout: 'end',
-        displayTotalNumberOfPages: true,
-        itemsPerPage: true,
-        itemsPerPageOptions: [10, 20, 'All'],
-        plumage: false,
-        pageSizeLabel: 'Items per page:',
-        pageSizeHelpText: 'Use this control to change how many items are shown per page.',
-        paginationAriaLabel: 'Pagination',
+      {
+        title: 'Error/Validation-ish (no rows: “All” disabled, range shows 0-0 of 0)',
+        args: {
+          currentPage: 1,
+          totalRows: 0,
+          pageSize: 10,
+          paginationLayout: 'end',
+          displayTotalNumberOfPages: true,
+          itemsPerPage: true,
+          itemsPerPageOptions: [10, 20, 'All'],
+          plumage: false,
+          pageSizeLabel: 'Items per page:',
+          pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+          paginationAriaLabel: 'Pagination',
+        },
       },
-    },
-    {
-      title: 'Disabled-ish (at start: First/Prev disabled)',
-      args: {
-        currentPage: 1,
-        totalRows: 120,
-        pageSize: 10,
-        paginationLayout: 'center',
-        displayTotalNumberOfPages: false,
-        itemsPerPage: false,
-        plumage: false,
-        paginationAriaLabel: 'Pagination',
+      {
+        title: 'Disabled-ish (at start: First/Prev disabled)',
+        args: {
+          currentPage: 1,
+          totalRows: 120,
+          pageSize: 10,
+          paginationLayout: 'center',
+          displayTotalNumberOfPages: false,
+          itemsPerPage: false,
+          plumage: false,
+          paginationAriaLabel: 'Pagination',
+        },
       },
-    },
-  ];
+    ];
 
-  rows.forEach((r, idx) => {
-    root.appendChild(
-      renderMatrixRow({
-        ...r,
-        idSuffix: String(idx + 1),
-      }),
-    );
-  });
+    rows.forEach((r, idx) => {
+      root.appendChild(
+        renderMatrixRow({
+          ...r,
+          idSuffix: String(idx + 1),
+        }),
+      );
+    });
 
-  return root;
-};
-
-AccessibilityMatrix.storyName = 'Accessibility Matrix (computed)';
-AccessibilityMatrix.parameters = {
-  docs: {
-    description: {
-      story:
-        'Matrix of key states (default/inline/horizontal, no-rows “validation-ish”, at-start disabled-ish). Each row prints computed role/aria/ids and whether aria-describedby resolves.',
-    },
-    story: { height: '1400px' },
-    source: {
-      code: normalizeHtml(`
+    return root;
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Matrix of key states (default/inline/horizontal, no-rows “validation-ish”, at-start disabled-ish). Each row prints computed role/aria/ids and whether aria-describedby resolves.',
+      },
+      story: { height: '1400px' },
+      source: {
+        code: normalizeHtml(`
 <div style="display:grid; gap:16px;">
   <!-- This story renders DOM nodes (not just HTML) so it can inspect computed role/aria/ids. -->
   <!-- See Canvas for the live matrix output. -->
 </div>
 `),
-      language: 'html',
+        language: 'html',
+      },
     },
+    controls: { disable: true },
   },
-  controls: { disable: true },
 };

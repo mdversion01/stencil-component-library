@@ -1,5 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`<input-group-component> disables native affix buttons when readOnly=true 1`] = `
+<input-group-component append-button="" append-text="Go" has-append="" has-prepend="" input-id="search-readonly" label="Search" prepend-button="" prepend-text="Back" read-only="">
+  <div>
+    <div class="form-group">
+      <label class="form-control-label label-sm" for="search-readonly" id="search-readonly__label">
+        <span>
+          Search
+        </span>
+      </label>
+      <div>
+        <div class="sr-only" id="search-readonly__desc">
+          Enter Search. Type: text.
+        </div>
+        <div class="input-group">
+          <span class="prepend-btn">
+            <button class="btn btn-secondary" disabled="" type="button">
+              Back
+            </button>
+          </span>
+          <input aria-describedby="search-readonly__desc" aria-labelledby="search-readonly__label" class="form-control" id="search-readonly" name="search" placeholder="Search" readonly="" type="text" value="">
+          <span class="append-btn">
+            <button class="btn btn-secondary" disabled="" type="button">
+              Go
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</input-group-component>
+`;
+
 exports[`<input-group-component> horizontal with numeric fallback cols and prop-driven text affixes snapshots correctly 1`] = `
 <input-group-component append-text=".js" form-layout="horizontal" has-append="" has-prepend="" input-col="9" input-id="code" label="Code" label-col="3" prepend-text="#">
   <div class="horizontal">

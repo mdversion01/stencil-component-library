@@ -282,7 +282,7 @@ export const Basic = {
     value: '',
   },
 };
-Basic.storyName = 'Basic';
+Basic.name = 'Basic';
 Basic.parameters = {
   docs: { description: { story: 'Default single-select autocomplete.' }, story: { height: '300px' } },
 };
@@ -297,7 +297,7 @@ export const HorizontalLayout = {
     inputCol: 8,
   },
 };
-HorizontalLayout.storyName = 'Horizontal Layout';
+HorizontalLayout.name = 'Horizontal Layout';
 HorizontalLayout.parameters = {
   docs: { description: { story: 'Horizontal form layout with right-aligned label.' }, story: { height: '300px' } },
 };
@@ -311,7 +311,7 @@ export const InlineLayout = {
     size: 'sm',
   },
 };
-InlineLayout.storyName = 'Inline Layout';
+InlineLayout.name = 'Inline Layout';
 InlineLayout.parameters = {
   docs: { description: { story: 'Inline layout where label + input sit in a single row.' }, story: { height: '300px' } },
 };
@@ -362,7 +362,7 @@ export const Sizes = {
     },
   },
 };
-Sizes.storyName = 'Sizes';
+Sizes.name = 'Sizes';
 
 export const ControlledValue = {
   args: {
@@ -418,7 +418,7 @@ export const ControlledValue = {
     return wrap;
   },
 };
-ControlledValue.storyName = 'Controlled Value (args.value)';
+ControlledValue.name = 'Controlled Value (args.value)';
 ControlledValue.parameters = {
   docs: {
     description: {
@@ -437,7 +437,7 @@ export const FieldValidation = {
     required: true,
   },
 };
-FieldValidation.storyName = 'Field Validation';
+FieldValidation.name = 'Field Validation';
 FieldValidation.parameters = {
   docs: {
     description: { story: 'Shows external validation state + validation message.' },
@@ -455,7 +455,7 @@ export const Disabled = {
     validationMessage: '',
   },
 };
-Disabled.storyName = 'Disabled';
+Disabled.name = 'Disabled';
 Disabled.parameters = {
   docs: { description: { story: 'Disabled state example (with a preset value).' } },
 };

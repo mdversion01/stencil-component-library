@@ -33,6 +33,7 @@ export class InputGroupComponent {
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
   @Prop() placeholder: string = '';
+  @Prop() readOnly: boolean = false;
 
   @Prop({ attribute: 'has-prepend' }) prependField: boolean = false;
   @Prop() prependId: string = '';
@@ -175,6 +176,8 @@ export class InputGroupComponent {
   };
 
   private handleAffixClick = (side: AffixSide, ev: MouseEvent) => {
+    ev.stopPropagation();
+
     if (side === 'prepend') this.prependClick.emit({ originalEvent: ev });
     else this.appendClick.emit({ originalEvent: ev });
   };
@@ -394,7 +397,7 @@ export class InputGroupComponent {
             type={buttonType}
             class={this.getNativeButtonClass(buttonVariant)}
             aria-label={ariaLabel || undefined}
-            disabled={this.disabled}
+            disabled={this.disabled || this.readOnly}
             onClick={ev => this.handleAffixClick(side, ev)}
           >
             {text}
@@ -446,7 +449,7 @@ export class InputGroupComponent {
             aria-invalid={this.isInvalidNow() ? 'true' : undefined}
             disabled={this.disabled}
             required={this.required}
-            readOnly={false}
+            readOnly={this.readOnly}
             form={this._computedFormId || undefined}
             onInput={this.handleInput}
           />

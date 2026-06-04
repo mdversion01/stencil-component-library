@@ -46,6 +46,7 @@
 | `prependIcon`          | `prepend-icon`           |             | `string`                          | `undefined`   |
 | `prependId`            | `prepend-id`             |             | `string`                          | `''`          |
 | `prependText`          | `prepend-text`           |             | `string`                          | `''`          |
+| `readOnly`             | `read-only`              |             | `boolean`                         | `false`       |
 | `required`             | `required`               |             | `boolean`                         | `false`       |
 | `size`                 | `size`                   |             | `"" \| "lg" \| "sm"`              | `''`          |
 | `type`                 | `type`                   |             | `string`                          | `'text'`      |

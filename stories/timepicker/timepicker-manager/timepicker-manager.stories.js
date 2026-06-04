@@ -8,6 +8,36 @@ import {
   normalizeHtml,
 } from './timepicker-manager-component.story-helpers.js';
 
+const baseArgs = {
+  ariaLabel: 'Time Picker',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
+  disableTimepicker: false,
+  hideSeconds: false,
+  hideTimepickerBtn: false,
+  inputId: 'default-time-input',
+  inputName: 'time',
+  inputWidth: null,
+  isTwentyFourHourFormat: true,
+  isValid: true,
+  labelText: 'Add Time',
+  required: false,
+  showLabel: true,
+  size: '',
+  twelveHourOnly: false,
+  twentyFourHourOnly: false,
+  usePlTimepicker: false,
+  validation: false,
+  validationMessage: '',
+  value: '',
+  timeInputThrottleMs: 50,
+  wrapperWidth: 240,
+};
+
+const storyWithTemplate = {
+  render: args => Template(args),
+};
+
 export default {
   title: 'Components/Timepicker/Timepicker Manager',
   tags: ['autodocs'],
@@ -247,186 +277,158 @@ When the popover is open (both implementations), the keyboard model is consisten
     },
   },
   args: {
-    ariaLabel: 'Time Picker',
-    ariaLabelledby: '',
-    ariaDescribedby: '',
-    disableTimepicker: false,
-    hideSeconds: false,
-    hideTimepickerBtn: false,
-    inputId: 'default-time-input',
-    inputName: 'time',
-    inputWidth: null,
-    isTwentyFourHourFormat: true,
-    isValid: true,
-    labelText: 'Add Time',
-    required: false,
+    ...baseArgs,
+  },
+};
+
+export const Default = {
+  ...storyWithTemplate,
+  name: 'Default Timepicker Manager',
+  args: {
+    ...baseArgs,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Default configuration with a visible label. For best accessibility, prefer a visible label or external aria-labelledby.',
+      },
+      story: { height: '220px' },
+    },
+  },
+};
+
+export const SmallSize = {
+  ...storyWithTemplate,
+  name: 'Small Size (no Label)',
+  args: {
+    ...baseArgs,
+    showLabel: false,
+    size: 'sm',
+    inputId: 'time-input-sm',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Small input with no visible label. In real usage, provide aria-labelledby to an external label or aria-label.',
+      },
+      story: { height: '220px' },
+    },
+  },
+};
+
+export const LargeWithLabel = {
+  ...storyWithTemplate,
+  name: 'Large Size with Label',
+  args: {
+    ...baseArgs,
+    size: 'lg',
     showLabel: true,
-    size: '',
-    twelveHourOnly: false,
+    inputId: 'time-input-lg',
+  },
+  parameters: {
+    docs: {
+      description: { story: 'Large input with a visible label.' },
+      story: { height: '220px' },
+    },
+  },
+};
+
+export const TwelveHourOnly = {
+  ...storyWithTemplate,
+  name: '12-Hour Only',
+  args: {
+    ...baseArgs,
+    isTwentyFourHourFormat: false,
+    twelveHourOnly: true,
     twentyFourHourOnly: false,
-    usePlTimepicker: false,
-    validation: false,
-    validationMessage: '',
-    value: '',
-    timeInputThrottleMs: 50,
-    wrapperWidth: 240,
+    labelText: '12-hour Time',
+    inputId: 'time-12h-only',
+    wrapperWidth: 340,
   },
-};
-
-export const Default = Template.bind({});
-Default.args = {
-  ariaLabel: 'Time Picker',
-  ariaLabelledby: '',
-  ariaDescribedby: '',
-  disableTimepicker: false,
-  hideSeconds: false,
-  hideTimepickerBtn: false,
-  inputId: 'default-time-input',
-  inputName: 'time',
-  inputWidth: null,
-  isTwentyFourHourFormat: true,
-  isValid: true,
-  labelText: 'Add Time',
-  required: false,
-  showLabel: true,
-  size: '',
-  twelveHourOnly: false,
-  twentyFourHourOnly: false,
-  usePlTimepicker: false,
-  validation: false,
-  validationMessage: '',
-  value: '',
-  timeInputThrottleMs: 50,
-  wrapperWidth: 240,
-};
-Default.storyName = 'Default Timepicker Manager';
-Default.parameters = {
-  docs: {
-    description: {
-      story: 'Default configuration with a visible label. For best accessibility, prefer a visible label or external aria-labelledby.',
+  parameters: {
+    docs: {
+      description: { story: 'Only allow 12-hour format.' },
+      story: { height: '220px' },
     },
-    story: { height: '220px' },
   },
 };
 
-export const SmallSize = Template.bind({});
-SmallSize.args = {
-  ...Default.args,
-  showLabel: false,
-  size: 'sm',
-  inputId: 'time-input-sm',
-};
-SmallSize.storyName = 'Small Size (no Label)';
-SmallSize.parameters = {
-  docs: {
-    description: {
-      story: 'Small input with no visible label. In real usage, provide aria-labelledby to an external label or aria-label.',
+export const TwentyFourHourOnlyHideSeconds = {
+  ...storyWithTemplate,
+  name: '24-Hour Only (with Seconds Hidden)',
+  args: {
+    ...baseArgs,
+    twentyFourHourOnly: true,
+    twelveHourOnly: false,
+    hideSeconds: true,
+    labelText: '24-hour (HH:mm)',
+    inputId: 'time-24h-only',
+    wrapperWidth: 340,
+  },
+  parameters: {
+    docs: {
+      description: { story: 'Only allow 24-hour format and hide seconds.' },
+      story: { height: '220px' },
     },
-    story: { height: '220px' },
   },
 };
 
-export const LargeWithLabel = Template.bind({});
-LargeWithLabel.args = {
-  ...Default.args,
-  size: 'lg',
-  showLabel: true,
-  inputId: 'time-input-lg',
-};
-LargeWithLabel.storyName = 'Large Size with Label';
-LargeWithLabel.parameters = {
-  docs: {
-    description: { story: 'Large input with a visible label.' },
-    story: { height: '220px' },
+export const CustomInputWidth = {
+  ...storyWithTemplate,
+  name: 'Custom Input Width',
+  args: {
+    ...baseArgs,
+    inputId: 'time-custom-width',
+    labelText: 'Custom Width',
+    inputWidth: 260,
+    wrapperWidth: 420,
   },
-};
-
-export const TwelveHourOnly = Template.bind({});
-TwelveHourOnly.args = {
-  ...Default.args,
-  isTwentyFourHourFormat: false,
-  twelveHourOnly: true,
-  twentyFourHourOnly: false,
-  labelText: '12-hour Time',
-  inputId: 'time-12h-only',
-  wrapperWidth: 340,
-};
-TwelveHourOnly.storyName = '12-Hour Only';
-TwelveHourOnly.parameters = {
-  docs: {
-    description: { story: 'Only allow 12-hour format.' },
-    story: { height: '220px' },
-  },
-};
-
-export const TwentyFourHourOnlyHideSeconds = Template.bind({});
-TwentyFourHourOnlyHideSeconds.args = {
-  ...Default.args,
-  twentyFourHourOnly: true,
-  twelveHourOnly: false,
-  hideSeconds: true,
-  labelText: '24-hour (HH:mm)',
-  inputId: 'time-24h-only',
-  wrapperWidth: 340,
-};
-TwentyFourHourOnlyHideSeconds.storyName = '24-Hour Only (with Seconds Hidden)';
-TwentyFourHourOnlyHideSeconds.parameters = {
-  docs: {
-    description: { story: 'Only allow 24-hour format and hide seconds.' },
-    story: { height: '220px' },
-  },
-};
-
-export const CustomInputWidth = Template.bind({});
-CustomInputWidth.args = {
-  ...Default.args,
-  inputId: 'time-custom-width',
-  labelText: 'Custom Width',
-  inputWidth: 260,
-  wrapperWidth: 420,
-};
-CustomInputWidth.storyName = 'Custom Input Width';
-CustomInputWidth.parameters = {
-  docs: {
-    description: { story: 'Custom input width via input-width.' },
-    story: { height: '220px' },
-  },
-};
-
-export const WithValidation = Template.bind({});
-WithValidation.args = {
-  ...Default.args,
-  inputId: 'time-input-validation',
-  validation: true,
-  isValid: false,
-  validationMessage: 'Please enter a valid time.',
-  wrapperWidth: 420,
-};
-WithValidation.storyName = 'With Validation Message';
-WithValidation.parameters = {
-  docs: {
-    description: {
-      story: 'Invalid styling + validation message. Manager appends the child validation element id to aria-describedby when validationMessage is present.',
+  parameters: {
+    docs: {
+      description: { story: 'Custom input width via input-width.' },
+      story: { height: '220px' },
     },
-    story: { height: '240px' },
   },
 };
 
-export const PlumageStyle = Template.bind({});
-PlumageStyle.args = {
-  ...Default.args,
-  usePlTimepicker: true,
-  inputId: 'time-plumage',
-  labelText: 'Add Time',
-  wrapperWidth: 520,
-};
-PlumageStyle.storyName = 'Plumage Style Timepicker';
-PlumageStyle.parameters = {
-  docs: {
-    description: {
-      story: 'Renders the <plumage-timepicker-component> when use-pl-timepicker is true. Disabled mapping differs (disabled vs disableTimepicker).',
+export const WithValidation = {
+  ...storyWithTemplate,
+  name: 'With Validation Message',
+  args: {
+    ...baseArgs,
+    inputId: 'time-input-validation',
+    validation: true,
+    isValid: false,
+    validationMessage: 'Please enter a valid time.',
+    wrapperWidth: 420,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Invalid styling + validation message. Manager appends the child validation element id to aria-describedby when validationMessage is present.',
+      },
+      story: { height: '240px' },
     },
-    story: { height: '240px' },
+  },
+};
+
+export const PlumageStyle = {
+  ...storyWithTemplate,
+  name: 'Plumage Style Timepicker',
+  args: {
+    ...baseArgs,
+    usePlTimepicker: true,
+    inputId: 'time-plumage',
+    labelText: 'Add Time',
+    wrapperWidth: 520,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Renders the <plumage-timepicker-component> when use-pl-timepicker is true. Disabled mapping differs (disabled vs disableTimepicker).',
+      },
+      story: { height: '240px' },
+    },
   },
 };
 
@@ -475,7 +477,7 @@ export const AccessibilityMatrix = {
       const mount = document.createElement('div');
       mount.innerHTML = normalizeHtml(`
         ${extraHtml}
-        ${Template({ ...Default.args, ...storyArgs })}
+        ${Template({ ...baseArgs, ...storyArgs })}
       `);
 
       demo.appendChild(mount);

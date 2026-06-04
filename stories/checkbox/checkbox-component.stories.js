@@ -3,6 +3,36 @@
 import DocsPage from './checkbox-component.docs.mdx';
 import { buildDocsHtml, Template } from './checkbox-component.story-helpers.js';
 
+const baseArgs = {
+  checkboxGroup: false,
+  customCheckbox: false,
+  customCheckboxGroup: false,
+
+  inputId: 'agree-1',
+  labelTxt: 'I agree to the terms',
+  name: 'agree',
+  value: 'agree',
+  size: '',
+  inline: false,
+
+  checked: false,
+  disabled: false,
+
+  required: false,
+  validation: false,
+  validationMsg: '',
+
+  groupTitle: 'Pick one or more',
+  groupTitleSize: '',
+  groupOptions: [
+    { inputId: 'opt-1', value: 'alpha', labelTxt: 'Alpha' },
+    { inputId: 'opt-2', value: 'beta', labelTxt: 'Beta' },
+    { inputId: 'opt-3', value: 'gamma', labelTxt: 'Gamma', disabled: false },
+  ],
+};
+
+const renderTemplate = args => Template(args);
+
 export default {
   title: 'Form/Checkbox',
   tags: ['autodocs'],
@@ -122,163 +152,163 @@ export default {
   },
 
   args: {
-    checkboxGroup: false,
-    customCheckbox: false,
-    customCheckboxGroup: false,
-
-    inputId: 'agree-1',
-    labelTxt: 'I agree to the terms',
-    name: 'agree',
-    value: 'agree',
-    size: '',
-    inline: false,
-
-    checked: false,
-    disabled: false,
-
-    required: false,
-    validation: false,
-    validationMsg: '',
-
-    groupTitle: 'Pick one or more',
-    groupTitleSize: '',
-    groupOptions: [
-      { inputId: 'opt-1', value: 'alpha', labelTxt: 'Alpha' },
-      { inputId: 'opt-2', value: 'beta', labelTxt: 'Beta' },
-      { inputId: 'opt-3', value: 'gamma', labelTxt: 'Gamma', disabled: false },
-    ],
+    ...baseArgs,
   },
 
-  render: (args) => Template(args),
+  render: renderTemplate,
 };
 
-export const SingleBasic = Template.bind({});
-SingleBasic.args = {
-  customCheckbox: false,
-  checkboxGroup: false,
-  customCheckboxGroup: false,
-  inputId: 'agree-1',
-  labelTxt: 'I agree to the terms',
-  value: 'agree',
-  size: 'lg',
-};
-SingleBasic.storyName = 'Single Checkbox';
-SingleBasic.parameters = {
-  docs: { description: { story: 'A single checkbox with default styling.' } },
-};
-
-export const SingleRequired = Template.bind({});
-SingleRequired.args = {
-  required: true,
-  validation: true,
-  validationMsg: 'Please agree before continuing.',
-};
-SingleRequired.storyName = 'Single Required';
-SingleRequired.parameters = {
-  docs: { description: { story: 'A single checkbox that is required and includes validation.' } },
+export const SingleBasic = {
+  name: 'Single Checkbox',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    customCheckbox: false,
+    checkboxGroup: false,
+    customCheckboxGroup: false,
+    inputId: 'agree-1',
+    labelTxt: 'I agree to the terms',
+    value: 'agree',
+    size: 'lg',
+  },
+  parameters: {
+    docs: { description: { story: 'A single checkbox with default styling.' } },
+  },
 };
 
-export const SingleCustom = Template.bind({});
-SingleCustom.args = {
-  customCheckbox: true,
-  inputId: 'custom-1',
-  labelTxt: 'Custom styled checkbox',
-  size: 'lg',
-};
-SingleCustom.storyName = 'Single Custom';
-SingleCustom.parameters = {
-  docs: { description: { story: 'A single checkbox with custom styling.' } },
-};
-
-export const GroupInline = Template.bind({});
-GroupInline.args = {
-  checkboxGroup: true,
-  customCheckbox: false,
-  customCheckboxGroup: false,
-  name: 'flavors',
-  inline: true,
-  groupTitle: 'Flavors (inline)',
-  groupOptions: [
-    { inputId: 'fl-1', value: 'vanilla', labelTxt: 'Vanilla' },
-    { inputId: 'fl-2', value: 'chocolate', labelTxt: 'Chocolate', checked: true },
-    { inputId: 'fl-3', value: 'strawberry', labelTxt: 'Strawberry', disabled: false },
-  ],
-};
-GroupInline.storyName = 'Group Inline Layout';
-GroupInline.parameters = {
-  docs: { description: { story: 'A group of checkboxes displayed inline.' } },
+export const SingleRequired = {
+  name: 'Single Required',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    required: true,
+    validation: true,
+    validationMsg: 'Please agree before continuing.',
+  },
+  parameters: {
+    docs: { description: { story: 'A single checkbox that is required and includes validation.' } },
+  },
 };
 
-export const GroupCustomStyled = Template.bind({});
-GroupCustomStyled.args = {
-  checkboxGroup: false,
-  customCheckboxGroup: true,
-  name: 'letters',
-  groupTitle: 'Custom group',
-  groupTitleSize: '',
-  size: 'lg',
-  groupOptions: [
-    { inputId: 'cg-1', value: 'A', labelTxt: 'Option A' },
-    { inputId: 'cg-2', value: 'B', labelTxt: 'Option B', checked: true },
-    { inputId: 'cg-3', value: 'C', labelTxt: 'Option C' },
-  ],
-};
-GroupCustomStyled.storyName = 'Group with Custom Styling';
-GroupCustomStyled.parameters = {
-  docs: { description: { story: 'A group of checkboxes with custom styling.' } },
+export const SingleCustom = {
+  name: 'Single Custom',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    customCheckbox: true,
+    inputId: 'custom-1',
+    labelTxt: 'Custom styled checkbox',
+    size: 'lg',
+  },
+  parameters: {
+    docs: { description: { story: 'A single checkbox with custom styling.' } },
+  },
 };
 
-export const GroupWithValidation = Template.bind({});
-GroupWithValidation.args = {
-  checkboxGroup: true,
-  name: 'features',
-  required: true,
-  validation: true,
-  validationMsg: 'Select at least one option.',
-  groupTitle: 'Required group',
-  size: 'lg',
-  groupOptions: [
-    { inputId: 'ft-1', value: 'sync', labelTxt: 'Sync' },
-    { inputId: 'ft-2', value: 'backup', labelTxt: 'Backup' },
-    { inputId: 'ft-3', value: 'share', labelTxt: 'Share' },
-  ],
-};
-GroupWithValidation.storyName = 'Group with Validation';
-GroupWithValidation.parameters = {
-  docs: { description: { story: 'A group of checkboxes that is required and includes validation.' } },
-};
-
-export const SingleDisabled = Template.bind({});
-SingleDisabled.args = {
-  disabled: true,
-  inputId: 'disabled-1',
-  labelTxt: 'Disabled checkbox',
-  value: 'disabled',
-};
-SingleDisabled.storyName = 'Single Disabled Checkbox';
-SingleDisabled.parameters = {
-  docs: { description: { story: 'A single checkbox that is disabled.' } },
+export const GroupInline = {
+  name: 'Group Inline Layout',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    checkboxGroup: true,
+    customCheckbox: false,
+    customCheckboxGroup: false,
+    name: 'flavors',
+    inline: true,
+    groupTitle: 'Flavors (inline)',
+    groupOptions: [
+      { inputId: 'fl-1', value: 'vanilla', labelTxt: 'Vanilla' },
+      { inputId: 'fl-2', value: 'chocolate', labelTxt: 'Chocolate', checked: true },
+      { inputId: 'fl-3', value: 'strawberry', labelTxt: 'Strawberry', disabled: false },
+    ],
+  },
+  parameters: {
+    docs: { description: { story: 'A group of checkboxes displayed inline.' } },
+  },
 };
 
-export const GroupDisabledOptions = Template.bind({});
-GroupDisabledOptions.args = {
-  checkboxGroup: true,
-  name: 'seating',
-  groupTitle: 'Seating Preferences',
-  groupOptions: [
-    { inputId: 'seat-window', value: 'window', labelTxt: 'Window' },
-    { inputId: 'seat-middle', value: 'middle', labelTxt: 'Middle', disabled: true },
-    { inputId: 'seat-aisle', value: 'aisle', labelTxt: 'Aisle' },
-  ],
+export const GroupCustomStyled = {
+  name: 'Group with Custom Styling',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    checkboxGroup: false,
+    customCheckboxGroup: true,
+    name: 'letters',
+    groupTitle: 'Custom group',
+    groupTitleSize: '',
+    size: 'lg',
+    groupOptions: [
+      { inputId: 'cg-1', value: 'A', labelTxt: 'Option A' },
+      { inputId: 'cg-2', value: 'B', labelTxt: 'Option B', checked: true },
+      { inputId: 'cg-3', value: 'C', labelTxt: 'Option C' },
+    ],
+  },
+  parameters: {
+    docs: { description: { story: 'A group of checkboxes with custom styling.' } },
+  },
 };
-GroupDisabledOptions.storyName = 'Group with Disabled Options';
-GroupDisabledOptions.parameters = {
-  docs: { description: { story: 'A group of checkboxes with some options disabled.' } },
+
+export const GroupWithValidation = {
+  name: 'Group with Validation',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    checkboxGroup: true,
+    name: 'features',
+    required: true,
+    validation: true,
+    validationMsg: 'Select at least one option.',
+    groupTitle: 'Required group',
+    size: 'lg',
+    groupOptions: [
+      { inputId: 'ft-1', value: 'sync', labelTxt: 'Sync' },
+      { inputId: 'ft-2', value: 'backup', labelTxt: 'Backup' },
+      { inputId: 'ft-3', value: 'share', labelTxt: 'Share' },
+    ],
+  },
+  parameters: {
+    docs: { description: { story: 'A group of checkboxes that is required and includes validation.' } },
+  },
+};
+
+export const SingleDisabled = {
+  name: 'Single Disabled Checkbox',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    disabled: true,
+    inputId: 'disabled-1',
+    labelTxt: 'Disabled checkbox',
+    value: 'disabled',
+  },
+  parameters: {
+    docs: { description: { story: 'A single checkbox that is disabled.' } },
+  },
+};
+
+export const GroupDisabledOptions = {
+  name: 'Group with Disabled Options',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    checkboxGroup: true,
+    name: 'seating',
+    groupTitle: 'Seating Preferences',
+    groupOptions: [
+      { inputId: 'seat-window', value: 'window', labelTxt: 'Window' },
+      { inputId: 'seat-middle', value: 'middle', labelTxt: 'Middle', disabled: true },
+      { inputId: 'seat-aisle', value: 'aisle', labelTxt: 'Aisle' },
+    ],
+  },
+  parameters: {
+    docs: { description: { story: 'A group of checkboxes with some options disabled.' } },
+  },
 };
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
-  render: (args) => {
+  render: args => {
     const wrap = document.createElement('div');
     wrap.style.display = 'grid';
     wrap.style.gap = '16px';
@@ -353,7 +383,7 @@ export const AccessibilityMatrix = {
             labelText: singleLabel?.textContent?.trim() ?? null,
             disabledAttr: singleInput?.hasAttribute('disabled') ?? null,
             requiredAttr: singleInput?.hasAttribute('required') ?? null,
-            options: groupInputs.map((i) => ({
+            options: groupInputs.map(i => ({
               id: i.getAttribute('id'),
               name: i.getAttribute('name'),
               checked: i.checked,

@@ -141,7 +141,7 @@ export const Single_Bootstrap = {
     ariaLabelledby: '',
   },
 };
-Single_Bootstrap.storyName = 'Single Toggle Switch (Bootstrap)';
+Single_Bootstrap.name = 'Single Toggle Switch (Bootstrap)';
 Single_Bootstrap.parameters = {
   docs: { description: { story: 'A single toggle switch using the default Bootstrap styles.' } },
 };
@@ -157,7 +157,7 @@ export const Single_WithValidation = {
     labelTxt: 'Accept terms',
   },
 };
-Single_WithValidation.storyName = 'Single Toggle Switch, with Required and Validation (Bootstrap)';
+Single_WithValidation.name = 'Single Toggle Switch, with Required and Validation (Bootstrap)';
 Single_WithValidation.parameters = {
   docs: { description: { story: 'A single toggle switch using with `required` and `validation` enabled.' } },
 };
@@ -178,7 +178,7 @@ export const Single_Custom = {
     validationMessage: '',
   },
 };
-Single_Custom.storyName = 'Single Toggle Switch (Custom)';
+Single_Custom.name = 'Single Toggle Switch (Custom)';
 Single_Custom.parameters = { docs: { description: { story: 'A single custom toggle switch.' } } };
 
 export const Single_Custom_Required = {
@@ -197,7 +197,7 @@ export const Single_Custom_Required = {
     validationMessage: 'Please enable this switch.',
   },
 };
-Single_Custom_Required.storyName = 'Single Toggle Switch, with Required and Validation (Custom)';
+Single_Custom_Required.name = 'Single Toggle Switch, with Required and Validation (Custom)';
 Single_Custom_Required.parameters = {
   docs: { description: { story: 'A single custom toggle switch using with `required` and `validation` enabled.' } },
 };
@@ -226,7 +226,7 @@ export const Multi_Bootstrap = {
     ariaLabelledby: '',
   },
 };
-Multi_Bootstrap.storyName = 'Multiple Inline Toggle Switches (Bootstrap)';
+Multi_Bootstrap.name = 'Multiple Inline Toggle Switches (Bootstrap)';
 Multi_Bootstrap.parameters = { docs: { description: { story: 'A group of toggle switches using the default Bootstrap styles.' } } };
 
 export const Multi_Custom_Inline_Sizes = {
@@ -255,7 +255,7 @@ export const Multi_Custom_Inline_Sizes = {
     ],
   },
 };
-Multi_Custom_Inline_Sizes.storyName = 'Multiple Switches, Inline, Sizes and Disabled (Custom)';
+Multi_Custom_Inline_Sizes.name = 'Multiple Switches, Inline, Sizes and Disabled (Custom)';
 Multi_Custom_Inline_Sizes.parameters = {
   docs: { description: { story: 'A group of custom toggle switches in inline layout with different sizes and a disabled switch.' } },
 };
@@ -273,7 +273,7 @@ export const Multi_WithValidation = {
     ],
   },
 };
-Multi_WithValidation.storyName = 'Multiple Toggle Switches using Required, Validation and Disabled (Bootstrap)';
+Multi_WithValidation.name = 'Multiple Toggle Switches using Required, Validation and Disabled (Bootstrap)';
 Multi_WithValidation.parameters = { docs: { description: { story: 'A group of toggle switches with validation enabled and disabled.' } } };
 
 export const AccessibilityMatrix = {

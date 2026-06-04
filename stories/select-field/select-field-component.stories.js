@@ -1,3 +1,5 @@
+// File: src/stories/select-field-component.stories.js
+
 import SelectFieldDocs from './select-field-component.docs.mdx';
 import { normalize, buildDocsHtml, Template, SIZE_VARIANTS, getSnapshot } from './select-field-component.story-helpers';
 

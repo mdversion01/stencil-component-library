@@ -229,6 +229,37 @@ describe('<input-group-component>', () => {
     buttons.forEach(btn => expect(btn.hasAttribute('disabled')).toBe(true));
   });
 
+  it('disables native affix buttons when readOnly=true', async () => {
+    const page = await newSpecPage({
+      components: [InputGroupComponent],
+      html: `
+        <input-group-component
+          label="Search"
+          input-id="search-readonly"
+          has-prepend
+          has-append
+          prepend-button
+          prepend-text="Back"
+          append-button
+          append-text="Go"
+          read-only
+        ></input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root as HTMLElement;
+    const input = q<HTMLInputElement>(root, 'input')!;
+    const buttons = qa<HTMLButtonElement>(root, '.prepend-btn button, .append-btn button');
+
+    expect(input.hasAttribute('readonly')).toBe(true);
+    expect(buttons.length).toBe(2);
+    buttons.forEach(btn => expect(btn.hasAttribute('disabled')).toBe(true));
+
+    expect(page.root).toMatchSnapshot();
+  });
+
   it('emits valueChange and bubbles "change" CustomEvent on input', async () => {
     const page = await newSpecPage({
       components: [InputGroupComponent],
@@ -409,5 +440,107 @@ describe('<input-group-component>', () => {
     expect(q(root, '.prepend-btn')).toBeNull();
     expect(q(root, '.append-btn')).toBeNull();
     expect(qa(root, '.input-group-text').length).toBe(0);
+  });
+
+  it('emits appendClick when append native button is clicked', async () => {
+    const page = await newSpecPage({
+      components: [InputGroupComponent],
+      html: `
+        <input-group-component
+          label="Search"
+          input-id="append-click"
+          has-append
+          append-button
+          append-text="Go"
+          append-button-id="append-click-btn"
+        ></input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root as HTMLElement;
+    const appendSpy = jest.fn();
+    root.addEventListener('appendClick', appendSpy as any);
+
+    const appendButton = q<HTMLButtonElement>(root, '#append-click-btn')!;
+    expect(appendButton).toBeTruthy();
+
+    appendButton.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(appendSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('emits prependClick when prepend native button is clicked', async () => {
+    const page = await newSpecPage({
+      components: [InputGroupComponent],
+      html: `
+        <input-group-component
+          label="Search"
+          input-id="prepend-click"
+          has-prepend
+          prepend-button
+          prepend-text="Back"
+          prepend-button-id="prepend-click-btn"
+        ></input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root as HTMLElement;
+    const prependSpy = jest.fn();
+    root.addEventListener('prependClick', prependSpy as any);
+
+    const prependButton = q<HTMLButtonElement>(root, '#prepend-click-btn')!;
+    expect(prependButton).toBeTruthy();
+
+    prependButton.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(prependSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not bubble affix button click to host click handler', async () => {
+    const page = await newSpecPage({
+      components: [InputGroupComponent],
+      html: `
+        <input-group-component
+          label="Search"
+          input-id="host-click-test"
+          has-prepend
+          has-append
+          prepend-button
+          prepend-text="Back"
+          prepend-button-id="host-click-test-prepend-btn"
+          append-button
+          append-text="Go"
+          append-button-id="host-click-test-append-btn"
+        ></input-group-component>
+      `,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root as HTMLElement;
+    const hostClickSpy = jest.fn();
+    const prependSpy = jest.fn();
+    const appendSpy = jest.fn();
+
+    root.addEventListener('click', hostClickSpy);
+    root.addEventListener('prependClick', prependSpy as any);
+    root.addEventListener('appendClick', appendSpy as any);
+
+    const prependButton = q<HTMLButtonElement>(root, '#host-click-test-prepend-btn')!;
+    const appendButton = q<HTMLButtonElement>(root, '#host-click-test-append-btn')!;
+
+    prependButton.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    appendButton.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect(prependSpy).toHaveBeenCalledTimes(1);
+    expect(appendSpy).toHaveBeenCalledTimes(1);
+    expect(hostClickSpy).not.toHaveBeenCalled();
   });
 });

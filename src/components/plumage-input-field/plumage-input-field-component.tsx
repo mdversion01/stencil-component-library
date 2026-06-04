@@ -389,7 +389,7 @@ export class PlumageInputFieldComponent {
 
         <div class={`b-underline${this.validationState ? ' invalid' : ''}`} role="presentation" aria-hidden="true">
           <div
-            class={`b-focus${this.disabled ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`}
+            class={`b-focus${this.disabled || this.readOnly ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`}
             role="presentation"
             aria-hidden="true"
             style={{ width: '0', left: '50%' } as any}

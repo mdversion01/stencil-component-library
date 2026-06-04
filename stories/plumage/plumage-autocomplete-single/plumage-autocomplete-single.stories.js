@@ -117,7 +117,7 @@ export const Basic = {
     value: '',
   },
 };
-Basic.storyName = 'Basic';
+Basic.name = 'Basic';
 Basic.parameters = {
   docs: { description: { story: 'Default Plumage single-select autocomplete.' }, story: { height: '300px' } },
 };
@@ -132,7 +132,7 @@ export const HorizontalLayout = {
     inputCol: 8,
   },
 };
-HorizontalLayout.storyName = 'Horizontal Layout';
+HorizontalLayout.name = 'Horizontal Layout';
 
 export const InlineLayout = {
   args: {
@@ -142,7 +142,7 @@ export const InlineLayout = {
     size: 'sm',
   },
 };
-InlineLayout.storyName = 'Inline Layout';
+InlineLayout.name = 'Inline Layout';
 
 export const Sizes = {
   render: (args, ctx) => {
@@ -206,7 +206,7 @@ export const Sizes = {
     },
   },
 };
-Sizes.storyName = 'Sizes';
+Sizes.name = 'Sizes';
 
 export const ControlledValue = {
   args: {
@@ -274,7 +274,7 @@ export const ControlledValue = {
     return wrap;
   },
 };
-ControlledValue.storyName = 'Controlled Value (args.value)';
+ControlledValue.name = 'Controlled Value (args.value)';
 
 export const FieldValidation = {
   args: {
@@ -285,7 +285,7 @@ export const FieldValidation = {
     required: true,
   },
 };
-FieldValidation.storyName = 'Field Validation';
+FieldValidation.name = 'Field Validation';
 
 export const Disabled = {
   args: {
@@ -297,7 +297,7 @@ export const Disabled = {
     validationMessage: '',
   },
 };
-Disabled.storyName = 'Disabled';
+Disabled.name = 'Disabled';
 
 export const AccessibilityMatrix = {
   name: 'Accessibility matrix',

@@ -192,8 +192,7 @@ export default {
   },
 };
 
-export const BasicSingle = Template.bind({});
-BasicSingle.args = {
+const baseArgs = {
   label: 'Fruits',
   labelSize: 'sm',
   labelAlign: '',
@@ -235,120 +234,140 @@ BasicSingle.args = {
 
   withTable: false,
 };
-BasicSingle.storyName = 'Basic (single select)';
-BasicSingle.parameters = {
-  docs: {
-    description: {
-      story: 'A basic single-select example with default args. Use Controls to customize and explore different configurations.',
+
+export const BasicSingle = {
+  name: 'Basic (single select)',
+  render: args => Template(args),
+  args: {
+    ...baseArgs,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'A basic single-select example with default args. Use Controls to customize and explore different configurations.',
+      },
     },
   },
 };
 
-export const WithSelection = Template.bind({});
-WithSelection.args = {
-  ...BasicSingle.args,
-  value: 'banana',
-};
-WithSelection.storyName = 'With Selection';
-WithSelection.parameters = {
-  docs: {
-    description: {
-      story: 'A single-select example with a pre-selected value.',
+export const WithSelection = {
+  name: 'With Selection',
+  render: args => Template(args),
+  args: {
+    ...baseArgs,
+    value: 'banana',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'A single-select example with a pre-selected value.',
+      },
     },
   },
 };
 
-export const MultipleSelection = Template.bind({});
-MultipleSelection.args = {
-  ...BasicSingle.args,
-  label: 'Tags',
-  multiple: true,
-  defaultOptionTxt: 'Choose tags',
-  options: [
-    { value: 'ux', name: 'UX' },
-    { value: 'web', name: 'Web' },
-    { value: 'mobile', name: 'Mobile' },
-    { value: 'data', name: 'Data' },
-  ],
-  fieldHeight: 6,
-};
-MultipleSelection.storyName = 'Multiple Selections';
-MultipleSelection.parameters = {
-  docs: {
-    description: {
-      story:
-        'An example of the select field in multiple selection mode. The `field-height` attribute can be used to control the height of the select box when `multiple` is enabled.',
+export const MultipleSelection = {
+  name: 'Multiple Selections',
+  render: args => Template(args),
+  args: {
+    ...baseArgs,
+    label: 'Tags',
+    multiple: true,
+    defaultOptionTxt: 'Choose tags',
+    options: [
+      { value: 'ux', name: 'UX' },
+      { value: 'web', name: 'Web' },
+      { value: 'mobile', name: 'Mobile' },
+      { value: 'data', name: 'Data' },
+    ],
+    fieldHeight: 6,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'An example of the select field in multiple selection mode. The `field-height` attribute can be used to control the height of the select box when `multiple` is enabled.',
+      },
     },
   },
 };
 
-export const HorizontalLayout = Template.bind({});
-HorizontalLayout.args = {
-  ...BasicSingle.args,
-  formLayout: 'horizontal',
-  labelCols: 'col-sm-3',
-  inputCols: 'col-sm-9',
-  value: 'cherry',
-};
-HorizontalLayout.storyName = 'Horizontal Layout';
-HorizontalLayout.parameters = {
-  docs: {
-    description: {
-      story:
-        'The select field can be used within a horizontal form layout. Use the `form-layout` prop set to "horizontal" and specify column widths for the label and input using `label-cols` and `input-cols`.',
+export const HorizontalLayout = {
+  name: 'Horizontal Layout',
+  render: args => Template(args),
+  args: {
+    ...baseArgs,
+    formLayout: 'horizontal',
+    labelCols: 'col-sm-3',
+    inputCols: 'col-sm-9',
+    value: 'cherry',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The select field can be used within a horizontal form layout. Use the `form-layout` prop set to "horizontal" and specify column widths for the label and input using `label-cols` and `input-cols`.',
+      },
     },
   },
 };
 
-export const InlineLayout = Template.bind({});
-InlineLayout.args = {
-  ...BasicSingle.args,
-  formLayout: 'inline',
-  value: 'apple',
-};
-InlineLayout.storyName = 'Inline Layout';
-InlineLayout.parameters = {
-  docs: {
-    description: {
-      story:
-        'The select field can also be used within an inline form layout. Set the `form-layout` prop to "inline" to arrange the label and select field in a single row.',
+export const InlineLayout = {
+  name: 'Inline Layout',
+  render: args => Template(args),
+  args: {
+    ...baseArgs,
+    formLayout: 'inline',
+    value: 'apple',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The select field can also be used within an inline form layout. Set the `form-layout` prop to "inline" to arrange the label and select field in a single row.',
+      },
     },
   },
 };
 
-export const WithValidationRequired = Template.bind({});
-WithValidationRequired.args = {
-  ...BasicSingle.args,
-  required: true,
-  validation: true,
-  validationMessage: 'Please select an option.',
-  defaultOptionTxt: 'Please choose…',
-};
-WithValidationRequired.storyName = 'With Validation (Required)';
-WithValidationRequired.parameters = {
-  docs: {
-    description: {
-      story: 'An example of the select field with validation enabled and a required selection.',
+export const WithValidationRequired = {
+  name: 'With Validation (Required)',
+  render: args => Template(args),
+  args: {
+    ...baseArgs,
+    required: true,
+    validation: true,
+    validationMessage: 'Please select an option.',
+    defaultOptionTxt: 'Please choose…',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'An example of the select field with validation enabled and a required selection.',
+      },
     },
   },
 };
 
-export const Disabled = Template.bind({});
-Disabled.args = {
-  ...BasicSingle.args,
-  disabled: true,
-  defaultOptionTxt: 'Not available',
-};
-Disabled.storyName = 'Disabled';
-Disabled.parameters = {
-  docs: {
-    description: {
-      story: 'An example of the select field in a disabled state.',
+export const Disabled = {
+  name: 'Disabled',
+  render: args => Template(args),
+  args: {
+    ...baseArgs,
+    disabled: true,
+    defaultOptionTxt: 'Not available',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'An example of the select field in a disabled state.',
+      },
     },
   },
 };
 
 export const SizeVariants = {
+  name: 'Size Variants',
   render: args => {
     const container = document.createElement('div');
     container.style.display = 'grid';
@@ -371,19 +390,18 @@ export const SizeVariants = {
       const mount = document.createElement('div');
       mount.innerHTML = markup.trim();
 
-      block.appendChild(mount.firstElementChild);
+      if (mount.firstElementChild) {
+        block.appendChild(mount.firstElementChild);
+      }
+
       container.appendChild(block);
     });
 
     return container;
   },
-
   args: {
-    ...BasicSingle.args,
+    ...baseArgs,
   },
-
-  storyName: 'Size Variants',
-
   parameters: {
     docs: {
       description: {
@@ -399,6 +417,8 @@ export const SizeVariants = {
                 `  <!-- ${v.label} -->`,
                 `  ${Template({
                   ...ctx.args,
+                  label: v.label,
+                  labelSize: v.labelSize,
                   size: v.size,
                   selectFieldId: v.selectFieldId,
                 })
@@ -413,18 +433,20 @@ export const SizeVariants = {
   },
 };
 
-export const CustomStyling = Template.bind({});
-CustomStyling.args = {
-  ...BasicSingle.args,
-  custom: true,
-  classes: 'my-shadow-1',
-  value: 'apple',
-};
-CustomStyling.storyName = 'Custom Styling';
-CustomStyling.parameters = {
-  docs: {
-    description: {
-      story: 'An example of the select field with custom styling applied.',
+export const CustomStyling = {
+  name: 'Custom Styling',
+  render: args => Template(args),
+  args: {
+    ...baseArgs,
+    custom: true,
+    classes: 'my-shadow-1',
+    value: 'apple',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'An example of the select field with custom styling applied.',
+      },
     },
   },
 };
@@ -470,7 +492,7 @@ OptionsViaJSONAttribute.parameters = {
               { "value": "sa", "name": "South America" }
             ]'
           ></plumage-select-field-component>
-      `),
+        `),
     },
     description: {
       story: 'An example of passing options as a JSON string via the `options` attribute.',
@@ -518,7 +540,7 @@ export const AccessibilityMatrix = {
       pre.textContent = 'Loading…';
 
       const mount = document.createElement('div');
-      mount.innerHTML = Template({ ...BasicSingle.args, ...args, ...storyArgs });
+      mount.innerHTML = Template({ ...baseArgs, ...args, ...storyArgs });
 
       const host = mount.querySelector('plumage-select-field-component');
       demo.appendChild(mount);

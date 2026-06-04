@@ -383,7 +383,7 @@ export class InputFieldComponent {
           {this.isHorizontal() ? (
             <div class={inputColClass}>{this.renderInput()}</div>
           ) : (
-            this.renderInput()
+            <div>{this.renderInput()}</div>
           )}
         </div>
       </div>

@@ -1,5 +1,3 @@
-// File: src/stories/input-group-component/input-group-component.story-helpers.js
-
 export const normalize = value => {
   if (value === '' || value == null) return undefined;
   if (value === true) return true;
@@ -14,13 +12,30 @@ export const esc = s =>
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 
-export const buildDocsHtml = args => {
-  const a = { ...args };
+const getStorySafeArgs = rawArgs => {
+  const args = { ...rawArgs };
+
+  if (args.prependButton) {
+    args.prependIcon = '';
+    if (!String(args.prependText ?? '').trim()) args.prependText = 'Go';
+  }
+
+  if (args.appendButton) {
+    args.appendIcon = '';
+    if (!String(args.appendText ?? '').trim()) args.appendText = 'Go';
+  }
+
+  return args;
+};
+
+export const buildDocsHtml = rawArgs => {
+  const a = getStorySafeArgs(rawArgs);
 
   const attrs = [
     ['has-append', !!a.append],
     ['has-prepend', !!a.prepend],
     ['disabled', !!a.disabled],
+    ['read-only', !!a.readOnly],
     ['label-hidden', !!a.labelHidden],
     ['required', !!a.required],
     ['validation', !!a.validation],
@@ -78,12 +93,15 @@ export const attr = (name, val) => {
   return v === undefined || v === false ? '' : v === true ? ` ${name}` : ` ${name}="${esc(v)}"`;
 };
 
-export const template = args => {
+export const template = rawArgs => {
+  const args = getStorySafeArgs(rawArgs);
+
   return `
 <input-group-component
 ${boolAttr('has-append', !!args.append)}
 ${boolAttr('has-prepend', !!args.prepend)}
 ${boolAttr('disabled', !!args.disabled)}
+${boolAttr('read-only', !!args.readOnly)}
 ${boolAttr('label-hidden', !!args.labelHidden)}
 ${boolAttr('required', !!args.required)}
 ${boolAttr('validation', !!args.validation)}
@@ -170,7 +188,7 @@ export function snapshotA11y(host) {
           id: input.getAttribute('id') || '',
           role: input.getAttribute('role') || '',
           class: input.getAttribute('class') || '',
-          ...pickAttrs(input, ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid', 'disabled', 'required', 'type', 'name', 'form']),
+          ...pickAttrs(input, ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid', 'disabled', 'required', 'readonly', 'type', 'name', 'form']),
           resolves: {
             'aria-labelledby': resolveIdsWithin(host, labelledByIds),
             'aria-describedby': resolveIdsWithin(host, describedByIds),
@@ -212,7 +230,8 @@ export function snapshotA11y(host) {
   };
 }
 
-export function buildEl(args) {
+export function buildEl(rawArgs) {
+  const args = getStorySafeArgs(rawArgs);
   const el = document.createElement('input-group-component');
 
   const setBool = (name, on) => {
@@ -230,6 +249,7 @@ export function buildEl(args) {
   setBool('has-append', !!args.append);
   setBool('has-prepend', !!args.prepend);
   setBool('disabled', !!args.disabled);
+  setBool('read-only', !!args.readOnly);
   setBool('label-hidden', !!args.labelHidden);
   setBool('required', !!args.required);
   setBool('validation', !!args.validation);

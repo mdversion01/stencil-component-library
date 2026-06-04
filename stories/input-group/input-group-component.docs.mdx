@@ -37,6 +37,17 @@ import { reactExample, vueExample, angularExample, svelteExample, svelteKitExamp
   append-button-variant="secondary"
   append-button-id="search-q-append-btn"
 ></input-group-component>
+
+<script>
+  const searchField = document.querySelector('input-group-component[input-id="search-q"]');
+
+  searchField?.addEventListener('appendClick', event => {
+    const input = searchField.querySelector('input');
+    const value = input ? input.value : '';
+    console.log('appendClick:', event.detail);
+    console.log('Current value:', value);
+  });
+</script>
 ```
 
 ## React

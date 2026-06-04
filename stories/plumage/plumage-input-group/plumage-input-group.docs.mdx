@@ -24,20 +24,69 @@ import { reactExample, vueExample, angularExample, svelteExample, svelteKitExamp
   has-append
   append-button
   append-text="Go"
-  append-button-variant="secondary"
   append-button-id="search-example-append-btn"
 ></plumage-input-group-component>
 
+<plumage-input-group-component
+  label="Read Only Search"
+  input-id="readonly-search-example"
+  read-only
+  value="Locked value"
+  has-prepend
+  prepend-button
+  prepend-text="Back"
+  prepend-button-id="readonly-search-example-prepend-btn"
+  has-append
+  append-button
+  append-text="Go"
+  append-button-id="readonly-search-example-append-btn"
+></plumage-input-group-component>
+
+<plumage-input-group-component
+  label="Search Users"
+  input-id="search-users"
+  placeholder="Type a username"
+  has-append
+  append-button
+  append-text="Search"
+  append-button-id="search-users-append-btn"
+></plumage-input-group-component>
+
+<div id="search-users-result"></div>
+
 <script>
-  const el = document.querySelector('plumage-input-group-component');
+  const examples = document.querySelectorAll('plumage-input-group-component');
 
-  el.addEventListener('valueChange', event => {
-    console.log('valueChange:', event.detail);
+  examples.forEach(el => {
+    el.addEventListener('valueChange', event => {
+      console.log('valueChange:', event.detail);
+    });
+
+    el.addEventListener('appendClick', event => {
+      console.log('appendClick:', event.detail);
+    });
+
+    el.addEventListener('prependClick', event => {
+      console.log('prependClick:', event.detail);
+    });
   });
 
-  el.addEventListener('appendClick', event => {
-    console.log('appendClick:', event.detail);
-  });
+  const searchUsersField = document.querySelector('plumage-input-group-component[input-id="search-users"]');
+  const searchUsersResult = document.getElementById('search-users-result');
+
+  if (searchUsersField && searchUsersResult) {
+    searchUsersField.addEventListener('appendClick', event => {
+      const input = searchUsersField.querySelector('input');
+      const value = input ? input.value : '';
+
+      console.log('appendClick fired:', event.detail);
+      console.log('Current input value:', value);
+
+      searchUsersResult.textContent = value
+        ? \`Append button clicked. Current value: "\${value}"\`
+        : 'Append button clicked. Input is empty.';
+    });
+  }
 </script>
 ```
 

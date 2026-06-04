@@ -13,6 +13,60 @@ import {
   template,
 } from './modal-component.story-helpers.js';
 
+const basicArgs = {
+  ariaLabel: '',
+  block: false,
+  btnText: 'Open modal',
+  classNames: '',
+  disabled: false,
+  link: false,
+  outlined: false,
+  ripple: false,
+  size: '',
+  shape: '',
+  titleAttr: '',
+  variant: 'primary',
+
+  modalId: '',
+  modalTitle: 'Modal title',
+  modalSize: undefined,
+  modalFullScreen: undefined,
+  scrollableBody: false,
+  scrollLongContent: false,
+  verticallyCentered: false,
+  cancelCloseBtn: 'Close',
+
+  bodyHtml: '<p>Basic modal content.</p>',
+  footerHtml: '',
+};
+
+const playgroundArgs = {
+  ariaLabel: '',
+  block: false,
+  btnText: 'Launch demo modal',
+  classNames: '',
+  disabled: false,
+  link: false,
+  outlined: false,
+  ripple: false,
+  size: '',
+  shape: '',
+  titleAttr: '',
+  variant: 'primary',
+
+  modalId: '',
+  modalTitle: 'Modal title',
+  modalSize: undefined,
+  modalFullScreen: undefined,
+  scrollableBody: false,
+  scrollLongContent: false,
+  verticallyCentered: false,
+  cancelCloseBtn: 'Close',
+
+  bodyHtml: '',
+  footerHtml: '',
+};
+
 export default {
   title: 'Components/Modal',
   tags: ['autodocs'],
@@ -221,112 +275,111 @@ export default {
   },
 };
 
-const Template = (args) => template(args);
-
-export const Basic = Template.bind({});
-Basic.storyName = 'Basic modal';
-Basic.args = {
-  btnText: 'Open modal',
-  variant: 'primary',
-  size: '',
-  shape: '',
-  outlined: false,
-  block: false,
-  link: false,
-  ripple: false,
-  classNames: '',
-  disabled: false,
-  titleAttr: '',
-  ariaLabel: '',
-
-  modalId: '',
-  modalTitle: 'Modal title',
-  modalSize: undefined,
-  modalFullScreen: undefined,
-  scrollableBody: false,
-  scrollLongContent: false,
-  verticallyCentered: false,
-  cancelCloseBtn: 'Close',
-
-  bodyHtml: '<p>Basic modal content.</p>',
-  footerHtml: '',
-};
-Basic.parameters = {
-  docs: {
-    description: {
-      story:
-        'A basic modal wired to Controls. Component supplies required ARIA attributes (role="dialog", aria-modal="true", aria-labelledby + aria-describedby that resolve).',
+export const Basic = {
+  name: 'Basic modal',
+  render: args => template(args),
+  args: {
+    ...basicArgs,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A basic modal wired to Controls. Component supplies required ARIA attributes (role="dialog", aria-modal="true", aria-labelledby + aria-describedby that resolve).',
+      },
     },
   },
 };
 
-export const Sizes = () => DOCS_SIZES;
-Sizes.storyName = 'Modal sizes';
-Sizes.parameters = {
-  docs: {
-    source: { code: DOCS_SIZES, language: 'html' },
-    description: { story: 'Demonstrates modal sizes: sm, lg, xl.' },
+export const Sizes = {
+  name: 'Modal sizes',
+  render: () => DOCS_SIZES,
+  parameters: {
+    docs: {
+      source: { code: DOCS_SIZES, language: 'html' },
+      description: { story: 'Demonstrates modal sizes: sm, lg, xl.' },
+    },
   },
 };
 
-export const FullscreenVariants = () => DOCS_FULLSCREEN;
-FullscreenVariants.storyName = 'Fullscreen variants';
-FullscreenVariants.parameters = {
-  docs: {
-    source: { code: DOCS_FULLSCREEN, language: 'html' },
-    description: { story: 'Demonstrates fullscreen variants.' },
+export const FullscreenVariants = {
+  name: 'Fullscreen variants',
+  render: () => DOCS_FULLSCREEN,
+  parameters: {
+    docs: {
+      source: { code: DOCS_FULLSCREEN, language: 'html' },
+      description: { story: 'Demonstrates fullscreen variants.' },
+    },
   },
 };
 
-export const VerticallyCentered = () => `
+export const VerticallyCentered = {
+  name: 'Vertically centered modal',
+  render: () => `
 <modal-component variant="success" btn-text="Centered modal" vertically-centered>
   <p>This modal is vertically centered.</p>
 </modal-component>
-`;
-VerticallyCentered.storyName = 'Vertically centered modal';
-VerticallyCentered.parameters = {
-  docs: { description: { story: 'A vertically centered modal.' } },
-};
-
-export const ScrollableBody = () => DOCS_SCROLLABLE_BODY;
-ScrollableBody.storyName = 'Scrollable body modal';
-ScrollableBody.parameters = {
-  docs: {
-    source: { code: DOCS_SCROLLABLE_BODY, language: 'html' },
-    description: { story: 'Modal with a scrollable body (modal-dialog-scrollable).' },
+`,
+  parameters: {
+    docs: {
+      description: { story: 'A vertically centered modal.' },
+    },
   },
 };
 
-export const LongContentScroll = () => DOCS_LONG_SCROLL;
-LongContentScroll.storyName = 'Long content (window scroll)';
-LongContentScroll.parameters = {
-  docs: {
-    source: { code: DOCS_LONG_SCROLL, language: 'html' },
-    description: { story: 'Modal with long content that scrolls the window.' },
+export const ScrollableBody = {
+  name: 'Scrollable body modal',
+  render: () => DOCS_SCROLLABLE_BODY,
+  parameters: {
+    docs: {
+      source: { code: DOCS_SCROLLABLE_BODY, language: 'html' },
+      description: { story: 'Modal with a scrollable body (modal-dialog-scrollable).' },
+    },
   },
 };
 
-export const OutlinedTrigger = () => `
+export const LongContentScroll = {
+  name: 'Long content (window scroll)',
+  render: () => DOCS_LONG_SCROLL,
+  parameters: {
+    docs: {
+      source: { code: DOCS_LONG_SCROLL, language: 'html' },
+      description: { story: 'Modal with long content that scrolls the window.' },
+    },
+  },
+};
+
+export const OutlinedTrigger = {
+  name: 'Outlined trigger button',
+  render: () => `
 <modal-component variant="primary" outlined btn-text="Outlined trigger">
   <p>Modal opened by an outlined button.</p>
 </modal-component>
-`;
-OutlinedTrigger.storyName = 'Outlined trigger button';
-OutlinedTrigger.parameters = {
-  docs: { description: { story: 'A modal triggered by an outlined button.' } },
+`,
+  parameters: {
+    docs: {
+      description: { story: 'A modal triggered by an outlined button.' },
+    },
+  },
 };
 
-export const LinkTrigger = () => `
+export const LinkTrigger = {
+  name: 'Link trigger button',
+  render: () => `
 <modal-component link btn-text="Open as link">
   <p>Trigger is styled like a link.</p>
 </modal-component>
-`;
-LinkTrigger.storyName = 'Link trigger button';
-LinkTrigger.parameters = {
-  docs: { description: { story: 'A modal triggered by a link-styled button.' } },
+`,
+  parameters: {
+    docs: {
+      description: { story: 'A modal triggered by a link-styled button.' },
+    },
+  },
 };
 
-export const CustomFooter = () => `
+export const CustomFooter = {
+  name: 'Custom footer content',
+  render: () => `
 <modal-component variant="primary" btn-text="Custom footer">
   <p>Add any controls to the footer slot.</p>
   <div slot="footer" style="display:flex; gap:8px;">
@@ -334,142 +387,128 @@ export const CustomFooter = () => `
     <button-component variant="primary">Primary Action</button-component>
   </div>
 </modal-component>
-`;
-CustomFooter.storyName = 'Custom footer content';
-CustomFooter.parameters = {
-  docs: { description: { story: 'Custom footer content using the footer slot.' } },
-};
-
-export const Playground = Template.bind({});
-Playground.args = {
-  btnText: 'Launch demo modal',
-  variant: 'primary',
-  size: '',
-  shape: '',
-  outlined: false,
-  block: false,
-  link: false,
-  ripple: false,
-  classNames: '',
-  disabled: false,
-  titleAttr: '',
-  ariaLabel: '',
-
-  modalId: '',
-  modalTitle: 'Modal title',
-  modalSize: undefined,
-  modalFullScreen: undefined,
-  scrollableBody: false,
-  scrollLongContent: false,
-  verticallyCentered: false,
-  cancelCloseBtn: 'Close',
-
-  bodyHtml: '',
-  footerHtml: '',
-};
-Playground.parameters = {
-  docs: {
-    description: { story: 'Interactive playground. Modal includes ARIA labelling/description ids and trigger aria-haspopup/controls/expanded.' },
+`,
+  parameters: {
+    docs: {
+      description: { story: 'Custom footer content using the footer slot.' },
+    },
   },
 };
 
-export const AccessibilityMatrix = () => {
-  const root = document.createElement('div');
-  root.style.display = 'grid';
-  root.style.gap = '16px';
+export const Playground = {
+  name: 'Playground',
+  render: args => template(args),
+  args: {
+    ...playgroundArgs,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Interactive playground. Modal includes ARIA labelling/description ids and trigger aria-haspopup/controls/expanded.',
+      },
+    },
+  },
+};
 
-  const intro = document.createElement('div');
-  intro.innerHTML = `
+export const AccessibilityMatrix = {
+  name: 'Accessibility Matrix (computed)',
+  render: () => {
+    const root = document.createElement('div');
+    root.style.display = 'grid';
+    root.style.gap = '16px';
+
+    const intro = document.createElement('div');
+    intro.innerHTML = `
     <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
     <div style="font-size:13px; color:#444;">
       Prints computed <code>role</code> + <code>aria-*</code> + IDs and whether <code>aria-labelledby</code> / <code>aria-describedby</code> resolve.
       (Modal opens on interaction; this matrix validates static wiring + required attributes.)
     </div>
   `;
-  root.appendChild(intro);
+    root.appendChild(intro);
 
-  const rows = [
-    {
-      title: 'Default',
-      args: {
-        btnText: 'Open modal',
-        variant: 'primary',
-        modalTitle: 'Default Dialog',
-        bodyHtml: '<p>Default modal content.</p>',
-        footerHtml: '',
-        disabled: false,
+    const rows = [
+      {
+        title: 'Default',
+        args: {
+          btnText: 'Open modal',
+          variant: 'primary',
+          modalTitle: 'Default Dialog',
+          bodyHtml: '<p>Default modal content.</p>',
+          footerHtml: '',
+          disabled: false,
+        },
+        wrapStyle: '',
       },
-      wrapStyle: '',
-    },
-    {
-      title: 'Inline (layout wrapper only)',
-      args: {
-        btnText: 'Inline trigger',
-        variant: 'secondary',
-        modalTitle: 'Inline Wrapper',
-        bodyHtml: '<p>Inline wrapper demonstration (storybook-only).</p>',
-        footerHtml: '',
+      {
+        title: 'Inline (layout wrapper only)',
+        args: {
+          btnText: 'Inline trigger',
+          variant: 'secondary',
+          modalTitle: 'Inline Wrapper',
+          bodyHtml: '<p>Inline wrapper demonstration (storybook-only).</p>',
+          footerHtml: '',
+        },
+        wrapStyle: 'display:flex; align-items:center; gap:12px;',
       },
-      wrapStyle: 'display:flex; align-items:center; gap:12px;',
-    },
-    {
-      title: 'Horizontal (layout wrapper only)',
-      args: {
-        btnText: 'Horizontal trigger',
-        variant: 'secondary',
-        modalTitle: 'Horizontal Wrapper',
-        bodyHtml: '<p>Horizontal wrapper demonstration (storybook-only).</p>',
-        footerHtml: '',
+      {
+        title: 'Horizontal (layout wrapper only)',
+        args: {
+          btnText: 'Horizontal trigger',
+          variant: 'secondary',
+          modalTitle: 'Horizontal Wrapper',
+          bodyHtml: '<p>Horizontal wrapper demonstration (storybook-only).</p>',
+          footerHtml: '',
+        },
+        wrapStyle: 'display:flex; justify-content:space-between; align-items:center;',
       },
-      wrapStyle: 'display:flex; justify-content:space-between; align-items:center;',
-    },
-    {
-      title: 'Error/Validation (content only)',
-      args: {
-        btnText: 'Open error dialog',
-        variant: 'danger',
-        modalTitle: 'Validation Error',
-        bodyHtml:
-          '<p><strong>There was a problem.</strong></p><p>Please correct the highlighted fields and try again.</p>',
-        footerHtml:
-          '<button class="btn btn-danger" type="button">Fix issues</button>',
+      {
+        title: 'Error/Validation (content only)',
+        args: {
+          btnText: 'Open error dialog',
+          variant: 'danger',
+          modalTitle: 'Validation Error',
+          bodyHtml:
+            '<p><strong>There was a problem.</strong></p><p>Please correct the highlighted fields and try again.</p>',
+          footerHtml:
+            '<button class="btn btn-danger" type="button">Fix issues</button>',
+        },
+        wrapStyle: '',
       },
-      wrapStyle: '',
-    },
-    {
-      title: 'Disabled trigger',
-      args: {
-        btnText: 'Disabled',
-        variant: 'secondary',
-        modalTitle: 'Disabled',
-        disabled: true,
-        bodyHtml: '<p>This should not open because trigger is disabled.</p>',
-        footerHtml: '',
+      {
+        title: 'Disabled trigger',
+        args: {
+          btnText: 'Disabled',
+          variant: 'secondary',
+          modalTitle: 'Disabled',
+          disabled: true,
+          bodyHtml: '<p>This should not open because trigger is disabled.</p>',
+          footerHtml: '',
+        },
+        wrapStyle: '',
       },
-      wrapStyle: '',
-    },
-  ];
+    ];
 
-  rows.forEach((r, idx) => {
-    root.appendChild(
-      buildMatrixRow({
-        ...r,
-        idSuffix: String(idx + 1),
-      }),
-    );
-  });
+    rows.forEach((r, idx) => {
+      root.appendChild(
+        buildMatrixRow({
+          ...r,
+          idSuffix: String(idx + 1),
+        }),
+      );
+    });
 
-  return root;
-};
-AccessibilityMatrix.storyName = 'Accessibility Matrix (computed)';
-AccessibilityMatrix.parameters = {
-  docs: {
-    description: {
-      story:
-        'Matrix of key states. Prints computed role/aria/ids and whether ARIA references resolve to real elements.',
-    },
-    source: { code: DOCS_MATRIX, language: 'html' },
-    story: { height: '1200px' },
+    return root;
   },
-  controls: { disable: true },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Matrix of key states. Prints computed role/aria/ids and whether ARIA references resolve to real elements.',
+      },
+      source: { code: DOCS_MATRIX, language: 'html' },
+      story: { height: '1200px' },
+    },
+    controls: { disable: true },
+  },
 };
