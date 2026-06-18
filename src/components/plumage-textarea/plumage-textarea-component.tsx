@@ -102,16 +102,12 @@ export class PlumageTextareaComponent {
 
     this.valueState = this.value ?? '';
     this.validationState = !!this.validation;
+    this._resolvedFormId = this.formId || '';
 
     document.addEventListener('click', this.handleDocumentClick, true);
   }
 
-  disconnectedCallback() {
-    document.removeEventListener('click', this.handleDocumentClick, true);
-  }
-
   componentDidLoad() {
-    this._resolvedFormId = this.formId || '';
     this.applyFormAttribute();
   }
 

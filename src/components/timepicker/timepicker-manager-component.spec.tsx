@@ -27,9 +27,14 @@ class TimepickerStub {
 
   @Prop() isTwentyFourHourFormat?: boolean;
   @Prop() size?: string;
+  @Prop() readOnly?: boolean;
 
   @Prop() validationMessage?: string;
   @Prop() validation?: boolean;
+
+  @Prop() timeValidation?: boolean;
+  @Prop() timeValidationMessage?: string;
+
   @Prop() isValid?: boolean;
 
   @Prop() twentyFourHourOnly?: boolean;
@@ -82,9 +87,14 @@ class TimepickerStub {
             isTwentyFourHourFormat: this.isTwentyFourHourFormat ?? null,
             size: this.size ?? null,
             inputWidth: this.inputWidth ?? null,
+            readOnly: this.readOnly ?? null,
 
             validationMessage: this.validationMessage ?? null,
             validation: this.validation ?? null,
+
+            timeValidation: this.timeValidation ?? null,
+            timeValidationMessage: this.timeValidationMessage ?? null,
+
             isValid: this.isValid ?? null,
 
             twentyFourHourOnly: this.twentyFourHourOnly ?? null,
@@ -123,9 +133,14 @@ class PlumageTimepickerStub {
 
   @Prop() isTwentyFourHourFormat?: boolean;
   @Prop() size?: string;
+  @Prop() readOnly?: boolean;
 
   @Prop() validationMessage?: string;
   @Prop() validation?: boolean;
+
+  @Prop() timeValidation?: boolean;
+  @Prop() timeValidationMessage?: string;
+
   @Prop() isValid?: boolean;
 
   @Prop() twentyFourHourOnly?: boolean;
@@ -178,9 +193,14 @@ class PlumageTimepickerStub {
             isTwentyFourHourFormat: this.isTwentyFourHourFormat ?? null,
             size: this.size ?? null,
             inputWidth: this.inputWidth ?? null,
+            readOnly: this.readOnly ?? null,
 
             validationMessage: this.validationMessage ?? null,
             validation: this.validation ?? null,
+
+            timeValidation: this.timeValidation ?? null,
+            timeValidationMessage: this.timeValidationMessage ?? null,
+
             isValid: this.isValid ?? null,
 
             twentyFourHourOnly: this.twentyFourHourOnly ?? null,
@@ -218,7 +238,6 @@ function splitIds(v: string | null | undefined): string[] {
     .filter(Boolean);
 }
 
-// ✅ TSX-safe (no generic arrow)
 function dispatchChild<T>(el: HTMLElement, name: string, detail: T) {
   el.dispatchEvent(new CustomEvent<T>(name, { detail, bubbles: true, composed: true }));
 }
@@ -254,22 +273,27 @@ describe('timepicker-manager', () => {
     expect(page.root).toMatchSnapshot();
   });
 
-  it('forwards props to classic child (check properties, not attributes)', async () => {
+  it('forwards props to classic child', async () => {
     const page = await newSpecPage({
       components: [TimepickerManagerComponent, TimepickerStub, PlumageTimepickerStub],
-      html: `
+      template: () => (
         <timepicker-manager
-          show-label
-          label-text="Pick a time"
-          input-id="my-input"
-          input-name="my-time"
+          showLabel={true}
+          labelText="Pick a time"
+          inputId="my-input"
+          inputName="my-time"
           size="sm"
-          disable-timepicker
-          required
+          readOnly={true}
+          disableTimepicker={true}
+          required={true}
           value="01:02:03"
-          time-input-throttle-ms="25"
-        ></timepicker-manager>
-      `,
+          timeInputThrottleMs={25}
+          validation={true}
+          validationMessage="User validation"
+          timeValidation={true}
+          timeValidationMessage="Built-in time validation"
+        />
+      ),
     });
 
     const child = page.root!.querySelector('timepicker-component') as any;
@@ -280,31 +304,42 @@ describe('timepicker-manager', () => {
     expect(child.inputId).toBe('my-input');
     expect(child.inputName).toBe('my-time');
     expect(child.size).toBe('sm');
+    expect(child.readOnly).toBe(true);
 
     expect(child.value).toBe('01:02:03');
     expect(child.timeInputThrottleMs).toBe(25);
+
+    expect(child.validation).toBe(true);
+    expect(child.validationMessage).toBe('User validation');
+    expect(child.timeValidation).toBe(true);
+    expect(child.timeValidationMessage).toBe('Built-in time validation');
 
     expect(child.disableTimepicker).toBe(true);
     expect(page.root!.querySelector('plumage-timepicker-component')).toBeNull();
   });
 
-  it('forwards props to plumage child (check properties, not attributes)', async () => {
+  it('forwards props to plumage child', async () => {
     const page = await newSpecPage({
       components: [TimepickerManagerComponent, TimepickerStub, PlumageTimepickerStub],
-      html: `
+      template: () => (
         <timepicker-manager
-          use-pl-timepicker
-          show-label
-          label-text="Pick a time"
-          input-id="my-input"
-          input-name="my-time"
+          usePlTimepicker={true}
+          showLabel={true}
+          labelText="Pick a time"
+          inputId="my-input"
+          inputName="my-time"
           size="sm"
-          disable-timepicker
-          required
+          readOnly={true}
+          disableTimepicker={true}
+          required={true}
           value="01:02:03"
-          time-input-throttle-ms="25"
-        ></timepicker-manager>
-      `,
+          timeInputThrottleMs={25}
+          validation={true}
+          validationMessage="User validation"
+          timeValidation={true}
+          timeValidationMessage="Built-in time validation"
+        />
+      ),
     });
 
     const child = page.root!.querySelector('plumage-timepicker-component') as any;
@@ -315,9 +350,15 @@ describe('timepicker-manager', () => {
     expect(child.inputId).toBe('my-input');
     expect(child.inputName).toBe('my-time');
     expect(child.size).toBe('sm');
+    expect(child.readOnly).toBe(true);
 
     expect(child.value).toBe('01:02:03');
     expect(child.timeInputThrottleMs).toBe(25);
+
+    expect(child.validation).toBe(true);
+    expect(child.validationMessage).toBe('User validation');
+    expect(child.timeValidation).toBe(true);
+    expect(child.timeValidationMessage).toBe('Built-in time validation');
 
     expect(child.disabled).toBe(true);
     expect(page.root!.querySelector('timepicker-component')).toBeNull();
@@ -331,7 +372,7 @@ describe('timepicker-manager', () => {
           <div id="ext-label">External label</div>
           <div id="ext-help">External help</div>
 
-          <timepicker-manager aria-label="Ignored" aria-labelledby="ext-label" aria-describedby="ext-help" />
+          <timepicker-manager ariaLabel="Ignored" ariaLabelledby="ext-label" ariaDescribedby="ext-help" />
         </div>
       ),
     });
@@ -344,24 +385,25 @@ describe('timepicker-manager', () => {
 
     expect(child.ariaLabelledby).toBe('ext-label');
     expect(child.ariaLabel).toBeUndefined();
-
     expect(child.ariaDescribedby).toBe('ext-help');
 
     expect(!!page.body.querySelector('#ext-label')).toBe(true);
     expect(!!page.body.querySelector('#ext-help')).toBe(true);
   });
 
-  it('a11y: validationMessage causes manager to merge child validation id into aria-describedby', async () => {
+  it('a11y: validationMessage and timeValidationMessage cause manager to merge both child ids into aria-describedby', async () => {
     const page = await newSpecPage({
       components: [TimepickerManagerComponent, TimepickerStub, PlumageTimepickerStub],
-      html: `
+      template: () => (
         <timepicker-manager
-          input-id="tp-a"
-          validation
-          validation-message="Time is required"
-          aria-describedby="ext-help"
-        ></timepicker-manager>
-      `,
+          inputId="tp-a"
+          validation={true}
+          validationMessage="User validation"
+          timeValidation={true}
+          timeValidationMessage="Built-in time validation"
+          ariaDescribedby="ext-help"
+        />
+      ),
     });
 
     const mgr = page.root as HTMLElement;
@@ -370,20 +412,23 @@ describe('timepicker-manager', () => {
 
     const ids = splitIds(child.ariaDescribedby);
     expect(ids).toContain('ext-help');
+    expect(ids).toContain('tp-a-time-validation');
     expect(ids).toContain('tp-a-validation');
   });
 
-  it('a11y: when no validationMessage, manager does not append validation id', async () => {
+  it('a11y: when no validation messages exist, manager does not append validation ids', async () => {
     const page = await newSpecPage({
       components: [TimepickerManagerComponent, TimepickerStub, PlumageTimepickerStub],
-      html: `
+      template: () => (
         <timepicker-manager
-          input-id="tp-b"
-          validation
-          validation-message=""
-          aria-describedby="ext-help"
-        ></timepicker-manager>
-      `,
+          inputId="tp-b"
+          validation={true}
+          validationMessage=""
+          timeValidation={true}
+          timeValidationMessage=""
+          ariaDescribedby="ext-help"
+        />
+      ),
     });
 
     const mgr = page.root as HTMLElement;
@@ -392,10 +437,36 @@ describe('timepicker-manager', () => {
 
     const ids = splitIds(child.ariaDescribedby);
     expect(ids).toEqual(['ext-help']);
+    expect(ids).not.toContain('tp-b-time-validation');
     expect(ids).not.toContain('tp-b-validation');
   });
 
-  it('re-emits namespaced events (managerTimeChange / managerTimeInput) and mirrors mutable props upward', async () => {
+  it('a11y: when validation flags are false, manager does not append validation ids even if messages exist', async () => {
+    const page = await newSpecPage({
+      components: [TimepickerManagerComponent, TimepickerStub, PlumageTimepickerStub],
+      template: () => (
+        <timepicker-manager
+          inputId="tp-c"
+          validation={false}
+          validationMessage="User validation"
+          timeValidation={false}
+          timeValidationMessage="Built-in time validation"
+          ariaDescribedby="ext-help"
+        />
+      ),
+    });
+
+    const mgr = page.root as HTMLElement;
+    const child = mgr.querySelector('timepicker-component') as any;
+    expect(child).toBeTruthy();
+
+    const ids = splitIds(child.ariaDescribedby);
+    expect(ids).toEqual(['ext-help']);
+    expect(ids).not.toContain('tp-c-time-validation');
+    expect(ids).not.toContain('tp-c-validation');
+  });
+
+  it('re-emits namespaced events and mirrors mutable child props upward', async () => {
     const page = await newSpecPage({
       components: [TimepickerManagerComponent, TimepickerStub, PlumageTimepickerStub],
       html: `<timepicker-manager input-id="tp-x"></timepicker-manager>`,
@@ -403,7 +474,7 @@ describe('timepicker-manager', () => {
 
     const mgrEl = page.root as HTMLElement;
     const mgrInst = page.rootInstance as TimepickerManagerComponent;
-    const childEl = mgrEl.querySelector('timepicker-component') as any as HTMLElement;
+    const childEl = mgrEl.querySelector('timepicker-component') as HTMLElement;
 
     expect(childEl).toBeTruthy();
 
@@ -418,7 +489,10 @@ describe('timepicker-manager', () => {
     (childEl as any).isTwentyFourHourFormat = false;
     (childEl as any).hideSeconds = true;
     (childEl as any).isValid = false;
+    (childEl as any).validation = true;
     (childEl as any).validationMessage = 'Bad';
+    (childEl as any).timeValidation = true;
+    (childEl as any).timeValidationMessage = 'Bad format';
 
     const changeDetail: TimeChangeDetail = {
       value: '12:34 PM',
@@ -439,7 +513,10 @@ describe('timepicker-manager', () => {
     expect(mgrInst.isTwentyFourHourFormat).toBe(false);
     expect(mgrInst.hideSeconds).toBe(true);
     expect(mgrInst.isValid).toBe(false);
+    expect(mgrInst.validation).toBe(true);
     expect(mgrInst.validationMessage).toBe('Bad');
+    expect(mgrInst.timeValidation).toBe(true);
+    expect(mgrInst.timeValidationMessage).toBe('Bad format');
 
     expect(plainChange).toHaveBeenCalled();
 
@@ -484,5 +561,44 @@ describe('timepicker-manager', () => {
     await page.waitForChanges();
 
     expect(child.getAttribute('data-close-called')).toBe('1');
+  });
+
+  it('mirrors from plumage child as well', async () => {
+    const page = await newSpecPage({
+      components: [TimepickerManagerComponent, TimepickerStub, PlumageTimepickerStub],
+      html: `<timepicker-manager use-pl-timepicker input-id="tp-pl"></timepicker-manager>`,
+    });
+
+    const mgrEl = page.root as HTMLElement;
+    const mgrInst = page.rootInstance as TimepickerManagerComponent;
+    const childEl = mgrEl.querySelector('plumage-timepicker-component') as HTMLElement;
+
+    expect(childEl).toBeTruthy();
+
+    (childEl as any).isTwentyFourHourFormat = false;
+    (childEl as any).hideSeconds = true;
+    (childEl as any).isValid = false;
+    (childEl as any).validation = true;
+    (childEl as any).validationMessage = 'User invalid';
+    (childEl as any).timeValidation = true;
+    (childEl as any).timeValidationMessage = 'Format invalid';
+
+    dispatchChild<TimeChangeDetail>(childEl, 'timeChange', {
+      value: '11:59 PM',
+      parts: { hour: 11, minute: 59, second: 0, ampm: 'PM' },
+      isValid: false,
+      source: 'commit',
+    });
+
+    await page.waitForChanges();
+
+    expect(mgrInst.isTwentyFourHourFormat).toBe(false);
+    expect(mgrInst.hideSeconds).toBe(true);
+    expect(mgrInst.isValid).toBe(false);
+    expect(mgrInst.validation).toBe(true);
+    expect(mgrInst.validationMessage).toBe('User invalid');
+    expect(mgrInst.timeValidation).toBe(true);
+    expect(mgrInst.timeValidationMessage).toBe('Format invalid');
+    expect(mgrInst.value).toBe('11:59 PM');
   });
 });

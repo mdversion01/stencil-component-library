@@ -10,12 +10,12 @@ exports[`plumage-timepicker-component disabled: disables input/buttons and dropd
         </label>
         <div class="timepicker-group">
           <div class="dd-position">
-            <div class="input-group">
+            <div class="disabled input-group">
               <input aria-controls="tp5-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Time Picker" class="form-control time-input" disabled="" id="tp5" maxlength="8" name="time" placeholder="Enter Time" type="text" value="00:00:00">
               <button aria-label="Clear time" class="clear-button" disabled="" type="button">
                 <i class="fa-times-circle fas"></i>
               </button>
-              <button aria-controls="tp5-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Open time picker" class="btn input-group-text time-icon time-icon-btn" disabled="" tabindex="0" type="button">
+              <button aria-controls="tp5-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Open time picker" class="input-group-text time-icon time-icon-btn" disabled="" tabindex="0" type="button">
                 <i class="fa fa-clock"></i>
               </button>
             </div>
@@ -90,6 +90,7 @@ exports[`plumage-timepicker-component disabled: disables input/buttons and dropd
             </svg>
           </button>
         </div>
+        <div aria-live="polite" class="hidden validation-message" id="tp5-time-validation" role="alert"></div>
         <div aria-live="polite" class="hidden validation-message" id="tp5-validation" role="alert"></div>
         <div aria-live="polite" class="hidden warning-message" id="tp5-warning" role="alert">
           <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>
@@ -116,7 +117,7 @@ exports[`plumage-timepicker-component hides the label (sr-only) when "show-label
               <button aria-label="Clear time" class="clear-button" type="button">
                 <i class="fa-times-circle fas"></i>
               </button>
-              <button aria-controls="a1-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Open time picker" class="btn input-group-text time-icon time-icon-btn" tabindex="0" type="button">
+              <button aria-controls="a1-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Open time picker" class="input-group-text time-icon time-icon-btn" tabindex="0" type="button">
                 <i class="fa fa-clock"></i>
               </button>
             </div>
@@ -191,6 +192,7 @@ exports[`plumage-timepicker-component hides the label (sr-only) when "show-label
             </svg>
           </button>
         </div>
+        <div aria-live="polite" class="hidden validation-message" id="a1-time-validation" role="alert"></div>
         <div aria-live="polite" class="hidden validation-message" id="a1-validation" role="alert"></div>
         <div aria-live="polite" class="hidden warning-message" id="a1-warning" role="alert">
           <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>
@@ -202,12 +204,12 @@ exports[`plumage-timepicker-component hides the label (sr-only) when "show-label
 </plumage-timepicker-component>
 `;
 
-exports[`plumage-timepicker-component required + invalid: sets aria-required + required, sets aria-invalid only when invalid, and wires validation message id 1`] = `
-<plumage-timepicker-component input-id="tp4">
+exports[`plumage-timepicker-component required + invalid user validation: sets aria-required + required, sets aria-invalid only when invalid, and wires user validation message id 1`] = `
+<plumage-timepicker-component input-id="tp4" required="" validation="" validation-message="Bad time">
   <div class="plumage">
     <div class="time-picker-container">
       <div class="mr-2 time-picker">
-        <label class="invalid sr-only" for="tp4">
+        <label class="is-invalid sr-only" for="tp4">
           Enter Time
           <span class="required">
             *
@@ -220,7 +222,7 @@ exports[`plumage-timepicker-component required + invalid: sets aria-required + r
               <button aria-label="Clear time" class="clear-button invalid" type="button">
                 <i class="fa-times-circle fas"></i>
               </button>
-              <button aria-controls="tp4-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Open time picker" class="btn input-group-text invalid time-icon time-icon-btn" disabled="" tabindex="0" type="button">
+              <button aria-controls="tp4-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Open time picker" class="input-group-text invalid time-icon time-icon-btn" tabindex="0" type="button">
                 <i class="fa fa-clock"></i>
               </button>
             </div>
@@ -286,7 +288,7 @@ exports[`plumage-timepicker-component required + invalid: sets aria-required + r
               </div>
             </div>
           </div>
-          <button aria-label="Switch to 12 hour format" class="btn btn--outlined toggle-format-btn" disabled="" type="button">
+          <button aria-label="Switch to 12 hour format" class="btn btn--outlined toggle-format-btn" type="button">
             <svg aria-hidden="true" class="format-btn" focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <title>
                 Switch to 12 Hour Format
@@ -295,6 +297,7 @@ exports[`plumage-timepicker-component required + invalid: sets aria-required + r
             </svg>
           </button>
         </div>
+        <div aria-live="polite" class="hidden validation-message" id="tp4-time-validation" role="alert"></div>
         <div aria-live="polite" class="validation-message" id="tp4-validation" role="alert">
           Bad time
         </div>
@@ -323,7 +326,7 @@ exports[`plumage-timepicker-component shows the label when "show-label" is prese
               <button aria-label="Clear time" class="clear-button" type="button">
                 <i class="fa-times-circle fas"></i>
               </button>
-              <button aria-controls="my-time-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Open time picker" class="btn input-group-text time-icon time-icon-btn" tabindex="0" type="button">
+              <button aria-controls="my-time-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Open time picker" class="input-group-text time-icon time-icon-btn" tabindex="0" type="button">
                 <i class="fa fa-clock"></i>
               </button>
             </div>
@@ -398,6 +401,7 @@ exports[`plumage-timepicker-component shows the label when "show-label" is prese
             </svg>
           </button>
         </div>
+        <div aria-live="polite" class="hidden validation-message" id="my-time-time-validation" role="alert"></div>
         <div aria-live="polite" class="hidden validation-message" id="my-time-validation" role="alert"></div>
         <div aria-live="polite" class="hidden warning-message" id="my-time-warning" role="alert">
           <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>

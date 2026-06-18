@@ -25,6 +25,8 @@
 | `showLabel`              | `show-label`                 |             | `boolean`          | `undefined`    |
 | `size`                   | `size`                       |             | `string`           | `''`           |
 | `timeInputThrottleMs`    | `time-input-throttle-ms`     |             | `number`           | `50`           |
+| `timeValidation`         | `time-validation`            |             | `boolean`          | `true`         |
+| `timeValidationMessage`  | `time-validation-message`    |             | `string`           | `''`           |
 | `twelveHourOnly`         | `twelve-hour-only`           |             | `boolean`          | `false`        |
 | `twentyFourHourOnly`     | `twenty-four-hour-only`      |             | `boolean`          | `false`        |
 | `usePlTimepicker`        | `use-pl-timepicker`          |             | `boolean`          | `false`        |
@@ -35,12 +37,12 @@
 
 ## Events
 
-| Event               | Description                           | Type                                                                                                                                                                                                    |
-| ------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `managerTimeChange` | Namespaced events to avoid collisions | `CustomEvent<TimeChangeDetail & { managerInputId: string; impl: "plumage-timepicker-component" \| "timepicker-component"; }>`                                                                           |
-| `managerTimeInput`  |                                       | `CustomEvent<TimeInputDetail & { managerInputId: string; impl: "plumage-timepicker-component" \| "timepicker-component"; }>`                                                                            |
-| `timeChange`        |                                       | `CustomEvent<{ value: string; parts: TimeParts; isValid: boolean; source: "commit" \| "spinner" \| "clear" \| "format" \| "external" \| "inputName" \| "inputId" \| "constraints" \| "hideSeconds"; }>` |
-| `timeInput`         |                                       | `CustomEvent<{ raw: string; normalized: string; isValid: boolean; parts?: TimeParts; reason?: "pattern" \| "range"; caretStart: number; caretEnd: number; inputType: string; }>`                        |
+| Event               | Description | Type                                                                                                                                                                                                    |
+| ------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `managerTimeChange` |             | `CustomEvent<TimeChangeDetail & { managerInputId: string; impl: "plumage-timepicker-component" \| "timepicker-component"; }>`                                                                           |
+| `managerTimeInput`  |             | `CustomEvent<TimeInputDetail & { managerInputId: string; impl: "plumage-timepicker-component" \| "timepicker-component"; }>`                                                                            |
+| `timeChange`        |             | `CustomEvent<{ value: string; parts: TimeParts; isValid: boolean; source: "commit" \| "spinner" \| "clear" \| "format" \| "external" \| "inputName" \| "inputId" \| "constraints" \| "hideSeconds"; }>` |
+| `timeInput`         |             | `CustomEvent<{ raw: string; normalized: string; isValid: boolean; parts?: TimeParts; reason?: "pattern" \| "range"; caretStart: number; caretEnd: number; inputType: string; }>`                        |
 
 
 ## Methods

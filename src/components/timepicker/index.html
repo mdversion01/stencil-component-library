@@ -52,19 +52,31 @@
           </div>
 
           <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
-            <timepicker-manager size="lg" show-label></timepicker-manager>
+            <timepicker-manager read-only size="lg" show-label></timepicker-manager>
           </div>
 
           <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
-            <timepicker-manager show-label label-text="Required Time" required is-valid validation validation-message="testing validation"></timepicker-manager>
+            <timepicker-manager disable-timepicker show-label label-text="Required Time (Disabled)" required is-valid validation validation-message="testing validation"></timepicker-manager>
           </div>
 
           <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
-            <timepicker-component show-label label-text="Required Time" required is-valid validation validation-message="testing validation"></timepicker-component>
+            <timepicker-component read-only show-label label-text="Time (Read-Only)" required is-valid validation validation-message="testing validation"></timepicker-component>
+          </div>
+
+          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
+            <timepicker-component show-label label-text="Required Time (Required)" required is-valid validation validation-message="testing validation"></timepicker-component>
           </div>
 
           <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
             <plumage-timepicker-component show-label label-text="Required Time" required is-valid validation validation-message="testing validation" input-id="validation-timepicker"></plumage-timepicker-component>
+          </div>
+
+          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
+            <plumage-timepicker-component read-only show-label label-text="Required Time (Read-Only)" input-id="read-only-timepicker"></plumage-timepicker-component>
+          </div>
+
+          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
+            <plumage-timepicker-component disabled show-label label-text="Required Time (Disabled)" input-id="disabled-timepicker"></plumage-timepicker-component>
           </div>
 
         </section>

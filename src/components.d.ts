@@ -3293,7 +3293,6 @@ export namespace Components {
          */
         "ariaLabelledby": string;
         /**
-          * Disable the component (input + buttons + popover).
           * @default false
          */
         "disabled"?: boolean;
@@ -3330,6 +3329,10 @@ export namespace Components {
         /**
           * @default false
          */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
         "showLabel"?: boolean;
         /**
@@ -3337,10 +3340,17 @@ export namespace Components {
          */
         "size": string;
         /**
-          * Throttle window for timeInput events (ms). Set 0 to disable throttling.
           * @default 50
          */
         "timeInputThrottleMs": number;
+        /**
+          * @default true
+         */
+        "timeValidation": boolean;
+        /**
+          * @default ''
+         */
+        "timeValidationMessage": string;
         /**
           * @default false
          */
@@ -3352,13 +3362,12 @@ export namespace Components {
         /**
           * @default false
          */
-        "validation"?: boolean;
+        "validation": boolean;
         /**
           * @default ''
          */
         "validationMessage": string;
         /**
-          * Controlled value (optional). - If non-empty, component parses/displays it. - On commit/spinner/clear, component updates this (mutable) and emits `timeChange`.
           * @default ''
          */
         "value": string;
@@ -4424,6 +4433,10 @@ export namespace Components {
         /**
           * @default false
          */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
         "showLabel"?: boolean;
         /**
@@ -4436,6 +4449,11 @@ export namespace Components {
          */
         "timeInputThrottleMs": number;
         /**
+          * Built-in time format/range validation is always enabled. Kept as a prop for backwards compatibility, but internal time validation always runs.
+          * @default true
+         */
+        "timeValidation": boolean;
+        /**
           * @default false
          */
         "twelveHourOnly": boolean;
@@ -4444,6 +4462,7 @@ export namespace Components {
          */
         "twentyFourHourOnly": boolean;
         /**
+          * User-controlled validation toggle/message
           * @default false
          */
         "validation"?: boolean;
@@ -4452,7 +4471,6 @@ export namespace Components {
          */
         "validationMessage": string;
         /**
-          * Controlled value (optional). - If non-empty, component parses/displays it. - On commit/spinner/clear, component updates this (mutable) and emits `timeChange`.
           * @default ''
          */
         "value": string;
@@ -4502,6 +4520,10 @@ export namespace Components {
         /**
           * @default false
          */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
         "showLabel"?: boolean;
         /**
@@ -4512,6 +4534,14 @@ export namespace Components {
           * @default 50
          */
         "timeInputThrottleMs": number;
+        /**
+          * @default true
+         */
+        "timeValidation": boolean;
+        /**
+          * @default ''
+         */
+        "timeValidationMessage": string;
         /**
           * @default false
          */
@@ -9062,7 +9092,6 @@ declare namespace LocalJSX {
          */
         "ariaLabelledby"?: string;
         /**
-          * Disable the component (input + buttons + popover).
           * @default false
          */
         "disabled"?: boolean;
@@ -9100,6 +9129,10 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
         "showLabel"?: boolean;
         /**
@@ -9107,10 +9140,17 @@ declare namespace LocalJSX {
          */
         "size"?: string;
         /**
-          * Throttle window for timeInput events (ms). Set 0 to disable throttling.
           * @default 50
          */
         "timeInputThrottleMs"?: number;
+        /**
+          * @default true
+         */
+        "timeValidation"?: boolean;
+        /**
+          * @default ''
+         */
+        "timeValidationMessage"?: string;
         /**
           * @default false
          */
@@ -9128,7 +9168,6 @@ declare namespace LocalJSX {
          */
         "validationMessage"?: string;
         /**
-          * Controlled value (optional). - If non-empty, component parses/displays it. - On commit/spinner/clear, component updates this (mutable) and emits `timeChange`.
           * @default ''
          */
         "value"?: string;
@@ -10204,6 +10243,10 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
         "showLabel"?: boolean;
         /**
@@ -10216,6 +10259,11 @@ declare namespace LocalJSX {
          */
         "timeInputThrottleMs"?: number;
         /**
+          * Built-in time format/range validation is always enabled. Kept as a prop for backwards compatibility, but internal time validation always runs.
+          * @default true
+         */
+        "timeValidation"?: boolean;
+        /**
           * @default false
          */
         "twelveHourOnly"?: boolean;
@@ -10224,6 +10272,7 @@ declare namespace LocalJSX {
          */
         "twentyFourHourOnly"?: boolean;
         /**
+          * User-controlled validation toggle/message
           * @default false
          */
         "validation"?: boolean;
@@ -10232,7 +10281,6 @@ declare namespace LocalJSX {
          */
         "validationMessage"?: string;
         /**
-          * Controlled value (optional). - If non-empty, component parses/displays it. - On commit/spinner/clear, component updates this (mutable) and emits `timeChange`.
           * @default ''
          */
         "value"?: string;
@@ -10277,13 +10325,14 @@ declare namespace LocalJSX {
           * @default 'Enter Time'
          */
         "labelText"?: string;
-        /**
-          * Namespaced events to avoid collisions
-         */
         "onManagerTimeChange"?: (event: TimepickerManagerCustomEvent<ManagerTimeChangeDetail>) => void;
         "onManagerTimeInput"?: (event: TimepickerManagerCustomEvent<ManagerTimeInputDetail>) => void;
         "onTimeChange"?: (event: TimepickerManagerCustomEvent<TimeChangeDetail2>) => void;
         "onTimeInput"?: (event: TimepickerManagerCustomEvent<TimeInputDetail2>) => void;
+        /**
+          * @default false
+         */
+        "readOnly"?: boolean;
         /**
           * @default false
          */
@@ -10297,6 +10346,14 @@ declare namespace LocalJSX {
           * @default 50
          */
         "timeInputThrottleMs"?: number;
+        /**
+          * @default true
+         */
+        "timeValidation"?: boolean;
+        /**
+          * @default ''
+         */
+        "timeValidationMessage"?: string;
         /**
           * @default false
          */
@@ -11425,6 +11482,8 @@ declare namespace LocalJSX {
         "value": string;
         "isTwentyFourHourFormat": boolean;
         "size": string;
+        "timeValidation": boolean;
+        "timeValidationMessage": string;
         "validationMessage": string;
         "twentyFourHourOnly": boolean;
         "twelveHourOnly": boolean;
@@ -11435,6 +11494,7 @@ declare namespace LocalJSX {
         "required": boolean;
         "validation": boolean;
         "disabled": boolean;
+        "readOnly": boolean;
         "timeInputThrottleMs": number;
     }
     interface PopoverComponentAttributes {
@@ -11761,6 +11821,9 @@ declare namespace LocalJSX {
         "size": string;
         "validation": boolean;
         "validationMessage": string;
+        "disableTimepicker": boolean;
+        "readOnly": boolean;
+        "timeValidation": boolean;
         "twentyFourHourOnly": boolean;
         "twelveHourOnly": boolean;
         "hideTimepickerBtn": boolean;
@@ -11768,7 +11831,6 @@ declare namespace LocalJSX {
         "hideSeconds": boolean;
         "inputWidth": string;
         "required": boolean;
-        "disableTimepicker": boolean;
         "timeInputThrottleMs": number;
     }
     interface TimepickerManagerAttributes {
@@ -11791,8 +11853,11 @@ declare namespace LocalJSX {
         "required": boolean;
         "disableTimepicker": boolean;
         "timeInputThrottleMs": number;
+        "readOnly": boolean;
         "validationMessage": string;
         "validation": boolean;
+        "timeValidation": boolean;
+        "timeValidationMessage": string;
         "isValid": boolean;
     }
     interface ToastsComponentAttributes {

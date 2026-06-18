@@ -1,17 +1,6 @@
 // src/components/timepicker/plumage-timepicker-component.tsx
-import {
-  Component,
-  h,
-  Prop,
-  Element,
-  State,
-  Method,
-  Fragment,
-  Listen,
-  Watch,
-  Event,
-  EventEmitter,
-} from '@stencil/core';
+
+import { Component, h, Prop, Element, State, Method, Fragment, Listen, Watch, Event, EventEmitter } from '@stencil/core';
 
 type TimePart = 'hour' | 'minute' | 'second' | 'ampm';
 type AmPm = 'AM' | 'PM';
@@ -19,7 +8,7 @@ type AmPm = 'AM' | 'PM';
 type TimeParts = {
   hour: number;
   minute: number;
-  second: number; // preserved even when hideSeconds=true
+  second: number;
   ampm: AmPm;
 };
 
@@ -33,16 +22,7 @@ export type TimeChangeDetail = {
   value: string;
   parts: TimeParts;
   isValid: boolean;
-  source:
-    | 'commit'
-    | 'spinner'
-    | 'clear'
-    | 'format'
-    | 'external'
-    | 'inputName'
-    | 'inputId'
-    | 'constraints'
-    | 'hideSeconds';
+  source: 'commit' | 'spinner' | 'clear' | 'format' | 'external' | 'inputName' | 'inputId' | 'constraints' | 'hideSeconds';
 };
 
 export type TimeInputDetail = {
@@ -58,21 +38,14 @@ export type TimeInputDetail = {
 
 @Component({
   tag: 'plumage-timepicker-component',
-  styleUrls: ['./timepicker-styles.scss', '../button/button.scss', '../plumage-input-field/plumage-input-field-styles.scss'],
+  styleUrls: ['./timepicker-styles.scss', '../button/button.scss', '../plumage-input-field/plumage-input-field-styles.scss', '../form-styles.scss'],
   shadow: false,
 })
 export class PlumageTimepickerComponent {
   @Element() host!: HTMLElement;
 
-  /* ============================================
-   * Events
-   * ============================================ */
   @Event({ eventName: 'timeChange' }) timeChange!: EventEmitter<TimeChangeDetail>;
   @Event({ eventName: 'timeInput' }) timeInput!: EventEmitter<TimeInputDetail>;
-
-  /* ============================================
-   * Public API
-   * ============================================ */
 
   @Prop() ariaLabel: string = 'Time Picker';
   @Prop() ariaLabelledby: string = '';
@@ -84,69 +57,46 @@ export class PlumageTimepickerComponent {
   @Prop() inputId: string = 'time-input';
   @Prop() inputName: string = 'time';
 
-  /**
-   * Controlled value (optional).
-   * - If non-empty, component parses/displays it.
-   * - On commit/spinner/clear, component updates this (mutable) and emits `timeChange`.
-   */
   @Prop({ mutable: true }) value: string = '';
-
   @Prop({ mutable: true }) isTwentyFourHourFormat: boolean = true;
 
   @Prop() size: string = '';
 
-  @Prop({ mutable: true }) validationMessage: string = '';
+  @Prop() timeValidation: boolean = true;
+  @Prop({ mutable: true }) timeValidationMessage: string = '';
 
+  @Prop() validationMessage: string = '';
   @Prop() twentyFourHourOnly: boolean = false;
   @Prop() twelveHourOnly: boolean = false;
-
   @Prop() hideTimepickerBtn: boolean = false;
-
   @Prop({ mutable: true }) isValid: boolean = true;
-
   @Prop() hideSeconds: boolean = false;
-
   @Prop() inputWidth?: number | string;
-
   @Prop() required: boolean = false;
-
-  @Prop() validation?: boolean = false;
-
-  /** Disable the component (input + buttons + popover). */
+  @Prop() validation: boolean = false;
   @Prop() disabled?: boolean = false;
-
-  /** Throttle window for timeInput events (ms). Set 0 to disable throttling. */
+  @Prop() readOnly: boolean = false;
   @Prop() timeInputThrottleMs: number = 50;
-
-  /* ============================================
-   * Internal State
-   * ============================================ */
 
   @State() private _open: boolean = false;
   @State() private _activePart: TimePart = 'hour';
   @State() private _warningVisible: boolean = false;
   @State() private _parts: TimeParts = { hour: 0, minute: 0, second: 0, ampm: 'AM' };
+  @State() private _userValidationActive: boolean = false;
 
   private _returnFocusEl?: HTMLElement | null;
-
-  // IMPORTANT: input is UNCONTROLLED while typing
   private _inputEl?: HTMLInputElement;
   private _inputValue: string = '';
   private _isInputFocused: boolean = false;
-
   private _didUserChangeTime: boolean = false;
   private _emitSuppressionDepth = 0;
 
-  // ---- timeInput throttling ----
   private _timeInputLastEmitTs = 0;
   private _timeInputTimer: number | undefined;
   private _timeInputPending: TimeInputDetail | null = null;
 
-  /* ============================================
-   * Lifecycle
-   * ============================================ */
-
   connectedCallback() {
+    this._userValidationActive = !!this.validation;
     this._withEmitSuppressed(() => this._applyFormatConstraints());
   }
 
@@ -159,6 +109,8 @@ export class PlumageTimepickerComponent {
   }
 
   componentWillLoad() {
+    this._userValidationActive = !!this.validation;
+
     const initial = (this.value ?? '').trim();
     if (initial) {
       this._withEmitSuppressed(() => {
@@ -170,25 +122,29 @@ export class PlumageTimepickerComponent {
     this._resetToDefault();
   }
 
-  /* ============================================
-   * Public API
-   * ============================================ */
-
-  @Method()
-  async forceTimeUpdate(): Promise<void> {
-    if (this._isDisabled) return;
-    this._commitFromInput();
-  }
-
-  /* ============================================
-   * Watchers
-   * ============================================ */
+ @Method()
+   async forceTimeUpdate(): Promise<void> {
+     if (this._isInteractionLocked) return;
+     this._commitFromInput();
+   }
 
   @Watch('disabled')
   onDisabledChange(next: boolean | undefined, prev: boolean | undefined) {
     if (!!next === !!prev) return;
     if (!!next && this._open) this._setDropdownVisibility(false);
     if (!next && !this._isPartEnabled(this._activePart)) this._activePart = 'hour';
+  }
+
+  @Watch('validation')
+  onValidationChange(next: boolean, prev: boolean) {
+    if (next === prev) return;
+    this._userValidationActive = !!next;
+  }
+
+  @Watch('readOnly')
+  onReadOnlyChange(next: boolean, prev: boolean) {
+    if (next === prev) return;
+    if (next && this._open) this._setDropdownVisibility(false);
   }
 
   @Watch('value')
@@ -288,10 +244,6 @@ export class PlumageTimepickerComponent {
     this._emitTimeChange('inputName');
   }
 
-  /* ============================================
-   * Helpers
-   * ============================================ */
-
   private qs<T extends Element = Element>(sel: string): T | null {
     return (this.host.querySelector(sel) as T) || null;
   }
@@ -300,7 +252,26 @@ export class PlumageTimepickerComponent {
     return !!this.disabled;
   }
 
-  // ---------- input helpers (UNCONTROLLED) ----------
+  private get _isReadOnly(): boolean {
+    return !!this.readOnly;
+  }
+
+  private get _isInteractionLocked(): boolean {
+    return this._isDisabled || this._isReadOnly;
+  }
+
+  private get _hasTimeValidationError(): boolean {
+    return !!this.timeValidation && !this.isValid;
+  }
+
+  private get _hasUserValidationError(): boolean {
+    return !!this._userValidationActive && !!(this.validationMessage ?? '').trim();
+  }
+
+  private get _isInvalid(): boolean {
+    return this._hasTimeValidationError || this._hasUserValidationError;
+  }
+
   private _setInputValue(next: string, opts?: { writeToDom?: boolean }) {
     this._inputValue = next;
     if (opts?.writeToDom !== false) {
@@ -314,7 +285,11 @@ export class PlumageTimepickerComponent {
     return this._inputEl?.value ?? this._inputValue ?? '';
   }
 
-  // ---------- emit helpers ----------
+  private _syncValuePropFromState() {
+    const next = this._partsToInput(this._parts);
+    if (this.value !== next) this.value = next;
+  }
+
   private _withEmitSuppressed(fn: () => void) {
     this._emitSuppressionDepth++;
     try {
@@ -364,42 +339,64 @@ export class PlumageTimepickerComponent {
     const wait = Math.max(0, throttle - elapsed);
     this._timeInputTimer = window.setTimeout(() => {
       this._timeInputTimer = undefined;
-      if (!this._timeInputPending) return;
-
-      const payload = this._timeInputPending;
-      this._timeInputPending = null;
       this._timeInputLastEmitTs = Date.now();
-      this._emitTimeInputNow(payload);
+
+      if (this._timeInputPending) {
+        const pending = this._timeInputPending;
+        this._timeInputPending = null;
+        this._emitTimeInputNow(pending);
+      }
     }, wait);
   }
 
   private _flushTimeInput() {
-    if (this._emitSuppressionDepth > 0) return;
-
     if (this._timeInputTimer !== undefined) {
       clearTimeout(this._timeInputTimer);
       this._timeInputTimer = undefined;
     }
-    if (!this._timeInputPending) return;
 
-    const payload = this._timeInputPending;
-    this._timeInputPending = null;
-    this._timeInputLastEmitTs = Date.now();
-    this._emitTimeInputNow(payload);
-  }
-
-  private _syncValuePropFromState() {
-    const next = this._partsToInput(this._parts);
-    if ((this.value ?? '') !== next) {
-      this._withEmitSuppressed(() => {
-        this.value = next;
-      });
+    if (this._timeInputPending) {
+      this._timeInputLastEmitTs = Date.now();
+      const pending = this._timeInputPending;
+      this._timeInputPending = null;
+      this._emitTimeInputNow(pending);
     }
   }
 
-  /* ============================================
-   * A11y id helpers
-   * ============================================ */
+  private _pad2(n: number): string {
+    return String(Math.max(0, Math.trunc(n))).padStart(2, '0');
+  }
+
+  private _partsToInput(parts: TimeParts): string {
+    const hh = this._pad2(parts.hour);
+    const mm = this._pad2(parts.minute);
+    const ss = this._pad2(parts.second);
+
+    if (this.isTwentyFourHourFormat || this.twentyFourHourOnly) {
+      return this.hideSeconds ? `${hh}:${mm}` : `${hh}:${mm}:${ss}`;
+    }
+
+    return this.hideSeconds ? `${hh}:${mm} ${parts.ampm}` : `${hh}:${mm}:${ss} ${parts.ampm}`;
+  }
+
+  private _normalizeForTyping(raw: string): string {
+    return (raw ?? '').replace(/\s+/g, ' ').toUpperCase();
+  }
+
+  private _pattern(): RegExp {
+    if (this.isTwentyFourHourFormat || this.twentyFourHourOnly) {
+      return this.hideSeconds ? /^(\d{1,2}):(\d{1,2})$/ : /^(\d{1,2}):(\d{1,2}):(\d{1,2})$/;
+    }
+
+    return this.hideSeconds ? /^(\d{1,2}):(\d{1,2})\s?(AM|PM)$/ : /^(\d{1,2}):(\d{1,2}):(\d{1,2})\s?(AM|PM)$/;
+  }
+
+   private _validationMessageForPattern(): string {
+    if (this.isTwentyFourHourFormat) {
+      return this.hideSeconds ? 'Invalid time format. Correct format is HH:mm' : 'Invalid time format. Correct format is HH:mm:ss';
+    }
+    return this.hideSeconds ? 'Invalid time format. Correct format is hh:mm AM/PM' : 'Invalid time format. Correct format is hh:mm:ss AM/PM';
+  }
 
   private normalizeIdList(value?: string): string | undefined {
     const trimmed = (value ?? '').trim();
@@ -426,6 +423,10 @@ export class PlumageTimepickerComponent {
     return `${this.inputId}-dropdown`;
   }
 
+  private getTimeValidationId(): string {
+    return `${this.inputId}-time-validation`;
+  }
+
   private getValidationId(): string {
     return `${this.inputId}-validation`;
   }
@@ -441,22 +442,18 @@ export class PlumageTimepickerComponent {
     const autoLabelId = hasVisibleLabel ? this.getLabelId() : undefined;
     const ariaLabelledby = autoLabelId ?? userLabelledby;
 
-    const ariaLabel =
-      ariaLabelledby ? undefined : (this.ariaLabel ?? '').trim() || (this.labelText ?? '').trim() || 'Time Picker';
+    const ariaLabel = ariaLabelledby ? undefined : (this.ariaLabel ?? '').trim() || (this.labelText ?? '').trim() || 'Time Picker';
 
     return { hasVisibleLabel, ariaLabelledby, ariaLabel };
   }
 
   private computeDescribedByAttrs() {
     const external = this.normalizeIdList(this.ariaDescribedby);
-    const validationId = (this.validationMessage ?? '').trim() ? this.getValidationId() : undefined;
+    const timeValidationId = this.timeValidation && (this.timeValidationMessage ?? '').trim() ? this.getTimeValidationId() : undefined;
+    const validationId = this._userValidationActive && (this.validationMessage ?? '').trim() ? this.getValidationId() : undefined;
     const warningId = this._warningVisible ? this.getWarningId() : undefined;
-    return this.mergeIdLists(external, this.mergeIdLists(validationId, warningId));
+    return this.mergeIdLists(external, this.mergeIdLists(timeValidationId, this.mergeIdLists(validationId, warningId)));
   }
-
-  /* ============================================
-   * Constraints + Defaults
-   * ============================================ */
 
   private _formatAllowed(nextIs24: boolean): boolean {
     if (this.twentyFourHourOnly && !nextIs24) return false;
@@ -509,54 +506,14 @@ export class PlumageTimepickerComponent {
 
     this.isValid = true;
     this._warningVisible = false;
-    if (this.validationMessage) this.validationMessage = '';
+    if (this.timeValidationMessage) this.timeValidationMessage = '';
 
     this._syncValuePropFromState();
     this._recomputeValidityFromState();
   }
 
-  /* ============================================
-   * Parsing
-   * ============================================ */
-
-  private _pad2(n: number): string {
-    return String(n).padStart(2, '0');
-  }
-
-  private _pattern(): RegExp {
-    return this.isTwentyFourHourFormat
-      ? this.hideSeconds
-        ? /^(\d{1,2}):(\d{2})$/
-        : /^(\d{1,2}):(\d{2}):(\d{2})$/
-      : this.hideSeconds
-        ? /^(\d{1,2}):(\d{2})\s(AM|PM)$/
-        : /^(\d{1,2}):(\d{2}):(\d{2})\s(AM|PM)$/;
-  }
-
-  private _validationMessageForPattern(): string {
-    if (this.isTwentyFourHourFormat) {
-      return this.hideSeconds ? 'Invalid time format. Correct format is 00:00.' : 'Invalid time format. Correct format is 00:00:00.';
-    }
-    return this.hideSeconds
-      ? 'Invalid time format. Correct format is 00:00 AM(or PM).'
-      : 'Invalid time format. Correct format is 00:00:00 AM(or PM).';
-  }
-
-  private _partsToInput(parts: TimeParts): string {
-    const hh = this._pad2(parts.hour);
-    const mm = this._pad2(parts.minute);
-    const ss = this._pad2(parts.second);
-
-    if (this.isTwentyFourHourFormat || this.twentyFourHourOnly) {
-      return this.hideSeconds ? `${hh}:${mm}` : `${hh}:${mm}:${ss}`;
-    }
-    return this.hideSeconds ? `${hh}:${mm} ${parts.ampm}` : `${hh}:${mm}:${ss} ${parts.ampm}`;
-  }
-
-  private _isValidParts(parts: TimeParts): boolean {
-    const h = parts.hour;
-    const m = parts.minute;
-    const s = parts.second;
+  private _isPartsRangeValid(parts: TimeParts): boolean {
+    const { hour: h, minute: m, second: s } = parts;
 
     if (this.isTwentyFourHourFormat || this.twentyFourHourOnly) {
       if (h < 0 || h > 23) return false;
@@ -571,10 +528,6 @@ export class PlumageTimepickerComponent {
     return true;
   }
 
-  /**
-   * Commit-grade normalize+parse (pads segments).
-   * Do NOT call from typing path if you care about caret/segment editing.
-   */
   private _normalizeAndParse(raw: string): NormalizeResult {
     const normalized = (raw ?? '')
       .trim()
@@ -586,32 +539,25 @@ export class PlumageTimepickerComponent {
       .trim();
 
     const m = normalized.match(this._pattern());
-    if (!m) return { ok: false as const, normalized, reason: 'pattern' as const };
+    if (!m) return { ok: false, normalized, reason: 'pattern' };
 
     const hour = Number.parseInt(m[1], 10);
     const minute = Number.parseInt(m[2], 10);
     const second = this.hideSeconds ? this._parts.second : Number.parseInt(m[3], 10);
 
-    const ampm =
-      this.isTwentyFourHourFormat || this.twentyFourHourOnly
-        ? 'AM'
-        : ((this.hideSeconds ? m[3] : m[4]) as AmPm);
+    const ampm = this.isTwentyFourHourFormat || this.twentyFourHourOnly ? 'AM' : ((this.hideSeconds ? m[3] : m[4]) as AmPm);
 
-    const parts: TimeParts = { hour, minute, second, ampm: (ampm || 'AM') as AmPm };
-    if (!this._isValidParts(parts)) return { ok: false as const, normalized, reason: 'range' as const };
+    const parts: TimeParts = { hour, minute, second, ampm };
 
-    return { ok: true as const, normalized, parts };
-  }
+    if (!this._isPartsRangeValid(parts)) {
+      return { ok: false, normalized, reason: 'range' };
+    }
 
-  private _normalizeForTyping(raw: string): string {
-    return (raw ?? '').toUpperCase().replace(/\s+/g, ' ').trim();
+    return { ok: true, normalized, parts };
   }
 
   private _tryParseComplete(raw: string): NormalizeResult {
     const typed = this._normalizeForTyping(raw);
-    if (!typed.match(this._pattern())) {
-      return { ok: false as const, normalized: typed, reason: 'pattern' as const };
-    }
     return this._normalizeAndParse(typed);
   }
 
@@ -621,37 +567,42 @@ export class PlumageTimepickerComponent {
     if (isNormalizeErr(res)) {
       this.isValid = false;
       if (res.reason === 'pattern') {
-        this.validationMessage = this._validationMessageForPattern();
+        this.timeValidationMessage = this._validationMessageForPattern();
         this._warningVisible = false;
       } else {
+        this.timeValidationMessage = '';
         this._warningVisible = true;
       }
       return false;
     }
 
     this._parts = res.parts;
-
-    // external value should display formatted immediately
     this._setInputValue(res.normalized, { writeToDom: true });
 
     this.isValid = true;
     this._warningVisible = false;
-    if (this.validationMessage) this.validationMessage = '';
+    if (this.timeValidationMessage) this.timeValidationMessage = '';
     return true;
   }
 
   private _recomputeValidityFromState() {
     const res = this._normalizeAndParse(this._partsToInput(this._parts));
     this.isValid = res.ok;
-    if (res.ok) {
+
+    if (!isNormalizeErr(res)) {
       this._warningVisible = false;
-      if (this.validationMessage) this.validationMessage = '';
+      if (this.timeValidationMessage) this.timeValidationMessage = '';
+      return;
+    }
+
+    if (res.reason === 'pattern') {
+      this.timeValidationMessage = this._validationMessageForPattern();
+      this._warningVisible = false;
+    } else {
+      this.timeValidationMessage = '';
+      this._warningVisible = true;
     }
   }
-
-  /* ============================================
-   * Underline focus behavior (Plumage)
-   * ============================================ */
 
   private _handleFocusAndInteraction = (event: Event) => {
     if ((event as any).stopPropagation) (event as any).stopPropagation();
@@ -688,18 +639,12 @@ export class PlumageTimepickerComponent {
     }
   }
 
-  /* ============================================
-   * Popover visibility + focus trap
-   * ============================================ */
-
   private _getFocusableInDropdown(): HTMLElement[] {
     const dd = this.qs<HTMLDivElement>('.time-dropdown');
     if (!dd || !this._open) return [];
 
     const nodes = Array.from(
-      dd.querySelectorAll<HTMLElement>(
-        '[role="spinbutton"][tabindex], button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      ),
+      dd.querySelectorAll<HTMLElement>('[role="spinbutton"][tabindex], button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'),
     );
 
     return nodes.filter(el => {
@@ -717,20 +662,14 @@ export class PlumageTimepickerComponent {
     const idx = active ? focusables.indexOf(active) : -1;
 
     const forward = !ev.shiftKey;
-    const next = forward
-      ? idx >= 0
-        ? (idx + 1) % focusables.length
-        : 0
-      : idx >= 0
-        ? (idx - 1 + focusables.length) % focusables.length
-        : focusables.length - 1;
+    const next = forward ? (idx >= 0 ? (idx + 1) % focusables.length : 0) : idx >= 0 ? (idx - 1 + focusables.length) % focusables.length : focusables.length - 1;
 
     ev.preventDefault();
     focusables[next]?.focus();
   }
 
   private _setDropdownVisibility(show: boolean) {
-    if (this._isDisabled) return;
+    if (show && this._isInteractionLocked) return;
 
     const trigger = this.qs<HTMLButtonElement>('.time-icon-btn');
     const input = this._inputEl;
@@ -750,36 +689,25 @@ export class PlumageTimepickerComponent {
   }
 
   private _toggleDropdown = () => {
-    if (this._isDisabled) return;
+    if (this._isInteractionLocked) return;
 
-    // Commit current input to sync panel values, but don't disrupt typing.
     if (!this._isInputFocused) this._commitFromInput();
-
     this._setDropdownVisibility(!this._open);
-
-    if (!this._open) return;
-    const fakeEvent = { target: this._inputEl } as unknown as Event;
-    this._handleFocusAndInteraction(fakeEvent);
   };
 
-  private _hideDropdown = (ev?: Event) => {
+  private _hideDropdown = () => {
     if (this._isDisabled) return;
-    ev?.preventDefault();
-    ev?.stopPropagation();
     this._setDropdownVisibility(false);
   };
 
   @Listen('keydown', { target: 'document' })
-  onDocKeyDown(ev: KeyboardEvent) {
-    if (this._isDisabled) return;
+  onDocKeydown(ev: KeyboardEvent) {
     if (!this._open) return;
-
-    const path = (ev.composedPath?.() as any[]) || [];
-    if (!path.includes(this.host)) return;
+    if (this._isDisabled) return;
 
     if (ev.key === 'Escape') {
       ev.preventDefault();
-      this._setDropdownVisibility(false);
+      this._hideDropdown();
       return;
     }
 
@@ -787,21 +715,6 @@ export class PlumageTimepickerComponent {
       this._trapTab(ev);
     }
   }
-
-  @Listen('mousedown', { target: 'document' })
-  onDocMouseDown(ev: MouseEvent) {
-    if (this._isDisabled) return;
-    if (!this._open) return;
-
-    const path = (ev.composedPath?.() as any[]) || [];
-    if (path.includes(this.host)) return;
-
-    this._setDropdownVisibility(false);
-  }
-
-  /* ============================================
-   * Spinbutton semantics + roving tabindex
-   * ============================================ */
 
   private _orderedParts(): TimePart[] {
     const parts: TimePart[] = ['hour', 'minute'];
@@ -830,14 +743,7 @@ export class PlumageTimepickerComponent {
   }
 
   private _getPartEl(part: TimePart): HTMLElement | null {
-    const sel =
-      part === 'hour'
-        ? '.hour-display'
-        : part === 'minute'
-          ? '.minute-display'
-          : part === 'second'
-            ? '.second-display'
-            : '.ampm-display';
+    const sel = part === 'hour' ? '.hour-display' : part === 'minute' ? '.minute-display' : part === 'second' ? '.second-display' : '.ampm-display';
     return this.qs<HTMLElement>(sel);
   }
 
@@ -867,11 +773,12 @@ export class PlumageTimepickerComponent {
   }
 
   private _applySpinDelta(part: TimePart, delta: number) {
-    if (this._isDisabled) return;
+     if (this._isInteractionLocked) return;
 
     this._didUserChangeTime = true;
-    if (this.validationMessage) this.validationMessage = '';
-    this.validation = false;
+
+    this._userValidationActive = false;
+    if (this.timeValidationMessage) this.timeValidationMessage = '';
     this.isValid = true;
     this._warningVisible = false;
 
@@ -884,12 +791,7 @@ export class PlumageTimepickerComponent {
       if (next > meta.max) next = meta.min;
       if (next < meta.min) next = meta.max;
 
-      this._parts =
-        part === 'hour'
-          ? { ...this._parts, hour: next }
-          : part === 'minute'
-            ? { ...this._parts, minute: next }
-            : { ...this._parts, second: next };
+      this._parts = part === 'hour' ? { ...this._parts, hour: next } : part === 'minute' ? { ...this._parts, minute: next } : { ...this._parts, second: next };
     }
 
     const formatted = this._partsToInput(this._parts);
@@ -900,7 +802,7 @@ export class PlumageTimepickerComponent {
   }
 
   private _onSpinKeyDown = (part: TimePart, ev: KeyboardEvent) => {
-    if (this._isDisabled) return;
+    if (this._isInteractionLocked) return;
     if (!this._open) return;
 
     const key = ev.key;
@@ -954,17 +856,11 @@ export class PlumageTimepickerComponent {
     }
   };
 
-  /* ============================================
-   * Format toggle (must NOT clear validation)
-   * ============================================ */
-
   private _toggleFormat = () => {
     if (this._isDisabled) return;
     if (this.twentyFourHourOnly || this.twelveHourOnly) return;
 
     this.isTwentyFourHourFormat = !this.isTwentyFourHourFormat;
-
-    // emit in watcher? no — watcher uses 'external'; this one is user action
     this._emitTimeChange('format');
   };
 
@@ -972,7 +868,6 @@ export class PlumageTimepickerComponent {
     const p = this._parts;
 
     if (this.isTwentyFourHourFormat) {
-      // 12 -> 24
       let h = Math.min(12, Math.max(1, p.hour));
       if (p.ampm === 'PM' && h < 12) h += 12;
       if (p.ampm === 'AM' && h === 12) h = 0;
@@ -981,7 +876,6 @@ export class PlumageTimepickerComponent {
       return;
     }
 
-    // 24 -> 12
     let h = Math.min(23, Math.max(0, p.hour));
     let ampm: AmPm = 'AM';
 
@@ -1000,12 +894,8 @@ export class PlumageTimepickerComponent {
     this._parts = { ...p, hour: h, ampm };
   }
 
-  /* ============================================
-   * Input: commit vs typing (manual entry UX fix)
-   * ============================================ */
-
   private _commitFromInput() {
-    if (this._isDisabled) return;
+    if (this._isInteractionLocked) return;
 
     this._flushTimeInput();
 
@@ -1016,9 +906,10 @@ export class PlumageTimepickerComponent {
       this.isValid = false;
 
       if (res.reason === 'pattern') {
-        this.validationMessage = this._validationMessageForPattern();
+        this.timeValidationMessage = this._validationMessageForPattern();
         this._warningVisible = false;
       } else {
+        this.timeValidationMessage = '';
         this._warningVisible = true;
       }
       return;
@@ -1028,30 +919,27 @@ export class PlumageTimepickerComponent {
     this._setInputValue(res.normalized, { writeToDom: true });
 
     this.isValid = true;
+    this._userValidationActive = false;
     this._warningVisible = false;
-    if (this.validationMessage) this.validationMessage = '';
+    if (this.timeValidationMessage) this.timeValidationMessage = '';
 
     this._syncValuePropFromState();
 
     if (this._didUserChangeTime) {
       this._emitTimeChange('commit');
+
       this._didUserChangeTime = false;
     }
   }
 
-  /**
-   * Typing: do NOT normalize/pad into the input DOM.
-   * Allows "00:00:1" then "00:00:12" without auto-left-padding.
-   */
   private _validateTimeInput = (ev: Event) => {
-    if (this._isDisabled) return;
+    if (this._isInteractionLocked) return;
 
     this._didUserChangeTime = true;
 
     const input = ev.target as HTMLInputElement | null;
     const raw = input?.value ?? this._readInputValue();
 
-    // store internally, DO NOT write to DOM (no padding while typing)
     this._setInputValue(raw, { writeToDom: false });
 
     const caretStart = input?.selectionStart ?? null;
@@ -1065,6 +953,13 @@ export class PlumageTimepickerComponent {
 
     if (isNormalizeErr(parsed)) {
       this.isValid = false;
+      if (parsed.reason === 'pattern') {
+        this.timeValidationMessage = this._validationMessageForPattern();
+        this._warningVisible = false;
+      } else {
+        this.timeValidationMessage = '';
+        this._warningVisible = true;
+      }
 
       this._scheduleTimeInput({
         raw,
@@ -1080,10 +975,10 @@ export class PlumageTimepickerComponent {
     }
 
     this.isValid = true;
+    this._userValidationActive = false;
     this._warningVisible = false;
-    if (this.validationMessage) this.validationMessage = '';
+    if (this.timeValidationMessage) this.timeValidationMessage = '';
 
-    // complete+valid: update parts so panel reflects it
     this._parts = parsed.parts;
 
     this._scheduleTimeInput({
@@ -1098,7 +993,7 @@ export class PlumageTimepickerComponent {
   };
 
   private _handleEnterKeyOnly = (e: KeyboardEvent) => {
-    if (this._isDisabled) return;
+    if (this._isInteractionLocked) return;
     if (e.key === 'Enter') this._commitFromInput();
   };
 
@@ -1107,12 +1002,13 @@ export class PlumageTimepickerComponent {
   };
 
   private _clearTime = () => {
-    if (this._isDisabled) return;
+    if (this._isInteractionLocked) return;
 
     this._flushTimeInput();
     this._didUserChangeTime = true;
 
     this._resetToDefault();
+    this._userValidationActive = !!this.validation && !!(this.validationMessage ?? '').trim();
     this._emitTimeChange('clear');
     this._didUserChangeTime = false;
 
@@ -1127,31 +1023,27 @@ export class PlumageTimepickerComponent {
     });
   };
 
-  /* ============================================
-   * Render
-   * ============================================ */
-
   render() {
     const disabledAll = this._isDisabled;
+    const readOnly = this._isReadOnly;
+    const isPopoverOpen = this._open && !disabledAll && !readOnly;
+    const disableInteractive = disabledAll || readOnly || !this.isValid;
 
     const groupSize = this.size === 'sm' ? ' input-group-sm' : this.size === 'lg' ? ' input-group-lg' : '';
     const ddSize = this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : '';
     const maxLength = this.isTwentyFourHourFormat ? (this.hideSeconds ? 5 : 8) : this.hideSeconds ? 8 : 11;
 
-    const inputInlineStyle =
-      this.inputWidth !== undefined && this.inputWidth !== null && this.inputWidth !== '' ? { width: `${this.inputWidth}px` } : {};
+    const inputInlineStyle = this.inputWidth !== undefined && this.inputWidth !== null && this.inputWidth !== '' ? { width: `${this.inputWidth}px` } : {};
 
     const dropdownId = this.getDropdownId();
+    const timeValidationId = this.getTimeValidationId();
     const validationId = this.getValidationId();
     const warningId = this.getWarningId();
 
     const { hasVisibleLabel, ariaLabelledby, ariaLabel } = this.computeNameAttrs();
     const describedBy = this.computeDescribedByAttrs();
 
-    const isInvalid = !this.isValid;
-    const disableInteractive = disabledAll || !this.isValid;
-
-    const isPopoverOpen = this._open && !disabledAll;
+    const isInvalid = this._isInvalid;
     const dropdownClass = `time-dropdown${ddSize}${isPopoverOpen ? '' : ' hidden'}`;
 
     const hourMeta = this._getSpinMeta('hour');
@@ -1169,20 +1061,18 @@ export class PlumageTimepickerComponent {
             <label
               htmlFor={this.inputId}
               id={hasVisibleLabel ? this.getLabelId() : undefined}
-              class={`${this.showLabel ? '' : 'sr-only'} ${this.validation ? ' invalid' : ''}`}
+              class={`${this.showLabel ? '' : 'sr-only'}${this.readOnly || this._isDisabled ? '' : isInvalid ? ' is-invalid' : ''}`}
             >
               {this.labelText}
-              {this.required ? <span class="required">*</span> : null}
+              {this.readOnly || this._isDisabled ? null : this.required ? <span class="required">*</span> : null}
             </label>
 
             <div class="timepicker-group">
               <div class="dd-position">
-                <div class={`input-group${groupSize}`}>
+                <div class={`input-group${groupSize}${this._isDisabled ? ' disabled' : ''}`}>
                   <input
                     ref={el => {
                       this._inputEl = el as HTMLInputElement;
-
-                      // seed DOM value once ref exists (keeps default visible)
                       if (this._inputEl && this._inputEl.value !== this._inputValue) {
                         this._inputEl.value = this._inputValue;
                       }
@@ -1190,7 +1080,7 @@ export class PlumageTimepickerComponent {
                     type="text"
                     id={this.inputId}
                     name={this.inputName}
-                    class={`form-control time-input${this.validation ? ' is-invalid' : ''}`}
+                    class={`form-control time-input${this.readOnly ? ' read-only' : this._isDisabled ? '' : isInvalid ? ' is-invalid' : ''}`}
                     style={inputInlineStyle as any}
                     placeholder="Enter Time"
                     aria-label={ariaLabel}
@@ -1204,6 +1094,8 @@ export class PlumageTimepickerComponent {
                     aria-describedby={describedBy}
                     maxLength={maxLength}
                     disabled={disabledAll}
+                    readOnly={readOnly}
+                    aria-readonly={readOnly ? 'true' : undefined}
                     onFocus={e => {
                       this._isInputFocused = true;
                       this._handleFocusAndInteraction(e);
@@ -1219,14 +1111,22 @@ export class PlumageTimepickerComponent {
                     onKeyDown={this._handleEnterKeyOnly}
                   />
 
-                  <button type="button" class={`clear-button${this.validation ? ' invalid' : ''}`} aria-label="Clear time" onClick={this._clearTime} disabled={disabledAll}>
-                    <i class="fas fa-times-circle" />
-                  </button>
-
-                  {this.hideTimepickerBtn ? null : (
+                  {readOnly ? null : (
                     <button
                       type="button"
-                      class={`time-icon input-group-text btn time-icon-btn${this.validation ? ' invalid' : ''}`}
+                      class={`clear-button${this.readOnly ? '' : this._isDisabled ? '' : isInvalid ? ' invalid' : ''}`}
+                      aria-label="Clear time"
+                      onClick={this._clearTime}
+                      disabled={disabledAll}
+                    >
+                      <i class="fas fa-times-circle" />
+                    </button>
+                  )}
+
+                  {this.hideTimepickerBtn || this.readOnly ? null : (
+                    <button
+                      type="button"
+                      class={`time-icon input-group-text time-icon-btn${this.readOnly ? '' : this._isDisabled ? '' : isInvalid ? ' invalid' : ''}`}
                       aria-label="Open time picker"
                       aria-controls={dropdownId}
                       aria-expanded={isPopoverOpen ? 'true' : 'false'}
@@ -1240,9 +1140,9 @@ export class PlumageTimepickerComponent {
                   )}
                 </div>
 
-                <div class={`b-underline${this.validation ? ' invalid' : ''}`} role="presentation">
+                <div class={`b-underline${readOnly ? ' disabled' : isInvalid ? ' invalid' : ''}`} role="presentation">
                   <div
-                    class={`b-focus${disabledAll ? ' disabled' : ''}${this.validation ? ' invalid' : ''}`}
+                    class={`b-focus${disabledAll || readOnly ? ' disabled' : isInvalid ? ' invalid' : ''}`}
                     role="presentation"
                     aria-hidden="true"
                     style={{ width: '0', left: '50%' } as any}
@@ -1261,7 +1161,6 @@ export class PlumageTimepickerComponent {
                   style={!isPopoverOpen ? ({ pointerEvents: 'none' } as any) : undefined}
                 >
                   <div class="time-spinner-wrapper">
-                    {/* HOURS */}
                     <div class="time-spinner">
                       <button type="button" class="arrow up" aria-label="Increment hour" onClick={() => this._applySpinDelta('hour', +1)} disabled={disabledAll}>
                         <i class="fas fa-chevron-up" />
@@ -1289,11 +1188,14 @@ export class PlumageTimepickerComponent {
                     </div>
 
                     <div class="time-spinner-colon" aria-hidden="true">
-                      <div class="dot"><i class="fa fa-circle" /></div>
-                      <div class="dot"><i class="fa fa-circle" /></div>
+                      <div class="dot">
+                        <i class="fa fa-circle" />
+                      </div>
+                      <div class="dot">
+                        <i class="fa fa-circle" />
+                      </div>
                     </div>
 
-                    {/* MINUTES */}
                     <div class="time-spinner">
                       <button type="button" class="arrow up" aria-label="Increment minute" onClick={() => this._applySpinDelta('minute', +1)} disabled={disabledAll}>
                         <i class="fas fa-chevron-up" />
@@ -1320,12 +1222,15 @@ export class PlumageTimepickerComponent {
                       </button>
                     </div>
 
-                    {/* SECONDS */}
                     {this.hideSeconds ? null : (
                       <Fragment>
                         <div class="time-spinner-colon" aria-hidden="true">
-                          <div class="dot"><i class="fa fa-circle" /></div>
-                          <div class="dot"><i class="fa fa-circle" /></div>
+                          <div class="dot">
+                            <i class="fa fa-circle" />
+                          </div>
+                          <div class="dot">
+                            <i class="fa fa-circle" />
+                          </div>
                         </div>
 
                         <div class="time-spinner">
@@ -1356,7 +1261,6 @@ export class PlumageTimepickerComponent {
                       </Fragment>
                     )}
 
-                    {/* AM/PM */}
                     {this.isTwentyFourHourFormat || this.twentyFourHourOnly ? null : (
                       <div class="time-spinner am-pm-spinner" aria-hidden="false">
                         <button type="button" class="arrow up" aria-label="Toggle AM/PM" onClick={() => this._applySpinDelta('ampm', +1)} disabled={disabledAll}>
@@ -1394,8 +1298,7 @@ export class PlumageTimepickerComponent {
                 </div>
               </div>
 
-              {/* SVG format toggle (restored) */}
-              {!this.twentyFourHourOnly && !this.twelveHourOnly ? (
+              {!readOnly && !this.twentyFourHourOnly && !this.twelveHourOnly ? (
                 <button
                   type="button"
                   class={`toggle-format-btn btn btn--outlined${this.size === 'sm' ? ' sm' : this.size === 'lg' ? ' lg' : ''}`}
@@ -1418,11 +1321,25 @@ export class PlumageTimepickerComponent {
               ) : null}
             </div>
 
-            <div id={validationId} class={`validation-message ${this.validationMessage ? '' : 'hidden'}`} role="alert" aria-live="polite">
-              {this.validationMessage}
+            <div
+              id={timeValidationId}
+              class={`validation-message ${this.readOnly || this._isDisabled ? 'hidden' : this.timeValidation && this.timeValidationMessage ? '' : 'hidden'}`}
+              role="alert"
+              aria-live="polite"
+            >
+              {this.timeValidation && this.timeValidationMessage ? this.timeValidationMessage : ''}
             </div>
 
-            <div id={warningId} class={`warning-message ${this._warningVisible ? '' : 'hidden'}`} role="alert" aria-live="polite">
+            <div
+              id={validationId}
+              class={`validation-message ${this.readOnly || this._isDisabled ? 'hidden' : this._userValidationActive && this.validationMessage ? '' : 'hidden'}`}
+              role="alert"
+              aria-live="polite"
+            >
+              {this._userValidationActive && this.validationMessage ? this.validationMessage : ''}
+            </div>
+
+            <div id={warningId} class={`warning-message ${this.readOnly || this._isDisabled ? 'hidden' : this._warningVisible ? '' : 'hidden'}`} role="alert" aria-live="polite">
               <i class="fa fa-exclamation-triangle" aria-hidden="true" /> Time values cannot exceed the limits.
             </div>
           </div>

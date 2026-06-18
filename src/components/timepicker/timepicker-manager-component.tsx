@@ -23,42 +23,25 @@ export type FocusOptions = {
 export class TimepickerManagerComponent {
   @Element() host!: HTMLElement;
 
-  /* -----------------------------
-   Events (re-emitted)
-  ------------------------------ */
   @Event({ eventName: 'timeChange' }) timeChange!: EventEmitter<TimeChangeDetail>;
   @Event({ eventName: 'timeInput' }) timeInput!: EventEmitter<TimeInputDetail>;
 
-  /** Namespaced events to avoid collisions */
   @Event({ eventName: 'managerTimeChange' }) managerTimeChange!: EventEmitter<ManagerTimeChangeDetail>;
   @Event({ eventName: 'managerTimeInput' }) managerTimeInput!: EventEmitter<ManagerTimeInputDetail>;
 
-  /* -----------------------------
-   Accessibility (Overrides)
-  ------------------------------ */
   @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
   @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
 
-  /* -----------------------------
-   Label UI (delegated to children)
-  ------------------------------ */
   @Prop() showLabel?: boolean;
   @Prop() labelText: string = 'Enter Time';
 
   @Prop() inputId: string = 'time-input';
   @Prop() inputName: string = 'time';
 
-  /* -----------------------------
-   Controlled Value
-  ------------------------------ */
   @Prop({ mutable: true }) value: string = '';
 
-  /* -----------------------------
-   Behavior / Display
- ------------------------------ */
   @Prop({ mutable: true }) isTwentyFourHourFormat: boolean = true;
-
   @Prop() size: string = '';
 
   @Prop({ mutable: true }) twentyFourHourOnly: boolean = false;
@@ -66,29 +49,24 @@ export class TimepickerManagerComponent {
   @Prop() hideTimepickerBtn: boolean = false;
 
   @Prop({ mutable: true }) hideSeconds: boolean = false;
-
   @Prop() usePlTimepicker: boolean = false;
 
   @Prop() inputWidth: number | string = null;
   @Prop() required: boolean = false;
-
   @Prop() disableTimepicker: boolean = false;
-
   @Prop() timeInputThrottleMs: number = 50;
+  @Prop() readOnly: boolean = false;
 
-  /* -----------------------------
-   Validation
- ------------------------------ */
   @Prop({ mutable: true }) validationMessage: string = '';
   @Prop({ mutable: true }) validation?: boolean = false;
+
+  @Prop({ mutable: true }) timeValidation: boolean = true;
+  @Prop({ mutable: true }) timeValidationMessage: string = '';
+
   @Prop({ mutable: true }) isValid: boolean = true;
 
-  /* -----------------------------
-   Internal
- ------------------------------ */
   private _syncingFromChild = false;
   private _syncingFromChildProps = false;
-
   private _childEl: HTMLElement | null = null;
 
   @Watch('value')
@@ -132,7 +110,9 @@ export class TimepickerManagerComponent {
     if (!tokens.length) return undefined;
 
     const out: string[] = [];
-    for (const t of tokens) if (!out.includes(t)) out.push(t);
+    for (const t of tokens) {
+      if (!out.includes(t)) out.push(t);
+    }
     return out.join(' ');
   }
 
@@ -141,14 +121,22 @@ export class TimepickerManagerComponent {
     return `${base}-validation`;
   }
 
+  private getChildTimeValidationId(): string {
+    const base = (this.inputId || '').trim() || 'time-input';
+    return `${base}-time-validation`;
+  }
+
   private computeA11y() {
     const labelledBy = this.normalizeIdList(this.ariaLabelledby);
     const label = (this.ariaLabel ?? '').trim() || undefined;
 
-    const hasMsg = !!(this.validationMessage ?? '').trim();
-    const validationId = hasMsg ? this.getChildValidationId() : undefined;
+    const hasUserMsg = !!this.validation && !!(this.validationMessage ?? '').trim();
+    const hasTimeMsg = !!this.timeValidation && !!(this.timeValidationMessage ?? '').trim();
 
-    const describedBy = this.joinIds(this.ariaDescribedby, validationId);
+    const validationId = hasUserMsg ? this.getChildValidationId() : undefined;
+    const timeValidationId = hasTimeMsg ? this.getChildTimeValidationId() : undefined;
+
+    const describedBy = this.joinIds(this.ariaDescribedby, timeValidationId, validationId);
 
     return {
       ariaLabel: labelledBy ? undefined : label,
@@ -175,9 +163,14 @@ export class TimepickerManagerComponent {
       isTwentyFourHourFormat: this.isTwentyFourHourFormat,
       size: this.size,
       inputWidth: this.inputWidth,
+      readOnly: this.readOnly,
 
       validationMessage: this.validationMessage,
       validation: this.validation,
+
+      timeValidation: this.timeValidation,
+      timeValidationMessage: this.timeValidationMessage,
+
       isValid: this.isValid,
 
       twentyFourHourOnly: this.twentyFourHourOnly,
@@ -191,35 +184,25 @@ export class TimepickerManagerComponent {
     };
   }
 
-  /* -----------------------------
-   Public method: focusInput({open})
-   - Focus input
-   - Optionally open popover
-   - If opened, focus hour spinbutton so arrows work immediately
- ------------------------------ */
   @Method()
   async focusInput(options?: FocusOptions): Promise<void> {
-    const child =
-      this._childEl ??
-      (this.host.querySelector('timepicker-component, plumage-timepicker-component') as HTMLElement | null);
+    const child = this._childEl ?? (this.host.querySelector('timepicker-component, plumage-timepicker-component') as HTMLElement | null);
 
     if (!child) return;
 
-    // 1) Focus input
     const maybeFocus = (child as any).focusInput;
     if (typeof maybeFocus === 'function') {
       try {
         await maybeFocus.call(child, options);
         return;
       } catch {
-        // fall through
+        // no-op
       }
     }
 
     const input = child.querySelector('input.time-input') as HTMLInputElement | null;
     input?.focus();
 
-    // 2) Optionally open popover
     if (!options?.open) return;
 
     const maybeOpen = (child as any).open;
@@ -227,29 +210,22 @@ export class TimepickerManagerComponent {
       try {
         await maybeOpen.call(child);
       } catch {
-        // fall through
+        // no-op
       }
     } else {
       const iconBtn = child.querySelector('.time-icon-btn') as HTMLButtonElement | null;
       if (iconBtn && !iconBtn.disabled) iconBtn.click();
     }
 
-    // 3) Focus hour spinbutton after open
     requestAnimationFrame(() => {
       const hour = child.querySelector('.hour-display') as HTMLElement | null;
       hour?.focus();
     });
   }
 
-  /* -----------------------------
-   Public method: close()
-   - Closes popover if open (both implementations)
- ------------------------------ */
   @Method()
   async close(): Promise<void> {
-    const child =
-      this._childEl ??
-      (this.host.querySelector('timepicker-component, plumage-timepicker-component') as HTMLElement | null);
+    const child = this._childEl ?? (this.host.querySelector('timepicker-component, plumage-timepicker-component') as HTMLElement | null);
 
     if (!child) return;
 
@@ -259,13 +235,14 @@ export class TimepickerManagerComponent {
         await maybeClose.call(child);
         return;
       } catch {
-        // fall through
+        // no-op
       }
     }
 
     const btn =
       (child.querySelector('button.close-button') as HTMLButtonElement | null) ??
       (child.querySelector('.time-spinner-close button') as HTMLButtonElement | null);
+
     if (btn && !btn.disabled) {
       btn.click();
       return;
@@ -275,9 +252,6 @@ export class TimepickerManagerComponent {
     child.dispatchEvent(ev);
   }
 
-  /* -----------------------------
-   Mirroring child mutable props up to manager
- ------------------------------ */
   private _mirrorFromChild() {
     const child = this._childEl;
     if (!child) return;
@@ -285,30 +259,47 @@ export class TimepickerManagerComponent {
     const childFormat = (child as any).isTwentyFourHourFormat as boolean | undefined;
     const childHideSeconds = (child as any).hideSeconds as boolean | undefined;
     const childIsValid = (child as any).isValid as boolean | undefined;
+
+    const childValidation = (child as any).validation as boolean | undefined;
     const childValidationMessage = (child as any).validationMessage as string | undefined;
+
+    const childTimeValidation = (child as any).timeValidation as boolean | undefined;
+    const childTimeValidationMessage = (child as any).timeValidationMessage as string | undefined;
 
     this._syncingFromChildProps = true;
     try {
       if (typeof childFormat === 'boolean' && childFormat !== this.isTwentyFourHourFormat) {
         this.isTwentyFourHourFormat = childFormat;
       }
+
       if (typeof childHideSeconds === 'boolean' && childHideSeconds !== this.hideSeconds) {
         this.hideSeconds = childHideSeconds;
       }
+
       if (typeof childIsValid === 'boolean' && childIsValid !== this.isValid) {
         this.isValid = childIsValid;
       }
+
+      if (typeof childValidation === 'boolean' && childValidation !== this.validation) {
+        this.validation = childValidation;
+      }
+
       if (typeof childValidationMessage === 'string' && childValidationMessage !== this.validationMessage) {
         this.validationMessage = childValidationMessage;
+      }
+
+      if (typeof childTimeValidation === 'boolean' && childTimeValidation !== this.timeValidation) {
+        this.timeValidation = childTimeValidation;
+      }
+
+      if (typeof childTimeValidationMessage === 'string' && childTimeValidationMessage !== this.timeValidationMessage) {
+        this.timeValidationMessage = childTimeValidationMessage;
       }
     } finally {
       this._syncingFromChildProps = false;
     }
   }
 
-  /* -----------------------------
-   Event handlers (child -> manager)
- ------------------------------ */
   private _onChildTimeChange = (ev: CustomEvent<TimeChangeDetail>) => {
     const detail = ev.detail;
 

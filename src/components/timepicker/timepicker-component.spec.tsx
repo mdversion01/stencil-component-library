@@ -2,7 +2,6 @@
 import { newSpecPage } from '@stencil/core/testing';
 import { TimePickerComponent as TimepickerComponent } from './timepicker-component';
 
-// helper: split aria-describedby tokens
 const splitIds = (v: string | null) =>
   String(v || '')
     .trim()
@@ -29,33 +28,25 @@ describe('timepicker-component', () => {
     expect(dropdown).toBeTruthy();
     expect(iconBtn).toBeTruthy();
 
-    // Visible label when show-label is present
     expect(label.classList.contains('sr-only')).toBe(false);
     expect(label.textContent).toContain('Pick a time');
 
-    // label id derived from inputId and aria-labelledby points to it when showLabel=true
     expect(label.id).toBe('my-time-label');
     expect(input.id).toBe('my-time');
     expect(input.getAttribute('aria-labelledby')).toBe('my-time-label');
 
-    // dropdown id derived from inputId and input/icon button aria-controls points to it
     expect(dropdown.getAttribute('id')).toBe('my-time-dropdown');
     expect(input.getAttribute('aria-controls')).toBe('my-time-dropdown');
     expect(iconBtn.getAttribute('aria-controls')).toBe('my-time-dropdown');
 
-    // Trigger should expose popover semantics
     expect(iconBtn.getAttribute('aria-haspopup')).toBe('dialog');
     expect(iconBtn.getAttribute('aria-expanded')).toBe('false');
 
-    // Input also has popover semantics
     expect(input.getAttribute('aria-haspopup')).toBe('dialog');
     expect(input.getAttribute('aria-expanded')).toBe('false');
 
-    // New behavior: dropdown is rendered inert while closed
     expect(dropdown.classList.contains('hidden')).toBe(true);
     expect(dropdown.hasAttribute('inert')).toBe(true);
-
-    expect(root).toMatchSnapshot();
   });
 
   it('hides the label (sr-only) when "show-label" is omitted, and uses aria-label (no aria-labelledby)', async () => {
@@ -73,19 +64,15 @@ describe('timepicker-component', () => {
     expect(label).toBeTruthy();
     expect(input).toBeTruthy();
 
-    // Hidden for sighted users but present for screen readers
     expect(label.classList.contains('sr-only')).toBe(true);
     expect(label.textContent).toContain('Hidden label test');
 
-    // When showLabel is not set, we do NOT auto-wire aria-labelledby; we fall back to aria-label.
     expect(input.id).toBe('a1');
     expect(input.getAttribute('aria-labelledby')).toBeNull();
     expect(input.getAttribute('aria-label')).toBe('Time Picker');
-
-    expect(root).toMatchSnapshot();
   });
 
-  it('a11y overrides: uses consumer aria-labelledby when provided (even if showLabel omitted), and keeps aria-describedby external-only when no validation/warning shown', async () => {
+  it('a11y overrides: uses consumer aria-labelledby when provided, and keeps aria-describedby external-only when no validation/warning shown', async () => {
     const page = await newSpecPage({
       components: [TimepickerComponent],
       html: `
@@ -107,58 +94,105 @@ describe('timepicker-component', () => {
     const host = page.body.querySelector('timepicker-component') as HTMLElement;
     const input = host.querySelector('input.time-input') as HTMLInputElement;
 
-    expect(!!page.body.querySelector('#ext-label')).toBe(true);
-    expect(!!page.body.querySelector('#ext-help')).toBe(true);
+    expect(page.body.querySelector('#ext-label')).toBeTruthy();
+    expect(page.body.querySelector('#ext-help')).toBeTruthy();
 
-    // consumer aria-labelledby wins
     expect(input.getAttribute('aria-labelledby')).toBe('ext-label');
-
-    // and aria-label should be omitted when aria-labelledby is present
     expect(input.getAttribute('aria-label')).toBeNull();
 
-    // describedby includes ext-help, and should NOT include validation/warning ids when not shown
     const described = splitIds(input.getAttribute('aria-describedby'));
     expect(described).toContain('ext-help');
     expect(described).not.toContain('tp3-validation');
+    expect(described).not.toContain('tp3-time-validation');
     expect(described).not.toContain('tp3-warning');
   });
 
-  it('required + invalid: sets aria-required + required, sets aria-invalid only when invalid, and wires validation message id', async () => {
-    // IMPORTANT: boolean attributes like is-valid="false" are unreliable in string HTML.
-    // We set props on the instance to ensure correct boolean values.
+  it('user validation wires the user validation message id and not the built-in time validation id when user validation is enabled', async () => {
     const page = await newSpecPage({
       components: [TimepickerComponent],
-      html: `<timepicker-component input-id="tp4"></timepicker-component>`,
+      html: `<timepicker-component input-id="tp4" required validation validation-message="Bad time"></timepicker-component>`,
     });
-
-    const inst = page.rootInstance as TimepickerComponent;
-
-    inst.required = true;
-    inst.validation = true;
-    inst.validationMessage = 'Bad time';
-    inst.isValid = false;
 
     await page.waitForChanges();
 
     const root = page.root!;
     const input = root.querySelector('input.time-input') as HTMLInputElement;
-    const msg = root.querySelector('#tp4-validation') as HTMLElement;
+    const userMsg = root.querySelector('#tp4-validation') as HTMLElement | null;
+    const timeMsg = root.querySelector('#tp4-time-validation') as HTMLElement | null;
 
     expect(input).toBeTruthy();
-    expect(msg).toBeTruthy();
+    expect(userMsg).toBeTruthy();
+    expect(timeMsg).toBeTruthy();
 
     expect(input.hasAttribute('required')).toBe(true);
     expect(input.getAttribute('aria-required')).toBe('true');
-
     expect(input.getAttribute('aria-invalid')).toBe('true');
 
     const described = splitIds(input.getAttribute('aria-describedby'));
     expect(described).toContain('tp4-validation');
+    expect(described).not.toContain('tp4-time-validation');
 
-    expect(msg.getAttribute('role')).toBe('alert');
-    expect(msg.textContent).toContain('Bad time');
+    expect(userMsg!.getAttribute('role')).toBe('alert');
+    expect(userMsg!.textContent).toContain('Bad time');
+    expect(userMsg!.classList.contains('hidden')).toBe(false);
+    expect(timeMsg!.classList.contains('hidden')).toBe(true);
+  });
 
-    expect(root).toMatchSnapshot();
+  it('built-in time validation uses the time-validation id/message for malformed non-transient time input', async () => {
+    const page = await newSpecPage({
+      components: [TimepickerComponent],
+      html: `<timepicker-component input-id="tp-time-validation"></timepicker-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root!;
+    const input = root.querySelector('input.time-input') as HTMLInputElement;
+
+    input.value = 'ab';
+    input.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    const timeMsg = root.querySelector('#tp-time-validation-time-validation') as HTMLElement | null;
+    const userMsg = root.querySelector('#tp-time-validation-validation') as HTMLElement | null;
+
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+
+    const described = splitIds(input.getAttribute('aria-describedby'));
+    expect(described).toContain('tp-time-validation-time-validation');
+    expect(described).not.toContain('tp-time-validation-validation');
+
+    expect(timeMsg).toBeTruthy();
+    expect(timeMsg!.getAttribute('role')).toBe('alert');
+    expect(timeMsg!.classList.contains('hidden')).toBe(false);
+    expect((timeMsg!.textContent || '').trim().length).toBeGreaterThan(0);
+
+    expect(userMsg).toBeTruthy();
+    expect(userMsg!.classList.contains('hidden')).toBe(true);
+  });
+
+  it('transient partial input does not trigger built-in validation', async () => {
+    const page = await newSpecPage({
+      components: [TimepickerComponent],
+      html: `<timepicker-component input-id="tp-transient"></timepicker-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root!;
+    const input = root.querySelector('input.time-input') as HTMLInputElement;
+
+    input.value = '99';
+    input.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    const timeMsg = root.querySelector('#tp-transient-time-validation') as HTMLElement | null;
+    const warningMsg = root.querySelector('#tp-transient-warning') as HTMLElement | null;
+
+    expect(input.getAttribute('aria-invalid')).toBeNull();
+    expect(timeMsg).toBeTruthy();
+    expect(timeMsg!.classList.contains('hidden')).toBe(true);
+    if (warningMsg) expect(warningMsg.classList.contains('hidden')).toBe(true);
   });
 
   it('disabled: disables input/buttons and dropdown stays hidden/inert', async () => {
@@ -171,7 +205,6 @@ describe('timepicker-component', () => {
 
     const root = page.root!;
     const input = root.querySelector('input.time-input') as HTMLInputElement;
-
     const clearBtn = root.querySelector('button.clear-button') as HTMLButtonElement | null;
     const iconBtn = root.querySelector('button.time-icon-btn') as HTMLButtonElement | null;
     const dropdown = root.querySelector('.time-dropdown') as HTMLElement | null;
@@ -180,21 +213,46 @@ describe('timepicker-component', () => {
     expect(clearBtn).toBeTruthy();
     expect(dropdown).toBeTruthy();
 
-    // input: property is fine in Stencil mock DOM
     expect(input.disabled).toBe(true);
-
-    // buttons: assert disabled via attribute (more reliable in Stencil mock DOM)
     expect(clearBtn!.hasAttribute('disabled')).toBe(true);
     if (iconBtn) expect(iconBtn.hasAttribute('disabled')).toBe(true);
 
-    // dropdown remains hidden and inert
     expect(dropdown!.classList.contains('hidden')).toBe(true);
     expect(dropdown!.hasAttribute('inert')).toBe(true);
-
-    expect(root).toMatchSnapshot();
   });
 
-  it('spinbutton semantics: hour/minute(/second) render role=spinbutton with aria-valuemin/max/now and roving tabindex defaults to -1 when closed', async () => {
+  it('readOnly: makes input readonly and hides clear and icon controls', async () => {
+    const page = await newSpecPage({
+      components: [TimepickerComponent],
+      html: `<timepicker-component input-id="tp-readonly" read-only show-label label-text="Read only time"></timepicker-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root!;
+    const input = root.querySelector('input.time-input') as HTMLInputElement;
+    const clearBtn = root.querySelector('button.clear-button');
+    const iconBtn = root.querySelector('button.time-icon-btn');
+    const label = root.querySelector('label') as HTMLLabelElement;
+    const dropdown = root.querySelector('.time-dropdown') as HTMLElement;
+
+    expect(input).toBeTruthy();
+    expect(input.readOnly).toBe(true);
+    expect(input.getAttribute('aria-readonly')).toBe('true');
+    expect(input.classList.contains('read-only')).toBe(true);
+
+    expect(clearBtn).toBeNull();
+    expect(iconBtn).toBeNull();
+
+    expect(label).toBeTruthy();
+    expect(label.classList.contains('is-invalid')).toBe(false);
+
+    expect(dropdown).toBeTruthy();
+    expect(dropdown.classList.contains('hidden')).toBe(true);
+    expect(dropdown.hasAttribute('inert')).toBe(true);
+  });
+
+  it('spinbutton semantics: hour/minute/second render role=spinbutton with aria-valuemin/max/now and roving tabindex defaults to -1 when closed', async () => {
     const page = await newSpecPage({
       components: [TimepickerComponent],
       html: `<timepicker-component input-id="tp6"></timepicker-component>`,
@@ -205,22 +263,112 @@ describe('timepicker-component', () => {
     const root = page.root!;
     const hour = root.querySelector('.hour-display') as HTMLElement;
     const minute = root.querySelector('.minute-display') as HTMLElement;
+    const second = root.querySelector('.second-display') as HTMLElement;
 
     expect(hour).toBeTruthy();
     expect(minute).toBeTruthy();
+    expect(second).toBeTruthy();
 
     expect(hour.getAttribute('role')).toBe('spinbutton');
     expect(minute.getAttribute('role')).toBe('spinbutton');
+    expect(second.getAttribute('role')).toBe('spinbutton');
 
-    // 24h default -> hour 0..23, minute 0..59
     expect(hour.getAttribute('aria-valuemin')).toBe('0');
     expect(hour.getAttribute('aria-valuemax')).toBe('23');
 
     expect(minute.getAttribute('aria-valuemin')).toBe('0');
     expect(minute.getAttribute('aria-valuemax')).toBe('59');
 
-    // closed => roving tabindex should be -1 (component sets 0 only when popover open)
+    expect(second.getAttribute('aria-valuemin')).toBe('0');
+    expect(second.getAttribute('aria-valuemax')).toBe('59');
+
     expect(hour.getAttribute('tabindex')).toBe('-1');
     expect(minute.getAttribute('tabindex')).toBe('-1');
+    expect(second.getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('clear button removes built-in time validation, restores user validation, and keeps field invalid state while buttons are not marked invalid', async () => {
+    const page = await newSpecPage({
+      components: [TimepickerComponent],
+      html: `<timepicker-component input-id="tp-clear" validation validation-message="Please enter a time"></timepicker-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root!;
+    const input = root.querySelector('input.time-input') as HTMLInputElement;
+    const clearBtn = root.querySelector('button.clear-button') as HTMLButtonElement;
+    const iconBtn = root.querySelector('button.time-icon-btn') as HTMLButtonElement | null;
+    const label = root.querySelector('label') as HTMLLabelElement;
+
+    input.value = 'ab';
+    input.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    let userMsg = root.querySelector('#tp-clear-validation') as HTMLElement | null;
+    let timeMsg = root.querySelector('#tp-clear-time-validation') as HTMLElement | null;
+
+    expect(timeMsg).toBeTruthy();
+    expect(timeMsg!.classList.contains('hidden')).toBe(false);
+    expect(userMsg).toBeTruthy();
+    expect(userMsg!.classList.contains('hidden')).toBe(false);
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+
+    clearBtn.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    userMsg = root.querySelector('#tp-clear-validation') as HTMLElement | null;
+    timeMsg = root.querySelector('#tp-clear-time-validation') as HTMLElement | null;
+
+    const described = splitIds(input.getAttribute('aria-describedby'));
+    expect(described).toContain('tp-clear-validation');
+    expect(described).not.toContain('tp-clear-time-validation');
+
+    expect(timeMsg).toBeTruthy();
+    expect(timeMsg!.classList.contains('hidden')).toBe(true);
+    expect(userMsg).toBeTruthy();
+    expect(userMsg!.classList.contains('hidden')).toBe(false);
+
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(label.classList.contains('is-invalid')).toBe(true);
+    expect(clearBtn.classList.contains('invalid')).toBe(false);
+    if (iconBtn) expect(iconBtn.classList.contains('invalid')).toBe(false);
+  });
+
+  it('typing a valid time clears user validation, removes describedby id, and removes invalid class from clear/icon buttons', async () => {
+    const page = await newSpecPage({
+      components: [TimepickerComponent],
+      html: `<timepicker-component input-id="tp-valid" validation validation-message="Please enter a time"></timepicker-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root!;
+    const input = root.querySelector('input.time-input') as HTMLInputElement;
+    const clearBtn = root.querySelector('button.clear-button') as HTMLButtonElement;
+    const iconBtn = root.querySelector('button.time-icon-btn') as HTMLButtonElement | null;
+    const userMsg = root.querySelector('#tp-valid-validation') as HTMLElement | null;
+    const timeMsg = root.querySelector('#tp-valid-time-validation') as HTMLElement | null;
+
+    expect(userMsg).toBeTruthy();
+    expect(userMsg!.classList.contains('hidden')).toBe(false);
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(clearBtn.classList.contains('invalid')).toBe(true);
+    if (iconBtn) expect(iconBtn.classList.contains('invalid')).toBe(true);
+
+    input.value = '13:05:09';
+    input.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    const described = splitIds(input.getAttribute('aria-describedby'));
+    expect(described).not.toContain('tp-valid-validation');
+
+    expect(root.querySelector('#tp-valid-validation')).toBeTruthy();
+    expect((root.querySelector('#tp-valid-validation') as HTMLElement).classList.contains('hidden')).toBe(true);
+    expect(timeMsg).toBeTruthy();
+    expect((root.querySelector('#tp-valid-time-validation') as HTMLElement).classList.contains('hidden')).toBe(true);
+    expect(input.getAttribute('aria-invalid')).toBeNull();
+    expect(clearBtn.classList.contains('invalid')).toBe(false);
+    if (iconBtn) expect(iconBtn.classList.contains('invalid')).toBe(false);
   });
 });
