@@ -294,6 +294,10 @@ export namespace Components {
         /**
           * @default false
          */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
         "removeBtnBorder": boolean;
         /**
           * @default false
@@ -467,6 +471,10 @@ export namespace Components {
         /**
           * @default false
          */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
         "removeBtnBorder": boolean;
         /**
           * @default false
@@ -505,9 +513,6 @@ export namespace Components {
     }
     interface AutocompleteSingle {
         "ariaDescribedby"?: string;
-        /**
-          * Standard ARIA naming hooks
-         */
         "ariaLabel"?: string;
         "ariaLabelledby"?: string;
         /**
@@ -568,12 +573,10 @@ export namespace Components {
          */
         "labelAlign": '' | 'right';
         /**
-          * Back-compat numeric columns
           * @default 2
          */
         "labelCol": number;
         /**
-          * Responsive column class specs
           * @default ''
          */
         "labelCols": string;
@@ -596,6 +599,10 @@ export namespace Components {
         /**
           * @default false
          */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
         "removeClearBtn": boolean;
         /**
           * @default false
@@ -610,7 +617,6 @@ export namespace Components {
          */
         "type": string;
         /**
-          * Validation controlled externally (prop remains source of truth)
           * @default false
          */
         "validation": boolean;
@@ -619,7 +625,6 @@ export namespace Components {
          */
         "validationMessage": string;
         /**
-          * Value controlled externally (don’t mutate the prop)
           * @default ''
          */
         "value": string;
@@ -1106,7 +1111,7 @@ export namespace Components {
         /**
           * @default []
          */
-        "groupOptions": any;
+        "groupOptions": CheckboxOption[] | string;
         /**
           * @default ''
          */
@@ -1204,7 +1209,7 @@ export namespace Components {
          */
         "inputId": string;
         /**
-          * @default ' - '
+          * @default '-'
          */
         "joinBy": string;
         /**
@@ -1230,6 +1235,10 @@ export namespace Components {
          */
         "labelHidden": boolean;
         /**
+          * @default ''
+         */
+        "labelSize": '' | 'sm' | 'lg';
+        /**
           * External placeholder prop (immutable). We derive a default into state.
          */
         "placeholder"?: string;
@@ -1251,6 +1260,10 @@ export namespace Components {
           * @default false
          */
         "rangePicker": boolean;
+        /**
+          * @default false
+         */
+        "readOnly": boolean;
         /**
           * @default false
          */
@@ -1346,7 +1359,7 @@ export namespace Components {
          */
         "isTwentyFourHourFormat": boolean;
         /**
-          * @default ' - '
+          * @default '-'
          */
         "joinBy": string;
         /**
@@ -1386,6 +1399,10 @@ export namespace Components {
           * @default false
          */
         "rangeTimePicker": boolean;
+        /**
+          * @default false
+         */
+        "readOnly": boolean;
         /**
           * @default false
          */
@@ -1441,11 +1458,6 @@ export namespace Components {
           * @default true
          */
         "appendProp": boolean;
-        /**
-          * NEW: Autocomplete
-          * @default 'off'
-         */
-        "autocomplete": AutocompleteValue;
         /**
           * @default false
          */
@@ -1545,6 +1557,10 @@ export namespace Components {
           * @default false
          */
         "prependProp": boolean;
+        /**
+          * @default false
+         */
+        "readOnly": boolean;
         /**
           * Validation
           * @default false
@@ -2513,6 +2529,10 @@ export namespace Components {
         /**
           * @default false
          */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
         "removeBtnBorder": boolean;
         /**
           * @default false
@@ -2676,6 +2696,10 @@ export namespace Components {
         /**
           * @default false
          */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
         "removeClearBtn": boolean;
         "removeItem": (value: string) => Promise<void>;
         /**
@@ -2787,6 +2811,10 @@ export namespace Components {
          */
         "options": string[];
         "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "readOnly": boolean;
         /**
           * @default false
          */
@@ -3684,7 +3712,6 @@ export namespace Components {
          */
         "disabled": boolean;
         /**
-          * Native <select size>; useful for visually taller lists (single or multiple)
           * @default null
          */
         "fieldHeight": number;
@@ -3713,12 +3740,10 @@ export namespace Components {
          */
         "labelAlign": '' | 'right';
         /**
-          * Legacy numeric cols (fallback)
           * @default 2
          */
         "labelCol": number;
         /**
-          * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")
           * @default ''
          */
         "labelCols": string;
@@ -3741,9 +3766,12 @@ export namespace Components {
         /**
           * @default false
          */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
         "required": boolean;
         /**
-          * ID attribute for the <select> (Lit: selectFieldId)
           * @default ''
          */
         "selectFieldId": string;
@@ -3764,12 +3792,10 @@ export namespace Components {
          */
         "validationMessage": string;
         /**
-          * Single: string; Multiple: string[]
           * @default 'none'
          */
         "value": string | string[];
         /**
-          * When used with a table, sync with external sort events
           * @default false
          */
         "withTable": boolean;
@@ -6049,6 +6075,10 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
         "removeBtnBorder"?: boolean;
         /**
           * @default false
@@ -6223,6 +6253,10 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
         "removeBtnBorder"?: boolean;
         /**
           * @default false
@@ -6256,9 +6290,6 @@ declare namespace LocalJSX {
     }
     interface AutocompleteSingle {
         "ariaDescribedby"?: string;
-        /**
-          * Standard ARIA naming hooks
-         */
         "ariaLabel"?: string;
         "ariaLabelledby"?: string;
         /**
@@ -6319,12 +6350,10 @@ declare namespace LocalJSX {
          */
         "labelAlign"?: '' | 'right';
         /**
-          * Back-compat numeric columns
           * @default 2
          */
         "labelCol"?: number;
         /**
-          * Responsive column class specs
           * @default ''
          */
         "labelCols"?: string;
@@ -6351,6 +6380,10 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
         "removeClearBtn"?: boolean;
         /**
           * @default false
@@ -6365,7 +6398,6 @@ declare namespace LocalJSX {
          */
         "type"?: string;
         /**
-          * Validation controlled externally (prop remains source of truth)
           * @default false
          */
         "validation"?: boolean;
@@ -6374,7 +6406,6 @@ declare namespace LocalJSX {
          */
         "validationMessage"?: string;
         /**
-          * Value controlled externally (don’t mutate the prop)
           * @default ''
          */
         "value"?: string;
@@ -6866,7 +6897,7 @@ declare namespace LocalJSX {
         /**
           * @default []
          */
-        "groupOptions"?: any;
+        "groupOptions"?: CheckboxOption[] | string;
         /**
           * @default ''
          */
@@ -6962,7 +6993,7 @@ declare namespace LocalJSX {
          */
         "inputId"?: string;
         /**
-          * @default ' - '
+          * @default '-'
          */
         "joinBy"?: string;
         /**
@@ -6987,6 +7018,10 @@ declare namespace LocalJSX {
           * @default false
          */
         "labelHidden"?: boolean;
+        /**
+          * @default ''
+         */
+        "labelSize"?: '' | 'sm' | 'lg';
         /**
           * Emits both human-readable (matches input/display) and ISO (YYYY-MM-DD) values
          */
@@ -7018,6 +7053,10 @@ declare namespace LocalJSX {
           * @default false
          */
         "rangePicker"?: boolean;
+        /**
+          * @default false
+         */
+        "readOnly"?: boolean;
         /**
           * @default false
          */
@@ -7112,7 +7151,7 @@ declare namespace LocalJSX {
          */
         "isTwentyFourHourFormat"?: boolean;
         /**
-          * @default ' - '
+          * @default '-'
          */
         "joinBy"?: string;
         /**
@@ -7163,6 +7202,10 @@ declare namespace LocalJSX {
           * @default false
          */
         "rangeTimePicker"?: boolean;
+        /**
+          * @default false
+         */
+        "readOnly"?: boolean;
         /**
           * @default false
          */
@@ -7218,11 +7261,6 @@ declare namespace LocalJSX {
           * @default true
          */
         "appendProp"?: boolean;
-        /**
-          * NEW: Autocomplete
-          * @default 'off'
-         */
-        "autocomplete"?: AutocompleteValue;
         /**
           * @default false
          */
@@ -7323,6 +7361,10 @@ declare namespace LocalJSX {
           * @default false
          */
         "prependProp"?: boolean;
+        /**
+          * @default false
+         */
+        "readOnly"?: boolean;
         /**
           * Validation
           * @default false
@@ -8302,6 +8344,10 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
         "removeBtnBorder"?: boolean;
         /**
           * @default false
@@ -8467,6 +8513,10 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
         "removeClearBtn"?: boolean;
         /**
           * @default false
@@ -8580,6 +8630,10 @@ declare namespace LocalJSX {
          */
         "options"?: string[];
         "placeholder"?: string;
+        /**
+          * @default false
+         */
+        "readOnly"?: boolean;
         /**
           * @default false
          */
@@ -9485,7 +9539,6 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
-          * Native <select size>; useful for visually taller lists (single or multiple)
           * @default null
          */
         "fieldHeight"?: number;
@@ -9514,12 +9567,10 @@ declare namespace LocalJSX {
          */
         "labelAlign"?: '' | 'right';
         /**
-          * Legacy numeric cols (fallback)
           * @default 2
          */
         "labelCol"?: number;
         /**
-          * Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4")
           * @default ''
          */
         "labelCols"?: string;
@@ -9543,9 +9594,12 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
         "required"?: boolean;
         /**
-          * ID attribute for the <select> (Lit: selectFieldId)
           * @default ''
          */
         "selectFieldId"?: string;
@@ -9566,12 +9620,10 @@ declare namespace LocalJSX {
          */
         "validationMessage"?: string;
         /**
-          * Single: string; Multiple: string[]
           * @default 'none'
          */
         "value"?: string | string[];
         /**
-          * When used with a table, sync with external sort events
           * @default false
          */
         "withTable"?: boolean;
@@ -10656,6 +10708,7 @@ declare namespace LocalJSX {
         "placeholder": string;
         "devMode": boolean;
         "disabled": boolean;
+        "readOnly": boolean;
         "formId": string;
         "formLayout": '' | 'horizontal' | 'inline';
         "error": boolean;
@@ -10698,6 +10751,7 @@ declare namespace LocalJSX {
         "placeholder": string;
         "devMode": boolean;
         "disabled": boolean;
+        "readOnly": boolean;
         "formId": string;
         "formLayout": '' | 'horizontal' | 'inline';
         "error": boolean;
@@ -10739,6 +10793,7 @@ declare namespace LocalJSX {
         "placeholder": string;
         "devMode": boolean;
         "disabled": boolean;
+        "readOnly": boolean;
         "formId": string;
         "formLayout": '' | 'horizontal' | 'inline';
         "error": boolean;
@@ -10887,7 +10942,7 @@ declare namespace LocalJSX {
         "checkboxGroup": boolean;
         "customCheckbox": boolean;
         "customCheckboxGroup": boolean;
-        "groupOptions": string;
+        "groupOptions": CheckboxOption[] | string;
         "groupTitle": string;
         "groupTitleSize": string;
         "inline": boolean;
@@ -10915,7 +10970,9 @@ declare namespace LocalJSX {
         "prependProp": boolean;
         "prependId": string;
         "disabled": boolean;
+        "readOnly": boolean;
         "label": string;
+        "labelSize": '' | 'sm' | 'lg';
         "labelAlign": '' | 'right';
         "labelHidden": boolean;
         "formLayout": '' | 'horizontal' | 'inline';
@@ -10948,6 +11005,7 @@ declare namespace LocalJSX {
         "prependProp": boolean;
         "prependId": string;
         "disabled": boolean;
+        "readOnly": boolean;
         "label": string;
         "labelAlign": '' | 'right';
         "labelHidden": boolean;
@@ -10979,6 +11037,7 @@ declare namespace LocalJSX {
         "currentYear": number;
         "dateFormat": DateFormat;
         "disabled": boolean;
+        "readOnly": boolean;
         "displayContextExamples": boolean;
         "dropdownOpen": boolean;
         "formLayout": '' | 'horizontal' | 'inline';
@@ -10990,7 +11049,6 @@ declare namespace LocalJSX {
         "labelHidden": boolean;
         "labelSize": '' | 'sm' | 'lg';
         "placeholder": string;
-        "autocomplete": AutocompleteValue;
         "plumage": boolean;
         "prependProp": boolean;
         "prependId": string;
@@ -11243,6 +11301,7 @@ declare namespace LocalJSX {
         "placeholder": string;
         "devMode": boolean;
         "disabled": boolean;
+        "readOnly": boolean;
         "formId": string;
         "formLayout": '' | 'horizontal' | 'inline';
         "error": boolean;
@@ -11282,6 +11341,7 @@ declare namespace LocalJSX {
         "placeholder": string;
         "devMode": boolean;
         "disabled": boolean;
+        "readOnly": boolean;
         "formId": string;
         "formLayout": '' | 'horizontal' | 'inline';
         "error": boolean;
@@ -11319,6 +11379,7 @@ declare namespace LocalJSX {
         "placeholder": string;
         "devMode": boolean;
         "disabled": boolean;
+        "readOnly": boolean;
         "formId": string;
         "formLayout": '' | 'horizontal' | 'inline';
         "error": boolean;
@@ -11627,6 +11688,7 @@ declare namespace LocalJSX {
         "defaultTxt": string;
         "defaultOptionTxt": string;
         "disabled": boolean;
+        "readOnly": boolean;
         "fieldHeight": number;
         "formLayout": '' | 'horizontal' | 'inline';
         "formId": string;

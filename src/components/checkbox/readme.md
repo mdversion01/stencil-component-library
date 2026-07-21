@@ -7,26 +7,26 @@
 
 ## Properties
 
-| Property              | Attribute               | Description | Type      | Default |
-| --------------------- | ----------------------- | ----------- | --------- | ------- |
-| `checkboxGroup`       | `checkbox-group`        |             | `boolean` | `false` |
-| `checked`             | `checked`               |             | `boolean` | `false` |
-| `customCheckbox`      | `custom-checkbox`       |             | `boolean` | `false` |
-| `customCheckboxGroup` | `custom-checkbox-group` |             | `boolean` | `false` |
-| `disabled`            | `disabled`              |             | `boolean` | `false` |
-| `groupOptions`        | `group-options`         |             | `any`     | `[]`    |
-| `groupTitle`          | `group-title`           |             | `string`  | `''`    |
-| `groupTitleSize`      | `group-title-size`      |             | `string`  | `''`    |
-| `inline`              | `inline`                |             | `boolean` | `false` |
-| `inputId`             | `input-id`              |             | `string`  | `''`    |
-| `labelTxt`            | `label-txt`             |             | `string`  | `''`    |
-| `name`                | `name`                  |             | `string`  | `''`    |
-| `noPadding`           | `no-padding`            |             | `boolean` | `false` |
-| `required`            | `required`              |             | `boolean` | `false` |
-| `size`                | `size`                  |             | `string`  | `''`    |
-| `validation`          | `validation`            |             | `boolean` | `false` |
-| `validationMsg`       | `validation-msg`        |             | `string`  | `''`    |
-| `value`               | `value`                 |             | `string`  | `''`    |
+| Property              | Attribute               | Description | Type                         | Default |
+| --------------------- | ----------------------- | ----------- | ---------------------------- | ------- |
+| `checkboxGroup`       | `checkbox-group`        |             | `boolean`                    | `false` |
+| `checked`             | `checked`               |             | `boolean`                    | `false` |
+| `customCheckbox`      | `custom-checkbox`       |             | `boolean`                    | `false` |
+| `customCheckboxGroup` | `custom-checkbox-group` |             | `boolean`                    | `false` |
+| `disabled`            | `disabled`              |             | `boolean`                    | `false` |
+| `groupOptions`        | `group-options`         |             | `CheckboxOption[] \| string` | `[]`    |
+| `groupTitle`          | `group-title`           |             | `string`                     | `''`    |
+| `groupTitleSize`      | `group-title-size`      |             | `string`                     | `''`    |
+| `inline`              | `inline`                |             | `boolean`                    | `false` |
+| `inputId`             | `input-id`              |             | `string`                     | `''`    |
+| `labelTxt`            | `label-txt`             |             | `string`                     | `''`    |
+| `name`                | `name`                  |             | `string`                     | `''`    |
+| `noPadding`           | `no-padding`            |             | `boolean`                    | `false` |
+| `required`            | `required`              |             | `boolean`                    | `false` |
+| `size`                | `size`                  |             | `string`                     | `''`    |
+| `validation`          | `validation`            |             | `boolean`                    | `false` |
+| `validationMsg`       | `validation-msg`        |             | `string`                     | `''`    |
+| `value`               | `value`                 |             | `string`                     | `''`    |
 
 
 ## Events

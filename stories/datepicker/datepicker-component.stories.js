@@ -13,6 +13,7 @@ const baseArgs = {
   calendar: false,
   dateFormat: 'YYYY-MM-DD',
   disabled: false,
+  readOnly: false,
   displayContextExamples: false,
   dropdownOpen: false,
   formLayout: '',
@@ -35,6 +36,7 @@ const baseArgs = {
   validationAttr: false,
   validationMessage: 'Please select a date.',
   warningMessage: '',
+  value: '',
 };
 
 const renderTemplate = args => buildEl(args, action);
@@ -47,7 +49,7 @@ export default {
       page: DatepickerDocs,
       description: {
         component:
-          'A datepicker input with an optional attached calendar view. Supports Bootstrap-style layout and sizing, validation states, and custom formatting.',
+          'A datepicker input with an optional attached calendar view. Supports Bootstrap-style layout and sizing, validation states, disabled/read-only modes, externally supplied values, and custom formatting.',
       },
       source: {
         language: 'html',
@@ -58,49 +60,92 @@ export default {
   argTypes: {
     calendar: {
       control: 'boolean',
-      table: { defaultValue: { summary: false }, category: 'Core' },
+      table: {
+        defaultValue: { summary: false },
+        category: 'Core',
+      },
       description: 'Standalone calendar view (no input group)',
     },
     plumage: {
       control: 'boolean',
-      table: { defaultValue: { summary: false }, category: 'Core' },
+      table: {
+        defaultValue: { summary: false },
+        category: 'Core',
+      },
       description: 'Render using Plumage styling',
     },
     disabled: {
       control: 'boolean',
-      table: { defaultValue: { summary: false }, category: 'Core' },
+      table: {
+        defaultValue: { summary: false },
+        category: 'Core',
+      },
       description: 'Disable the input and calendar button',
+    },
+    readOnly: {
+      control: 'boolean',
+      name: 'read-only',
+      table: {
+        defaultValue: { summary: false },
+        category: 'Core',
+      },
+      description:
+        'Make the input read-only and disable calendar toggles while preserving the field value',
     },
     required: {
       control: 'boolean',
-      table: { defaultValue: { summary: false }, category: 'Core' },
+      table: {
+        defaultValue: { summary: false },
+        category: 'Validation',
+      },
       description: 'Mark the input as required',
     },
     autocomplete: {
       control: { type: 'select' },
-      options: ['off', 'bday', 'bday-day', 'bday-month', 'bday-year'],
-      table: { defaultValue: { summary: 'off' }, category: 'Core' },
+      options: [
+        'off',
+        'bday',
+        'bday-day',
+        'bday-month',
+        'bday-year',
+      ],
+      table: {
+        defaultValue: { summary: 'off' },
+        category: 'Core',
+      },
       description:
         'HTML autocomplete value for the input. Use "bday" / "bday-*" when the date represents a birthday. Default is "off".',
     },
     validationAttr: {
       control: 'boolean',
       name: 'validation-attr',
-      table: { defaultValue: { summary: false }, category: 'Validation' },
+      table: {
+        defaultValue: { summary: false },
+        category: 'Validation',
+      },
       description:
         'Turns on validation mode by adding the "validation" attribute. Component only validates if the attribute is present.',
     },
     validationMessage: {
       control: 'text',
       name: 'validation-message',
-      table: { defaultValue: { summary: 'Please select a date.' }, category: 'Validation' },
+      table: {
+        defaultValue: {
+          summary: 'Please select a date.',
+        },
+        category: 'Validation',
+      },
       description: 'Message displayed when validation fails',
     },
     warningMessage: {
       control: 'text',
       name: 'warning-message',
-      table: { defaultValue: { summary: '' }, category: 'Validation' },
-      description: 'Optional warning message (displays with warning visuals)',
+      table: {
+        defaultValue: { summary: '' },
+        category: 'Validation',
+      },
+      description:
+        'Optional warning message (displays with warning visuals)',
     },
     formLayout: {
       control: { type: 'select' },
@@ -122,15 +167,24 @@ export default {
       options: ['', 'right'],
       name: 'label-align',
       table: { category: 'Layout' },
-      description: 'Alignment for the label text (only applies when label is visible)',
+      description:
+        'Alignment for the label text (only applies when label is visible)',
     },
     labelHidden: {
       control: 'boolean',
       name: 'label-hidden',
-      table: { category: 'Layout', defaultValue: { summary: false } },
-      description: 'Visually hide the label (but keep it accessible to screen readers)',
+      table: {
+        category: 'Layout',
+        defaultValue: { summary: false },
+      },
+      description:
+        'Visually hide the label (but keep it accessible to screen readers)',
     },
-    label: { control: 'text', table: { category: 'Layout' }, description: 'Label text for the input' },
+    label: {
+      control: 'text',
+      table: { category: 'Layout' },
+      description: 'Label text for the input',
+    },
     labelSize: {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
@@ -143,9 +197,13 @@ export default {
       min: 0,
       max: 12,
       step: 1,
-      table: { category: 'Layout', subcategory: 'Grid' },
+      table: {
+        category: 'Layout',
+        subcategory: 'Grid',
+      },
       name: 'label-col',
-      description: 'Number of grid columns for the label (horizontal layout only)',
+      description:
+        'Number of grid columns for the label (horizontal layout only)',
     },
     inputCol: {
       control: 'number',
@@ -153,62 +211,113 @@ export default {
       max: 12,
       step: 1,
       name: 'input-col',
-      table: { category: 'Layout', subcategory: 'Grid' },
-      description: 'Number of grid columns for the input (horizontal layout only)',
+      table: {
+        category: 'Layout',
+        subcategory: 'Grid',
+      },
+      description:
+        'Number of grid columns for the input (horizontal layout only)',
     },
     labelCols: {
       control: 'text',
       name: 'label-cols',
-      table: { category: 'Layout', subcategory: 'Grid' },
-      description: 'e.g. "col-sm-3 col-md-4" or "xs-12 sm-6 md-4"',
+      table: {
+        category: 'Layout',
+        subcategory: 'Grid',
+      },
+      description:
+        'e.g. "col-sm-3 col-md-4" or "xs-12 sm-6 md-4"',
     },
     inputCols: {
       control: 'text',
       name: 'input-cols',
-      table: { category: 'Layout', subcategory: 'Grid' },
-      description: 'e.g. "col-sm-9 col-md-8" or "xs-12 sm-6 md-8"',
+      table: {
+        category: 'Layout',
+        subcategory: 'Grid',
+      },
+      description:
+        'e.g. "col-sm-9 col-md-8" or "xs-12 sm-6 md-8"',
     },
     prepend: {
       control: 'boolean',
-      table: { category: 'Layout', defaultValue: { summary: false } },
+      table: {
+        category: 'Layout',
+        defaultValue: { summary: false },
+      },
       description: 'Show calendar button before input',
     },
     append: {
       control: 'boolean',
-      table: { category: 'Layout', defaultValue: { summary: true } },
+      table: {
+        category: 'Layout',
+        defaultValue: { summary: true },
+      },
       description: 'Show calendar button after input',
     },
-    icon: { control: 'text', table: { category: 'Layout' }, description: 'Icon class for the calendar button' },
+    icon: {
+      control: 'text',
+      table: { category: 'Layout' },
+      description: 'Icon class for the calendar button',
+    },
     dateFormat: {
       control: { type: 'select' },
       options: ['YYYY-MM-DD', 'MM-DD-YYYY'],
       name: 'date-format',
-      table: { category: 'Formatting', defaultValue: { summary: 'YYYY-MM-DD' } },
-      description: 'Date format used for parsing and displaying the selected date.',
+      table: {
+        category: 'Formatting',
+        defaultValue: { summary: 'YYYY-MM-DD' },
+      },
+      description:
+        'Date format used for parsing and displaying the selected date.',
     },
     placeholder: {
       control: 'text',
-      table: { category: 'Formatting', defaultValue: { summary: 'YYYY-MM-DD' } },
-      description: 'Hint shown in the input (defaults to dateFormat if not provided)',
+      table: {
+        category: 'Formatting',
+        defaultValue: { summary: 'YYYY-MM-DD' },
+      },
+      description:
+        'Hint shown in the input (defaults to dateFormat if not provided)',
+    },
+    value: {
+      control: 'text',
+      table: {
+        category: 'Value',
+        defaultValue: { summary: '' },
+      },
+      description:
+        'Initial or externally controlled date value. The value must match dateFormat, such as "2026-07-20" or "07-20-2026".',
     },
     inputId: {
       control: 'text',
       name: 'input-id',
-      table: { category: 'Identity', defaultValue: { summary: 'datepicker' } },
+      table: {
+        category: 'Identity',
+        defaultValue: { summary: 'datepicker' },
+      },
       description:
         'ID for the input element. If you omit the input-id attribute entirely, the component will generate a unique ID per instance.',
     },
     dropdownOpen: {
       control: 'boolean',
       name: 'dropdown-open',
-      table: { disable: true, category: 'Demo Helpers', defaultValue: { summary: false } },
-      description: 'Open the calendar dropdown (for demonstration purposes)',
+      table: {
+        disable: true,
+        category: 'Demo Helpers',
+        defaultValue: { summary: false },
+      },
+      description:
+        'Open the calendar dropdown (for demonstration purposes)',
     },
     displayContextExamples: {
       control: 'boolean',
       name: 'display-context-examples',
-      table: { category: 'Demo Helpers', defaultValue: { summary: false } },
-      description: 'Display context examples (for demonstration purposes)',
+      table: {
+        category: 'Demo Helpers',
+        defaultValue: { summary: false },
+      },
+      description:
+        'Display context examples (for demonstration purposes)',
     },
   },
   args: {
@@ -229,7 +338,30 @@ export const Basic = {
   parameters: {
     docs: {
       description: {
-        story: 'A basic datepicker with default settings. Click the calendar button to select a date.',
+        story:
+          'A basic datepicker with default settings. Click the calendar button to select a date.',
+      },
+      story: { height: '430px' },
+    },
+  },
+};
+
+export const Value = {
+  name: 'Initial Value',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    label: 'Scheduled Date',
+    value: '2026-07-20',
+    inputId: 'datepicker-value',
+    labelCol: '',
+    inputCol: '',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A datepicker initialized with a value. The component parses the value using dateFormat, displays it in the input, and opens the calendar to the selected month.',
       },
       story: { height: '430px' },
     },
@@ -250,7 +382,8 @@ export const Plumage = {
   parameters: {
     docs: {
       description: {
-        story: 'Datepicker rendered with Plumage styling. Note the different colors and focus styles.',
+        story:
+          'Datepicker rendered with Plumage styling. Note the different colors and focus styles.',
       },
       story: { height: '430px' },
     },
@@ -272,7 +405,8 @@ export const HorizontalLayout = {
   parameters: {
     docs: {
       description: {
-        story: 'Datepicker with a horizontal form layout. Labels and inputs are aligned side by side.',
+        story:
+          'Datepicker with a horizontal form layout. Labels and inputs are aligned side by side.',
       },
       story: { height: '430px' },
     },
@@ -295,7 +429,8 @@ export const InlineLayout = {
   parameters: {
     docs: {
       description: {
-        story: 'Datepicker with an inline form layout. Labels and inputs are aligned inline.',
+        story:
+          'Datepicker with an inline form layout. Labels and inputs are aligned inline.',
       },
       story: { height: '430px' },
     },
@@ -317,7 +452,8 @@ export const WithValidation = {
   parameters: {
     docs: {
       description: {
-        story: 'Datepicker with validation enabled. Try leaving the field empty then blurring to see the validation message.',
+        story:
+          'Datepicker with validation enabled. Try leaving the field empty then blurring to see the validation message.',
       },
       story: { height: '430px' },
     },
@@ -338,7 +474,8 @@ export const DateFormat = {
   parameters: {
     docs: {
       description: {
-        story: 'Datepicker using MM-DD-YYYY format. The input and calendar will use the specified format for displaying and parsing dates.',
+        story:
+          'Datepicker using MM-DD-YYYY format. The input and calendar use the specified format for displaying and parsing dates.',
       },
       story: { height: '430px' },
     },
@@ -351,13 +488,37 @@ export const Disabled = {
   args: {
     ...baseArgs,
     disabled: true,
+    label: 'Disabled Date',
+    value: '2026-07-20',
     labelCol: '',
     inputCol: '',
   },
   parameters: {
     docs: {
       description: {
-        story: 'Datepicker in a disabled state. The input and calendar are not interactive.',
+        story:
+          'Datepicker in a disabled state. The value remains visible, but the input and calendar are not interactive.',
+      },
+    },
+  },
+};
+
+export const ReadOnly = {
+  name: 'Read Only',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    readOnly: true,
+    label: 'Read Only Date',
+    value: '2026-07-20',
+    labelCol: '',
+    inputCol: '',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Datepicker in a read-only state. The value remains visible and read-only, and the calendar toggle is not interactive.',
       },
     },
   },
@@ -376,7 +537,8 @@ export const Sizes = {
   parameters: {
     docs: {
       description: {
-        story: 'Datepicker with different size options. Try changing the size to see the effect.',
+        story:
+          'Datepicker with different size options. Try changing the size to see the effect.',
       },
       story: { height: '430px' },
     },
@@ -397,7 +559,8 @@ export const PrependIcon = {
   parameters: {
     docs: {
       description: {
-        story: 'Datepicker with a prepend icon. The icon appears before the input field.',
+        story:
+          'Datepicker with a prepend icon. The icon appears before the input field.',
       },
       story: { height: '430px' },
     },
@@ -418,7 +581,8 @@ export const StandaloneCalendar = {
   parameters: {
     docs: {
       description: {
-        story: 'Datepicker displayed as a standalone calendar. No input field is shown.',
+        story:
+          'Datepicker displayed as a standalone calendar. No input field is shown.',
       },
     },
   },
@@ -436,7 +600,8 @@ export const AccessibilityMatrix = {
       <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
       <div style="font-size:13px; color:#444;">
         Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs.
-        Also reports whether <code>aria-labelledby</code> / <code>aria-describedby</code> resolve to real elements and whether help text is outside the dialog.
+        Also reports whether <code>aria-labelledby</code> / <code>aria-describedby</code> resolve to real elements,
+        whether help text is outside the dialog, and the current input value.
       </div>
     `;
     root.appendChild(intro);
@@ -444,36 +609,110 @@ export const AccessibilityMatrix = {
     const rows = [
       {
         title: 'Default',
-        args: { label: 'Date', formLayout: '', disabled: false, required: false, validationAttr: false, autocomplete: 'off' },
+        args: {
+          label: 'Date',
+          formLayout: '',
+          disabled: false,
+          readOnly: false,
+          required: false,
+          validationAttr: false,
+          autocomplete: 'off',
+          value: '',
+        },
+        forceInvalid: false,
+      },
+      {
+        title: 'With Value',
+        args: {
+          label: 'Date',
+          formLayout: '',
+          disabled: false,
+          readOnly: false,
+          required: false,
+          validationAttr: false,
+          autocomplete: 'off',
+          value: '2026-07-20',
+        },
         forceInvalid: false,
       },
       {
         title: 'Inline',
-        args: { label: 'Date', formLayout: 'inline', disabled: false, required: false, validationAttr: false, autocomplete: 'off' },
+        args: {
+          label: 'Date',
+          formLayout: 'inline',
+          disabled: false,
+          readOnly: false,
+          required: false,
+          validationAttr: false,
+          autocomplete: 'off',
+          value: '',
+        },
         forceInvalid: false,
       },
       {
         title: 'Horizontal',
-        args: { label: 'Date', formLayout: 'horizontal', labelCol: 3, inputCol: 9, disabled: false, required: false, validationAttr: false, autocomplete: 'off' },
+        args: {
+          label: 'Date',
+          formLayout: 'horizontal',
+          labelCol: 3,
+          inputCol: 9,
+          disabled: false,
+          readOnly: false,
+          required: false,
+          validationAttr: false,
+          autocomplete: 'off',
+          value: '',
+        },
         forceInvalid: false,
       },
       {
         title: 'Validation / Error (required + validation attr)',
-        args: { label: 'Date', formLayout: '', required: true, validationAttr: true, validationMessage: 'Date is required.', autocomplete: 'off' },
+        args: {
+          label: 'Date',
+          formLayout: '',
+          required: true,
+          validationAttr: true,
+          validationMessage: 'Date is required.',
+          autocomplete: 'off',
+          value: '',
+        },
         forceInvalid: true,
       },
       {
         title: 'Disabled',
-        args: { label: 'Date', formLayout: '', disabled: true, required: false, validationAttr: false, autocomplete: 'off' },
+        args: {
+          label: 'Date',
+          formLayout: '',
+          disabled: true,
+          readOnly: false,
+          required: false,
+          validationAttr: false,
+          autocomplete: 'off',
+          value: '2026-07-20',
+        },
+        forceInvalid: false,
+      },
+      {
+        title: 'Read Only',
+        args: {
+          label: 'Date',
+          formLayout: '',
+          disabled: false,
+          readOnly: true,
+          required: false,
+          validationAttr: false,
+          autocomplete: 'off',
+          value: '2026-07-20',
+        },
         forceInvalid: false,
       },
     ];
 
-    rows.forEach((row, idx) => {
+    rows.forEach((row, index) => {
       root.appendChild(
         renderMatrixRow({
           ...row,
-          idSuffix: String(idx + 1),
+          idSuffix: String(index + 1),
           buildEl,
           action,
         }),
@@ -486,9 +725,9 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Matrix of key states (default/inline/horizontal, validation/error, disabled). Each row prints computed role/aria/ids and whether ARIA references resolve.',
+          'Matrix of key states including a populated value, default/inline/horizontal layouts, validation/error, disabled, and read-only. Each row prints computed role/aria/IDs, the input value, and whether ARIA references resolve.',
       },
-      story: { height: '1100px' },
+      story: { height: '1480px' },
     },
     controls: { disable: true },
   },

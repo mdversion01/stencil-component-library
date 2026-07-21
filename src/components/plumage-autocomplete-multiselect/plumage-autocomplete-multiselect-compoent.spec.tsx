@@ -11,7 +11,6 @@ function getInput(root: HTMLElement): HTMLInputElement {
 async function typeIn(page: any, root: HTMLElement, value: string) {
   const input = getInput(root);
   input.value = value;
-  // Avoid InputEvent (not defined in JSDOM)
   input.dispatchEvent(new Event('input', { bubbles: true }));
   await page.waitForChanges();
 }
@@ -22,14 +21,20 @@ async function keydown(page: any, root: HTMLElement, key: string) {
   await page.waitForChanges();
 }
 
+function getDropdownItems(root: HTMLElement): HTMLElement[] {
+  return Array.from(root.querySelectorAll('.autocomplete-dropdown-item')) as HTMLElement[];
+}
+
 describe('plumage-autocomplete-multiselect-component', () => {
   test('renders (stacked) and matches snapshot', async () => {
     const page = await newSpecPage({
       components: [PlumageAutocompleteMultiselectComponent],
-      html: `<plumage-autocomplete-multiselect-component
-                input-id="Fruits"
-                label="Fruits"
-              ></plumage-autocomplete-multiselect-component>`,
+      html: `
+        <plumage-autocomplete-multiselect-component
+          input-id="Fruits"
+          label="Fruits"
+        ></plumage-autocomplete-multiselect-component>
+      `,
     });
 
     expect(page.root).toBeTruthy();
@@ -39,46 +44,68 @@ describe('plumage-autocomplete-multiselect-component', () => {
   test('filters, navigates, selects via keyboard; badges render; dropdown closes', async () => {
     const page = await newSpecPage({
       components: [PlumageAutocompleteMultiselectComponent],
-      html: `<plumage-autocomplete-multiselect-component
-              input-id="Fruit"
-              label="Fruit"
-            ></plumage-autocomplete-multiselect-component>`,
+      html: `
+        <plumage-autocomplete-multiselect-component
+          input-id="Fruit"
+          label="Fruit"
+        ></plumage-autocomplete-multiselect-component>
+      `,
     });
 
-    page.root!.options = ['Apple', 'Apricot', 'Banana', 'Grape'];
+    const inst = page.rootInstance as PlumageAutocompleteMultiselectComponent;
+    inst.options = ['Apple', 'Apricot', 'Banana', 'Grape'];
     await page.waitForChanges();
 
     await typeIn(page, page.root!, 'ap');
 
-    const list = page.root!.querySelector('[role="listbox"]') as HTMLElement | null;
-    expect(list).toBeTruthy();
-    expect(list!.textContent).toContain('Apple');
-    expect(list!.textContent).toContain('Apricot');
-    expect(list!.textContent).not.toContain('Banana');
+    let input = getInput(page.root!);
+    expect(input.value).toBe('ap');
+    expect(input.getAttribute('aria-expanded')).toBe('true');
+    expect(input.getAttribute('aria-controls')).toBe('fruit-listbox');
 
-    // ArrowDown enters list and sets aria-activedescendant to role=option node id
+    let list = page.root!.querySelector('#fruit-listbox') as HTMLElement | null;
+    expect(list).toBeTruthy();
+    expect(list!.getAttribute('role')).toBe('listbox');
+    expect(list!.getAttribute('aria-multiselectable')).toBe('true');
+
+    let items = getDropdownItems(page.root!);
+    expect(items.length).toBe(3);
+    expect(items[0].textContent || '').toContain('Apple');
+    expect(items[1].textContent || '').toContain('Apricot');
+    expect(items.some(item => (item.textContent || '').includes('Banana'))).toBe(false);
+
     await keydown(page, page.root!, 'ArrowDown');
-    const input = getInput(page.root!);
+
+    input = getInput(page.root!);
     expect(input.getAttribute('aria-expanded')).toBe('true');
     expect(input.getAttribute('aria-activedescendant')).toBe('fruit-opt-0');
 
     await keydown(page, page.root!, 'Enter');
     await page.waitForChanges();
 
-    const dropdown = page.root!.querySelector('.autocomplete-dropdown');
-    expect(dropdown).toBeNull();
-
-    const selected = page.root!.querySelector('.ac-selected-items')!;
-    expect(selected.textContent).toContain('Apple');
-
+    expect(page.root!.querySelector('.autocomplete-dropdown')).toBeNull();
+    expect(page.root!.querySelector('.ac-selected-items')!.textContent).toContain('Apple');
     expect(getInput(page.root!).value).toBe('');
 
     await typeIn(page, page.root!, 'gr');
+
+    items = getDropdownItems(page.root!);
+    expect(items.length).toBe(1);
+    expect(items[0].textContent || '').toContain('Grape');
+
     await keydown(page, page.root!, 'ArrowDown');
     await keydown(page, page.root!, 'Enter');
     await page.waitForChanges();
 
-    expect(page.root!.querySelector('.ac-selected-items')!.textContent).toContain('Grape');
+    const selected = page.root!.querySelector('.ac-selected-items')!;
+    expect(selected.textContent).toContain('Apple');
+    expect(selected.textContent).toContain('Grape');
+    expect(page.root!.querySelector('.autocomplete-dropdown')).toBeNull();
+    expect(getInput(page.root!).value).toBe('');
+
+    const clearBtn = page.root!.querySelector('.clear-btn') as HTMLButtonElement | null;
+    expect(clearBtn).toBeTruthy();
+    expect(clearBtn!.getAttribute('type')).toBe('button');
 
     expect(page.root).toMatchSnapshot();
   });
@@ -86,15 +113,17 @@ describe('plumage-autocomplete-multiselect-component', () => {
   test('Enter on typed text adds a badge even when not editable; does not mutate options', async () => {
     const page = await newSpecPage({
       components: [PlumageAutocompleteMultiselectComponent],
-      html: `<plumage-autocomplete-multiselect-component
-              input-id="Tags"
-              label="Tags"
-            ></plumage-autocomplete-multiselect-component>`,
+      html: `
+        <plumage-autocomplete-multiselect-component
+          input-id="Tags"
+          label="Tags"
+        ></plumage-autocomplete-multiselect-component>
+      `,
     });
 
-    // editable defaults to false
+    const inst = page.rootInstance as PlumageAutocompleteMultiselectComponent;
     const initialOptions = ['Apple', 'Apricot', 'Banana'];
-    page.root!.options = initialOptions.slice();
+    inst.options = initialOptions.slice();
     await page.waitForChanges();
 
     await typeIn(page, page.root!, 'My Custom Tag');
@@ -102,21 +131,20 @@ describe('plumage-autocomplete-multiselect-component', () => {
     await page.waitForChanges();
 
     expect(page.root!.querySelector('.ac-selected-items')!.textContent).toContain('My Custom Tag');
-
-    // should NOT persist into options when editable=false
-    const inst = page.rootInstance as PlumageAutocompleteMultiselectComponent;
     expect(inst.options).toEqual(initialOptions);
   });
 
   test('Enter on typed text adds badge AND persists into options when editable + addNewOnEnter=true', async () => {
     const page = await newSpecPage({
       components: [PlumageAutocompleteMultiselectComponent],
-      html: `<plumage-autocomplete-multiselect-component
-              input-id="Tags2"
-              label="Tags2"
-              editable
-              add-new-on-enter
-            ></plumage-autocomplete-multiselect-component>`,
+      html: `
+        <plumage-autocomplete-multiselect-component
+          input-id="Tags2"
+          label="Tags2"
+          editable
+          add-new-on-enter
+        ></plumage-autocomplete-multiselect-component>
+      `,
     });
 
     const inst = page.rootInstance as PlumageAutocompleteMultiselectComponent;
@@ -128,34 +156,36 @@ describe('plumage-autocomplete-multiselect-component', () => {
     await page.waitForChanges();
 
     expect(page.root!.querySelector('.ac-selected-items')!.textContent).toContain('Three');
-    expect(inst.options.some((o) => o.toLowerCase() === 'three')).toBe(true);
+    expect(inst.options.some(o => o.toLowerCase() === 'three')).toBe(true);
   });
 
   test('required validation mirror toggles validationState and ARIA', async () => {
     const page = await newSpecPage({
       components: [PlumageAutocompleteMultiselectComponent],
-      html: `<plumage-autocomplete-multiselect-component
-                input-id="Pets"
-                label="Pets"
-                required
-                validation-message="Please select or type 3+ chars"
-              ></plumage-autocomplete-multiselect-component>`,
+      html: `
+        <plumage-autocomplete-multiselect-component
+          input-id="Pets"
+          label="Pets"
+          required
+          validation-message="Please select or type 3+ chars"
+        ></plumage-autocomplete-multiselect-component>
+      `,
     });
 
-    const input = getInput(page.root!);
+    let input = getInput(page.root!);
     input.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
     await page.waitForChanges();
 
     expect(page.root!.querySelector('.b-underline')!.classList.contains('invalid')).toBe(true);
     expect(getInput(page.root!).classList.contains('is-invalid')).toBe(true);
-
-    const ariadesc = getInput(page.root!).getAttribute('aria-describedby') || '';
-    expect(ariadesc).toContain('pets-validation');
-
-    // aria-invalid should reflect invalid state
     expect(getInput(page.root!).getAttribute('aria-invalid')).toBe('true');
 
+    const describedBy = getInput(page.root!).getAttribute('aria-describedby') || '';
+    expect(describedBy).toContain('pets-validation');
+
     await typeIn(page, page.root!, 'cat');
+
+    input = getInput(page.root!);
     input.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
     await page.waitForChanges();
 
@@ -168,16 +198,19 @@ describe('plumage-autocomplete-multiselect-component', () => {
   test('clear button clears badges + input and emits change', async () => {
     const page = await newSpecPage({
       components: [PlumageAutocompleteMultiselectComponent],
-      html: `<plumage-autocomplete-multiselect-component
-                input-id="Tags"
-                label="Tags"
-              ></plumage-autocomplete-multiselect-component>`,
+      html: `
+        <plumage-autocomplete-multiselect-component
+          input-id="Tags"
+          label="Tags"
+        ></plumage-autocomplete-multiselect-component>
+      `,
     });
 
     const changeSpy = jest.fn();
     page.root!.addEventListener('change', changeSpy);
 
-    page.root!.options = ['Red', 'Green', 'Blue'];
+    const inst = page.rootInstance as PlumageAutocompleteMultiselectComponent;
+    inst.options = ['Red', 'Green', 'Blue'];
     await page.waitForChanges();
 
     await typeIn(page, page.root!, 're');
@@ -189,8 +222,13 @@ describe('plumage-autocomplete-multiselect-component', () => {
     await keydown(page, page.root!, 'Enter');
     await page.waitForChanges();
 
+    const selectedBefore = page.root!.querySelector('.ac-selected-items')!;
+    expect(selectedBefore.textContent).toContain('Red');
+    expect(selectedBefore.textContent).toContain('Blue');
+
     const clearBtn = page.root!.querySelector('.clear-btn') as HTMLButtonElement | null;
     expect(clearBtn).toBeTruthy();
+
     clearBtn!.click();
     await page.waitForChanges();
 
@@ -202,13 +240,16 @@ describe('plumage-autocomplete-multiselect-component', () => {
   test('listbox has aria-multiselectable=true when open', async () => {
     const page = await newSpecPage({
       components: [PlumageAutocompleteMultiselectComponent],
-      html: `<plumage-autocomplete-multiselect-component
-              input-id="Colors"
-              label="Colors"
-            ></plumage-autocomplete-multiselect-component>`,
+      html: `
+        <plumage-autocomplete-multiselect-component
+          input-id="Colors"
+          label="Colors"
+        ></plumage-autocomplete-multiselect-component>
+      `,
     });
 
-    page.root!.options = ['Red', 'Green', 'Blue'];
+    const inst = page.rootInstance as PlumageAutocompleteMultiselectComponent;
+    inst.options = ['Red', 'Green', 'Blue'];
     await page.waitForChanges();
 
     await typeIn(page, page.root!, 'r');

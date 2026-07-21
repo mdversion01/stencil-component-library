@@ -18,36 +18,28 @@ describe('<autocomplete-single>', () => {
     expect(label).toBeTruthy();
     expect(input).toBeTruthy();
 
-    // label text & class
     expect(label.textContent || '').toContain('Test Label');
     expect(label.className).toContain('form-control-label');
 
-    // placeholder prefers label
     expect(input.placeholder).toBe('Test Label');
 
-    // internal ids now come from resolved base id ("test")
     expect(input.getAttribute('id')).toBe('test');
     expect(input.getAttribute('aria-controls')).toBe('test-listbox');
     expect(input.getAttribute('aria-expanded')).toBe('false');
 
-    // label wiring defaults to internal label id
     expect(label.getAttribute('id')).toBe('test-label');
 
-    // Stencil can serialize htmlFor as `htmlfor`
     const labelFor = label.getAttribute('for') || label.getAttribute('htmlfor') || (label as any).htmlFor || (label as any).htmlfor;
-
     expect(labelFor).toBe('test');
 
-    // aria-labelledby uses internal label id by default
     expect(input.getAttribute('aria-labelledby')).toBe('test-label');
-
-    // aria-label should NOT be present when aria-labelledby exists
     expect(input.getAttribute('aria-label')).toBeNull();
 
-    // optional attributes should be absent when not needed
     expect(input.getAttribute('aria-required')).toBeNull();
     expect(input.getAttribute('aria-invalid')).toBeNull();
     expect(input.getAttribute('aria-describedby')).toBeNull();
+    expect(input.getAttribute('aria-readonly')).toBeNull();
+    expect(input.readOnly).toBe(false);
   });
 
   it('opens dropdown only when there are matches', async () => {
@@ -59,7 +51,6 @@ describe('<autocomplete-single>', () => {
     const comp = page.rootInstance as AutocompleteSingle;
     comp.options = ['Apple', 'Banana', 'Orange'];
 
-    // No input -> closed
     comp.inputValue = '';
     (comp as any).filterOptions();
     await page.waitForChanges();
@@ -68,7 +59,6 @@ describe('<autocomplete-single>', () => {
     expect((comp as any).dropdownOpen).toBe(false);
     expect(page.root!.querySelector('.autocomplete-dropdown')).toBeNull();
 
-    // With matches -> open
     comp.inputValue = 'an';
     (comp as any).filterOptions();
     await page.waitForChanges();
@@ -128,7 +118,6 @@ describe('<autocomplete-single>', () => {
     const comp = page.rootInstance as AutocompleteSingle;
     comp.options = ['Apple', 'Banana', 'Orange'];
 
-    // type so it opens
     comp.inputValue = 'a';
     (comp as any).filterOptions();
     await page.waitForChanges();
@@ -137,7 +126,6 @@ describe('<autocomplete-single>', () => {
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, composed: true }));
     await page.waitForChanges();
 
-    // should focus first option -> aria-activedescendant points at fruit-option-0
     expect(input.getAttribute('aria-activedescendant')).toBe('fruit-option-0');
 
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
@@ -226,8 +214,6 @@ describe('<autocomplete-single>', () => {
     expect(sanitized).not.toContain('>');
   });
 
-  // ---- Enter with no focused option: keep typed value, do NOT mutate options, do NOT emit itemSelect ----
-
   it('pressing Enter with no focused option keeps free-typed text, does not emit itemSelect, and does not mutate options', async () => {
     const page = await newSpecPage({
       components: [AutocompleteSingle],
@@ -241,25 +227,18 @@ describe('<autocomplete-single>', () => {
 
     comp.options = ['Banana', 'Apple'];
     await page.waitForChanges();
-    expect(comp.options).toEqual(['Apple', 'Banana']); // watcher sorts by default
+    expect(comp.options).toEqual(['Apple', 'Banana']);
 
-    // Type a non-matching value
     comp.inputValue = 'Pear';
     (comp as any).filterOptions();
     await page.waitForChanges();
 
-    // Press Enter with no focused item
     const input = page.root!.querySelector('input[role="combobox"]')!;
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }));
     await page.waitForChanges();
 
-    // Input remains what user typed
     expect(comp.inputValue).toBe('Pear');
-
-    // Options remain unchanged (no insertion)
     expect(comp.options).toEqual(['Apple', 'Banana']);
-
-    // No itemSelect for free-typed Enter path
     expect(emitted).toEqual([]);
   });
 
@@ -319,7 +298,6 @@ describe('<autocomplete-single>', () => {
     const withControls = 'a\u0007\u0008 b\t\tc   \n d';
     const sanitized = (comp as any).sanitizeInput(withControls);
 
-    // \t and \n are removed, whitespace collapsed
     expect(sanitized).toBe('a bc d');
 
     const long = 'x'.repeat(600);
@@ -338,7 +316,6 @@ describe('<autocomplete-single>', () => {
       ),
     });
 
-    // IMPORTANT: page.root will be the FIRST component, not the wrapper.
     const comps = page.doc.querySelectorAll('autocomplete-single');
     expect(comps.length).toBe(2);
 
@@ -347,35 +324,118 @@ describe('<autocomplete-single>', () => {
     expect(firstInput).toBeTruthy();
     expect(secondInput).toBeTruthy();
 
-    // ids must be unique
     const firstId = firstInput.getAttribute('id');
     const secondId = secondInput.getAttribute('id');
     expect(firstId).toBeTruthy();
     expect(secondId).toBeTruthy();
     expect(firstId).not.toBe(secondId);
 
-    // aria-controls must reference unique listbox ids
     const firstControls = firstInput.getAttribute('aria-controls');
     const secondControls = secondInput.getAttribute('aria-controls');
     expect(firstControls).toBeTruthy();
     expect(secondControls).toBeTruthy();
     expect(firstControls).not.toBe(secondControls);
 
-    // aria-labelledby must reference unique label ids
     const firstLabelledby = firstInput.getAttribute('aria-labelledby');
     const secondLabelledby = secondInput.getAttribute('aria-labelledby');
     expect(firstLabelledby).toBeTruthy();
     expect(secondLabelledby).toBeTruthy();
     expect(firstLabelledby).not.toBe(secondLabelledby);
 
-    // the referenced label elements should exist
     const firstLabel = page.doc.getElementById(firstLabelledby!);
     const secondLabel = page.doc.getElementById(secondLabelledby!);
     expect(firstLabel).toBeTruthy();
     expect(secondLabel).toBeTruthy();
   });
 
-  // ---------------- SNAPSHOTS ----------------
+  it('readOnly: sets input readonly + aria-readonly and hides clear button', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteSingle],
+      html: `<autocomplete-single label="Cities" input-id="city" read-only value="Boston"></autocomplete-single>`,
+    });
+
+    const root = page.root!;
+    const input = root.querySelector('input[role="combobox"]') as HTMLInputElement;
+
+    expect(input).toBeTruthy();
+    expect(input.readOnly).toBe(true);
+    expect(input.getAttribute('aria-readonly')).toBe('true');
+    expect(input.classList.contains('read-only')).toBe(true);
+    expect(root.querySelector('button.clear-btn')).toBeNull();
+    expect(root.querySelector('.autocomplete-dropdown')).toBeNull();
+  });
+
+  it('readOnly: does not open dropdown when filtering finds matches', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteSingle],
+      html: `<autocomplete-single label="Cities" input-id="city" read-only></autocomplete-single>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteSingle;
+    comp.options = ['Boston', 'Chicago', 'Austin'];
+    comp.inputValue = 'o';
+
+    (comp as any).filterOptions();
+    await page.waitForChanges();
+
+    expect(comp.filteredOptions).toEqual([]);
+    expect((comp as any).dropdownOpen).toBe(false);
+
+    const input = page.root!.querySelector('input[role="combobox"]') as HTMLInputElement;
+    expect(input.getAttribute('aria-expanded')).toBe('false');
+    expect(page.root!.querySelector('.autocomplete-dropdown')).toBeNull();
+  });
+
+  it('readOnly: keyboard navigation does not focus options or open dropdown', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteSingle],
+      html: `<autocomplete-single label="Cities" input-id="city" read-only></autocomplete-single>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteSingle;
+    comp.options = ['Boston', 'Chicago', 'Austin'];
+    comp.inputValue = 'o';
+    (comp as any).filteredOptions = ['Boston', 'Chicago'];
+    await page.waitForChanges();
+
+    const input = page.root!.querySelector('input[role="combobox"]') as HTMLInputElement;
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect((comp as any).dropdownOpen).toBe(false);
+    expect(comp.focusedOptionIndex).toBe(-1);
+    expect(input.getAttribute('aria-activedescendant')).toBeNull();
+  });
+
+  it('readOnly: selecting programmatically is ignored', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteSingle],
+      html: `<autocomplete-single input-id="x" label="X" read-only value="Locked"></autocomplete-single>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteSingle;
+    const spy = jest.fn();
+    comp.itemSelect = { emit: spy } as any;
+
+    (comp as any).selectOption('Two');
+    await page.waitForChanges();
+
+    expect(comp.inputValue).toBe('Locked');
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('readOnly: clear button never renders even when input has value', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteSingle],
+      html: `<autocomplete-single input-id="ro" label="RO" read-only></autocomplete-single>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteSingle;
+    comp.inputValue = 'Some text';
+    await page.waitForChanges();
+
+    expect(page.root!.querySelector('button.clear-btn')).toBeNull();
+  });
 
   it('matches snapshot (default render)', async () => {
     const page = await newSpecPage({
@@ -408,6 +468,21 @@ describe('<autocomplete-single>', () => {
     await page.waitForChanges();
 
     expect((comp as any).dropdownOpen).toBe(true);
+    expect(page.root).toMatchSnapshot();
+  });
+
+  it('matches snapshot (readOnly render)', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteSingle],
+      html: `<autocomplete-single
+             label="Cities"
+             input-id="city"
+             value="Boston"
+             read-only
+           ></autocomplete-single>`,
+    });
+
+    await page.waitForChanges();
     expect(page.root).toMatchSnapshot();
   });
 });

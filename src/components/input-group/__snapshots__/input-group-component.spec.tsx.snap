@@ -14,16 +14,12 @@ exports[`<input-group-component> disables native affix buttons when readOnly=tru
           Enter Search. Type: text.
         </div>
         <div class="input-group">
-          <span class="prepend-btn">
-            <button class="btn btn-secondary" disabled="" type="button">
-              Back
-            </button>
+          <span class="input-group-text">
+            Back
           </span>
-          <input aria-describedby="search-readonly__desc" aria-labelledby="search-readonly__label" class="form-control" id="search-readonly" name="search" placeholder="Search" readonly="" type="text" value="">
-          <span class="append-btn">
-            <button class="btn btn-secondary" disabled="" type="button">
-              Go
-            </button>
+          <input aria-describedby="search-readonly__desc" aria-labelledby="search-readonly__label" aria-readonly="true" class="form-control read-only" id="search-readonly" name="search" placeholder="Search" readonly="" type="text" value="">
+          <span class="input-group-text">
+            Go
           </span>
         </div>
       </div>

@@ -1,9 +1,12 @@
+// File: src/stories/autocomplete-multiple-selections/autocomplete-multiple-selections.stories.js
+
 import DocsPage from './autocomplete-multiple-selections.docs.mdx';
 import {
   DocsWrapStyles,
   FRUIT,
   SIZE_VARIANTS,
   buildDocsComponentHtml,
+  buildDocsHtmlControlledValue,
   buildDocsHtmlMany,
   renderComponent,
   wrapDocsHtml,
@@ -14,7 +17,7 @@ export default {
   tags: ['autodocs'],
 
   decorators: [
-    (Story) => {
+    Story => {
       const wrap = document.createElement('div');
       wrap.appendChild(DocsWrapStyles());
       wrap.appendChild(Story());
@@ -27,7 +30,7 @@ export default {
       page: DocsPage,
       description: {
         component: [
-          'Autocomplete Multiselect component with badges, fast keyboard navigation (arrows/Home/End/PageUp/PageDown/Escape), optional add/delete of user options, responsive layouts (stacked, horizontal, inline), and keep-open-after-select UX.',
+          'Autocomplete Multiple Selections component with badges, keyboard navigation, optional add/delete of user options, responsive layouts, controlled selected values, and read-only support.',
           '',
         ].join('\n'),
       },
@@ -38,7 +41,7 @@ export default {
     },
   },
 
-  render: (args) => renderComponent(args),
+  render: (args, ctx) => renderComponent(args, ctx),
 
   argTypes: {
     addNewOnEnter: {
@@ -65,12 +68,24 @@ export default {
       table: { category: 'Attributes', defaultValue: { summary: false } },
       description: 'Allows adding/removing options at runtime.',
     },
+    disabled: {
+      control: 'boolean',
+      name: 'disabled',
+      table: { category: 'Attributes', defaultValue: { summary: false } },
+      description: 'Disables the input field, preventing user interaction.',
+    },
+    readOnly: {
+      control: 'boolean',
+      name: 'read-only',
+      table: { category: 'Attributes', defaultValue: { summary: false } },
+      description: 'Makes the input read-only. The input remains focusable, but typing, add/remove, clear, and dropdown interaction are disabled.',
+    },
     id: {
       control: 'text',
       name: 'id',
       table: { category: 'Attributes' },
       description:
-        'The unique identifier for the component instance. This is used to associate the component with the javascript API and for accessibility purposes.',
+        'Base id for the host element. Storybook will suffix it per-mount to prevent duplicate ids when Docs mounts stories multiple times.',
     },
     preserveInputOnSelect: {
       control: 'boolean',
@@ -140,14 +155,14 @@ export default {
       name: 'options',
       table: { category: 'Data' },
       description:
-        'The array of options available for selection in the autocomplete. Note: options must be set at runtime (not via attribute) for the autocomplete to work properly.',
+        'The array of options available for selection in the autocomplete. Options are applied at runtime via property assignment.',
     },
     value: {
       control: 'object',
       name: 'value',
       table: { category: 'Data' },
       description:
-        'Controlled selected values (array). Applied via property at runtime (not as an attribute). Use this to preselect items or drive selections externally.',
+        'Controlled selected values (array). Applied via property at runtime. Use this to preselect items or drive selections externally.',
     },
 
     devMode: {
@@ -175,7 +190,6 @@ export default {
       table: { category: 'Accessibility' },
       description: 'Optional helper text id reference. Component also appends validation/error ids when present.',
     },
-
     arialabelledBy: {
       control: 'text',
       name: 'arialabelled-by',
@@ -183,74 +197,62 @@ export default {
       description: 'Legacy: The id of the element that labels the input for accessibility purposes.',
     },
 
-    disabled: {
-      control: 'boolean',
-      name: 'disabled',
-      table: { category: 'Input Attributes', defaultValue: { summary: false } },
-      description: 'Disables the input field, preventing user interaction.',
-    },
     formId: {
       control: 'text',
       name: 'form-id',
       table: { category: 'Layout' },
-      description:
-        'The id of the parent form element to associate with when using form layouts. This is necessary when the component is not a direct child of the form element.',
+      description: 'The id of the parent form element to associate with when using form layouts.',
     },
     formLayout: {
       control: { type: 'select' },
       options: ['', 'horizontal', 'inline'],
       name: 'form-layout',
       table: { category: 'Layout' },
-      description:
-        'Sets the form layout style. "horizontal" applies a two-column grid layout, while "inline" arranges elements in a single row.',
+      description: 'Sets the form layout style.',
     },
     inputCol: {
       control: 'text',
       name: 'input-col',
       table: { category: 'Layout', defaultValue: { summary: 10 } },
-      description:
-        'Used with horizontal form layouts. Single numeric column for the input in a grid. Default is 10 (col-10).',
+      description: 'Used with horizontal form layouts. Single numeric column for the input in a grid.',
     },
     inputCols: {
       control: 'text',
       name: 'input-cols',
       table: { category: 'Layout' },
-      description: 'Used with horizontal form layouts. Responsive input column classes, e.g. "col", "col-sm-9 col-md-8".',
+      description: 'Used with horizontal form layouts. Responsive input column classes.',
     },
     inputId: {
       control: 'text',
       name: 'input-id',
       table: { category: 'Input Attributes' },
       description:
-        'The unique identifier for the input element within the component. This is used for accessibility and form association.',
+        'Base input-id used to derive internal ARIA ids. Storybook will suffix it per-mount to prevent collisions when Docs mounts twice.',
     },
     label: {
       control: 'text',
       name: 'label',
       table: { category: 'Input Attributes' },
-      description: 'The text label for the component. This is used for accessibility and user guidance.',
+      description: 'The text label for the component.',
     },
     labelAlign: {
       control: { type: 'select' },
       options: ['', 'right'],
       name: 'label-align',
       table: { category: 'Layout' },
-      description:
-        'Aligns the label text. "right" aligns the label to the right, which is typically used in horizontal form layouts.',
+      description: 'Aligns the label text.',
     },
     labelCol: {
       control: 'text',
       name: 'label-col',
       table: { category: 'Layout', defaultValue: { summary: 2 } },
-      description:
-        'Used with horizontal form layouts. Single numeric column for the label in a grid. Default is 2 (col-2).',
+      description: 'Used with horizontal form layouts. Single numeric column for the label in a grid.',
     },
     labelCols: {
       control: 'text',
       name: 'label-cols',
       table: { category: 'Layout' },
-      description:
-        'Used with horizontal form layouts. Responsive label column classes, e.g. "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4".',
+      description: 'Used with horizontal form layouts. Responsive label column classes.',
     },
     labelHidden: {
       control: 'boolean',
@@ -263,7 +265,7 @@ export default {
       options: ['xs', 'sm', 'base', 'lg'],
       name: 'label-size',
       table: { category: 'Layout' },
-      description: 'Sets the size of the label text. Options include "xs", "sm", "base", and "lg".',
+      description: 'Sets the size of the label text.',
     },
     name: {
       control: 'text',
@@ -275,14 +277,14 @@ export default {
       control: 'text',
       name: 'placeholder',
       table: { category: 'Input Attributes' },
-      description: 'The placeholder text for the input element. This provides a hint to the user about what to enter.',
+      description: 'The placeholder text for the input element.',
     },
     size: {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
       name: 'size',
       table: { category: 'Layout' },
-      description: 'Sets the size of the input field. Options include "sm" and "lg".',
+      description: 'Sets the size of the input field.',
     },
     type: {
       control: 'text',
@@ -336,6 +338,7 @@ export default {
     clearInputOnBlurOutside: false,
     devMode: false,
     disabled: false,
+    readOnly: false,
     editable: false,
     error: false,
     errorMessage: '',
@@ -383,6 +386,7 @@ export const Basic = {
     clearInputOnBlurOutside: false,
     devMode: false,
     disabled: false,
+    readOnly: false,
     editable: false,
     formLayout: '',
     labelAlign: '',
@@ -402,8 +406,7 @@ export const Basic = {
   parameters: {
     docs: {
       description: {
-        story:
-          'The default configuration of the component with no specific layout applied. Note: options must be set at runtime (not via attribute) for the autocomplete to work properly, so the "Options" control here is an array that gets passed in after hydration.',
+        story: 'The default configuration of the component. Options are set at runtime after hydration.',
       },
       story: { height: '300px' },
     },
@@ -421,8 +424,7 @@ export const HorizontalLayout = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Applies a horizontal Bootstrap layout with the label aligned to the right. This layout is suitable for forms where labels and inputs are arranged in a two-column format.',
+        story: 'Applies a horizontal Bootstrap layout with the label aligned to the right.',
       },
       story: { height: '300px' },
     },
@@ -456,8 +458,7 @@ export const EditableKeepOpen = {
   parameters: {
     docs: {
       description: {
-        story:
-          'When "editable" is enabled, users can type new items/options into the field and those items will appear in the dropdown list if removed from the input. This also allows users to delete the added item by clicking the "x" from the dropdown list.',
+        story: 'When editable is enabled, users can type new items into the field and manage added items from the dropdown.',
       },
       story: { height: '300px' },
     },
@@ -471,6 +472,8 @@ export const ControlledValue = {
     container.style.display = 'grid';
     container.style.gap = '12px';
     container.style.maxWidth = '760px';
+
+    let controlledValue = Array.isArray(args.value) ? args.value.slice() : ['Apple'];
 
     const controls = document.createElement('div');
     controls.style.display = 'flex';
@@ -486,34 +489,53 @@ export const ControlledValue = {
       return b;
     };
 
-    const elWrap = renderComponent({
-      ...args,
-      id: args.id || 'acms_controlled',
-      inputId: args.inputId || 'acms-controlled',
-      label: args.label || 'Controlled Value',
-    });
+    const elWrap = renderComponent(
+      {
+        ...args,
+        id: args.id || 'acms_controlled',
+        inputId: args.inputId || 'acms-controlled',
+        label: args.label || 'Controlled Value',
+        value: controlledValue,
+      },
+      ctx,
+    );
 
     const el = elWrap.querySelector('autocomplete-multiple-selections');
 
-    const setNext = (next) => {
-      const safe = Array.isArray(next) ? next.slice() : [];
-      ctx.updateArgs?.({ value: safe });
-      if (el) el.value = safe;
-    };
-
-    controls.appendChild(mkBtn('Set: ["Apple","Mango"]', () => setNext(['Apple', 'Mango'])));
-    controls.appendChild(
-      mkBtn('Add "Banana"', () => {
-        const cur = Array.isArray(args.value) ? args.value.slice() : [];
-        if (!cur.includes('Banana')) cur.push('Banana');
-        setNext(cur);
-      }),
-    );
-    controls.appendChild(mkBtn('Clear []', () => setNext([])));
-
     const hint = document.createElement('div');
     hint.style.opacity = '0.75';
-    hint.textContent = `Current args.value: ${JSON.stringify(Array.isArray(args.value) ? args.value : [])}`;
+
+    const renderHint = source => {
+      hint.textContent = `External controlled value (${source}): ${JSON.stringify(controlledValue)}`;
+    };
+
+    const setNext = (next, source) => {
+      controlledValue = Array.isArray(next) ? next.slice() : [];
+      ctx.updateArgs?.({ value: controlledValue });
+      if (el) el.value = controlledValue.slice();
+      renderHint(source);
+    };
+
+    controls.appendChild(mkBtn('Set: ["Apple","Mango"]', () => setNext(['Apple', 'Mango'], 'button click')));
+    controls.appendChild(
+      mkBtn('Add "Banana"', () => {
+        const cur = controlledValue.slice();
+        if (!cur.includes('Banana')) cur.push('Banana');
+        setNext(cur, 'button click');
+      }),
+    );
+    controls.appendChild(mkBtn('Clear []', () => setNext([], 'button click')));
+
+    if (el) {
+      el.addEventListener('multiSelectChange', e => {
+        const next = Array.isArray(e?.detail) ? e.detail : Array.isArray(e?.detail?.value) ? e.detail.value : [];
+        setNext(next, 'multiSelectChange event');
+      });
+
+      el.addEventListener('clear', () => setNext([], 'clear event'));
+    }
+
+    renderHint('initial args.value');
 
     container.appendChild(controls);
     container.appendChild(hint);
@@ -528,11 +550,11 @@ export const ControlledValue = {
     docs: {
       source: {
         language: 'html',
-        transform: (_src, ctx) => wrapDocsHtml(buildDocsComponentHtml(ctx.args)),
+        transform: () => wrapDocsHtml(buildDocsHtmlControlledValue()),
       },
       description: {
         story:
-          'Demonstrates the controlled `value` prop (array). Buttons call `updateArgs({ value })` and also set the element property immediately so the UI updates without waiting for a Storybook re-render.',
+          'Demonstrates the controlled selected-values prop (array), including the external state that drives the component.',
       },
       story: { height: '420px' },
     },
@@ -541,20 +563,23 @@ export const ControlledValue = {
 
 export const Sizes = {
   name: 'Sizes',
-  render: (args) => {
+  render: (args, ctx) => {
     const container = document.createElement('div');
     container.style.display = 'grid';
     container.style.gap = '14px';
     container.style.maxWidth = '760px';
 
     for (const v of SIZE_VARIANTS) {
-      const el = renderComponent({
-        ...args,
-        id: v.id,
-        inputId: v.inputId,
-        label: v.label,
-        size: v.size,
-      });
+      const el = renderComponent(
+        {
+          ...args,
+          id: v.id,
+          inputId: v.inputId,
+          label: v.label,
+          size: v.size,
+        },
+        ctx,
+      );
       container.appendChild(el);
     }
 
@@ -566,7 +591,7 @@ export const Sizes = {
         language: 'html',
         transform: (_src, ctx) =>
           buildDocsHtmlMany(
-            SIZE_VARIANTS.map((v) =>
+            SIZE_VARIANTS.map(v =>
               buildDocsComponentHtml({
                 ...ctx.args,
                 id: v.id,
@@ -579,8 +604,7 @@ export const Sizes = {
           ),
       },
       description: {
-        story:
-          'Shows the three supported sizes by setting the `size` arg to `sm`, empty string (default), and `lg`. Note: options are set at runtime (not via attribute) for the autocomplete to work properly, so the "Options" control here is an array that gets passed in after hydration.',
+        story: 'Shows the three supported sizes by setting size to sm, default, and lg.',
       },
       story: { height: '480px' },
     },
@@ -597,8 +621,7 @@ export const FieldValidation = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Enables validation for the input field. When the field is left empty and loses focus, the specified validation message will be displayed.',
+        story: 'Enables validation for the input field and displays a validation message.',
       },
       story: { height: '300px' },
     },
@@ -629,6 +652,27 @@ export const Disabled = {
   },
 };
 
+export const ReadOnly = {
+  name: 'Read Only',
+  args: {
+    inputId: 'acms-readonly',
+    label: 'Read only',
+    readOnly: true,
+    validationMessage: '',
+    addBtn: true,
+    editable: true,
+    value: ['Banana', 'Mango'],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Read-only state. The input remains focusable and announces aria-readonly, but typing, add/remove, clear, and dropdown interaction are disabled while selected badges remain visible.',
+      },
+    },
+  },
+};
+
 export const BadgeStyling = {
   name: 'Custom Badge Styling',
   args: {
@@ -643,8 +687,7 @@ export const BadgeStyling = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Use the "Badge Variant" control to apply Bootstrap text-bg color classes (e.g. "primary", "success", "danger") or your own CSS class for custom colors. The "Badge Shape" control can be used to apply a custom class for pill/rounded styling. For full control, use the "Badge Inline Styles" to add any CSS properties you want directly to each badge.',
+        story: 'Use badge variant, shape, and inline styles to customize badge presentation.',
       },
       story: { height: '300px' },
     },
@@ -653,7 +696,7 @@ export const BadgeStyling = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
-  render: (args) => {
+  render: (args, ctx) => {
     const wrap = document.createElement('div');
     wrap.style.display = 'grid';
     wrap.style.gap = '16px';
@@ -661,7 +704,7 @@ export const AccessibilityMatrix = {
 
     const title = document.createElement('div');
     title.innerHTML =
-      '<strong>Accessibility matrix</strong><div style="opacity:.8">Prints computed combobox/listbox/label wiring + validation/error ids. Also shows id de-dupe with two instances.</div>';
+      '<strong>Accessibility matrix</strong><div style="opacity:.8">Prints computed combobox/listbox/label wiring + validation/error ids. Includes disabled, readOnly, and id de-dupe.</div>';
     wrap.appendChild(title);
 
     const row = (labelText, build) => {
@@ -701,25 +744,36 @@ export const AccessibilityMatrix = {
       const snapshot = () => {
         const host = demo.querySelector('autocomplete-multiple-selections');
         const input = host?.querySelector('input[role="combobox"]');
-        const listbox = host?.querySelector('[role="listbox"]');
         const labelEl = host?.querySelector('label');
+
+        const listboxId = input?.getAttribute('aria-controls') || null;
+        const listbox = listboxId ? host?.querySelector(`#${CSS.escape(listboxId)}`) : host?.querySelector('[role="listbox"]');
 
         pre.textContent = JSON.stringify(
           {
             hostId: host?.getAttribute('id') ?? null,
             inputId: input?.getAttribute('id') ?? null,
             labelId: labelEl?.getAttribute('id') ?? null,
-            'aria-labelledby': input?.getAttribute('aria-labelledby') ?? null,
-            'aria-label': input?.getAttribute('aria-label') ?? null,
-            'aria-describedby': input?.getAttribute('aria-describedby') ?? null,
-            'aria-controls': input?.getAttribute('aria-controls') ?? null,
-            'aria-expanded': input?.getAttribute('aria-expanded') ?? null,
-            'aria-activedescendant': input?.getAttribute('aria-activedescendant') ?? null,
-            'aria-required': input?.getAttribute('aria-required') ?? null,
-            'aria-invalid': input?.getAttribute('aria-invalid') ?? null,
+            labelFor: labelEl?.getAttribute('for') ?? labelEl?.getAttribute('htmlfor') ?? null,
+            ariaLabelledby: input?.getAttribute('aria-labelledby') ?? null,
+            ariaLabel: input?.getAttribute('aria-label') ?? null,
+            ariaDescribedby: input?.getAttribute('aria-describedby') ?? null,
+            ariaControls: input?.getAttribute('aria-controls') ?? null,
+            ariaExpanded: input?.getAttribute('aria-expanded') ?? null,
+            ariaActivedescendant: input?.getAttribute('aria-activedescendant') ?? null,
+            ariaRequired: input?.getAttribute('aria-required') ?? null,
+            ariaInvalid: input?.getAttribute('aria-invalid') ?? null,
+            ariaDisabled: input?.getAttribute('aria-disabled') ?? null,
+            ariaReadonly: input?.getAttribute('aria-readonly') ?? null,
+            readonlyAttr: input?.hasAttribute('readonly') ?? null,
+            disabledAttr: input?.hasAttribute('disabled') ?? null,
+            listboxPresent: !!listbox,
             listboxId: listbox?.getAttribute('id') ?? null,
             hasValidation: !!host?.querySelector('.invalid-feedback'),
             hasError: !!host?.querySelector('.error-message'),
+            hasAddButton: !!host?.querySelector('button.add-btn'),
+            hasClearButton: !!host?.querySelector('button.clear-btn'),
+            hasRemoveButtons: !!host?.querySelector('.remove-btn'),
           },
           null,
           2,
@@ -732,27 +786,37 @@ export const AccessibilityMatrix = {
 
     wrap.appendChild(
       row('Default (internal label wiring)', () =>
-        renderComponent({
-          ...args,
-          inputId: 'mx-default',
-          label: 'Default A11y',
-          validation: false,
-          error: false,
-          value: [],
-        }),
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-default',
+            label: 'Default A11y',
+            validation: false,
+            error: false,
+            disabled: false,
+            readOnly: false,
+            value: [],
+          },
+          ctx,
+        ),
       ),
     );
 
     wrap.appendChild(
       row('Validation (aria-invalid + describedby)', () =>
-        renderComponent({
-          ...args,
-          inputId: 'mx-val',
-          label: 'Required',
-          required: true,
-          validation: true,
-          validationMessage: 'This is required.',
-        }),
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-val',
+            label: 'Required',
+            required: true,
+            validation: true,
+            validationMessage: 'This is required.',
+            disabled: false,
+            readOnly: false,
+          },
+          ctx,
+        ),
       ),
     );
 
@@ -775,17 +839,56 @@ export const AccessibilityMatrix = {
         outer.appendChild(lbl);
         outer.appendChild(desc);
 
-        const wrapped = renderComponent({
-          ...args,
-          inputId: 'mx-ext',
-          label: 'Internal label still exists',
-          ariaLabelledby: 'mx-external-label',
-          ariaDescribedby: 'mx-external-desc',
-        });
+        const wrapped = renderComponent(
+          {
+            ...args,
+            inputId: 'mx-ext',
+            label: 'Internal label still exists',
+            ariaLabelledby: 'mx-external-label',
+            ariaDescribedby: 'mx-external-desc',
+          },
+          ctx,
+        );
 
         outer.appendChild(wrapped);
         return outer;
       }),
+    );
+
+    wrap.appendChild(
+      row('Disabled', () =>
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-disabled',
+            label: 'Disabled',
+            disabled: true,
+            readOnly: false,
+            editable: true,
+            addBtn: true,
+            value: ['Banana'],
+          },
+          ctx,
+        ),
+      ),
+    );
+
+    wrap.appendChild(
+      row('Read only', () =>
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-readonly',
+            label: 'Read only',
+            disabled: false,
+            readOnly: true,
+            editable: true,
+            addBtn: true,
+            value: ['Banana'],
+          },
+          ctx,
+        ),
+      ),
     );
 
     wrap.appendChild(
@@ -796,8 +899,8 @@ export const AccessibilityMatrix = {
           outer.style.display = 'grid';
           outer.style.gap = '10px';
 
-          const a = renderComponent({ ...args, inputId: 'dup', label: 'First dup' });
-          const b = renderComponent({ ...args, inputId: 'dup', label: 'Second dup' });
+          const a = renderComponent({ ...args, inputId: 'dup', label: 'First dup' }, ctx);
+          const b = renderComponent({ ...args, inputId: 'dup', label: 'Second dup' }, ctx);
 
           outer.appendChild(a);
           outer.appendChild(b);
@@ -840,17 +943,17 @@ export const AccessibilityMatrix = {
 
         const snapshot = () => {
           const hosts = Array.from(demo.querySelectorAll('autocomplete-multiple-selections'));
-          const instances = hosts.map((host) => {
+          const instances = hosts.map(host => {
             const input = host.querySelector('input[role="combobox"]');
             const labelEl = host.querySelector('label');
-            const listboxId = input?.getAttribute('aria-controls') ?? null;
+            const controls = input?.getAttribute('aria-controls') ?? null;
 
             return {
               hostId: host.getAttribute('id') ?? null,
               inputId: input?.getAttribute('id') ?? null,
               labelId: labelEl?.getAttribute('id') ?? null,
               labelledby: input?.getAttribute('aria-labelledby') ?? null,
-              controls: listboxId,
+              controls,
             };
           });
 
@@ -869,7 +972,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Prints computed accessibility wiring for the combobox + listbox: `aria-labelledby`, `aria-describedby` (including validation/error ids), `aria-controls`, `aria-expanded`, `aria-activedescendant`, and shows id de-dupe when multiple instances use the same `input-id`.',
+          'Prints computed accessibility wiring for the combobox + listbox: aria-labelledby, aria-describedby, aria-controls, aria-expanded, aria-activedescendant, disabled/readOnly state, and id de-dupe across multiple instances.',
       },
     },
   },

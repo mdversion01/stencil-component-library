@@ -58,7 +58,11 @@
     font-size: 1rem;
     line-height: 1.5;
     border-radius: 0.25rem;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition:
+      color 0.15s ease-in-out,
+      background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
     /* width: 32px;
   height: 32px;
   font-size: 14px;
@@ -189,7 +193,11 @@
     font-weight: 400;
     line-height: 1.5;
     user-select: none;
-    transition: color 0.15s ease-in-out 0s, background-color 0.15s ease-in-out 0s, border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    transition:
+      color 0.15s ease-in-out 0s,
+      background-color 0.15s ease-in-out 0s,
+      border-color 0.15s ease-in-out 0s,
+      box-shadow 0.15s ease-in-out 0s;
 
     &.pp-left {
       padding-left: 0.75rem !important;
@@ -209,6 +217,26 @@
 
   .calendar-button.is-invalid {
     color: #b30009 !important;
+  }
+
+  .calendar-button:disabled,
+  .calendar-button[disabled],
+  .calendar-button.disabled {
+    background-color: #e9ecef !important;
+    margin: 0 !important;
+    height: auto !important;
+    opacity: 1 !important;
+    // color: #ccc !important;
+    cursor: not-allowed;
+  }
+
+  .calendar-button.read-only:disabled,
+  .calendar-button.read-only[disabled],
+  .calendar-button.read-only.disabled {
+    background-color: transparent !important;
+    height: auto !important;
+    cursor: not-allowed !important;
+    opacity: 1 !important;
   }
 
   .calendar-grid {
@@ -274,7 +302,9 @@
     background-color: transparent !important;
     color: #838383;
     opacity: 0;
-    transition: opacity 0.2s ease-in-out, color 0.2s ease-in-out;
+    transition:
+      opacity 0.2s ease-in-out,
+      color 0.2s ease-in-out;
     position: absolute;
     right: 6px;
     top: 7px;
@@ -468,7 +498,9 @@
 
   .drp-input-field .clear-input-button {
     opacity: 0;
-    transition: opacity 0.2s ease-in-out, color 0.2s ease-in-out;
+    transition:
+      opacity 0.2s ease-in-out,
+      color 0.2s ease-in-out;
     position: absolute;
     right: 3px;
     top: 11px;
@@ -511,7 +543,9 @@
   }
 
   .drtp .calendar-icon {
-    transition: opacity 0.2s ease-in-out, color 0.2s ease-in-out;
+    transition:
+      opacity 0.2s ease-in-out,
+      color 0.2s ease-in-out;
   }
 
   .drtp:hover .calendar-icon {
@@ -624,7 +658,9 @@
     background-clip: padding-box;
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition:
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
   }
 
   .form-control-sm {
@@ -718,7 +754,8 @@
     border-color: rgb(155, 196, 246);
   }
 
-  .input-group.disabled:hover {
+  .input-group.disabled:hover,
+  .input-group.read-only:hover {
     border-color: rgb(206, 212, 218);
   }
 
@@ -733,6 +770,15 @@
 
   .input-group.is-invalid {
     border-color: #b30009 !important;
+
+    &.focus {
+      background-color: transparent;
+      border-color: #b30009 !important;
+      color: rgb(56, 56, 56);
+      outline: 0px;
+      box-shadow: rgb(179 0 9 / 25%) 0px 0px 0px 0.2rem;
+      border-radius: 0.25rem;
+    }
   }
 
   .input-group {
@@ -959,6 +1005,26 @@
       color: #1f1f1f;
       background-color: transparent !important;
     }
+
+    &:disabled,
+    &.disabled,
+    &[disabled] {
+      background-color: #e9ecef !important;
+      margin: 0 !important;
+      height: auto !important;
+      opacity: 1 !important;
+      // color: #ccc !important;
+      cursor: not-allowed;
+    }
+
+    &.read-only:disabled,
+    &.read-only[disabled],
+    &.read-only.disabled {
+      background-color: transparent !important;
+      height: auto !important;
+      cursor: not-allowed !important;
+      opacity: 1 !important;
+    }
   }
 
   .calendar {
@@ -1025,9 +1091,9 @@
 
     &.focus {
       background-color: transparent;
-      border-color: transparent;
-      outline: 0px;
-      box-shadow: none;
+      border-color: transparent !important;
+      outline: 0px !important;
+      box-shadow: none !important;
       border-radius: 0;
     }
   }

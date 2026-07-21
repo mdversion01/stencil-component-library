@@ -231,6 +231,39 @@ export const buildEl = rawArgs => {
   return el;
 };
 
+export const buildDocsHtmlValueProp = () =>
+  `<${TAG} has-append append-icon="fa-solid fa-dollar-sign" label="Amount" input-id="amount-value" value="123.45" placeholder="Enter amount"></${TAG}>`;
+
+export const buildDocsHtmlExternalValue = () =>
+  [
+    '<div>',
+    '  <button type="button" id="load-123-45">Load 123.45</button>',
+    '  <button type="button" id="load-999-99">Load 999.99</button>',
+    '  <button type="button" id="load-empty">Clear</button>',
+    '',
+    `  <${TAG}`,
+    '    has-append',
+    '    append-icon="fa-solid fa-dollar-sign"',
+    '    label="Amount"',
+    '    input-id="amount-external"',
+    '    placeholder="Enter amount"',
+    `  ></${TAG}>`,
+    '</div>',
+    '',
+    '<script>',
+    `  const host = document.querySelector('${TAG}');`,
+    "  document.querySelector('#load-123-45').addEventListener('click', () => {",
+    "    host.value = '123.45';",
+    '  });',
+    "  document.querySelector('#load-999-99').addEventListener('click', () => {",
+    "    host.value = '999.99';",
+    '  });',
+    "  document.querySelector('#load-empty').addEventListener('click', () => {",
+    "    host.value = '';",
+    '  });',
+    '</script>',
+  ].join('\n');
+
 export const getSnapshot = host => {
   const input =
     host?.querySelector('input.form-control') ||
@@ -254,6 +287,7 @@ export const getSnapshot = host => {
     labelFor: label?.getAttribute('for') ?? label?.getAttribute('htmlfor') ?? null,
     role: input?.getAttribute('role') ?? null,
     type: input?.getAttribute('type') ?? null,
+    value: host?.value ?? null,
     readOnly: input?.readOnly ?? null,
     'aria-label': input?.getAttribute('aria-label') ?? null,
     'aria-labelledby': input?.getAttribute('aria-labelledby') ?? null,

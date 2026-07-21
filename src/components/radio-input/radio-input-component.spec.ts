@@ -2,7 +2,11 @@
 import { newSpecPage } from '@stencil/core/testing';
 import { RadioComponent } from './radio-input-component';
 
-const getLabelFor = (label: Element) => label.getAttribute('for') ?? label.getAttribute('htmlfor') ?? (label as any).htmlFor ?? label.getAttribute('htmlFor');
+const getLabelFor = (label: Element) =>
+  label.getAttribute('for') ??
+  label.getAttribute('htmlfor') ??
+  (label as any).htmlFor ??
+  label.getAttribute('htmlFor');
 
 function splitIds(v: string | null): string[] {
   return String(v || '')
@@ -34,7 +38,6 @@ describe('radio-input-component', () => {
 
     expect((label as any).id).toBe('radio-single-label-test');
     expect(input.getAttribute('aria-labelledby')).toBe('radio-single-label-test');
-
     expect(input.getAttribute('aria-label')).toBeNull();
 
     expect(page.root).toMatchSnapshot();
@@ -111,13 +114,23 @@ describe('radio-input-component', () => {
 
     const group = page.root.querySelector('[role="radiogroup"]') as HTMLElement;
     const error = page.root.querySelector('#radio-group-error-group1') as HTMLElement;
+    const title = page.root.querySelector('#radio-group-title-group1') as HTMLElement;
 
     expect(error).toBeTruthy();
+    expect(error.textContent?.trim()).toBe('Please select one');
     expect(group.getAttribute('aria-invalid')).toBe('true');
     expect(group.getAttribute('aria-required')).toBe('true');
+    expect(title.textContent).toContain('*');
 
     const describedBy = splitIds(group.getAttribute('aria-describedby'));
     expect(describedBy).toContain('radio-group-error-group1');
+
+    const inputs = page.root.querySelectorAll<HTMLInputElement>('input[type="radio"]');
+    inputs.forEach(input => {
+      expect(input.required).toBe(true);
+      expect(input.getAttribute('aria-invalid')).toBe('true');
+      expect(splitIds(input.getAttribute('aria-describedby'))).toContain('radio-group-error-group1');
+    });
 
     expect(page.root).toMatchSnapshot();
   });
@@ -144,6 +157,7 @@ describe('radio-input-component', () => {
     const groupAfter = page.root.querySelector('[role="radiogroup"]') as HTMLElement;
     expect(page.root.querySelector('#radio-group-error-group2')).toBeFalsy();
     expect(groupAfter.getAttribute('aria-invalid')).toBeNull();
+    expect(groupAfter.getAttribute('aria-describedby')).toBeNull();
 
     expect(page.root).toMatchSnapshot();
   });
@@ -178,9 +192,12 @@ describe('radio-input-component', () => {
 
     let input = page.root.querySelector('input[type="radio"]') as HTMLInputElement;
     const error = page.root.querySelector('#radio-single-error-singleReq') as HTMLElement;
+    const label = page.root.querySelector('label') as HTMLLabelElement;
 
     expect(error).toBeTruthy();
+    expect(error.textContent?.trim()).toBe('Required');
     expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(label.textContent).toContain('*');
 
     const describedBy = splitIds(input.getAttribute('aria-describedby'));
     expect(describedBy).toContain('radio-single-error-singleReq');
@@ -193,6 +210,7 @@ describe('radio-input-component', () => {
 
     expect(page.root.querySelector('#radio-single-error-singleReq')).toBeFalsy();
     expect(input.getAttribute('aria-invalid')).toBeNull();
+    expect(input.getAttribute('aria-describedby')).toBeNull();
   });
 
   it('a11y overrides: aria-label used when no labelTxt and aria-labelledby not provided (single)', async () => {
@@ -232,7 +250,115 @@ describe('radio-input-component', () => {
     expect(group.getAttribute('aria-labelledby')).toBe('external-title');
     expect(group.getAttribute('aria-label')).toBeNull();
 
-    // ✅ external id is outside the component host, so query the page body/doc
     expect(!!page.body.querySelector('#external-title')).toBe(true);
+  });
+
+  it('disabled group: disables every radio and suppresses required + validation UI until enabled', async () => {
+    const options = JSON.stringify([
+      { value: 'a', labelTxt: 'Alpha', inputId: 'radio-alpha', checked: false, disabled: false },
+      { value: 'b', labelTxt: 'Beta', inputId: 'radio-beta', checked: false, disabled: true },
+    ]);
+
+    const page = await newSpecPage({
+      components: [RadioComponent],
+      html: `<radio-input-component
+        bs-radio-group
+        name="groupDisabled"
+        group-title="Disabled Group"
+        required
+        validation
+        validation-msg="Please select one"
+        disabled
+        group-options='${options}'
+      ></radio-input-component>`,
+    });
+
+    const group = page.root.querySelector('[role="radiogroup"]') as HTMLElement;
+    const title = page.root.querySelector('#radio-group-title-groupDisabled') as HTMLElement;
+    const inputs = page.root.querySelectorAll<HTMLInputElement>('input[type="radio"]');
+
+    expect(group).toBeTruthy();
+    expect(title).toBeTruthy();
+    expect(inputs.length).toBe(2);
+
+    expect(group.getAttribute('aria-required')).toBeNull();
+    expect(group.getAttribute('aria-invalid')).toBeNull();
+    expect(group.getAttribute('aria-describedby')).toBeNull();
+
+    expect(title.textContent).toBe('Disabled Group');
+
+    inputs.forEach(input => {
+      expect(input.disabled).toBe(true);
+      expect(input.required).toBe(false);
+      expect(input.getAttribute('aria-invalid')).toBeNull();
+      expect(input.getAttribute('aria-describedby')).toBeNull();
+    });
+
+    expect(page.root.querySelector('.invalid-feedback')).toBeNull();
+
+    const spy = jest.fn();
+    page.root.addEventListener('groupChange', (e: CustomEvent<string>) => spy(e.detail));
+
+    inputs[0].checked = true;
+    inputs[0].dispatchEvent(new Event('change', { bubbles: true }));
+    await page.waitForChanges();
+
+    expect(spy).not.toHaveBeenCalled();
+    expect((page.rootInstance as RadioComponent).selectedValue).toBe('');
+  });
+
+  it('disabled single: suppresses required marker and validation message', async () => {
+    const page = await newSpecPage({
+      components: [RadioComponent],
+      html: `<radio-input-component
+        bs-radio
+        input-id="single-disabled"
+        name="singleDisabled"
+        label-txt="Disabled single"
+        required
+        validation
+        validation-msg="Required"
+        disabled
+      ></radio-input-component>`,
+    });
+
+    const input = page.root.querySelector('input[type="radio"]') as HTMLInputElement;
+    const label = page.root.querySelector('label') as HTMLLabelElement;
+
+    expect(input.disabled).toBe(true);
+    expect(input.required).toBe(false);
+    expect(input.getAttribute('aria-invalid')).toBeNull();
+    expect(input.getAttribute('aria-describedby')).toBeNull();
+    expect(page.root.querySelector('.invalid-feedback')).toBeNull();
+    expect(label.textContent).toBe('Disabled single');
+  });
+
+  it('group combines external aria-describedby with validation id when invalid', async () => {
+    const options = JSON.stringify([
+      { value: 'x', labelTxt: 'X', inputId: 'radio-x', checked: false, disabled: false },
+    ]);
+
+    const page = await newSpecPage({
+      components: [RadioComponent],
+      html: `
+        <div id="external-help">External help</div>
+        <radio-input-component
+          bs-radio-group
+          name="group4"
+          group-title="Combined describedby"
+          required
+          validation
+          validation-msg="Please select one"
+          aria-describedby="external-help"
+          group-options='${options}'
+        ></radio-input-component>
+      `,
+    });
+
+    const group = page.root.querySelector('[role="radiogroup"]') as HTMLElement;
+    const describedBy = splitIds(group.getAttribute('aria-describedby'));
+
+    expect(describedBy).toContain('external-help');
+    expect(describedBy).toContain('radio-group-error-group4');
   });
 });

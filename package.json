@@ -1,6 +1,6 @@
 {
   "name": "stencil-component-library",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Stencil Component Starter",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -50,10 +50,11 @@
     "url": "https://github.com/stenciljs/component-starter.git"
   },
   "scripts": {
-    "clean": "rimraf www dist .stencil",
+    "clean": "rimraf www dist loader .stencil",
     "copy:package-assets": "node scripts/copy-package-assets.mjs",
     "copy:mdi": "node scripts/copy-mdi.mjs",
     "build": "stencil build && npm run copy:mdi && npm run copy:package-assets",
+    "build:clean": "npm run clean && npm run build",
     "prestart": "rimraf www/assets && rimraf www/build",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec",

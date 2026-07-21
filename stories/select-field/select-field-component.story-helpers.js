@@ -1,3 +1,5 @@
+// File: src/stories/select-field-component.story-helpers.js
+
 export const normalize = txt => {
   const lines = String(txt || '')
     .replace(/\r\n/g, '\n')
@@ -109,6 +111,7 @@ export const buildDocsHtml = args => {
 
     ['custom', !!a.custom],
     ['disabled', !!a.disabled],
+    ['read-only', !!a.readOnly],
     ['label-hidden', !!a.labelHidden],
     ['multiple', !!a.multiple],
     ['required', !!a.required],
@@ -146,6 +149,7 @@ export const Template = args => `
   ${boolAttr('multiple', args.multiple)}
   ${boolAttr('required', args.required)}
   ${boolAttr('disabled', args.disabled)}
+  ${boolAttr('read-only', args.readOnly)}
 
   ${boolAttr('validation', args.validation)}
   ${attr('validation-message', args.validationMessage)}
@@ -176,6 +180,81 @@ export const SIZE_VARIANTS = [
   { key: 'lg', labelSize: 'lg', size: 'lg', selectFieldId: 'fruit-size-lg', label: 'Large field with lg label' },
 ];
 
+export const buildDocsHtmlExternalValue = () =>
+  normalize(`
+    <div>
+      <button type="button" id="load-banana">Load Banana</button>
+      <button type="button" id="load-cherry">Load Cherry</button>
+
+      <select-field-component
+        label="Fruits"
+        label-size="sm"
+        default-option-txt="Select a fruit"
+        select-field-id="fruit-external-value"
+        options='[
+          { "value": "apple", "name": "Apple" },
+          { "value": "banana", "name": "Banana" },
+          { "value": "cherry", "name": "Cherry" }
+        ]'
+      ></select-field-component>
+    </div>
+
+    <script>
+      const host = document.querySelector('select-field-component');
+      document.querySelector('#load-banana').addEventListener('click', () => {
+        host.value = 'banana';
+      });
+      document.querySelector('#load-cherry').addEventListener('click', () => {
+        host.value = 'cherry';
+      });
+    </script>
+  `);
+
+export const buildDocsHtmlExternalMultiValue = () =>
+  normalize(`
+    <div>
+      <button type="button" id="load-ux-web">Load UX + Web</button>
+      <button type="button" id="load-mobile-data">Load Mobile + Data</button>
+      <button type="button" id="load-all">Load All</button>
+      <button type="button" id="load-empty-default">Load Empty Default</button>
+      <button type="button" id="clear-tags">Clear</button>
+
+      <select-field-component
+        label="Tags"
+        label-size="sm"
+        multiple
+        field-height="6"
+        default-option-txt="Choose tags"
+        select-field-id="tags-external-value"
+        options='[
+          { "value": "ux", "name": "UX" },
+          { "value": "web", "name": "Web" },
+          { "value": "mobile", "name": "Mobile" },
+          { "value": "data", "name": "Data" }
+        ]'
+      ></select-field-component>
+    </div>
+
+    <script>
+      const host = document.querySelector('select-field-component');
+      document.querySelector('#load-ux-web').addEventListener('click', () => {
+        host.value = ['ux', 'web'];
+      });
+      document.querySelector('#load-mobile-data').addEventListener('click', () => {
+        host.value = ['mobile', 'data'];
+      });
+      document.querySelector('#load-all').addEventListener('click', () => {
+        host.value = ['ux', 'web', 'mobile', 'data'];
+      });
+      document.querySelector('#load-empty-default').addEventListener('click', () => {
+        host.value = [''];
+      });
+      document.querySelector('#clear-tags').addEventListener('click', () => {
+        host.value = [];
+      });
+    </script>
+  `);
+
 export const getSnapshot = host => {
   const select = host?.querySelector('select');
   const label = host?.querySelector('label');
@@ -188,7 +267,11 @@ export const getSnapshot = host => {
 
   const resolve = id => {
     if (!id) return false;
-    return !!host?.querySelector(`#${id}`);
+    try {
+      return !!host?.querySelector(`#${CSS.escape(id)}`);
+    } catch {
+      return false;
+    }
   };
 
   return {
@@ -208,6 +291,7 @@ export const getSnapshot = host => {
     'aria-required': select?.getAttribute('aria-required') ?? null,
     'aria-invalid': select?.getAttribute('aria-invalid') ?? null,
     'aria-disabled': select?.getAttribute('aria-disabled') ?? null,
+    'aria-readonly': select?.getAttribute('aria-readonly') ?? null,
     labelledbyIds: labelledIds,
     labelledbyAllResolve: labelledIds.every(resolve),
     describedbyIds: describedIds,

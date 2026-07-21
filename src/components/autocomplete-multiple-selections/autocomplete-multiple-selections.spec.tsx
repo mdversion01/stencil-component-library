@@ -20,23 +20,22 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(label.textContent || '').toContain('Fruits');
     expect(label.className).toContain('form-control-label');
 
-    // placeholder prefers label
     expect(input.placeholder).toBe('Fruits');
 
-    // input a11y basics
     expect(input.getAttribute('role')).toBe('combobox');
     expect(input.getAttribute('aria-controls')).toBe('fruit-listbox');
     expect(input.getAttribute('aria-expanded')).toBe('false');
 
-    // label wiring now defaults to internal label id
     expect(label.getAttribute('id')).toBe('fruit-label');
 
-    // ✅ FIX: Stencil can serialize htmlFor as `htmlfor` (not `for`)
     const labelFor = label.getAttribute('for') || label.getAttribute('htmlfor') || (label as any).htmlFor || (label as any).htmlfor;
-
     expect(labelFor).toBe('fruit');
 
     expect(input.getAttribute('aria-labelledby')).toBe('fruit-label');
+    expect(input.getAttribute('aria-label')).toBeNull();
+    expect(input.getAttribute('aria-describedby')).toBeNull();
+    expect(input.getAttribute('aria-readonly')).toBeNull();
+    expect(input.readOnly).toBe(false);
   });
 
   it('opens dropdown only when there are matches (and renders listbox)', async () => {
@@ -48,7 +47,6 @@ describe('<autocomplete-multiple-selections>', () => {
     const comp = page.rootInstance as AutocompleteMultipleSelections;
     comp.options = ['Apple', 'Banana', 'Orange'];
 
-    // No query => closed
     comp.inputValue = '';
     comp.filterOptions();
     await page.waitForChanges();
@@ -57,8 +55,7 @@ describe('<autocomplete-multiple-selections>', () => {
     expect((comp as any).dropdownOpen).toBe(false);
     expect(page.root!.querySelector('[role="listbox"]')).toBeNull();
 
-    // With matches => open
-    comp.inputValue = 'an'; // Banana, Orange
+    comp.inputValue = 'an';
     comp.filterOptions();
     await page.waitForChanges();
 
@@ -79,7 +76,6 @@ describe('<autocomplete-multiple-selections>', () => {
     const comp = page.rootInstance as AutocompleteMultipleSelections;
     comp.options = ['Alpha', 'Beta', 'Gamma'];
 
-    // Select "Alpha"
     comp.inputValue = 'a';
     comp.filterOptions();
     await page.waitForChanges();
@@ -89,7 +85,6 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(comp.selectedItems).toEqual(['Alpha']);
     expect((comp as any).dropdownOpen).toBe(false);
 
-    // Select "Gamma"
     comp.inputValue = 'a';
     comp.filterOptions();
     await page.waitForChanges();
@@ -119,7 +114,6 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(hiddenRaw).toBeTruthy();
     expect(hiddenRaw.value).toBe('A B C');
 
-    // length cap
     input.value = 'x'.repeat(600);
     input.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
     await page.waitForChanges();
@@ -210,7 +204,7 @@ describe('<autocomplete-multiple-selections>', () => {
 
     expect(comp.selectedItems.length).toBe(1);
     expect(['Alpha', 'Beta', 'Gamma']).toContain(comp.selectedItems[0]);
-    expect((comp as any).dropdownOpen).toBe(true); // keepDropdownOpen path
+    expect((comp as any).dropdownOpen).toBe(true);
   });
 
   it('assigns correct aria attributes and roles (legacy arialabelled-by)', async () => {
@@ -271,15 +265,13 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(input.getAttribute('aria-activedescendant')).toBe('id-option-0');
   });
 
-  it('disabled: input is disabled; add button (if shown) is disabled; clear button is not rendered', async () => {
+  it('disabled: input is disabled; add button is hidden; clear button is not rendered', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
       html: `<autocomplete-multiple-selections disabled add-btn editable input-id="dis" label="Dis"></autocomplete-multiple-selections>`,
     });
 
     const comp = page.rootInstance as AutocompleteMultipleSelections;
-
-    // Make Add eligible to render (editable && addBtn && input has text)
     comp.inputValue = 'x';
     await page.waitForChanges();
 
@@ -287,11 +279,9 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(input).toHaveAttribute('disabled');
     expect(input.getAttribute('aria-disabled')).toBe('true');
 
-    const addBtn = page.root!.querySelector('button.add-btn') as HTMLButtonElement | null;
-    expect(addBtn).toBeTruthy();
-    expect(addBtn!).toHaveAttribute('disabled');
+    const addBtn = page.root!.querySelector('button.add-btn');
+    expect(addBtn).toBeNull();
 
-    // Clear button is intentionally hidden when disabled
     expect(page.root!.querySelector('button.clear-btn')).toBeNull();
   });
 
@@ -537,18 +527,16 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(comp.inputValue).toBe('o');
   });
 
-  // ✅ FIX: wrap both instances so page.root is the wrapper and querySelectorAll works
   it('dedupes ids when two instances use the same input-id', async () => {
     const page = await newSpecPage({
       components: [AutocompleteMultipleSelections],
       template: () =>
         h('div', null, [
-          h('autocomplete-multiple-selections', { 'input-id': 'dup', 'label': 'First' }),
-          h('autocomplete-multiple-selections', { 'input-id': 'dup', 'label': 'Second' }),
+          h('autocomplete-multiple-selections', { 'input-id': 'dup', label: 'First' }),
+          h('autocomplete-multiple-selections', { 'input-id': 'dup', label: 'Second' }),
         ]),
     });
 
-    // ✅ Query from the document, not page.root
     const comps = page.doc.body.querySelectorAll('autocomplete-multiple-selections');
     expect(comps.length).toBe(2);
 
@@ -566,7 +554,123 @@ describe('<autocomplete-multiple-selections>', () => {
     expect(firstControls).not.toBe(secondControls);
   });
 
-  // ---------------- SNAPSHOTS ----------------
+  it('readOnly: sets input readonly + aria-readonly and hides add/clear buttons', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections input-id="tags" label="Tags" read-only add-btn editable></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.inputValue = 'Cherry';
+    comp.selectedItems = ['Apple'];
+    await page.waitForChanges();
+
+    const input = page.root!.querySelector('input[role="combobox"]') as HTMLInputElement;
+    expect(input.readOnly).toBe(true);
+    expect(input.getAttribute('aria-readonly')).toBe('true');
+    expect(input.classList.contains('read-only')).toBe(true);
+
+    expect(page.root!.querySelector('button.add-btn')).toBeNull();
+    expect(page.root!.querySelector('button.clear-btn')).toBeNull();
+  });
+
+  it('readOnly: keeps selected badges visible but hides remove buttons', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections input-id="tags" label="Tags" read-only></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.selectedItems = ['Apple', 'Orange'];
+    await page.waitForChanges();
+
+    const badges = page.root!.querySelectorAll('.badge');
+    expect(badges.length).toBe(2);
+    expect(page.root!.querySelector('.remove-btn')).toBeNull();
+  });
+
+  it('readOnly: does not open dropdown when filtering finds matches', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections input-id="fruit" label="Fruits" read-only></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['Apple', 'Banana', 'Orange'];
+    comp.inputValue = 'an';
+    comp.filterOptions();
+    await page.waitForChanges();
+
+    expect(comp.filteredOptions).toEqual([]);
+    expect((comp as any).dropdownOpen).toBe(false);
+
+    const input = page.root!.querySelector('input')!;
+    expect(input.getAttribute('aria-expanded')).toBe('false');
+    expect(page.root!.querySelector('.autocomplete-dropdown')).toBeNull();
+  });
+
+  it('readOnly: keyboard navigation does not focus options or open dropdown', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections input-id="letters" label="Letters" read-only></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['A', 'B'];
+    comp.inputValue = 'b';
+    (comp as any).filteredOptions = ['B'];
+    await page.waitForChanges();
+
+    const input = page.root!.querySelector('input')!;
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, composed: true }));
+    await page.waitForChanges();
+
+    expect((comp as any).dropdownOpen).toBe(false);
+    expect(comp.focusedOptionIndex).toBe(-1);
+    expect(input.getAttribute('aria-activedescendant')).toBeNull();
+  });
+
+  it('readOnly: programmatic toggle/remove/clear paths are ignored', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections input-id="ro" label="RO" read-only></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['Apple', 'Banana'];
+    comp.selectedItems = ['Apple'];
+    comp.inputValue = 'Banana';
+    await page.waitForChanges();
+
+    (comp as any).toggleItem('Banana');
+    await page.waitForChanges();
+    expect(comp.selectedItems).toEqual(['Apple']);
+
+    (comp as any).removeItemAt(0);
+    await page.waitForChanges();
+    expect(comp.selectedItems).toEqual(['Apple']);
+
+    (comp as any).clearAll();
+    await page.waitForChanges();
+    expect(comp.selectedItems).toEqual(['Apple']);
+    expect(comp.inputValue).toBe('Banana');
+  });
+
+  it('readOnly: add button click path does nothing when button is absent', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections input-id="ro-add" label="RO Add" read-only add-btn editable></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.options = ['Banana'];
+    comp.inputValue = 'Cherry';
+    await page.waitForChanges();
+
+    expect(page.root!.querySelector('button.add-btn')).toBeNull();
+    expect(comp.options).toEqual(['Banana']);
+    expect(comp.selectedItems).toEqual([]);
+  });
 
   it('matches snapshot (default render)', async () => {
     const page = await newSpecPage({
@@ -601,11 +705,24 @@ describe('<autocomplete-multiple-selections>', () => {
 
     expect(comp.selectedItems).toEqual(['Alpha', 'Gamma']);
 
-    // Re-open for snapshot
     comp.inputValue = 'a';
     comp.filterOptions();
     await page.waitForChanges();
     expect((comp as any).dropdownOpen).toBe(true);
+
+    expect(page.root).toMatchSnapshot();
+  });
+
+  it('matches snapshot (readOnly render)', async () => {
+    const page = await newSpecPage({
+      components: [AutocompleteMultipleSelections],
+      html: `<autocomplete-multiple-selections label="Tags" input-id="tags-ro" read-only></autocomplete-multiple-selections>`,
+    });
+
+    const comp = page.rootInstance as AutocompleteMultipleSelections;
+    comp.selectedItems = ['Alpha', 'Gamma'];
+    comp.inputValue = 'Locked';
+    await page.waitForChanges();
 
     expect(page.root).toMatchSnapshot();
   });

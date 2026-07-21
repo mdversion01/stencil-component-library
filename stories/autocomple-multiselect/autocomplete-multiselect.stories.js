@@ -6,6 +6,7 @@ import {
   FRUIT,
   SIZE_VARIANTS,
   buildDocsHtml,
+  buildDocsHtmlControlledValue,
   buildDocsHtmlMany,
   renderComponent,
   wrapDocsHtml,
@@ -15,7 +16,7 @@ export default {
   title: 'Form/Autocomplete Multiselect',
   tags: ['autodocs'],
   decorators: [
-    (Story) => {
+    Story => {
       const wrap = document.createElement('div');
       wrap.appendChild(DocsWrapStyles());
       wrap.appendChild(Story());
@@ -26,7 +27,11 @@ export default {
     docs: {
       page: DocsPage,
       description: {
-        component: ['Autocomplete Multiselect component for selecting multiple options from a list with autocomplete functionality.', ''].join('\n'),
+        component: [
+          'Autocomplete Multiselect component for selecting multiple options from a list with autocomplete functionality.',
+          '',
+          'Supports controlled selected values, editable option management, validation/error messaging, disabled state, and read-only mode.',
+        ].join('\n'),
       },
       source: {
         language: 'html',
@@ -35,7 +40,7 @@ export default {
     },
   },
 
-  render: (args) => renderComponent(args),
+  render: (args, ctx) => renderComponent(args, ctx),
 
   argTypes: {
     addNewOnEnter: {
@@ -62,11 +67,30 @@ export default {
       table: { category: 'Attributes', defaultValue: { summary: false } },
       description: 'Allows adding/removing options at runtime.',
     },
+    disabled: {
+      control: 'boolean',
+      name: 'disabled',
+      table: { category: 'Attributes', defaultValue: { summary: false } },
+      description: 'Disables the input field, preventing user interaction.',
+    },
+    readOnly: {
+      control: 'boolean',
+      name: 'read-only',
+      table: { category: 'Attributes', defaultValue: { summary: false } },
+      description: 'Makes the input read-only. The input remains focusable, but typing, add/remove, clear, and dropdown interaction are disabled.',
+    },
+    devMode: {
+      control: 'boolean',
+      name: 'dev-mode',
+      table: { category: 'Dev Mode', defaultValue: { summary: false } },
+      description: 'Enables developer mode (extra logging).',
+    },
     id: {
       control: 'text',
       name: 'id',
       table: { category: 'Attributes' },
-      description: 'The unique identifier for the component instance.',
+      description:
+        'Base id for the host element. Storybook will suffix it per-mount to prevent duplicate ids when Docs mounts stories multiple times.',
     },
     preserveInputOnSelect: {
       control: 'boolean',
@@ -104,7 +128,7 @@ export default {
       name: 'arialabelled-by',
       table: { category: 'Accessibility' },
       description:
-        'Legacy: id(s) of label(s) that label this input (space-separated). If empty, component falls back to its internal <label> id.',
+        'Legacy: id(s) of label(s) that label this input (space-separated). If empty, component falls back to its internal label id.',
     },
 
     badgeInlineStyles: {
@@ -161,7 +185,7 @@ export default {
       control: 'object',
       name: 'options',
       table: { category: 'Data' },
-      description: 'Options array (applied at runtime via setOptions/property).',
+      description: 'Options array (applied at runtime via property assignment).',
     },
     value: {
       control: 'object',
@@ -170,19 +194,6 @@ export default {
       description: 'Controlled selected values (array). Applied via property at runtime.',
     },
 
-    devMode: {
-      control: 'boolean',
-      name: 'dev-mode',
-      table: { category: 'Dev Mode', defaultValue: { summary: false } },
-      description: 'Enables developer mode (extra logging).',
-    },
-
-    disabled: {
-      control: 'boolean',
-      name: 'disabled',
-      table: { category: 'Input Attributes', defaultValue: { summary: false } },
-      description: 'Disables the input field, preventing user interaction.',
-    },
     formId: {
       control: 'text',
       name: 'form-id',
@@ -212,7 +223,8 @@ export default {
       control: 'text',
       name: 'input-id',
       table: { category: 'Input Attributes' },
-      description: 'Identifier used as the base for internal ids (deduped when needed).',
+      description:
+        'Base input-id used to derive internal ARIA ids. Storybook will suffix it per-mount to prevent collisions when Docs mounts twice.',
     },
     label: {
       control: 'text',
@@ -326,6 +338,7 @@ export default {
     clearInputOnBlurOutside: false,
     devMode: false,
     disabled: false,
+    readOnly: false,
     editable: false,
     error: false,
     errorMessage: '',
@@ -340,7 +353,7 @@ export default {
     labelCol: '',
     labelCols: '',
     labelHidden: false,
-    labelSize: '',
+    labelSize: 'sm',
     name: '',
     options: FRUIT,
     placeholder: '',
@@ -369,6 +382,7 @@ export const Basic = {
     clearInputOnBlurOutside: false,
     devMode: false,
     disabled: false,
+    readOnly: false,
     editable: false,
     formLayout: '',
     labelAlign: '',
@@ -376,7 +390,7 @@ export const Basic = {
     labelCol: '',
     inputCol: '',
     labelHidden: false,
-    labelSize: '',
+    labelSize: 'sm',
     preserveInputOnSelect: false,
     removeClearBtn: false,
     required: false,
@@ -452,6 +466,8 @@ export const ControlledValue = {
     container.style.gap = '12px';
     container.style.maxWidth = '760px';
 
+    let controlledValue = Array.isArray(args.value) ? args.value.slice() : ['Apple'];
+
     const controls = document.createElement('div');
     controls.style.display = 'flex';
     controls.style.flexWrap = 'wrap';
@@ -466,37 +482,65 @@ export const ControlledValue = {
       return b;
     };
 
-    const elWrap = renderComponent({
-      ...args,
-      id: args.id || 'acm_controlled',
-      inputId: args.inputId || 'acm-controlled',
-      label: args.label || 'Controlled Value',
-    });
+    const hint = document.createElement('div');
+    hint.style.opacity = '0.75';
+
+    const elWrap = renderComponent(
+      {
+        ...args,
+        id: args.id || 'acm_controlled',
+        inputId: args.inputId || 'acm-controlled',
+        label: args.label || 'Controlled Value',
+      },
+      ctx,
+    );
 
     const el = elWrap.querySelector('autocomplete-multiselect');
 
-    const setNext = (next) => {
+    const renderState = source => {
+      hint.textContent = `External controlled value (${source}): ${JSON.stringify(controlledValue)}`;
+    };
+
+    const setNext = next => {
       const safe = Array.isArray(next) ? next.slice() : [];
+      controlledValue = safe;
       ctx.updateArgs?.({ value: safe });
-      if (el) el.value = safe;
+      if (el) el.value = safe.slice();
+      renderState('button click');
     };
 
     controls.appendChild(mkBtn('Set: ["Apple","Mango"]', () => setNext(['Apple', 'Mango'])));
     controls.appendChild(
       mkBtn('Add "Banana"', () => {
-        const cur = Array.isArray(args.value) ? args.value.slice() : [];
-        if (!cur.includes('Banana')) cur.push('Banana');
-        setNext(cur);
+        const next = controlledValue.slice();
+        if (!next.includes('Banana')) next.push('Banana');
+        setNext(next);
       }),
     );
     controls.appendChild(mkBtn('Clear []', () => setNext([])));
+    controls.appendChild(mkBtn('Set: sanitization demo', () => setNext(['  <b>Apple</b>  ', 'MANGO', 'mango', '\u0007Bad\u0000', ''])));
 
-    const hint = document.createElement('div');
-    hint.style.opacity = '0.75';
-    hint.textContent = `Current args.value: ${JSON.stringify(Array.isArray(args.value) ? args.value : [])}`;
+    if (el) {
+      el.addEventListener('multiSelectChange', e => {
+        const next = Array.isArray(e?.detail) ? e.detail : Array.isArray(e?.detail?.value) ? e.detail.value : [];
+        controlledValue = next.slice();
+        ctx.updateArgs?.({ value: controlledValue.slice() });
+        if (el) el.value = controlledValue.slice();
+        renderState('multiSelectChange event');
+      });
 
-    container.appendChild(controls);
+      el.addEventListener('clear', () => {
+        controlledValue = [];
+        ctx.updateArgs?.({ value: [] });
+        if (el) el.value = [];
+        renderState('clear event');
+      });
+    }
+
+    renderState('initial value');
+
     container.appendChild(hint);
+    container.appendChild(controls);
     container.appendChild(elWrap);
 
     return container;
@@ -508,11 +552,11 @@ export const ControlledValue = {
     docs: {
       source: {
         language: 'html',
-        transform: (_src, ctx) => wrapDocsHtml(buildDocsHtml(ctx.args)),
+        transform: () => buildDocsHtmlControlledValue(),
       },
       description: {
         story:
-          'Demonstrates the controlled `value` prop (array). Buttons call `updateArgs({ value })` and also set the element property immediately so the UI updates without waiting for a Storybook re-render.',
+          'Demonstrates the controlled `value` prop (array), including the external state that drives the component and updates it programmatically.',
       },
       story: { height: '420px' },
     },
@@ -521,20 +565,23 @@ export const ControlledValue = {
 ControlledValue.name = 'Controlled Value (array)';
 
 export const Sizes = {
-  render: (args) => {
+  render: (args, ctx) => {
     const container = document.createElement('div');
     container.style.display = 'grid';
     container.style.gap = '14px';
     container.style.maxWidth = '760px';
 
     for (const v of SIZE_VARIANTS) {
-      const el = renderComponent({
-        ...args,
-        id: v.id,
-        inputId: v.inputId,
-        label: v.label,
-        size: v.size,
-      });
+      const el = renderComponent(
+        {
+          ...args,
+          id: v.id,
+          inputId: v.inputId,
+          label: v.label,
+          size: v.size,
+        },
+        ctx,
+      );
       container.appendChild(el);
     }
 
@@ -546,7 +593,7 @@ export const Sizes = {
         language: 'html',
         transform: (_src, ctx) =>
           buildDocsHtmlMany(
-            SIZE_VARIANTS.map((v) =>
+            SIZE_VARIANTS.map(v =>
               buildDocsHtml({
                 ...ctx.args,
                 id: v.id,
@@ -609,6 +656,27 @@ Disabled.parameters = {
   },
 };
 
+export const ReadOnly = {
+  args: {
+    inputId: 'acm-readonly',
+    label: 'Read only',
+    readOnly: true,
+    validationMessage: '',
+    addBtn: true,
+    editable: true,
+    value: ['Banana', 'Cherry'],
+  },
+};
+ReadOnly.name = 'Read Only';
+ReadOnly.parameters = {
+  docs: {
+    description: {
+      story:
+        'Read-only state. The input remains focusable and announces `aria-readonly`, but typing, add/remove, clear, and dropdown interaction are disabled while selected badges remain visible.',
+    },
+  },
+};
+
 export const BadgeStyling = {
   args: {
     inputId: 'acm-badges',
@@ -633,7 +701,7 @@ BadgeStyling.parameters = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
-  render: (args) => {
+  render: (args, ctx) => {
     const wrap = document.createElement('div');
     wrap.style.display = 'grid';
     wrap.style.gap = '16px';
@@ -642,7 +710,7 @@ export const AccessibilityMatrix = {
     const title = document.createElement('div');
     title.innerHTML =
       '<strong>Accessibility matrix</strong>' +
-      '<div style="opacity:.8">Prints computed combobox/listbox/label wiring: role + aria-* + ids (default/inline/horizontal, error/validation, disabled).</div>';
+      '<div style="opacity:.8">Prints computed combobox/listbox/label wiring: role + aria-* + ids (default/inline/horizontal, error/validation, disabled, readOnly).</div>';
     wrap.appendChild(title);
 
     const card = (labelText, build) => {
@@ -696,20 +764,25 @@ export const AccessibilityMatrix = {
             labelText: labelEl?.textContent?.trim() ?? null,
             labelCount: host ? host.querySelectorAll('label').length : null,
             role: input?.getAttribute('role') ?? null,
-            'aria-labelledby': input?.getAttribute('aria-labelledby') ?? null,
-            'aria-label': input?.getAttribute('aria-label') ?? null,
-            'aria-describedby': input?.getAttribute('aria-describedby') ?? null,
-            'aria-controls': input?.getAttribute('aria-controls') ?? null,
-            'aria-expanded': input?.getAttribute('aria-expanded') ?? null,
-            'aria-activedescendant': input?.getAttribute('aria-activedescendant') ?? null,
-            'aria-required': input?.getAttribute('aria-required') ?? null,
-            'aria-invalid': input?.getAttribute('aria-invalid') ?? null,
-            'aria-disabled': input?.getAttribute('aria-disabled') ?? null,
+            ariaLabelledby: input?.getAttribute('aria-labelledby') ?? null,
+            ariaLabel: input?.getAttribute('aria-label') ?? null,
+            ariaDescribedby: input?.getAttribute('aria-describedby') ?? null,
+            ariaControls: input?.getAttribute('aria-controls') ?? null,
+            ariaExpanded: input?.getAttribute('aria-expanded') ?? null,
+            ariaActivedescendant: input?.getAttribute('aria-activedescendant') ?? null,
+            ariaRequired: input?.getAttribute('aria-required') ?? null,
+            ariaInvalid: input?.getAttribute('aria-invalid') ?? null,
+            ariaDisabled: input?.getAttribute('aria-disabled') ?? null,
+            ariaReadonly: input?.getAttribute('aria-readonly') ?? null,
+            readonlyAttr: input?.hasAttribute('readonly') ?? null,
             disabledAttr: input?.hasAttribute('disabled') ?? null,
             listboxPresent: !!listbox,
             listboxId: listbox?.getAttribute('id') ?? null,
             hasValidation: !!host?.querySelector('.invalid-feedback'),
             hasError: !!host?.querySelector('.error-message'),
+            hasAddButton: !!host?.querySelector('button.add-btn'),
+            hasClearButton: !!host?.querySelector('button.clear-btn'),
+            hasRemoveButtons: !!host?.querySelector('.remove-btn'),
           },
           null,
           2,
@@ -722,98 +795,143 @@ export const AccessibilityMatrix = {
 
     wrap.appendChild(
       card('Default (stacked)', () =>
-        renderComponent({
-          ...args,
-          inputId: 'mx-default',
-          label: 'Default A11y',
-          formLayout: '',
-          disabled: false,
-          error: false,
-          validation: false,
-          value: [],
-          ariaLabel: '',
-          ariaLabelledby: '',
-          ariaDescribedby: '',
-          arialabelledBy: '',
-        }),
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-default',
+            label: 'Default A11y',
+            formLayout: '',
+            disabled: false,
+            readOnly: false,
+            error: false,
+            validation: false,
+            value: [],
+            ariaLabel: '',
+            ariaLabelledby: '',
+            ariaDescribedby: '',
+            arialabelledBy: '',
+          },
+          ctx,
+        ),
       ),
     );
 
     wrap.appendChild(
       card('Inline layout', () =>
-        renderComponent({
-          ...args,
-          inputId: 'mx-inline',
-          label: 'Inline',
-          formLayout: 'inline',
-          labelAlign: '',
-          error: false,
-          validation: false,
-          value: [],
-          ariaLabel: '',
-          ariaLabelledby: '',
-          ariaDescribedby: '',
-          arialabelledBy: '',
-        }),
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-inline',
+            label: 'Inline',
+            formLayout: 'inline',
+            labelAlign: '',
+            error: false,
+            validation: false,
+            disabled: false,
+            readOnly: false,
+            value: [],
+            ariaLabel: '',
+            ariaLabelledby: '',
+            ariaDescribedby: '',
+            arialabelledBy: '',
+          },
+          ctx,
+        ),
       ),
     );
 
     wrap.appendChild(
       card('Horizontal layout', () =>
-        renderComponent({
-          ...args,
-          inputId: 'mx-horizontal',
-          label: 'Horizontal',
-          formLayout: 'horizontal',
-          labelAlign: 'right',
-          labelCols: 'xs-12 sm-4',
-          inputCols: 'xs-12 sm-8',
-          error: false,
-          validation: false,
-          value: [],
-          ariaLabel: '',
-          ariaLabelledby: '',
-          ariaDescribedby: '',
-          arialabelledBy: '',
-        }),
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-horizontal',
+            label: 'Horizontal',
+            formLayout: 'horizontal',
+            labelAlign: 'right',
+            labelCols: 'xs-12 sm-4',
+            inputCols: 'xs-12 sm-8',
+            error: false,
+            validation: false,
+            disabled: false,
+            readOnly: false,
+            value: [],
+            ariaLabel: '',
+            ariaLabelledby: '',
+            ariaDescribedby: '',
+            arialabelledBy: '',
+          },
+          ctx,
+        ),
       ),
     );
 
     wrap.appendChild(
       card('Error + Validation', () =>
-        renderComponent({
-          ...args,
-          inputId: 'mx-ev',
-          label: 'Error + Validation',
-          required: true,
-          validation: true,
-          validationMessage: 'This is required.',
-          error: true,
-          errorMessage: 'Something went wrong.',
-          value: [],
-          ariaLabel: '',
-          ariaLabelledby: '',
-          ariaDescribedby: '',
-          arialabelledBy: '',
-        }),
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-ev',
+            label: 'Error + Validation',
+            required: true,
+            validation: true,
+            validationMessage: 'This is required.',
+            error: true,
+            errorMessage: 'Something went wrong.',
+            disabled: false,
+            readOnly: false,
+            value: [],
+            ariaLabel: '',
+            ariaLabelledby: '',
+            ariaDescribedby: '',
+            arialabelledBy: '',
+          },
+          ctx,
+        ),
       ),
     );
 
     wrap.appendChild(
       card('Disabled', () =>
-        renderComponent({
-          ...args,
-          inputId: 'mx-disabled',
-          label: 'Disabled',
-          disabled: true,
-          editable: true,
-          addBtn: true,
-          value: ['Banana'],
-          ariaLabel: '',
-          ariaLabelledby: '',
-          ariaDescribedby: '',
-          arialabelledBy: '',
-        }),
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-disabled',
+            label: 'Disabled',
+            disabled: true,
+            readOnly: false,
+            editable: true,
+            addBtn: true,
+            value: ['Banana'],
+            ariaLabel: '',
+            ariaLabelledby: '',
+            ariaDescribedby: '',
+            arialabelledBy: '',
+          },
+          ctx,
+        ),
+      ),
+    );
+
+    wrap.appendChild(
+      card('Read only', () =>
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-readonly',
+            label: 'Read only',
+            disabled: false,
+            readOnly: true,
+            editable: true,
+            addBtn: true,
+            value: ['Banana'],
+            ariaLabel: '',
+            ariaLabelledby: '',
+            ariaDescribedby: '',
+            arialabelledBy: '',
+          },
+          ctx,
+        ),
       ),
     );
 
@@ -824,7 +942,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Prints computed accessibility wiring for the combobox + listbox: role + `aria-*` attributes + ids. Includes default/inline/horizontal, error+validation, and disabled examples.',
+          'Prints computed accessibility wiring for the combobox + listbox: role + `aria-*` attributes + ids. Includes default/inline/horizontal, error+validation, disabled, and readOnly examples.',
       },
     },
   },

@@ -19,17 +19,19 @@
 | `inputCol`          | `input-col`          |                                                                                      | `number`                         | `10`                    |
 | `inputCols`         | `input-cols`         |                                                                                      | `string`                         | `''`                    |
 | `inputId`           | `input-id`           |                                                                                      | `string`                         | `'drp'`                 |
-| `joinBy`            | `join-by`            |                                                                                      | `string`                         | `' - '`                 |
+| `joinBy`            | `join-by`            |                                                                                      | `string`                         | `'-'`                   |
 | `label`             | `label`              |                                                                                      | `string`                         | `'Date Range Picker'`   |
 | `labelAlign`        | `label-align`        |                                                                                      | `"" \| "right"`                  | `''`                    |
 | `labelCol`          | `label-col`          | Legacy numeric cols (fallback)                                                       | `number`                         | `2`                     |
 | `labelCols`         | `label-cols`         | Responsive column class specs                                                        | `string`                         | `''`                    |
 | `labelHidden`       | `label-hidden`       |                                                                                      | `boolean`                        | `false`                 |
+| `labelSize`         | `label-size`         |                                                                                      | `"" \| "lg" \| "sm"`             | `''`                    |
 | `placeholder`       | `placeholder`        | External placeholder prop (immutable). We derive a default into state.               | `string`                         | `undefined`             |
 | `plumage`           | `plumage`            |                                                                                      | `boolean`                        | `false`                 |
 | `prependId`         | `prepend-id`         |                                                                                      | `string`                         | `''`                    |
 | `prependProp`       | `prepend-prop`       | was `prepend`, renamed to avoid reserved name                                        | `boolean`                        | `false`                 |
 | `rangePicker`       | `range-picker`       | Render only the picker (no input group); disables OK button                          | `boolean`                        | `false`                 |
+| `readOnly`          | `read-only`          |                                                                                      | `boolean`                        | `false`                 |
 | `required`          | `required`           |                                                                                      | `boolean`                        | `false`                 |
 | `showIso`           | `show-iso`           |                                                                                      | `boolean`                        | `false`                 |
 | `showLong`          | `show-long`          |                                                                                      | `boolean`                        | `false`                 |

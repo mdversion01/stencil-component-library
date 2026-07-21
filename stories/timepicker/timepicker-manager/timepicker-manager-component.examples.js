@@ -97,7 +97,7 @@ export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENT
       input-id="angular-manager-time"
       input-name="meetingTime"
       value="00:00:00"
-      [isTwentyFourHourFormat]="true"
+      is-twenty-four-hour-format
     ></timepicker-manager>
   \`,
 })
@@ -146,11 +146,6 @@ export const svelteExample = `
 
     el.addEventListener('managerTimeChange', handleManagerTimeChange);
     el.addEventListener('managerTimeInput', handleManagerTimeInput);
-
-    return () => {
-      el.removeEventListener('managerTimeChange', handleManagerTimeChange);
-      el.removeEventListener('managerTimeInput', handleManagerTimeInput);
-    };
   });
 
   onDestroy(() => {
@@ -175,22 +170,35 @@ export const svelteExample = `
 
 export const svelteKitExample = `
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
 
-  type TimeChangeDetail = {
-    value: string;
-    hours?: string;
-    minutes?: string;
-    seconds?: string;
-    meridiem?: string;
+  type TimeParts = {
+    hour: number;
+    minute: number;
+    second: number;
+    ampm: 'AM' | 'PM';
   };
 
-  type TimeInputDetail = {
+  type ManagerTimeChangeDetail = {
     value: string;
-    hours?: string;
-    minutes?: string;
-    seconds?: string;
-    meridiem?: string;
+    parts: TimeParts;
+    isValid: boolean;
+    source: 'commit' | 'spinner' | 'clear' | 'format' | 'external' | 'inputName' | 'inputId' | 'constraints' | 'hideSeconds';
+    managerInputId: string;
+    impl: 'timepicker-component' | 'plumage-timepicker-component';
+  };
+
+  type ManagerTimeInputDetail = {
+    raw: string;
+    normalized: string;
+    isValid: boolean;
+    parts?: TimeParts;
+    reason?: 'pattern' | 'range';
+    caretStart: number | null;
+    caretEnd: number | null;
+    inputType: string | null;
+    managerInputId: string;
+    impl: 'timepicker-component' | 'plumage-timepicker-component';
   };
 
   type TimepickerManagerElement = HTMLElement & {
@@ -206,15 +214,11 @@ export const svelteKitExample = `
 
   let managerEl: TimepickerManagerElement | null = null;
 
-  const handleManagerTimeChange = (
-    event: CustomEvent<TimeChangeDetail & { managerInputId: string; impl: string }>
-  ) => {
+  const handleManagerTimeChange = (event: CustomEvent<ManagerTimeChangeDetail>) => {
     console.log('managerTimeChange', event.detail);
   };
 
-  const handleManagerTimeInput = (
-    event: CustomEvent<TimeInputDetail & { managerInputId: string; impl: string }>
-  ) => {
+  const handleManagerTimeInput = (event: CustomEvent<ManagerTimeInputDetail>) => {
     console.log('managerTimeInput', event.detail);
   };
 
@@ -224,11 +228,14 @@ export const svelteKitExample = `
 
     el.addEventListener('managerTimeChange', handleManagerTimeChange);
     el.addEventListener('managerTimeInput', handleManagerTimeInput);
+  });
 
-    return () => {
-      el.removeEventListener('managerTimeChange', handleManagerTimeChange);
-      el.removeEventListener('managerTimeInput', handleManagerTimeInput);
-    };
+  onDestroy(() => {
+    const el = managerEl;
+    if (!el) return;
+
+    el.removeEventListener('managerTimeChange', handleManagerTimeChange);
+    el.removeEventListener('managerTimeInput', handleManagerTimeInput);
   });
 </script>
 

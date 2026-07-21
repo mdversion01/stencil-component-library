@@ -238,6 +238,46 @@ describe('<plumage-input-group-component>', () => {
     expect((root.querySelector('input.form-control') as HTMLInputElement).value).toBe('USA');
   });
 
+  it('syncs native input when value prop changes externally', async () => {
+    const page = await newSpecPage({
+      components: [PlumageInputGroupComponent],
+      html: `<plumage-input-group-component label="Country" input-id="country-external" value="Start"></plumage-input-group-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const comp = page.rootInstance as PlumageInputGroupComponent;
+    let input = page.root!.querySelector('input.form-control') as HTMLInputElement;
+
+    expect(input.value).toBe('Start');
+
+    comp.value = 'Updated externally';
+    await page.waitForChanges();
+
+    input = page.root!.querySelector('input.form-control') as HTMLInputElement;
+    expect(input.value).toBe('Updated externally');
+  });
+
+  it('syncs search input when value prop changes externally', async () => {
+    const page = await newSpecPage({
+      components: [PlumageInputGroupComponent],
+      html: `<plumage-input-group-component plumage-search input-id="search-sync" label="Search" value="ann"></plumage-input-group-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const comp = page.rootInstance as PlumageInputGroupComponent;
+    let input = page.root!.querySelector('input.search-bar') as HTMLInputElement;
+
+    expect(input.value).toBe('ann');
+
+    comp.value = 'beth';
+    await page.waitForChanges();
+
+    input = page.root!.querySelector('input.search-bar') as HTMLInputElement;
+    expect(input.value).toBe('beth');
+  });
+
   it('renders append native button from props with ids and emits appendClick', async () => {
     const page = await newSpecPage({
       components: [PlumageInputGroupComponent],

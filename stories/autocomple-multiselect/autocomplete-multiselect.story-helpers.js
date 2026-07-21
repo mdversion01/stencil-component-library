@@ -13,11 +13,11 @@ export const DocsWrapStyles = () => {
   return style;
 };
 
-export const normalize = (txt) => {
+export const normalize = txt => {
   const lines = String(txt)
     .replace(/\r\n/g, '\n')
     .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
+    .map(l => l.replace(/[ \t]+$/g, ''));
 
   const out = [];
   let prevBlank = false;
@@ -40,13 +40,13 @@ export const normalize = (txt) => {
   return out.join('\n');
 };
 
-export const attrLines = (pairs) =>
+export const attrLines = pairs =>
   pairs
     .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
     .map(([k, v]) => (v === true ? `${k}` : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
     .join('\n  ');
 
-export const buildDocsHtml = (args) =>
+export const buildDocsHtml = args =>
   normalize(`
 <autocomplete-multiselect
   ${attrLines([
@@ -79,6 +79,7 @@ export const buildDocsHtml = (args) =>
     ['error', args.error],
     ['error-message', args.errorMessage],
     ['disabled', args.disabled],
+    ['read-only', args.readOnly],
     ['label-hidden', args.labelHidden],
     ['dev-mode', args.devMode],
 
@@ -107,18 +108,88 @@ export const buildDocsHtml = (args) =>
 ></autocomplete-multiselect>
 `);
 
-export const wrapDocsHtml = (innerHtml) =>
+export const buildDocsHtmlControlledValue = () =>
+  wrapDocsHtml(
+    normalize(`
+<div style="max-width:760px; display:grid; gap:12px;">
+  <div id="acm-controlled-state" style="opacity:.75;">
+    External controlled value: ["Apple"]
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap; gap:8px;">
+    <button type="button" id="acm-set-apple-mango">Set: ["Apple","Mango"]</button>
+    <button type="button" id="acm-add-banana">Add "Banana"</button>
+    <button type="button" id="acm-clear">Clear []</button>
+    <button type="button" id="acm-sanitize">Set: sanitization demo</button>
+  </div>
+
+  <autocomplete-multiselect
+    id="acm_controlled"
+    input-id="acm-controlled"
+    label="Controlled Value"
+  ></autocomplete-multiselect>
+
+  <script>
+    let controlledValue = ['Apple'];
+
+    const host = document.querySelector('autocomplete-multiselect');
+    const state = document.querySelector('#acm-controlled-state');
+
+    const renderState = (source) => {
+      state.textContent = 'External controlled value (' + source + '): ' + JSON.stringify(controlledValue);
+    };
+
+    const applyValue = (next, source) => {
+      controlledValue = Array.isArray(next) ? next.slice() : [];
+      host.value = controlledValue.slice();
+      renderState(source);
+    };
+
+    document.querySelector('#acm-set-apple-mango').addEventListener('click', () => {
+      applyValue(['Apple', 'Mango'], 'button click');
+    });
+
+    document.querySelector('#acm-add-banana').addEventListener('click', () => {
+      const next = controlledValue.slice();
+      if (!next.includes('Banana')) next.push('Banana');
+      applyValue(next, 'button click');
+    });
+
+    document.querySelector('#acm-clear').addEventListener('click', () => {
+      applyValue([], 'button click');
+    });
+
+    document.querySelector('#acm-sanitize').addEventListener('click', () => {
+      applyValue(['  <b>Apple</b>  ', 'MANGO', 'mango', '\\u0007Bad\\u0000', ''], 'button click');
+    });
+
+    host.addEventListener('multiSelectChange', (e) => {
+      const next = Array.isArray(e.detail) ? e.detail : Array.isArray(e.detail?.value) ? e.detail.value : [];
+      applyValue(next, 'multiSelectChange event');
+    });
+
+    host.addEventListener('clear', () => {
+      applyValue([], 'clear event');
+    });
+
+    applyValue(controlledValue, 'initial value');
+  </script>
+</div>
+`),
+  );
+
+export const wrapDocsHtml = innerHtml =>
   normalize(`
 <div style="max-width:680px;">
   ${String(innerHtml).replace(/\n/g, '\n  ')}
 </div>
 `);
 
-export const buildDocsHtmlMany = (snippets) =>
+export const buildDocsHtmlMany = snippets =>
   wrapDocsHtml(
     normalize(`
 <div style="display:grid; gap:14px;">
-${snippets.map((s) => `  ${String(s).replace(/\n/g, '\n  ')}`).join('\n')}
+${snippets.map(s => `  ${String(s).replace(/\n/g, '\n  ')}`).join('\n')}
 </div>
 `),
   );
@@ -152,7 +223,7 @@ export const setValueWhenReady = async (el, value) => {
   el.value = safe;
 };
 
-export const wrapEl = (childEl) => {
+export const wrapEl = childEl => {
   const wrap = document.createElement('div');
   wrap.style.maxWidth = '680px';
   wrap.appendChild(childEl);
@@ -182,11 +253,46 @@ export const SIZE_VARIANTS = [
   { key: 'lg', label: 'Large', size: 'lg', inputId: 'acm-lg', id: 'acm_lg' },
 ];
 
-export const renderComponent = (args) => {
+const __renderSeqByStory = Object.create(null);
+
+const safeStoryKey = ctx => String(ctx?.id || 'story').replace(/[^a-z0-9_-]/gi, '_');
+
+const nextMountSuffix = ctx => {
+  const k = safeStoryKey(ctx);
+  __renderSeqByStory[k] = (__renderSeqByStory[k] || 0) + 1;
+  return `${k}_${__renderSeqByStory[k]}`;
+};
+
+const withUniqueId = (base, suffix) => {
+  const b = String(base || '').trim() || 'acm';
+  return `${b}__${suffix}`;
+};
+
+const getMountSuffix = ctx => {
+  if (!ctx) return 'mount';
+  if (!ctx.__acmMountSuffix) ctx.__acmMountSuffix = nextMountSuffix(ctx);
+  if (!ctx.__acmLocalSeq) ctx.__acmLocalSeq = 0;
+  return ctx.__acmMountSuffix;
+};
+
+const nextLocalSeq = ctx => {
+  if (!ctx) return 1;
+  ctx.__acmLocalSeq = (ctx.__acmLocalSeq || 0) + 1;
+  return ctx.__acmLocalSeq;
+};
+
+export const renderComponent = (args, ctx) => {
   const el = document.createElement('autocomplete-multiselect');
 
-  setAttr(el, 'id', args.id);
-  setAttr(el, 'input-id', args.inputId);
+  const mountSuffix = getMountSuffix(ctx);
+  const local = nextLocalSeq(ctx);
+  const uniq = `${mountSuffix}_${local}`;
+
+  const hostId = withUniqueId(args.id, uniq);
+  const inputId = withUniqueId(args.inputId, uniq);
+
+  setAttr(el, 'id', hostId);
+  setAttr(el, 'input-id', inputId);
   setAttr(el, 'label', args.label);
   setAttr(el, 'placeholder', args.placeholder);
   setAttr(el, 'form-id', args.formId);
@@ -221,6 +327,7 @@ export const renderComponent = (args) => {
   args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
   args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
   args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
+  args.readOnly ? el.setAttribute('read-only', '') : el.removeAttribute('read-only');
   args.labelHidden ? el.setAttribute('label-hidden', '') : el.removeAttribute('label-hidden');
   args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
   args.addBtn ? el.setAttribute('add-btn', '') : el.removeAttribute('add-btn');
@@ -233,10 +340,10 @@ export const renderComponent = (args) => {
   setAttr(el, 'add-new-on-enter', args.addNewOnEnter);
   setAttr(el, 'preserve-input-on-select', args.preserveInputOnSelect);
 
-  el.addEventListener('multiSelectChange', (e) => console.log('[acm] selectionChange', e.detail));
-  el.addEventListener('valueChange', (e) => console.log('[acm] valueChange', e.detail));
-  el.addEventListener('optionsChange', (e) => console.log('[acm] optionsChange', e.detail));
-  el.addEventListener('optionDelete', (e) => console.log('[acm] optionDelete', e.detail));
+  el.addEventListener('multiSelectChange', e => console.log('[acm] selectionChange', e.detail));
+  el.addEventListener('valueChange', e => console.log('[acm] valueChange', e.detail));
+  el.addEventListener('optionsChange', e => console.log('[acm] optionsChange', e.detail));
+  el.addEventListener('optionDelete', e => console.log('[acm] optionDelete', e.detail));
   el.addEventListener('clear', () => console.log('[acm] clear'));
 
   const fallback = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];

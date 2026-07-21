@@ -1,6 +1,10 @@
+// File: src/stories/input-group-component/input-group-component.stories.js
+
 import DocsPage from './input-group-component.docs.mdx';
 import {
   buildDocsHtml,
+  buildDocsHtmlExternalValue,
+  buildDocsHtmlValueProp,
   buildEl,
   renderMatrixRow,
 } from './input-group-component.story-helpers.js';
@@ -15,7 +19,7 @@ export default {
       page: DocsPage,
       description: {
         component:
-          'The `input-group-component` is a wrapper for an input field that allows you to add prepend and append content such as icons, text, or native buttons. It also supports various form layouts, affix button IDs, emitted click events, validation states, and read-only mode.',
+          'The `input-group-component` is a wrapper for an input field that allows you to add prepend and append content such as icons, text, or native buttons. It also supports various form layouts, affix button IDs, emitted click events, validation states, read-only mode, and external value syncing.',
       },
       source: {
         language: 'html',
@@ -364,6 +368,106 @@ export const Basic = {
       description: {
         story:
           'This is a basic example of the input group component with an append icon. You can customize the label, placeholder, and affix content using the controls.',
+      },
+    },
+  },
+};
+
+export const ValueProp = {
+  name: 'Value Prop',
+  args: {
+    ...Basic.args,
+    inputId: 'amount-value',
+    label: 'Amount',
+    value: '123.45',
+    placeholder: 'Enter amount',
+    prepend: false,
+    append: true,
+    prependIcon: '',
+    appendIcon: 'fa-solid fa-dollar-sign',
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlValueProp(),
+      },
+      description: {
+        story:
+          'This example demonstrates setting the initial input value with the `value` prop.',
+      },
+    },
+  },
+};
+
+export const ExternalValue = {
+  name: 'External Value',
+  render: () => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
+    wrap.style.maxWidth = '640px';
+
+    const controls = document.createElement('div');
+    controls.style.display = 'flex';
+    controls.style.flexWrap = 'wrap';
+    controls.style.gap = '8px';
+
+    const output = document.createElement('div');
+    output.style.fontSize = '14px';
+    output.style.color = '#444';
+
+    const host = buildEl({
+      ...Basic.args,
+      inputId: 'amount-external',
+      label: 'Amount',
+      placeholder: 'Enter amount',
+      prepend: false,
+      append: true,
+      prependIcon: '',
+      appendIcon: 'fa-solid fa-dollar-sign',
+      value: '',
+    });
+
+    const update = () => {
+      output.textContent = `Current external value: ${JSON.stringify(host.value ?? '')}`;
+    };
+
+    const makeButton = (label, nextValue) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = label;
+      btn.addEventListener('click', () => {
+        host.value = nextValue;
+        update();
+      });
+      return btn;
+    };
+
+    host.addEventListener('valueChange', e => {
+      output.textContent = `Current external value: ${JSON.stringify(e.detail?.value ?? '')}`;
+    });
+
+    controls.append(
+      makeButton('Load 123.45', '123.45'),
+      makeButton('Load 999.00', '999.00'),
+      makeButton('Load 42.00', '42.00'),
+      makeButton('Clear', ''),
+    );
+
+    update();
+    wrap.append(controls, host, output);
+    return wrap;
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlExternalValue(),
+      },
+      description: {
+        story:
+          'Demonstrates updating the component from an external source after render by assigning to the `value` property. The native input stays synced with external value changes.',
       },
     },
   },

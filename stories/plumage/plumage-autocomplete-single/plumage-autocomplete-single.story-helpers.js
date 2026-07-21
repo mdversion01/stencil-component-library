@@ -1,4 +1,8 @@
+// File: src/stories/plumage-autocomplete-single/plumage-autocomplete-single.story-helpers.js
+
 export const TAG = 'plumage-autocomplete-single';
+
+export const DEFAULT_OPTIONS = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
 
 export const DocsWrapStyles = () => {
   const style = document.createElement('style');
@@ -13,11 +17,11 @@ export const DocsWrapStyles = () => {
   return style;
 };
 
-export const normalize = (txt) => {
+export const normalize = txt => {
   const lines = String(txt || '')
     .replace(/\r\n/g, '\n')
     .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
+    .map(l => l.replace(/[ \t]+$/g, ''));
 
   const out = [];
   let prevBlank = false;
@@ -40,13 +44,13 @@ export const normalize = (txt) => {
   return out.join('\n');
 };
 
-export const attrLines = (pairs) =>
+export const attrLines = pairs =>
   pairs
     .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
     .map(([k, v]) => (v === true ? `${k}` : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
     .join('\n  ');
 
-export const buildDocsComponentHtml = (args) =>
+export const buildDocsComponentHtml = args =>
   normalize(`
 <plumage-autocomplete-single
   ${attrLines([
@@ -55,6 +59,7 @@ export const buildDocsComponentHtml = (args) =>
     ['clear-icon', args.clearIcon],
     ['dev-mode', args.devMode],
     ['disabled', args.disabled],
+    ['read-only', args.readOnly],
     ['error', args.error],
     ['error-message', args.errorMessage],
     ['form-id', args.formId],
@@ -81,18 +86,67 @@ export const buildDocsComponentHtml = (args) =>
 ></plumage-autocomplete-single>
 `);
 
-export const wrapDocsHtml = (innerHtml) =>
+export const buildDocsHtmlControlledValue = () =>
+  normalize(`
+<div style="max-width:680px; display:grid; gap:10px;">
+  <div id="plumage-controlled-value-state" style="font-size:14px; color:#444;">
+    External controlled value: "Apple"
+  </div>
+
+  <plumage-autocomplete-single
+    id="plumageAcSingle_controlled"
+    input-id="plumageAcSingle_controlled"
+    label="Autocomplete Single"
+    placeholder="Type to search/filter..."
+    value="Apple"
+  ></plumage-autocomplete-single>
+
+  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+    <button type="button" id="plumage-set-apple">Set "Apple"</button>
+    <button type="button" id="plumage-set-mango">Set "Mango"</button>
+    <button type="button" id="plumage-clear-value">Clear value</button>
+  </div>
+
+  <script>
+    let controlledValue = 'Apple';
+
+    const host = document.querySelector('plumage-autocomplete-single');
+    const state = document.querySelector('#plumage-controlled-value-state');
+
+    const renderState = () => {
+      state.textContent = 'External controlled value: ' + JSON.stringify(controlledValue);
+    };
+
+    const applyValue = next => {
+      controlledValue = typeof next === 'string' ? next : '';
+      host.value = controlledValue;
+      renderState();
+    };
+
+    document.querySelector('#plumage-set-apple').addEventListener('click', () => applyValue('Apple'));
+    document.querySelector('#plumage-set-mango').addEventListener('click', () => applyValue('Mango'));
+    document.querySelector('#plumage-clear-value').addEventListener('click', () => applyValue(''));
+
+    host.addEventListener('itemSelect', e => applyValue(String(e.detail || '')));
+    host.addEventListener('clear', () => applyValue(''));
+
+    renderState();
+  </script>
+</div>
+`);
+
+export const wrapDocsHtml = innerHtml =>
   normalize(`
 <div style="max-width:680px;">
   ${String(innerHtml).replace(/\n/g, '\n  ')}
 </div>
 `);
 
-export const buildDocsHtmlMany = (snippets) =>
+export const buildDocsHtmlMany = snippets =>
   wrapDocsHtml(
     normalize(`
 <div style="display:grid; gap:14px;">
-${snippets.map((s) => `  ${String(s).replace(/\n/g, '\n  ')}`).join('\n')}
+${snippets.map(s => `  ${String(s).replace(/\n/g, '\n  ')}`).join('\n')}
 </div>
 `),
   );
@@ -151,13 +205,11 @@ export const updateArgsBestEffort = (ctx, updatedArgs) => {
   } catch (_e) {}
 };
 
-export const DEFAULT_OPTIONS = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
-
 const __renderSeqByStory = Object.create(null);
 
-const safeStoryKey = (ctx) => String(ctx?.id || 'story').replace(/[^a-z0-9_-]/gi, '_');
+const safeStoryKey = ctx => String(ctx?.id || 'story').replace(/[^a-z0-9_-]/gi, '_');
 
-export const nextMountSuffix = (ctx) => {
+export const nextMountSuffix = ctx => {
   const k = safeStoryKey(ctx);
   __renderSeqByStory[k] = (__renderSeqByStory[k] || 0) + 1;
   return `${k}_${__renderSeqByStory[k]}`;
@@ -207,6 +259,7 @@ export const renderComponent = (args, ctx, overrides = {}) => {
   (overrides.validation ?? args.validation) ? el.setAttribute('validation', '') : el.removeAttribute('validation');
   (overrides.error ?? args.error) ? el.setAttribute('error', '') : el.removeAttribute('error');
   (overrides.disabled ?? args.disabled) ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
+  (overrides.readOnly ?? args.readOnly) ? el.setAttribute('read-only', '') : el.removeAttribute('read-only');
   (overrides.devMode ?? args.devMode) ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
   (overrides.removeClearBtn ?? args.removeClearBtn) ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
 
@@ -219,21 +272,21 @@ export const renderComponent = (args, ctx, overrides = {}) => {
   setAutoSortWhenReady(el, overrides.autoSort ?? args.autoSort);
   setValueWhenReady(el, overrides.value ?? args.value);
 
-  el.addEventListener('itemSelect', (e) => console.log('[plumage-autocomplete-single] itemSelect', e.detail));
-  el.addEventListener('valueChange', (e) => console.log('[plumage-autocomplete-single] valueChange', e.detail));
+  el.addEventListener('itemSelect', e => console.log('[plumage-autocomplete-single] itemSelect', e.detail));
+  el.addEventListener('valueChange', e => console.log('[plumage-autocomplete-single] valueChange', e.detail));
   el.addEventListener('clear', () => console.log('[plumage-autocomplete-single] clear'));
 
   return el;
 };
 
-const escapeHtmlA11ySingle = (s) =>
+const escapeHtmlA11ySingle = s =>
   String(s)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 
-const readA11ySnapshotSingle = (hostEl) => {
+const readA11ySnapshotSingle = hostEl => {
   const input = hostEl?.querySelector?.('input') || null;
 
   const keys = [
@@ -268,7 +321,7 @@ const readA11ySnapshotSingle = (hostEl) => {
   const live = input?.id ? hostEl.querySelector(`#${input.id}-live`) : hostEl.querySelector('.sr-only[aria-live]');
   const messages = hostEl.querySelectorAll('[role="alert"], .invalid-feedback, .error-message');
   const msgTexts = Array.from(messages)
-    .map((n) => (n.textContent || '').trim())
+    .map(n => (n.textContent || '').trim())
     .filter(Boolean);
 
   return {
@@ -322,13 +375,14 @@ export const mkMatrixCellSingle = (args, { idOverride, inputIdOverride, title } 
   setAttr(el, 'label-size', args.labelSize);
   setAttr(el, 'placeholder', args.placeholder);
   setAttr(el, 'size', args.size);
-  setAttr(el, 'type', (args.type) || 'text');
+  setAttr(el, 'type', args.type || 'text');
   setAttr(el, 'validation-message', args.validationMessage);
 
   args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
   args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
   args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
   args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
+  args.readOnly ? el.setAttribute('read-only', '') : el.removeAttribute('read-only');
   args.labelHidden ? el.setAttribute('label-hidden', '') : el.removeAttribute('label-hidden');
   args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
   args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
@@ -364,14 +418,14 @@ export const mkMatrixCellSingle = (args, { idOverride, inputIdOverride, title } 
           el.validate();
         } catch (_) {}
       }
-      return new Promise((r) => setTimeout(r, 0));
+      return new Promise(r => setTimeout(r, 0));
     })
     .then(() => {
       const snap = readA11ySnapshotSingle(el);
       pre.innerHTML = escapeHtmlA11ySingle(JSON.stringify(snap, null, 2));
       status.textContent = 'Snapshot ready.';
     })
-    .catch((err) => {
+    .catch(err => {
       status.textContent = 'Snapshot error.';
       pre.innerHTML = escapeHtmlA11ySingle(String(err?.stack || err));
     });

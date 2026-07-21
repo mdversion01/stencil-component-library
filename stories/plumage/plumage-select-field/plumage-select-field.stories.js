@@ -1,7 +1,10 @@
+// src/stories/plumage-select-field-component.stories.js
 import DocsPage from './plumage-select-field.docs.mdx';
 import {
   DocsWrapStyles,
   buildDocsHtml,
+  buildDocsHtmlExternalMultiValue,
+  buildDocsHtmlExternalValue,
   getSnapshot,
   normalize,
   renderComponent as Template,
@@ -163,6 +166,12 @@ export default {
       table: { category: 'Select Field Attributes', defaultValue: false },
       description: 'Disable the select field',
     },
+    readOnly: {
+      control: 'boolean',
+      name: 'read-only',
+      table: { category: 'Select Field Attributes', defaultValue: false },
+      description: 'Sets the select field to a read-only state. Adds the `read-only` class and disables interaction.',
+    },
     fieldHeight: {
       control: { type: 'number', min: 2, step: 1 },
       name: 'field-height',
@@ -178,7 +187,7 @@ export default {
     value: {
       control: 'text',
       table: { category: 'Select Field Attributes' },
-      description: 'For single select; in multiple mode prefer selection via UI',
+      description: 'For single select. In multiple mode, the component expects an array value via property, not an HTML attribute.',
     },
 
     required: { control: 'boolean', table: { category: 'Validation', defaultValue: false }, description: 'Mark the field as required' },
@@ -209,6 +218,7 @@ const baseArgs = {
   multiple: false,
   required: false,
   disabled: false,
+  readOnly: false,
 
   validation: false,
   validationMessage: '',
@@ -266,6 +276,205 @@ export const WithSelection = {
   },
 };
 
+export const ValueFromOutsideSource = {
+  name: 'Value from Outside Source',
+  render: args => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
+    wrap.style.maxWidth = '680px';
+
+    const controls = document.createElement('div');
+    controls.style.display = 'flex';
+    controls.style.gap = '8px';
+    controls.style.flexWrap = 'wrap';
+
+    const status = document.createElement('div');
+    status.style.fontSize = '14px';
+    status.style.color = '#444';
+
+    const mount = document.createElement('div');
+    mount.innerHTML = Template({
+      ...args,
+      value: '',
+      selectFieldId: args.selectFieldId || 'plumage-fruit-external-value',
+      label: args.label || 'Fruits',
+      defaultOptionTxt: args.defaultOptionTxt || 'Select a fruit',
+    });
+
+    const host = mount.querySelector('plumage-select-field-component');
+
+    const syncStatus = () => {
+      status.textContent = `Current external value: ${host?.value ?? '(none)'}`;
+    };
+
+    const setExternalValue = value => {
+      if (!host) return;
+      host.value = value;
+      syncStatus();
+    };
+
+    const makeBtn = (text, value) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-outline-secondary btn-sm';
+      btn.textContent = text;
+      btn.addEventListener('click', () => setExternalValue(value));
+      return btn;
+    };
+
+    controls.append(
+      makeBtn('Load Apple', 'apple'),
+      makeBtn('Load Banana', 'banana'),
+      makeBtn('Load Cherry', 'cherry'),
+    );
+
+    if (host) {
+      host.addEventListener('change', syncStatus);
+      host.addEventListener('valueChange', syncStatus);
+    }
+
+    wrap.append(controls, mount, status);
+
+    requestAnimationFrame(() => {
+      syncStatus();
+      setTimeout(() => setExternalValue('banana'), 600);
+    });
+
+    return wrap;
+  },
+  args: {
+    ...baseArgs,
+    label: 'Fruits',
+    labelSize: 'sm',
+    selectFieldId: 'plumage-fruit-external-value',
+    defaultOptionTxt: 'Select a fruit',
+    value: '',
+    options: [
+      { value: 'apple', name: 'Apple' },
+      { value: 'banana', name: 'Banana' },
+      { value: 'cherry', name: 'Cherry' },
+    ],
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlExternalValue(),
+      },
+      description: {
+        story: 'Demonstrates updating the component `value` prop from an external source after render.',
+      },
+    },
+  },
+};
+
+export const MultipleValueFromOutsideSource = {
+  name: 'Multiple Value from Outside Source',
+  render: args => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
+    wrap.style.maxWidth = '680px';
+
+    const controls = document.createElement('div');
+    controls.style.display = 'flex';
+    controls.style.gap = '8px';
+    controls.style.flexWrap = 'wrap';
+
+    const status = document.createElement('div');
+    status.style.fontSize = '14px';
+    status.style.color = '#444';
+
+    const mount = document.createElement('div');
+    mount.innerHTML = Template({
+      ...args,
+      multiple: true,
+      value: '',
+      label: args.label || 'Tags',
+      selectFieldId: args.selectFieldId || 'plumage-tags-external-value',
+      defaultOptionTxt: args.defaultOptionTxt || 'Choose tags',
+      fieldHeight: args.fieldHeight ?? 6,
+    });
+
+    const host = mount.querySelector('plumage-select-field-component');
+
+    const readHostValue = () => {
+      if (!host) return [];
+      const v = host.value;
+      return Array.isArray(v) ? v : [];
+    };
+
+    const syncStatus = () => {
+      status.textContent = `Current external values: ${JSON.stringify(readHostValue())}`;
+    };
+
+    const setExternalValue = value => {
+      if (!host) return;
+      host.value = value;
+      syncStatus();
+    };
+
+    const makeBtn = (text, value) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-outline-secondary btn-sm';
+      btn.textContent = text;
+      btn.addEventListener('click', () => setExternalValue(value));
+      return btn;
+    };
+
+    controls.append(
+      makeBtn('Load UX + Web', ['ux', 'web']),
+      makeBtn('Load Mobile + Data', ['mobile', 'data']),
+      makeBtn('Load All', ['ux', 'web', 'mobile', 'data']),
+      makeBtn('Load Empty Default', ['']),
+      makeBtn('Clear', []),
+    );
+
+    if (host) {
+      host.addEventListener('change', syncStatus);
+      host.addEventListener('valueChange', syncStatus);
+    }
+
+    wrap.append(controls, mount, status);
+
+    requestAnimationFrame(() => {
+      syncStatus();
+      setTimeout(() => setExternalValue(['ux', 'web']), 600);
+    });
+
+    return wrap;
+  },
+  args: {
+    ...baseArgs,
+    label: 'Tags',
+    multiple: true,
+    defaultOptionTxt: 'Choose tags',
+    selectFieldId: 'plumage-tags-external-value',
+    fieldHeight: 6,
+    value: '',
+    options: [
+      { value: 'ux', name: 'UX' },
+      { value: 'web', name: 'Web' },
+      { value: 'mobile', name: 'Mobile' },
+      { value: 'data', name: 'Data' },
+    ],
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlExternalMultiValue(),
+      },
+      description: {
+        story:
+          'Demonstrates updating the component `value` property from an external source in `multiple` mode using an array. Passing `[""]` is normalized by the component to `[]`, and selecting the empty default option clears the selection.',
+      },
+    },
+  },
+};
+
 export const MultipleSelection = {
   name: 'Multiple Selections',
   render: args => Template(args),
@@ -286,7 +495,7 @@ export const MultipleSelection = {
     docs: {
       description: {
         story:
-          'An example of the select field in multiple selection mode. The `field-height` attribute can be used to control the height of the select box when `multiple` is enabled.',
+          'An example of the select field in multiple selection mode. The `field-height` attribute can be used to control the height of the select box when `multiple` is enabled. Selecting the empty default option clears the current selections.',
       },
     },
   },
@@ -361,6 +570,24 @@ export const Disabled = {
     docs: {
       description: {
         story: 'An example of the select field in a disabled state.',
+      },
+    },
+  },
+};
+
+export const ReadOnly = {
+  name: 'Read Only',
+  render: args => Template(args),
+  args: {
+    ...baseArgs,
+    readOnly: true,
+    value: 'banana',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'An example of the select field in a read-only state. The component adds the `read-only` class, disables interaction, and suppresses invalid UI.',
       },
     },
   },
@@ -512,7 +739,7 @@ export const AccessibilityMatrix = {
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
       <div style="opacity:.8">
-        Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal, validation, and disabled.
+        Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal, validation, disabled, and read-only.
       </div>
     `;
     wrap.appendChild(header);
@@ -574,6 +801,7 @@ export const AccessibilityMatrix = {
         formLayout: '',
         validation: false,
         disabled: false,
+        readOnly: false,
         value: '',
       }),
     );
@@ -585,6 +813,7 @@ export const AccessibilityMatrix = {
         formLayout: 'inline',
         validation: false,
         disabled: false,
+        readOnly: false,
         value: '',
       }),
     );
@@ -599,6 +828,7 @@ export const AccessibilityMatrix = {
         inputCols: 'xs-12 sm-8',
         validation: false,
         disabled: false,
+        readOnly: false,
         value: '',
       }),
     );
@@ -610,6 +840,8 @@ export const AccessibilityMatrix = {
         required: true,
         validation: true,
         validationMessage: 'This is required.',
+        readOnly: false,
+        disabled: false,
         value: '',
       }),
     );
@@ -619,6 +851,18 @@ export const AccessibilityMatrix = {
         selectFieldId: 'mx-select-disabled',
         label: 'Disabled',
         disabled: true,
+        readOnly: false,
+        value: 'banana',
+        validation: false,
+      }),
+    );
+
+    wrap.appendChild(
+      card('Read Only', {
+        selectFieldId: 'mx-select-readonly',
+        label: 'Read Only',
+        readOnly: true,
+        disabled: false,
         value: 'banana',
         validation: false,
       }),
@@ -631,7 +875,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Prints computed accessibility wiring for the select: `aria-labelledby`, `aria-describedby` (including validation id when present), `aria-required`, `aria-invalid` across default / inline / horizontal, validation, and disabled.',
+          'Prints computed accessibility wiring for the select: `aria-labelledby`, `aria-describedby` (including validation id when present), `aria-required`, `aria-invalid`, `aria-readonly`, and `aria-disabled` across default / inline / horizontal, validation, disabled, and read-only.',
       },
       source: {
         language: 'html',

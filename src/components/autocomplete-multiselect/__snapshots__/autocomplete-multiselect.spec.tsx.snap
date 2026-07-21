@@ -1,5 +1,40 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`autocomplete-multiselect matches snapshot (readOnly render) 1`] = `
+<autocomplete-multiselect input-id="tag-readonly" label="Tags" read-only="">
+  <div class="autocomplete-container form-group">
+    <div>
+      <label class="form-control-label label-sm" for="tagReadonly" id="tagReadonly-label">
+        <span>
+          Tags
+        </span>
+      </label>
+      <div>
+        <div class="ac-multi-select-container read-only">
+          <div class="ac-selected-items">
+            <div class="badge">
+              <span>
+                Apple
+              </span>
+            </div>
+            <div class="badge">
+              <span>
+                Orange
+              </span>
+            </div>
+          </div>
+          <div class="ac-input-container-multi">
+            <div class="input-group read-only">
+              <input aria-autocomplete="list" aria-controls="tagReadonly-listbox" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="tagReadonly-label" aria-readonly="true" autocomplete="off" class="form-control read-only" id="tagReadonly" inputmode="text" placeholder="Tags" readonly="" role="combobox" spellcheck="false" type="text" value="Locked">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</autocomplete-multiselect>
+`;
+
 exports[`autocomplete-multiselect renders full DOM output snapshot for given props 1`] = `
 <autocomplete-multiselect add-btn="" badge-inline-styles="background-color: red; color: white;" badge-shape="rounded" badge-variant="danger" editable="" error="" error-message="Invalid input" input-id="tag-input" label="Tags" required="" validation-message="Required field.">
   <div class="autocomplete-container form-group">

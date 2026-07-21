@@ -21,6 +21,7 @@
 | `isTwentyFourHourFormat` | `is-twenty-four-hour-format` |             | `boolean`          | `true`         |
 | `isValid`                | `is-valid`                   |             | `boolean`          | `true`         |
 | `labelText`              | `label-text`                 |             | `string`           | `'Enter Time'` |
+| `readOnly`               | `read-only`                  |             | `boolean`          | `false`        |
 | `required`               | `required`                   |             | `boolean`          | `false`        |
 | `showLabel`              | `show-label`                 |             | `boolean`          | `undefined`    |
 | `size`                   | `size`                       |             | `string`           | `''`           |

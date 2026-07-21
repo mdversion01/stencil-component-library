@@ -37,7 +37,7 @@ export class PlumageInputGroupComponent {
   @Prop() validation: boolean = false;
   @Prop() validationMessage: string = '';
 
-  @Prop() value: string = '';
+  @Prop({ mutable: true }) value: string = '';
 
   @Prop() icon: string = '';
   @Prop() otherContent: boolean = false;
@@ -246,6 +246,7 @@ export class PlumageInputGroupComponent {
     if (clean !== target.value) target.value = clean;
 
     this.valueState = clean;
+    this.value = clean;
 
     this.valueChange.emit(this.valueState);
     this.host.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true, detail: { value: this.valueState } }));
@@ -379,7 +380,7 @@ export class PlumageInputGroupComponent {
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.isInline() ? 'col-form-label' : '',
-      this.validationState ? 'invalid' : '',
+      this.readOnly ? 'read-only' : this.disabled ? '' : this.validationState ? 'invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -388,8 +389,8 @@ export class PlumageInputGroupComponent {
 
     return (
       <label class={classes} id={ids.labelId} htmlFor={ids.inputId || undefined}>
-        <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
-        {this.required ? <span class="required">*</span> : null}
+        <span class={this.readOnly || this.disabled ? '' : this.showAsRequired() ? 'required' : ''}>{text}</span>
+        {this.readOnly || this.disabled ? null : this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
@@ -434,7 +435,7 @@ export class PlumageInputGroupComponent {
 
     if (icon) {
       return (
-        <span class={`input-group-text ${invalidClass}`.trim()} id={id}>
+        <span class={`input-group-text ${this.readOnly ? '' : this.disabled ? '' : invalidClass}`.trim()} id={id}>
           <i class={icon} aria-hidden="true" />
         </span>
       );
@@ -461,7 +462,7 @@ export class PlumageInputGroupComponent {
     }
 
     return (
-      <span class={`input-group-text ${invalidClass}`.trim()} id={id}>
+      <span class={`input-group-text ${this.readOnly ? '' : this.disabled ? '' : invalidClass}`.trim()} id={id}>
         {text}
       </span>
     );
@@ -469,8 +470,8 @@ export class PlumageInputGroupComponent {
 
   private renderInput(ids: ReturnType<typeof this.resolveIds>) {
     const sizeClass = this.size === 'sm' ? 'input-group-sm' : this.size === 'lg' ? 'input-group-lg' : '';
-    const groupClasses = ['input-group', this.validationState ? 'is-invalid' : '', sizeClass, this.disabled ? 'disabled' : ''].filter(Boolean).join(' ');
-    const inputClasses = ['form-control', this.validationState ? 'is-invalid' : ''].filter(Boolean).join(' ');
+    const groupClasses = ['input-group', this.readOnly ? '' : this.disabled ? ' disabled' : this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    const inputClasses = ['form-control', this.readOnly ? 'read-only' : this.disabled ? '' : this.validationState ? 'is-invalid' : ''].filter(Boolean).join(' ');
 
     const labelText = (this.label || '').trim();
     const placeholder = (this.placeholder || '').trim() || labelText || 'Enter text';
@@ -501,6 +502,7 @@ export class PlumageInputGroupComponent {
             aria-required={this.required ? 'true' : undefined}
             aria-invalid={this.validationState ? 'true' : 'false'}
             aria-disabled={this.disabled ? 'true' : undefined}
+            aria-readonly={this.readOnly ? 'true' : undefined}
             disabled={this.disabled}
             readOnly={this.readOnly}
             onInput={this.handleInput}
@@ -516,9 +518,9 @@ export class PlumageInputGroupComponent {
 
           {this.appendField ? this.renderAffix('append', ids) : null}
 
-          <div class={`b-underline${this.validationState ? ' invalid' : ''}`} role="presentation" aria-hidden="true">
+          <div class={`b-underline${this.disabled || this.readOnly ? ' disabled' : this.validationState ? ' invalid' : ''}`} role="presentation" aria-hidden="true">
             <div
-              class={`b-focus${this.disabled ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`}
+              class={`b-focus${this.disabled || this.readOnly ? ' disabled' : this.validationState ? ' invalid' : ''}`}
               role="presentation"
               aria-hidden="true"
               style={{ width: '0', left: '50%' } as any}
@@ -540,12 +542,14 @@ export class PlumageInputGroupComponent {
     const clean = this.sanitizeInput(target.value);
     if (clean !== target.value) target.value = clean;
     this.valueState = clean;
+    this.value = clean;
     this.valueChange.emit(this.valueState);
     this.host.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true, detail: { value: this.valueState } }));
   };
 
   private clearInput = () => {
     this.valueState = '';
+    this.value = '';
     const inputEl = this.host.querySelector<HTMLInputElement>('.search-bar');
     if (inputEl) inputEl.value = '';
     this.valueChange.emit(this.valueState);
@@ -587,6 +591,7 @@ export class PlumageInputGroupComponent {
             aria-required={this.required ? 'true' : undefined}
             aria-invalid={this.validationState ? 'true' : 'false'}
             aria-disabled={this.disabled ? 'true' : undefined}
+            aria-readonly={this.readOnly ? 'true' : undefined}
             disabled={this.disabled}
             onInput={this.handleInputChange}
             onFocus={this.handleInteraction}

@@ -20,7 +20,6 @@ describe('<checkbox-component>', () => {
     expect(input.getAttribute('id')).toBe('check1');
     expect(label.getAttribute('for') || label.getAttribute('htmlfor') || (label as any).htmlFor).toBe('check1');
 
-    // no redundant aria-* on native checkbox
     expect(input.getAttribute('aria-checked')).toBeNull();
     expect(input.getAttribute('aria-disabled')).toBeNull();
 
@@ -40,7 +39,7 @@ describe('<checkbox-component>', () => {
     expect(page.root).toMatchSnapshot();
   });
 
-  it('renders checkbox group with options (fieldset/legend + correct initial checked)', async () => {
+  it('renders checkbox group with options (role=group + group title + correct initial checked)', async () => {
     const groupOptions = JSON.stringify([
       { value: 'opt1', labelTxt: 'Option 1', inputId: 'opt1', disabled: false, checked: true },
       { value: 'opt2', labelTxt: 'Option 2', inputId: 'opt2', disabled: false, checked: false },
@@ -51,18 +50,19 @@ describe('<checkbox-component>', () => {
       html: `<checkbox-component checkbox-group name="group1" group-title="Choose Options" group-options='${groupOptions}' required validation validation-msg="Please select at least one"></checkbox-component>`,
     });
 
-    const fieldset = page.root!.querySelector('fieldset.checkbox-group') as HTMLFieldSetElement;
-    const legend = page.root!.querySelector('legend.group-title') as HTMLElement;
-    expect(fieldset).toBeTruthy();
-    expect(legend).toBeTruthy();
-    expect(legend.textContent || '').toContain('Choose Options');
+    const group = page.root!.querySelector('[role="group"]') as HTMLElement;
+    const title = page.root!.querySelector('.group-title') as HTMLElement;
+
+    expect(group).toBeTruthy();
+    expect(title).toBeTruthy();
+    expect(title.textContent || '').toContain('Choose Options');
+    expect(group.getAttribute('aria-labelledby')).toBe(title.id);
 
     const inputs = page.root!.querySelectorAll('input[type="checkbox"]') as NodeListOf<HTMLInputElement>;
     expect(inputs.length).toBe(2);
     expect(inputs[0].checked).toBe(true);
     expect(inputs[1].checked).toBe(false);
 
-    // labels wired
     const labels = page.root!.querySelectorAll('label') as NodeListOf<HTMLLabelElement>;
     expect(labels.length).toBe(2);
     expect(labels[0].getAttribute('for') || labels[0].getAttribute('htmlfor') || (labels[0] as any).htmlFor).toBe('opt1');
@@ -86,7 +86,6 @@ describe('<checkbox-component>', () => {
     expect(inputs.length).toBe(2);
     expect(inputs[1].disabled).toBe(true);
 
-    // wrapper class for custom group
     expect(page.root!.querySelectorAll('.custom-control.custom-checkbox').length).toBe(2);
 
     expect(page.root).toMatchSnapshot();
@@ -107,13 +106,12 @@ describe('<checkbox-component>', () => {
     expect(feedback).toBeTruthy();
     expect(feedback.textContent || '').toContain('Please select an option');
 
-    // fieldset should be aria-invalid and describe itself by feedback id
-    const fieldset = page.root!.querySelector('fieldset.checkbox-group') as HTMLElement;
-    expect(fieldset.getAttribute('aria-invalid')).toBe('true');
-    const describedBy = fieldset.getAttribute('aria-describedby') || '';
+    const group = page.root!.querySelector('[role="group"]') as HTMLElement;
+    expect(group.getAttribute('aria-invalid')).toBe('true');
+
+    const describedBy = group.getAttribute('aria-describedby') || '';
     expect(describedBy.length).toBeGreaterThan(0);
 
-    // each input should also reference feedback when invalid
     const inputs = page.root!.querySelectorAll('input[type="checkbox"]') as NodeListOf<HTMLInputElement>;
     expect(inputs[0].getAttribute('aria-invalid')).toBe('true');
     expect(inputs[0].getAttribute('aria-describedby') || '').toBe(describedBy);
@@ -132,7 +130,6 @@ describe('<checkbox-component>', () => {
       html: `<checkbox-component checkbox-group name="group4" group-title="Validation Clear" group-options='${groupOptions}' required validation validation-msg="Select one"></checkbox-component>`,
     });
 
-    // initially invalid
     expect(page.root!.querySelector('.invalid-feedback')).toBeTruthy();
 
     const secondInput = page.root!.querySelectorAll('input[type="checkbox"]')[1] as HTMLInputElement;
@@ -140,12 +137,11 @@ describe('<checkbox-component>', () => {
     secondInput.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
     await page.waitForChanges();
 
-    // invalid feedback should disappear (because checkedValues updated)
     expect(page.root!.querySelector('.invalid-feedback')).toBeNull();
 
-    const fieldset = page.root!.querySelector('fieldset.checkbox-group') as HTMLElement;
-    expect(fieldset.getAttribute('aria-invalid')).toBeNull();
-    expect(fieldset.getAttribute('aria-describedby')).toBeNull();
+    const group = page.root!.querySelector('[role="group"]') as HTMLElement;
+    expect(group.getAttribute('aria-invalid')).toBeNull();
+    expect(group.getAttribute('aria-describedby')).toBeNull();
 
     expect(page.root).toMatchSnapshot();
   });
@@ -170,7 +166,6 @@ describe('<checkbox-component>', () => {
     await page.waitForChanges();
 
     expect(spy).toHaveBeenCalled();
-    // detail should be array of selected values
     expect(spy.mock.calls[0][0].detail).toEqual(['y']);
   });
 
@@ -199,5 +194,41 @@ describe('<checkbox-component>', () => {
         }),
       }),
     );
+  });
+
+  it('disables every checkbox in the group when component disabled is true and suppresses required/validation UI', async () => {
+    const groupOptions = JSON.stringify([
+      { value: 'a', labelTxt: 'A', inputId: 'a', checked: false, disabled: false },
+      { value: 'b', labelTxt: 'B', inputId: 'b', checked: false, disabled: false },
+    ]);
+
+    const page = await newSpecPage({
+      components: [CheckboxComponent],
+      html: `<checkbox-component checkbox-group name="group6" group-title="Disabled Group" group-options='${groupOptions}' required validation validation-msg="Select one" disabled></checkbox-component>`,
+    });
+
+    const group = page.root!.querySelector('[role="group"]') as HTMLElement;
+    const title = page.root!.querySelector('.group-title') as HTMLElement;
+    const inputs = page.root!.querySelectorAll('input[type="checkbox"]') as NodeListOf<HTMLInputElement>;
+
+    expect(group).toBeTruthy();
+    expect(title).toBeTruthy();
+
+    expect(group.getAttribute('aria-required')).toBeNull();
+    expect(group.getAttribute('aria-invalid')).toBeNull();
+    expect(group.getAttribute('aria-describedby')).toBeNull();
+
+    expect(title.textContent || '').toContain('Disabled Group');
+    expect(title.querySelector('.required')).toBeNull();
+
+    expect(inputs.length).toBe(2);
+    expect(inputs[0].disabled).toBe(true);
+    expect(inputs[1].disabled).toBe(true);
+    expect(inputs[0].required).toBe(false);
+    expect(inputs[1].required).toBe(false);
+    expect(inputs[0].getAttribute('aria-invalid')).toBeNull();
+    expect(inputs[1].getAttribute('aria-invalid')).toBeNull();
+
+    expect(page.root!.querySelector('.invalid-feedback')).toBeNull();
   });
 });

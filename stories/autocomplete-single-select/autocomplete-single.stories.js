@@ -6,6 +6,7 @@ import {
   DEFAULT_OPTIONS,
   SIZE_VARIANTS,
   buildDocsHtml,
+  buildDocsHtmlControlledValue,
   buildDocsHtmlMany,
   renderComponent,
   setValueWhenReady,
@@ -17,7 +18,7 @@ export default {
   title: 'Form/Autocomplete Single',
   tags: ['autodocs'],
   decorators: [
-    (Story) => {
+    Story => {
       const wrap = document.createElement('div');
       wrap.appendChild(DocsWrapStyles());
       wrap.appendChild(Story());
@@ -28,7 +29,11 @@ export default {
     docs: {
       page: DocsPage,
       description: {
-        component: ['Autocomplete Single component for selecting a single option from a list with autocomplete functionality.', ''].join('\n'),
+        component: [
+          'Autocomplete Single component for selecting a single option from a list with autocomplete functionality.',
+          '',
+          'Supports external `value`, validation/error messaging, accessibility wiring, disabled state, and read-only mode.',
+        ].join('\n'),
       },
       source: {
         language: 'html',
@@ -57,6 +62,12 @@ export default {
       name: 'disabled',
       table: { category: 'Attributes', defaultValue: { summary: false } },
       description: 'Disables the input field, preventing user interaction.',
+    },
+    readOnly: {
+      control: 'boolean',
+      name: 'read-only',
+      table: { category: 'Attributes', defaultValue: { summary: false } },
+      description: 'Makes the input read-only. The input remains focusable, but typing, clearing, and dropdown interaction are disabled.',
     },
     formId: {
       control: 'text',
@@ -95,7 +106,7 @@ export default {
       control: 'object',
       name: 'options',
       table: { category: 'Data' },
-      description: 'The array of options available for selection in the autocomplete. (Applied at runtime via prop assignment.)',
+      description: 'The array of options available for selection in the autocomplete. Applied at runtime via prop assignment.',
     },
 
     ariaLabel: {
@@ -249,6 +260,7 @@ export default {
     clearIcon: 'fa-solid fa-xmark',
     devMode: false,
     disabled: false,
+    readOnly: false,
     error: false,
     errorMessage: '',
     formId: '',
@@ -343,7 +355,7 @@ export const Sizes = {
         language: 'html',
         transform: (_src, ctx) =>
           buildDocsHtmlMany(
-            SIZE_VARIANTS.map((v) =>
+            SIZE_VARIANTS.map(v =>
               buildDocsHtml({
                 ...ctx.args,
                 id: v.id,
@@ -377,14 +389,21 @@ export const ControlledValue = {
     wrap.style.display = 'grid';
     wrap.style.gap = '10px';
 
-    const el = renderComponent(args, ctx);
+    let controlledValue = typeof args.value === 'string' ? args.value : 'Apple';
+
+    const stateBox = document.createElement('div');
+    stateBox.style.fontSize = '14px';
+    stateBox.style.color = '#444';
+    stateBox.style.padding = '8px 0';
+
+    const el = renderComponent({ ...args, value: controlledValue }, ctx);
 
     const buttons = document.createElement('div');
     buttons.style.display = 'flex';
     buttons.style.gap = '8px';
     buttons.style.flexWrap = 'wrap';
 
-    const mkBtn = (label) => {
+    const mkBtn = label => {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'btn btn-sm btn-secondary';
@@ -400,29 +419,41 @@ export const ControlledValue = {
     buttons.appendChild(btnMango);
     buttons.appendChild(btnClear);
 
-    const applyValue = (next) => {
-      const v = typeof next === 'string' ? next : '';
-      setValueWhenReady(el, v);
-      updateArgsBestEffort(ctx, { value: v });
+    const renderState = source => {
+      stateBox.textContent = `External controlled value (${source}): ${JSON.stringify(controlledValue)}`;
     };
 
-    btnApple.addEventListener('click', () => applyValue('Apple'));
-    btnMango.addEventListener('click', () => applyValue('Mango'));
-    btnClear.addEventListener('click', () => applyValue(''));
+    const applyValue = (next, source) => {
+      controlledValue = typeof next === 'string' ? next : '';
+      setValueWhenReady(el, controlledValue);
+      updateArgsBestEffort(ctx, { value: controlledValue });
+      renderState(source);
+    };
 
-    el.addEventListener('itemSelect', (e) => applyValue(String(e?.detail ?? '')));
-    el.addEventListener('clear', () => applyValue(''));
+    btnApple.addEventListener('click', () => applyValue('Apple', 'button click'));
+    btnMango.addEventListener('click', () => applyValue('Mango', 'button click'));
+    btnClear.addEventListener('click', () => applyValue('', 'button click'));
+
+    el.addEventListener('itemSelect', e => applyValue(String(e?.detail ?? ''), 'itemSelect event'));
+    el.addEventListener('clear', () => applyValue('', 'clear event'));
+
+    renderState('initial args.value');
 
     wrap.appendChild(el);
     wrap.appendChild(buttons);
+    wrap.appendChild(stateBox);
     return wrap;
   },
 };
 ControlledValue.name = 'Controlled Value (args.value)';
 ControlledValue.parameters = {
   docs: {
+    source: {
+      language: 'html',
+      transform: () => wrapDocsHtml(buildDocsHtmlControlledValue()),
+    },
     description: {
-      story: 'Demonstrates the `value` prop as the external source of truth.',
+      story: 'Demonstrates the `value` prop as the external source of truth, including the external state that drives the component.',
     },
     story: { height: '380px' },
   },
@@ -460,6 +491,25 @@ Disabled.parameters = {
   docs: { description: { story: 'Disabled state example (with a preset value).' } },
 };
 
+export const ReadOnly = {
+  args: {
+    id: 'acSingle_readonly',
+    inputId: 'acSingle_readonly',
+    readOnly: true,
+    value: 'Banana',
+    placeholder: '',
+    validationMessage: '',
+  },
+};
+ReadOnly.name = 'Read Only';
+ReadOnly.parameters = {
+  docs: {
+    description: {
+      story: 'Read-only state. The input remains focusable and announces `aria-readonly`, but typing, clearing, and dropdown interaction are disabled.',
+    },
+  },
+};
+
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: (args, ctx) => {
@@ -470,7 +520,7 @@ export const AccessibilityMatrix = {
 
     const title = document.createElement('div');
     title.innerHTML = `<strong>Accessibility matrix</strong>
-<div style="opacity:.8">Prints computed label/combobox/listbox wiring: role + aria-* + ids (default/inline/horizontal, validation/error, disabled).</div>`;
+<div style="opacity:.8">Prints computed label/combobox/listbox wiring: role + aria-* + ids (default/inline/horizontal, validation/error, disabled, readOnly).</div>`;
     wrap.appendChild(title);
 
     const cardRow = (labelText, buildEl) => {
@@ -521,19 +571,23 @@ export const AccessibilityMatrix = {
             labelId: labelEl?.getAttribute('id') ?? null,
             labelFor: labelEl?.getAttribute('for') ?? labelEl?.getAttribute('htmlfor') ?? null,
             role: input?.getAttribute('role') ?? null,
-            'aria-labelledby': input?.getAttribute('aria-labelledby') ?? null,
-            'aria-label': input?.getAttribute('aria-label') ?? null,
-            'aria-describedby': input?.getAttribute('aria-describedby') ?? null,
-            'aria-controls': input?.getAttribute('aria-controls') ?? null,
-            'aria-expanded': input?.getAttribute('aria-expanded') ?? null,
-            'aria-activedescendant': input?.getAttribute('aria-activedescendant') ?? null,
-            'aria-required': input?.getAttribute('aria-required') ?? null,
-            'aria-invalid': input?.getAttribute('aria-invalid') ?? null,
-            'aria-disabled': input?.getAttribute('aria-disabled') ?? null,
+            ariaLabelledby: input?.getAttribute('aria-labelledby') ?? null,
+            ariaLabel: input?.getAttribute('aria-label') ?? null,
+            ariaDescribedby: input?.getAttribute('aria-describedby') ?? null,
+            ariaControls: input?.getAttribute('aria-controls') ?? null,
+            ariaExpanded: input?.getAttribute('aria-expanded') ?? null,
+            ariaActivedescendant: input?.getAttribute('aria-activedescendant') ?? null,
+            ariaRequired: input?.getAttribute('aria-required') ?? null,
+            ariaInvalid: input?.getAttribute('aria-invalid') ?? null,
+            ariaDisabled: input?.getAttribute('aria-disabled') ?? null,
+            ariaReadonly: input?.getAttribute('aria-readonly') ?? null,
+            readonly: input?.hasAttribute('readonly') ?? false,
+            disabled: input?.hasAttribute('disabled') ?? false,
             listboxPresent: !!listbox,
             listboxId: listbox?.getAttribute('id') ?? null,
             hasValidation: !!host?.querySelector('.invalid-feedback'),
             hasError: !!host?.querySelector('.error-message'),
+            hasClearButton: !!host?.querySelector('button.clear-btn'),
           },
           null,
           2,
@@ -555,6 +609,7 @@ export const AccessibilityMatrix = {
             validation: false,
             error: false,
             disabled: false,
+            readOnly: false,
             value: '',
           },
           ctx,
@@ -574,6 +629,7 @@ export const AccessibilityMatrix = {
             validation: false,
             error: false,
             disabled: false,
+            readOnly: false,
             value: '',
           },
           ctx,
@@ -595,6 +651,7 @@ export const AccessibilityMatrix = {
             validation: false,
             error: false,
             disabled: false,
+            readOnly: false,
             value: '',
           },
           ctx,
@@ -614,6 +671,7 @@ export const AccessibilityMatrix = {
             validationMessage: 'This is required.',
             error: true,
             errorMessage: 'Something went wrong.',
+            readOnly: false,
             value: '',
           },
           ctx,
@@ -629,6 +687,25 @@ export const AccessibilityMatrix = {
             inputId: 'mx-disabled',
             label: 'Disabled',
             disabled: true,
+            readOnly: false,
+            value: 'Banana',
+            validation: false,
+            error: false,
+          },
+          ctx,
+        ),
+      ),
+    );
+
+    wrap.appendChild(
+      cardRow('Read only (aria-readonly)', () =>
+        renderComponent(
+          {
+            ...args,
+            inputId: 'mx-readonly',
+            label: 'Read only',
+            disabled: false,
+            readOnly: true,
             value: 'Banana',
             validation: false,
             error: false,
@@ -645,7 +722,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Prints computed accessibility wiring for the combobox + listbox: role/aria-labelledby/aria-describedby/aria-controls/aria-expanded/aria-activedescendant plus ids across layouts and states.',
+          'Prints computed accessibility wiring for the combobox + listbox: role/aria-labelledby/aria-describedby/aria-controls/aria-expanded/aria-activedescendant plus ids across layouts and states, including disabled and readOnly.',
       },
       source: {
         language: 'html',

@@ -37,8 +37,16 @@
           <datepicker-component calendar></datepicker-component>
         </div>
 
+        <div>
+          <datepicker-component form-layout="inline" value="07-15-2026" required validation validation-message="Invalid date" input-id="dp-test" date-format="YYYY-MM-DD"></datepicker-component>
+        </div>
+
         <div style="width: 210px">
-          <datepicker-component required validation validation-message="Invalid date" input-id="dp-test" date-format="MM-DD-YYYY"></datepicker-component>
+          <datepicker-component read-only value="07-15-2026" required validation validation-message="Invalid date" input-id="dp-test" date-format="MM-DD-YYYY"></datepicker-component>
+        </div>
+
+        <div>
+          <datepicker-component disabled required value="07-15-2026" validation validation-message="Invalid date" input-id="dp-test" date-format="MM-DD-YYYY"></datepicker-component>
         </div>
 
         <div style="margin-bottom: 20px">
@@ -46,15 +54,31 @@
         </div>
 
         <div style="width: 210px">
-          <datepicker-component date-format="MM-DD-YYYY" plumage required validation validation-message="Invalid date"></datepicker-component>
+          <datepicker-component value="07-15-2026" date-format="YYYY-MM-DD" plumage required validation validation-message="Invalid date"></datepicker-component>
+        </div>
+
+        <div style="width: 210px">
+          <datepicker-component value="07-15-2026" date-format="MM-DD-YYYY" read-only plumage required validation validation-message="Invalid date"></datepicker-component>
+        </div>
+
+        <div style="width: 210px">
+          <datepicker-component value="07-15-2026" date-format="MM-DD-YYYY" disabled plumage required validation validation-message="Invalid date"></datepicker-component>
         </div>
 
         <div>
           <date-range-picker-component size="sm" range-picker></date-range-picker-component>
         </div>
 
-        <div style="width: 325px">
-          <date-range-picker-component input-id="drp-1" form-layout="inline" show-long required validation validation-message="Invalid date"></date-range-picker-component>
+        <div>
+          <date-range-picker-component input-id="drp-1" value="2026-07-15 - 2026-08-17" date-format="MM-DD-YYYY" required validation validation-message="Invalid date"></date-range-picker-component>
+        </div>
+
+        <div>
+          <date-range-picker-component input-id="drp-1" read-only value="2026-07-15 - 2026-08-17" show-iso required validation validation-message="Invalid date"></date-range-picker-component>
+        </div>
+
+        <div>
+          <date-range-picker-component input-id="drp-1" disabled value="2026-07-15 - 2026-08-17" show-long required validation validation-message="Invalid date"></date-range-picker-component>
         </div>
 
         <div>
@@ -62,11 +86,60 @@
         </div>
 
         <div style="width: 325px">
-          <date-range-picker-component plumage show-ymd required validation validation-message="Invalid date"></date-range-picker-component>
+          <date-range-picker-component plumage value="2026-07-15 - 2026-08-17" form-layout="inline" required validation validation-message="Invalid date"></date-range-picker-component>
+        </div>
+
+        <div style="width: 325px">
+          <date-range-picker-component plumage read-only value="2026-07-15 - 2026-08-17" show-iso required validation validation-message="Invalid date"></date-range-picker-component>
+        </div>
+
+        <div style="width: 325px">
+          <date-range-picker-component plumage disabled value="2026-07-15 - 2026-08-17" show-long required validation validation-message="Invalid date"></date-range-picker-component>
         </div>
 
         <div>
           <date-range-time-picker-component size="sm" range-time-picker date-format="MM-DD-YYYY" show-duration></date-range-time-picker-component>
+        </div>
+
+        <div style="width: 554px">
+          <date-range-time-picker-component
+            size="sm"
+            form-layout="inline"
+            value="Wednesday, July 15, 2026 11:00 AM  -  Thursday, August 20, 2026 08:00 PM"
+            is-twenty-four-hour-format="true"
+            show-duration
+            required
+            validation
+            validation-message="Invalid date"
+          ></date-range-time-picker-component>
+        </div>
+
+        <div style="width: 554px">
+          <date-range-time-picker-component
+            size="sm"
+            show-long
+            value="2026-07-15 11:00  -  2026-08-20 20:00"
+            is-twenty-four-hour-format="false"
+            form-layout="inline"
+            show-duration
+            read-only
+            required
+            validation
+            validation-message="Invalid date"
+          ></date-range-time-picker-component>
+        </div>
+
+        <div style="width: 554px">
+          <date-range-time-picker-component
+            size="sm"
+            value="2026-07-15 11:00  -  2026-08-20 20:00"
+            form-layout="inline"
+            show-duration
+            disabled
+            required
+            validation
+            validation-message="Invalid date"
+          ></date-range-time-picker-component>
         </div>
 
         <div>
@@ -77,10 +150,41 @@
           <date-range-time-picker-component
             size="sm"
             show-long
+            value="Wednesday, July 15, 2026 11:00 AM  -  Thursday, August 20, 2026 08:00 PM"
             is-twenty-four-hour-format="false"
             form-layout="inline"
             plumage
             show-duration
+            required
+            validation
+            validation-message="Invalid date"
+          ></date-range-time-picker-component>
+        </div>
+
+        <div style="width: 554px">
+          <date-range-time-picker-component
+            size="sm"
+            value="2026-07-15 11:00  -  2026-08-20 20:00"
+            form-layout="inline"
+            plumage
+            show-duration
+            read-only
+            required
+            validation
+            validation-message="Invalid date"
+          ></date-range-time-picker-component>
+        </div>
+
+        <div style="width: 554px">
+          <date-range-time-picker-component
+            size="sm"
+            value="2026-07-15 11:00  -  2026-08-20 20:00"
+            show-long
+            is-twenty-four-hour-format="false"
+            form-layout="inline"
+            plumage
+            show-duration
+            disabled
             required
             validation
             validation-message="Invalid date"

@@ -13,11 +13,11 @@ export const DocsWrapStyles = () => {
   return style;
 };
 
-export const normalize = (txt) => {
+export const normalize = txt => {
   const lines = String(txt)
     .replace(/\r\n/g, '\n')
     .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
+    .map(l => l.replace(/[ \t]+$/g, ''));
 
   const out = [];
   let prevBlank = false;
@@ -40,13 +40,13 @@ export const normalize = (txt) => {
   return out.join('\n');
 };
 
-export const attrLines = (pairs) =>
+export const attrLines = pairs =>
   pairs
     .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
     .map(([k, v]) => (v === true ? `${k}` : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
     .join('\n  ');
 
-export const buildDocsComponentHtml = (args) =>
+export const buildDocsComponentHtml = args =>
   normalize(`
 <autocomplete-multiple-selections
   ${attrLines([
@@ -79,6 +79,7 @@ export const buildDocsComponentHtml = (args) =>
     ['error', args.error],
     ['error-message', args.errorMessage],
     ['disabled', args.disabled],
+    ['read-only', args.readOnly],
     ['label-hidden', args.labelHidden],
     ['dev-mode', args.devMode],
 
@@ -107,18 +108,82 @@ export const buildDocsComponentHtml = (args) =>
 ></autocomplete-multiple-selections>
 `);
 
-export const wrapDocsHtml = (innerHtml) =>
+export const buildDocsHtmlControlledValue = () =>
+  normalize(`
+<div style="max-width:760px; display:grid; gap:12px;">
+  <div id="acms-controlled-value-state" style="opacity:.75;">
+    External controlled value: ["Apple"]
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap; gap:8px;">
+    <button type="button" id="acms-set-apple-mango">Set: ["Apple","Mango"]</button>
+    <button type="button" id="acms-add-banana">Add "Banana"</button>
+    <button type="button" id="acms-clear-all">Clear []</button>
+  </div>
+
+  <autocomplete-multiple-selections
+    id="acms_controlled"
+    input-id="acms-controlled"
+    label="Controlled Value"
+    value='["Apple"]'
+  ></autocomplete-multiple-selections>
+
+  <script>
+    let controlledValue = ['Apple'];
+
+    const host = document.querySelector('autocomplete-multiple-selections');
+    const state = document.querySelector('#acms-controlled-value-state');
+
+    const renderState = () => {
+      state.textContent = 'External controlled value: ' + JSON.stringify(controlledValue);
+    };
+
+    const applyValue = next => {
+      controlledValue = Array.isArray(next) ? next.slice() : [];
+      host.value = controlledValue.slice();
+      renderState();
+    };
+
+    document.querySelector('#acms-set-apple-mango').addEventListener('click', () => {
+      applyValue(['Apple', 'Mango']);
+    });
+
+    document.querySelector('#acms-add-banana').addEventListener('click', () => {
+      const cur = controlledValue.slice();
+      if (!cur.includes('Banana')) cur.push('Banana');
+      applyValue(cur);
+    });
+
+    document.querySelector('#acms-clear-all').addEventListener('click', () => {
+      applyValue([]);
+    });
+
+    host.addEventListener('multiSelectChange', e => {
+      const next = Array.isArray(e.detail) ? e.detail : Array.isArray(e.detail?.value) ? e.detail.value : [];
+      applyValue(next);
+    });
+
+    host.addEventListener('clear', () => {
+      applyValue([]);
+    });
+
+    renderState();
+  </script>
+</div>
+`);
+
+export const wrapDocsHtml = innerHtml =>
   normalize(`
 <div style="max-width:680px;">
   ${String(innerHtml).replace(/\n/g, '\n  ')}
 </div>
 `);
 
-export const buildDocsHtmlMany = (snippets) =>
+export const buildDocsHtmlMany = snippets =>
   wrapDocsHtml(
     normalize(`
 <div style="display:grid; gap:14px;">
-${snippets.map((s) => `  ${String(s).replace(/\n/g, '\n  ')}`).join('\n')}
+${snippets.map(s => `  ${String(s).replace(/\n/g, '\n  ')}`).join('\n')}
 </div>
 `),
   );
@@ -129,21 +194,29 @@ export const setAttr = (el, name, value) => {
   else el.setAttribute(name, String(value));
 };
 
+export const whenReady = async el => {
+  if (typeof el.componentOnReady === 'function') {
+    await el.componentOnReady();
+    return;
+  }
+  if (window.customElements?.whenDefined) {
+    await customElements.whenDefined('autocomplete-multiple-selections');
+  }
+};
+
 export const setOptionsWhenReady = async (el, options) => {
   const safe = Array.isArray(options) ? options.slice() : [];
-  if (typeof el.componentOnReady === 'function') await el.componentOnReady();
-  else if (window.customElements?.whenDefined) await customElements.whenDefined('autocomplete-multiple-selections');
+  await whenReady(el);
   el.options = safe;
 };
 
 export const setValueWhenReady = async (el, value) => {
   const safe = Array.isArray(value) ? value.slice() : [];
-  if (typeof el.componentOnReady === 'function') await el.componentOnReady();
-  else if (window.customElements?.whenDefined) await customElements.whenDefined('autocomplete-multiple-selections');
+  await whenReady(el);
   el.value = safe;
 };
 
-export const wrapEl = (childEl) => {
+export const wrapEl = childEl => {
   const wrap = document.createElement('div');
   wrap.style.maxWidth = '680px';
   wrap.appendChild(childEl);
@@ -167,11 +240,46 @@ export const FRUIT = [
   'Bobby Green',
 ];
 
-export const renderComponent = (args) => {
+const __renderSeqByStory = Object.create(null);
+
+const safeStoryKey = ctx => String(ctx?.id || 'story').replace(/[^a-z0-9_-]/gi, '_');
+
+const nextMountSuffix = ctx => {
+  const k = safeStoryKey(ctx);
+  __renderSeqByStory[k] = (__renderSeqByStory[k] || 0) + 1;
+  return `${k}_${__renderSeqByStory[k]}`;
+};
+
+const withUniqueId = (base, suffix) => {
+  const b = String(base || '').trim() || 'acms';
+  return `${b}__${suffix}`;
+};
+
+const getMountSuffix = ctx => {
+  if (!ctx) return 'mount';
+  if (!ctx.__acmsMountSuffix) ctx.__acmsMountSuffix = nextMountSuffix(ctx);
+  if (!ctx.__acmsLocalSeq) ctx.__acmsLocalSeq = 0;
+  return ctx.__acmsMountSuffix;
+};
+
+const nextLocalSeq = ctx => {
+  if (!ctx) return 1;
+  ctx.__acmsLocalSeq = (ctx.__acmsLocalSeq || 0) + 1;
+  return ctx.__acmsLocalSeq;
+};
+
+export const renderComponent = (args, ctx) => {
   const el = document.createElement('autocomplete-multiple-selections');
 
-  setAttr(el, 'id', args.id);
-  setAttr(el, 'input-id', args.inputId);
+  const mountSuffix = getMountSuffix(ctx);
+  const local = nextLocalSeq(ctx);
+  const uniq = `${mountSuffix}_${local}`;
+
+  const hostId = withUniqueId(args.id, uniq);
+  const inputId = withUniqueId(args.inputId, uniq);
+
+  setAttr(el, 'id', hostId);
+  setAttr(el, 'input-id', inputId);
   setAttr(el, 'label', args.label);
   setAttr(el, 'placeholder', args.placeholder);
   setAttr(el, 'form-id', args.formId);
@@ -206,6 +314,7 @@ export const renderComponent = (args) => {
   args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
   args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
   args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
+  args.readOnly ? el.setAttribute('read-only', '') : el.removeAttribute('read-only');
   args.labelHidden ? el.setAttribute('label-hidden', '') : el.removeAttribute('label-hidden');
   args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
   args.addBtn ? el.setAttribute('add-btn', '') : el.removeAttribute('add-btn');
@@ -218,9 +327,9 @@ export const renderComponent = (args) => {
   setAttr(el, 'add-new-on-enter', args.addNewOnEnter);
   setAttr(el, 'preserve-input-on-select', args.preserveInputOnSelect);
 
-  el.addEventListener('multiSelectChange', (e) => console.log('[ams] selectionChange', e.detail));
-  el.addEventListener('valueChange', (e) => console.log('[ams] valueChange', e.detail));
-  el.addEventListener('optionDelete', (e) => console.log('[ams] optionDelete', e.detail));
+  el.addEventListener('multiSelectChange', e => console.log('[ams] selectionChange', e.detail));
+  el.addEventListener('valueChange', e => console.log('[ams] valueChange', e.detail));
+  el.addEventListener('optionDelete', e => console.log('[ams] optionDelete', e.detail));
   el.addEventListener('clear', () => console.log('[ams] clear'));
 
   const fallback = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango'];
@@ -235,4 +344,3 @@ export const SIZE_VARIANTS = [
   { key: 'default', label: 'Default', size: '', inputId: 'acms-md', id: 'acms_md' },
   { key: 'lg', label: 'Large', size: 'lg', inputId: 'acms-lg', id: 'acms_lg' },
 ];
-

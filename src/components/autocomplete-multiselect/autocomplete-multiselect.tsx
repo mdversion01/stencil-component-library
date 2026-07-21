@@ -38,6 +38,7 @@ export class AutocompleteMultiselect {
   @Prop() placeholder = '';
   @Prop() devMode = false;
   @Prop() disabled = false;
+  @Prop() readOnly = false;
   @Prop() formId = '';
   @Prop({ mutable: true }) formLayout: '' | 'horizontal' | 'inline' = '';
   @Prop({ mutable: true }) error = false;
@@ -117,6 +118,10 @@ export class AutocompleteMultiselect {
   private static _seq = 0;
   private _baseId = '';
 
+  private get isInteractionLocked(): boolean {
+    return this.disabled || this.readOnly;
+  }
+
   // Events
   @Event({ eventName: 'itemSelect' }) itemSelect: EventEmitter<string>;
   @Event() clear: EventEmitter<void>;
@@ -151,6 +156,16 @@ export class AutocompleteMultiselect {
       return;
     }
     this.filterOptions();
+  }
+
+  @Watch('readOnly')
+  onReadOnlyChange(next: boolean) {
+    if (next) this.closeDropdown();
+  }
+
+  @Watch('disabled')
+  onDisabledChange(next: boolean) {
+    if (next) this.closeDropdown();
   }
 
   connectedCallback() {
@@ -337,6 +352,10 @@ export class AutocompleteMultiselect {
 
   /** Insert value into options (no-dup, optional sort). Respects editable=false. */
   private upsertOption(raw: string): void {
+    if (this.isInteractionLocked) {
+      logWarn(this.devMode, 'AutocompleteMultiselect', 'Refused upsert while readOnly/disabled', { raw });
+      return;
+    }
     const cleaned = this.sanitizeInput(raw);
     const value = cleaned.trim();
     if (!value) return;
@@ -360,6 +379,7 @@ export class AutocompleteMultiselect {
 
   /** Remove a user-added option (and unselect if selected). */
   private deleteUserOption(option: string) {
+    if (this.isInteractionLocked) return;
     if (!this.editable) return;
     if (!this.userAddedOptions.has(option)) {
       logWarn(this.devMode, 'AutocompleteMultiselect', 'Refused delete: not a user-added option', { option });
@@ -425,6 +445,10 @@ export class AutocompleteMultiselect {
       if (spec) return this.parseColsSpec(spec);
       if (kind === 'input' && this.labelHidden) return this.inputCols ? this.parseColsSpec(this.inputCols) : 'col-12';
 
+      // default numeric fallback for horizontal layout
+      if (kind === 'input' && this.labelHidden) {
+        return this.inputCols ? this.parseColsSpec(this.inputCols) : 'col-12';
+      }
       if (Number.isFinite(num)) {
         const n = Math.max(0, Math.min(12, Number(num)));
         return n === 0 ? '' : `col-${n}`;
@@ -432,21 +456,25 @@ export class AutocompleteMultiselect {
       return '';
     }
 
-    if (this.isInline()) return spec ? this.parseColsSpec(spec) : '';
+    if (this.isInline()) {
+      if (spec) return this.parseColsSpec(spec);
+      return '';
+    }
+
     return '';
   }
 
   private inputClasses() {
     const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
-    return ['form-control', sizeClass, this.validation || this.error ? 'is-invalid' : ''].filter(Boolean).join(' ');
+    return ['form-control', sizeClass, this.disabled ? 'disabled' : this.readOnly ? 'read-only' : this.validation || this.error ? 'is-invalid' : ''].filter(Boolean).join(' ');
   }
 
   private groupClasses() {
     const sizeClass = this.size === 'sm' ? 'input-group-sm' : this.size === 'lg' ? 'input-group-lg' : '';
     return [
       'input-group',
-      this.validation || this.error ? 'is-invalid' : '',
-      this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '',
+      this.disabled ? 'disabled' : this.readOnly ? 'read-only' : this.validation || this.error ? 'is-invalid' : '',
+      this.disabled ? 'disabled' : this.readOnly ? 'read-only' : this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '',
       sizeClass,
     ]
       .filter(Boolean)
@@ -456,9 +484,8 @@ export class AutocompleteMultiselect {
   private containerClasses() {
     return [
       'ac-multi-select-container',
-      this.disabled ? 'disabled' : '',
-      this.validation || this.error ? 'is-invalid' : '',
-      this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '',
+      this.disabled ? 'disabled' : this.readOnly ? 'read-only' : this.validation || this.error ? 'is-invalid' : '',
+      this.disabled ? 'disabled' : this.readOnly ? 'read-only' : this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -492,7 +519,7 @@ export class AutocompleteMultiselect {
       this.closeTimer = null;
     }, 120);
 
-    if (this.required) this.validation = !this.isSatisfiedNow();
+    if (!this.readOnly && !this.disabled && this.required) this.validation = !this.isSatisfiedNow();
   };
 
   private handleClickOutside = (e: MouseEvent) => {
@@ -506,6 +533,31 @@ export class AutocompleteMultiselect {
   // Keyboard + input on the text field
   private handleInput = (event: InputEvent | KeyboardEvent) => {
     const input = event.target as HTMLInputElement;
+
+    if (this.isInteractionLocked) {
+      if (event.type === 'input' && input.value !== this.inputValue) input.value = this.inputValue;
+
+      if (event.type === 'keydown') {
+        const key = (event as KeyboardEvent).key;
+        if (
+          key === 'ArrowDown' ||
+          key === 'ArrowUp' ||
+          key === 'Home' ||
+          key === 'End' ||
+          key === 'PageDown' ||
+          key === 'PageUp' ||
+          key === 'ArrowRight' ||
+          key === 'ArrowLeft' ||
+          key === 'Enter' ||
+          key === 'Escape'
+        ) {
+          event.preventDefault();
+        }
+      }
+
+      this.closeDropdown({ clearInput: false });
+      return;
+    }
 
     if (event.type === 'keydown') {
       const key = (event as KeyboardEvent).key;
@@ -641,12 +693,14 @@ export class AutocompleteMultiselect {
   };
 
   private onOptionButtonMouseDown = (e: MouseEvent) => {
+    if (this.isInteractionLocked) return;
     e.preventDefault();
     e.stopPropagation();
     this.suppressBlur = true;
   };
 
   private onOptionButtonClick = (e: MouseEvent, option: string) => {
+    if (this.isInteractionLocked) return;
     e.preventDefault();
     e.stopPropagation();
     this.toggleItem(option);
@@ -657,12 +711,14 @@ export class AutocompleteMultiselect {
   };
 
   private onDeleteButtonMouseDown = (e: MouseEvent) => {
+    if (this.isInteractionLocked) return;
     e.preventDefault();
     e.stopPropagation();
     this.suppressBlur = true;
   };
 
   private onDeleteButtonClick = (e: MouseEvent, option: string) => {
+    if (this.isInteractionLocked) return;
     e.preventDefault();
     e.stopPropagation();
     this.deleteUserOption(option);
@@ -673,6 +729,7 @@ export class AutocompleteMultiselect {
   };
 
   private onRowMouseDown = (e: MouseEvent) => {
+    if (this.isInteractionLocked) return;
     e.preventDefault();
     e.stopPropagation();
     this.suppressBlur = true;
@@ -688,6 +745,7 @@ export class AutocompleteMultiselect {
   }
 
   private setFocusIndex(index: number) {
+    if (this.isInteractionLocked) return;
     if (!Array.isArray(this.filteredOptions) || this.filteredOptions.length === 0) return;
     const len = this.filteredOptions.length;
     const clamped = Math.max(0, Math.min(len - 1, index));
@@ -704,6 +762,7 @@ export class AutocompleteMultiselect {
   }
 
   private pageNavigate(direction: 1 | -1) {
+    if (this.isInteractionLocked) return;
     if (!Array.isArray(this.filteredOptions) || this.filteredOptions.length === 0 || !this.dropdownOpen) return;
 
     const len = this.filteredOptions.length;
@@ -716,6 +775,7 @@ export class AutocompleteMultiselect {
 
   @Method()
   public async navigateOptions(direction: number): Promise<void> {
+    if (this.isInteractionLocked) return;
     if (!Array.isArray(this.filteredOptions) || this.filteredOptions.length === 0 || !this.dropdownOpen) return;
 
     const len = this.filteredOptions.length;
@@ -726,6 +786,14 @@ export class AutocompleteMultiselect {
 
   @Method()
   public async filterOptions(): Promise<void> {
+    if (this.isInteractionLocked) {
+      this.filteredOptions = [];
+      this.dropdownOpen = false;
+      this.focusedOptionIndex = -1;
+      this.focusedPart = 'option';
+      this.listEntered = false;
+      return;
+    }
     if (!Array.isArray(this.options)) {
       logError(this.devMode, 'AutocompleteMultiselect', `'options' must be an array`, { receivedType: typeof this.options, value: this.options });
       this.filteredOptions = [];
@@ -770,6 +838,7 @@ export class AutocompleteMultiselect {
   }
 
   private toggleItem(rawOption: string) {
+    if (this.isInteractionLocked) return;
     const option = this.sanitizeInput(rawOption).trim();
     if (!option) return;
 
@@ -810,6 +879,7 @@ export class AutocompleteMultiselect {
   }
 
   private removeItemAt(index: number) {
+    if (this.isInteractionLocked) return;
     if (index < 0 || index >= this.selectedItems.length) return;
     const removed = this.selectedItems[index];
     this.selectedItems = [...this.selectedItems.slice(0, index), ...this.selectedItems.slice(index + 1)];
@@ -823,11 +893,13 @@ export class AutocompleteMultiselect {
 
   @Method()
   async removeItem(value: string): Promise<void> {
+    if (this.isInteractionLocked) return;
     const idx = this.selectedItems.indexOf(value);
     if (idx !== -1) this.removeItemAt(idx);
   }
 
   private handleAddItem = () => {
+    if (this.isInteractionLocked) return;
     const value = this.sanitizeInput(this.inputValue || '').trim();
     if (!value) return;
 
@@ -845,6 +917,7 @@ export class AutocompleteMultiselect {
   };
 
   private clearAll = () => {
+    if (this.isInteractionLocked) return;
     this.selectedItems = [];
     this.valueState = [];
     this.inputValue = '';
@@ -898,7 +971,7 @@ export class AutocompleteMultiselect {
         <div class={classMap} style={this.parseInlineStyles(this.badgeInlineStyles)} key={`${item}-${index}`}>
           <span>{item}</span>
 
-          {!this.disabled ? (
+          {!this.isInteractionLocked ? (
             <button
               type="button"
               onClick={() => this.removeItemAt(index)}
@@ -925,7 +998,7 @@ export class AutocompleteMultiselect {
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.labelHidden ? 'sr-only' : '',
-      this.validation || this.error ? 'invalid' : '',
+      this.readOnly || this.disabled ? '' : this.validation || this.error ? 'invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -935,21 +1008,21 @@ export class AutocompleteMultiselect {
     // Exactly ONE label element for the input.
     return (
       <label class={classes} id={this.labelId} htmlFor={this.ids || undefined}>
-        <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
-        {this.required ? <span class="required">*</span> : ''}
+        <span class={this.readOnly || this.disabled ? '' : this.showAsRequired() ? 'required' : ''}>{text}</span>
+        {this.readOnly || this.disabled ? null : this.required ? <span class="required">*</span> : ''}
       </label>
     );
   }
 
   private renderAddButton() {
-    const shouldShow = this.editable && this.addBtn && this.inputValue.trim().length > 0;
+    const shouldShow = !this.isInteractionLocked && this.editable && this.addBtn && this.inputValue.trim().length > 0;
     if (!shouldShow) return null;
 
     return (
       <button
         type="button"
         class={{ 'add-btn': true, 'no-border': this.removeBtnBorder }}
-        disabled={this.disabled}
+        disabled={this.disabled || this.readOnly}
         onMouseDown={e => {
           e.preventDefault();
           e.stopPropagation();
@@ -973,14 +1046,14 @@ export class AutocompleteMultiselect {
 
   private renderClearButton() {
     const hasInputOrSelection = this.inputValue.trim().length > 0 || this.selectedItems.length > 0;
-    if (this.removeClearBtn || this.disabled || !hasInputOrSelection) return null;
+    if (this.removeClearBtn || this.disabled || this.readOnly || !hasInputOrSelection) return null;
 
     return (
       <button
         type="button"
         class="clear-btn"
         aria-label="Clear input"
-        disabled={this.disabled}
+        disabled={this.disabled || this.readOnly}
         title="Clear input"
         onMouseDown={e => {
           e.preventDefault();
@@ -1037,11 +1110,13 @@ export class AutocompleteMultiselect {
         aria-invalid={this.validation || this.error ? 'true' : undefined}
         aria-haspopup="listbox"
         aria-disabled={this.disabled ? 'true' : undefined}
+        aria-readonly={this.readOnly ? 'true' : undefined}
         class={this.inputClasses()}
         type={this.type || 'text'}
         placeholder={placeholder}
         value={this.inputValue}
         disabled={this.disabled}
+        readOnly={this.readOnly}
         onInput={this.handleInput}
         onKeyDown={this.handleInput}
         onFocus={this.handleFocus}
@@ -1059,7 +1134,7 @@ export class AutocompleteMultiselect {
       <ul role="listbox" id={this.listboxId} aria-multiselectable="true" tabIndex={-1}>
         {this.filteredOptions.map((option, i) => {
           const isUserAdded = this.userAddedOptions.has(option);
-          const showDelete = this.editable && isUserAdded;
+          const showDelete = !this.isInteractionLocked && this.editable && isUserAdded;
 
           return (
             <li
@@ -1115,7 +1190,7 @@ export class AutocompleteMultiselect {
   }
 
   private renderDropdown() {
-    if (!this.dropdownOpen) return null;
+    if (!this.dropdownOpen || this.readOnly) return null;
     return (
       <div class="autocomplete-dropdown" aria-live="polite">
         {this.renderDropdownList()}

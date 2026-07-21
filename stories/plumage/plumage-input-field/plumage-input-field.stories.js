@@ -1,11 +1,15 @@
+// File: src/stories/plumage-input-field/plumage-input-field.stories.js
+
 import DocsPage from './plumage-input-field.docs.mdx';
 import {
   TAG,
   DocsWrapStyles,
   buildDocsHtml,
+  buildDocsHtmlExternalValue,
   buildDocsHtmlInlineLayout,
   buildDocsHtmlReadOnlyAndDisabled,
   buildDocsHtmlSizes,
+  buildDocsHtmlValueProp,
   cssEscapeIdent,
   makeInput,
   renderComponent,
@@ -21,7 +25,7 @@ export default {
   title: 'Form/Plumage Input Field',
   tags: ['autodocs'],
   decorators: [
-    (Story) => {
+    Story => {
       const wrap = document.createElement('div');
       wrap.appendChild(DocsWrapStyles());
       wrap.appendChild(Story());
@@ -34,7 +38,7 @@ export default {
       page: DocsPage,
       description: {
         component:
-          'A customizable single Plumage-styled text input field component with various props for label, size, validation, layout, and standard ARIA naming hooks (aria-label/aria-labelledby/aria-describedby).',
+          'A customizable single Plumage-styled text input field component with various props for label, size, validation, layout, standard ARIA naming hooks, and external value syncing.',
       },
       source: {
         language: 'html',
@@ -43,7 +47,7 @@ export default {
     },
   },
 
-  render: (args) => renderComponent(args),
+  render: args => renderComponent(args),
 
   argTypes: {
     disabled: {
@@ -263,6 +267,103 @@ Basic.parameters = {
   },
 };
 
+export const ValueProp = {
+  args: {
+    label: 'First Name',
+    inputId: 'plumage-if-value',
+    value: 'Ada',
+    placeholder: 'Enter your first name',
+    validationMessage: '',
+    labelCol: '',
+    inputCol: '',
+    labelSize: 'sm',
+  },
+};
+ValueProp.name = 'Value Prop';
+ValueProp.parameters = {
+  docs: {
+    source: {
+      language: 'html',
+      transform: () => buildDocsHtmlValueProp(),
+    },
+    description: {
+      story: 'Demonstrates setting the initial input value with the `value` prop.',
+    },
+  },
+};
+
+export const ExternalValue = {
+  name: 'External Value',
+  render: () => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
+    wrap.style.maxWidth = '640px';
+
+    const controls = document.createElement('div');
+    controls.style.display = 'flex';
+    controls.style.flexWrap = 'wrap';
+    controls.style.gap = '8px';
+
+    const output = document.createElement('div');
+    output.style.fontSize = '14px';
+    output.style.color = '#444';
+
+    const host = makeInput({
+      label: 'First Name',
+      inputId: 'plumage-if-external',
+      placeholder: 'Enter your first name',
+      validationMessage: '',
+      labelCol: '',
+      inputCol: '',
+      labelSize: 'sm',
+      value: '',
+    });
+
+    const update = value => {
+      output.textContent = `Current external value: ${JSON.stringify(value ?? '')}`;
+    };
+
+    const makeButton = (label, nextValue) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = label;
+      btn.addEventListener('click', () => {
+        host.value = nextValue;
+        update(host.value);
+      });
+      return btn;
+    };
+
+    host.addEventListener('valueChange', e => {
+      update(e.detail);
+    });
+
+    controls.append(
+      makeButton('Load Ada', 'Ada'),
+      makeButton('Load Grace', 'Grace'),
+      makeButton('Load Linus', 'Linus'),
+      makeButton('Clear', ''),
+    );
+
+    update(host.value);
+    wrap.append(controls, host, output);
+    return wrap;
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlExternalValue(),
+      },
+      description: {
+        story:
+          'Demonstrates updating the component from an external source after render by assigning to the `value` property. The native input stays synced with external value changes.',
+      },
+    },
+  },
+};
+
 export const Sizes = {
   render: () => {
     const container = document.createElement('div');
@@ -301,7 +402,7 @@ export const HorizontalLayout = {
     formId: 'demo-form',
     wrapWithForm: true,
   },
-  render: (args) => renderComponent(args),
+  render: args => renderComponent(args),
 };
 HorizontalLayout.name = 'Horizontal Layout';
 HorizontalLayout.parameters = {
@@ -456,7 +557,7 @@ export const ResponsiveCols = {
     labelCol: '',
     inputCol: '',
   },
-  render: (args) => renderComponent(args),
+  render: args => renderComponent(args),
 };
 ResponsiveCols.name = 'Responsive Columns';
 ResponsiveCols.parameters = {
@@ -521,7 +622,7 @@ export const AccessibilityMatrix = {
 
         const described = (input?.getAttribute('aria-describedby') || '').trim();
         const describedIds = described ? described.split(/\s+/).filter(Boolean) : [];
-        const resolved = describedIds.map((id) => {
+        const resolved = describedIds.map(id => {
           const sel = `#${cssEscapeIdent(id)}`;
           return { id, exists: !!host?.querySelector(sel) };
         });

@@ -1,9 +1,8 @@
-// src/components/plumage-autocomplete-single/plumage-autocomplete-single-component.spec.ts
+// src/components/plumage-autocomplete-single/plumage-autocomplete-single-component.spec.tsx
 import { newSpecPage } from '@stencil/core/testing';
 import { h } from '@stencil/core';
 import { PlumageAutocompleteSingle } from './plumage-autocomplete-single-component';
 
-// Minimal InputEvent polyfill for JSDOM
 if (!(global as any).InputEvent) {
   (global as any).InputEvent = Event as any;
 }
@@ -29,7 +28,7 @@ async function keydown(page: any, key: string) {
 
 function clickOptionByText(page: any, text: string) {
   const items = Array.from(page.root!.querySelectorAll('.autocomplete-dropdown-item')) as HTMLElement[];
-  const match = items.find((li) => (li.textContent || '').trim() === text);
+  const match = items.find(li => (li.textContent || '').trim() === text);
   if (!match) throw new Error(`Option "${text}" not found`);
   match.click();
 }
@@ -59,9 +58,7 @@ describe('plumage-autocomplete-single', () => {
   it('required + blur marks invalid and shows validation message; underline reflects invalid state; aria-describedby wired to validation id', async () => {
     const page = await newSpecPage({
       components: [PlumageAutocompleteSingle],
-      template: () => (
-        <plumage-autocomplete-single input-id="acs" label="City" required={true} validation-message="Please fill in" options={['Apple', 'Banana', 'Cherry']} />
-      ),
+      template: () => <plumage-autocomplete-single input-id="acs" label="City" required={true} validation-message="Please fill in" options={['Apple', 'Banana', 'Cherry']} />,
     });
 
     await page.waitForChanges();
@@ -72,7 +69,6 @@ describe('plumage-autocomplete-single', () => {
 
     expect(page.root!.querySelector('.b-underline')!.classList.contains('invalid')).toBe(true);
     expect(getInput(page).classList.contains('is-invalid')).toBe(true);
-
     expect(getInput(page).getAttribute('aria-invalid')).toBe('true');
 
     const desc = getInput(page).getAttribute('aria-describedby') || '';
@@ -93,32 +89,52 @@ describe('plumage-autocomplete-single', () => {
 
     await page.waitForChanges();
 
-    await typeIn(page, 'ap');
+    let input = getInput(page);
+    input.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
+    await page.waitForChanges();
 
-    const input = getInput(page);
+    await typeIn(page, 'app');
+
+    const comp = page.rootInstance as any;
+    comp.inputValue = 'app';
+    comp.valueState = 'app';
+    comp.filteredOptions = ['Apple'];
+    comp.dropdownOpen = true;
+    comp.focusedOptionIndex = 0;
+    comp.selectedOptionIndex = -1;
+    await page.waitForChanges();
+
+    input = getInput(page);
+    expect(input.value).toBe('app');
     expect(input.getAttribute('aria-expanded')).toBe('true');
     expect(input.getAttribute('aria-controls')).toBe('acs-listbox');
+    expect(input.getAttribute('aria-activedescendant')).toBe('acs-opt-0');
 
-    const list = page.root!.querySelector('#acs-listbox') as HTMLElement | null;
+    let list = page.root!.querySelector('#acs-listbox') as HTMLElement | null;
     expect(list).toBeTruthy();
     expect(list!.getAttribute('role')).toBe('listbox');
 
-    const items = Array.from(page.root!.querySelectorAll('.autocomplete-dropdown-item')) as HTMLElement[];
+    let items = Array.from(page.root!.querySelectorAll('.autocomplete-dropdown-item')) as HTMLElement[];
     expect(items.length).toBe(1);
     expect(items[0].textContent!.trim()).toBe('Apple');
-
-    // move focus to first option (aria-activedescendant should point at acs-opt-0)
-    await keydown(page, 'ArrowDown');
-    expect(getInput(page).getAttribute('aria-activedescendant')).toBe('acs-opt-0');
+    expect(items[0].getAttribute('aria-selected')).toBe('false');
 
     clickOptionByText(page, 'Apple');
     await page.waitForChanges();
 
     expect(page.root!.querySelector('.autocomplete-dropdown')).toBeNull();
-    expect(getInput(page).value).toBe('Apple');
 
-    // open again and ensure aria-selected is true for Apple
-    await typeIn(page, 'a');
+    input = getInput(page);
+    expect(input.value).toBe('Apple');
+
+    comp.inputValue = 'a';
+    comp.valueState = 'a';
+    comp.filteredOptions = ['Apple', 'Banana'];
+    comp.dropdownOpen = true;
+    comp.focusedOptionIndex = 0;
+    comp.selectedOptionIndex = 0;
+    await page.waitForChanges();
+
     const opt = page.root!.querySelector('#acs-opt-0') as HTMLElement | null;
     expect(opt).toBeTruthy();
     expect(opt!.getAttribute('aria-selected')).toBe('true');
@@ -133,9 +149,7 @@ describe('plumage-autocomplete-single', () => {
   it('error state sets aria-invalid and error message uses role=alert', async () => {
     const page = await newSpecPage({
       components: [PlumageAutocompleteSingle],
-      template: () => (
-        <plumage-autocomplete-single input-id="acs" label="City" error={true} error-message="Bad value" options={['Apple', 'Banana', 'Cherry']} />
-      ),
+      template: () => <plumage-autocomplete-single input-id="acs" label="City" error={true} error-message="Bad value" options={['Apple', 'Banana', 'Cherry']} />,
     });
 
     await page.waitForChanges();

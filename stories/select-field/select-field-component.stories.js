@@ -1,7 +1,15 @@
 // File: src/stories/select-field-component.stories.js
 
 import SelectFieldDocs from './select-field-component.docs.mdx';
-import { normalize, buildDocsHtml, Template, SIZE_VARIANTS, getSnapshot } from './select-field-component.story-helpers';
+import {
+  normalize,
+  buildDocsHtml,
+  buildDocsHtmlExternalValue,
+  buildDocsHtmlExternalMultiValue,
+  Template,
+  SIZE_VARIANTS,
+  getSnapshot,
+} from './select-field-component.story-helpers';
 
 export default {
   title: 'Form/Select Field',
@@ -10,7 +18,8 @@ export default {
     docs: {
       page: SelectFieldDocs,
       description: {
-        component: 'A customizable select field component with various props for label, size, validation, layout, and accessibility overrides.',
+        component:
+          'A customizable select field component with support for single and multiple selection, responsive layouts, validation, accessibility overrides, and read-only/disabled states.',
       },
       source: {
         language: 'html',
@@ -41,12 +50,12 @@ export default {
         'ARIA override: element id(s) that label the select (space-separated). Takes precedence over aria-label and component-generated label id.',
     },
 
-    classes: { control: 'text', table: { category: 'Layout' }, description: 'Additional CSS classes' },
+    classes: { control: 'text', table: { category: 'Layout' }, description: 'Additional CSS classes.' },
     formId: {
       control: 'text',
       name: 'form-id',
       table: { category: 'Layout' },
-      description: 'ID of the parent form element, used for accessibility and form association',
+      description: 'ID of the parent form element, used for form association.',
     },
     formLayout: {
       control: { type: 'select' },
@@ -68,13 +77,13 @@ export default {
       table: { category: 'Layout' },
       description: 'Used with horizontal form layouts. Responsive input column classes.',
     },
-    label: { control: 'text', table: { category: 'Layout' }, description: 'Label text for the select field' },
+    label: { control: 'text', table: { category: 'Layout' }, description: 'Label text for the select field.' },
     labelAlign: {
       control: { type: 'select' },
       options: ['', 'right'],
       name: 'label-align',
       table: { category: 'Layout' },
-      description: 'Alignment of the label',
+      description: 'Alignment of the label.',
     },
     labelCol: {
       control: 'text',
@@ -88,46 +97,53 @@ export default {
       table: { category: 'Layout' },
       description: 'Used with horizontal form layouts. Responsive label column classes.',
     },
-    labelHidden: { control: 'boolean', name: 'label-hidden', table: { category: 'Layout' }, description: 'Hide the label' },
+    labelHidden: { control: 'boolean', name: 'label-hidden', table: { category: 'Layout' }, description: 'Hide the label visually.' },
     labelSize: {
       control: { type: 'select' },
       options: ['', 'xs', 'sm', 'lg'],
       name: 'label-size',
       table: { category: 'Layout' },
-      description: 'Size variant of the label',
+      description: 'Size variant of the label.',
     },
     size: {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
       table: { category: 'Layout' },
-      description: 'Size variant of the select field',
+      description: 'Size variant of the select field.',
     },
 
-    multiple: { control: 'boolean', table: { category: 'Options', defaultValue: false }, description: 'Enable multiple selection mode' },
-    options: { control: 'object', description: 'Array of { value, name } or JSON string', table: { category: 'Options' } },
+    multiple: { control: 'boolean', table: { category: 'Options', defaultValue: false }, description: 'Enable multiple selection mode.' },
+    options: { control: 'object', description: 'Array of { value, name } or JSON string.', table: { category: 'Options' } },
 
     withTable: {
       control: 'boolean',
       name: 'with-table',
       table: { category: 'Other', defaultValue: { summary: false } },
-      description: 'This associates the select field with a table for synchronized behavior.',
+      description: 'Associates the select field with table sort events for synchronized behavior.',
     },
 
     custom: {
       control: 'boolean',
       table: { category: 'Select Field Attributes', defaultValue: false },
-      description: 'Enable custom styling for the select field',
+      description: 'Enable custom styling for the select field.',
     },
     defaultOptionTxt: {
       control: 'text',
       name: 'default-option-txt',
       table: { category: 'Select Field Attributes' },
-      description: 'Text for the default (unselected) option',
+      description: 'Text for the default (unselected) option.',
     },
     disabled: {
       control: 'boolean',
       table: { category: 'Select Field Attributes', defaultValue: false },
-      description: 'Disable the select field',
+      description: 'Disable the select field.',
+    },
+    readOnly: {
+      control: 'boolean',
+      name: 'read-only',
+      table: { category: 'Select Field Attributes', defaultValue: false },
+      description:
+        'Read-only mode. The component renders the native select as disabled, sets aria-readonly/aria-disabled, and applies read-only styling.',
     },
     fieldHeight: {
       control: { type: 'number', min: 2, step: 1 },
@@ -139,21 +155,21 @@ export default {
       control: 'text',
       name: 'select-field-id',
       table: { category: 'Select Field Attributes' },
-      description: 'ID of the select field, used for accessibility and form association',
+      description: 'ID of the select field, used for accessibility and form association.',
     },
     value: {
       control: 'text',
       table: { category: 'Select Field Attributes' },
-      description: 'For single select; in multiple mode prefer selection via UI',
+      description: 'For single select. In multiple mode, the component expects an array value via property, not an HTML attribute.',
     },
 
-    required: { control: 'boolean', table: { category: 'Validation', defaultValue: false }, description: 'Mark the field as required' },
-    validation: { control: 'boolean', table: { category: 'Validation', defaultValue: false }, description: 'Enable validation' },
+    required: { control: 'boolean', table: { category: 'Validation', defaultValue: false }, description: 'Mark the field as required.' },
+    validation: { control: 'boolean', table: { category: 'Validation', defaultValue: false }, description: 'Enable validation.' },
     validationMessage: {
       control: 'text',
       name: 'validation-message',
       table: { category: 'Validation' },
-      description: 'Validation message to display',
+      description: 'Validation message to display.',
     },
   },
 };
@@ -176,6 +192,7 @@ BasicSingle.args = {
   multiple: false,
   required: false,
   disabled: false,
+  readOnly: false,
 
   validation: false,
   validationMessage: '',
@@ -224,6 +241,197 @@ WithSelection.parameters = {
   },
 };
 
+export const ValueFromOutsideSource = {
+  name: 'Value from Outside Source',
+  render: args => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
+    wrap.style.maxWidth = '680px';
+
+    const controls = document.createElement('div');
+    controls.style.display = 'flex';
+    controls.style.gap = '8px';
+    controls.style.flexWrap = 'wrap';
+
+    const status = document.createElement('div');
+    status.style.fontSize = '14px';
+    status.style.color = '#444';
+    status.textContent = 'Current external value: (none)';
+
+    const mount = document.createElement('div');
+    mount.innerHTML = Template({
+      ...args,
+      value: '',
+      selectFieldId: args.selectFieldId || 'fruit-external-value',
+      label: args.label || 'Fruits',
+      defaultOptionTxt: args.defaultOptionTxt || 'Select a fruit',
+    });
+
+    const host = mount.querySelector('select-field-component');
+
+    const setExternalValue = value => {
+      if (!host) return;
+      host.value = value;
+      status.textContent = `Current external value: ${value}`;
+    };
+
+    const makeBtn = (text, value) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-outline-secondary btn-sm';
+      btn.textContent = text;
+      btn.addEventListener('click', () => setExternalValue(value));
+      return btn;
+    };
+
+    controls.append(
+      makeBtn('Load Apple', 'apple'),
+      makeBtn('Load Banana', 'banana'),
+      makeBtn('Load Cherry', 'cherry'),
+    );
+
+    wrap.append(controls, mount, status);
+
+    requestAnimationFrame(() => {
+      setTimeout(() => setExternalValue('banana'), 600);
+    });
+
+    return wrap;
+  },
+  args: {
+    ...BasicSingle.args,
+    label: 'Fruits',
+    labelSize: 'sm',
+    selectFieldId: 'fruit-external-value',
+    defaultOptionTxt: 'Select a fruit',
+    value: '',
+    options: [
+      { value: 'apple', name: 'Apple' },
+      { value: 'banana', name: 'Banana' },
+      { value: 'cherry', name: 'Cherry' },
+    ],
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlExternalValue(),
+      },
+      description: {
+        story:
+          'Demonstrates updating the component `value` prop from an external source after render, such as an API response or another control.',
+      },
+    },
+  },
+};
+
+export const MultipleValueFromOutsideSource = {
+  name: 'Multiple Value from Outside Source',
+  render: args => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
+    wrap.style.maxWidth = '680px';
+
+    const controls = document.createElement('div');
+    controls.style.display = 'flex';
+    controls.style.gap = '8px';
+    controls.style.flexWrap = 'wrap';
+
+    const status = document.createElement('div');
+    status.style.fontSize = '14px';
+    status.style.color = '#444';
+
+    const mount = document.createElement('div');
+    mount.innerHTML = Template({
+      ...args,
+      multiple: true,
+      value: '',
+      label: args.label || 'Tags',
+      selectFieldId: args.selectFieldId || 'tags-external-value',
+      defaultOptionTxt: args.defaultOptionTxt || 'Choose tags',
+      fieldHeight: args.fieldHeight ?? 6,
+    });
+
+    const host = mount.querySelector('select-field-component');
+
+    const readHostValue = () => {
+      if (!host) return [];
+      const v = host.value;
+      return Array.isArray(v) ? v : [];
+    };
+
+    const syncStatus = () => {
+      status.textContent = `Current external values: ${JSON.stringify(readHostValue())}`;
+    };
+
+    const setExternalValue = value => {
+      if (!host) return;
+      host.value = value;
+      syncStatus();
+    };
+
+    const makeBtn = (text, value) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-outline-secondary btn-sm';
+      btn.textContent = text;
+      btn.addEventListener('click', () => setExternalValue(value));
+      return btn;
+    };
+
+    controls.append(
+      makeBtn('Load UX + Web', ['ux', 'web']),
+      makeBtn('Load Mobile + Data', ['mobile', 'data']),
+      makeBtn('Load All', ['ux', 'web', 'mobile', 'data']),
+      makeBtn('Load Empty Default', ['']),
+      makeBtn('Clear', []),
+    );
+
+    if (host) {
+      host.addEventListener('change', syncStatus);
+      host.addEventListener('valueChange', syncStatus);
+    }
+
+    wrap.append(controls, mount, status);
+
+    requestAnimationFrame(() => {
+      syncStatus();
+      setTimeout(() => setExternalValue(['ux', 'web']), 600);
+    });
+
+    return wrap;
+  },
+  args: {
+    ...BasicSingle.args,
+    label: 'Tags',
+    multiple: true,
+    selectFieldId: 'tags-external-value',
+    defaultOptionTxt: 'Choose tags',
+    fieldHeight: 6,
+    value: '',
+    options: [
+      { value: 'ux', name: 'UX' },
+      { value: 'web', name: 'Web' },
+      { value: 'mobile', name: 'Mobile' },
+      { value: 'data', name: 'Data' },
+    ],
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlExternalMultiValue(),
+      },
+      description: {
+        story:
+          'Demonstrates updating the component `value` property from an external source in `multiple` mode using an array. Selecting the empty default option clears the selection to `[]`.',
+      },
+    },
+  },
+};
+
 export const MultipleSelection = Template.bind({});
 MultipleSelection.args = {
   ...BasicSingle.args,
@@ -242,7 +450,8 @@ MultipleSelection.storyName = 'Multiple Selections';
 MultipleSelection.parameters = {
   docs: {
     description: {
-      story: 'An example of the select field in multiple selection mode. The `field-height` attribute can be used to control the height of the select box when `multiple` is enabled.',
+      story:
+        'An example of the select field in multiple selection mode. The `field-height` attribute can be used to control the height of the select box when `multiple` is enabled. Selecting the empty default option clears the current selections.',
     },
   },
 };
@@ -251,15 +460,16 @@ export const HorizontalLayout = Template.bind({});
 HorizontalLayout.args = {
   ...BasicSingle.args,
   formLayout: 'horizontal',
-  labelCols: 'col-sm-3',
-  inputCols: 'col-sm-9',
+  labelCols: 'xs-12 sm-3',
+  inputCols: 'xs-12 sm-9',
   value: 'cherry',
 };
 HorizontalLayout.storyName = 'Horizontal Layout';
 HorizontalLayout.parameters = {
   docs: {
     description: {
-      story: 'The select field can be used within a horizontal form layout. Use the `form-layout` prop set to "horizontal" and specify column widths for the label and input using `label-cols` and `input-cols`.',
+      story:
+        'The select field can be used within a horizontal form layout. Use the `form-layout` prop set to "horizontal" and specify column widths for the label and input using `label-cols` and `input-cols`.',
     },
   },
 };
@@ -307,6 +517,24 @@ Disabled.parameters = {
   docs: {
     description: {
       story: 'An example of the select field in a disabled state.',
+    },
+  },
+};
+
+export const ReadOnly = Template.bind({});
+ReadOnly.args = {
+  ...BasicSingle.args,
+  selectFieldId: 'fruit-readonly',
+  label: 'Read only',
+  readOnly: true,
+  value: 'banana',
+};
+ReadOnly.storyName = 'Read Only';
+ReadOnly.parameters = {
+  docs: {
+    description: {
+      story:
+        'Read-only state. The native select is rendered disabled, exposes `aria-readonly="true"` and `aria-disabled="true"`, and keeps the current value visible without allowing interaction.',
     },
   },
 };
@@ -454,12 +682,12 @@ export const AccessibilityMatrix = {
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
       <div style="opacity:.8">
-        Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal, validation, and disabled.
+        Prints computed <code>aria-*</code>, generated ids, and state for default / inline / horizontal, validation, disabled, and read-only.
       </div>
     `;
     wrap.appendChild(header);
 
-    const card = (title, storyArgs) => {
+    const card = (title, storyArgs, extraHtml = '') => {
       const box = document.createElement('div');
       box.style.border = '1px solid #ddd';
       box.style.borderRadius = '10px';
@@ -482,7 +710,7 @@ export const AccessibilityMatrix = {
       pre.textContent = 'Loading…';
 
       const mount = document.createElement('div');
-      mount.innerHTML = Template({ ...BasicSingle.args, ...args, ...storyArgs });
+      mount.innerHTML = `${extraHtml}${Template({ ...BasicSingle.args, ...args, ...storyArgs })}`;
 
       const host = mount.querySelector('select-field-component');
       demo.appendChild(mount);
@@ -516,6 +744,7 @@ export const AccessibilityMatrix = {
         formLayout: '',
         validation: false,
         disabled: false,
+        readOnly: false,
         value: '',
       }),
     );
@@ -527,6 +756,7 @@ export const AccessibilityMatrix = {
         formLayout: 'inline',
         validation: false,
         disabled: false,
+        readOnly: false,
         value: '',
       }),
     );
@@ -541,6 +771,7 @@ export const AccessibilityMatrix = {
         inputCols: 'xs-12 sm-8',
         validation: false,
         disabled: false,
+        readOnly: false,
         value: '',
       }),
     );
@@ -566,6 +797,34 @@ export const AccessibilityMatrix = {
       }),
     );
 
+    wrap.appendChild(
+      card('Read only', {
+        selectFieldId: 'mx-select-readonly',
+        label: 'Read only',
+        readOnly: true,
+        value: 'banana',
+        validation: false,
+      }),
+    );
+
+    wrap.appendChild(
+      card(
+        'External aria-labelledby + aria-describedby',
+        {
+          selectFieldId: 'mx-select-external',
+          label: 'Internal label',
+          ariaLabel: 'Ignored',
+          ariaLabelledby: 'mx-select-ext-label',
+          ariaDescribedby: 'mx-select-ext-help',
+          value: '',
+        },
+        `
+          <div id="mx-select-ext-label" style="font-weight:600; margin-bottom:6px;">External label</div>
+          <div id="mx-select-ext-help" style="opacity:.8; margin-bottom:8px;">External help text.</div>
+        `,
+      ),
+    );
+
     return wrap;
   },
   parameters: {
@@ -573,7 +832,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Prints computed accessibility wiring for the select: `aria-labelledby`, `aria-describedby` (including validation id when present), `aria-required`, `aria-invalid` across default / inline / horizontal, validation, and disabled.',
+          'Prints computed accessibility wiring for the select: `aria-labelledby`, `aria-describedby` (including validation id when present), `aria-required`, `aria-invalid`, `aria-disabled`, and `aria-readonly` across default / inline / horizontal, validation, disabled, and read-only.',
       },
       source: {
         language: 'html',

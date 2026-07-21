@@ -4,6 +4,8 @@ import DocsPage from './plumage-input-group.docs.mdx';
 import {
   DocsWrapStyles,
   buildDocsHtml,
+  buildDocsHtmlValueProp,
+  buildDocsHtmlExternalValue,
   buildEl,
   getSnapshot,
 } from './plumage-input-group.story-helpers.js';
@@ -439,6 +441,116 @@ export const Basic = {
   },
 };
 
+export const ValueProp = {
+  name: 'Value Prop',
+  args: {
+    ...Basic.args,
+    inputId: 'amount-value',
+    label: 'Amount',
+    value: '123.45',
+    placeholder: 'Enter amount',
+    prepend: false,
+    append: true,
+    prependIcon: '',
+    appendIcon: 'fa-solid fa-dollar-sign',
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlValueProp(),
+      },
+      description: {
+        story:
+          'This example demonstrates setting the initial input value with the `value` prop.',
+      },
+    },
+  },
+};
+
+export const ExternalValue = {
+  name: 'External Value',
+  render: args => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
+    wrap.style.maxWidth = '640px';
+
+    const controls = document.createElement('div');
+    controls.style.display = 'flex';
+    controls.style.flexWrap = 'wrap';
+    controls.style.gap = '8px';
+
+    const host = buildEl({
+      ...Basic.args,
+      ...args,
+      label: args.label || 'Amount',
+      inputId: args.inputId || 'amount-external',
+      placeholder: args.placeholder || 'Enter amount',
+      append: true,
+      appendIcon: 'fa-solid fa-dollar-sign',
+      prepend: false,
+      value: '',
+    });
+
+    const output = document.createElement('div');
+    output.style.fontSize = '14px';
+    output.style.color = '#444';
+
+    const updateDisplay = () => {
+      output.textContent = `Current external value: ${JSON.stringify(host.value ?? '')}`;
+    };
+
+    const makeButton = (label, nextValue) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = label;
+      btn.addEventListener('click', () => {
+        host.value = nextValue;
+        updateDisplay();
+      });
+      return btn;
+    };
+
+    host.addEventListener('valueChange', event => {
+      output.textContent = `Current typed value: ${JSON.stringify(event.detail ?? '')}`;
+    });
+
+    controls.append(
+      makeButton('Load 123.45', '123.45'),
+      makeButton('Load 999.99', '999.99'),
+      makeButton('Clear', ''),
+    );
+
+    updateDisplay();
+    wrap.append(controls, host, output);
+    return wrap;
+  },
+  args: {
+    ...Basic.args,
+    inputId: 'amount-external',
+    label: 'Amount',
+    placeholder: 'Enter amount',
+    prepend: false,
+    append: true,
+    prependIcon: '',
+    appendIcon: 'fa-solid fa-dollar-sign',
+    value: '',
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlExternalValue(),
+      },
+      description: {
+        story:
+          'Demonstrates updating the component from an external source after render by assigning to the `value` property. This should stay in sync with the inner native input.',
+      },
+    },
+  },
+};
+
 export const RequiredWithValidation = {
   name: 'Required + Validation',
   args: {
@@ -698,9 +810,7 @@ export const AppendButtonAction = {
       const input = host.querySelector('input');
       const value = input ? input.value : '';
 
-      // eslint-disable-next-line no-console
       console.log('appendClick fired:', event.detail);
-      // eslint-disable-next-line no-console
       console.log('Current input value:', value);
 
       result.textContent = value
@@ -709,7 +819,6 @@ export const AppendButtonAction = {
     });
 
     host.addEventListener('valueChange', event => {
-      // eslint-disable-next-line no-console
       console.log('valueChange:', event.detail);
     });
 

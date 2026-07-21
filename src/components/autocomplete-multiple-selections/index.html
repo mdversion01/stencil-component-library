@@ -34,29 +34,84 @@
     <app-wrapper>
       <div class="cwrapper">
         <autocomplete-multiple-selections
-            id="aci4"
-            editable
-            input-id="ac-2"
-            label="Autocomplete Multiple Selections"
-            label-size="lg"
-            placeholder="Type to search..."
-            data-autocomplete="true"
-            required
-            add-btn
-            validation
-            validation-message="Please fill in"
-            placeholder="Type to search..."
+          id="aci4"
+          editable
+          input-id="ac-0"
+          label="Autocomplete Multiple Selections"
+          label-size="lg"
+          placeholder="Type to search..."
+          data-autocomplete="true"
+          add-btn
+          placeholder="Type to search..."
+          size="lg"
+          form-layout="horizontal"
+          label-align="right"
+          badge-variant="primary"
+          read-only
+        ></autocomplete-multiple-selections>
 
-            size="lg"
-            form-layout="horizontal"
-            label-align="right"
-          ></autocomplete-multiple-selections>
+        <autocomplete-multiple-selections
+          id="aci4"
+          editable
+          input-id="ac-2"
+          label="Autocomplete Multiple Selections"
+          label-size="lg"
+          placeholder="Type to search..."
+          data-autocomplete="true"
+          required
+          add-btn
+          validation
+          validation-message="Please fill in"
+          placeholder="Type to search..."
+          size="lg"
+          form-layout="horizontal"
+          label-align="right"
+        ></autocomplete-multiple-selections>
+
+        <autocomplete-multiple-selections
+          id="aci4"
+          editable
+          input-id="ac-3"
+          label="Autocomplete Multiple Selections"
+          label-size="lg"
+          placeholder="Type to search..."
+          data-autocomplete="true"
+          required
+          add-btn
+          validation
+          validation-message="Please fill in"
+          placeholder="Type to search..."
+          read-only
+          size="lg"
+          form-layout="horizontal"
+          label-align="right"
+        ></autocomplete-multiple-selections>
+
+        <autocomplete-multiple-selections
+          id="aci4"
+          editable
+          input-id="ac-4"
+          label="Autocomplete Multiple Selections"
+          label-size="lg"
+          placeholder="Type to search..."
+          data-autocomplete="true"
+          required
+          add-btn
+          disabled
+          validation
+          validation-message="Please fill in"
+          placeholder="Type to search..."
+          read-only
+          size="lg"
+          form-layout="horizontal"
+          label-align="right"
+        ></autocomplete-multiple-selections>
       </div>
     </app-wrapper>
 
     <script type="module">
       window.addEventListener('DOMContentLoaded', () => {
-          let aci4Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango', 'Bet', 'Betty', 'Bobby', 'Bob', 'Bobby Brown', 'Bobby Blue', 'Bobby Green'];
+        let aci4Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango', 'Bet', 'Betty', 'Bobby', 'Bob', 'Bobby Brown', 'Bobby Blue', 'Bobby Green'];
 
         const aci4 = document.getElementById('aci4');
 
@@ -70,6 +125,7 @@
 
           // seed options by assigning the prop (the component’s @Watch('options') will pick it up)
           aci4.options = aci4Options.slice();
+          aci4.value = ['Apple', 'Banana'];
 
           // there is NO optionsChange in this component by default.
           // You can still listen to selection changes:

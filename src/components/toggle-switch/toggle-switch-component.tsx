@@ -72,7 +72,7 @@ export class ToggleSwitchComponent {
   @State() internalSwitchesArray: ToggleItem[] = [];
 
   /**
-   * ✅ Resolved toggle text used by render.
+   * Resolved toggle text used by render.
    * Priority:
    *  1) new-toggle-txt attribute (JSON string)
    *  2) newToggleTxt prop (object)
@@ -101,7 +101,6 @@ export class ToggleSwitchComponent {
 
   @Watch('newToggleTxt')
   onNewToggleTxtPropChange() {
-    // If attribute is NOT set, prop changes should update resolved value
     if (!this.newToggleTxtAttr || !String(this.newToggleTxtAttr).trim()) {
       this.resolveToggleTxt();
     }
@@ -109,12 +108,10 @@ export class ToggleSwitchComponent {
 
   @Watch('newToggleTxtAttr')
   onNewToggleTxtAttrChange() {
-    // Attribute always wins when present
     this.resolveToggleTxt();
   }
 
   private resolveToggleTxt() {
-    // 1) attribute JSON wins if valid
     const raw = (this.newToggleTxtAttr || '').trim();
     if (raw) {
       try {
@@ -131,7 +128,6 @@ export class ToggleSwitchComponent {
       }
     }
 
-    // 2) prop object
     const on = typeof this.newToggleTxt?.on === 'string' ? this.newToggleTxt.on : 'On';
     const off = typeof this.newToggleTxt?.off === 'string' ? this.newToggleTxt.off : 'Off';
     this.resolvedToggleTxt = { on, off };
@@ -160,7 +156,7 @@ export class ToggleSwitchComponent {
   private toggleSwitch(index: number) {
     const item = this.internalSwitchesArray[index];
     if (!item) return;
-    if (this.disabled || item.disabled) return;
+    if (this.isItemDisabled(item)) return;
 
     const updated = [...this.internalSwitchesArray];
     updated[index] = { ...updated[index], checked: !updated[index].checked };
@@ -176,20 +172,54 @@ export class ToggleSwitchComponent {
   };
 
   private getGroupId(): string {
-    // Prefer deterministic id derived from inputId. If missing, derive from host (still stable in DOM).
     const base = (this.inputId || '').trim();
     if (base) return base;
-    // deterministic-ish fallback (not random): use tag + incremental index if needed.
-    // If a consumer doesn't pass inputId, the input itself will still be correctly labelled,
-    // but group id is best-effort.
     return this.host.id?.trim() || 'toggle-group';
+  }
+
+  private isItemDisabled(item: ToggleItem): boolean {
+    return !!(this.disabled || item.disabled);
+  }
+
+  private getItemRequired(item: ToggleItem): boolean {
+    return this.isItemDisabled(item) ? false : !!(this.required || item.required);
+  }
+
+  private getItemValidation(item: ToggleItem): boolean {
+    return this.isItemDisabled(item) ? false : !!(this.validation || item.validation);
+  }
+
+  private getItemValidationMessage(item: ToggleItem): string {
+    return this.isItemDisabled(item) ? '' : String(item.validationMessage || this.validationMessage || '').trim();
+  }
+
+  private isItemInvalid(item: ToggleItem): boolean {
+    return this.getItemRequired(item) && this.getItemValidation(item) && !item.checked;
+  }
+
+  private shouldShowItemMessage(item: ToggleItem): boolean {
+    return this.isItemInvalid(item) && !!this.getItemValidationMessage(item);
+  }
+
+  private isSingleRequired(): boolean {
+    return this.disabled ? false : !!this.required;
+  }
+
+  private isSingleInvalid(): boolean {
+    return this.disabled ? false : !!(this.required && this.validation && !this.isChecked);
+  }
+
+  private shouldShowSingleMessage(): boolean {
+    return this.isSingleInvalid() && !!String(this.validationMessage || '').trim();
   }
 
   // ---------- RENDER HELPERS (MULTI) ----------
   private renderBootstrapSwitch(item: ToggleItem, parentId: string, index: number) {
     const switchId = `${parentId}_option_${item.id}`;
-    const invalid = !!(item.required && item.validation && !item.checked);
+    const invalid = this.isItemInvalid(item);
     const msgId = `${switchId}-validation`;
+    const isRequired = this.getItemRequired(item);
+    const isDisabled = this.isItemDisabled(item);
 
     const showToggleTxt = (item.toggleTxt ?? this.toggleTxt) === true;
     const base = this.resolvedToggleTxt;
@@ -217,13 +247,13 @@ export class ToggleSwitchComponent {
           type="checkbox"
           role="switch"
           checked={!!item.checked}
-          disabled={!!(this.disabled || item.disabled)}
-          required={!!(this.required || item.required)}
+          disabled={isDisabled}
+          required={isRequired}
           aria-checked={String(!!item.checked)}
-          aria-disabled={String(!!(this.disabled || item.disabled))}
-          aria-required={item.required || this.required ? 'true' : undefined}
+          aria-disabled={String(isDisabled)}
+          aria-required={isRequired ? 'true' : undefined}
           aria-invalid={invalid ? 'true' : undefined}
-          aria-describedby={invalid && item.validationMessage ? msgId : undefined}
+          aria-describedby={this.shouldShowItemMessage(item) ? msgId : undefined}
           onChange={() => this.toggleSwitch(index)}
           value={item.value}
         />
@@ -231,15 +261,14 @@ export class ToggleSwitchComponent {
         <label class="form-check-label" htmlFor={switchId} onClick={onLabelClick}>
           {item.label}
           {showToggleTxt && <span class="toggleTxt-bold"> {toggleText}</span>}
-          {(item.required || this.required) && <span class="required">*</span>}
+          {isRequired && <span class="required">*</span>}
         </label>
 
-        {/* Per-item message (non-inline OR inline—this message is for the input itself) */}
-        {invalid && item.validationMessage && (
+        {/* {this.shouldShowItemMessage(item) && (
           <div id={msgId} class="invalid-feedback" role="alert" aria-live="polite">
-            {item.validationMessage}
+            {this.getItemValidationMessage(item)}
           </div>
-        )}
+        )} */}
       </div>
     );
   }
@@ -247,11 +276,14 @@ export class ToggleSwitchComponent {
   private renderCustomSwitch(item: ToggleItem, parentId: string, index: number) {
     const switchId = `${parentId}_option_${item.id}`;
     const msgId = `${switchId}-validation`;
+    const invalid = this.isItemInvalid(item);
+    const isRequired = this.getItemRequired(item);
+    const isDisabled = this.isItemDisabled(item);
+    const validationMessage = this.getItemValidationMessage(item);
 
     const base = this.resolvedToggleTxt;
     const toggleText = item.checked ? item.newToggleTxt?.on || base.on : item.newToggleTxt?.off || base.off;
     const showToggleTxt = (item.toggleTxt ?? this.toggleTxt) === true;
-    const invalid = !!(item.required && item.validation && !item.checked);
 
     const sizeClass = item.size || this.size ? `custom-control-${item.size || this.size}` : '';
     const wrapperCls = ['custom-control', 'custom-switch', sizeClass, this.inline ? 'custom-control-inline' : ''].filter(Boolean).join(' ');
@@ -269,13 +301,13 @@ export class ToggleSwitchComponent {
           class={`custom-control-input ${invalid ? 'is-invalid' : ''}`}
           role="switch"
           checked={!!item.checked}
-          disabled={!!(this.disabled || item.disabled)}
-          required={!!(this.required || item.required)}
+          disabled={isDisabled}
+          required={isRequired}
           aria-checked={String(!!item.checked)}
-          aria-disabled={String(!!(this.disabled || item.disabled))}
-          aria-required={item.required || this.required ? 'true' : undefined}
+          aria-disabled={String(isDisabled)}
+          aria-required={isRequired ? 'true' : undefined}
           aria-invalid={invalid ? 'true' : undefined}
-          aria-describedby={invalid && item.validationMessage ? msgId : undefined}
+          aria-describedby={this.shouldShowItemMessage(item) ? msgId : undefined}
           onChange={() => this.toggleSwitch(index)}
           value={item.value}
         />
@@ -287,12 +319,12 @@ export class ToggleSwitchComponent {
         >
           {item.label}
           {showToggleTxt && <span class="toggleTxt-bold"> {toggleText}</span>}
-          {(item.required || this.required) && <span class="required">*</span>}
+          {isRequired && <span class="required">*</span>}
         </label>
 
-        {invalid && item.validationMessage && (
+        {this.shouldShowItemMessage(item) && (
           <div id={msgId} class="invalid-feedback" role="alert" aria-live="polite">
-            {item.validationMessage}
+            {validationMessage}
           </div>
         )}
       </div>
@@ -305,12 +337,13 @@ export class ToggleSwitchComponent {
 
   // ---------- RENDER (SINGLE) ----------
   private renderSingleBootstrap() {
-    const switchId = (this.inputId || '').trim() || `toggle-switch`;
+    const switchId = (this.inputId || '').trim() || 'toggle-switch';
     const msgId = `${switchId}-validation`;
 
     const base = this.resolvedToggleTxt;
     const toggleText = this.isChecked ? base.on : base.off;
-    const invalid = !!(this.required && this.validation && !this.isChecked);
+    const invalid = this.isSingleInvalid();
+    const isRequired = this.isSingleRequired();
 
     const wrapperCls = ['form-check', 'form-switch', this.inline ? 'form-check-inline' : '', this.size ? `ts-size-${this.size}` : '']
       .filter(Boolean)
@@ -334,13 +367,13 @@ export class ToggleSwitchComponent {
             role="switch"
             checked={!!this.isChecked}
             disabled={!!this.disabled}
-            required={!!this.required}
+            required={isRequired}
             aria-label={ariaLabel}
             aria-checked={String(!!this.isChecked)}
             aria-disabled={String(!!this.disabled)}
-            aria-required={this.required ? 'true' : undefined}
+            aria-required={isRequired ? 'true' : undefined}
             aria-invalid={invalid ? 'true' : undefined}
-            aria-describedby={invalid && this.validationMessage ? msgId : undefined}
+            aria-describedby={this.shouldShowSingleMessage() ? msgId : undefined}
             onChange={this.toggleSingle}
             value={this.value}
           />
@@ -348,10 +381,10 @@ export class ToggleSwitchComponent {
           <label class="form-check-label" htmlFor={switchId} onClick={onLabelClick}>
             {this.labelTxt}
             {this.toggleTxt && <span class="toggleTxt-bold"> {toggleText}</span>}
-            {this.required && <span class="required">*</span>}
+            {isRequired && <span class="required">*</span>}
           </label>
 
-          {invalid && this.validationMessage && (
+          {this.shouldShowSingleMessage() && (
             <div id={msgId} class="invalid-feedback" role="alert" aria-live="polite">
               {this.validationMessage}
             </div>
@@ -362,12 +395,13 @@ export class ToggleSwitchComponent {
   }
 
   private renderSingleCustom() {
-    const switchId = (this.inputId || '').trim() || `toggle-switch`;
+    const switchId = (this.inputId || '').trim() || 'toggle-switch';
     const msgId = `${switchId}-validation`;
 
     const base = this.resolvedToggleTxt;
     const toggleText = this.isChecked ? base.on : base.off;
-    const invalid = !!(this.required && this.validation && !this.isChecked);
+    const invalid = this.isSingleInvalid();
+    const isRequired = this.isSingleRequired();
 
     const wrapperCls = ['custom-control', 'custom-switch', this.size ? `custom-control-${this.size}` : '', this.inline ? 'custom-control-inline' : '']
       .filter(Boolean)
@@ -391,13 +425,13 @@ export class ToggleSwitchComponent {
             role="switch"
             checked={!!this.isChecked}
             disabled={!!this.disabled}
-            required={!!this.required}
+            required={isRequired}
             aria-label={ariaLabel}
             aria-checked={String(!!this.isChecked)}
             aria-disabled={String(!!this.disabled)}
-            aria-required={this.required ? 'true' : undefined}
+            aria-required={isRequired ? 'true' : undefined}
             aria-invalid={invalid ? 'true' : undefined}
-            aria-describedby={invalid && this.validationMessage ? msgId : undefined}
+            aria-describedby={this.shouldShowSingleMessage() ? msgId : undefined}
             onChange={this.toggleSingle}
             value={this.value}
           />
@@ -409,10 +443,10 @@ export class ToggleSwitchComponent {
           >
             {this.labelTxt}
             {this.toggleTxt && <span class="toggleTxt-bold"> {toggleText}</span>}
-            {this.required && <span class="required">*</span>}
+            {isRequired && <span class="required">*</span>}
           </label>
 
-          {invalid && this.validationMessage && (
+          {this.shouldShowSingleMessage() && (
             <div id={msgId} class="invalid-feedback" role="alert" aria-live="polite">
               {this.validationMessage}
             </div>
@@ -426,12 +460,10 @@ export class ToggleSwitchComponent {
     const parentId = this.getGroupId();
 
     if (this.switches) {
-      const invalidItems = this.internalSwitchesArray.filter((i) => i.required && i.validation && !i.checked);
-      const invalidMessages = invalidItems.map((i) => i.validationMessage?.trim()).filter(Boolean) as string[];
+      const invalidItems = this.internalSwitchesArray.filter(item => this.isItemInvalid(item));
+      const invalidMessages = invalidItems.map(item => this.getItemValidationMessage(item)).filter(Boolean) as string[];
       const hasAnyInvalid = invalidMessages.length > 0;
 
-      // Only render group-level message in inline mode (existing behavior),
-      // but keep group aria-invalid correct in all cases.
       const groupMsgId = `${parentId}-validation`;
       const groupLabelledby = this.normalizeIdList(this.ariaLabelledby);
 
@@ -462,7 +494,6 @@ export class ToggleSwitchComponent {
     return this.customSwitch ? this.renderSingleCustom() : this.renderSingleBootstrap();
   }
 
-  // tiny helper to normalize id lists
   private normalizeIdList(value?: string): string | undefined {
     const trimmed = (value ?? '').trim();
     if (!trimmed) return undefined;

@@ -3,6 +3,7 @@
 import DocsPage from './plumage-textarea-component.docs.mdx';
 import {
   buildDocsHtml,
+  buildDocsHtmlExternalValue,
   buildEl,
   renderMatrixRow,
 } from './plumage-textarea-component.story-helpers.js';
@@ -39,7 +40,7 @@ export default {
     },
     required: {
       control: 'boolean',
-      table: { defaultValue: { summary: false }, category: 'Input Attributes' },
+      table: { defaultValue: { summary: false }, category: 'Validation' },
       description: 'Marks the field as required.',
     },
     formId: {
@@ -203,7 +204,7 @@ export default {
     value: '',
     placeholder: 'Enter your message',
     rows: 4,
-    maxLength: 250,
+     maxLength: undefined,
     ariaLabel: '',
     ariaLabelledby: '',
     ariaDescribedby: '',
@@ -242,6 +243,83 @@ export const Basic = {
     docs: {
       description: {
         story: 'Basic Plumage textarea with label and placeholder.',
+      },
+    },
+  },
+};
+
+export const ValueFromExternalSource = {
+  name: 'Value From External Source',
+  render: () => {
+    const root = document.createElement('div');
+    root.style.display = 'grid';
+    root.style.gap = '12px';
+    root.style.maxWidth = '720px';
+
+    const controls = document.createElement('div');
+    controls.style.display = 'flex';
+    controls.style.flexWrap = 'wrap';
+    controls.style.gap = '8px';
+
+    const status = document.createElement('div');
+    status.style.fontSize = '14px';
+    status.style.color = '#444';
+
+    const textarea = buildEl({
+      ...Basic.args,
+      inputId: 'message-external-value',
+      label: 'Message',
+      placeholder: 'Load prefilled content',
+      rows: 5,
+      maxLength: undefined,
+      value: '',
+    });
+
+    const updateStatus = () => {
+      status.textContent = `Current external value: ${JSON.stringify(textarea.value || '')}`;
+    };
+
+    const makeButton = (label, value) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = label;
+      button.addEventListener('click', () => {
+        textarea.value = value;
+        updateStatus();
+      });
+      return button;
+    };
+
+    const loadDraft = makeButton(
+      'Load Draft',
+      'Hello team,\n\nHere is the latest draft message loaded from an outside source.\n\nThanks.'
+    );
+
+    const loadApi = makeButton(
+      'Load API Response',
+      'This Plumage textarea was populated from preloaded data or an API response.'
+    );
+
+    const clear = makeButton('Clear', '');
+
+    textarea.addEventListener('valueChange', updateStatus);
+    textarea.addEventListener('blurChange', updateStatus);
+
+    controls.append(loadDraft, loadApi, clear);
+    root.append(controls, textarea, status);
+
+    updateStatus();
+    return root;
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Demonstrates setting the `value` prop from someplace else, such as preloaded data, an API response, or another UI action.',
+      },
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlExternalValue(),
       },
     },
   },

@@ -1,16 +1,12 @@
-// src/components/plumage-input-field/plumage-input-field-component.spec.tsx
+// File: src/components/plumage-input-field/plumage-input-field-component.spec.tsx
 import { newSpecPage } from '@stencil/core/testing';
 import { PlumageInputFieldComponent } from './plumage-input-field-component';
 
-// Small helper to make snapshots stable (strip inline style noise if any)
 function normalize(html: string) {
   return html.replace(/\sstyle="[^"]*"/g, '');
 }
 
-// Minimal CSS.escape polyfill for test envs where it doesn't exist (JSDOM)
 function cssEscapeIdent(value: string): string {
-  // Good enough for ids produced by this library (letters, numbers, dashes/underscores).
-  // If an id contains special CSS selector characters, escape them.
   return String(value).replace(/([ !"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~])/g, '\\$1');
 }
 
@@ -24,7 +20,7 @@ function idRefs(v: string | null | undefined): string[] {
   return String(v ?? '')
     .trim()
     .split(/\s+/)
-    .map((s) => s.trim())
+    .map(s => s.trim())
     .filter(Boolean);
 }
 
@@ -51,14 +47,13 @@ describe('<plumage-input-field-component>', () => {
     expect(label).toBeTruthy();
     expect(input).toBeTruthy();
 
-    // ID is the important linkage
     expect(input.id).toBe('user');
-
-    // a11y wiring: label has stable id; input references it via aria-labelledby
     expect(label!.id).toBe('user-label');
     expect(input.getAttribute('aria-labelledby')).toBe('user-label');
 
-    expect(normalize(root.outerHTML)).toMatchInlineSnapshot(`"<plumage-input-field-component label="Username" input-id="user"><div class="plumage"><div class="form-group"><label class="form-control-label label-sm" id="user-label" for="user"><span>Username</span></label><div class="input-container" role="presentation"><input id="user" name="user" type="text" class="form-control" placeholder="Username" value="" aria-labelledby="user-label" aria-invalid="false" autocomplete="off" inputmode="text"><div class="b-underline" role="presentation" aria-hidden="true"><div class="b-focus" role="presentation" aria-hidden="true"></div></div></div></div></div></plumage-input-field-component>"`);
+    expect(normalize(root.outerHTML)).toMatchInlineSnapshot(
+      `"<plumage-input-field-component label="Username" input-id="user"><div class="plumage"><div class="form-group"><label class="form-control-label label-sm" id="user-label" for="user"><span>Username</span></label><div class="input-container" role="presentation"><input id="user" name="user" type="text" class="form-control" placeholder="Username" value="" aria-labelledby="user-label" aria-invalid="false" autocomplete="off" inputmode="text"><div class="b-underline" role="presentation" aria-hidden="true"><div class="b-focus" role="presentation" aria-hidden="true"></div></div></div></div></div></plumage-input-field-component>"`,
+    );
   });
 
   it('applies horizontal layout with responsive cols and matches snapshot', async () => {
@@ -89,7 +84,9 @@ describe('<plumage-input-field-component>', () => {
     const input = getInput(root);
     expect(input.className).toContain('form-control-lg');
 
-    expect(normalize(root.outerHTML)).toMatchInlineSnapshot(`"<plumage-input-field-component label="Amount" input-id="amount" form-layout="horizontal" label-cols="sm-3" input-cols="sm-9" size="lg"><div class="plumage horizontal"><div class="form-group row"><label class="form-control-label label-sm col-sm-3 no-padding col-form-label" id="amount-label" for="amount"><span>Amount:</span></label><div class="col-sm-9"><div class="input-container" role="presentation"><input id="amount" name="amount" type="text" class="form-control form-control-lg" placeholder="Amount" value="" aria-labelledby="amount-label" aria-invalid="false" autocomplete="off" inputmode="text"><div class="b-underline" role="presentation" aria-hidden="true"><div class="b-focus" role="presentation" aria-hidden="true"></div></div></div></div></div></div></plumage-input-field-component>"`);
+    expect(normalize(root.outerHTML)).toMatchInlineSnapshot(
+      `"<plumage-input-field-component label="Amount" input-id="amount" form-layout="horizontal" label-cols="sm-3" input-cols="sm-9" size="lg"><div class="plumage horizontal"><div class="form-group row"><label class="form-control-label label-sm col-sm-3 no-padding col-form-label" id="amount-label" for="amount"><span>Amount:</span></label><div class="col-sm-9"><div class="input-container" role="presentation"><input id="amount" name="amount" type="text" class="form-control form-control-lg" placeholder="Amount" value="" aria-labelledby="amount-label" aria-invalid="false" autocomplete="off" inputmode="text"><div class="b-underline" role="presentation" aria-hidden="true"><div class="b-focus" role="presentation" aria-hidden="true"></div></div></div></div></div></div></plumage-input-field-component>"`,
+    );
   });
 
   it('shows validation UI when validation=true (computed ids) and sets aria-describedby/aria-invalid', async () => {
@@ -118,8 +115,7 @@ describe('<plumage-input-field-component>', () => {
     const describedIds = idRefs(input.getAttribute('aria-describedby'));
     expect(describedIds).toContain('email-validation');
 
-    // all aria-describedby references resolve (no CSS.escape)
-    describedIds.forEach((id) => {
+    describedIds.forEach(id => {
       const sel = `#${cssEscapeIdent(id)}`;
       expect(root.querySelector(sel)).toBeTruthy();
     });
@@ -143,6 +139,26 @@ describe('<plumage-input-field-component>', () => {
 
     expect(spy).toHaveBeenCalledWith('Berlin');
     expect(getInput(root).value).toBe('Berlin');
+  });
+
+  it('syncs the native input when value prop changes externally', async () => {
+    const page = await newSpecPage({
+      components: [PlumageInputFieldComponent],
+      html: `<plumage-input-field-component label="Email" input-id="email-sync" value="start"></plumage-input-field-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const comp = page.rootInstance as PlumageInputFieldComponent;
+    let input = getInput(page.root!);
+
+    expect(input.value).toBe('start');
+
+    comp.value = 'updated@site.com';
+    await page.waitForChanges();
+
+    input = getInput(page.root!);
+    expect(input.value).toBe('updated@site.com');
   });
 
   it('underline expands on focus and collapses on outside click', async () => {

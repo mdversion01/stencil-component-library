@@ -1,52 +1,86 @@
 // src/stories/radio-input-component.examples.js
 
-export const reactExample = `import React from 'react';
-
-const groupOptions = [
-  { inputId: 'contact-email', value: 'email', labelTxt: 'Email', checked: true },
-  { inputId: 'contact-sms', value: 'sms', labelTxt: 'SMS' },
-  { inputId: 'contact-call', value: 'call', labelTxt: 'Phone Call' },
-];
+export const reactExample = `
+import { useEffect, useRef } from 'react';
 
 export default function RadioInputExample() {
+  const radioRef = useRef(null);
+
+  useEffect(() => {
+    const el = radioRef.current;
+    if (!el) return;
+
+    const groupOptions = [
+      { inputId: 'contact-email', value: 'email', labelTxt: 'Email', checked: true },
+      { inputId: 'contact-sms', value: 'sms', labelTxt: 'SMS' },
+      { inputId: 'contact-call', value: 'call', labelTxt: 'Phone Call' },
+    ];
+
+    el.groupOptions = groupOptions;
+
+    const handleGroupChange = (event) => {
+      console.log('Selected value:', event.detail);
+    };
+
+    el.addEventListener('groupChange', handleGroupChange);
+
+    return () => {
+      el.removeEventListener('groupChange', handleGroupChange);
+    };
+  }, []);
+
   return (
     <radio-input-component
+      ref={radioRef}
       bs-radio-group
       name="preferredContact"
       group-title="Preferred Contact"
-      group-options={JSON.stringify(groupOptions)}
-      onGroupChange={(event) => console.log('Selected value:', event.detail)}
     />
   );
 }
-`;
+`.trim();
 
-export const vueExample = `<template>
+export const vueExample = `
+<template>
   <radio-input-component
+    ref="radioEl"
     bs-radio-group
     name="preferredContact"
     group-title="Preferred Contact"
-    :group-options="serializedOptions"
-    @groupChange="handleGroupChange"
   />
 </template>
 
 <script setup>
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+
+const radioEl = ref(null);
+
 const groupOptions = [
   { inputId: 'contact-email', value: 'email', labelTxt: 'Email', checked: true },
   { inputId: 'contact-sms', value: 'sms', labelTxt: 'SMS' },
   { inputId: 'contact-call', value: 'call', labelTxt: 'Phone Call' },
 ];
 
-const serializedOptions = JSON.stringify(groupOptions);
-
 const handleGroupChange = (event) => {
   console.log('Selected value:', event.detail);
 };
-</script>
-`;
 
-export const angularExample = `import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+onMounted(() => {
+  const el = radioEl.value;
+  if (!el) return;
+
+  el.groupOptions = groupOptions;
+  el.addEventListener('groupChange', handleGroupChange);
+});
+
+onBeforeUnmount(() => {
+  radioEl.value?.removeEventListener('groupChange', handleGroupChange);
+});
+</script>
+`.trim();
+
+export const angularExample = `
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-radio-input',
@@ -54,30 +88,42 @@ export const angularExample = `import { Component, CUSTOM_ELEMENTS_SCHEMA } from
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
     <radio-input-component
+      #radioEl
       bs-radio-group
       name="preferredContact"
       group-title="Preferred Contact"
-      [attr.group-options]="serializedOptions"
-      (groupChange)="handleGroupChange($event)"
     ></radio-input-component>
   \`,
 })
-export class RadioInputComponent {
-  groupOptions = [
+export class RadioInputComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('radioEl', { static: true }) radioRef!: ElementRef<HTMLElement & { groupOptions?: unknown }>;
+
+  private readonly groupOptions = [
     { inputId: 'contact-email', value: 'email', labelTxt: 'Email', checked: true },
     { inputId: 'contact-sms', value: 'sms', labelTxt: 'SMS' },
     { inputId: 'contact-call', value: 'call', labelTxt: 'Phone Call' },
   ];
 
-  serializedOptions = JSON.stringify(this.groupOptions);
+  private readonly handleGroupChange = (event: Event) => {
+    console.log('Selected value:', (event as CustomEvent<string>).detail);
+  };
 
-  handleGroupChange(event: CustomEvent<string>) {
-    console.log('Selected value:', event.detail);
+  ngAfterViewInit(): void {
+    const el = this.radioRef.nativeElement;
+    el.groupOptions = this.groupOptions;
+    el.addEventListener('groupChange', this.handleGroupChange);
+  }
+
+  ngOnDestroy(): void {
+    this.radioRef.nativeElement.removeEventListener('groupChange', this.handleGroupChange);
   }
 }
-`;
+`.trim();
 
-export const svelteExample = `<script>
+export const svelteExample = `
+<script>
+  import { onMount } from 'svelte';
+
   let radioEl;
 
   const groupOptions = [
@@ -86,11 +132,21 @@ export const svelteExample = `<script>
     { inputId: 'contact-call', value: 'call', labelTxt: 'Phone Call' },
   ];
 
-  const serializedOptions = JSON.stringify(groupOptions);
-
   function handleGroupChange(event) {
     console.log('Selected value:', event.detail);
   }
+
+  onMount(() => {
+    const el = radioEl;
+    if (!el) return;
+
+    el.groupOptions = groupOptions;
+    el.addEventListener('groupChange', handleGroupChange);
+
+    return () => {
+      el.removeEventListener('groupChange', handleGroupChange);
+    };
+  });
 </script>
 
 <section>
@@ -101,14 +157,14 @@ export const svelteExample = `<script>
     bs-radio-group
     name="preferredContact"
     group-title="Preferred Contact"
-    group-options={serializedOptions}
-    on:groupChange={handleGroupChange}
   ></radio-input-component>
 </section>
-`;
+`.trim();
 
-export const svelteKitExample = `<script>
+export const svelteKitExample = `
+<script>
   import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
 
   let radioEl;
 
@@ -118,11 +174,23 @@ export const svelteKitExample = `<script>
     { inputId: 'contact-call', value: 'call', labelTxt: 'Phone Call' },
   ];
 
-  const serializedOptions = JSON.stringify(groupOptions);
-
   function handleGroupChange(event) {
     console.log('Selected value:', event.detail);
   }
+
+  onMount(() => {
+    if (!browser) return;
+
+    const el = radioEl;
+    if (!el) return;
+
+    el.groupOptions = groupOptions;
+    el.addEventListener('groupChange', handleGroupChange);
+
+    return () => {
+      el.removeEventListener('groupChange', handleGroupChange);
+    };
+  });
 </script>
 
 <section>
@@ -134,9 +202,7 @@ export const svelteKitExample = `<script>
       bs-radio-group
       name="preferredContact"
       group-title="Preferred Contact"
-      group-options={serializedOptions}
-      on:groupChange={handleGroupChange}
     ></radio-input-component>
   {/if}
 </section>
-`;
+`.trim();

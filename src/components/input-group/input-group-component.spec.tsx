@@ -12,10 +12,6 @@ function qa<T extends Element = HTMLElement>(root: ParentNode, sel: string): T[]
   return Array.from(root.querySelectorAll(sel)) as T[];
 }
 
-/**
- * Escape for attribute selector value: [id="..."].
- * Minimal escaping for quotes and backslashes so querySelector stays valid.
- */
 function escapeAttrValue(v: string): string {
   return v.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 }
@@ -64,6 +60,9 @@ describe('<input-group-component>', () => {
     expect(describedBy).toContain('user__desc');
     expect(byId(root, 'user__desc')).toBeTruthy();
     expectIdRefsResolve(root, describedBy);
+
+    expect(input.getAttribute('aria-readonly')).toBeNull();
+    expect(input.readOnly).toBe(false);
 
     expect(page.root).toMatchSnapshot();
   });
@@ -201,6 +200,45 @@ describe('<input-group-component>', () => {
 
     const input = (page.root as HTMLElement).querySelector('input')!;
     expect(input.hasAttribute('disabled')).toBe(true);
+    expect(input.getAttribute('aria-disabled')).toBe('true');
+  });
+
+  it('sets readonly semantics on the native input when readOnly=true', async () => {
+    const page = await newSpecPage({
+      components: [InputGroupComponent],
+      html: `<input-group-component label="Read only" input-id="ro" read-only value="Locked"></input-group-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const root = page.root as HTMLElement;
+    const input = q<HTMLInputElement>(root, 'input')!;
+
+    expect(input.hasAttribute('readonly')).toBe(true);
+    expect(input.getAttribute('aria-readonly')).toBe('true');
+    expect(input.className).toContain('read-only');
+    expect(input.className).not.toContain('is-invalid');
+    expect(input.value).toBe('Locked');
+  });
+
+  it('syncs native input when value prop changes externally', async () => {
+    const page = await newSpecPage({
+      components: [InputGroupComponent],
+      html: `<input-group-component label="City" input-id="city-sync" value="Start"></input-group-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const comp = page.rootInstance as InputGroupComponent;
+    let input = page.root!.querySelector('input') as HTMLInputElement;
+
+    expect(input.value).toBe('Start');
+
+    comp.value = 'Updated externally';
+    await page.waitForChanges();
+
+    input = page.root!.querySelector('input') as HTMLInputElement;
+    expect(input.value).toBe('Updated externally');
   });
 
   it('disables native affix buttons when disabled=true', async () => {
@@ -254,8 +292,10 @@ describe('<input-group-component>', () => {
     const buttons = qa<HTMLButtonElement>(root, '.prepend-btn button, .append-btn button');
 
     expect(input.hasAttribute('readonly')).toBe(true);
-    expect(buttons.length).toBe(2);
-    buttons.forEach(btn => expect(btn.hasAttribute('disabled')).toBe(true));
+    expect(input.getAttribute('aria-readonly')).toBe('true');
+    expect(buttons.length).toBe(0);
+    expect(q(root, '.prepend-btn')).toBeNull();
+    expect(q(root, '.append-btn')).toBeNull();
 
     expect(page.root).toMatchSnapshot();
   });

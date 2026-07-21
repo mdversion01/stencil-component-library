@@ -1,18 +1,15 @@
+// File: src/stories/plumage-input-field/plumage-input-field.story-helpers.js
+
 export const TAG = 'plumage-input-field-component';
 
-export const normalizeArg = (value) => {
+export const normalizeArg = value => {
   if (value === '' || value == null) return undefined;
   if (value === true) return true;
   if (value === false) return false;
   return value;
 };
 
-export const esc = (s) =>
-  String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+export const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 export const DocsWrapStyles = () => {
   const style = document.createElement('style');
@@ -27,13 +24,13 @@ export const DocsWrapStyles = () => {
   return style;
 };
 
-export const attrLines = (pairs) =>
+export const attrLines = pairs =>
   pairs
     .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
     .map(([k, v]) => (v === true ? `${k}` : `${k}="${esc(String(v))}"`))
     .join('\n  ');
 
-export const buildDocsHtml = (args) => {
+export const buildDocsHtml = args => {
   const a = { ...args };
   delete a.wrapWithForm;
 
@@ -64,7 +61,8 @@ export const buildDocsHtml = (args) => {
     ['validation', !!a.validation],
   ];
 
-  const openTag = `<${TAG}\n  ${attrLines(attrs)}\n></${TAG}>`;
+  const body = attrLines(attrs);
+  const openTag = body ? `<${TAG}\n  ${body}\n></${TAG}>` : `<${TAG}></${TAG}>`;
 
   if (args.wrapWithForm) {
     const formAttrs = [
@@ -83,6 +81,42 @@ export const buildDocsHtml = (args) => {
 
   return openTag;
 };
+
+export const buildDocsHtmlValueProp = () =>
+  `<${TAG} label="First Name" input-id="plumage-if-value" value="Ada" placeholder="Enter your first name" label-size="sm"></${TAG}>`;
+
+export const buildDocsHtmlExternalValue = () =>
+  [
+    '<div>',
+    '  <button type="button" id="load-ada">Load Ada</button>',
+    '  <button type="button" id="load-grace">Load Grace</button>',
+    '  <button type="button" id="load-linus">Load Linus</button>',
+    '  <button type="button" id="clear-value">Clear</button>',
+    '',
+    `  <${TAG}`,
+    '    label="First Name"',
+    '    input-id="plumage-if-external"',
+    '    placeholder="Enter your first name"',
+    '    label-size="sm"',
+    `  ></${TAG}>`,
+    '</div>',
+    '',
+    '<script>',
+    `  const host = document.querySelector('${TAG}');`,
+    "  document.querySelector('#load-ada').addEventListener('click', () => {",
+    "    host.value = 'Ada';",
+    '  });',
+    "  document.querySelector('#load-grace').addEventListener('click', () => {",
+    "    host.value = 'Grace';",
+    '  });',
+    "  document.querySelector('#load-linus').addEventListener('click', () => {",
+    "    host.value = 'Linus';",
+    '  });',
+    "  document.querySelector('#clear-value').addEventListener('click', () => {",
+    "    host.value = '';",
+    '  });',
+    '</script>',
+  ].join('\n');
 
 export const buildDocsHtmlSizes = () =>
   [
@@ -134,12 +168,7 @@ export const buildDocsHtmlReadOnlyAndDisabled = () => {
     wrapWithForm: false,
   };
 
-  return [
-    '<div>',
-    `  ${buildDocsHtml(roArgs).replace(/\n/g, '\n  ')}`,
-    `  ${buildDocsHtml(disArgs).replace(/\n/g, '\n  ')}`,
-    '</div>',
-  ].join('\n');
+  return ['<div>', `  ${buildDocsHtml(roArgs).replace(/\n/g, '\n  ')}`, `  ${buildDocsHtml(disArgs).replace(/\n/g, '\n  ')}`, '</div>'].join('\n');
 };
 
 export const setAttr = (el, name, value) => {
@@ -148,7 +177,7 @@ export const setAttr = (el, name, value) => {
   else el.setAttribute(name, String(value));
 };
 
-export const cssEscapeIdent = (value) => String(value).replace(/([ !"#$%&'()*+,./:;<=>?@[\\\]^\`{|}~])/g, '\\$1');
+export const cssEscapeIdent = value => String(value).replace(/([ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, '\\$1');
 
 export const makeInput = (args = {}) => {
   const el = document.createElement(TAG);
@@ -180,7 +209,7 @@ export const makeInput = (args = {}) => {
   setAttr(el, 'aria-describedby', args.ariaDescribedby);
   setAttr(el, 'arialabelled-by', args.arialabelledBy);
 
-  el.addEventListener('valueChange', (e) => {
+  el.addEventListener('valueChange', e => {
     console.log('[valueChange]', e.detail);
   });
 
@@ -198,7 +227,7 @@ export const wrapInForm = (inputEl, { formLayout = '', formId = 'demo-form' } = 
   return form;
 };
 
-export const renderComponent = (args) => {
+export const renderComponent = args => {
   const input = makeInput(args);
   return args.wrapWithForm ? wrapInForm(input, { formLayout: args.formLayout, formId: args.formId || 'demo-form' }) : input;
 };

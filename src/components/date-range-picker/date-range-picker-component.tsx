@@ -32,7 +32,7 @@ export class DateRangePickerComponent {
   @Prop() plumage: boolean = false;
 
   @Prop({ mutable: true }) value: string = ''; // reflects selection (start joinBy end)
-  @Prop() joinBy: string = ' - ';
+  @Prop() joinBy: string = '-';
 
   @Prop() inputId: string = 'drp';
 
@@ -45,7 +45,10 @@ export class DateRangePickerComponent {
   @Prop() prependId: string = '';
 
   @Prop() disabled: boolean = false;
+  @Prop() readOnly: boolean = false;
+
   @Prop() label: string = 'Date Range Picker';
+  @Prop() labelSize: '' | 'sm' | 'lg' = '';
   @Prop() labelAlign: '' | 'right' = '';
   @Prop() labelHidden: boolean = false;
 
@@ -198,6 +201,10 @@ export class DateRangePickerComponent {
       this.currentEndYear += 1;
     }
     this.setDefaultWarningMessage();
+
+    if ((this.value || '').trim()) {
+      this.applyInitialValue(this.value);
+    }
   }
 
   componentDidLoad() {
@@ -209,6 +216,7 @@ export class DateRangePickerComponent {
     if (this.inputEl) {
       this.inputEl.addEventListener('focus', this.addFocusClass);
       this.inputEl.addEventListener('blur', this.removeFocusClass);
+      this.syncInputValue(this.value || '');
     }
     const calendarButtons = Array.from(this.el.querySelectorAll('.calendar-button'));
     calendarButtons.forEach(btn => {
@@ -236,6 +244,9 @@ export class DateRangePickerComponent {
 
     this.syncMonthYearSelectors();
     this.setDefaultWarningMessage();
+    this.updateDisplayedDateRange();
+    this.updateOkButtonState();
+    this.updateActiveDateElements();
   }
 
   disconnectedCallback() {
@@ -281,6 +292,50 @@ export class DateRangePickerComponent {
     if (yearSelect) yearSelect.value = String(this.currentStartYear);
   }
 
+  @Watch('value')
+  onValueChange(newValue: string) {
+    const trimmed = String(newValue || '').trim();
+
+    if (!trimmed) {
+      this.startDate = null;
+      this.endDate = null;
+      this.selectedStartDate = '';
+      this.selectedEndDate = '';
+      this.okButtonLabel = 'Close';
+
+      this.syncInputValue('');
+      this.updateDisplayedDateRange();
+      return;
+    }
+
+    const currentRendered = this.startDate && this.endDate ? `${this.formatForOutput(this.startDate)} ${this.joinBy} ${this.formatForOutput(this.endDate)}` : '';
+    if (trimmed === currentRendered) return;
+
+    const parsed = this.parseIncomingRangeValue(trimmed);
+    if (!parsed) return;
+
+    this.startDate = parsed.start;
+    this.endDate = parsed.end;
+    this.selectedStartDate = this.formatForOutput(parsed.start);
+    this.selectedEndDate = this.formatForOutput(parsed.end);
+
+    const normalized = `${this.selectedStartDate} ${this.joinBy} ${this.selectedEndDate}`;
+    if (this.value !== normalized) {
+      this.value = normalized;
+    }
+
+    if (this.inputEl && this.inputEl.value !== normalized) {
+      this.syncInputValue(normalized);
+    }
+
+    this.validation = false;
+    this.validationMessage = '';
+    this.warningMessage = '';
+    this.updateOkButtonState();
+    this.updateDisplayedDateRange();
+    this.updateActiveDateElements();
+  }
+
   // -------------------- public method ---------------------
   /** Programmatically clear the selection and reset */
   @Method()
@@ -295,6 +350,15 @@ export class DateRangePickerComponent {
     });
   }
 
+  private syncInputValue(nextValue: string) {
+    const safe = nextValue || '';
+
+    if (this.inputEl) {
+      this.inputEl.value = safe;
+      this.inputEl.setAttribute('value', safe);
+    }
+  }
+
   private escapeRegex(s: string) {
     return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
@@ -302,7 +366,7 @@ export class DateRangePickerComponent {
   /** Example for placeholder based on current display mode */
   private displayFormatExample(): string {
     if (this.showIso) return 'YYYY-MM-DDTHH:mm:ss.sssZ';
-    if (this.showLong) return 'Day, Month Date, Year - (or) Day, Month Date, Year';
+    if (this.showLong) return 'Day, Month, Year - (or) Day, Month, Year';
     if (this.showYmd) return 'YYYY-MM-DD';
     return this.dateFormat === 'MM-DD-YYYY' ? 'MM-DD-YYYY' : 'YYYY-MM-DD';
   }
@@ -324,11 +388,104 @@ export class DateRangePickerComponent {
     return out.length ? out.join(' ') : undefined;
   }
 
+  private applyInitialValue(rawValue: string) {
+    const next = String(rawValue ?? '').trim();
+    if (!next) return;
+
+    const parsed = this.parseIncomingRangeValue(next);
+    if (!parsed) return;
+
+    this.startDate = parsed.start;
+    this.endDate = parsed.end;
+
+    this.currentStartMonth = parsed.start.getUTCMonth();
+    this.currentStartYear = parsed.start.getUTCFullYear();
+    this.currentEndMonth = parsed.end.getUTCMonth();
+    this.currentEndYear = parsed.end.getUTCFullYear();
+
+    if (this.currentStartMonth === this.currentEndMonth && this.currentStartYear === this.currentEndYear) {
+      this.currentEndMonth = (this.currentStartMonth + 1) % 12;
+      this.currentEndYear = this.currentStartMonth === 11 ? this.currentStartYear + 1 : this.currentStartYear;
+    }
+
+    const sLabel = this.formatForOutput(this.startDate);
+    const eLabel = this.formatForOutput(this.endDate);
+
+    this.selectedStartDate = sLabel;
+    this.selectedEndDate = eLabel;
+    this.value = `${sLabel} ${this.joinBy} ${eLabel}`;
+
+    this.validation = false;
+    this.validationMessage = '';
+    this.warningMessage = '';
+    this.updateOkButtonState();
+  }
+
+  private splitIncomingRange(rawValue: string): [string, string] | null {
+    const input = String(rawValue ?? '').trim();
+
+    if (!input) {
+      return null;
+    }
+
+    const configuredSeparator = String(this.joinBy ?? '').trim();
+
+    if (configuredSeparator) {
+      const separatorPattern = new RegExp(`\\s*${this.escapeRegex(configuredSeparator)}\\s*`);
+
+      const configuredParts = input
+        .split(separatorPattern)
+        .map(part => part.trim())
+        .filter(Boolean);
+
+      if (configuredParts.length === 2) {
+        return [configuredParts[0], configuredParts[1]];
+      }
+    }
+
+    const toParts = input
+      .split(/\s+to\s+/i)
+      .map(part => part.trim())
+      .filter(Boolean);
+
+    if (toParts.length === 2) {
+      return [toParts[0], toParts[1]];
+    }
+
+    const spacedDashParts = input
+      .split(/\s+-\s+/)
+      .map(part => part.trim())
+      .filter(Boolean);
+
+    if (spacedDashParts.length === 2) {
+      return [spacedDashParts[0], spacedDashParts[1]];
+    }
+
+    return null;
+  }
+
+  private parseIncomingRangeValue(rawValue: string): { start: Date; end: Date } | null {
+    const parts = this.splitIncomingRange(rawValue);
+    if (!parts) return null;
+
+    const start = this.parseDate(parts[0]);
+    const end = this.parseDate(parts[1]);
+
+    if (!start || !end) return null;
+    if (start.getTime() > end.getTime()) return null;
+
+    return {
+      start: this.normalizeDate(start)!,
+      end: this.normalizeDate(end)!,
+    };
+  }
+
   // -------------------- dropdown & popper -----------------
   private openDropdown = () => {
     this.dropdownOpen = true;
-    this.userNavigated = false; // opening fresh; don't auto-apply focusedDate visually
+    this.userNavigated = false;
     this.createPopperInstance();
+    this.updateOkButtonState();
 
     const calendarWrapper = this.el.querySelector('.calendar-wrapper');
     if (calendarWrapper) {
@@ -340,7 +497,6 @@ export class DateRangePickerComponent {
       });
     }
 
-    // Focus the dialog container (NOT a day cell)
     setTimeout(() => this.dropdownContentEl?.focus(), 0);
   };
 
@@ -536,7 +692,9 @@ export class DateRangePickerComponent {
       const m = parseInt(parts[1], 10) - 1;
       const d = parseInt(parts[2], 10);
       if ([y, m, d].some(n => Number.isNaN(n))) return null;
-      return new Date(Date.UTC(y, m, d));
+      const parsed = new Date(Date.UTC(y, m, d));
+      if (parsed.getUTCFullYear() !== y || parsed.getUTCMonth() !== m || parsed.getUTCDate() !== d) return null;
+      return parsed;
     };
 
     const tryMdy = () => {
@@ -546,7 +704,9 @@ export class DateRangePickerComponent {
       const d = parseInt(parts[1], 10);
       const y = parseInt(parts[2], 10);
       if ([y, m, d].some(n => Number.isNaN(n))) return null;
-      return new Date(Date.UTC(y, m, d));
+      const parsed = new Date(Date.UTC(y, m, d));
+      if (parsed.getUTCFullYear() !== y || parsed.getUTCMonth() !== m || parsed.getUTCDate() !== d) return null;
+      return parsed;
     };
 
     // Primary format based on flags
@@ -561,6 +721,8 @@ export class DateRangePickerComponent {
     } else if (this.showYmd) {
       const d = tryYmd();
       if (d) return d;
+      const alt = tryMdy();
+      if (alt) return alt;
     } else {
       if (this.dateFormat === 'YYYY-MM-DD') {
         const d = tryYmd() ?? tryMdy();
@@ -601,14 +763,24 @@ export class DateRangePickerComponent {
     if (this.startDate && this.endDate) {
       const sLabel = this.formatForOutput(this.startDate);
       const eLabel = this.formatForOutput(this.endDate);
+      this.selectedStartDate = sLabel;
+      this.selectedEndDate = eLabel;
       this.value = `${sLabel} ${this.joinBy} ${eLabel}`;
-      if (this.inputEl) this.inputEl.value = this.value;
+      this.syncInputValue(this.value);
     }
   }
 
   private updateOkButtonState() {
+    const hasAnySelection = !!this.startDate || !!this.endDate || !!this.value?.trim();
+
+    if (!hasAnySelection) {
+      this.okButtonLabel = 'Close';
+      return;
+    }
+
     const startValid = !!this.startDate;
     const endValid = !!this.endDate;
+
     this.okButtonLabel = startValid && endValid ? 'OK' : 'Close';
   }
 
@@ -670,89 +842,99 @@ export class DateRangePickerComponent {
     }
   };
 
-  private handleInputChange = (e: Event) => {
-    const target = e.target as HTMLInputElement;
+  private handleInputChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
     const inputValue = target.value.trim();
 
-    if (inputValue === '') {
+    if (!inputValue) {
       this.clearInputField();
+
       this.validation = this.required;
       this.validationMessage = this.required ? 'This field is required.' : '';
+
       this.value = '';
-      this.el.setAttribute('value', this.value);
+      this.el.setAttribute('value', '');
+      this.syncInputValue('');
+
       return;
     }
 
     this.validateInput(inputValue);
-    if (this.validation) return;
 
-    // split by preferred joinBy, with friendly fallback to " to " or "-"
-    const parts = inputValue.includes(this.joinBy) ? inputValue.split(this.joinBy) : /\sto\s/i.test(inputValue) ? inputValue.split(/\sto\s/i) : inputValue.split('-'); // last resort
+    if (this.validation) {
+      return;
+    }
 
-    if (parts.length !== 2) {
+    const parsedRange = this.parseIncomingRangeValue(inputValue);
+
+    if (!parsedRange) {
       this.validation = true;
       this.validationMessage = 'Please enter a valid date range.';
       return;
     }
 
-    const [s, eStr] = parts.map(p => p.trim());
-    const sDate = this.parseDate(s);
-    const eDate = this.parseDate(eStr);
+    this.startDate = parsedRange.start;
+    this.endDate = parsedRange.end;
 
-    if (!sDate || !eDate || sDate > eDate) {
-      this.validation = true;
-      this.validationMessage = 'Please enter a valid date range.';
-      return;
-    }
+    const startLabel = this.formatForOutput(this.startDate);
+    const endLabel = this.formatForOutput(this.endDate);
+    const normalizedValue = `${startLabel}${this.joinBy}${endLabel}`;
 
-    this.startDate = this.normalizeDate(sDate);
-    this.endDate = this.normalizeDate(eDate);
+    this.selectedStartDate = startLabel;
+    this.selectedEndDate = endLabel;
+    this.value = normalizedValue;
 
-    // **Display** exactly as preview:
-    const sLabel = this.formatForOutput(this.startDate);
-    const eLabel = this.formatForOutput(this.endDate);
-    this.value = `${sLabel} ${this.joinBy} ${eLabel}`;
-    target.value = this.value;
-    this.el.setAttribute('value', this.value);
+    this.syncInputValue(normalizedValue);
+    this.el.setAttribute('value', normalizedValue);
 
-    // keep the inline preview in sync
+    this.validation = false;
+    this.validationMessage = '';
+    this.warningMessage = '';
+
     this.updateSelectedRange();
     this.updateDisplayedDateRange();
+    this.updateOkButtonState();
+    this.updateActiveDateElements();
 
-    // emit with ISO for submission
-    const sIso = this.startDate.toISOString().split('T')[0];
-    const eIso = this.endDate.toISOString().split('T')[0];
     this.dateRangeUpdated.emit({
-      startDate: sLabel,
-      endDate: eLabel,
-      startDateIso: sIso,
-      endDateIso: eIso,
+      startDate: startLabel,
+      endDate: endLabel,
+      startDateIso: this.formatDateYmd(this.startDate),
+      endDateIso: this.formatDateYmd(this.endDate),
     });
   };
 
   private _handleOkClick = () => {
+    if (this.okButtonLabel === 'Close') {
+      this.closeDropdown();
+      return;
+    }
+
     const s = this.startDate ? this.formatForOutput(this.startDate) : null;
     const e = this.endDate ? this.formatForOutput(this.endDate) : null;
 
     if (s && e) {
       const selectedRange = `${s} ${this.joinBy} ${e}`;
-      if (this.inputEl) this.inputEl.value = selectedRange;
+      this.syncInputValue(selectedRange);
       this.value = selectedRange;
 
-      // emit human + ISO
       const sIso = this.startDate!.toISOString().split('T')[0];
       const eIso = this.endDate!.toISOString().split('T')[0];
-      this.dateRangeUpdated.emit({ startDate: s, endDate: e, startDateIso: sIso, endDateIso: eIso });
+      this.dateRangeUpdated.emit({
+        startDate: s,
+        endDate: e,
+        startDateIso: sIso,
+        endDateIso: eIso,
+      });
 
-      // clear validation
       this.validation = false;
       this.validationMessage = '';
-
       this.closeDropdown();
       this.syncMonthYearSelectors();
-    } else {
-      this.closeDropdown();
+      return;
     }
+
+    this.closeDropdown();
   };
 
   // -------------------- reset & clear --------------------
@@ -761,14 +943,15 @@ export class DateRangePickerComponent {
   }
 
   private clearInputField = () => {
-    // 1) Clear any existing visual focus ring(s)
     this.clearAllFocus();
-    // 2) Reset dates and input value
     this.startDate = null;
     this.endDate = null;
+    this.selectedStartDate = '';
+    this.selectedEndDate = '';
+
     if (this.inputEl) this.inputEl.value = '';
     this.value = '';
-    // 3) Reset validation
+
     if (this.required) {
       this.validation = true;
       this.validationMessage = 'This field is required.';
@@ -776,19 +959,20 @@ export class DateRangePickerComponent {
       this.validation = false;
       this.validationMessage = '';
     }
-    // 4) Reset months to current and next
+
     const now = new Date();
     this.currentStartMonth = now.getMonth();
     this.currentStartYear = now.getFullYear();
     this.currentEndMonth = (this.currentStartMonth + 1) % 12;
     this.currentEndYear = this.currentStartMonth === 11 ? this.currentStartYear + 1 : this.currentStartYear;
-    // 5) Make sure no render-time focus is applied after reset
+
     this.userNavigated = false;
+    this.okButtonLabel = 'Close';
 
     this.syncMonthYearSelectors();
     this.updateSelectedRange();
     this.updateDisplayedDateRange();
-    this.updateActiveDateElements(); // no-op now
+    this.updateActiveDateElements();
   };
 
   /** Public reset via event (kept for parity with Lit) */
@@ -804,11 +988,15 @@ export class DateRangePickerComponent {
   private updateDisplayedDateRange() {
     const root = this.el;
     if (!root) return;
-    const sEl = root.querySelector(`.${'start-date'}`) as HTMLElement | null;
-    const eEl = root.querySelector(`.${'end-date'}`) as HTMLElement | null;
+    const sEl = root.querySelector('.start-date') as HTMLElement | null;
+    const eEl = root.querySelector('.end-date') as HTMLElement | null;
 
     if (sEl) sEl.textContent = this.formatForOutput(this.startDate);
     if (eEl) eEl.textContent = this.formatForOutput(this.endDate);
+
+    if (this.inputEl && this.inputEl.value !== (this.value || '')) {
+      this.syncInputValue(this.value || '');
+    }
   }
 
   /** No-op (preview UI removed in Option B) */
@@ -818,6 +1006,7 @@ export class DateRangePickerComponent {
 
   // -------------------- focus styling (ported from Lit) ---
   private addFocusClass = () => {
+    if (this.readOnly || this.disabled) return;
     const grp = this.el.querySelector('.input-group');
     if (grp) grp.classList.add('focus');
   };
@@ -843,10 +1032,11 @@ export class DateRangePickerComponent {
   private labelClassBase() {
     return [
       'form-control-label',
-      this.showAsRequired() ? 'required' : '',
+      this.readOnly ? 'read-only' : this.disabled ? '' : this.showAsRequired() ? 'required' : '',
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
-      this.validation ? 'invalid' : '',
+      this.readOnly ? 'read-only' : this.disabled ? '' : this.validation ? 'invalid' : '',
+      this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -993,22 +1183,11 @@ export class DateRangePickerComponent {
       this.activateFirstFocusableCell();
 
       const gridsNow = this.el.querySelectorAll('.calendar-grid');
-      const cellsNow = Array.from(gridsNow).flatMap(g =>
-        Array.from(g.querySelectorAll('.calendar-grid-item:not(.previous-month-day):not(.next-month-day)')) as HTMLElement[],
-      );
+      const cellsNow = Array.from(gridsNow).flatMap(g => Array.from(g.querySelectorAll('.calendar-grid-item:not(.previous-month-day):not(.next-month-day)')) as HTMLElement[]);
       const focusEl = (this.el.getRootNode() as Document | ShadowRoot)['activeElement'] as HTMLElement | null;
       const startIndex = focusEl ? cellsNow.indexOf(focusEl) : -1;
       if (startIndex >= 0) {
-        const delta =
-          event.key === 'ArrowLeft'
-            ? -1
-            : event.key === 'ArrowRight'
-              ? +1
-              : event.key === 'ArrowUp'
-                ? -7
-                : event.key === 'ArrowDown'
-                  ? +7
-                  : 0;
+        const delta = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? +1 : event.key === 'ArrowUp' ? -7 : event.key === 'ArrowDown' ? +7 : 0;
         const nextIndex = Math.max(0, Math.min(cellsNow.length - 1, startIndex + delta));
         if (nextIndex !== startIndex) this.moveFocusToNewIndex(cellsNow, nextIndex);
       }
@@ -1499,9 +1678,11 @@ export class DateRangePickerComponent {
             <div class="date-range-display" role="region" aria-labelledby={`${this.ids}-date-ranges`} tabIndex={0}>
               <div id={`${this.ids}-date-ranges`} class="date-ranges">
                 <span class={`start-end-ranges${this.showIso ? ' iso' : this.showLong ? ' long' : ''}`}>
-                  <span class="start-date">N/A</span>
+                  <span class="start-date">{this.formatForOutput(this.startDate)}</span>
+
                   <span class="to-spacing">{this.joinBy}</span>
-                  <span class="end-date">N/A</span>
+
+                  <span class="end-date">{this.formatForOutput(this.endDate)}</span>
                 </span>
               </div>
             </div>
@@ -1556,38 +1737,40 @@ export class DateRangePickerComponent {
 
     this.getComputedCols();
 
-    const groupClass = ['input-group', this.groupSizeClass(), this.validation ? ' is-invalid' : '', this.disabled ? 'disabled' : ''].filter(Boolean).join(' ');
+    const groupClass = ['input-group', this.groupSizeClass(), this.readOnly ? 'read-only' : this.disabled ? 'disabled' : this.validation ? ' is-invalid' : '']
+      .filter(Boolean)
+      .join(' ');
     const describedby = this.joinIdRefs(this.dialogDescId, this.validation ? this.validationId : undefined);
 
     return (
       <Fragment>
-        <div class={['form-group', 'form-input-group-basic', this.formLayout, isRow ? 'row' : ''].filter(Boolean).join(' ')}>
+        <div class={['form-group', 'form-input-group-basic', this.formLayout || '', isRow ? 'row' : ''].filter(Boolean).join(' ')}>
           {this.labelHidden ? null : (
             <label id={this.labelId} class={this.isHorizontal() ? this.labelClassHorizontal(labelColClass) : this.labelClassBase()} htmlFor={this.inputId}>
-              <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
-              {this.required ? <span class="required">*</span> : null}
+              <span class={this.readOnly || this.disabled ? '' : this.showAsRequired() ? 'required' : ''}>{text}</span>
+              {this.readOnly || this.disabled ? null : this.required ? <span class="required">*</span> : null}
             </label>
           )}
 
           <div class={this.isHorizontal() ? inputColClass : undefined}>
             <div class={groupClass} role="group" aria-label="Date picker group">
-              {this.prependProp ? (
-                <div class="input-group-prepend">
-                  <button
-                    type="button"
-                    onClick={this.toggleDropdown}
-                    class={`calendar-button btn pp-left${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text${
-                      this.validation ? ' is-invalid' : ''
-                    }`}
-                    aria-label="Toggle calendar picker"
-                    aria-haspopup="dialog"
-                    aria-expanded={this.dropdownOpen ? 'true' : 'false'}
-                    aria-controls={this.dropdownOpen ? undefined : undefined}
-                    disabled={this.disabled}
-                  >
-                    <i class={this.icon} aria-hidden="true" />
-                  </button>
-                </div>
+              {this.readOnly ? (
+                ''
+              ) : this.prependProp ? (
+                <button
+                  type="button"
+                  onClick={this.toggleDropdown}
+                  class={`calendar-button btn pp-left${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text${
+                    this.disabled ? '' : this.validation ? ' is-invalid' : ''
+                  }`}
+                  aria-label="Toggle calendar picker"
+                  aria-haspopup="dialog"
+                  aria-expanded={this.dropdownOpen ? 'true' : 'false'}
+                  aria-controls={this.dropdownOpen ? undefined : undefined}
+                  disabled={this.disabled || this.readOnly}
+                >
+                  <i class={this.icon} aria-hidden="true" />
+                </button>
               ) : null}
 
               <div class="drp-input-field">
@@ -1595,38 +1778,43 @@ export class DateRangePickerComponent {
                   id={this.inputId}
                   ref={el => (this.inputEl = el as HTMLInputElement)}
                   type="text"
-                  class={`form-control${this.validation ? ' is-invalid' : ''}`}
+                  class={`form-control${this.readOnly ? ' read-only' : this.disabled ? '' : this.validation ? ' is-invalid' : ''}`}
                   placeholder={this.placeholderText}
-                  value={this.value}
+                  value={this.value || ''}
                   onInput={this.handleInputChange}
                   disabled={this.disabled}
+                  readOnly={this.readOnly}
                   aria-label={this.labelHidden ? this.label : undefined}
                   aria-labelledby={!this.labelHidden ? this.labelId : undefined}
                   aria-describedby={describedby}
                   aria-required={this.required ? 'true' : undefined}
                   aria-invalid={this.validation ? 'true' : undefined}
+                  aria-disabled={this.disabled ? 'true' : undefined}
+                  aria-readonly={this.readOnly ? 'true' : undefined}
                 />
-                {this.value ? (
+                {this.readOnly || this.disabled ? (
+                  ''
+                ) : this.value ? (
                   <button type="button" onClick={() => this.clearInputField()} class="clear-input-button" aria-label="Clear date range" disabled={this.disabled}>
                     <i class="fas fa-times-circle" aria-hidden="true" />
                   </button>
                 ) : null}
               </div>
 
-              {this.appendProp ? (
-                <div class="input-group-append">
-                  <button
-                    type="button"
-                    onClick={this.toggleDropdown}
-                    class={`calendar-button btn${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text${this.validation ? ' is-invalid' : ''}`}
-                    aria-label="Toggle calendar picker"
-                    aria-haspopup="dialog"
-                    aria-expanded={this.dropdownOpen ? 'true' : 'false'}
-                    disabled={this.disabled}
-                  >
-                    <i class={this.icon} aria-hidden="true" />
-                  </button>
-                </div>
+              {this.readOnly ? (
+                ''
+              ) : this.appendProp ? (
+                <button
+                  type="button"
+                  onClick={this.toggleDropdown}
+                  class={`calendar-button btn${this.size === 'sm' ? ' btn-sm' : this.size === 'lg' ? ' btn-lg' : ''} input-group-text${this.disabled ? '' : this.validation ? ' is-invalid' : ''}`}
+                  aria-label="Toggle calendar picker"
+                  aria-haspopup="dialog"
+                  aria-expanded={this.dropdownOpen ? 'true' : 'false'}
+                  disabled={this.disabled || this.readOnly}
+                >
+                  <i class={this.icon} aria-hidden="true" />
+                </button>
               ) : null}
             </div>
 
@@ -1658,7 +1846,7 @@ export class DateRangePickerComponent {
 
     this.getComputedCols();
 
-    const groupClass = ['input-group', 'nowrap', this.groupSizeClass(), this.disabled ? 'disabled' : ''].filter(Boolean).join(' ');
+    const groupClass = ['input-group', 'nowrap', this.groupSizeClass(), this.readOnly ? 'read-only' : this.disabled ? 'disabled' : ''].filter(Boolean).join(' ');
     const describedby = this.joinIdRefs(this.dialogDescId, this.validation ? this.validationId : undefined);
 
     return (
@@ -1666,22 +1854,24 @@ export class DateRangePickerComponent {
         <div class={['form-group', 'form-input-group', this.formLayout || '', isRow ? 'row' : ''].filter(Boolean).join(' ')}>
           {this.labelHidden ? null : (
             <label id={this.labelId} class={this.isHorizontal() ? this.labelClassHorizontal(labelColClass) : this.labelClassBase()} htmlFor={this.inputId}>
-              <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
-              {this.required ? <span class="required">*</span> : null}
+              <span class={this.readOnly || this.disabled ? '' : this.showAsRequired() ? 'required' : ''}>{text}</span>
+              {this.readOnly || this.disabled ? null : this.required ? <span class="required">*</span> : null}
             </label>
           )}
 
           <div class={this.isHorizontal() ? inputColClass : undefined}>
             <div class={groupClass} role="group" aria-label="Date picker group" tabIndex={0}>
-              {this.prependProp ? (
+              {this.readOnly ? (
+                ''
+              ) : this.prependProp ? (
                 <button
                   type="button"
                   onClick={this.toggleDropdown}
-                  class={`calendar-button btn pp-left input-group-text${this.validation ? ' is-invalid' : ''}`}
+                  class={`calendar-button btn pp-left input-group-text${this.disabled ? 'disabled' : this.validation ? ' is-invalid' : ''}`}
                   aria-label="Toggle calendar picker"
                   aria-haspopup="dialog"
                   aria-expanded={this.dropdownOpen ? 'true' : 'false'}
-                  disabled={this.disabled}
+                  disabled={this.disabled || this.readOnly}
                   onFocus={this.handleInputFocusStyle}
                   onBlur={this.handleInputBlurStyle}
                 >
@@ -1694,35 +1884,42 @@ export class DateRangePickerComponent {
                   id={this.inputId}
                   ref={el => (this.inputEl = el as HTMLInputElement)}
                   type="text"
-                  class={`form-control${this.validation ? ' is-invalid' : ''}`}
+                  class={`form-control${this.readOnly ? ' read-only' : this.disabled ? '' : this.validation ? ' is-invalid' : ''}`}
                   placeholder={this.placeholderText}
-                  value={this.value}
+                  value={this.value || ''}
                   onInput={this.handleInputChange}
                   aria-label={this.labelHidden ? this.label : undefined}
                   aria-labelledby={!this.labelHidden ? this.labelId : undefined}
                   aria-describedby={describedby}
                   aria-required={this.required ? 'true' : undefined}
                   aria-invalid={this.validation ? 'true' : undefined}
+                  aria-disabled={this.disabled ? 'true' : undefined}
+                  aria-readonly={this.readOnly ? 'true' : undefined}
                   name="selectedDate"
                   disabled={this.disabled}
+                  readOnly={this.readOnly}
                   onFocus={this.handleInputFocusStyle}
                 />
-                {this.value ? (
+                {this.readOnly || this.disabled ? (
+                  ''
+                ) : this.value ? (
                   <button type="button" onClick={() => this.clearInputField()} class="clear-input-button" aria-label="Clear date range" disabled={this.disabled}>
                     <i class="fas fa-times-circle" aria-hidden="true" />
                   </button>
                 ) : null}
               </div>
 
-              {this.appendProp ? (
+              {this.readOnly ? (
+                ''
+              ) : this.appendProp ? (
                 <button
                   type="button"
                   onClick={this.toggleDropdown}
-                  class={`calendar-button btn input-group-text${this.validation ? ' is-invalid' : ''}`}
+                  class={`calendar-button btn input-group-text${this.disabled ? ' disabled' : this.validation ? ' is-invalid' : ''}`}
                   aria-label="Toggle calendar picker"
                   aria-haspopup="dialog"
                   aria-expanded={this.dropdownOpen ? 'true' : 'false'}
-                  disabled={this.disabled}
+                  disabled={this.disabled || this.readOnly}
                   onFocus={this.handleInputFocusStyle}
                   onBlur={this.handleInputBlurStyle}
                 >
@@ -1731,8 +1928,8 @@ export class DateRangePickerComponent {
               ) : null}
             </div>
 
-            <div class={`b-underline${this.validation ? ' invalid' : ''}`} role="presentation">
-              <div class={`b-focus${this.disabled ? ' disabled' : ''}${this.validation ? ' invalid' : ''}`} role="presentation" aria-hidden="true" />
+            <div class={`b-underline${this.disabled || this.readOnly ? ' disabled' : this.validation ? ' invalid' : ''}`} role="presentation">
+              <div class={`b-focus${this.disabled || this.readOnly ? ' disabled' : this.validation ? ' invalid' : ''}`} role="presentation" aria-hidden="true" />
             </div>
 
             {this.validation ? (

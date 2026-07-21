@@ -192,6 +192,10 @@ $input-wrappers: (
     }
 
     &.is-invalid { @include placeholder-color($danger); }
+
+    &.read-only {
+      cursor: not-allowed;
+    }
   }
 
   .input-container input {

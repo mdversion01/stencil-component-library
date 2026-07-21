@@ -10,7 +10,7 @@
     box-shadow: none;
 }
 
-.plumage textarea.form-control.readonly:focus {
+.plumage textarea.form-control.read-only:focus {
     background-color: transparent;
     border-top-color: #ccc !important;
     color: #383838;

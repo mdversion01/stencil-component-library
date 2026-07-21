@@ -11,25 +11,23 @@ type _SelectOption = { value: string; name: string };
 export class SelectFieldComponent {
   @Element() host!: HTMLElement;
 
-  // ----- Public API (parity with Lit) -----
   @Prop() classes: string = '';
   @Prop() custom: boolean = false;
   @Prop() defaultTxt: string = '';
   @Prop() defaultOptionTxt: string = 'Select an option';
 
   @Prop() disabled: boolean = false;
+  @Prop({ attribute: 'read-only' }) readOnly: boolean = false;
 
-  /** Native <select size>; useful for visually taller lists (single or multiple) */
   @Prop() fieldHeight: number = null;
 
   @Prop({ mutable: true }) formLayout: '' | 'horizontal' | 'inline' = '';
   @Prop({ mutable: true }) formId: string = '';
 
-  /** ID attribute for the <select> (Lit: selectFieldId) */
   @Prop() selectFieldId: string = '';
 
   @Prop() options: Array<{ value: string; name: string }> | string = [];
-  @Prop() selected: boolean = false; // kept for parity (not used directly)
+  @Prop() selected: boolean = false;
   @Prop() size: '' | 'sm' | 'lg' = '';
 
   @Prop() label: string = '';
@@ -43,26 +41,20 @@ export class SelectFieldComponent {
   @Prop({ mutable: true }) validation: boolean = false;
   @Prop() validationMessage: string = '';
 
-  /** Single: string; Multiple: string[] */
   @Prop({ mutable: true }) value: string | string[] = 'none';
 
-  /** When used with a table, sync with external sort events */
   @Prop() withTable: boolean = false;
 
-  /** Legacy numeric cols (fallback) */
   @Prop() labelCol: number = 2;
   @Prop() inputCol: number = 10;
 
-  /** Responsive column class specs (e.g., "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4") */
   @Prop() labelCols: string = '';
   @Prop() inputCols: string = '';
 
-  // ----------------- a11y override props -----------------
   @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
   @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
 
-  // ----- Internal -----
   @State() _resolvedFormId: string = '';
   @State() private _options: _SelectOption[] = [];
   @State() private _safeDefaultOptionTxt: string = 'Select an option';
@@ -71,10 +63,8 @@ export class SelectFieldComponent {
   private sortFieldHandler = (e: any) => this.updateSortField(e);
   private sortOrderHandler = (e: any) => this.updateSortOrder(e);
 
-  // Avoid native "change" event name for Stencil Event; we still dispatch a DOM CustomEvent('change') for back-compat.
   @Event() valueChange: EventEmitter<{ value: string | string[] }>;
 
-  // ----- Lifecycle / Interop with <form-component> -----
   connectedCallback() {
     const formComponent = this.host.closest('form-component') as any;
     const fcFormId = formComponent?.formId;
@@ -107,7 +97,12 @@ export class SelectFieldComponent {
     if (!this.selectEl) return;
 
     if (this.multiple && Array.isArray(this.value)) {
-      this.applyMultiSelection(this.selectEl, this.value);
+      const normalized = this.normalizeMultiValue(this.value);
+      if (normalized !== this.value) {
+        this.value = normalized;
+        return;
+      }
+      this.applyMultiSelection(this.selectEl, normalized);
     } else if (!this.multiple && typeof this.value === 'string') {
       this.selectEl.value = this.value;
     }
@@ -137,16 +132,26 @@ export class SelectFieldComponent {
     if (!this.selectEl) return;
 
     if (this.multiple && Array.isArray(newVal)) {
-      this.applyMultiSelection(this.selectEl, newVal);
+      const normalized = this.normalizeMultiValue(newVal);
+
+      if (normalized !== newVal) {
+        this.value = normalized;
+        return;
+      }
+
+      this.applyMultiSelection(this.selectEl, normalized);
     } else if (!this.multiple && typeof newVal === 'string') {
       this.selectEl.value = newVal;
       this.selectEl.selectedIndex = this.selectEl.selectedIndex;
     }
 
     this.clearValidationIfSatisfied(this.selectEl);
-    if (this.required && this.isEmptySelection(this.selectEl)) this.validation = true;
 
-    if (this.multiple && this.validation && this.isDefaultOnlySelected(this.selectEl)) {
+    if (!this.isUiLocked() && this.required && this.isEmptySelection(this.selectEl)) {
+      this.validation = true;
+    }
+
+    if (!this.isUiLocked() && this.multiple && this.validation && this.isDefaultOnlySelected(this.selectEl)) {
       this.validation = true;
     }
   }
@@ -165,7 +170,6 @@ export class SelectFieldComponent {
       const parsed = JSON.parse(input);
       return Array.isArray(parsed) ? parsed.map((o: any) => ({ value: String(o?.value ?? ''), name: String(o?.name ?? '') })) : [];
     } catch {
-      // eslint-disable-next-line no-console
       console.warn('[select-field-component] Invalid JSON for "options" attribute.');
       return [];
     }
@@ -177,7 +181,6 @@ export class SelectFieldComponent {
     else this.selectEl.removeAttribute('form');
   }
 
-  // ----- Table sync (sort field/order) -----
   private updateSortField(event: CustomEvent<{ value: string }>) {
     if (this.host.id && this.host.id.includes('sortField')) {
       this.value = event.detail?.value ?? 'none';
@@ -192,7 +195,6 @@ export class SelectFieldComponent {
     }
   }
 
-  // ----- Utils -----
   private camelCase(str: string) {
     if (!str) return '';
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase())).replace(/\s+/g, '');
@@ -200,6 +202,11 @@ export class SelectFieldComponent {
 
   private sanitizeText(v: string): string {
     return (v ?? '').replace(/[<>]/g, '');
+  }
+
+  private normalizeMultiValue(v?: string[] | string): string[] {
+    if (!Array.isArray(v)) return [];
+    return v.includes('') ? [] : v;
   }
 
   private applyMultiSelection(sel?: HTMLSelectElement, v?: string[] | string) {
@@ -210,7 +217,6 @@ export class SelectFieldComponent {
     }
   }
 
-  /** Multiple mode helper: is the *only* selected option the default blank ""? */
   private isDefaultOnlySelected(el?: HTMLSelectElement): boolean {
     if (!this.multiple) return false;
     if (el) {
@@ -223,10 +229,10 @@ export class SelectFieldComponent {
     return false;
   }
 
-  // ----- Layout helpers (mirrors input-field-component) -----
   private isHorizontal() {
     return this.formLayout === 'horizontal';
   }
+
   private isInline() {
     return this.formLayout === 'inline';
   }
@@ -257,7 +263,6 @@ export class SelectFieldComponent {
       }
       if (t === 'col') {
         out.push('col');
-        continue;
       }
     }
 
@@ -290,7 +295,6 @@ export class SelectFieldComponent {
     return '';
   }
 
-  /** Only used to keep numeric 12-column validation when string specs aren’t provided. */
   private getComputedCols() {
     const DEFAULT_LABEL = 2;
     const DEFAULT_INPUT = 10;
@@ -303,7 +307,6 @@ export class SelectFieldComponent {
     const input = Number.isFinite(inp) ? Math.max(1, Math.min(11, inp)) : DEFAULT_INPUT;
 
     if (this.isHorizontal() && !this.labelCols && !this.inputCols && label + input !== 12) {
-      // eslint-disable-next-line no-console
       console.error(
         '[select-field-component] For formLayout="horizontal", labelCol + inputCol must equal 12. ' +
           `Received: ${this.labelCol} + ${this.inputCol} = ${Number(this.labelCol) + Number(this.inputCol)}. Falling back to 2/10.`,
@@ -313,7 +316,6 @@ export class SelectFieldComponent {
     return { label, input };
   }
 
-  // ----- Satisfaction helpers (state-safe) -----
   private isDefaultOnlyInArray(arr: string[]): boolean {
     return Array.isArray(arr) && arr.length === 1 && arr[0] === '';
   }
@@ -364,12 +366,10 @@ export class SelectFieldComponent {
     return typeof this.value === 'string' && (this.value === '' || this.value === 'none');
   }
 
-  /** Should the label show as required *right now*? */
   private showAsRequired(el?: HTMLSelectElement) {
     return !!this.required && this.isEmptySelection(el);
   }
 
-  // ----------------- a11y id helpers -----------------
   private buildA11yBaseId(selectId: string, nameId: string): string {
     const fallback = this.host?.id || 'selectField';
     return selectId || nameId || fallback;
@@ -400,15 +400,37 @@ export class SelectFieldComponent {
     return Array.from(new Set(merged)).join(' ');
   }
 
-  // ----- Handlers -----
+  private isUiLocked() {
+    return !!(this.readOnly || this.disabled);
+  }
+
+  private isInvalidNow() {
+    return !this.isUiLocked() && !!this.validation && !this.isSatisfiedByState(this.value as any);
+  }
+
   private handleChange = (ev: Event) => {
     const sel = ev.target as HTMLSelectElement;
 
     if (this._resolvedFormId) sel.setAttribute('form', this._resolvedFormId);
     else sel.removeAttribute('form');
 
+    if (this.readOnly) {
+      if (this.multiple && Array.isArray(this.value)) {
+        this.applyMultiSelection(sel, this.value);
+      } else if (!this.multiple && typeof this.value === 'string') {
+        sel.value = this.value;
+      }
+      return;
+    }
+
     if (this.multiple) {
-      const vals = Array.from(sel.selectedOptions).map(o => o.value);
+      const rawVals = Array.from(sel.selectedOptions).map(o => o.value);
+      const vals = rawVals.includes('') ? [] : rawVals;
+
+      if (rawVals.includes('')) {
+        this.applyMultiSelection(sel, vals);
+      }
+
       this.value = vals;
       this.valueChange.emit({ value: vals });
 
@@ -427,18 +449,17 @@ export class SelectFieldComponent {
     this.host.dispatchEvent(new CustomEvent('change', { detail: { value: this.value }, bubbles: true }));
   };
 
-  // ----- Render pieces -----
   private renderSelectLabel(selectId: string, nameId: string, labelColClass?: string) {
     if (this.labelHidden) return null;
 
-    const invalidNow = !!this.validation && !this.isSatisfiedByState(this.value as any);
+    const invalidNow = this.isInvalidNow();
 
     const classes = [
       'form-control-label',
       this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding` : '',
-      invalidNow ? 'invalid' : '',
+      this.isUiLocked() ? '' : invalidNow ? 'invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -449,18 +470,19 @@ export class SelectFieldComponent {
 
     return (
       <label id={labelId} class={classes} htmlFor={selectId || undefined}>
-        <span class={requiredNow ? 'required' : ''}>{text}</span>
-        {this.required ? <span class="required">*</span> : null}
+        <span class={this.isUiLocked() ? '' : requiredNow ? 'required' : ''}>{text}</span>
+        {this.isUiLocked() ? null : this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
 
   private renderSelectField(selectId: string, nameId: string) {
-    const invalidNow = !!this.validation && !this.isSatisfiedByState(this.value as any);
+    const invalidNow = this.isInvalidNow();
 
     const selectClassParts = [
       this.custom ? 'custom-select' : 'form-select',
-      invalidNow ? 'is-invalid' : '',
+      this.readOnly ? 'read-only' : null,
+      !this.isUiLocked() && invalidNow ? 'is-invalid' : null,
       this.size === 'sm' ? 'form-select-sm' : this.size === 'lg' ? 'form-select-lg' : '',
       this.classes || '',
     ].filter(Boolean);
@@ -476,14 +498,16 @@ export class SelectFieldComponent {
     const userLabelledBy = this.normalizeIdList(this.ariaLabelledby);
     const userDescribedBy = this.normalizeIdList(this.ariaDescribedby);
 
-    const defaultAriaLabel = this.labelHidden ? (this.label || this.defaultOptionTxt || 'Select') : undefined;
+    const defaultAriaLabel = this.labelHidden ? this.label || this.defaultOptionTxt || 'Select' : undefined;
     const defaultAriaLabelledBy = this.labelHidden ? undefined : labelId;
 
     const ariaLabel = userLabelledBy ? undefined : userLabel ?? defaultAriaLabel;
     const ariaLabelledBy = userLabelledBy ?? (ariaLabel ? undefined : defaultAriaLabelledBy);
 
     const describedByWithValidation =
-      invalidNow && this.validationMessage ? this.mergeDescribedBy(userDescribedBy, validationId) : userDescribedBy;
+      !this.isUiLocked() && invalidNow && this.validationMessage
+        ? this.mergeDescribedBy(userDescribedBy, validationId)
+        : userDescribedBy;
 
     return (
       <div>
@@ -492,13 +516,15 @@ export class SelectFieldComponent {
           id={selectId || undefined}
           class={selectClassParts.join(' ')}
           multiple={this.multiple}
-          disabled={this.disabled}
+          disabled={this.disabled || this.readOnly}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-describedby={describedByWithValidation}
           aria-required={this.required ? 'true' : null}
+          aria-disabled={this.disabled || this.readOnly ? 'true' : undefined}
+          aria-readonly={this.readOnly ? 'true' : undefined}
           required={this.required}
-          aria-invalid={invalidNow ? 'true' : null}
+          aria-invalid={!this.isUiLocked() && invalidNow ? 'true' : null}
           size={this.fieldHeight || undefined}
           form={this._resolvedFormId || undefined}
           onChange={this.handleChange}
@@ -516,9 +542,7 @@ export class SelectFieldComponent {
           ) : null}
 
           {(this._options || []).map(opt => {
-            const selected = this.multiple
-              ? Array.isArray(this.value) && this.value.includes(opt.value)
-              : typeof this.value === 'string' && opt.value === this.value;
+            const selected = this.multiple ? Array.isArray(this.value) && this.value.includes(opt.value) : typeof this.value === 'string' && opt.value === this.value;
 
             return (
               <option value={opt.value} aria-label={opt.name} selected={selected}>
@@ -528,7 +552,7 @@ export class SelectFieldComponent {
           })}
         </select>
 
-        {invalidNow && this.validationMessage ? (
+        {this.isUiLocked() ? null : invalidNow && this.validationMessage ? (
           <div id={validationId} class="invalid-feedback form-text" aria-live="polite">
             {this.validationMessage}
           </div>
@@ -537,7 +561,6 @@ export class SelectFieldComponent {
     );
   }
 
-  // ----- Render root -----
   render() {
     const selectId = this.camelCase(this.selectFieldId).replace(/ /g, '');
     const nameId = this.camelCase(this.label).replace(/ /g, '');

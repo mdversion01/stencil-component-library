@@ -1,4 +1,5 @@
-export const reactExample = `import React from 'react';
+export const reactExample = `
+import { useEffect, useRef } from 'react';
 
 const fruitOptions = [
   { value: 'apple', name: 'Apple' },
@@ -7,40 +8,60 @@ const fruitOptions = [
 ];
 
 export default function SelectFieldExample() {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    el.options = fruitOptions;
+    el.value = 'banana';
+  }, []);
+
   return (
     <select-field-component
+      ref={ref}
       label="Fruits"
       select-field-id="fruit"
       default-option-txt="Select a fruit"
-      options={JSON.stringify(fruitOptions)}
-      value="banana"
     />
   );
 }
-`;
+`.trim();
 
-export const vueExample = `<template>
+export const vueExample = `
+<template>
   <select-field-component
+    ref="selectEl"
     label="Fruits"
     select-field-id="fruit"
     default-option-txt="Select a fruit"
-    :options="serializedOptions"
-    value="banana"
   />
 </template>
 
 <script setup>
+import { onMounted, ref } from 'vue';
+
+const selectEl = ref(null);
+
 const fruitOptions = [
   { value: 'apple', name: 'Apple' },
   { value: 'banana', name: 'Banana' },
   { value: 'cherry', name: 'Cherry' },
 ];
 
-const serializedOptions = JSON.stringify(fruitOptions);
-</script>
-`;
+onMounted(() => {
+  const el = selectEl.value;
+  if (!el) return;
 
-export const angularExample = `import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+  el.options = fruitOptions;
+  el.value = 'banana';
+});
+</script>
+`.trim();
+
+export const angularExample = `
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-select-field',
@@ -48,50 +69,68 @@ export const angularExample = `import { Component, CUSTOM_ELEMENTS_SCHEMA } from
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   template: \`
     <select-field-component
+      #selectEl
       label="Fruits"
       select-field-id="fruit"
       default-option-txt="Select a fruit"
-      [attr.options]="serializedOptions"
-      value="banana"
     ></select-field-component>
   \`,
 })
-export class SelectFieldComponent {
-  fruitOptions = [
+export class SelectFieldExampleComponent implements AfterViewInit {
+  @ViewChild('selectEl', { static: true }) selectEl!: ElementRef<HTMLElement & { options: Array<{ value: string; name: string }>; value: string }>;
+
+  private readonly fruitOptions = [
     { value: 'apple', name: 'Apple' },
     { value: 'banana', name: 'Banana' },
     { value: 'cherry', name: 'Cherry' },
   ];
 
-  serializedOptions = JSON.stringify(this.fruitOptions);
+  ngAfterViewInit(): void {
+    const el = this.selectEl.nativeElement;
+    el.options = this.fruitOptions;
+    el.value = 'banana';
+  }
 }
-`;
+`.trim();
 
-export const svelteExample = `<script>
+export const svelteExample = `
+<script>
+  import { onMount } from 'svelte';
+
+  let selectEl;
+
   const fruitOptions = [
     { value: 'apple', name: 'Apple' },
     { value: 'banana', name: 'Banana' },
     { value: 'cherry', name: 'Cherry' },
   ];
 
-  const serializedOptions = JSON.stringify(fruitOptions);
+  onMount(() => {
+    if (!selectEl) return;
+
+    selectEl.options = fruitOptions;
+    selectEl.value = 'banana';
+  });
 </script>
 
 <section>
   <h2>Select Field Example</h2>
 
   <select-field-component
+    bind:this={selectEl}
     label="Fruits"
     select-field-id="fruit"
     default-option-txt="Select a fruit"
-    options={serializedOptions}
-    value="banana"
   ></select-field-component>
 </section>
-`;
+`.trim();
 
-export const svelteKitExample = `<script>
+export const svelteKitExample = `
+<script>
   import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
+
+  let selectEl;
 
   const fruitOptions = [
     { value: 'apple', name: 'Apple' },
@@ -99,7 +138,12 @@ export const svelteKitExample = `<script>
     { value: 'cherry', name: 'Cherry' },
   ];
 
-  const serializedOptions = JSON.stringify(fruitOptions);
+  onMount(() => {
+    if (!browser || !selectEl) return;
+
+    selectEl.options = fruitOptions;
+    selectEl.value = 'banana';
+  });
 </script>
 
 <section>
@@ -107,12 +151,11 @@ export const svelteKitExample = `<script>
 
   {#if browser}
     <select-field-component
+      bind:this={selectEl}
       label="Fruits"
       select-field-id="fruit"
       default-option-txt="Select a fruit"
-      options={serializedOptions}
-      value="banana"
     ></select-field-component>
   {/if}
 </section>
-`;
+`.trim();

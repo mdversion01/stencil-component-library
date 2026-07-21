@@ -3,9 +3,11 @@
 import DocsPage from './input-field-component.docs.mdx';
 import {
   buildDocsHtml,
+  buildDocsHtmlExternalValue,
   buildDocsHtmlInlineLayout,
   buildDocsHtmlReadOnlyAndDisabled,
   buildDocsHtmlSizes,
+  buildDocsHtmlValueProp,
   makeInput,
   renderMatrixRow,
   template,
@@ -14,6 +16,7 @@ import {
 
 const baseArgs = {
   disabled: false,
+  formId: '',
   formLayout: '',
   inputCol: 10,
   inputCols: '',
@@ -46,7 +49,7 @@ export default {
       description: {
         component:
           'A customizable input field component with various props for label, size, validation, and layout. ' +
-          'Updated to always render help text (sr-only) and keep aria-describedby resolvable; validation is announced via aria-live.',
+          'Updated to always render help text (sr-only), keep aria-describedby resolvable, and sync the native input when the `value` prop changes externally.',
       },
       source: {
         language: 'html',
@@ -55,9 +58,6 @@ export default {
     },
   },
   argTypes: {
-    /* =========================
-     * Input Attributes
-     * ========================= */
     disabled: {
       control: 'boolean',
       name: 'disabled',
@@ -87,9 +87,6 @@ export default {
       table: { category: 'Input Attributes' },
     },
 
-    /* =========================
-     * Layout
-     * ========================= */
     formLayout: {
       control: { type: 'select' },
       options: ['', 'horizontal', 'inline'],
@@ -161,9 +158,6 @@ export default {
       description: 'Sets the size of the input field. Options include "sm" (small) and "lg" (large). Not adding any size will use the default.',
     },
 
-    /* =========================
-     * Storybook Only
-     * ========================= */
     wrapWithForm: {
       control: 'boolean',
       description:
@@ -172,9 +166,6 @@ export default {
       table: { category: 'Storybook Only', defaultValue: { summary: false } },
     },
 
-    /* =========================
-     * Validation
-     * ========================= */
     required: {
       control: 'boolean',
       name: 'required',
@@ -216,6 +207,105 @@ export const Basic = {
     docs: {
       description: {
         story: 'A basic input field with a label and placeholder.',
+      },
+    },
+  },
+};
+
+export const ValueProp = {
+  name: 'Value Prop',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    label: 'First Name',
+    inputId: 'first-name-value',
+    value: 'Ada',
+    placeholder: 'Enter your first name',
+    validationMessage: '',
+    labelCol: '',
+    inputCol: '',
+    labelSize: 'sm',
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlValueProp(),
+      },
+      description: {
+        story: 'Demonstrates setting the input value with the `value` prop on initial render.',
+      },
+    },
+  },
+};
+
+export const ExternalValue = {
+  name: 'External Value',
+  render: () => {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
+    wrap.style.maxWidth = '560px';
+
+    const controls = document.createElement('div');
+    controls.style.display = 'flex';
+    controls.style.flexWrap = 'wrap';
+    controls.style.gap = '8px';
+
+    const output = document.createElement('div');
+    output.style.fontSize = '14px';
+    output.style.color = '#444';
+
+    const host = makeInput({
+      ...baseArgs,
+      label: 'First Name',
+      inputId: 'first-name-external',
+      placeholder: 'Enter your first name',
+      labelSize: 'sm',
+      validationMessage: '',
+      labelCol: '',
+      inputCol: '',
+    });
+
+    const makeButton = (label, nextValue) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = label;
+      btn.addEventListener('click', () => {
+        host.value = nextValue;
+        update();
+      });
+      return btn;
+    };
+
+    const update = () => {
+      output.textContent = `Current external value: ${JSON.stringify(host.value ?? '')}`;
+    };
+
+    controls.append(
+      makeButton('Load Ada', 'Ada'),
+      makeButton('Load Grace', 'Grace'),
+      makeButton('Load Katherine', 'Katherine'),
+      makeButton('Clear', ''),
+    );
+
+    host.addEventListener('valueChange', e => {
+      output.textContent = `Current external value: ${JSON.stringify(e.detail)}`;
+    });
+
+    update();
+    wrap.append(controls, host, output);
+    return wrap;
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlExternalValue(),
+      },
+      description: {
+        story:
+          'Demonstrates updating the component from an external source after render by assigning to the `value` property. The native input now stays in sync with external value changes.',
       },
     },
   },

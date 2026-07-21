@@ -1,3 +1,5 @@
+// File: src/stories/plumage-timepicker-component.story-helpers.js
+
 export const TAG = 'plumage-timepicker-component';
 
 export const DocsWrapStyles = () => {
@@ -13,11 +15,11 @@ export const DocsWrapStyles = () => {
   return style;
 };
 
-export const normalizeHtml = (html) => {
+export const normalizeHtml = html => {
   const lines = String(html ?? '')
     .replace(/\r\n/g, '\n')
     .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
+    .map(l => l.replace(/[ \t]+$/g, ''));
 
   const out = [];
   let prevBlank = false;
@@ -40,7 +42,7 @@ export const normalizeHtml = (html) => {
   return out.join('\n');
 };
 
-export const normalizeIdList = (v) => {
+export const normalizeIdList = v => {
   const s = String(v ?? '').trim();
   if (!s) return '';
   return s.split(/\s+/).filter(Boolean).join(' ');
@@ -52,9 +54,9 @@ export const boolStrAttr = (name, v) => (typeof v === 'boolean' ? `${name}="${v 
 
 export const boolPresenceAttr = (name, on) => (on ? name : null);
 
-export const buildDocsHtml = (args) => Template(args);
+export const buildDocsHtml = args => Template(args);
 
-export const Template = (args) => {
+export const Template = args => {
   const width = Number.isFinite(args.wrapperWidth) ? `${args.wrapperWidth}px` : '';
 
   const attrs = [
@@ -76,10 +78,16 @@ export const Template = (args) => {
     boolPresenceAttr('hide-timepicker-btn', args.hideTimepickerBtn),
 
     boolStrAttr('is-valid', !!args.isValid),
-    attr('validation-message', args.validationMessage),
+
     boolStrAttr('validation', !!args.validation),
+    attr('validation-message', args.validationMessage),
+
+    boolStrAttr('time-validation', !!args.timeValidation),
+    attr('time-validation-message', args.timeValidationMessage),
+
     boolStrAttr('required', !!args.required),
     boolStrAttr('disabled', !!args.disabled),
+    boolStrAttr('read-only', !!args.readOnly),
 
     attr('input-width', args.inputWidth),
     attr('size', args.size),
@@ -98,7 +106,11 @@ export const Template = (args) => {
 `);
 };
 
-export const splitIds = (v) => String(v || '').trim().split(/\s+/).filter(Boolean);
+export const splitIds = v =>
+  String(v || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
 
 export const resolveId = (scopeRoot, id) => {
   if (!id) return false;
@@ -114,22 +126,25 @@ export const getComputedSnapshot = (cmp, scopeRoot) => {
   const label = cmp?.querySelector?.('label') || null;
   const dropdown = cmp?.querySelector?.('.time-dropdown') || null;
 
+  const clearBtn = cmp?.querySelector?.('button.clear-button') || null;
+  const iconBtn = cmp?.querySelector?.('button.time-icon-btn') || null;
+  const toggleFormatBtn = cmp?.querySelector?.('button.toggle-format-btn') || null;
+  const closeBtn = cmp?.querySelector?.('button.close-button') || null;
+
   const inputId = cmp?.inputId ?? cmp?.getAttribute?.('input-id') ?? null;
   const derived = inputId
     ? {
         label: `${inputId}-label`,
         dropdown: `${inputId}-dropdown`,
+        timeValidation: `${inputId}-time-validation`,
         validation: `${inputId}-validation`,
         warning: `${inputId}-warning`,
       }
     : null;
 
-  const validation = derived
-    ? cmp?.querySelector?.(`#${CSS.escape(derived.validation)}`) || null
-    : null;
-  const warning = derived
-    ? cmp?.querySelector?.(`#${CSS.escape(derived.warning)}`) || null
-    : null;
+  const timeValidation = derived ? cmp?.querySelector?.(`#${CSS.escape(derived.timeValidation)}`) || null : null;
+  const validation = derived ? cmp?.querySelector?.(`#${CSS.escape(derived.validation)}`) || null : null;
+  const warning = derived ? cmp?.querySelector?.(`#${CSS.escape(derived.warning)}`) || null : null;
 
   const ariaLabelledby = input?.getAttribute?.('aria-labelledby') ?? null;
   const ariaDescribedby = input?.getAttribute?.('aria-describedby') ?? null;
@@ -144,20 +159,62 @@ export const getComputedSnapshot = (cmp, scopeRoot) => {
       value: cmp?.value ?? cmp?.getAttribute?.('value') ?? null,
       isOpen: cmp?._open ?? null,
       activePart: cmp?._activePart ?? null,
+      isTwentyFourHourFormat: cmp?.isTwentyFourHourFormat ?? null,
+      hideSeconds: cmp?.hideSeconds ?? null,
+      readOnly: cmp?.readOnly ?? null,
+      disabled: cmp?.disabled ?? null,
+      isValid: cmp?.isValid ?? null,
+      validation: cmp?.validation ?? null,
+      timeValidationEnabled: cmp?.timeValidation ?? null,
     },
     derivedIds: derived,
     dom: {
       hasLabel: !!label,
       hasInput: !!input,
       hasDropdown: !!dropdown,
+      hasTimeValidationEl: !!timeValidation,
       hasValidationEl: !!validation,
       hasWarningEl: !!warning,
+      hasClearButton: !!clearBtn,
+      hasTimeIconButton: !!iconBtn,
+      hasToggleFormatButton: !!toggleFormatBtn,
+      hasCloseButton: !!closeBtn,
+    },
+    controls: {
+      clearButton: clearBtn
+        ? {
+            disabled: clearBtn.hasAttribute('disabled'),
+            invalidClass: clearBtn.classList.contains('invalid'),
+          }
+        : null,
+      timeIconButton: iconBtn
+        ? {
+            disabled: iconBtn.hasAttribute('disabled'),
+            invalidClass: iconBtn.classList.contains('invalid'),
+            ariaControls: iconBtn.getAttribute('aria-controls'),
+            ariaExpanded: iconBtn.getAttribute('aria-expanded'),
+            ariaHaspopup: iconBtn.getAttribute('aria-haspopup'),
+          }
+        : null,
+      toggleFormatButton: toggleFormatBtn
+        ? {
+            disabled: toggleFormatBtn.hasAttribute('disabled'),
+            ariaLabel: toggleFormatBtn.getAttribute('aria-label'),
+          }
+        : null,
+      closeButton: closeBtn
+        ? {
+            disabled: closeBtn.hasAttribute('disabled'),
+            ariaLabel: closeBtn.getAttribute('aria-label'),
+          }
+        : null,
     },
     input: input
       ? {
           id: input.getAttribute('id'),
           name: input.getAttribute('name'),
           disabled: input.hasAttribute('disabled'),
+          readOnly: input.hasAttribute('readonly'),
           role: input.getAttribute('role') || 'textbox (implicit)',
           ariaLabel: input.getAttribute('aria-label'),
           ariaLabelledby,
@@ -167,6 +224,7 @@ export const getComputedSnapshot = (cmp, scopeRoot) => {
           ariaHaspopup: input.getAttribute('aria-haspopup'),
           ariaInvalid: input.getAttribute('aria-invalid'),
           ariaRequired: input.getAttribute('aria-required'),
+          ariaReadonly: input.getAttribute('aria-readonly'),
           required: input.hasAttribute('required'),
         }
       : null,
@@ -181,15 +239,36 @@ export const getComputedSnapshot = (cmp, scopeRoot) => {
           tabIndex: dropdown.getAttribute('tabindex'),
         }
       : null,
+    messages: {
+      timeValidation: timeValidation
+        ? {
+            hiddenClass: timeValidation.classList.contains('hidden'),
+            text: (timeValidation.textContent || '').trim(),
+          }
+        : null,
+      validation: validation
+        ? {
+            hiddenClass: validation.classList.contains('hidden'),
+            text: (validation.textContent || '').trim(),
+          }
+        : null,
+      warning: warning
+        ? {
+            hiddenClass: warning.classList.contains('hidden'),
+            text: (warning.textContent || '').trim(),
+          }
+        : null,
+    },
     resolved: {
       labelledbyIds: labelledIds,
-      labelledbyAllResolve: labelledIds.every((id) => resolveId(scopeRoot, id)),
+      labelledbyAllResolve: labelledIds.every(id => resolveId(scopeRoot, id)),
       describedbyIds: describedIds,
-      describedbyAllResolve: describedIds.every((id) => resolveId(scopeRoot, id)),
+      describedbyAllResolve: describedIds.every(id => resolveId(scopeRoot, id)),
       derivedResolves: derived
         ? {
             label: resolveId(scopeRoot, derived.label),
             dropdown: resolveId(scopeRoot, derived.dropdown),
+            timeValidation: resolveId(scopeRoot, derived.timeValidation),
             validation: resolveId(scopeRoot, derived.validation),
             warning: resolveId(scopeRoot, derived.warning),
           }
@@ -197,7 +276,7 @@ export const getComputedSnapshot = (cmp, scopeRoot) => {
     },
     spinbuttons: (() => {
       if (!dropdown) return null;
-      return Array.from(dropdown.querySelectorAll('[role="spinbutton"]')).map((el) => ({
+      return Array.from(dropdown.querySelectorAll('[role="spinbutton"]')).map(el => ({
         class: el.getAttribute('class'),
         tabIndex: el.getAttribute('tabindex'),
         ariaLabel: el.getAttribute('aria-label'),

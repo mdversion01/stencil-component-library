@@ -17,7 +17,6 @@ import { logInfo, logWarn, logError } from '../../utils/log-debug';
 export class AutocompleteSingle {
   @Element() el: HTMLElement;
 
-  // ---------------- Props ----------------
   @Prop({ mutable: true }) options: string[] = [];
   @Prop() autoSort: boolean = true;
 
@@ -27,7 +26,6 @@ export class AutocompleteSingle {
    */
   @Prop() arialabelledBy: string = '';
 
-  /** Standard ARIA naming hooks */
   @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
   @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
@@ -36,6 +34,7 @@ export class AutocompleteSingle {
   @Prop() placeholder = '';
   @Prop() devMode = false;
   @Prop() disabled = false;
+  @Prop() readOnly = false;
 
   @Prop() formId = '';
   @Prop({ mutable: true }) formLayout: '' | 'horizontal' | 'inline' = '';
@@ -54,45 +53,41 @@ export class AutocompleteSingle {
   @Prop() required = false;
   @Prop() type: string = 'text';
 
-  /** Validation controlled externally (prop remains source of truth) */
   @Prop({ mutable: true }) validation = false;
   @Prop() validationMessage = '';
 
-  /** Value controlled externally (don’t mutate the prop) */
   @Prop() value: string = '';
 
-  /** Back-compat numeric columns */
   @Prop() labelCol: number = 2;
   @Prop() inputCol: number = 10;
 
-  /** Responsive column class specs */
   @Prop() labelCols: string = '';
   @Prop() inputCols: string = '';
 
-  // ---------------- State ----------------
   @State() inputValue = '';
   @State() filteredOptions: string[] = [];
-  @State() focusedOptionIndex = -1; // no virtual focus until user navigates
+  @State() focusedOptionIndex = -1;
   @State() selectedOptionIndex = -1;
   @State() isFocused = false;
   @State() hasBeenInteractedWith = false;
   @State() dropdownOpen = false;
 
-  // Mirrors
   @State() private valueState: string = '';
 
   private suppressBlur = false;
   private inputEl?: HTMLInputElement;
 
-  // ---------------- Events ----------------
   @Event({ eventName: 'itemSelect' }) itemSelect: EventEmitter<string>;
   @Event() clear: EventEmitter<void>;
   @Event() componentError: EventEmitter<{ message: string; stack?: string }>;
   @Event() valueChange: EventEmitter<string>;
 
-  // ---------- Unique ID protection (prevents ARIA collisions) ----------
   private static _seq = 0;
   private _baseId = '';
+
+  private get isInteractionLocked(): boolean {
+    return this.disabled || this.readOnly;
+  }
 
   private resolveBaseId() {
     const raw = (this.inputId || this.label || '').trim();
@@ -104,7 +99,6 @@ export class AutocompleteSingle {
       base = `acs-${AutocompleteSingle._seq}-${rnd}`;
     }
 
-    // If an element already exists with this id, suffix it (avoid collisions)
     const existing = document.getElementById(base);
     if (existing && !this.el.contains(existing)) {
       AutocompleteSingle._seq += 1;
@@ -119,27 +113,28 @@ export class AutocompleteSingle {
   private get ids(): string {
     return this._baseId;
   }
+
   private get labelId(): string {
     return `${this.ids}-label`;
   }
+
   private get listboxId(): string {
     return `${this.ids}-listbox`;
   }
+
   private get validationId(): string {
     return `${this.ids}-validation`;
   }
+
   private get errorId(): string {
     return `${this.ids}-error`;
   }
 
   private joinIds(...ids: Array<string | undefined | null>) {
-    const cleaned = ids
-      .map((s) => String(s || '').trim())
-      .filter(Boolean);
+    const cleaned = ids.map(s => String(s || '').trim()).filter(Boolean);
     return cleaned.length ? cleaned.join(' ') : undefined;
   }
 
-  // ---------------- Watchers --------------
   @Watch('value')
   onValuePropChange(v: string) {
     this.valueState = v ?? '';
@@ -169,7 +164,16 @@ export class AutocompleteSingle {
     this.filterOptions();
   }
 
-  // ---------------- Lifecycle -------------
+  @Watch('readOnly')
+  onReadOnlyChange(next: boolean) {
+    if (next) this.closeDropdown();
+  }
+
+  @Watch('disabled')
+  onDisabledChange(next: boolean) {
+    if (next) this.closeDropdown();
+  }
+
   connectedCallback() {
     this.valueState = this.value ?? '';
     this.inputValue = this.sanitizeInput(this.valueState);
@@ -182,21 +186,17 @@ export class AutocompleteSingle {
       logError(this.devMode, 'AutocompleteSingle', `Expected 'options' to be an array, got ${typeof this.options}`);
     }
 
-    // Unique ids first (used everywhere in render)
     this.resolveBaseId();
 
-    // 508 / WCAG: form elements must have a label (visible unless explicitly hidden)
     if (!this.label && !this.ariaLabel && !this.ariaLabelledby && !this.arialabelledBy) {
       logWarn(this.devMode, 'AutocompleteSingle', 'Missing label/aria-label/aria-labelledby; accessibility may be impacted');
     }
 
-    // keep input in sync if value was set before load
     this.valueState = this.value ?? '';
     this.inputValue = this.sanitizeInput(this.valueState);
   }
 
   componentDidLoad() {
-    // Use capture phase to catch clicks before focus moves around
     document.addEventListener('click', this.handleClickOutside, true);
     this.hasBeenInteractedWith = false;
   }
@@ -205,14 +205,12 @@ export class AutocompleteSingle {
     document.removeEventListener('click', this.handleClickOutside, true);
   }
 
-  // ---------------- Utils -----------------
   private camelCase(str: string): string {
     return (str || '')
       .replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase()))
       .replace(/\s+/g, '');
   }
 
-  /** Sanitize user-typed input: strip tags, remove control chars, trim, cap length. */
   private sanitizeInput(value: string): string {
     if (typeof value !== 'string') return '';
     let v = value.replace(/<[^>]*>/g, '');
@@ -274,35 +272,60 @@ export class AutocompleteSingle {
   private meetsTypingThreshold() {
     return this.inputValue.trim().length >= 3;
   }
+
   private showAsRequired() {
     return this.required && !this.meetsTypingThreshold();
   }
 
-  // ---------------- Handlers --------------
   private handleFocus = () => {
     this.isFocused = true;
   };
 
   private handleBlur = () => {
     this.isFocused = false;
+
     if (this.suppressBlur) {
       this.suppressBlur = false;
       return;
     }
+
     setTimeout(() => this.closeDropdown(), 0);
-    if (this.required) this.validation = !this.meetsTypingThreshold();
+
+    if (!this.readOnly && !this.disabled && this.required) {
+      this.validation = !this.meetsTypingThreshold();
+    }
   };
 
   private emitValue(next: string) {
     this.valueState = next;
     this.valueChange.emit(this.valueState);
     this.el.dispatchEvent(
-      new CustomEvent('change', { bubbles: true, composed: true, detail: { value: this.valueState } }),
+      new CustomEvent('change', {
+        bubbles: true,
+        composed: true,
+        detail: { value: this.valueState },
+      }),
     );
   }
 
   private handleInput = (event: InputEvent | KeyboardEvent) => {
     const input = event.target as HTMLInputElement;
+
+    if (this.isInteractionLocked) {
+      if (event.type === 'input') {
+        if (input.value !== this.inputValue) input.value = this.inputValue;
+      }
+
+      if (event.type === 'keydown') {
+        const key = (event as KeyboardEvent).key;
+        if (key === 'ArrowDown' || key === 'ArrowUp' || key === 'Home' || key === 'End' || key === 'PageDown' || key === 'PageUp' || key === 'Enter' || key === 'Escape') {
+          event.preventDefault();
+        }
+      }
+
+      this.closeDropdown();
+      return;
+    }
 
     if (event.type === 'keydown') {
       const key = (event as KeyboardEvent).key;
@@ -384,6 +407,7 @@ export class AutocompleteSingle {
   };
 
   private onDropdownMouseDown = () => {
+    if (this.isInteractionLocked) return;
     this.suppressBlur = true;
   };
 
@@ -392,11 +416,13 @@ export class AutocompleteSingle {
     if (!path.includes(this.el)) this.closeDropdown();
   };
 
-  // ---------------- Core behavior ---------
   private openDropdown(opts?: { withFocus?: boolean }) {
+    if (this.isInteractionLocked) return;
+
     const withFocus = !!opts?.withFocus;
     const wasOpen = this.dropdownOpen;
     this.dropdownOpen = true;
+
     if (withFocus && (!wasOpen || this.focusedOptionIndex < 0)) {
       this.focusedOptionIndex = 0;
       requestAnimationFrame(() => this.ensureOptionInView(this.focusedOptionIndex));
@@ -404,8 +430,18 @@ export class AutocompleteSingle {
   }
 
   private filterOptions() {
+    if (this.isInteractionLocked) {
+      this.filteredOptions = [];
+      this.dropdownOpen = false;
+      this.focusedOptionIndex = -1;
+      return;
+    }
+
     if (!Array.isArray(this.options)) {
-      logError(this.devMode, 'AutocompleteSingle', `'options' must be an array`, { receivedType: typeof this.options, value: this.options });
+      logError(this.devMode, 'AutocompleteSingle', `'options' must be an array`, {
+        receivedType: typeof this.options,
+        value: this.options,
+      });
       this.filteredOptions = [];
       this.dropdownOpen = false;
       this.focusedOptionIndex = -1;
@@ -421,7 +457,7 @@ export class AutocompleteSingle {
       return;
     }
 
-    const nextFiltered = this.options.filter((opt) => (opt || '').toLowerCase().includes(v));
+    const nextFiltered = this.options.filter(opt => (opt || '').toLowerCase().includes(v));
     const opening = !this.dropdownOpen && nextFiltered.length > 0;
 
     this.filteredOptions = nextFiltered;
@@ -441,7 +477,9 @@ export class AutocompleteSingle {
   }
 
   private setFocusIndex(index: number) {
+    if (this.isInteractionLocked) return;
     if (!this.dropdownOpen || this.filteredOptions.length === 0) return;
+
     const len = this.filteredOptions.length;
     const clamped = Math.max(0, Math.min(len - 1, index));
     this.focusedOptionIndex = clamped;
@@ -457,7 +495,9 @@ export class AutocompleteSingle {
   }
 
   private pageNavigate(direction: 1 | -1) {
+    if (this.isInteractionLocked) return;
     if (!this.dropdownOpen || this.filteredOptions.length === 0) return;
+
     const len = this.filteredOptions.length;
     const page = this.getPageSize();
 
@@ -478,7 +518,9 @@ export class AutocompleteSingle {
   }
 
   private navigateOptions(direction: number) {
+    if (this.isInteractionLocked) return;
     if (!this.dropdownOpen || this.filteredOptions.length === 0) return;
+
     const len = this.filteredOptions.length;
     let newIndex = this.focusedOptionIndex;
     newIndex = newIndex < 0 ? (direction > 0 ? 0 : len - 1) : (newIndex + direction + len) % len;
@@ -486,6 +528,8 @@ export class AutocompleteSingle {
   }
 
   private selectOption(option: string) {
+    if (this.isInteractionLocked) return;
+
     if (typeof option !== 'string' || option.trim() === '') {
       logError(this.devMode, 'AutocompleteSingle', 'Invalid option selected', { option });
       return;
@@ -520,6 +564,8 @@ export class AutocompleteSingle {
   }
 
   private clearInput = () => {
+    if (this.isInteractionLocked) return;
+
     this.inputValue = '';
     if (this.inputEl) this.inputEl.value = '';
 
@@ -545,7 +591,6 @@ export class AutocompleteSingle {
     return true;
   }
 
-  // ---------------- Render helpers --------
   private labelClasses(labelColClass?: string) {
     return [
       'form-control-label',
@@ -554,14 +599,16 @@ export class AutocompleteSingle {
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.isInline() ? `col-form-label` : '',
-      this.validation ? 'invalid' : '',
+      this.readOnly || this.disabled ? '' : this.validation || this.error ? ' invalid' : ''
     ]
       .filter(Boolean)
       .join(' ');
   }
 
   private inputClasses() {
-    return ['form-control', this.validation || this.error ? 'is-invalid' : ''].filter(Boolean).join(' ');
+    return ['form-control', this.disabled ? 'disabled' : this.readOnly ? 'read-only' : this.validation || this.error ? 'is-invalid' : '']
+      .filter(Boolean)
+      .join(' ');
   }
 
   private groupClasses() {
@@ -569,8 +616,8 @@ export class AutocompleteSingle {
     return [
       'input-group',
       'autocomplete-single-select',
-      this.validation ? 'is-invalid' : '',
-      this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '',
+      this.disabled ? 'disabled' : this.readOnly ? 'read-only' : this.validation || this.error ? 'is-invalid' : '',
+      this.disabled ? 'disabled' : this.readOnly ? 'read-only' : this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '',
       sizeClass,
     ]
       .filter(Boolean)
@@ -580,23 +627,23 @@ export class AutocompleteSingle {
   private isHorizontal() {
     return this.formLayout === 'horizontal';
   }
+
   private isInline() {
     return this.formLayout === 'inline';
   }
+
   private isRowLayout() {
     return this.isHorizontal() || this.isInline();
   }
 
   private renderInputLabel(labelColClass?: string) {
-    // 508: always render a label element; use sr-only when labelHidden=true
     const labelText = (this.label || '').trim() || 'Autocomplete';
-
     const text = this.isRowLayout() ? `${labelText}:` : labelText;
 
     return (
       <label class={this.labelClasses(labelColClass)} id={this.labelId} htmlFor={this.ids || undefined}>
-        <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
-        {this.required ? <span class="required">*</span> : ''}
+        <span class={this.readOnly || this.disabled ? '' : this.showAsRequired() ? 'required' : ''}>{text}</span>
+         {this.readOnly || this.disabled ? null : this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
@@ -605,13 +652,10 @@ export class AutocompleteSingle {
     const labelText = (this.label || '').trim();
     const placeholder = ((this.placeholder || '').trim() || labelText || 'Autocomplete');
 
-    // external aria-labelledby wins; legacy prop supported
     const externalLabelledby = (this.ariaLabelledby || '').trim() || (this.arialabelledBy || '').trim() || undefined;
     const externalLabel = (this.ariaLabel || '').trim() || undefined;
 
     const computedLabelledby = externalLabelledby || this.labelId;
-
-    // Use aria-label only if aria-labelledby is absent (per spec)
     const computedAriaLabel = computedLabelledby ? undefined : (externalLabel || placeholder);
 
     const describedby = this.joinIds(
@@ -624,9 +668,8 @@ export class AutocompleteSingle {
 
     return (
       <input
-        ref={(el) => (this.inputEl = el as HTMLInputElement)}
+        ref={el => (this.inputEl = el as HTMLInputElement)}
         id={this.ids || undefined}
-        // NOTE: name for the text input isn't typically submitted; host can read `change` detail or use value prop.
         name={names || undefined}
         role="combobox"
         aria-label={computedAriaLabel}
@@ -640,11 +683,13 @@ export class AutocompleteSingle {
         aria-invalid={this.validation || this.error ? 'true' : undefined}
         aria-haspopup="listbox"
         aria-disabled={this.disabled ? 'true' : undefined}
+        aria-readonly={this.readOnly ? 'true' : undefined}
         class={this.inputClasses()}
         type={this.type || 'text'}
         placeholder={placeholder}
         value={this.inputValue}
         disabled={this.disabled}
+        readOnly={this.readOnly}
         onInput={this.handleInput}
         onKeyDown={this.handleInput}
         onFocus={this.handleFocus}
@@ -657,8 +702,7 @@ export class AutocompleteSingle {
   }
 
   private renderClearButton() {
-    // Avoid invalid ARIA: native button already has role=button; do not set role attribute.
-    if (this.removeClearBtn || !this.inputValue || this.disabled) return null;
+    if (this.removeClearBtn || !this.inputValue || this.disabled || this.readOnly) return null;
 
     return (
       <button
@@ -699,9 +743,8 @@ export class AutocompleteSingle {
   }
 
   private renderDropdown() {
-    if (!this.dropdownOpen) return null;
+    if (!this.dropdownOpen || this.readOnly || this.disabled) return null;
 
-    // Keep aria-live off the listbox itself; use a polite container.
     return (
       <div class="autocomplete-dropdown single" aria-live="polite" onMouseDown={this.onDropdownMouseDown}>
         {this.renderDropdownList()}
@@ -771,10 +814,7 @@ export class AutocompleteSingle {
     );
   }
 
-  // ---------------- Render root -----------
   render() {
-    // NOTE: We intentionally do NOT set aria-hidden anywhere (tooling checks for aria-hidden on body).
-    // Color contrast + text spacing are handled in CSS themes; component uses semantic elements and no fixed line-heights here.
     const names = this.camelCase(this.label).replace(/ /g, '');
     return <div class={{ 'autocomplete-container': true, 'form-group': true }}>{this.renderLayout(names)}</div>;
   }

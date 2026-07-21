@@ -1,12 +1,14 @@
+// File: src/stories/plumage-autocomplete-single/plumage-autocomplete-single.stories.js
+
 import DocsPage from './plumage-autocomplete-single.docs.mdx';
 import {
   DocsWrapStyles,
   DEFAULT_OPTIONS,
   SIZE_VARIANTS,
   buildDocsComponentHtml,
+  buildDocsHtmlControlledValue,
   buildDocsHtmlMany,
   mkMatrixCellSingle,
-  normalize,
   renderComponent,
   setAttr,
   setAutoSortWhenReady,
@@ -23,7 +25,7 @@ export default {
   title: 'Form/Plumage Autocomplete Single',
   tags: ['autodocs'],
   decorators: [
-    (Story) => {
+    Story => {
       const wrap = document.createElement('div');
       wrap.appendChild(DocsWrapStyles());
       wrap.appendChild(Story());
@@ -53,6 +55,7 @@ export default {
     clearIcon: { control: 'text', name: 'clear-icon', table: { category: 'Button Attributes' } },
     devMode: { control: 'boolean', name: 'dev-mode', table: { category: 'Attributes', defaultValue: { summary: false } } },
     disabled: { control: 'boolean', name: 'disabled', table: { category: 'Attributes', defaultValue: { summary: false } } },
+    readOnly: { control: 'boolean', name: 'read-only', table: { category: 'Attributes', defaultValue: { summary: false } } },
     error: { control: 'boolean', name: 'error', table: { category: 'Attributes', defaultValue: { summary: false } } },
     errorMessage: { control: 'text', name: 'error-message', table: { category: 'Attributes' } },
     formId: { control: 'text', name: 'form-id', table: { category: 'Attributes' } },
@@ -84,6 +87,7 @@ export default {
     clearIcon: 'fa-solid fa-xmark',
     devMode: false,
     disabled: false,
+    readOnly: false,
     error: false,
     errorMessage: '',
     formId: '',
@@ -174,6 +178,7 @@ export const Sizes = {
       args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
       args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
       args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
+      args.readOnly ? el.setAttribute('read-only', '') : el.removeAttribute('read-only');
       args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
 
       setOptionsWhenReady(el, Array.isArray(args.options) && args.options.length ? args.options : DEFAULT_OPTIONS);
@@ -191,7 +196,7 @@ export const Sizes = {
         language: 'html',
         transform: (_src, ctx) =>
           buildDocsHtmlMany(
-            SIZE_VARIANTS.map((v) =>
+            SIZE_VARIANTS.map(v =>
               buildDocsComponentHtml({
                 ...ctx.args,
                 id: v.id,
@@ -220,6 +225,8 @@ export const ControlledValue = {
     wrap.style.display = 'grid';
     wrap.style.gap = '10px';
 
+    let controlledValue = typeof args.value === 'string' ? args.value : 'Apple';
+
     const suffix = nextMountSuffix(ctx);
     const el = document.createElement(TAG);
 
@@ -233,14 +240,18 @@ export const ControlledValue = {
 
     setOptionsWhenReady(el, Array.isArray(args.options) && args.options.length ? args.options : DEFAULT_OPTIONS);
     setAutoSortWhenReady(el, args.autoSort);
-    setValueWhenReady(el, args.value);
+    setValueWhenReady(el, controlledValue);
 
     const buttons = document.createElement('div');
     buttons.style.display = 'flex';
     buttons.style.gap = '8px';
     buttons.style.flexWrap = 'wrap';
 
-    const mkBtn = (label) => {
+    const state = document.createElement('div');
+    state.style.fontSize = '14px';
+    state.style.color = '#444';
+
+    const mkBtn = label => {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'btn btn-sm btn-secondary';
@@ -252,29 +263,49 @@ export const ControlledValue = {
     const btnMango = mkBtn('Set "Mango"');
     const btnClear = mkBtn('Clear value');
 
-    const applyValue = (next) => {
-      const v = typeof next === 'string' ? next : '';
-      setValueWhenReady(el, v);
-      updateArgsBestEffort(ctx, { value: v });
+    const renderState = source => {
+      state.textContent = `External controlled value (${source}): ${JSON.stringify(controlledValue)}`;
     };
 
-    btnApple.addEventListener('click', () => applyValue('Apple'));
-    btnMango.addEventListener('click', () => applyValue('Mango'));
-    btnClear.addEventListener('click', () => applyValue(''));
+    const applyValue = (next, source) => {
+      controlledValue = typeof next === 'string' ? next : '';
+      setValueWhenReady(el, controlledValue);
+      updateArgsBestEffort(ctx, { value: controlledValue });
+      renderState(source);
+    };
 
-    el.addEventListener('itemSelect', (e) => applyValue(String(e?.detail ?? '')));
-    el.addEventListener('clear', () => applyValue(''));
+    btnApple.addEventListener('click', () => applyValue('Apple', 'button click'));
+    btnMango.addEventListener('click', () => applyValue('Mango', 'button click'));
+    btnClear.addEventListener('click', () => applyValue('', 'button click'));
+
+    el.addEventListener('itemSelect', e => applyValue(String(e?.detail ?? ''), 'itemSelect event'));
+    el.addEventListener('clear', () => applyValue('', 'clear event'));
 
     buttons.appendChild(btnApple);
     buttons.appendChild(btnMango);
     buttons.appendChild(btnClear);
 
+    renderState('initial args.value');
+
     wrap.appendChild(el);
     wrap.appendChild(buttons);
+    wrap.appendChild(state);
     return wrap;
   },
 };
 ControlledValue.name = 'Controlled Value (args.value)';
+ControlledValue.parameters = {
+  docs: {
+    source: {
+      language: 'html',
+      transform: () => wrapDocsHtml(buildDocsHtmlControlledValue()),
+    },
+    description: {
+      story: 'Demonstrates the `value` prop as the external source of truth, including the external state that drives the component.',
+    },
+    story: { height: '380px' },
+  },
+};
 
 export const FieldValidation = {
   args: {
@@ -298,6 +329,25 @@ export const Disabled = {
   },
 };
 Disabled.name = 'Disabled';
+
+export const ReadOnly = {
+  args: {
+    id: 'plumageAcSingle_readonly',
+    inputId: 'plumageAcSingle_readonly',
+    readOnly: true,
+    value: 'Banana',
+    placeholder: '',
+    validationMessage: '',
+  },
+};
+ReadOnly.name = 'Read Only';
+ReadOnly.parameters = {
+  docs: {
+    description: {
+      story: 'Shows the autocomplete in a read-only state. The field is non-interactive, keeps its current value, and suppresses invalid interaction UI.',
+    },
+  },
+};
 
 export const AccessibilityMatrix = {
   name: 'Accessibility matrix',
@@ -323,7 +373,7 @@ export const AccessibilityMatrix = {
 
     const grid = document.createElement('div');
     grid.style.display = 'grid';
-    grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(360px, 1fr))';
+    grid.style.gridTemplateColumns = '1fr';
     grid.style.gap = '14px';
     grid.style.maxWidth = '1100px';
     outer.appendChild(grid);

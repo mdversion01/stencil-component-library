@@ -92,6 +92,7 @@ export const buildDocsHtml = (args) => {
     ['aria-labelledby', args.ariaLabelledby],
     ['aria-describedby', args.ariaDescribedby],
 
+    ['disabled', !!args.disabled],
     ['group-title', args.groupTitle],
     ['group-title-size', args.groupTitleSize],
     ['inline', !!args.inline],
@@ -140,6 +141,7 @@ export const GroupTemplate = (args) =>
     ['aria-labelledby', args.ariaLabelledby],
     ['aria-describedby', args.ariaDescribedby],
 
+    ['disabled', !!args.disabled],
     ['group-title', args.groupTitle],
     ['group-title-size', args.groupTitleSize],
     ['inline', !!args.inline],
@@ -232,6 +234,7 @@ export const getSnapshot = (hostOrOuter) => {
       name: i.getAttribute('name'),
       checked: i.checked,
       disabled: i.disabled,
+      required: i.hasAttribute('required'),
       'aria-invalid': i.getAttribute('aria-invalid'),
       'aria-describedby': i.getAttribute('aria-describedby'),
     })),

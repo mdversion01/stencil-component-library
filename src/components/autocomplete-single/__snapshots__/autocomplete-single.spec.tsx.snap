@@ -54,3 +54,22 @@ exports[`<autocomplete-single> matches snapshot (dropdown open with matches) 1`]
   </div>
 </autocomplete-single>
 `;
+
+exports[`<autocomplete-single> matches snapshot (readOnly render) 1`] = `
+<autocomplete-single input-id="city" label="Cities" read-only="" value="Boston">
+  <div class="autocomplete-container form-group">
+    <div>
+      <label class="form-control-label label-sm" for="city" id="city-label">
+        <span>
+          Cities
+        </span>
+      </label>
+      <div>
+        <div class="autocomplete-single-select input-group read-only">
+          <input aria-autocomplete="list" aria-controls="city-listbox" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="city-label" aria-readonly="true" autocomplete="off" class="form-control read-only" id="city" inputmode="text" name="cities" placeholder="Cities" readonly="" role="combobox" spellcheck="false" type="text" value="Boston">
+        </div>
+      </div>
+    </div>
+  </div>
+</autocomplete-single>
+`;

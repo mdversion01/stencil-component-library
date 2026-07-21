@@ -1,4 +1,4 @@
-// src/components/plumage-input-field/plumage-input-field-component.tsx
+// File: src/components/plumage-input-field/plumage-input-field-component.tsx
 import { Component, h, Prop, Element, State, Watch, Event, EventEmitter } from '@stencil/core';
 
 @Component({
@@ -24,7 +24,7 @@ export class PlumageInputFieldComponent {
   @Prop() type: string = 'text';
   @Prop() validation: boolean = false;
   @Prop() validationMessage: string = '';
-  @Prop() value: string = '';
+  @Prop({ mutable: true }) value: string = '';
   @Prop() placeholder?: string;
 
   /** Standard ARIA naming hooks (recommended) */
@@ -53,13 +53,10 @@ export class PlumageInputFieldComponent {
 
   private inputEl?: HTMLInputElement;
 
-  // Stable fallback id for ARIA wiring (prevents collisions)
   private _fallbackId: string = `plumage-if-${Math.random().toString(36).slice(2, 10)}`;
 
-  // Let parents observe user edits
   @Event() valueChange!: EventEmitter<string>;
 
-  // ---------- watchers ----------
   @Watch('value')
   syncValue(v: string) {
     this.valueState = v ?? '';
@@ -79,7 +76,6 @@ export class PlumageInputFieldComponent {
     this.applyFormAttribute();
   }
 
-  // ---------- lifecycle ----------
   connectedCallback() {
     const formComponent = this.host.closest('form-component') as any;
     const fcFormId = formComponent?.formId;
@@ -94,11 +90,9 @@ export class PlumageInputFieldComponent {
       }
     }
 
-    // Seed mirrors
     this.valueState = this.value ?? '';
     this.validationState = !!this.validation;
 
-    // collapse underline on outside click (capture)
     document.addEventListener('click', this.handleDocumentClick, true);
   }
 
@@ -111,14 +105,12 @@ export class PlumageInputFieldComponent {
     this.applyFormAttribute();
   }
 
-  // ---------- Form attribute ----------
   private applyFormAttribute() {
     if (!this.inputEl) return;
     if (this._resolvedFormId) this.inputEl.setAttribute('form', this._resolvedFormId);
     else this.inputEl.removeAttribute('form');
   }
 
-  // ---------- underline helpers ----------
   private expandUnderline() {
     const bFocusDiv = this.host.querySelector<HTMLDivElement>('.b-focus');
     if (!bFocusDiv) return;
@@ -144,7 +136,6 @@ export class PlumageInputFieldComponent {
     this.collapseUnderline();
   };
 
-  // ---------- utils ----------
   private camelCase(str: string) {
     if (!str) return '';
     return str
@@ -178,8 +169,11 @@ export class PlumageInputFieldComponent {
   private sanitizeIdRefList(v?: string | null): string | undefined {
     const raw = String(v ?? '').trim();
     if (!raw) return undefined;
-    const tokens = raw.split(/\s+/).map((t) => t.trim()).filter(Boolean);
-    const valid = tokens.filter((t) => /^[A-Za-z_][\w:\-\.]*$/.test(t));
+    const tokens = raw
+      .split(/\s+/)
+      .map(t => t.trim())
+      .filter(Boolean);
+    const valid = tokens.filter(t => /^[A-Za-z_][\w:\-.]*$/.test(t));
     return valid.length ? valid.join(' ') : undefined;
   }
 
@@ -190,11 +184,10 @@ export class PlumageInputFieldComponent {
       if (cleaned) tokens.push(...cleaned.split(/\s+/));
     }
     const seen = new Set<string>();
-    const out = tokens.filter((t) => (seen.has(t) ? false : (seen.add(t), true)));
+    const out = tokens.filter(t => (seen.has(t) ? false : (seen.add(t), true)));
     return out.length ? out.join(' ') : undefined;
   }
 
-  // ---------- validation ----------
   private meetsTypingThreshold() {
     return (this.valueState || '').trim().length >= 3;
   }
@@ -203,7 +196,6 @@ export class PlumageInputFieldComponent {
     return this.required && !this.meetsTypingThreshold();
   }
 
-  // ---------- input handlers ----------
   private handleInput = (ev: Event) => {
     const target = ev.target as HTMLInputElement;
 
@@ -214,6 +206,7 @@ export class PlumageInputFieldComponent {
     if (clean !== target.value) target.value = clean;
 
     this.valueState = clean;
+    this.value = clean;
     this.valueChange.emit(this.valueState);
 
     if (this.meetsTypingThreshold() && this.validationState) this.validationState = false;
@@ -221,7 +214,6 @@ export class PlumageInputFieldComponent {
   };
 
   private handleBlur = () => {
-    // ✅ fixed: don't synthesize Event; just collapse underline directly
     this.collapseUnderline();
 
     if (this.required) {
@@ -229,10 +221,10 @@ export class PlumageInputFieldComponent {
     }
   };
 
-  // ---------- layout helpers ----------
   private isHorizontal() {
     return this.formLayout === 'horizontal';
   }
+
   private isInline() {
     return this.formLayout === 'inline';
   }
@@ -308,7 +300,6 @@ export class PlumageInputFieldComponent {
     return { label, input };
   }
 
-  // ---------- render bits ----------
   private renderInputLabel(ids: ReturnType<typeof this.resolveIds>, labelColClass?: string) {
     const labelText = (this.label || '').trim() || 'Input';
 
@@ -318,7 +309,7 @@ export class PlumageInputFieldComponent {
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
-      this.validationState ? 'invalid' : '',
+      this.readOnly ? 'read-only' : this.disabled ? '' : this.validationState ? 'invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -327,8 +318,8 @@ export class PlumageInputFieldComponent {
 
     return (
       <label class={classes} id={ids.labelId} htmlFor={ids.inputId || undefined}>
-        <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
-        {this.required ? <span class="required">*</span> : null}
+        <span class={this.readOnly || this.disabled ? '' : this.showAsRequired() ? 'required' : ''}>{text}</span>
+        {this.readOnly || this.disabled ? null : this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
@@ -341,27 +332,22 @@ export class PlumageInputFieldComponent {
 
   private renderInput(ids: ReturnType<typeof this.resolveIds>) {
     const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
-    const classes = ['form-control', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    const classes = ['form-control', this.readOnly ? 'read-only' : this.disabled ? '' : this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
 
     const labelText = (this.label || '').trim();
     const placeholder = (this.placeholder || '').trim() || labelText || 'Enter text';
 
     const describedBy = this.buildDescribedBy(ids);
 
-    // ✅ fixed: support both ariaLabelledby + legacy arialabelledBy
-    const externalLabelledby =
-      this.sanitizeIdRefList(this.ariaLabelledby) ||
-      this.sanitizeIdRefList(this.arialabelledBy);
+    const externalLabelledby = this.sanitizeIdRefList(this.ariaLabelledby) || this.sanitizeIdRefList(this.arialabelledBy);
 
     const computedLabelledby = externalLabelledby || ids.labelId;
-
-    // aria-label only when aria-labelledby absent
     const computedAriaLabel = computedLabelledby ? undefined : (this.ariaLabel || placeholder || 'Input').trim();
 
     return (
       <div class="input-container" role="presentation" onClick={this.handleInteraction} onMouseDown={this.handleInteraction}>
         <input
-          ref={(el) => (this.inputEl = el as HTMLInputElement)}
+          ref={el => (this.inputEl = el as HTMLInputElement)}
           id={ids.inputId || undefined}
           name={ids.inputId || undefined}
           type={this.type || 'text'}
@@ -387,9 +373,9 @@ export class PlumageInputFieldComponent {
           inputMode="text"
         />
 
-        <div class={`b-underline${this.validationState ? ' invalid' : ''}`} role="presentation" aria-hidden="true">
+        <div class={`b-underline${this.disabled || this.readOnly ? ' disabled' : this.validationState ? ' invalid' : ''}`} role="presentation" aria-hidden="true">
           <div
-            class={`b-focus${this.disabled || this.readOnly ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`}
+            class={`b-focus${this.disabled || this.readOnly ? ' disabled' : this.validationState ? ' invalid' : ''}`}
             role="presentation"
             aria-hidden="true"
             style={{ width: '0', left: '50%' } as any}
@@ -415,11 +401,7 @@ export class PlumageInputFieldComponent {
     this.getComputedCols();
 
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass = this.isHorizontal()
-      ? this.buildColClass('input') || undefined
-      : this.isInline()
-        ? this.buildColClass('input') || undefined
-        : undefined;
+    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     return (
       <div class={`plumage${outerClass}`}>

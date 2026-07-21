@@ -16,7 +16,7 @@ export class PlumageSelectFieldComponent {
   @Prop() defaultTxt: string = '';
   @Prop() defaultOptionTxt: string = 'Select an option';
   @Prop() disabled: boolean = false;
-  @Prop() readOnly: boolean = false;
+  @Prop({ attribute: 'read-only' }) readOnly: boolean = false;
   @Prop() fieldHeight: number = null;
   @Prop({ mutable: true }) formLayout: '' | 'horizontal' | 'inline' = '';
   @Prop({ mutable: true }) formId: string = '';
@@ -32,7 +32,7 @@ export class PlumageSelectFieldComponent {
   @Prop() required: boolean = false;
   @Prop({ mutable: true }) validation: boolean = false;
   @Prop() validationMessage: string = '';
-  @Prop() value: string | string[] = '';
+  @Prop({ mutable: true }) value: string | string[] = '';
   @Prop() withTable: boolean = false;
   @Prop() labelCol: number = 2;
   @Prop() inputCol: number = 10;
@@ -55,27 +55,37 @@ export class PlumageSelectFieldComponent {
 
   @Watch('value')
   onValuePropChange(v: string | string[]) {
-    this.valueState = v ?? (this.multiple ? [] : '');
-    if (!this.selectEl) return;
+    const next = v ?? (this.multiple ? [] : '');
 
-    if (this.multiple && Array.isArray(this.valueState)) {
-      this.applyMultiSelection(this.selectEl, this.valueState);
-      const cleaned = this.stripDefaultIfOthersSelected(this.selectEl, this.valueState);
-      this.valueState = cleaned as any;
-    } else if (!this.multiple && typeof this.valueState === 'string') {
-      this.selectEl.value = this.valueState;
-      this.selectEl.selectedIndex = this.selectEl.selectedIndex;
+    if (this.multiple && Array.isArray(next)) {
+      const normalized = this.normalizeMultiValue(next);
+
+      if (normalized !== next) {
+        this.value = normalized;
+        return;
+      }
+
+      this.valueState = normalized;
+
+      if (this.selectEl) {
+        this.applyMultiSelection(this.selectEl, normalized);
+      }
+    } else {
+      this.valueState = next;
+
+      if (this.selectEl && !this.multiple && typeof this.valueState === 'string') {
+        this.selectEl.value = this.valueState;
+        this.selectEl.selectedIndex = this.selectEl.selectedIndex;
+      }
     }
 
-    const satisfied = this.isSatisfiedByState(this.valueState);
-    this.validationState = !satisfied;
-    if (satisfied && this.validation) this.validation = false;
+    this.validationState = this.computeValidationState(this.valueState, this.selectEl);
     this.reflectInvalidClass();
   }
 
   @Watch('validation')
   onValidationPropChange(v: boolean) {
-    this.validationState = !!v;
+    this.validationState = !!v && !this.isRequirementSatisfied(this.valueState, this.selectEl);
     this.reflectInvalidClass();
   }
 
@@ -96,12 +106,23 @@ export class PlumageSelectFieldComponent {
     this._safeDefaultOptionTxt = this.sanitizeText(trimmed || 'Select an option');
   }
 
+  @Watch('disabled')
+  onDisabledChange() {
+    this.reflectInvalidClass();
+  }
+
+  @Watch('readOnly')
+  onReadOnlyChange() {
+    this.reflectInvalidClass();
+  }
+
   connectedCallback() {
     const formComponent = this.host.closest('form-component') as any;
     const fcFormId = formComponent?.formId;
     const fcLayout = formComponent?.formLayout;
 
     if (!this.formId && typeof fcFormId === 'string') this.formId = fcFormId;
+
     if (!this.formLayout && typeof fcLayout === 'string') {
       const allowed = ['', 'horizontal', 'inline'] as const;
       if ((allowed as readonly string[]).includes(fcLayout)) {
@@ -110,7 +131,16 @@ export class PlumageSelectFieldComponent {
     }
 
     this.valueState = this.value ?? (this.multiple ? [] : '');
-    this.validationState = !!this.validation;
+
+    if (this.multiple && Array.isArray(this.valueState)) {
+      const normalized = this.normalizeMultiValue(this.valueState);
+      this.valueState = normalized;
+      if (normalized !== this.value) {
+        this.value = normalized;
+      }
+    }
+
+    this.validationState = this.computeValidationState(this.valueState);
 
     document.addEventListener('click', this.handleDocumentClick, true);
 
@@ -127,33 +157,64 @@ export class PlumageSelectFieldComponent {
 
   componentDidLoad() {
     this.applyFormAttribute();
+
     if (this.selectEl) {
       if (this.multiple && Array.isArray(this.valueState)) {
-        this.applyMultiSelection(this.selectEl, this.valueState);
-        this.valueState = this.stripDefaultIfOthersSelected(this.selectEl, this.valueState) as any;
+        const normalized = this.normalizeMultiValue(this.valueState);
+        if (normalized !== this.valueState) {
+          this.valueState = normalized;
+          this.value = normalized;
+          return;
+        }
+        this.applyMultiSelection(this.selectEl, normalized);
       } else if (!this.multiple && typeof this.valueState === 'string') {
         this.selectEl.value = this.valueState;
       }
-      this.reflectInvalidClass();
     }
+
+    this.validationState = this.computeValidationState(this.valueState, this.selectEl);
+    this.reflectInvalidClass();
   }
 
   disconnectedCallback() {
     document.removeEventListener('click', this.handleDocumentClick, true);
+
     if (this.withTable) {
       window.removeEventListener('sort-field-updated', this.updateSortField);
       window.removeEventListener('sort-order-updated', this.updateSortOrder);
     }
   }
 
+  private isReadOnlyState(): boolean {
+    return this.readOnly === true || this.host.hasAttribute('read-only');
+  }
+
+  private isDisabledState(): boolean {
+    return this.disabled === true || this.host.hasAttribute('disabled');
+  }
+
+  private isNonInteractiveState(): boolean {
+    return this.isDisabledState() || this.isReadOnlyState();
+  }
+
+  private computeValidationState(value: string | string[], el?: HTMLSelectElement): boolean {
+    return !!this.validation && !this.isRequirementSatisfied(value, el);
+  }
+
+  private isInvalidNow(): boolean {
+    return !!this.validation && !!this.validationState && !this.isNonInteractiveState();
+  }
+
   private updateSortField = (event: any) => {
     if ((this.host.id || '').includes('sortField')) {
       this.valueState = event?.detail?.value || 'none';
-      if (this.selectEl && typeof this.valueState === 'string') this.selectEl.value = this.valueState;
+      this.value = this.valueState;
 
-      const satisfied = this.isSatisfiedByState(this.valueState);
-      this.validationState = !satisfied;
-      if (satisfied && this.validation) this.validation = false;
+      if (this.selectEl && typeof this.valueState === 'string') {
+        this.selectEl.value = this.valueState;
+      }
+
+      this.validationState = this.computeValidationState(this.valueState, this.selectEl);
       this.reflectInvalidClass();
     }
   };
@@ -161,11 +222,13 @@ export class PlumageSelectFieldComponent {
   private updateSortOrder = (event: any) => {
     if ((this.host.id || '').includes('sortOrder')) {
       this.valueState = event?.detail?.value || 'asc';
-      if (this.selectEl && typeof this.valueState === 'string') this.selectEl.value = this.valueState;
+      this.value = this.valueState;
 
-      const satisfied = this.isSatisfiedByState(this.valueState);
-      this.validationState = !satisfied;
-      if (satisfied && this.validation) this.validation = false;
+      if (this.selectEl && typeof this.valueState === 'string') {
+        this.selectEl.value = this.valueState;
+      }
+
+      this.validationState = this.computeValidationState(this.valueState, this.selectEl);
       this.reflectInvalidClass();
     }
   };
@@ -188,12 +251,12 @@ export class PlumageSelectFieldComponent {
 
   private handleInteraction = (event: Event) => {
     event.stopPropagation();
-    if (this.disabled || this.readOnly) return;
+    if (this.isNonInteractiveState()) return;
     this.expandUnderline();
   };
 
   private handleFocus = (event: Event) => {
-    if (this.disabled || this.readOnly) return;
+    if (this.isNonInteractiveState()) return;
     this.handleInteraction(event);
   };
 
@@ -205,16 +268,18 @@ export class PlumageSelectFieldComponent {
 
   private applyFormAttribute() {
     if (!this.selectEl) return;
+
     if (this._resolvedFormId) this.selectEl.setAttribute('form', this._resolvedFormId);
     else this.selectEl.removeAttribute('form');
   }
 
   private handleInput = (ev: Event) => {
     const target = ev.target as HTMLSelectElement;
+
     if (this._resolvedFormId) target.setAttribute('form', this._resolvedFormId);
     else target.removeAttribute('form');
 
-    if (this.readOnly) {
+    if (this.isReadOnlyState()) {
       if (this.multiple && Array.isArray(this.valueState)) {
         this.applyMultiSelection(target, this.valueState);
       } else if (typeof this.valueState === 'string') {
@@ -231,6 +296,11 @@ export class PlumageSelectFieldComponent {
     return Array.isArray(arr) && arr.length === 1 && arr[0] === '';
   }
 
+  private normalizeMultiValue(v?: string[] | string): string[] {
+    if (!Array.isArray(v)) return [];
+    return v.includes('') ? [] : v;
+  }
+
   private isSatisfiedByState(value: string | string[]): boolean {
     if (this.multiple) {
       if (!Array.isArray(value)) return false;
@@ -238,19 +308,23 @@ export class PlumageSelectFieldComponent {
       if (this.isDefaultOnlyInArray(value)) return false;
       return true;
     }
+
     return typeof value === 'string' && value !== '' && value !== 'none';
   }
 
   private isRequirementSatisfied(value: string | string[], el?: HTMLSelectElement): boolean {
-    if (!el) return this.isSatisfiedByState(value);
-
     if (this.multiple) {
-      const selected = Array.from(el.querySelectorAll('option'))
-        .filter(o => (o as HTMLOptionElement).selected)
-        .map(o => (o as HTMLOptionElement).value);
-      if (selected.length === 0) return false;
-      if (this.isDefaultOnlyInArray(selected)) return false;
-      return true;
+      if (el) {
+        const selected = Array.from(el.querySelectorAll('option'))
+          .filter(o => (o as HTMLOptionElement).selected)
+          .map(o => (o as HTMLOptionElement).value);
+
+        if (selected.length === 0) return false;
+        if (this.isDefaultOnlyInArray(selected)) return false;
+        return true;
+      }
+
+      return this.isSatisfiedByState(value);
     }
 
     return typeof value === 'string' && value !== '' && value !== 'none';
@@ -262,44 +336,51 @@ export class PlumageSelectFieldComponent {
         const selected = Array.from(el.querySelectorAll('option'))
           .filter(o => (o as HTMLOptionElement).selected)
           .map(o => (o as HTMLOptionElement).value);
+
         if (this.isDefaultOnlyInArray(selected)) return true;
         return selected.length === 0;
       }
-      if (Array.isArray(this.valueState)) return this.valueState.length === 0 || this.isDefaultOnlyInArray(this.valueState);
+
+      if (Array.isArray(this.valueState)) {
+        return this.valueState.length === 0 || this.isDefaultOnlyInArray(this.valueState);
+      }
+
       return true;
     }
+
     return typeof this.valueState === 'string' && (this.valueState === '' || this.valueState === 'none');
   }
 
   private reflectInvalidClass() {
     if (!this.selectEl) return;
-
-    const satisfied = this.isRequirementSatisfied(this.valueState as any, this.selectEl);
-    const invalid = (this.validationState || this.validation) && !satisfied;
-
-    this.selectEl.classList.toggle('is-invalid', invalid);
+    this.selectEl.classList.toggle('is-invalid', this.isInvalidNow());
   }
 
   private stripDefaultIfOthersSelected(sel: HTMLSelectElement, current: string[] | string) {
     if (!this.multiple || !Array.isArray(current)) return current;
+
     const hasBlank = current.includes('');
     const nonEmpty = current.filter(v => v !== '');
+
     if (hasBlank && nonEmpty.length > 0) {
       this.applyMultiSelection(sel, nonEmpty);
       return nonEmpty;
     }
+
     return current;
   }
 
   private handleChange = (ev: Event) => {
     const sel = ev.target as HTMLSelectElement;
 
-    if (this.readOnly) {
+    if (this.isReadOnlyState()) {
       if (this.multiple && Array.isArray(this.valueState)) {
         this.applyMultiSelection(sel, this.valueState);
       } else if (typeof this.valueState === 'string') {
         sel.value = this.valueState;
       }
+
+      this.reflectInvalidClass();
       return;
     }
 
@@ -310,19 +391,20 @@ export class PlumageSelectFieldComponent {
       : sel.value;
 
     if (this.multiple && Array.isArray(next)) {
-      next = this.stripDefaultIfOthersSelected(sel, next) as string[];
+      if (next.includes('')) {
+        next = [];
+        this.applyMultiSelection(sel, next);
+      } else {
+        next = this.stripDefaultIfOthersSelected(sel, next) as string[];
+      }
     }
 
     this.valueState = next as any;
+    this.value = next as any;
     this.valueChange.emit(this.valueState);
     this.host.dispatchEvent(new CustomEvent('change', { detail: { value: this.valueState }, bubbles: true }));
 
-    const satisfied = this.isRequirementSatisfied(this.valueState as any, sel);
-    if (this.validation || this.required || this.validationState) {
-      this.validationState = !satisfied;
-      this.validation = !satisfied;
-    }
-
+    this.validationState = this.computeValidationState(this.valueState, sel);
     this.reflectInvalidClass();
   };
 
@@ -338,6 +420,7 @@ export class PlumageSelectFieldComponent {
   private normalizeOptions(input: Array<{ value: string; name: string }> | string): _SelectOption[] {
     if (Array.isArray(input)) return input.map(o => ({ value: String(o?.value ?? ''), name: String(o?.name ?? '') }));
     if (typeof input !== 'string') return [];
+
     try {
       const parsed = JSON.parse(input);
       return Array.isArray(parsed) ? parsed.map((o: any) => ({ value: String(o?.value ?? ''), name: String(o?.name ?? '') })) : [];
@@ -350,7 +433,10 @@ export class PlumageSelectFieldComponent {
   private applyMultiSelection(sel?: HTMLSelectElement, v?: string[] | string) {
     if (!sel || !Array.isArray(v)) return;
     const set = new Set(v);
-    for (const opt of Array.from(sel.options)) (opt as HTMLOptionElement).selected = set.has((opt as HTMLOptionElement).value);
+
+    for (const opt of Array.from(sel.options)) {
+      (opt as HTMLOptionElement).selected = set.has((opt as HTMLOptionElement).value);
+    }
   }
 
   private isHorizontal() {
@@ -363,18 +449,23 @@ export class PlumageSelectFieldComponent {
 
   private parseColsSpec(spec?: string): string {
     if (!spec) return '';
+
     const tokens = spec.trim().split(/\s+/);
     const out: string[] = [];
+
     for (const t of tokens) {
       if (!t) continue;
+
       if (/^col(-\w+)?(-\d+)?$/.test(t)) {
         out.push(t);
         continue;
       }
+
       if (/^\d{1,2}$/.test(t)) {
         out.push(`col-${Math.max(1, Math.min(12, parseInt(t, 10)))}`);
         continue;
       }
+
       const m = /^(xs|sm|md|lg|xl|xxl)-(\d{1,2})$/.exec(t);
       if (m) {
         const bp = m[1];
@@ -382,20 +473,25 @@ export class PlumageSelectFieldComponent {
         out.push(bp === 'xs' ? `col-${n}` : `col-${bp}-${n}`);
         continue;
       }
+
       if (t === 'col') out.push('col');
     }
+
     return Array.from(new Set(out)).join(' ');
   }
 
   private buildColClass(kind: 'label' | 'input'): string {
     const spec = (kind === 'label' ? this.labelCols : this.inputCols)?.trim();
+
     if (this.isHorizontal()) {
       if (spec) return this.parseColsSpec(spec);
       if (kind === 'input' && this.labelHidden) return this.inputCols ? this.parseColsSpec(this.inputCols) : 'col-12';
+
       const num = kind === 'label' ? this.labelCol : this.inputCol;
       const n = Math.max(0, Math.min(12, Number(num)));
       return n === 0 ? '' : `col-${n}`;
     }
+
     if (this.isInline()) return spec ? this.parseColsSpec(spec) : '';
     return '';
   }
@@ -403,11 +499,14 @@ export class PlumageSelectFieldComponent {
   private getComputedCols() {
     const DEFAULT_LABEL = 2;
     const DEFAULT_INPUT = 10;
+
     if (this.isHorizontal() && this.labelHidden) return { label: 0, input: 12 };
+
     const lbl = Number(this.labelCol);
     const inp = Number(this.inputCol);
     const label = Number.isFinite(lbl) ? Math.max(1, Math.min(11, lbl)) : DEFAULT_LABEL;
     const input = Number.isFinite(inp) ? Math.max(1, Math.min(11, inp)) : DEFAULT_INPUT;
+
     if (this.isHorizontal() && !this.labelCols && !this.inputCols && label + input !== 12) {
       console.error(
         '[plumage-select-field-component] For formLayout="horizontal", labelCol + inputCol must equal 12. ' +
@@ -415,6 +514,7 @@ export class PlumageSelectFieldComponent {
       );
       return { label: DEFAULT_LABEL, input: DEFAULT_INPUT };
     }
+
     return { label, input };
   }
 
@@ -441,9 +541,11 @@ export class PlumageSelectFieldComponent {
   private mergeDescribedBy(existing?: string, extra?: string): string | undefined {
     const a = this.normalizeIdList(existing);
     const b = this.normalizeIdList(extra);
+
     if (!a && !b) return undefined;
     if (a && !b) return a;
     if (!a && b) return b;
+
     const merged = `${a} ${b}`.trim().split(/\s+/);
     return Array.from(new Set(merged)).join(' ');
   }
@@ -451,14 +553,14 @@ export class PlumageSelectFieldComponent {
   private renderSelectLabel(selectId: string, nameId: string, labelColClass?: string) {
     if (this.labelHidden) return null;
 
-    const isInvalidNow = (this.validationState || this.validation) && !this.isSatisfiedByState(this.valueState as any);
+    const isInvalidNow = this.isInvalidNow();
 
     const classes = [
       'form-control-label',
       this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding` : '',
-      isInvalidNow ? 'invalid' : '',
+      this.isNonInteractiveState() ? null : isInvalidNow ? 'invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -468,8 +570,8 @@ export class PlumageSelectFieldComponent {
 
     return (
       <label id={labelId} class={classes} htmlFor={selectId || undefined}>
-        <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
-        {this.required ? <span class="required">*</span> : null}
+        <span class={this.isNonInteractiveState() ? '' : this.showAsRequired() ? 'required' : ''}>{text}</span>
+        {this.isNonInteractiveState() ? null : this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
@@ -482,8 +584,16 @@ export class PlumageSelectFieldComponent {
     const defaultLabel = hasPlaceholder ? this._safeDefaultOptionTxt : '';
     const showDefaultOption = hasPlaceholder && !(this.host.id || '').includes('sortField');
 
-    const isInvalidNow = (this.validationState || this.validation) && !this.isSatisfiedByState(this.valueState as any);
-    const invalidClass = isInvalidNow ? ' is-invalid' : '';
+    const isInvalidNow = this.isInvalidNow();
+
+    const selectClasses = [
+      baseClass,
+      this.isReadOnlyState() ? 'read-only' : null,
+      sizeClass || null,
+      this.classes || null,
+    ]
+      .filter(Boolean)
+      .join(' ');
 
     const labelId = this.buildLabelId(selectId, nameId);
     const validationId = this.buildValidationId(selectId, nameId);
@@ -492,30 +602,33 @@ export class PlumageSelectFieldComponent {
     const userLabelledBy = this.normalizeIdList(this.ariaLabelledby);
     const userDescribedBy = this.normalizeIdList(this.ariaDescribedby);
 
-    const defaultAriaLabel = this.labelHidden ? (this.label || this.defaultOptionTxt || 'Select') : undefined;
+    const defaultAriaLabel = this.labelHidden ? this.label || this.defaultOptionTxt || 'Select' : undefined;
     const defaultAriaLabelledBy = this.labelHidden ? undefined : labelId;
 
     const ariaLabel = userLabelledBy ? undefined : userLabel ?? defaultAriaLabel;
     const ariaLabelledBy = userLabelledBy ?? (ariaLabel ? undefined : defaultAriaLabelledBy);
 
     const describedByWithValidation =
-      isInvalidNow && this.validationMessage ? this.mergeDescribedBy(userDescribedBy, validationId) : userDescribedBy;
+      !this.isNonInteractiveState() && isInvalidNow && this.validationMessage
+        ? this.mergeDescribedBy(userDescribedBy, validationId)
+        : userDescribedBy;
 
     return (
       <div class="input-container" role="presentation" onClick={this.handleInteraction}>
         <select
           ref={el => (this.selectEl = el as HTMLSelectElement)}
           id={selectId || undefined}
-          class={`${baseClass}${invalidClass}${sizeClass ? ` ${sizeClass}` : ''}${this.classes ? ` ${this.classes}` : ''}`}
+          class={selectClasses}
           multiple={this.multiple}
-          disabled={this.disabled}
+          disabled={this.isNonInteractiveState()}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-describedby={describedByWithValidation}
           aria-required={this.required ? 'true' : null}
-          aria-readonly={this.readOnly ? 'true' : undefined}
+          aria-disabled={this.isNonInteractiveState() ? 'true' : undefined}
+          aria-readonly={this.isReadOnlyState() ? 'true' : undefined}
           required={this.required}
-          aria-invalid={isInvalidNow ? 'true' : null}
+          aria-invalid={!this.isNonInteractiveState() && isInvalidNow ? 'true' : null}
           size={this.fieldHeight || undefined}
           onMouseDown={e => e.stopPropagation()}
           onFocus={this.handleFocus}
@@ -549,11 +662,11 @@ export class PlumageSelectFieldComponent {
           })}
         </select>
 
-        <div class={`b-underline${isInvalidNow ? ' invalid' : ''}`} role="presentation">
-          <div class={`b-focus${this.disabled || this.readOnly ? ' disabled' : ''}${isInvalidNow ? ' invalid' : ''}`} role="presentation" aria-hidden="true" />
+        <div class={`b-underline${this.isNonInteractiveState() ? ' disabled' : isInvalidNow ? ' invalid' : ''}`} role="presentation">
+          <div class={`b-focus${this.isNonInteractiveState() ? ' disabled' : isInvalidNow ? ' invalid' : ''}`} role="presentation" aria-hidden="true" />
         </div>
 
-        {isInvalidNow && this.validationMessage ? (
+        {this.isNonInteractiveState() ? null : isInvalidNow && this.validationMessage ? (
           <div id={validationId} class="invalid-feedback form-text">
             {this.validationMessage}
           </div>
@@ -568,6 +681,7 @@ export class PlumageSelectFieldComponent {
 
     const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
     const groupClasses = ['form-group'];
+
     if (this.isHorizontal()) groupClasses.push('row');
     else if (this.isInline()) groupClasses.push('row', 'inline');
 

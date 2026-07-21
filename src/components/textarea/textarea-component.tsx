@@ -23,7 +23,7 @@ export class TextareaComponent {
   @Prop() required: boolean = false;
   @Prop() validation: boolean = false;
   @Prop() validationMessage: string = '';
-  @Prop() value: string = '';
+  @Prop({ mutable: true }) value: string = '';
   @Prop() placeholder?: string;
   @Prop() rows: number = 3;
   @Prop() maxLength?: number;
@@ -175,6 +175,7 @@ export class TextareaComponent {
     if (clean !== target.value) target.value = clean;
 
     this.valueState = clean;
+    this.value = clean;
     this.valueChange.emit(this.valueState);
 
     if (this.meetsTypingThreshold() && this.validationState) {
@@ -319,7 +320,7 @@ export class TextareaComponent {
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.isInline() ? 'col-form-label' : '',
-      this.validationState ? 'invalid' : '',
+      this.readOnly || this.disabled ? null : this.validationState ? 'invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -328,15 +329,15 @@ export class TextareaComponent {
 
     return (
       <label id={this.ids.label} class={classes} htmlFor={this.ids.textarea || undefined}>
-        <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
-        {this.required ? <span class="required">*</span> : null}
+        <span class={this.readOnly || this.disabled ? '' : this.showAsRequired() ? 'required' : ''}>{text}</span>
+        {this.readOnly || this.disabled ? null : this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
 
   private renderTextarea() {
     const sizeClass = this.textareaTextSize === 'sm' ? 'form-control-sm' : this.textareaTextSize === 'lg' ? 'form-control-lg' : '';
-    const classes = ['form-control', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    const classes = ['form-control', this.readOnly ? 'read-only' : this.disabled ? null : this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
 
     const placeholder =
       (this.placeholder && this.placeholder.trim().length > 0 ? this.placeholder : this.label) || 'Enter text';
@@ -371,6 +372,8 @@ export class TextareaComponent {
           aria-labelledby={this.ids.label}
           aria-describedby={describedBy || undefined}
           aria-invalid={this.validationState ? 'true' : undefined}
+          aria-disabled={this.disabled ? 'true' : undefined}
+          aria-readonly={this.readOnly ? 'true' : undefined}
           disabled={this.disabled}
           required={this.required}
           readOnly={this.readOnly}
@@ -378,7 +381,7 @@ export class TextareaComponent {
           onBlur={this.handleBlur}
         />
 
-        {this.renderCounter()}
+        {this.readOnly ? '' : this.renderCounter()}
         {this.renderValidation()}
       </Fragment>
     );

@@ -1,3 +1,5 @@
+// File: src/stories/input-group-component/input-group-component.story-helpers.js
+
 export const normalize = value => {
   if (value === '' || value == null) return undefined;
   if (value === true) return true;
@@ -85,6 +87,43 @@ export const buildDocsHtml = rawArgs => {
     ? `<input-group-component ${attrStr}></input-group-component>`
     : '<input-group-component></input-group-component>';
 };
+
+export const buildDocsHtmlValueProp = () =>
+  '<input-group-component has-append append-icon="fa-solid fa-dollar-sign" label="Amount" input-id="amount-value" value="123.45" placeholder="Enter amount"></input-group-component>';
+
+export const buildDocsHtmlExternalValue = () =>
+  [
+    '<div>',
+    '  <button type="button" id="load-123">Load 123.45</button>',
+    '  <button type="button" id="load-999">Load 999.00</button>',
+    '  <button type="button" id="load-42">Load 42.00</button>',
+    '  <button type="button" id="clear-amount">Clear</button>',
+    '',
+    '  <input-group-component',
+    '    has-append',
+    '    append-icon="fa-solid fa-dollar-sign"',
+    '    label="Amount"',
+    '    input-id="amount-external"',
+    '    placeholder="Enter amount"',
+    '  ></input-group-component>',
+    '</div>',
+    '',
+    '<script>',
+    "  const host = document.querySelector('input-group-component');",
+    "  document.querySelector('#load-123').addEventListener('click', () => {",
+    "    host.value = '123.45';",
+    '  });',
+    "  document.querySelector('#load-999').addEventListener('click', () => {",
+    "    host.value = '999.00';",
+    '  });',
+    "  document.querySelector('#load-42').addEventListener('click', () => {",
+    "    host.value = '42.00';",
+    '  });',
+    "  document.querySelector('#clear-amount').addEventListener('click', () => {",
+    "    host.value = '';",
+    '  });',
+    '</script>',
+  ].join('\n');
 
 export const boolAttr = (name, on) => (on ? ` ${name}` : '');
 
@@ -188,6 +227,7 @@ export function snapshotA11y(host) {
           id: input.getAttribute('id') || '',
           role: input.getAttribute('role') || '',
           class: input.getAttribute('class') || '',
+          value: input.value ?? '',
           ...pickAttrs(input, ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid', 'disabled', 'required', 'readonly', 'type', 'name', 'form']),
           resolves: {
             'aria-labelledby': resolveIdsWithin(host, labelledByIds),

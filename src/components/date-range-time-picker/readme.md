@@ -27,7 +27,7 @@ ISO / numeric / long display modes, and synchronized dropdown.
 | `inputCols`              | `input-cols`                 |             | `string`                         | `''`                     |
 | `inputId`                | `input-id`                   |             | `string`                         | `'date-range-time'`      |
 | `isTwentyFourHourFormat` | `is-twenty-four-hour-format` |             | `boolean`                        | `true`                   |
-| `joinBy`                 | `join-by`                    |             | `string`                         | `' - '`                  |
+| `joinBy`                 | `join-by`                    |             | `string`                         | `'-'`                    |
 | `label`                  | `label`                      |             | `string`                         | `'Date and Time Picker'` |
 | `labelAlign`             | `label-align`                |             | `"" \| "right"`                  | `''`                     |
 | `labelCol`               | `label-col`                  |             | `number`                         | `2`                      |
@@ -38,6 +38,7 @@ ISO / numeric / long display modes, and synchronized dropdown.
 | `prependId`              | `prepend-id`                 |             | `string`                         | `''`                     |
 | `prependProp`            | `prepend-prop`               |             | `boolean`                        | `false`                  |
 | `rangeTimePicker`        | `range-time-picker`          |             | `boolean`                        | `false`                  |
+| `readOnly`               | `read-only`                  |             | `boolean`                        | `false`                  |
 | `required`               | `required`                   |             | `boolean`                        | `false`                  |
 | `showDuration`           | `show-duration`              |             | `boolean`                        | `false`                  |
 | `showIso`                | `show-iso`                   |             | `boolean`                        | `false`                  |

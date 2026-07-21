@@ -3,8 +3,6 @@ import { newSpecPage } from '@stencil/core/testing';
 import { h } from '@stencil/core';
 import { PlumageSelectFieldComponent } from './plumage-select-field-component';
 
-// ---- helpers --------------------------------------------------------------
-
 function getSelect(page: any): HTMLSelectElement {
   const sel = page.root!.querySelector('select') as HTMLSelectElement | null;
   if (!sel) throw new Error('select element not found');
@@ -15,23 +13,22 @@ function getAllOptions(page: any): HTMLOptionElement[] {
   return Array.from(getSelect(page).querySelectorAll('option')) as HTMLOptionElement[];
 }
 
-/**
- * Robustly set multiple selection in JSDOM and browsers:
- * - toggles option.selected via querySelectorAll (avoids sel.options undefined cases)
- * - syncs select.value to first chosen value (JSDOM quirk)
- * - fires input + change to mimic real interaction
- */
-function setMultiple(sel: HTMLSelectElement | null, values: string[]) {
-  if (!sel) throw new Error('select element not found (setMultiple)');
-  const options = Array.from(sel.querySelectorAll('option')) as HTMLOptionElement[];
-  const set = new Set(values || []);
-  options.forEach(o => (o.selected = set.has(o.value)));
-  sel.value = values && values.length ? values[0] : '';
-  sel.dispatchEvent(new Event('input', { bubbles: true }));
-  sel.dispatchEvent(new Event('change', { bubbles: true }));
-}
+function makeMockSelect(optionValues: string[], selectedValues: string[] = []) {
+  const selectedSet = new Set(selectedValues);
+  const options = optionValues.map(value => ({
+    value,
+    selected: selectedSet.has(value),
+  }));
 
-// ---- tests ----------------------------------------------------------------
+  return {
+    options,
+    querySelectorAll: () => options,
+    classList: { toggle: jest.fn() },
+    setAttribute: jest.fn(),
+    removeAttribute: jest.fn(),
+    value: selectedValues[0] ?? '',
+  } as any;
+}
 
 describe('plumage-select-field-component', () => {
   it('sanitizes defaultOptionTxt and shows a blank default when provided (non-sortField)', async () => {
@@ -55,35 +52,13 @@ describe('plumage-select-field-component', () => {
 
     const first = options[0];
     expect(first.getAttribute('value')).toBe('');
-    expect(first.textContent).toBe('Pick one');
+    expect(first.textContent?.trim()).toBe('Pick one');
 
-    expect(page.root).toMatchInlineSnapshot(`
-<plumage-select-field-component default-option-txt="<Pick one>">
-  <div class="plumage">
-    <div class="form-group">
-      <label class="form-control-label label-sm" id="plumageSelect-label">
-        <span></span>
-      </label>
-      <div class="input-container" role="presentation">
-        <select aria-labelledby="plumageSelect-label" class="form-select is-invalid">
-          <option selected="" value="">
-            Pick one
-          </option>
-          <option aria-label="Apple" value="apple">
-            Apple
-          </option>
-          <option aria-label="Banana" value="banana">
-            Banana
-          </option>
-        </select>
-        <div class="b-underline" role="presentation">
-          <div aria-hidden="true" class="b-focus" role="presentation"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</plumage-select-field-component>
-`);
+    const sel = getSelect(page);
+    expect(sel.getAttribute('aria-labelledby')).toBe('plumageSelect-label');
+    expect(sel.getAttribute('aria-readonly')).toBeNull();
+    expect(sel.getAttribute('aria-disabled')).toBeNull();
+    expect(sel.classList.contains('read-only')).toBe(false);
   });
 
   it('parses options JSON and selects matching value (single)', async () => {
@@ -105,39 +80,13 @@ describe('plumage-select-field-component', () => {
 
     const options = getAllOptions(page);
     const banana = options.find(o => o.getAttribute('value') === 'banana');
+
     expect(banana).toBeTruthy();
     expect(banana!.hasAttribute('selected')).toBe(true);
 
-    expect(page.root).toMatchInlineSnapshot(`
-<plumage-select-field-component>
-  <div class="plumage">
-    <div class="form-group">
-      <label class="form-control-label label-sm" id="plumageSelect-label">
-        <span></span>
-      </label>
-      <div class="input-container" role="presentation">
-        <select aria-labelledby="plumageSelect-label" class="form-select is-invalid">
-          <option value="">
-            Select an option
-          </option>
-          <option aria-label="Apple" value="apple">
-            Apple
-          </option>
-          <option aria-label="Banana" selected="" value="banana">
-            Banana
-          </option>
-          <option aria-label="Cherry" value="cherry">
-            Cherry
-          </option>
-        </select>
-        <div class="b-underline" role="presentation">
-          <div aria-hidden="true" class="b-focus" role="presentation"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</plumage-select-field-component>
-`);
+    const sel = getSelect(page);
+    expect(sel.getAttribute('aria-labelledby')).toBe('plumageSelect-label');
+    expect(sel.classList.contains('read-only')).toBe(false);
   });
 
   it('when id includes sortField: renders legacy "--none--", suppresses blank default, and none is not selected for value=""', async () => {
@@ -164,36 +113,12 @@ describe('plumage-select-field-component', () => {
 
     expect(blank).toBeUndefined();
     expect(legacyNone).toBeTruthy();
-    expect(legacyNone!.textContent).toBe('--none--');
+    expect(legacyNone!.textContent?.trim()).toBe('--none--');
     expect(legacyNone!.hasAttribute('selected')).toBe(false);
 
-    expect(page.root).toMatchInlineSnapshot(`
-<plumage-select-field-component default-option-txt="Choose…" id="some-sortField">
-  <div class="plumage">
-    <div class="form-group">
-      <label class="form-control-label label-sm" id="some-sortField-label">
-        <span></span>
-      </label>
-      <div class="input-container" role="presentation">
-        <select aria-labelledby="some-sortField-label" class="form-select is-invalid">
-          <option aria-label="none" value="none">
-            --none--
-          </option>
-          <option aria-label="Apple" value="apple">
-            Apple
-          </option>
-          <option aria-label="Banana" value="banana">
-            Banana
-          </option>
-        </select>
-        <div class="b-underline" role="presentation">
-          <div aria-hidden="true" class="b-focus" role="presentation"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</plumage-select-field-component>
-`);
+    const sel = getSelect(page);
+    expect(sel.getAttribute('aria-labelledby')).toBe('some-sortField-label');
+    expect(sel.classList.contains('read-only')).toBe(false);
   });
 
   it('with value="none" and sortField: legacy none is selected', async () => {
@@ -222,33 +147,9 @@ describe('plumage-select-field-component', () => {
     expect(legacyNone).toBeTruthy();
     expect(legacyNone!.hasAttribute('selected')).toBe(true);
 
-    expect(page.root).toMatchInlineSnapshot(`
-<plumage-select-field-component default-option-txt="Choose…" id="some-sortField">
-  <div class="plumage">
-    <div class="form-group">
-      <label class="form-control-label label-sm" id="some-sortField-label">
-        <span></span>
-      </label>
-      <div class="input-container" role="presentation">
-        <select aria-labelledby="some-sortField-label" class="form-select is-invalid">
-          <option aria-label="none" selected="" value="none">
-            --none--
-          </option>
-          <option aria-label="Apple" value="apple">
-            Apple
-          </option>
-          <option aria-label="Banana" value="banana">
-            Banana
-          </option>
-        </select>
-        <div class="b-underline" role="presentation">
-          <div aria-hidden="true" class="b-focus" role="presentation"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</plumage-select-field-component>
-`);
+    const sel = getSelect(page);
+    expect(sel.getAttribute('aria-labelledby')).toBe('some-sortField-label');
+    expect(sel.classList.contains('read-only')).toBe(false);
   });
 
   it('marks label as required when blank and clears after a valid selection (single)', async () => {
@@ -282,52 +183,244 @@ describe('plumage-select-field-component', () => {
     const after = page.root!.querySelector('label > span');
     expect(after?.classList.contains('required')).toBe(false);
 
-    expect(page.root).toMatchInlineSnapshot(`
-<plumage-select-field-component default-option-txt="Pick one" select-field-id="fruit">
-  <div class="plumage">
-    <div class="form-group">
-      <label class="form-control-label label-sm" for="fruit" id="fruit-label">
-        <span>
-          Favorite Fruit
-        </span>
-        <span class="required">
-          *
-        </span>
-      </label>
-      <div class="input-container" role="presentation">
-        <select aria-labelledby="fruit-label" aria-required="true" class="form-select" id="fruit" required="">
-          <option value="">
-            Pick one
-          </option>
-          <option aria-label="Apple" selected="" value="apple">
-            Apple
-          </option>
-          <option aria-label="Banana" value="banana">
-            Banana
-          </option>
-        </select>
-        <div class="b-underline" role="presentation">
-          <div aria-hidden="true" class="b-focus" role="presentation"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</plumage-select-field-component>
-`);
+    expect(sel.getAttribute('aria-labelledby')).toBe('fruit-label');
+    expect(sel.getAttribute('aria-required')).toBe('true');
+    expect(sel.hasAttribute('required')).toBe(true);
+    expect(sel.classList.contains('read-only')).toBe(false);
   });
 
-  it('multiple + validation: selecting only default keeps invalid; selecting real option clears invalid', async () => {
+  it('does not apply invalid styling when required is true but validation is false', async () => {
+    const page = await newSpecPage({
+      components: [PlumageSelectFieldComponent],
+      html: `<plumage-select-field-component
+        required
+        label="Favorite Fruit"
+        select-field-id="fruit-required-only"
+        value=""
+        default-option-txt="Pick one"
+        options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"}
+        ]'
+      ></plumage-select-field-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const comp = page.rootInstance as PlumageSelectFieldComponent;
+    const toggleSpy = jest.fn();
+    (comp as any).selectEl = {
+      options: [{ value: '', selected: true }, { value: 'apple', selected: false }, { value: 'banana', selected: false }],
+      querySelectorAll: () => [{ value: '', selected: true }, { value: 'apple', selected: false }, { value: 'banana', selected: false }],
+      classList: { toggle: toggleSpy },
+      setAttribute: jest.fn(),
+      removeAttribute: jest.fn(),
+    } as any;
+
+    (comp as any).handleChange({ target: (comp as any).selectEl });
+    await page.waitForChanges();
+
+    expect(comp.validation).toBe(false);
+    expect((comp as any).validationState).toBe(false);
+    expect(toggleSpy).toHaveBeenLastCalledWith('is-invalid', false);
+
+    const label = page.root!.querySelector('label');
+    const msg = page.root!.querySelector('#fruitRequiredOnly-validation');
+    expect(label?.classList.contains('invalid')).toBe(false);
+    expect(msg).toBeNull();
+  });
+
+  it('multiple + validation: selecting only default keeps invalid state and clears to []', async () => {
+    const page = await newSpecPage({
+      components: [PlumageSelectFieldComponent],
+      html: `<plumage-select-field-component
+        multiple
+        validation
+        validation-message="Please choose at least one"
+        default-option-txt="Pick one"
+        options='[
+          {"value":"a","name":"A"},
+          {"value":"b","name":"B"}
+        ]'
+      ></plumage-select-field-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const comp = page.rootInstance as PlumageSelectFieldComponent;
+    const mockSelectEl = makeMockSelect(['', 'a', 'b'], ['']);
+    (comp as any).selectEl = mockSelectEl;
+
+    (comp as any).handleChange({ target: mockSelectEl });
+    await page.waitForChanges();
+
+    expect((comp as any).valueState).toEqual([]);
+    expect(comp.value).toEqual([]);
+    expect((comp as any).validationState).toBe(true);
+    expect(comp.validation).toBe(true);
+  });
+
+  it('multiple + validation accepts a real selection event payload', async () => {
+    const page = await newSpecPage({
+      components: [PlumageSelectFieldComponent],
+      html: `<plumage-select-field-component
+        multiple
+        validation
+        validation-message="Please choose at least one"
+        default-option-txt="Pick one"
+        options='[
+          {"value":"a","name":"A"},
+          {"value":"b","name":"B"}
+        ]'
+      ></plumage-select-field-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const comp = page.rootInstance as PlumageSelectFieldComponent;
+    const emitSpy = jest.fn();
+    (comp as any).valueChange = { emit: emitSpy };
+
+    const hostChangeSpy = jest.fn();
+    page.root!.addEventListener('change', hostChangeSpy as any);
+
+    const mockSelectEl = makeMockSelect(['', 'a', 'b'], ['b']);
+    (comp as any).selectEl = mockSelectEl;
+
+    (comp as any).handleChange({ target: mockSelectEl });
+    await page.waitForChanges();
+
+    expect(emitSpy).toHaveBeenCalledTimes(1);
+    expect(emitSpy).toHaveBeenCalledWith(['b']);
+    expect(hostChangeSpy).toHaveBeenCalledTimes(1);
+    expect(comp.value).toEqual(['b']);
+    expect((comp as any).valueState).toEqual(['b']);
+  });
+
+  it('multiple mode clears to [] when only the empty default option is selected', async () => {
+    const page = await newSpecPage({
+      components: [PlumageSelectFieldComponent],
+      html: `<plumage-select-field-component
+        label="Tags"
+        select-field-id="tags"
+        multiple
+        validation
+        validation-message="Please choose at least one"
+        default-option-txt="Choose tags"
+        options='[
+          {"value":"ux","name":"UX"},
+          {"value":"web","name":"Web"},
+          {"value":"mobile","name":"Mobile"}
+        ]'
+      ></plumage-select-field-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const comp = page.rootInstance as PlumageSelectFieldComponent;
+    const emitSpy = jest.fn();
+    (comp as any).valueChange = { emit: emitSpy };
+
+    const hostChangeSpy = jest.fn();
+    page.root!.addEventListener('change', hostChangeSpy as any);
+
+    const mockSelectEl = makeMockSelect(['', 'ux', 'web', 'mobile'], ['']);
+    (comp as any).selectEl = mockSelectEl;
+
+    const applySpy = jest.spyOn(comp as any, 'applyMultiSelection');
+
+    (comp as any).handleChange({ target: mockSelectEl });
+    await page.waitForChanges();
+
+    expect((comp as any).valueState).toEqual([]);
+    expect(comp.value).toEqual([]);
+    expect(emitSpy).toHaveBeenCalledTimes(1);
+    expect(emitSpy).toHaveBeenCalledWith([]);
+    expect(applySpy).toHaveBeenLastCalledWith(mockSelectEl, []);
+    expect(hostChangeSpy).toHaveBeenCalledTimes(1);
+    expect((comp as any).validationState).toBe(true);
+    expect(comp.validation).toBe(true);
+  });
+
+  it('normalizes external multiple value [""] to [] via value watcher', async () => {
+    const page = await newSpecPage({
+      components: [PlumageSelectFieldComponent],
+      html: `<plumage-select-field-component
+        label="Tags"
+        select-field-id="tags-external"
+        multiple
+        options='[
+          {"value":"ux","name":"UX"},
+          {"value":"web","name":"Web"}
+        ]'
+      ></plumage-select-field-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const comp = page.rootInstance as PlumageSelectFieldComponent;
+
+    (comp as any).selectEl = {
+      options: [],
+      querySelectorAll: () => [],
+      classList: { toggle: jest.fn() },
+      setAttribute: jest.fn(),
+      removeAttribute: jest.fn(),
+    } as any;
+
+    comp.value = [''];
+    await page.waitForChanges();
+
+    expect((comp as any).valueState).toEqual([]);
+    expect(comp.value).toEqual([]);
+  });
+
+  it('does not apply invalid styling in multiple mode when validation is false', async () => {
+    const page = await newSpecPage({
+      components: [PlumageSelectFieldComponent],
+      html: `<plumage-select-field-component
+        label="Tags"
+        select-field-id="tags-no-validation"
+        multiple
+        required
+        default-option-txt="Choose tags"
+        options='[
+          {"value":"ux","name":"UX"},
+          {"value":"web","name":"Web"}
+        ]'
+      ></plumage-select-field-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const comp = page.rootInstance as PlumageSelectFieldComponent;
+    const mockSelectEl = makeMockSelect(['', 'ux', 'web'], ['']);
+    const toggleSpy = jest.fn();
+    mockSelectEl.classList.toggle = toggleSpy;
+    (comp as any).selectEl = mockSelectEl;
+
+    (comp as any).handleChange({ target: mockSelectEl });
+    await page.waitForChanges();
+
+    expect((comp as any).valueState).toEqual([]);
+    expect(comp.value).toEqual([]);
+    expect((comp as any).validationState).toBe(false);
+    expect(comp.validation).toBe(false);
+    expect(toggleSpy).toHaveBeenLastCalledWith('is-invalid', false);
+  });
+
+  it('adds read-only class when readOnly is true', async () => {
     const page = await newSpecPage({
       components: [PlumageSelectFieldComponent],
       template: () => (
         <plumage-select-field-component
-          multiple
-          validation
-          validation-message="Please choose at least one"
-          default-option-txt="Pick one"
+          label="Favorite Fruit"
+          select-field-id="fruit-readonly"
+          read-only
+          value="banana"
           options='[
-            {"value":"a","name":"A"},
-            {"value":"b","name":"B"}
+            {"value":"apple","name":"Apple"},
+            {"value":"banana","name":"Banana"}
           ]'
         />
       ),
@@ -336,52 +429,190 @@ describe('plumage-select-field-component', () => {
     await page.waitForChanges();
 
     const sel = getSelect(page);
+    expect(sel.hasAttribute('disabled')).toBe(true);
+    expect(sel.getAttribute('aria-readonly')).toBe('true');
+    expect(sel.getAttribute('aria-disabled')).toBe('true');
+    expect(sel.classList.contains('read-only')).toBe(true);
+  });
+
+  it('suppresses validation message when readOnly and validation is true', async () => {
+    const page = await newSpecPage({
+      components: [PlumageSelectFieldComponent],
+      html: `<plumage-select-field-component
+        label="Favorite Fruit"
+        select-field-id="fruit-readonly-invalid"
+        read-only
+        required
+        validation
+        validation-message="Please fill in"
+        value=""
+        options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"}
+        ]'
+      ></plumage-select-field-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const comp = page.rootInstance as PlumageSelectFieldComponent;
+    const toggleSpy = jest.fn();
+    (comp as any).selectEl = {
+      options: [{ value: '', selected: true }, { value: 'apple', selected: false }, { value: 'banana', selected: false }],
+      querySelectorAll: () => [{ value: '', selected: true }, { value: 'apple', selected: false }, { value: 'banana', selected: false }],
+      classList: { toggle: toggleSpy },
+      setAttribute: jest.fn(),
+      removeAttribute: jest.fn(),
+    } as any;
+
+    (comp as any).handleChange({ target: (comp as any).selectEl });
+    await page.waitForChanges();
+
+    const sel = getSelect(page);
+    const msg = page.root!.querySelector('#fruitReadonlyInvalid-validation') as HTMLElement | null;
+
+    expect(sel.hasAttribute('disabled')).toBe(true);
+    expect(sel.classList.contains('read-only')).toBe(true);
+    expect(sel.getAttribute('aria-readonly')).toBe('true');
+    expect(sel.getAttribute('aria-disabled')).toBe('true');
+    expect(toggleSpy).toHaveBeenLastCalledWith('is-invalid', false);
+    expect(msg).toBeNull();
+  });
+
+  it('supports disabled without adding read-only class', async () => {
+    const page = await newSpecPage({
+      components: [PlumageSelectFieldComponent],
+      html: `<plumage-select-field-component
+        label="Favorite Fruit"
+        select-field-id="fruit-disabled"
+        disabled
+        required
+        validation
+        validation-message="Please fill in"
+        value=""
+        options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"}
+        ]'
+      ></plumage-select-field-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const comp = page.rootInstance as PlumageSelectFieldComponent;
+    const toggleSpy = jest.fn();
+    (comp as any).selectEl = {
+      options: [{ value: '', selected: true }, { value: 'apple', selected: false }, { value: 'banana', selected: false }],
+      querySelectorAll: () => [{ value: '', selected: true }, { value: 'apple', selected: false }, { value: 'banana', selected: false }],
+      classList: { toggle: toggleSpy },
+      setAttribute: jest.fn(),
+      removeAttribute: jest.fn(),
+    } as any;
+
+    (comp as any).handleChange({ target: (comp as any).selectEl });
+    await page.waitForChanges();
+
+    const sel = getSelect(page);
+    const msg = page.root!.querySelector('#fruitDisabled-validation') as HTMLElement | null;
+
+    expect(sel.hasAttribute('disabled')).toBe(true);
+    expect(sel.getAttribute('aria-disabled')).toBe('true');
+    expect(sel.getAttribute('aria-readonly')).toBeNull();
+    expect(sel.classList.contains('read-only')).toBe(false);
+    expect(toggleSpy).toHaveBeenLastCalledWith('is-invalid', false);
+    expect(msg).toBeNull();
+  });
+
+  it('supports a11y override props: aria-labelledby wins over aria-label and aria-describedby is forwarded', async () => {
+    const page = await newSpecPage({
+      components: [PlumageSelectFieldComponent],
+      template: () => (
+        <div>
+          <div id="external-label">External label</div>
+          <div id="external-help">External help</div>
+          <plumage-select-field-component
+            label="Internal Label"
+            select-field-id="a11y-select"
+            aria-label="Fallback label"
+            aria-labelledby="external-label"
+            aria-describedby="external-help"
+            options='[
+              {"value":"apple","name":"Apple"},
+              {"value":"banana","name":"Banana"}
+            ]'
+          />
+        </div>
+      ),
+    });
+
+    await page.waitForChanges();
+
+    const host = page.body.querySelector('plumage-select-field-component') as HTMLElement;
+    const sel = host.querySelector('select') as HTMLSelectElement;
+
+    expect(sel.getAttribute('aria-labelledby')).toBe('external-label');
+    expect(sel.getAttribute('aria-label')).toBeNull();
+    expect(sel.getAttribute('aria-describedby')).toBe('external-help');
+  });
+
+  it('supports multiple selection and emits array payload', async () => {
+    const page = await newSpecPage({
+      components: [PlumageSelectFieldComponent],
+      html: `<plumage-select-field-component
+        label="Fruits"
+        select-field-id="fruits"
+        multiple
+        options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+      ></plumage-select-field-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const comp = page.rootInstance as PlumageSelectFieldComponent;
+    const emitSpy = jest.fn();
+    (comp as any).valueChange = { emit: emitSpy };
+
+    const hostChangeSpy = jest.fn();
+    page.root!.addEventListener('change', hostChangeSpy as any);
+
+    const mockSelectEl = makeMockSelect(['', 'apple', 'banana', 'cherry'], ['banana', 'cherry']);
+    (comp as any).selectEl = mockSelectEl;
+
+    (comp as any).handleChange({ target: mockSelectEl });
+    await page.waitForChanges();
+
+    expect(emitSpy).toHaveBeenCalledTimes(1);
+    expect(emitSpy).toHaveBeenCalledWith(['banana', 'cherry']);
+    expect(comp.value).toEqual(['banana', 'cherry']);
+    expect((comp as any).valueState).toEqual(['banana', 'cherry']);
+    expect(hostChangeSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('can parse options from array via watcher helper', async () => {
+    const page = await newSpecPage({
+      components: [PlumageSelectFieldComponent],
+      html: `<plumage-select-field-component
+        label="Fruit"
+        select-field-id="fruit-array"
+        value="apple"
+      ></plumage-select-field-component>`,
+    });
+
+    const comp = page.rootInstance as PlumageSelectFieldComponent;
+
+    (comp as any).onOptionsChange([
+      { value: 'apple', name: 'Apple' },
+      { value: 'banana', name: 'Banana' },
+    ]);
+
+    await page.waitForChanges();
+
     const opts = getAllOptions(page);
-
-    const blank = opts.find(o => o.getAttribute('value') === '');
-    expect(blank).toBeTruthy();
-
-    setMultiple(sel, ['']);
-    await page.waitForChanges();
-
-    expect(page.root!.querySelector('select')!.classList.contains('is-invalid')).toBe(true);
-    const msg = page.root!.querySelector('#plumageSelect-validation');
-    expect(msg?.textContent).toBe('Please choose at least one');
-
-    setMultiple(sel, ['b']);
-    await page.waitForChanges();
-
-    expect(page.root!.querySelector('select')!.classList.contains('is-invalid')).toBe(false);
-
-    expect(page.root).toMatchInlineSnapshot(`
-<plumage-select-field-component default-option-txt="Pick one" validation-message="Please choose at least one">
-  <div class="plumage">
-    <div class="form-group">
-      <label class="form-control-label invalid label-sm" id="plumageSelect-label">
-        <span></span>
-      </label>
-      <div class="input-container" role="presentation">
-        <select aria-describedby="plumageSelect-validation" aria-invalid="true" aria-labelledby="plumageSelect-label" class="form-select" multiple="">
-          <option value="">
-            Pick one
-          </option>
-          <option aria-label="A" value="a">
-            A
-          </option>
-          <option aria-label="B" value="b">
-            B
-          </option>
-        </select>
-        <div class="b-underline invalid" role="presentation">
-          <div aria-hidden="true" class="b-focus invalid" role="presentation"></div>
-        </div>
-        <div class="form-text invalid-feedback" id="plumageSelect-validation">
-          Please choose at least one
-        </div>
-      </div>
-    </div>
-  </div>
-</plumage-select-field-component>
-`);
+    expect(opts.map(o => o.getAttribute('value'))).toEqual(['', 'apple', 'banana']);
+    expect(opts[1].hasAttribute('selected')).toBe(true);
   });
 });

@@ -9,7 +9,6 @@ const createWithSwitchesArray = async (switchesArray: any[], extraHtml = '') => 
     html: `<toggle-switch-component switches="true" ${extraHtml}></toggle-switch-component>`,
   });
 
-  // Use the component's watcher entrypoint (keeps intent explicit)
   (page.rootInstance as any).syncSwitchesArray(switchesArray);
   await page.waitForChanges();
   return page;
@@ -30,7 +29,6 @@ describe('toggle-switch-component', () => {
 
     await page.waitForChanges();
 
-    // Snapshot covers the rendered "Enabled" toggle text when checked=true.
     expect(page.root).toMatchSnapshot();
   });
 
@@ -77,12 +75,9 @@ describe('toggle-switch-component', () => {
     const input = page.root!.querySelector('input[type="checkbox"]') as HTMLInputElement;
     expect(input).toBeTruthy();
 
-    // role="switch" + aria-checked/aria-disabled as strings
     expect(input.getAttribute('role')).toBe('switch');
     expect(input.getAttribute('aria-checked')).toBe('false');
     expect(input.getAttribute('aria-disabled')).toBe('true');
-
-    // Native disabled should also be applied
     expect(input.disabled).toBe(true);
   });
 
@@ -103,6 +98,42 @@ describe('toggle-switch-component', () => {
     const error = page.root!.querySelector('.invalid-feedback') as HTMLElement | null;
     expect(error).toBeTruthy();
     expect(error!.textContent!.trim()).toBe('Required field.');
+
+    const input = page.root!.querySelector('input[type="checkbox"]') as HTMLInputElement;
+    expect(input.classList.contains('is-invalid')).toBe(true);
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(input.getAttribute('aria-required')).toBe('true');
+    expect(input.getAttribute('aria-describedby')).toBe('val-toggle-validation');
+  });
+
+  it('hides required/invalid/message semantics when single switch is disabled', async () => {
+    const page = await newSpecPage({
+      components: [ToggleSwitchComponent],
+      html: `<toggle-switch-component
+              input-id="disabled-val-toggle"
+              disabled="true"
+              required="true"
+              validation="true"
+              label-txt="Terms"
+              validation-message="Required field.">
+            </toggle-switch-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const input = page.root!.querySelector('input[type="checkbox"]') as HTMLInputElement;
+    const label = page.root!.querySelector('label') as HTMLLabelElement;
+    const error = page.root!.querySelector('.invalid-feedback');
+
+    expect(input.disabled).toBe(true);
+    expect(input.required).toBe(false);
+    expect(input.classList.contains('is-invalid')).toBe(false);
+    expect(input.getAttribute('aria-required')).toBeNull();
+    expect(input.getAttribute('aria-invalid')).toBeNull();
+    expect(input.getAttribute('aria-describedby')).toBeNull();
+
+    expect(label.querySelector('.required')).toBeNull();
+    expect(error).toBeNull();
   });
 
   it('sets keyboardFocused true on Tab press (document listener)', async () => {
@@ -152,14 +183,9 @@ describe('toggle-switch-component', () => {
 
     await page.waitForChanges();
 
-    // Default = Bootstrap 5 switch
     const wrapper = page.root!.querySelector('.form-check.form-switch') as HTMLElement;
     expect(wrapper).toBeTruthy();
-
-    // Inline uses BS5 class
     expect(wrapper.classList.contains('form-check-inline')).toBe(true);
-
-    // Default path uses ts-size-* mapping for size (not the old custom-control-lg)
     expect(wrapper.classList.contains('ts-size-lg')).toBe(true);
     expect(wrapper.classList.contains('custom-control-lg')).toBe(false);
   });
@@ -178,7 +204,6 @@ describe('toggle-switch-component', () => {
 
     await page.waitForChanges();
 
-    // Custom = your legacy/custom classes
     const wrapper = page.root!.querySelector('.custom-control.custom-switch') as HTMLElement;
     expect(wrapper).toBeTruthy();
     expect(wrapper.classList.contains('custom-control-lg')).toBe(true);
@@ -196,7 +221,7 @@ describe('toggle-switch-component', () => {
     page.win.addEventListener('checkedChanged', spy);
 
     const inputs = page.root!.querySelectorAll('input[type="checkbox"]');
-    inputs.forEach((input) => input.dispatchEvent(new Event('change')));
+    inputs.forEach(input => input.dispatchEvent(new Event('change')));
     await page.waitForChanges();
 
     expect(spy).toHaveBeenCalledTimes(3);
@@ -257,7 +282,7 @@ describe('toggle-switch-component', () => {
         { id: 'one', label: 'One', checked: false, required: true, validation: true, validationMessage: 'One required.' },
         { id: 'two', label: 'Two', checked: true, required: false, validation: false },
       ],
-      `input-id="group-a" inline="true"`,
+      `input-id="group-a" inline="true" custom-switch="true"`,
     );
 
     const group = page.root!.querySelector('#group-a[role="group"]') as HTMLElement;
@@ -269,5 +294,83 @@ describe('toggle-switch-component', () => {
     const inlineErrors = page.root!.querySelector('#group-a-validation.ts-inline.invalid-feedback') as HTMLElement;
     expect(inlineErrors).toBeTruthy();
     expect(inlineErrors.textContent).toContain('One required.');
+  });
+
+  it('multi-switch item hides required/invalid/message semantics when item is disabled', async () => {
+    const page = await createWithSwitchesArray(
+      [
+        {
+          id: 'one',
+          label: 'One',
+          checked: false,
+          disabled: true,
+          required: true,
+          validation: true,
+          validationMessage: 'One required.',
+        },
+      ],
+      `input-id="group-disabled-item" custom-switch="true"`,
+    );
+
+    const input = page.root!.querySelector('#group-disabled-item_option_one') as HTMLInputElement;
+    const label = page.root!.querySelector(`label[for="group-disabled-item_option_one"]`) as HTMLLabelElement;
+    const error = page.root!.querySelector('#group-disabled-item_option_one-validation');
+
+    expect(input).toBeTruthy();
+    expect(input.disabled).toBe(true);
+    expect(input.required).toBe(false);
+    expect(input.classList.contains('is-invalid')).toBe(false);
+    expect(input.getAttribute('aria-required')).toBeNull();
+    expect(input.getAttribute('aria-invalid')).toBeNull();
+    expect(input.getAttribute('aria-describedby')).toBeNull();
+
+    expect(label.classList.contains('invalid')).toBe(false);
+    expect(label.querySelector('.required')).toBeNull();
+    expect(error).toBeNull();
+  });
+
+  it('multi-switch group does not expose group invalid state when all invalid items are disabled', async () => {
+    const page = await createWithSwitchesArray(
+      [
+        {
+          id: 'one',
+          label: 'One',
+          checked: false,
+          disabled: true,
+          required: true,
+          validation: true,
+          validationMessage: 'One required.',
+        },
+        {
+          id: 'two',
+          label: 'Two',
+          checked: true,
+          disabled: false,
+          required: false,
+          validation: false,
+        },
+      ],
+      `input-id="group-disabled" inline="true" custom-switch="true"`,
+    );
+
+    const group = page.root!.querySelector('#group-disabled[role="group"]') as HTMLElement;
+    const inlineErrors = page.root!.querySelector('#group-disabled-validation.ts-inline.invalid-feedback');
+
+    expect(group).toBeTruthy();
+    expect(group.getAttribute('aria-invalid')).toBeNull();
+    expect(group.getAttribute('aria-describedby')).toBeNull();
+    expect(inlineErrors).toBeNull();
+  });
+
+  it('single custom switch uses aria-label fallback when labelTxt is empty', async () => {
+    const page = await newSpecPage({
+      components: [ToggleSwitchComponent],
+      html: `<toggle-switch-component custom-switch="true" input-id="aria-fallback" aria-label="Airplane mode"></toggle-switch-component>`,
+    });
+
+    await page.waitForChanges();
+
+    const input = page.root!.querySelector('input[type="checkbox"]') as HTMLInputElement;
+    expect(input.getAttribute('aria-label')).toBe('Airplane mode');
   });
 });

@@ -72,7 +72,7 @@ $radius: 0.25rem;
     display: flex;
 
     .input-group {
-      margin: 0 0.9rem;
+      margin: 0;
     }
   }
 
@@ -200,7 +200,7 @@ $radius: 0.25rem;
 
     > .form-control {
       width: 135px;
-      padding: 0.5rem 0 0.5rem 0 !important;
+      padding: 0.5rem 0 0.5rem 0.5rem !important;
       height: 2.5rem !important;
     }
   }
@@ -352,6 +352,10 @@ $radius: 0.25rem;
       color: $text;
       outline: 0;
       box-shadow: none;
+    }
+
+    &.read-only {
+      cursor: not-allowed;
     }
   }
 

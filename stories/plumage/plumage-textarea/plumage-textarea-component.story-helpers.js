@@ -58,6 +58,38 @@ export const buildDocsHtml = args => {
   return attrStr ? `<${TAG} ${attrStr}></${TAG}>` : `<${TAG}></${TAG}>`;
 };
 
+export const buildDocsHtmlExternalValue = () => `
+<div>
+  <button type="button" id="load-draft">Load Draft</button>
+  <button type="button" id="load-api-response">Load API Response</button>
+  <button type="button" id="clear-textarea">Clear</button>
+
+  <${TAG}
+    label="Message"
+    label-size="sm"
+    input-id="message-external-value"
+    placeholder="Load prefilled content"
+    rows="5"
+  ></${TAG}>
+</div>
+
+<script>
+  const host = document.querySelector('${TAG}');
+
+  document.querySelector('#load-draft').addEventListener('click', () => {
+    host.value = 'Hello team,\\n\\nHere is the latest draft message loaded from an outside source.\\n\\nThanks.';
+  });
+
+  document.querySelector('#load-api-response').addEventListener('click', () => {
+    host.value = 'This Plumage textarea was populated from preloaded data or an API response.';
+  });
+
+  document.querySelector('#clear-textarea').addEventListener('click', () => {
+    host.value = '';
+  });
+</script>
+`;
+
 export const boolAttr = (name, on) => (on ? ` ${name}` : '');
 
 export const attr = (name, val) => {

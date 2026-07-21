@@ -1,3 +1,5 @@
+// File: stories/plumage/plumage-autocomplete-multiple-selections/plumage-autocomplete-multiple-selections.story-helpers.js
+
 export const TAG = 'plumage-autocomplete-multiple-selections-component';
 
 export const DocsWrapStyles = () => {
@@ -62,7 +64,7 @@ export const buildDocsComponentHtml = (args) =>
     ['label', args.label],
     ['placeholder', args.placeholder],
 
-    ['value', Array.isArray(args.value) ? args.value.join(', ') : args.value],
+    ['value', Array.isArray(args.value) ? JSON.stringify(args.value) : args.value],
 
     ['form-layout', args.formLayout],
     ['label-align', args.labelAlign],
@@ -81,6 +83,7 @@ export const buildDocsComponentHtml = (args) =>
     ['error', args.error],
     ['error-message', args.errorMessage],
     ['disabled', args.disabled],
+    ['read-only', args.readOnly],
     ['label-hidden', args.labelHidden],
     ['dev-mode', args.devMode],
 
@@ -109,6 +112,74 @@ export const buildDocsComponentHtml = (args) =>
   ])}
 ></${TAG}>
 `);
+
+export const buildDocsHtmlControlledValue = () =>
+  wrapDocsHtml(
+    normalize(`
+<div style="max-width:760px; display:grid; gap:12px;">
+  <div id="plumage-acms-controlled-state" style="opacity:.75;">
+    External controlled value: ["Apple","Mango"]
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap; gap:8px;">
+    <button type="button" id="plumage-acms-set-apple-mango">Set: ["Apple","Mango"]</button>
+    <button type="button" id="plumage-acms-set-citrus">Set: ["Orange","Lemon","Lime"]</button>
+    <button type="button" id="plumage-acms-clear">Clear []</button>
+    <button type="button" id="plumage-acms-sanitize">Set: sanitization demo</button>
+  </div>
+
+  <${TAG}
+    id="acms_controlled"
+    input-id="acms-controlled"
+    label="Controlled selections"
+  ></${TAG}>
+
+  <script>
+    let controlledValue = ['Apple', 'Mango'];
+
+    const host = document.querySelector('${TAG}');
+    const state = document.querySelector('#plumage-acms-controlled-state');
+
+    const renderState = (source) => {
+      state.textContent = 'External controlled value (' + source + '): ' + JSON.stringify(controlledValue);
+    };
+
+    const applyValue = (next, source) => {
+      controlledValue = Array.isArray(next) ? next.slice() : [];
+      host.value = controlledValue.slice();
+      renderState(source);
+    };
+
+    document.querySelector('#plumage-acms-set-apple-mango').addEventListener('click', () => {
+      applyValue(['Apple', 'Mango'], 'button click');
+    });
+
+    document.querySelector('#plumage-acms-set-citrus').addEventListener('click', () => {
+      applyValue(['Orange', 'Lemon', 'Lime'], 'button click');
+    });
+
+    document.querySelector('#plumage-acms-clear').addEventListener('click', () => {
+      applyValue([], 'button click');
+    });
+
+    document.querySelector('#plumage-acms-sanitize').addEventListener('click', () => {
+      applyValue(['  <b>Apple</b>  ', 'MANGO', 'mango', '\\u0007Bad\\u0000', ''], 'button click');
+    });
+
+    host.addEventListener('multiSelectChange', (e) => {
+      const next = Array.isArray(e.detail) ? e.detail : Array.isArray(e.detail?.value) ? e.detail.value : [];
+      applyValue(next, 'multiSelectChange event');
+    });
+
+    host.addEventListener('clear', () => {
+      applyValue([], 'clear event');
+    });
+
+    applyValue(controlledValue, 'initial value');
+  </script>
+</div>
+`),
+  );
 
 export const buildDocsHtmlMany = (blocks) =>
   normalize(`
@@ -227,6 +298,7 @@ export const renderComponent = (args, { idOverride } = {}) => {
   setAttr(el, 'error-message', args.errorMessage);
 
   args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
+  args.readOnly ? el.setAttribute('read-only', '') : el.removeAttribute('read-only');
 
   args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
   setAttr(el, 'clear-icon', args.clearIcon);
@@ -300,6 +372,7 @@ const readA11ySnapshotA11y = (el) => {
     'aria-required',
     'aria-invalid',
     'aria-disabled',
+    'aria-readonly',
     'aria-describedby',
     'aria-labelledby',
     'aria-label',

@@ -119,6 +119,9 @@ export class InputGroupComponent {
   @Watch('value')
   onValuePropChange(newVal: string) {
     this.valueState = newVal ?? '';
+    if (this.inputEl && this.inputEl.value !== this.valueState) {
+      this.inputEl.value = this.valueState;
+    }
   }
 
   @Watch('inputId')
@@ -287,20 +290,20 @@ export class InputGroupComponent {
   private labelClasses(labelColClass?: string) {
     return [
       'form-control-label',
-      this.showAsRequired() ? 'required' : '',
+      this.readOnly || this.disabled ? '' : this.showAsRequired() ? 'required' : '',
       this.labelSize === 'xs' ? 'label-xs' : this.labelSize === 'sm' ? 'label-sm' : this.labelSize === 'lg' ? 'label-lg' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.labelHidden ? 'sr-only' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.isInline() ? 'col-form-label' : '',
-      this.isInvalidNow() ? 'invalid' : '',
+      this.readOnly || this.disabled ? '' : this.isInvalidNow() ? 'invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
   }
 
   private inputClasses() {
-    return ['form-control', this.isInvalidNow() ? 'is-invalid' : ''].filter(Boolean).join(' ');
+    return ['form-control', this.disabled ? 'disabled' : this.readOnly ? 'read-only' : this.isInvalidNow() ? 'is-invalid' : ''].filter(Boolean).join(' ');
   }
 
   private groupSizeClass() {
@@ -323,8 +326,8 @@ export class InputGroupComponent {
 
     return (
       <label id={this.ids.label} class={this.labelClasses(labelColClass)} htmlFor={this.ids.input || undefined}>
-        <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
-        {this.required ? <span class="required">*</span> : null}
+        <span class={this.readOnly || this.disabled ? '' : this.showAsRequired() ? 'required' : ''}>{text}</span>
+        {this.readOnly || this.disabled ? null : this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
@@ -379,7 +382,7 @@ export class InputGroupComponent {
 
     if (icon) {
       return (
-        <span class={`input-group-text ${invalidClass}`.trim()} id={id}>
+        <span class={`input-group-text ${this.readOnly || this.disabled ? '' : invalidClass}`.trim()} id={id}>
           <i class={icon} aria-hidden="true" />
         </span>
       );
@@ -389,7 +392,7 @@ export class InputGroupComponent {
       return null;
     }
 
-    if (isButton) {
+    if (this.readOnly ? null : isButton) {
       return (
         <span class={side === 'prepend' ? 'prepend-btn' : 'append-btn'} id={id}>
           <button
@@ -397,7 +400,7 @@ export class InputGroupComponent {
             type={buttonType}
             class={this.getNativeButtonClass(buttonVariant)}
             aria-label={ariaLabel || undefined}
-            disabled={this.disabled || this.readOnly}
+            disabled={this.disabled}
             onClick={ev => this.handleAffixClick(side, ev)}
           >
             {text}
@@ -407,7 +410,7 @@ export class InputGroupComponent {
     }
 
     return (
-      <span class={`input-group-text ${invalidClass}`.trim()} id={id}>
+      <span class={`input-group-text ${this.readOnly || this.disabled ? '' : invalidClass}`.trim()} id={id}>
         {text}
       </span>
     );
@@ -428,7 +431,7 @@ export class InputGroupComponent {
           class={{
             'input-group': true,
             [sizeClass]: !!sizeClass,
-            'is-invalid': this.isInvalidNow(),
+            'is-invalid': !this.readOnly && !this.disabled && this.isInvalidNow(),
           }}
         >
           {this.prependField ? this.renderAffix('prepend') : null}
@@ -443,10 +446,12 @@ export class InputGroupComponent {
             placeholder={placeholder}
             id={this.ids.input || undefined}
             name={names || undefined}
-            value={this.value}
+            value={this.valueState || ''}
             aria-labelledby={this.ids.label}
             aria-describedby={describedBy || undefined}
             aria-invalid={this.isInvalidNow() ? 'true' : undefined}
+            aria-disabled={this.disabled ? 'true' : undefined}
+            aria-readonly={this.readOnly ? 'true' : undefined}
             disabled={this.disabled}
             required={this.required}
             readOnly={this.readOnly}
@@ -457,7 +462,7 @@ export class InputGroupComponent {
           {this.appendField ? this.renderAffix('append') : null}
         </div>
 
-        {this.renderValidation()}
+        {this.readOnly || this.disabled ? null : this.renderValidation()}
       </Fragment>
     );
   }

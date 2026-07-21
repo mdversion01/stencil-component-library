@@ -1,33 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`date-range-picker-component input-group mode renders and matches the initial snapshot 1`] = `
-<date-range-picker-component>
+exports[`date-range-time-picker-component (input-group mode) renders and matches snapshot (input-group mode) 1`] = `
+<date-range-time-picker-component value="">
   <div class="date-picker">
     <div class="dropdown-wrapper">
       <div class="form-group form-input-group-basic">
-        <label class="form-control-label" for="drp" id="drp-19-4fzz-label">
+        <label class="form-control-label" for="date-range-time" id="date-range-time-9-5ovb-label">
           <span>
-            Date Range Picker
+            Date and Time Picker
           </span>
         </label>
         <div>
-          <div aria-label="Date picker group" class="input-group" role="group">
+          <div aria-label="Date and time picker group" class="input-group" role="group">
             <div class="drp-input-field">
-              <input aria-describedby="drp-19-4fzz-dialog-desc" aria-labelledby="drp-19-4fzz-label" class="form-control" id="drp" placeholder="YYYY-MM-DD - YYYY-MM-DD" type="text" value="">
+              <input aria-describedby="date-range-time-9-5ovb-dialog-desc" aria-labelledby="date-range-time-9-5ovb-label" autocomplete="off" class="form-control" id="date-range-time" placeholder="YYYY-MM-DD HH:MM - YYYY-MM-DD HH:MM" type="text" value="">
             </div>
-            <button aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text" type="button">
-              <i aria-hidden="true" class="fa-calendar-alt fas"></i>
-            </button>
+            <div class="input-group-append">
+              <button aria-controls="date-range-time-9-5ovb-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text" type="button">
+                <i aria-hidden="true" class="fa-calendar-alt fas"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="dropdown">
-        <div aria-describedby="drp-19-4fzz-dialog-desc" aria-labelledby="drp-19-4fzz-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
-          <div class="sr-only visually-hidden" id="drp-19-4fzz-dialog-title">
-            Date Range Picker
+      <div class="dropdown" id="date-range-time-9-5ovb-dropdown">
+        <div aria-describedby="date-range-time-9-5ovb-dialog-desc" aria-labelledby="date-range-time-9-5ovb-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
+          <div class="sr-only visually-hidden" id="date-range-time-9-5ovb-dialog-title">
+            Date and Time Picker
           </div>
-          <div class="sr-only visually-hidden" id="drp-19-4fzz-dialog-desc">
-            Select a start date and an end date. Use arrow keys to navigate days. Press Enter to select.
+          <div class="sr-only visually-hidden" id="date-range-time-9-5ovb-dialog-desc">
+            Select a start date and end date. Use arrow keys to navigate days. Press Enter to select. Enter times in HH:MM.
           </div>
           <div class="date-picker">
             <div class="range-picker-wrapper">
@@ -38,10 +40,10 @@ exports[`date-range-picker-component input-group mode renders and matches the in
                   </svg>
                 </button>
                 <div class="selectors">
-                  <label class="sr-only visually-hidden" for="drp-19-4fzz-months">
+                  <label class="sr-only visually-hidden" for="date-range-time-9-5ovb-months" id="date-range-time-9-5ovb-month-label">
                     Select month
                   </label>
-                  <select aria-label="Select month" class="form-control form-select months select-sm" id="drp-19-4fzz-months">
+                  <select aria-labelledby="date-range-time-9-5ovb-month-label" class="form-control form-select months select-sm" id="date-range-time-9-5ovb-months">
                     <option value="0">
                       January
                     </option>
@@ -79,10 +81,10 @@ exports[`date-range-picker-component input-group mode renders and matches the in
                       December
                     </option>
                   </select>
-                  <label class="sr-only visually-hidden" for="drp-19-4fzz-year">
+                  <label class="sr-only visually-hidden" for="date-range-time-9-5ovb-year" id="date-range-time-9-5ovb-year-label">
                     Select year
                   </label>
-                  <select aria-label="Select year" class="form-control form-select select-sm years" id="drp-19-4fzz-year">
+                  <select aria-labelledby="date-range-time-9-5ovb-year-label" class="form-control form-select select-sm years" id="date-range-time-9-5ovb-year">
                     <option value="2014">
                       2014
                     </option>
@@ -155,14 +157,14 @@ exports[`date-range-picker-component input-group mode renders and matches the in
                 </div>
                 <button aria-label="Next month" class="btn-outline-secondary range-picker-nav-btn" type="button">
                   <svg aria-hidden="true" focusable="false" viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s-32.8-12.5 45.3 0l160 160z"></path>
+                    <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path>
                   </svg>
                 </button>
               </div>
               <div class="range-picker">
                 <div aria-label="Calendars" class="calendar-wrapper" tabindex="0">
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-19-4fzz-grid-start-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="date-range-time-9-5ovb-grid-start-caption">
                       July 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -188,7 +190,7 @@ exports[`date-range-picker-component input-group mode renders and matches the in
                         Sat
                       </small>
                     </div>
-                    <div aria-labelledby="drp-19-4fzz-grid-start-caption" class="calendar-grid" id="drp-19-4fzz-grid-start" role="grid">
+                    <div aria-label="Calendar for July 2026" aria-labelledby="date-range-time-9-5ovb-grid-start-caption" aria-roledescription="Calendar" class="calendar-grid" id="date-range-time-9-5ovb-grid-start" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="June 28, 2026" class="calendar-grid-item previous-month-day" data-date="2026-06-28" data-day="28" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
@@ -414,7 +416,7 @@ exports[`date-range-picker-component input-group mode renders and matches the in
                     </div>
                   </div>
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-19-4fzz-grid-end-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="date-range-time-9-5ovb-grid-end-caption">
                       August 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -440,7 +442,7 @@ exports[`date-range-picker-component input-group mode renders and matches the in
                         Sat
                       </small>
                     </div>
-                    <div aria-labelledby="drp-19-4fzz-grid-end-caption" class="calendar-grid" id="drp-19-4fzz-grid-end" role="grid">
+                    <div aria-label="Calendar for August 2026" aria-labelledby="date-range-time-9-5ovb-grid-end-caption" aria-roledescription="Calendar" class="calendar-grid" id="date-range-time-9-5ovb-grid-end" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="July 26, 2026" class="calendar-grid-item previous-month-day" data-date="2026-07-26" data-day="26" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
@@ -671,20 +673,32 @@ exports[`date-range-picker-component input-group mode renders and matches the in
                     Use cursor keys to navigate calendar dates
                   </div>
                 </footer>
-                <div aria-labelledby="drp-19-4fzz-date-ranges" class="date-range-display" role="region" tabindex="0">
-                  <div class="date-ranges" id="drp-19-4fzz-date-ranges">
+                <div aria-labelledby="date-range-time-9-5ovb-date-ranges-title" class="date-range-display" role="region" tabindex="0">
+                  <div class="sr-only visually-hidden" id="date-range-time-9-5ovb-date-ranges-title">
+                    Selected date and time range
+                  </div>
+                  <div class="date-ranges">
                     <span class="start-end-ranges">
                       <span class="start-date">
                         N/A
                       </span>
+                      <label class="sr-only visually-hidden" for="date-range-time-9-5ovb-start-time" id="date-range-time-9-5ovb-start-time-label">
+                        Start time
+                      </label>
+                      <input aria-describedby="date-range-time-9-5ovb-warning" aria-labelledby="date-range-time-9-5ovb-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" id="date-range-time-9-5ovb-start-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
                       <span class="to-spacing">
                         -
                       </span>
                       <span class="end-date">
                         N/A
                       </span>
+                      <label class="sr-only visually-hidden" for="date-range-time-9-5ovb-end-time" id="date-range-time-9-5ovb-end-time-label">
+                        End time
+                      </label>
+                      <input aria-describedby="date-range-time-9-5ovb-warning" aria-labelledby="date-range-time-9-5ovb-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="date-range-time-9-5ovb-end-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
                     </span>
                   </div>
+                  <div aria-live="assertive" class="warning-message" id="date-range-time-9-5ovb-warning"></div>
                 </div>
               </div>
               <div class="ok-button">
@@ -698,11 +712,11 @@ exports[`date-range-picker-component input-group mode renders and matches the in
       </div>
     </div>
   </div>
-</date-range-picker-component>
+</date-range-time-picker-component>
 `;
 
-exports[`date-range-picker-component rangePicker mode renders and matches the initial snapshot 1`] = `
-<date-range-picker-component range-picker="true">
+exports[`date-range-time-picker-component (rangeTimePicker mode) renders and matches snapshot (initial) 1`] = `
+<date-range-time-picker-component range-time-picker="true">
   <div class="date-picker">
     <div class="range-picker-wrapper">
       <div aria-label="Navigation controls" class="mb-1 range-picker-nav">
@@ -712,10 +726,10 @@ exports[`date-range-picker-component rangePicker mode renders and matches the in
           </svg>
         </button>
         <div class="selectors">
-          <label class="sr-only visually-hidden" for="drp-5-4fzz-months">
+          <label class="sr-only visually-hidden" for="date-range-time-1-hgru-months" id="date-range-time-1-hgru-month-label">
             Select month
           </label>
-          <select aria-label="Select month" class="form-control form-select months select-sm" id="drp-5-4fzz-months">
+          <select aria-labelledby="date-range-time-1-hgru-month-label" class="form-control form-select months select-sm" id="date-range-time-1-hgru-months">
             <option value="0">
               January
             </option>
@@ -753,10 +767,10 @@ exports[`date-range-picker-component rangePicker mode renders and matches the in
               December
             </option>
           </select>
-          <label class="sr-only visually-hidden" for="drp-5-4fzz-year">
+          <label class="sr-only visually-hidden" for="date-range-time-1-hgru-year" id="date-range-time-1-hgru-year-label">
             Select year
           </label>
-          <select aria-label="Select year" class="form-control form-select select-sm years" id="drp-5-4fzz-year">
+          <select aria-labelledby="date-range-time-1-hgru-year-label" class="form-control form-select select-sm years" id="date-range-time-1-hgru-year">
             <option value="2014">
               2014
             </option>
@@ -829,14 +843,14 @@ exports[`date-range-picker-component rangePicker mode renders and matches the in
         </div>
         <button aria-label="Next month" class="btn-outline-secondary range-picker-nav-btn" type="button">
           <svg aria-hidden="true" focusable="false" viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg">
-            <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s-32.8-12.5 45.3 0l160 160z"></path>
+            <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path>
           </svg>
         </button>
       </div>
       <div class="range-picker">
         <div aria-label="Calendars" class="calendar-wrapper" tabindex="0">
           <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-            <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-5-4fzz-grid-start-caption">
+            <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="date-range-time-1-hgru-grid-start-caption">
               July 2026
             </div>
             <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -862,7 +876,7 @@ exports[`date-range-picker-component rangePicker mode renders and matches the in
                 Sat
               </small>
             </div>
-            <div aria-labelledby="drp-5-4fzz-grid-start-caption" class="calendar-grid" id="drp-5-4fzz-grid-start" role="grid">
+            <div aria-label="Calendar for July 2026" aria-labelledby="date-range-time-1-hgru-grid-start-caption" aria-roledescription="Calendar" class="calendar-grid" id="date-range-time-1-hgru-grid-start" role="grid">
               <div class="calendar-grid-row" role="row" style="display: contents;">
                 <div aria-label="June 28, 2026" class="calendar-grid-item previous-month-day" data-date="2026-06-28" data-day="28" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                   <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
@@ -1088,7 +1102,7 @@ exports[`date-range-picker-component rangePicker mode renders and matches the in
             </div>
           </div>
           <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-            <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="drp-5-4fzz-grid-end-caption">
+            <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="date-range-time-1-hgru-grid-end-caption">
               August 2026
             </div>
             <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -1114,7 +1128,7 @@ exports[`date-range-picker-component rangePicker mode renders and matches the in
                 Sat
               </small>
             </div>
-            <div aria-labelledby="drp-5-4fzz-grid-end-caption" class="calendar-grid" id="drp-5-4fzz-grid-end" role="grid">
+            <div aria-label="Calendar for August 2026" aria-labelledby="date-range-time-1-hgru-grid-end-caption" aria-roledescription="Calendar" class="calendar-grid" id="date-range-time-1-hgru-grid-end" role="grid">
               <div class="calendar-grid-row" role="row" style="display: contents;">
                 <div aria-label="July 26, 2026" class="calendar-grid-item previous-month-day" data-date="2026-07-26" data-day="26" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                   <span class="border-0 btn btn-outline-light rounded-circle text-muted text-nowrap">
@@ -1345,23 +1359,35 @@ exports[`date-range-picker-component rangePicker mode renders and matches the in
             Use cursor keys to navigate calendar dates
           </div>
         </footer>
-        <div aria-labelledby="drp-5-4fzz-date-ranges" class="date-range-display" role="region" tabindex="0">
-          <div class="date-ranges" id="drp-5-4fzz-date-ranges">
+        <div aria-labelledby="date-range-time-1-hgru-date-ranges-title" class="date-range-display" role="region" tabindex="0">
+          <div class="sr-only visually-hidden" id="date-range-time-1-hgru-date-ranges-title">
+            Selected date and time range
+          </div>
+          <div class="date-ranges">
             <span class="start-end-ranges">
               <span class="start-date">
                 N/A
               </span>
+              <label class="sr-only visually-hidden" for="date-range-time-1-hgru-start-time" id="date-range-time-1-hgru-start-time-label">
+                Start time
+              </label>
+              <input aria-describedby="date-range-time-1-hgru-warning" aria-labelledby="date-range-time-1-hgru-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" id="date-range-time-1-hgru-start-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
               <span class="to-spacing">
                 -
               </span>
               <span class="end-date">
                 N/A
               </span>
+              <label class="sr-only visually-hidden" for="date-range-time-1-hgru-end-time" id="date-range-time-1-hgru-end-time-label">
+                End time
+              </label>
+              <input aria-describedby="date-range-time-1-hgru-warning" aria-labelledby="date-range-time-1-hgru-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="date-range-time-1-hgru-end-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
             </span>
           </div>
+          <div aria-live="assertive" class="warning-message" id="date-range-time-1-hgru-warning"></div>
         </div>
       </div>
     </div>
   </div>
-</date-range-picker-component>
+</date-range-time-picker-component>
 `;

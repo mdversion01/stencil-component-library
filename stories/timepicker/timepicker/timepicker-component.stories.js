@@ -1,3 +1,5 @@
+// File: src/stories/timepicker-component.stories.js
+
 import DocsPage from './timepicker-component.docs.mdx';
 import {
   DocsWrapStyles,
@@ -7,11 +9,41 @@ import {
   normalizeHtml,
 } from './timepicker-component.story-helpers.js';
 
+const baseArgs = {
+  wrapperWidth: 260,
+  ariaLabel: 'Time Picker',
+  ariaLabelledby: '',
+  ariaDescribedby: '',
+  showLabel: false,
+  labelText: 'Enter Time',
+  inputId: 'time-input',
+  inputName: 'time',
+  value: '',
+  inputWidth: null,
+  isTwentyFourHourFormat: true,
+  twelveHourOnly: false,
+  twentyFourHourOnly: false,
+  hideSeconds: false,
+  hideTimepickerBtn: false,
+  required: false,
+  disableTimepicker: false,
+  readOnly: false,
+  isValid: true,
+  validation: false,
+  validationMessage: '',
+  timeValidation: true,
+  timeInputThrottleMs: 50,
+};
+
+const docsSource = {
+  transform: (_code, ctx) => buildDocsHtml(ctx.args),
+};
+
 export default {
-  title: 'Components/Timepicker/Timepicker',
+  title: 'Form/Timepicker/Timepicker',
   tags: ['autodocs'],
   decorators: [
-    (Story) => {
+    Story => {
       const wrap = document.createElement('div');
       wrap.appendChild(DocsWrapStyles());
 
@@ -38,60 +70,68 @@ export default {
       page: DocsPage,
       description: {
         component: `
-The **Timepicker Component** is a time selection input field that supports manual entry and an accessible popover “spinner” picker.
+The **Timepicker Component** is a time input with manual entry and an accessible popover spinner picker.
 
 ## Controlled value + events
-This component supports a controlled (or semi-controlled) \`value\` prop:
+This component supports a mutable \`value\` prop:
 
-- \`value\` (mutable): when set (non-empty), the component parses/displays it.
-- On **commit-like actions** (blur/enter/spinner/clear/format toggle), the component updates \`value\` and emits events.
+- \`value\`: when non-empty, the component parses and displays it
+- commit-like actions update \`value\` and emit events
 
-### \`timeChange\` (commit)
+### \`timeChange\`
 Emitted on committed changes:
 - \`source\`: \`commit\` | \`spinner\` | \`clear\` | \`format\` | \`external\` | \`inputName\` | \`inputId\` | \`constraints\` | \`hideSeconds\`
-- \`value\`: formatted value
+- \`value\`
 - \`parts\`: { hour, minute, second, ampm }
 - \`isValid\`
 
-### \`timeInput\` (typing)
-Emitted on keystrokes (throttled via \`time-input-throttle-ms\`):
-- \`raw\`: raw input string
-- \`normalized\`: normalized-for-typing string (does **not** pad segments)
+### \`timeInput\`
+Emitted during typing, throttled via \`time-input-throttle-ms\`:
+- \`raw\`
+- \`normalized\`
 - \`caretStart\` / \`caretEnd\`
-- \`inputType\` (from InputEvent.inputType)
-- \`isValid\`, \`reason\` (pattern/range) and optional \`parts\` (only when complete+valid)
+- \`inputType\`
+- \`isValid\`
+- optional \`reason\` and \`parts\`
 
-## Accessibility + derived IDs (recommended)
+## Accessibility + derived IDs
 This component derives stable IDs from \`input-id\`:
 
-- **Label id**: \`\${inputId}-label\` (used when \`show-label\` is true)
-- **Popover id**: \`\${inputId}-dropdown\`
-- **Validation message id**: \`\${inputId}-validation\` (present in DOM; shown when \`validation-message\` has content)
-- **Warning message id**: \`\${inputId}-warning\` (present in DOM; shown when time limits are exceeded)
+- label: \`\${inputId}-label\`
+- dropdown: \`\${inputId}-dropdown\`
+- time validation: \`\${inputId}-time-validation\`
+- user validation: \`\${inputId}-validation\`
+- warning: \`\${inputId}-warning\`
 
 ### Accessible name precedence
-- If \`show-label\` is true: the input is labelled by \`\${inputId}-label\`.
-- Otherwise: if \`aria-labelledby\` is provided, it is used.
-- Otherwise: falls back to \`aria-label\`.
+- if \`show-label\` is true, the input uses \`\${inputId}-label\`
+- otherwise, \`aria-labelledby\` is used when provided
+- otherwise, it falls back to \`aria-label\`
 
 ### \`aria-describedby\` composition
-\`aria-describedby\` merges:
-- external ids provided via \`aria-describedby\`
-- \`\${inputId}-validation\` when a validation message exists
-- \`\${inputId}-warning\` when the warning is visible
+The component merges:
+- external ids from \`aria-describedby\`
+- \`\${inputId}-time-validation\` when a time validation message is present
+- \`\${inputId}-validation\` when user validation is active
+- \`\${inputId}-warning\` when the warning is shown
 
-## Keyboard model for the popover/spinners
+## Current UI behavior
+- supports read-only mode
+- supports disabled state via \`disable-timepicker\`
+- supports 12h/24h toggle via \`.toggle-format-btn\`
+- popover includes a close button via \`.close-button\`
+- clear and time icon buttons remove their \`invalid\` class when validation is satisfied
+
+## Keyboard model
 When the popover is open:
 
-- **Tab / Shift+Tab**: focus is trapped within the popover
-- **Escape**: closes the popover and returns focus
-- **Left / Right**: roving focus between parts (Hour → Minute → Second → AM/PM)
-- **Up / Down**: increment/decrement active part
-- **PageUp / PageDown**: increment/decrement by 10
-- **Home / End**: jump to min/max for that part
-- **Enter**: commits the value
+- **Escape** closes the popover and restores focus
+- **Left / Right** move between time parts
+- **Up / Down** increment or decrement the active part
+- **Home / End** move to the first or last enabled part
+- **Enter / Space** interacts with the active part
 
-> Note: 508 compliance also depends on page-level usage: unique \`input-id\` per instance, visible or programmatic labels, and consistent error messaging.
+> Use a unique \`input-id\` per instance for correct a11y wiring.
 `.trim(),
       },
       source: {
@@ -102,24 +142,29 @@ When the popover is open:
     },
   },
   argTypes: {
+    wrapperWidth: {
+      control: { type: 'number', min: 120, step: 10 },
+      description: 'Demo wrapper width (px).',
+      name: 'wrapper-width',
+      table: { category: 'Storybook Only' },
+    },
+
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
-      description: 'Accessible label for the timepicker input. Used when `aria-labelledby` is not provided.',
+      description: 'Accessible label for the input when no visible label or aria-labelledby is used.',
       table: { category: 'Accessibility' },
     },
     ariaLabelledby: {
       control: 'text',
       name: 'aria-labelledby',
-      description:
-        'ID(s) of element(s) that label the timepicker input (space-separated). Takes precedence over aria-label. When show-label is true, the component auto-uses `${inputId}-label`.',
+      description: 'ID(s) of external labeling element(s), space-separated.',
       table: { category: 'Accessibility' },
     },
     ariaDescribedby: {
       control: 'text',
       name: 'aria-describedby',
-      description:
-        'ID(s) of external help/description elements (space-separated). The component may add its own ids when validation/warning are visible.',
+      description: 'External help/description ids. Component may append time-validation, validation, and warning ids.',
       table: { category: 'Accessibility' },
     },
 
@@ -127,38 +172,45 @@ When the popover is open:
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Labeling' },
       name: 'show-label',
-      description: 'Whether to show the label visually. The label is still read by screen readers even if hidden.',
+      description: 'Whether to show the label visually.',
     },
     labelText: {
       control: 'text',
       name: 'label-text',
-      description: 'Text for the label associated with the timepicker input.',
+      description: 'Text for the associated label.',
       table: { category: 'Labeling' },
     },
     required: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Labeling' },
       name: 'required',
-      description: 'Show required indicator (label asterisk) where supported.',
+      description: 'Marks the field as required.',
     },
 
     inputId: {
       control: 'text',
       name: 'input-id',
-      description: 'ID for the timepicker input element. Used for label association and generated ids.',
+      description: 'Base input id used for derived ids.',
       table: { category: 'Input Attributes' },
     },
     inputName: {
       control: 'text',
       name: 'input-name',
-      description: 'Name attribute for the timepicker input element.',
+      description: 'Input name attribute.',
       table: { category: 'Input Attributes' },
+    },
+
+    value: {
+      control: 'text',
+      name: 'value',
+      description: 'Controlled/mutable time value.',
+      table: { category: 'Controlled Value' },
     },
 
     inputWidth: {
       control: { type: 'number', min: 0, step: 1 },
       name: 'input-width',
-      description: 'Custom width for the timepicker input (px). If not set, the input uses its default width.',
+      description: 'Custom input width in px.',
       table: { category: 'Layout & Sizing' },
     },
     size: {
@@ -172,89 +224,82 @@ When the popover is open:
       control: 'boolean',
       table: { defaultValue: { summary: true }, category: 'Format & Options' },
       name: 'is-twenty-four-hour-format',
-      description: 'Initial preference (24h). Component may toggle this internally.',
+      description: 'Current format preference.',
     },
     twelveHourOnly: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Format & Options' },
       name: 'twelve-hour-only',
-      description: 'If true, only allow 12-hour format (overrides is-twenty-four-hour-format).',
+      description: 'Restricts the component to 12-hour format only.',
     },
     twentyFourHourOnly: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Format & Options' },
       name: 'twenty-four-hour-only',
-      description: 'If true, only allow 24-hour format (overrides is-twenty-four-hour-format).',
+      description: 'Restricts the component to 24-hour format only.',
     },
     hideSeconds: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Format & Options' },
       name: 'hide-seconds',
-      description: 'If true, seconds UI is hidden.',
+      description: 'Hides the seconds UI.',
     },
 
     hideTimepickerBtn: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'UI Controls' },
       name: 'hide-timepicker-btn',
-      description: 'If true, hides the button that opens the timepicker dropdown.',
+      description: 'Hides the dropdown trigger button.',
     },
 
     disableTimepicker: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'State' },
       name: 'disable-timepicker',
-      description: 'Disable the entire timepicker (input + buttons + dropdown).',
+      description: 'Disables the entire timepicker.',
+    },
+    readOnly: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'State' },
+      name: 'read-only',
+      description: 'Read-only mode. Hides clear, dropdown trigger, and format toggle controls.',
     },
     isValid: {
       control: 'boolean',
-      table: { defaultValue: { summary: false }, category: 'State' },
+      table: { defaultValue: { summary: true }, category: 'State' },
       name: 'is-valid',
-      description: 'Indicates whether the current input value is valid.',
+      description: 'Current validity state.',
     },
 
     validation: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Validation' },
       name: 'validation',
-      description: 'Apply invalid styling (drives `invalid` / `is-invalid` classes).',
+      description: 'Enables user validation styling/state.',
     },
     validationMessage: {
       control: 'text',
       name: 'validation-message',
-      description: 'Validation message to display below the input. Shown when message is non-empty.',
+      description: 'User validation message.',
       table: { category: 'Validation' },
     },
+    timeValidation: {
+      control: 'boolean',
+      table: { defaultValue: { summary: true }, category: 'Validation' },
+      name: 'time-validation',
+      description: 'Backwards-compatible built-in time validation toggle prop.',
+    },
 
-    wrapperWidth: {
-      control: { type: 'number', min: 120, step: 10 },
-      description: 'Demo wrapper width (px)',
-      name: 'wrapper-width',
-      table: { category: 'Storybook Only' },
+    timeInputThrottleMs: {
+      control: { type: 'number', min: 0, step: 10 },
+      name: 'time-input-throttle-ms',
+      description: 'Throttle window for timeInput events (ms).',
+      table: { category: 'Events' },
     },
   },
 
   args: {
-    wrapperWidth: 260,
-    ariaLabel: 'Time Picker',
-    ariaLabelledby: '',
-    ariaDescribedby: '',
-    disableTimepicker: false,
-    hideSeconds: false,
-    hideTimepickerBtn: false,
-    inputId: 'time-input',
-    inputName: 'time',
-    inputWidth: null,
-    isTwentyFourHourFormat: true,
-    isValid: true,
-    labelText: 'Enter Time',
-    required: false,
-    showLabel: false,
-    size: '',
-    twelveHourOnly: false,
-    twentyFourHourOnly: false,
-    validation: false,
-    validationMessage: '',
+    ...baseArgs,
   },
 };
 
@@ -262,34 +307,15 @@ export const Default = {
   name: 'Default Timepicker',
   render: Template,
   args: {
-    wrapperWidth: 260,
-    ariaLabel: 'Time Picker',
-    ariaLabelledby: '',
-    ariaDescribedby: '',
-    disableTimepicker: false,
-    hideSeconds: false,
-    hideTimepickerBtn: false,
-    inputId: 'time-input',
-    inputName: 'time',
-    inputWidth: null,
-    isTwentyFourHourFormat: true,
-    isValid: true,
-    labelText: 'Enter Time',
-    required: false,
-    showLabel: false,
-    size: '',
-    twelveHourOnly: false,
-    twentyFourHourOnly: false,
-    validation: false,
-    validationMessage: '',
+    ...baseArgs,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Default configuration. With no visible label and no aria-labelledby, the input uses aria-label for its accessible name.',
+        story: 'Default configuration. With no visible label and no aria-labelledby, the input uses aria-label.',
       },
       story: { height: '220px' },
-      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
+      source: docsSource,
     },
   },
 };
@@ -298,15 +324,15 @@ export const Small = {
   name: 'Small Size (no label)',
   render: Template,
   args: {
-    ...Default.args,
+    ...baseArgs,
     wrapperWidth: 210,
     size: 'sm',
   },
   parameters: {
     docs: {
-      description: { story: 'Small size variant (`size="sm"`). No visible label; uses aria-label.' },
+      description: { story: 'Small size variant.' },
       story: { height: '220px' },
-      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
+      source: docsSource,
     },
   },
 };
@@ -315,7 +341,7 @@ export const LargeWithVisibleLabel = {
   name: 'Large Size (with label)',
   render: Template,
   args: {
-    ...Default.args,
+    ...baseArgs,
     wrapperWidth: 320,
     size: 'lg',
     showLabel: true,
@@ -324,10 +350,10 @@ export const LargeWithVisibleLabel = {
   parameters: {
     docs: {
       description: {
-        story: 'Large size (`size="lg"`) with visible label. When `show-label` is true, the component wires aria-labelledby to `${inputId}-label`.',
+        story: 'Large size with visible label. When show-label is true, the component wires aria-labelledby to `${inputId}-label`.',
       },
       story: { height: '240px' },
-      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
+      source: docsSource,
     },
   },
 };
@@ -336,7 +362,7 @@ export const TwentyFourHourOnly = {
   name: '24-Hour Only',
   render: Template,
   args: {
-    ...Default.args,
+    ...baseArgs,
     wrapperWidth: 320,
     twentyFourHourOnly: true,
     twelveHourOnly: false,
@@ -347,10 +373,10 @@ export const TwentyFourHourOnly = {
   parameters: {
     docs: {
       description: {
-        story: 'Configured to only allow 24-hour time input (`twenty-four-hour-only`).',
+        story: 'Configured to only allow 24-hour time input.',
       },
       story: { height: '240px' },
-      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
+      source: docsSource,
     },
   },
 };
@@ -359,7 +385,7 @@ export const TwelveHourOnly = {
   name: '12-Hour Only',
   render: Template,
   args: {
-    ...Default.args,
+    ...baseArgs,
     wrapperWidth: 320,
     twentyFourHourOnly: false,
     twelveHourOnly: true,
@@ -370,10 +396,10 @@ export const TwelveHourOnly = {
   parameters: {
     docs: {
       description: {
-        story: 'Configured to only allow 12-hour time input (`twelve-hour-only`).',
+        story: 'Configured to only allow 12-hour time input.',
       },
       story: { height: '240px' },
-      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
+      source: docsSource,
     },
   },
 };
@@ -382,7 +408,7 @@ export const HideSeconds = {
   name: 'Hide Seconds',
   render: Template,
   args: {
-    ...Default.args,
+    ...baseArgs,
     wrapperWidth: 280,
     hideSeconds: true,
     showLabel: true,
@@ -391,10 +417,10 @@ export const HideSeconds = {
   parameters: {
     docs: {
       description: {
-        story: 'Hides the seconds UI (`hide-seconds`).',
+        story: 'Hides the seconds UI.',
       },
       story: { height: '240px' },
-      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
+      source: docsSource,
     },
   },
 };
@@ -403,7 +429,7 @@ export const NoDropdownButton = {
   name: 'No Dropdown Button',
   render: Template,
   args: {
-    ...Default.args,
+    ...baseArgs,
     wrapperWidth: 260,
     hideTimepickerBtn: true,
     showLabel: true,
@@ -412,10 +438,33 @@ export const NoDropdownButton = {
   parameters: {
     docs: {
       description: {
-        story: 'Hides the dropdown trigger button (`hide-timepicker-btn`), allowing manual time entry only.',
+        story: 'Hides the dropdown trigger button, allowing manual entry only.',
       },
       story: { height: '220px' },
-      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
+      source: docsSource,
+    },
+  },
+};
+
+export const ReadOnly = {
+  name: 'Read Only',
+  render: Template,
+  args: {
+    ...baseArgs,
+    wrapperWidth: 320,
+    readOnly: true,
+    showLabel: true,
+    labelText: 'Read Only Time',
+    inputId: 'tp-readonly',
+    value: '13:05:09',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Read-only mode hides the clear, dropdown trigger, and format toggle controls.',
+      },
+      story: { height: '220px' },
+      source: docsSource,
     },
   },
 };
@@ -424,7 +473,7 @@ export const WithValidationMessage = {
   name: 'With Validation Message',
   render: Template,
   args: {
-    ...Default.args,
+    ...baseArgs,
     wrapperWidth: 320,
     isValid: false,
     validation: true,
@@ -436,10 +485,10 @@ export const WithValidationMessage = {
   parameters: {
     docs: {
       description: {
-        story: 'Shows invalid styling + a validation message. The input will reference the validation container id via aria-describedby.',
+        story: 'Shows invalid styling and a user validation message.',
       },
       story: { height: '260px' },
-      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
+      source: docsSource,
     },
   },
 };
@@ -448,7 +497,7 @@ export const CustomInputWidth = {
   name: 'Custom Input Width',
   render: Template,
   args: {
-    ...Default.args,
+    ...baseArgs,
     wrapperWidth: 420,
     inputWidth: 300,
     showLabel: true,
@@ -456,9 +505,32 @@ export const CustomInputWidth = {
   },
   parameters: {
     docs: {
-      description: { story: 'Sets a custom width using `input-width`.' },
+      description: { story: 'Sets a custom width using input-width.' },
       story: { height: '240px' },
-      source: { transform: (_code, ctx) => buildDocsHtml(ctx.args) },
+      source: docsSource,
+    },
+  },
+};
+
+export const ControlledValueExample = {
+  name: 'Controlled Value (value="13:05:09")',
+  render: Template,
+  args: {
+    ...baseArgs,
+    wrapperWidth: 320,
+    showLabel: true,
+    labelText: 'Controlled Value',
+    inputId: 'tp-controlled',
+    value: '13:05:09',
+    isTwentyFourHourFormat: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Initializes the component with a controlled value.',
+      },
+      story: { height: '220px' },
+      source: docsSource,
     },
   },
 };
@@ -475,8 +547,8 @@ export const AccessibilityMatrix = {
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
       <div style="opacity:.8">
-        Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal,
-        simulated error/validation, and disabled. Includes spinbutton semantics for the dropdown parts.
+        Prints computed role, aria-*, derived ids, control visibility, and popover/spinbutton semantics for
+        <code>&lt;timepicker-component&gt;</code>.
       </div>
     `;
     wrap.appendChild(header);
@@ -508,7 +580,7 @@ export const AccessibilityMatrix = {
       const mount = document.createElement('div');
       mount.innerHTML = normalizeHtml(`
         ${extraHtml}
-        ${Template({ ...Default.args, ...storyArgs })}
+        ${Template({ ...baseArgs, ...storyArgs })}
       `);
 
       demo.appendChild(mount);
@@ -574,34 +646,12 @@ export const AccessibilityMatrix = {
 
     wrap.appendChild(
       card(
-        'Horizontal (simulated layout)',
-        {
-          wrapperWidth: 360,
-          inputId: 'mx-tp-horizontal',
-          showLabel: false,
-          ariaLabelledby: 'mx-horizontal-label',
-          ariaDescribedby: '',
-          isValid: true,
-        },
-        `
-        <div style="display:grid; grid-template-columns:220px 1fr; gap:12px; align-items:center; max-width:860px; margin-bottom:8px;">
-          <div id="mx-horizontal-label" style="font-weight:600;">Time (horizontal label area)</div>
-        </div>
-        `,
-        'max-width:860px;',
-      ),
-    );
-
-    wrap.appendChild(
-      card(
-        'Error / validation (validationMessage shown)',
+        'Error / validation (user validation shown)',
         {
           wrapperWidth: 360,
           inputId: 'mx-tp-error',
           showLabel: true,
           labelText: 'Enter time',
-          ariaLabelledby: '',
-          ariaLabel: '',
           ariaDescribedby: 'mx-error-help',
           isValid: false,
           validation: true,
@@ -610,7 +660,7 @@ export const AccessibilityMatrix = {
         },
         `
         <div id="mx-error-help" style="color:#444; font-size:12px; margin-bottom:8px;">
-          Help: provide a time. The input should include both this help id and its validation message id in aria-describedby.
+          Help: the input should include both this help id and its validation message id in aria-describedby.
         </div>
         `,
       ),
@@ -623,12 +673,20 @@ export const AccessibilityMatrix = {
         showLabel: true,
         labelText: 'Disabled time',
         disableTimepicker: true,
-        ariaLabel: '',
-        ariaLabelledby: '',
-        ariaDescribedby: '',
         isValid: true,
         validation: false,
         validationMessage: '',
+      }),
+    );
+
+    wrap.appendChild(
+      card('Read only', {
+        wrapperWidth: 320,
+        inputId: 'mx-tp-readonly',
+        showLabel: true,
+        labelText: 'Read only time',
+        readOnly: true,
+        value: '13:05:09',
       }),
     );
 
@@ -639,7 +697,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Renders multiple configurations and prints computed accessibility wiring for the timepicker: aria-label/labelledby/describedby, popup relationships (aria-controls/expanded/haspopup), dropdown role/inert/hidden, and spinbutton semantics for the picker parts.',
+          'Renders multiple configurations and prints computed accessibility wiring for the timepicker: aria-label/labelledby/describedby, popup relationships, derived ids, control presence, dropdown hidden/inert state, and spinbutton semantics.',
       },
     },
   },

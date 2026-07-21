@@ -1,3 +1,4 @@
+// File: src/stories/textarea-component.story-helpers.js
 import { action } from '@storybook/addon-actions';
 
 export const normalize = (txt) => {
@@ -71,6 +72,7 @@ export const buildDocsHtml = (args) => {
       ['placeholder', args.placeholder],
       ['validation', !!args.validation],
       ['validation-message', args.validationMessage],
+      ['value', args.value],
 
       [shouldPrintInputId ? 'input-id' : '', shouldPrintInputId ? args.inputId : ''],
     ].filter(([k]) => !!k),
@@ -82,6 +84,39 @@ export const buildDocsHtml = (args) => {
 ></textarea-component>
 `);
 };
+
+export const buildDocsHtmlExternalValue = () =>
+  normalize(`
+<div>
+  <button type="button" id="load-draft">Load Draft</button>
+  <button type="button" id="load-api-response">Load API Response</button>
+  <button type="button" id="clear-textarea">Clear</button>
+
+  <textarea-component
+    label="Message"
+    label-size="sm"
+    input-id="textarea-external-value"
+    placeholder="Load prefilled content"
+    rows="5"
+  ></textarea-component>
+</div>
+
+<script>
+  const host = document.querySelector('textarea-component');
+
+  document.querySelector('#load-draft').addEventListener('click', () => {
+    host.value = 'Hello team,\\n\\nHere is the latest draft message loaded from an outside source.\\n\\nThanks.';
+  });
+
+  document.querySelector('#load-api-response').addEventListener('click', () => {
+    host.value = 'This textarea was populated from preloaded data or an API response.';
+  });
+
+  document.querySelector('#clear-textarea').addEventListener('click', () => {
+    host.value = '';
+  });
+</script>
+`);
 
 export const setBoolAttr = (el, name, on) => {
   if (on) el.setAttribute(name, '');

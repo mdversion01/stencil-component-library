@@ -129,7 +129,7 @@ export default {
     disabled: {
       control: 'boolean',
       table: { category: 'Input Attributes', defaultValue: { summary: false } },
-      description: 'Disables the input element.',
+      description: 'Disables the input element. In group mode, disables the entire radio group.',
     },
     inputId: {
       control: 'text',
@@ -659,8 +659,8 @@ export const GroupDisabledOptions = {
     groupOptions: JSON.stringify(
       [
         { inputId: 'seat-window', value: 'window', labelTxt: 'Window', disabled: true },
-        { inputId: 'seat-middle', value: 'middle', labelTxt: 'Middle' },
-        { inputId: 'seat-aisle', value: 'aisle', checked: true, disabled: true },
+        { inputId: 'seat-middle', value: 'middle', labelTxt: 'Middle', checked: true },
+        { inputId: 'seat-aisle', value: 'aisle', labelTxt: 'Aisle', disabled: true },
       ],
       null,
       0,
@@ -674,6 +674,54 @@ export const GroupDisabledOptions = {
   },
   parameters: {
     docs: { description: { story: 'A group of radio inputs with some options disabled (Bootstrap styling).' } },
+  },
+  play: groupPlay,
+};
+
+export const GroupFullyDisabled = {
+  name: 'Group Fully Disabled (Bootstrap styling)',
+  render: args => GroupTemplate(args),
+  args: {
+    bsRadioGroup: true,
+    basicRadioGroup: false,
+    bsRadio: false,
+    basicRadio: false,
+
+    ariaLabel: '',
+    ariaLabelledby: '',
+    ariaDescribedby: '',
+
+    name: 'shipping-speed',
+    groupTitle: 'Shipping Speed',
+    groupTitleSize: '',
+    inline: false,
+    required: true,
+    validation: true,
+    validationMsg: 'Select a shipping speed.',
+
+    groupOptions: JSON.stringify(
+      [
+        { inputId: 'ship-standard', value: 'standard', labelTxt: 'Standard', checked: true },
+        { inputId: 'ship-express', value: 'express', labelTxt: 'Express' },
+        { inputId: 'ship-overnight', value: 'overnight', labelTxt: 'Overnight' },
+      ],
+      null,
+      0,
+    ),
+
+    inputId: '',
+    labelTxt: '',
+    value: '',
+    size: '',
+    disabled: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Disables the entire radio group via the component `disabled` prop. All radio inputs are disabled, and required/validation UI is suppressed until the group is enabled.',
+      },
+    },
   },
   play: groupPlay,
 };
@@ -843,6 +891,28 @@ export const AccessibilityMatrix = {
       }),
     );
 
+    wrap.appendChild(
+      card('Disabled (entire group disabled)', () => {
+        const el = document.createElement('radio-input-component');
+        el.setAttribute('bs-radio-group', '');
+        el.setAttribute('name', 'mxDisabledGroup');
+        el.setAttribute('group-title', 'Disabled group');
+        el.setAttribute('disabled', '');
+        el.setAttribute('required', '');
+        el.setAttribute('validation', '');
+        el.setAttribute('validation-msg', 'Should not display while disabled');
+        el.setAttribute(
+          'group-options',
+          JSON.stringify([
+            { inputId: 'mx-gd-a', value: 'a', labelTxt: 'Alpha', checked: true },
+            { inputId: 'mx-gd-b', value: 'b', labelTxt: 'Beta' },
+            { inputId: 'mx-gd-c', value: 'c', labelTxt: 'Gamma' },
+          ]),
+        );
+        return el;
+      }),
+    );
+
     return wrap;
   },
   parameters: {
@@ -850,7 +920,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Prints computed accessibility wiring for radios. Covers group default/inline/horizontal (simulated), validation, and disabled states: `role="radiogroup"`, `aria-labelledby`, `aria-describedby`, `aria-required`, `aria-invalid`, and generated title/error ids.',
+          'Prints computed accessibility wiring for radios. Covers group default/inline/horizontal (simulated), validation, disabled single, and disabled entire group states: `role="radiogroup"`, `aria-labelledby`, `aria-describedby`, `aria-required`, `aria-invalid`, and generated title/error ids.',
       },
       source: {
         language: 'html',

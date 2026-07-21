@@ -40,6 +40,7 @@
 | `placeholder`             | `placeholder`                 |                                                                                   | `string`                         | `'Type to search/filter...'` |
 | `preserveInputOnSelect`   | `preserve-input-on-select`    | Behavior switches                                                                 | `boolean`                        | `undefined`                  |
 | `rawInputName`            | `raw-input-name`              |                                                                                   | `string`                         | `undefined`                  |
+| `readOnly`                | `read-only`                   |                                                                                   | `boolean`                        | `false`                      |
 | `removeBtnBorder`         | `remove-btn-border`           |                                                                                   | `boolean`                        | `false`                      |
 | `removeClearBtn`          | `remove-clear-btn`            |                                                                                   | `boolean`                        | `false`                      |
 | `required`                | `required`                    |                                                                                   | `boolean`                        | `false`                      |

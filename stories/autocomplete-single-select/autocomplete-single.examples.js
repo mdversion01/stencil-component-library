@@ -1,14 +1,14 @@
 // File: src/stories/autocomplete-single/autocomplete-single.examples.js
 
 export const reactExample = `
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react';
 
 export default function AutocompleteSingleSelect() {
-  const ref = useRef(null)
+  const ref = useRef(null);
 
   useEffect(() => {
-    const el = ref.current
-    if (!el) return
+    const el = ref.current;
+    if (!el) return;
 
     el.options = [
       'Apple',
@@ -17,26 +17,26 @@ export default function AutocompleteSingleSelect() {
       'Mango',
       'Blueberry',
       'Strawberry',
-    ]
-    el.value = 'Apple'
-    el.autoSort = true
+    ];
+    el.value = 'Apple';
+    el.autoSort = true;
 
     const onSelect = (event) => {
-      console.log('itemSelect:', event.detail)
-    }
+      console.log('itemSelect:', event.detail);
+    };
 
     const onValueChange = (event) => {
-      console.log('valueChange:', event.detail)
-    }
+      console.log('valueChange:', event.detail);
+    };
 
-    el.addEventListener('itemSelect', onSelect)
-    el.addEventListener('valueChange', onValueChange)
+    el.addEventListener('itemSelect', onSelect);
+    el.addEventListener('valueChange', onValueChange);
 
     return () => {
-      el.removeEventListener('itemSelect', onSelect)
-      el.removeEventListener('valueChange', onValueChange)
-    }
-  }, [])
+      el.removeEventListener('itemSelect', onSelect);
+      el.removeEventListener('valueChange', onValueChange);
+    };
+  }, []);
 
   return (
     <main>
@@ -47,7 +47,7 @@ export default function AutocompleteSingleSelect() {
         placeholder="Type to search"
       />
     </main>
-  )
+  );
 }
 `.trim();
 
@@ -64,21 +64,21 @@ export const vueExample = `
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
-const autocompleteEl = ref(null)
+const autocompleteEl = ref(null);
 
 const onSelect = (event) => {
-  console.log('itemSelect:', event.detail)
-}
+  console.log('itemSelect:', event.detail);
+};
 
 const onValueChange = (event) => {
-  console.log('valueChange:', event.detail)
-}
+  console.log('valueChange:', event.detail);
+};
 
 onMounted(() => {
-  const el = autocompleteEl.value
-  if (!el) return
+  const el = autocompleteEl.value;
+  if (!el) return;
 
   el.options = [
     'Apple',
@@ -87,22 +87,22 @@ onMounted(() => {
     'Mango',
     'Blueberry',
     'Strawberry',
-  ]
-  el.value = 'Apple'
-  el.autoSort = true
+  ];
+  el.value = 'Apple';
+  el.autoSort = true;
 
-  el.addEventListener('itemSelect', onSelect)
-  el.addEventListener('valueChange', onValueChange)
-})
+  el.addEventListener('itemSelect', onSelect);
+  el.addEventListener('valueChange', onValueChange);
+});
 
 onBeforeUnmount(() => {
-  autocompleteEl.value?.removeEventListener('itemSelect', onSelect)
-  autocompleteEl.value?.removeEventListener('valueChange', onValueChange)
-})
+  autocompleteEl.value?.removeEventListener('itemSelect', onSelect);
+  autocompleteEl.value?.removeEventListener('valueChange', onValueChange);
+});
 </script>
 `.trim();
 
-export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core'
+export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-autocomplete-single',
@@ -120,20 +120,20 @@ export const angularExample = `import { AfterViewInit, Component, CUSTOM_ELEMENT
   \`,
 })
 export class AutocompleteSingleComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('autocompleteEl', { static: true }) autocompleteRef!: ElementRef
+  @ViewChild('autocompleteEl', { static: true }) autocompleteRef!: ElementRef<HTMLElement>;
 
   private readonly onSelect = (event: Event) => {
-    const customEvent = event as CustomEvent<string>
-    console.log('itemSelect:', customEvent.detail)
-  }
+    const customEvent = event as CustomEvent<string>;
+    console.log('itemSelect:', customEvent.detail);
+  };
 
   private readonly onValueChange = (event: Event) => {
-    const customEvent = event as CustomEvent<string>
-    console.log('valueChange:', customEvent.detail)
-  }
+    const customEvent = event as CustomEvent<string>;
+    console.log('valueChange:', customEvent.detail);
+  };
 
   ngAfterViewInit(): void {
-    const el = this.autocompleteRef.nativeElement
+    const el = this.autocompleteRef.nativeElement as any;
 
     el.options = [
       'Apple',
@@ -142,17 +142,18 @@ export class AutocompleteSingleComponent implements AfterViewInit, OnDestroy {
       'Mango',
       'Blueberry',
       'Strawberry',
-    ]
-    el.value = 'Apple'
-    el.autoSort = true
+    ];
+    el.value = 'Apple';
+    el.autoSort = true;
 
-    el.addEventListener('itemSelect', this.onSelect)
-    el.addEventListener('valueChange', this.onValueChange)
+    el.addEventListener('itemSelect', this.onSelect);
+    el.addEventListener('valueChange', this.onValueChange);
   }
 
   ngOnDestroy(): void {
-    this.autocompleteRef.nativeElement.removeEventListener('itemSelect', this.onSelect)
-    this.autocompleteRef.nativeElement.removeEventListener('valueChange', this.onValueChange)
+    const el = this.autocompleteRef.nativeElement;
+    el.removeEventListener('itemSelect', this.onSelect);
+    el.removeEventListener('valueChange', this.onValueChange);
   }
 }
 `.trim();

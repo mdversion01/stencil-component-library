@@ -29,6 +29,7 @@
 | `labelSize`         | `label-size`         |                                                                 | `"base" \| "lg" \| "sm" \| "xs"` | `'sm'`      |
 | `options`           | --                   |                                                                 | `string[]`                       | `[]`        |
 | `placeholder`       | `placeholder`        |                                                                 | `string`                         | `undefined` |
+| `readOnly`          | `read-only`          |                                                                 | `boolean`                        | `false`     |
 | `removeClearBtn`    | `remove-clear-btn`   |                                                                 | `boolean`                        | `false`     |
 | `required`          | `required`           |                                                                 | `boolean`                        | `false`     |
 | `size`              | `size`               |                                                                 | `"" \| "lg" \| "sm"`             | `''`        |

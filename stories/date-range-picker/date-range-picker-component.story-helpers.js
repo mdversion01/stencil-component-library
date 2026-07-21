@@ -2,50 +2,65 @@
 
 import { action } from '@storybook/addon-actions';
 
-export const normalize = (txt) => {
+export const normalize = txt => {
   const lines = String(txt ?? '')
     .replace(/\r\n/g, '\n')
     .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
+    .map(line => line.replace(/[ \t]+$/g, ''));
 
-  const out = [];
-  let prevBlank = false;
+  const output = [];
+  let previousBlank = false;
 
   for (const line of lines) {
     const blank = line.trim() === '';
+
     if (blank) {
-      if (prevBlank) continue;
-      prevBlank = true;
-      out.push('');
+      if (previousBlank) {
+        continue;
+      }
+
+      previousBlank = true;
+      output.push('');
       continue;
     }
-    prevBlank = false;
-    out.push(line);
+
+    previousBlank = false;
+    output.push(line);
   }
 
-  while (out[0] === '') out.shift();
-  while (out[out.length - 1] === '') out.pop();
+  while (output[0] === '') {
+    output.shift();
+  }
 
-  return out.join('\n');
+  while (output[output.length - 1] === '') {
+    output.pop();
+  }
+
+  return output.join('\n');
 };
 
-export const attrs = (pairs) =>
+export const attrs = pairs =>
   pairs
-    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
-    .map(([k, v]) => (v === true ? k : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
+    .filter(([, value]) => value !== undefined && value !== null && value !== '' && value !== false)
+    .map(([key, value]) => (value === true ? key : `${key}="${String(value).replace(/"/g, '&quot;')}"`))
     .join('\n  ');
 
-export const asNumOrUndef = (v) => {
-  if (v === '' || v === null || v === undefined) return undefined;
-  const n = Number(v);
-  return Number.isFinite(n) ? n : undefined;
+export const asNumOrUndef = value => {
+  if (value === '' || value === null || value === undefined) {
+    return undefined;
+  }
+
+  const numberValue = Number(value);
+
+  return Number.isFinite(numberValue) ? numberValue : undefined;
 };
 
-export const buildDocsHtml = (args) => {
+export const buildDocsHtml = args => {
   const attributeBlock = attrs([
     ['plumage', !!args.plumage],
     ['range-picker', !!args.rangePicker],
     ['disabled', !!args.disabled],
+    ['read-only', !!args.readOnly],
     ['required', !!args.required],
 
     ['date-format', args.dateFormat],
@@ -90,96 +105,145 @@ export const buildDocsHtml = (args) => {
 `);
 };
 
-export const setAttr = (el, name, value) => {
-  if (value === true) el.setAttribute(name, '');
-  else if (value === false || value == null || value === '') el.removeAttribute(name);
-  else el.setAttribute(name, String(value));
+export const setAttr = (element, name, value) => {
+  if (value === true) {
+    element.setAttribute(name, '');
+    return;
+  }
+
+  if (value === false || value === null || value === undefined || value === '') {
+    element.removeAttribute(name);
+    return;
+  }
+
+  element.setAttribute(name, String(value));
 };
 
-export const buildDateRangePickerEl = (args) => {
-  const el = document.createElement('date-range-picker-component');
+export const buildDateRangePickerEl = args => {
+  const element = document.createElement('date-range-picker-component');
 
-  el.plumage = !!args.plumage;
-  el.rangePicker = !!args.rangePicker;
-  el.disabled = !!args.disabled;
-  el.required = !!args.required;
+  element.plumage = !!args.plumage;
+  element.rangePicker = !!args.rangePicker;
+  element.disabled = !!args.disabled;
+  element.readOnly = !!args.readOnly;
+  element.required = !!args.required;
 
-  el.dateFormat = args.dateFormat || 'YYYY-MM-DD';
-  el.showYmd = !!args.showYmd;
-  el.showLong = !!args.showLong;
-  el.showIso = !!args.showIso;
+  element.dateFormat = args.dateFormat || 'YYYY-MM-DD';
 
-  if (args.placeholder) el.placeholder = args.placeholder;
-  el.joinBy = args.joinBy || ' - ';
-  el.icon = args.icon || 'fas fa-calendar-alt';
-  el.inputId = args.inputId || 'drp';
-  el.value = args.value || '';
+  element.showYmd = !!args.showYmd;
+  element.showLong = !!args.showLong;
+  element.showIso = !!args.showIso;
 
-  el.appendProp = !!args.appendProp;
-  el.prependProp = !!args.prependProp;
-  el.appendId = args.appendId || '';
-  el.prependId = args.prependId || '';
+  if (args.placeholder) {
+    element.placeholder = args.placeholder;
+  }
 
-  el.label = args.label || 'Date Range Picker';
-  el.labelAlign = args.labelAlign || '';
-  el.labelHidden = !!args.labelHidden;
-  el.formLayout = args.formLayout || '';
-  el.size = args.size || '';
+  element.joinBy = args.joinBy || ' - ';
+  element.icon = args.icon || 'fas fa-calendar-alt';
 
-  if (asNumOrUndef(args.labelCol) !== undefined) el.labelCol = Number(args.labelCol);
-  if (asNumOrUndef(args.inputCol) !== undefined) el.inputCol = Number(args.inputCol);
-  el.labelCols = args.labelCols || '';
-  el.inputCols = args.inputCols || '';
+  element.inputId = args.inputId || 'drp';
+  element.value = args.value || '';
 
-  el.validation = !!args.validation;
-  el.validationMessage = args.validationMessage || 'Required field';
-  el.warningMessage = args.warningMessage || '';
+  element.appendProp = !!args.appendProp;
+  element.prependProp = !!args.prependProp;
+  element.appendId = args.appendId || '';
+  element.prependId = args.prependId || '';
 
-  el.showOkButton = !!args.showOkButton;
-  el.ariaLabel = args.ariaLabel || '';
+  element.label = args.label || 'Date Range Picker';
 
-  setAttr(el, 'plumage', !!args.plumage);
-  setAttr(el, 'range-picker', !!args.rangePicker);
-  setAttr(el, 'disabled', !!args.disabled);
-  setAttr(el, 'required', !!args.required);
+  element.labelAlign = args.labelAlign || '';
+  element.labelHidden = !!args.labelHidden;
+  element.formLayout = args.formLayout || '';
+  element.size = args.size || '';
 
-  setAttr(el, 'date-format', args.dateFormat);
-  setAttr(el, 'show-ymd', !!args.showYmd);
-  setAttr(el, 'show-long', !!args.showLong);
-  setAttr(el, 'show-iso', !!args.showIso);
+  if (asNumOrUndef(args.labelCol) !== undefined) {
+    element.labelCol = Number(args.labelCol);
+  }
 
-  setAttr(el, 'placeholder', args.placeholder);
-  setAttr(el, 'join-by', args.joinBy);
-  setAttr(el, 'icon', args.icon);
-  setAttr(el, 'input-id', args.inputId);
-  setAttr(el, 'value', args.value);
+  if (asNumOrUndef(args.inputCol) !== undefined) {
+    element.inputCol = Number(args.inputCol);
+  }
 
-  setAttr(el, 'append-prop', !!args.appendProp);
-  setAttr(el, 'prepend-prop', !!args.prependProp);
-  setAttr(el, 'append-id', args.appendId);
-  setAttr(el, 'prepend-id', args.prependId);
+  element.labelCols = args.labelCols || '';
+  element.inputCols = args.inputCols || '';
 
-  setAttr(el, 'label', args.label);
-  setAttr(el, 'label-align', args.labelAlign);
-  setAttr(el, 'label-hidden', !!args.labelHidden);
-  setAttr(el, 'form-layout', args.formLayout);
-  setAttr(el, 'size', args.size);
+  element.validation = !!args.validation;
 
-  setAttr(el, 'label-col', asNumOrUndef(args.labelCol));
-  setAttr(el, 'input-col', asNumOrUndef(args.inputCol));
-  setAttr(el, 'label-cols', args.labelCols);
-  setAttr(el, 'input-cols', args.inputCols);
+  element.validationMessage = args.validationMessage || 'Required field';
 
-  setAttr(el, 'validation', !!args.validation);
-  setAttr(el, 'validation-message', args.validationMessage);
-  setAttr(el, 'warning-message', args.warningMessage);
+  element.warningMessage = args.warningMessage || '';
 
-  setAttr(el, 'show-ok-button', !!args.showOkButton);
-  setAttr(el, 'aria-label', args.ariaLabel);
+  element.showOkButton = !!args.showOkButton;
 
-  el.addEventListener('date-range-updated', (e) => action('date-range-updated')(e.detail));
+  element.ariaLabel = args.ariaLabel || '';
 
-  return el;
+  setAttr(element, 'plumage', !!args.plumage);
+
+  setAttr(element, 'range-picker', !!args.rangePicker);
+
+  setAttr(element, 'disabled', !!args.disabled);
+
+  setAttr(element, 'read-only', !!args.readOnly);
+
+  setAttr(element, 'required', !!args.required);
+
+  setAttr(element, 'date-format', args.dateFormat);
+
+  setAttr(element, 'show-ymd', !!args.showYmd);
+
+  setAttr(element, 'show-long', !!args.showLong);
+
+  setAttr(element, 'show-iso', !!args.showIso);
+
+  setAttr(element, 'placeholder', args.placeholder);
+
+  setAttr(element, 'join-by', args.joinBy);
+
+  setAttr(element, 'icon', args.icon);
+
+  setAttr(element, 'input-id', args.inputId);
+
+  setAttr(element, 'value', args.value);
+
+  setAttr(element, 'append-prop', !!args.appendProp);
+
+  setAttr(element, 'prepend-prop', !!args.prependProp);
+
+  setAttr(element, 'append-id', args.appendId);
+
+  setAttr(element, 'prepend-id', args.prependId);
+
+  setAttr(element, 'label', args.label);
+
+  setAttr(element, 'label-align', args.labelAlign);
+
+  setAttr(element, 'label-hidden', !!args.labelHidden);
+
+  setAttr(element, 'form-layout', args.formLayout);
+
+  setAttr(element, 'size', args.size);
+
+  setAttr(element, 'label-col', asNumOrUndef(args.labelCol));
+
+  setAttr(element, 'input-col', asNumOrUndef(args.inputCol));
+
+  setAttr(element, 'label-cols', args.labelCols);
+
+  setAttr(element, 'input-cols', args.inputCols);
+
+  setAttr(element, 'validation', !!args.validation);
+
+  setAttr(element, 'validation-message', args.validationMessage);
+
+  setAttr(element, 'warning-message', args.warningMessage);
+
+  setAttr(element, 'show-ok-button', !!args.showOkButton);
+
+  setAttr(element, 'aria-label', args.ariaLabel);
+
+  element.addEventListener('date-range-updated', event => action('date-range-updated')(event.detail));
+
+  return element;
 };
 
-export const Template = (args) => buildDateRangePickerEl(args);
+export const Template = args => buildDateRangePickerEl(args);

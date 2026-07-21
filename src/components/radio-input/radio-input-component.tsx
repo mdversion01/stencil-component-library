@@ -20,7 +20,7 @@ export class RadioComponent {
   @Prop() basicRadio = false;
   @Prop() basicRadioGroup = false;
 
-  @Prop() groupOptions: any = []; // JSON string or array
+  @Prop() groupOptions: any = [];
   @Prop() groupTitle = '';
   @Prop() groupTitleSize = '';
   @Prop() inline = false;
@@ -34,7 +34,6 @@ export class RadioComponent {
   @Prop() validationMsg = '';
   @Prop() value = '';
 
-  // ----------------- a11y override props -----------------
   @Prop({ attribute: 'aria-label' }) ariaLabel?: string;
   @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
@@ -68,22 +67,25 @@ export class RadioComponent {
   }
 
   private handleGroupChange(event: Event, value: string) {
+    if (this.disabled) return;
+
     const target = event.target as HTMLInputElement;
+    if (!target.checked) return;
 
-    if (target.checked) {
-      this.selectedValue = value;
+    this.selectedValue = value;
 
-      const updated = this.parsedOptions.map(opt => ({
-        ...opt,
-        checked: opt.value === value,
-      }));
-      this.parsedOptions = updated;
+    const updated = this.parsedOptions.map(opt => ({
+      ...opt,
+      checked: opt.value === value,
+    }));
+    this.parsedOptions = updated;
 
-      this.groupChange.emit(this.selectedValue);
-    }
+    this.groupChange.emit(this.selectedValue);
   }
 
   private handleSingleChange(event: Event) {
+    if (this.disabled) return;
+
     const target = event.target as HTMLInputElement;
     this.singleChecked = target.checked;
   }
@@ -103,13 +105,12 @@ export class RadioComponent {
   render() {
     const isGroup = this.bsRadioGroup || this.basicRadioGroup;
 
-    // GROUP RENDER
     if (isGroup) {
       const wrapperClass = this.basicRadioGroup ? 'basic-control basic-radio' : 'form-check';
       const inputClass = this.basicRadioGroup ? 'basic-control-input' : 'form-check-input';
       const labelClass = this.basicRadioGroup ? 'basic-control-label' : 'form-check-label';
 
-      const showValidation = this.validation && this.required && !this.selectedValue;
+      const showValidation = !this.disabled && this.validation && this.required && !this.selectedValue;
 
       const titleId = this.safeId('radio-group-title');
       const errorId = this.safeId('radio-group-error');
@@ -122,7 +123,6 @@ export class RadioComponent {
 
       const ariaLabelledBy = userLabelledBy ?? autoLabelledBy;
       const ariaLabel = ariaLabelledBy ? undefined : userLabel;
-
       const describedBy = this.joinIds(userDescribedBy, showValidation && this.validationMsg ? errorId : undefined);
 
       return (
@@ -132,38 +132,41 @@ export class RadioComponent {
               role="radiogroup"
               aria-labelledby={ariaLabelledBy}
               aria-label={ariaLabel}
-              aria-required={this.required ? 'true' : undefined}
+              aria-required={!this.disabled && this.required ? 'true' : undefined}
               aria-invalid={showValidation ? 'true' : undefined}
               aria-describedby={describedBy}
             >
               {this.groupTitle ? (
                 <div id={titleId} class={`group-title ${this.groupTitleSize}`}>
                   {this.groupTitle}
-                  {this.required ? <span class="required">*</span> : ''}
+                  {!this.disabled && this.required ? <span class="required">*</span> : ''}
                 </div>
               ) : null}
 
               <div class={`form-group ${this.inline ? 'form-inline' : ''}`}>
-                {this.parsedOptions.map(option => (
-                  <div class={wrapperClass}>
-                    <input
-                      class={inputClass}
-                      type="radio"
-                      name={this.name}
-                      id={option.inputId}
-                      value={option.value}
-                      checked={!!option.checked}
-                      disabled={!!option.disabled}
-                      required={this.required}
-                      aria-invalid={showValidation ? 'true' : undefined}
-                      aria-describedby={describedBy}
-                      onChange={e => this.handleGroupChange(e, option.value)}
-                    />
-                    <label class={`${labelClass} ${this.size}`} htmlFor={option.inputId}>
-                      {option.labelTxt}
-                    </label>
-                  </div>
-                ))}
+                {this.parsedOptions.map(option => {
+                  const optionDisabled = !!(this.disabled || option.disabled);
+                  return (
+                    <div class={wrapperClass}>
+                      <input
+                        class={inputClass}
+                        type="radio"
+                        name={this.name}
+                        id={option.inputId}
+                        value={option.value}
+                        checked={!!option.checked}
+                        disabled={optionDisabled}
+                        required={!this.disabled && this.required}
+                        aria-invalid={showValidation ? 'true' : undefined}
+                        aria-describedby={describedBy}
+                        onChange={e => this.handleGroupChange(e, option.value)}
+                      />
+                      <label class={`${labelClass} ${this.size}`} htmlFor={option.inputId}>
+                        {option.labelTxt}
+                      </label>
+                    </div>
+                  );
+                })}
               </div>
 
               {showValidation && this.validationMsg ? (
@@ -177,12 +180,11 @@ export class RadioComponent {
       );
     }
 
-    // SINGLE RENDER
     const singleWrapperClass = this.basicRadio ? 'basic-control basic-radio' : 'form-check';
     const singleInputClass = this.basicRadio ? 'basic-control-input' : 'form-check-input';
     const singleLabelClass = this.basicRadio ? 'basic-control-label' : 'form-check-label';
 
-    const showSingleValidation = this.validation && this.required && !this.singleChecked;
+    const showSingleValidation = !this.disabled && this.validation && this.required && !this.singleChecked;
 
     const labelId = this.safeId('radio-single-label');
     const errorId = this.safeId('radio-single-error');
@@ -195,7 +197,6 @@ export class RadioComponent {
 
     const ariaLabelledBy = userLabelledBy ?? autoLabelledBy;
     const ariaLabel = ariaLabelledBy ? undefined : userLabel;
-
     const describedBy = this.joinIds(userDescribedBy, showSingleValidation && this.validationMsg ? errorId : undefined);
 
     return (
@@ -209,7 +210,7 @@ export class RadioComponent {
               name={this.name}
               value={this.value}
               disabled={this.disabled}
-              required={this.required}
+              required={!this.disabled && this.required}
               aria-labelledby={ariaLabelledBy}
               aria-label={ariaLabel}
               aria-describedby={describedBy}
@@ -218,7 +219,7 @@ export class RadioComponent {
             />
             <label id={labelId} class={`${singleLabelClass} ${this.size}`} htmlFor={this.inputId}>
               {this.labelTxt}
-              {this.required ? <span class="required">*</span> : ''}
+              {!this.disabled && this.required ? <span class="required">*</span> : ''}
             </label>
           </div>
 

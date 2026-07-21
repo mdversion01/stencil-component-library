@@ -63,6 +63,13 @@ $radius-lg: 0.5rem;
   .btn { border-color: $invalid-border; }
 }
 
+.form-control.read-only {
+  border-color: var(--bs-border-color) !important;
+  cursor: not-allowed;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
 
 // =============================================
 // Input group buttons + sizes

@@ -42,3 +42,23 @@ exports[`<input-field-component> matches snapshot (horizontal with validation) 1
   </div>
 </input-field-component>
 `;
+
+exports[`<input-field-component> matches snapshot (readOnly) 1`] = `
+<input-field-component input-id="account-id" label="Account ID" read-only="" value="ABC-123">
+  <div>
+    <div class="form-group">
+      <label class="form-control-label label-sm" for="account-id" id="account-id__label">
+        <span>
+          Account ID
+        </span>
+      </label>
+      <div>
+        <div class="sr-only" id="account-id__desc">
+          Enter Account ID. Type: text.
+        </div>
+        <input aria-describedby="account-id__desc" aria-labelledby="account-id__label" aria-readonly="true" class="form-control read-only" id="account-id" name="accountID" placeholder="Account ID" readonly="" type="text" value="ABC-123">
+      </div>
+    </div>
+  </div>
+</input-field-component>
+`;

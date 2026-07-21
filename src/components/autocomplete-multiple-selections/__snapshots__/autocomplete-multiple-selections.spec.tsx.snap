@@ -92,3 +92,40 @@ exports[`<autocomplete-multiple-selections> matches snapshot (open with matches 
   </div>
 </autocomplete-multiple-selections>
 `;
+
+exports[`<autocomplete-multiple-selections> matches snapshot (readOnly render) 1`] = `
+<autocomplete-multiple-selections input-id="tags-ro" label="Tags" read-only="">
+  <div class="autocomplete-container form-group">
+    <div>
+      <div>
+        <label class="form-control-label label-sm" for="tags-Ro" id="tags-Ro-label">
+          <span>
+            Tags
+          </span>
+        </label>
+        <div>
+          <div class="ac-multi-select-container read-only">
+            <div class="ac-selected-items">
+              <div class="badge">
+                <span>
+                  Alpha
+                </span>
+              </div>
+              <div class="badge">
+                <span>
+                  Gamma
+                </span>
+              </div>
+            </div>
+            <div class="ac-input-container">
+              <div class="input-group read-only">
+                <input aria-autocomplete="list" aria-controls="tags-Ro-listbox" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="tags-Ro-label" aria-readonly="true" autocomplete="off" class="form-control read-only" id="tags-Ro" inputmode="text" placeholder="Tags" readonly="" role="combobox" spellcheck="false" type="text" value="Locked">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</autocomplete-multiple-selections>
+`;

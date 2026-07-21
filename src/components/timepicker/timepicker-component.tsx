@@ -1115,7 +1115,7 @@ export class TimePickerComponent {
                 type="text"
                 id={this.inputId}
                 name={this.inputName}
-                class={`time-input form-control${this.readOnly ? ' read-only' : this._isDisabled ? '' : isInvalid ? ' is-invalid' : ''}${this.hideTimepickerBtn || this.readOnly ? ' rounded-end' : ''}`}
+                class={`time-input form-control${this.readOnly ? ' read-only' : this._isDisabled ? '' : isInvalid ? ' is-invalid' : ''}${this.hideTimepickerBtn ? '' : this.readOnly ? ' rounded-end' : ''}`}
                 style={inputInlineStyle as any}
                 placeholder="Enter Time"
                 aria-label={ariaLabel}

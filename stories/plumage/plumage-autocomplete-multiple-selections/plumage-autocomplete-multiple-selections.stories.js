@@ -1,9 +1,13 @@
+// File: stories/plumage/plumage-autocomplete-multiple-selections/plumage-autocomplete-multiple-selections.stories.js
+
 import DocsPage from './plumage-autocomplete-multiple-selections.docs.mdx';
 import {
   DocsWrapStyles,
   FRUIT,
   SIZE_VARIANTS,
+  TAG,
   buildDocsComponentHtml,
+  buildDocsHtmlControlledValue,
   buildDocsHtmlMany,
   mkMatrixCellA11y,
   normalize,
@@ -12,8 +16,6 @@ import {
   setValueWhenReady,
   wrapDocsHtml,
 } from './plumage-autocomplete-multiple-selections.story-helpers.js';
-
-const TAG = 'plumage-autocomplete-multiple-selections-component';
 
 export default {
   title: 'Form/Plumage Autocomplete Multiple Selections',
@@ -88,6 +90,12 @@ export default {
       name: 'raw-input-name',
       table: { category: 'Attributes' },
       description: 'The name attribute for the raw input hidden field.',
+    },
+    readOnly: {
+      control: 'boolean',
+      name: 'read-only',
+      table: { category: 'Attributes', defaultValue: { summary: false } },
+      description: 'Makes the field read-only while preserving the selected badges.',
     },
     value: {
       control: 'object',
@@ -315,6 +323,7 @@ export default {
     clearInputOnBlurOutside: false,
     devMode: false,
     disabled: false,
+    readOnly: false,
     editable: true,
     error: false,
     errorMessage: '',
@@ -358,6 +367,7 @@ export const Basic = {
     clearInputOnBlurOutside: false,
     devMode: false,
     disabled: false,
+    readOnly: false,
     editable: false,
     formLayout: '',
     labelAlign: '',
@@ -488,12 +498,18 @@ export const ControlledValue = {
   render: (args) => {
     const wrap = document.createElement('div');
     wrap.style.maxWidth = '760px';
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
+
+    let controlledValue = Array.isArray(args.value) ? args.value.slice() : ['Apple', 'Mango'];
+
+    const state = document.createElement('div');
+    state.style.opacity = '0.75';
 
     const elWrap = renderComponent(args, { idOverride: 'acms_controlled' });
     const el = elWrap.querySelector(TAG);
 
     const buttons = document.createElement('div');
-    buttons.style.marginTop = '12px';
     buttons.style.display = 'flex';
     buttons.style.gap = '8px';
     buttons.style.flexWrap = 'wrap';
@@ -516,44 +532,51 @@ export const ControlledValue = {
     buttons.appendChild(btnClear);
     buttons.appendChild(btnWeird);
 
-    const setVal = async (next) => {
-      if (!el) return;
-      await (typeof el.componentOnReady === 'function' ? el.componentOnReady() : customElements.whenDefined(TAG));
-      el.value = Array.isArray(next) ? next : [];
-      args.value = Array.isArray(next) ? next : [];
+    const renderState = (source) => {
+      state.textContent = `External controlled value (${source}): ${JSON.stringify(controlledValue)}`;
     };
 
-    btnAppleMango.addEventListener('click', () => setVal(['Apple', 'Mango']));
-    btnCitrus.addEventListener('click', () => setVal(['Orange', 'Lemon', 'Lime']));
-    btnClear.addEventListener('click', () => setVal([]));
-    btnWeird.addEventListener('click', () => setVal(['  <b>Apple</b>  ', 'MANGO', 'mango', '\u0007Bad\u0000', '']));
+    const setVal = async (next, source) => {
+      controlledValue = Array.isArray(next) ? next.slice() : [];
+      if (!el) return;
+      await (typeof el.componentOnReady === 'function' ? el.componentOnReady() : customElements.whenDefined(TAG));
+      el.value = controlledValue.slice();
+      args.value = controlledValue.slice();
+      renderState(source);
+    };
 
-    wrap.appendChild(elWrap);
+    btnAppleMango.addEventListener('click', () => setVal(['Apple', 'Mango'], 'button click'));
+    btnCitrus.addEventListener('click', () => setVal(['Orange', 'Lemon', 'Lime'], 'button click'));
+    btnClear.addEventListener('click', () => setVal([], 'button click'));
+    btnWeird.addEventListener('click', () => setVal(['  <b>Apple</b>  ', 'MANGO', 'mango', '\u0007Bad\u0000', ''], 'button click'));
+
+    if (el) {
+      el.addEventListener('multiSelectChange', (e) => {
+        const next = Array.isArray(e?.detail) ? e.detail : Array.isArray(e?.detail?.value) ? e.detail.value : [];
+        setVal(next, 'multiSelectChange event');
+      });
+
+      el.addEventListener('clear', () => setVal([], 'clear event'));
+    }
+
+    renderState('initial value');
+
+    wrap.appendChild(state);
     wrap.appendChild(buttons);
+    wrap.appendChild(elWrap);
     return wrap;
   },
   parameters: {
     docs: {
       source: {
         language: 'html',
-        transform: (_src, ctx) =>
-          wrapDocsHtml(
-            normalize(`
-${buildDocsComponentHtml(ctx.args)}
-<!-- Value is a string[] prop; in real usage you typically set it as a property:
-<script>
-  const el = document.querySelector('${TAG}');
-  el.value = ${JSON.stringify(ctx.args.value || [])};
-</script>
--->
-`),
-          ),
+        transform: () => buildDocsHtmlControlledValue(),
       },
       description: {
         story:
-          'Demonstrates the controlled `value` prop (string[]). Buttons set `el.value` as a property to update selected items programmatically (and shows sanitization behavior).',
+          'Demonstrates the controlled `value` prop (string[]), including the external state that drives the component and updates it programmatically.',
       },
-      story: { height: '380px' },
+      story: { height: '420px' },
     },
   },
 };
@@ -632,6 +655,7 @@ export const Disabled = {
     inputId: 'acms-disabled',
     label: 'Disabled',
     disabled: true,
+    readOnly: false,
     badgeVariant: '',
     options: FRUIT,
     validationMessage: '',
@@ -649,6 +673,33 @@ Disabled.parameters = {
   docs: {
     description: {
       story: 'Disables the input field, preventing user interaction.',
+    },
+  },
+};
+
+export const ReadOnly = {
+  args: {
+    inputId: 'acms-read-only',
+    label: 'Read Only',
+    disabled: false,
+    readOnly: true,
+    badgeVariant: '',
+    options: FRUIT,
+    validationMessage: '',
+    addBtn: false,
+    addIcon: '',
+    editable: false,
+    autoSort: false,
+    addNewOnEnter: false,
+    clearIcon: '',
+    value: ['Banana', 'Mango'],
+  },
+};
+ReadOnly.name = 'Read Only';
+ReadOnly.parameters = {
+  docs: {
+    description: {
+      story: 'Keeps the selected badges visible while preventing typing, selection, removal, and clearing.',
     },
   },
 };
@@ -703,6 +754,7 @@ export const AccessibilityMatrix = {
     type: 'text',
     arialabelledBy: '',
     placeholder: 'Type to search...',
+    readOnly: false,
   },
   render: (args) => {
     const outer = document.createElement('div');
@@ -723,64 +775,45 @@ export const AccessibilityMatrix = {
 
     const container = document.createElement('div');
     container.style.display = 'grid';
-    container.style.gridTemplateColumns = 'repeat(auto-fit, minmax(360px, 1fr))';
+    container.style.gridTemplateColumns = '1fr';
     container.style.gap = '14px';
     container.style.maxWidth = '1100px';
     outer.appendChild(container);
 
     const variants = [
-      { __title: 'Default / normal', inputId: 'acms-a11y-default', label: 'Default', formLayout: '', disabled: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
-      { __title: 'Default / validation (required)', inputId: 'acms-a11y-default-validation', label: 'Default + validation', formLayout: '', disabled: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
-      { __title: 'Default / error', inputId: 'acms-a11y-default-error', label: 'Default + error', formLayout: '', disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
-      { __title: 'Default / disabled', inputId: 'acms-a11y-default-disabled', label: 'Default disabled', formLayout: '', disabled: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Apple', 'Mango'] },
+      { __title: 'Default / normal', inputId: 'acms-a11y-default', label: 'Default', required: false, validation: false, error: false, errorMessage: '', disabled: false, readOnly: false, value: [] },
+      { __title: 'Default / validation', inputId: 'acms-a11y-default-validation', label: 'Default + validation', required: true, validation: true, error: false, errorMessage: '', disabled: false, readOnly: false, value: [] },
+      { __title: 'Default / error', inputId: 'acms-a11y-default-error', label: 'Default + error', required: false, validation: false, error: true, errorMessage: 'Something went wrong.', disabled: false, readOnly: false, value: [] },
+      { __title: 'Default / disabled', inputId: 'acms-a11y-default-disabled', label: 'Default disabled', required: false, validation: false, error: false, errorMessage: '', disabled: true, readOnly: false, value: ['Apple'] },
 
-      { __title: 'Inline / normal', inputId: 'acms-a11y-inline', label: 'Inline', formLayout: 'inline', disabled: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
-      { __title: 'Inline / validation (required)', inputId: 'acms-a11y-inline-validation', label: 'Inline + validation', formLayout: 'inline', disabled: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
-      { __title: 'Inline / error', inputId: 'acms-a11y-inline-error', label: 'Inline + error', formLayout: 'inline', disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
-      { __title: 'Inline / disabled', inputId: 'acms-a11y-inline-disabled', label: 'Inline disabled', formLayout: 'inline', disabled: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Banana', 'Orange'] },
+      { __title: 'Inline / normal', inputId: 'acms-a11y-inline', label: 'Inline', formLayout: 'inline', required: false, validation: false, error: false, errorMessage: '', disabled: false, readOnly: false, value: [] },
+      { __title: 'Inline / validation', inputId: 'acms-a11y-inline-validation', label: 'Inline + validation', formLayout: 'inline', required: true, validation: true, error: false, errorMessage: '', disabled: false, readOnly: false, value: [] },
+      { __title: 'Inline / error', inputId: 'acms-a11y-inline-error', label: 'Inline + error', formLayout: 'inline', required: false, validation: false, error: true, errorMessage: 'Something went wrong.', disabled: false, readOnly: false, value: [] },
+      { __title: 'Inline / disabled', inputId: 'acms-a11y-inline-disabled', label: 'Inline disabled', formLayout: 'inline', required: false, validation: false, error: false, errorMessage: '', disabled: true, readOnly: false, value: ['Banana'] },
 
-      { __title: 'Horizontal / normal', inputId: 'acms-a11y-horizontal', label: 'Horizontal', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
-      { __title: 'Horizontal / validation (required)', inputId: 'acms-a11y-horizontal-validation', label: 'Horizontal + validation', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
-      { __title: 'Horizontal / error', inputId: 'acms-a11y-horizontal-error', label: 'Horizontal + error', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
-      { __title: 'Horizontal / disabled', inputId: 'acms-a11y-horizontal-disabled', label: 'Horizontal disabled', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Strawberry'] },
+      { __title: 'Horizontal / normal', inputId: 'acms-a11y-horizontal', label: 'Horizontal', formLayout: 'horizontal', labelAlign: 'right', labelCol: 4, inputCol: 8, required: false, validation: false, error: false, errorMessage: '', disabled: false, readOnly: false, value: [] },
+      { __title: 'Horizontal / validation', inputId: 'acms-a11y-horizontal-validation', label: 'Horizontal + validation', formLayout: 'horizontal', labelAlign: 'right', labelCol: 4, inputCol: 8, required: true, validation: true, error: false, errorMessage: '', disabled: false, readOnly: false, value: [] },
+      { __title: 'Horizontal / error', inputId: 'acms-a11y-horizontal-error', label: 'Horizontal + error', formLayout: 'horizontal', labelAlign: 'right', labelCol: 4, inputCol: 8, required: false, validation: false, error: true, errorMessage: 'Something went wrong.', disabled: false, readOnly: false, value: [] },
+      { __title: 'Horizontal / disabled', inputId: 'acms-a11y-horizontal-disabled', label: 'Horizontal disabled', formLayout: 'horizontal', labelAlign: 'right', labelCol: 4, inputCol: 8, required: false, validation: false, error: false, errorMessage: '', disabled: true, readOnly: false, value: ['Mango'] },
     ];
 
-    for (let i = 0; i < variants.length; i += 1) {
-      const v = variants[i];
-      const cell = mkMatrixCellA11y(
-        {
+    for (const variant of variants) {
+      container.appendChild(
+        mkMatrixCellA11y({
           ...args,
-          ...v,
-          options: Array.isArray(v.options) ? v.options : args.options,
-        },
-        { idOverride: `acms_a11y_${i}` },
+          ...variant,
+        }),
       );
-      container.appendChild(cell);
     }
 
     return outer;
   },
   parameters: {
+    controls: { disable: true },
     docs: {
       description: {
         story:
-          'Renders a matrix of layout + state combinations (default/inline/horizontal × error/validation/disabled). Each cell prints computed role/ARIA attributes/ids to support accessibility reviews and 508 checks.',
-      },
-      story: { height: '1400px' },
-      source: {
-        language: 'html',
-        transform: (_src, ctx) =>
-          wrapDocsHtml(
-            normalize(`
-<!-- Accessibility Matrix renders multiple instances; see Canvas for printed computed role + aria-* + ids. -->
-
-${buildDocsComponentHtml({
-  ...ctx.args,
-  inputId: 'acms-a11y-default',
-  label: 'Default',
-})}
-`),
-          ),
+          'Prints computed accessibility wiring for the combobox + listbox: aria-labelledby, aria-describedby, aria-controls, aria-expanded, aria-activedescendant, disabled/readOnly state, and validation/error message wiring.',
       },
     },
   },

@@ -32,6 +32,14 @@ describe('textarea-component', () => {
   const getOuter = (root: HTMLElement) => root.firstElementChild as HTMLElement;
   const getInputColumn = (root: HTMLElement) => root.querySelector('.form-group > div:last-child') as HTMLElement;
 
+  const splitIds = (v: string | null) =>
+    String(v || '')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+
+  const byId = (root: ParentNode, id: string) => root.querySelector(`[id="${String(id).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"]`);
+
   it('renders with default props', async () => {
     const page = await setup(`<textarea-component label="Comments"></textarea-component>`);
 
@@ -48,6 +56,10 @@ describe('textarea-component', () => {
     expect(textarea.getAttribute('rows')).toBe('3');
     expect(textarea.className).toContain('form-control');
     expect(textarea.getAttribute('placeholder')).toBe('Comments');
+    expect(textarea.getAttribute('aria-labelledby')).toBe('comments__label');
+    expect(splitIds(textarea.getAttribute('aria-describedby'))).toContain('comments__desc');
+    expect(textarea.getAttribute('aria-readonly')).toBeNull();
+    expect(textarea.getAttribute('aria-disabled')).toBeNull();
   });
 
   it('renders validation + counter snapshot', async () => {
@@ -106,6 +118,8 @@ describe('textarea-component', () => {
     expect(textarea.hasAttribute('required')).toBe(true);
     expect(textarea.getAttribute('rows')).toBe('5');
     expect(textarea.getAttribute('maxlength')).toBe('120');
+    expect(textarea.getAttribute('aria-disabled')).toBe('true');
+    expect(textarea.getAttribute('aria-readonly')).toBe('true');
   });
 
   it('renders textarea text size classes', async () => {
@@ -171,6 +185,7 @@ describe('textarea-component', () => {
     expect(textarea.getAttribute('id')).toBe('custom-textarea-id');
     expect(label.getAttribute('for')).toBe('custom-textarea-id');
     expect(label.getAttribute('id')).toBe('custom-textarea-id__label');
+    expect(splitIds(textarea.getAttribute('aria-describedby'))).toContain('custom-textarea-id__desc');
   });
 
   it('generates ids from label when inputId is not provided', async () => {
@@ -201,6 +216,10 @@ describe('textarea-component', () => {
     expect(help).toBeTruthy();
     expect(help.id).toBeTruthy();
     expect(describedBy).toContain(help.id);
+
+    splitIds(describedBy).forEach(id => {
+      expect(byId(root, id)).toBeTruthy();
+    });
   });
 
   it('renders validation message when validation is true', async () => {
@@ -221,6 +240,8 @@ describe('textarea-component', () => {
     expect(textarea.className).toContain('is-invalid');
     expect(textarea.getAttribute('aria-invalid')).toBe('true');
     expect(textarea.getAttribute('aria-describedby')).toContain(feedback.id);
+    expect(feedback.getAttribute('aria-live')).toBe('polite');
+    expect(feedback.getAttribute('aria-atomic')).toBe('true');
   });
 
   it('renders character counter when maxLength is provided', async () => {
@@ -240,6 +261,8 @@ describe('textarea-component', () => {
     expect(counter).toBeTruthy();
     expect(counter.textContent?.trim()).toBe('5 / 20');
     expect(describedBy).toContain(counter.id);
+    expect(counter.getAttribute('aria-live')).toBe('polite');
+    expect(counter.getAttribute('aria-atomic')).toBe('true');
   });
 
   it('does not render counter when maxLength is missing or invalid', async () => {
@@ -532,5 +555,50 @@ describe('textarea-component', () => {
 
     const textarea = page.root?.querySelector('textarea') as HTMLTextAreaElement;
     expect(textarea.getAttribute('rows')).toBe('3');
+  });
+
+  it('renders readOnly semantics and styling', async () => {
+    const page = await setup(`
+    <textarea-component
+      label="Read Only Notes"
+      read-only
+      value="Locked text"
+    ></textarea-component>
+  `);
+
+    const root = page.root as HTMLElement;
+    const textarea = root.querySelector('textarea') as HTMLTextAreaElement;
+    const label = root.querySelector('label') as HTMLLabelElement;
+
+    expect(textarea.hasAttribute('readonly')).toBe(true);
+    expect(textarea.getAttribute('aria-readonly')).toBe('true');
+    expect(textarea.className).toContain('read-only');
+    expect(textarea.className).not.toContain('is-invalid');
+    expect(label.className).not.toContain('invalid');
+    expect((page.rootInstance as any).valueState).toBe('Locked text');
+  });
+
+  it('keeps aria-describedby ids resolvable when help, counter, and validation are all present', async () => {
+    const page = await setup(`
+      <textarea-component
+        label="Summary"
+        validation
+        validation-message="Please enter a summary."
+        value="Hello"
+        max-length="20"
+      ></textarea-component>
+    `);
+
+    const root = page.root as HTMLElement;
+    const textarea = root.querySelector('textarea') as HTMLTextAreaElement;
+    const describedBy = splitIds(textarea.getAttribute('aria-describedby'));
+
+    expect(describedBy).toContain('summary__desc');
+    expect(describedBy).toContain('summary__validation');
+    expect(describedBy).toContain('summary__counter');
+
+    describedBy.forEach(id => {
+      expect(byId(root, id)).toBeTruthy();
+    });
   });
 });

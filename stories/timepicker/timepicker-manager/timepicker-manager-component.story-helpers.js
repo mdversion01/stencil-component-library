@@ -1,3 +1,5 @@
+// File: src/stories/timepicker-manager-component.story-helpers.js
+
 export const DocsWrapStyles = () => {
   const style = document.createElement('style');
   style.innerHTML = `
@@ -11,11 +13,11 @@ export const DocsWrapStyles = () => {
   return style;
 };
 
-export const normalizeHtml = (html) => {
+export const normalizeHtml = html => {
   const lines = String(html ?? '')
     .replace(/\r\n/g, '\n')
     .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
+    .map(l => l.replace(/[ \t]+$/g, ''));
 
   const out = [];
   let prevBlank = false;
@@ -38,7 +40,7 @@ export const normalizeHtml = (html) => {
   return out.join('\n');
 };
 
-export const normalizeIdList = (v) => {
+export const normalizeIdList = v => {
   const s = String(v ?? '').trim();
   if (!s) return '';
   return s.split(/\s+/).filter(Boolean).join(' ');
@@ -51,7 +53,7 @@ export const attr = (name, v) => {
   return `${name}="${String(v).replace(/"/g, '&quot;')}"`;
 };
 
-export const buildDocsHtml = (args) => {
+export const buildDocsHtml = args => {
   const attrs = [
     attr('aria-label', args.ariaLabel),
     attr('aria-labelledby', normalizeIdList(args.ariaLabelledby)),
@@ -66,18 +68,21 @@ export const buildDocsHtml = (args) => {
     boolAttr('is-valid', args.isValid),
     attr('label-text', args.labelText),
     boolAttr('required', args.required),
+    boolAttr('read-only', args.readOnly),
     boolAttr('show-label', args.showLabel),
     attr('size', args.size),
+    attr('time-input-throttle-ms', args.timeInputThrottleMs),
+    boolAttr('time-validation', args.timeValidation),
+    attr('time-validation-message', args.timeValidationMessage),
     boolAttr('twelve-hour-only', args.twelveHourOnly),
     boolAttr('twenty-four-hour-only', args.twentyFourHourOnly),
     boolAttr('use-pl-timepicker', args.usePlTimepicker),
     boolAttr('validation', args.validation),
     attr('validation-message', args.validationMessage),
     attr('value', args.value),
-    attr('time-input-throttle-ms', args.timeInputThrottleMs),
   ]
     .filter(Boolean)
-    .map((line) => `  ${line}`)
+    .map(line => `  ${line}`)
     .join('\n');
 
   return normalizeHtml(`
@@ -87,7 +92,7 @@ ${attrs}
 `);
 };
 
-export const Template = (args) => {
+export const Template = args => {
   const width = Number.isFinite(args.wrapperWidth) ? `${args.wrapperWidth}px` : '';
 
   const attrs = [
@@ -104,15 +109,18 @@ export const Template = (args) => {
     boolAttr('is-valid', args.isValid),
     attr('label-text', args.labelText),
     boolAttr('required', args.required),
+    boolAttr('read-only', args.readOnly),
     boolAttr('show-label', args.showLabel),
     attr('size', args.size),
+    attr('time-input-throttle-ms', args.timeInputThrottleMs),
+    boolAttr('time-validation', args.timeValidation),
+    attr('time-validation-message', args.timeValidationMessage),
     boolAttr('twelve-hour-only', args.twelveHourOnly),
     boolAttr('twenty-four-hour-only', args.twentyFourHourOnly),
     boolAttr('use-pl-timepicker', args.usePlTimepicker),
     boolAttr('validation', args.validation),
     attr('validation-message', args.validationMessage),
     attr('value', args.value),
-    attr('time-input-throttle-ms', args.timeInputThrottleMs),
   ]
     .filter(Boolean)
     .join('\n    ');
@@ -126,18 +134,16 @@ export const Template = (args) => {
 `);
 };
 
-export const getChild = (mgr) =>
-  mgr?.querySelector('plumage-timepicker-component') ||
-  mgr?.querySelector('timepicker-component') ||
-  null;
+export const getChild = mgr =>
+  mgr?.querySelector('plumage-timepicker-component') || mgr?.querySelector('timepicker-component') || null;
 
-const splitIds = (v) =>
+const splitIds = v =>
   String(v || '')
     .trim()
     .split(/\s+/)
     .filter(Boolean);
 
-const safeCssEscape = (value) =>
+const safeCssEscape = value =>
   typeof CSS !== 'undefined' && typeof CSS.escape === 'function'
     ? CSS.escape(value)
     : String(value).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
@@ -161,12 +167,19 @@ export const getSnapshot = (mgr, scopeRoot) => {
         ariaLabel: child.ariaLabel ?? null,
         ariaLabelledby: child.ariaLabelledby ?? null,
         ariaDescribedby: child.ariaDescribedby ?? null,
-        disableTimepicker:
-          childTag === 'plumage-timepicker-component'
-            ? child.disabled ?? null
-            : child.disableTimepicker ?? null,
+        disableTimepicker: childTag === 'plumage-timepicker-component' ? child.disabled ?? null : child.disableTimepicker ?? null,
         showLabel: child.showLabel ?? null,
         inputId: child.inputId ?? null,
+        inputName: child.inputName ?? null,
+        value: child.value ?? null,
+        readOnly: child.readOnly ?? null,
+        validation: child.validation ?? null,
+        validationMessage: child.validationMessage ?? null,
+        timeValidation: child.timeValidation ?? null,
+        timeValidationMessage: child.timeValidationMessage ?? null,
+        isValid: child.isValid ?? null,
+        isTwentyFourHourFormat: child.isTwentyFourHourFormat ?? null,
+        hideSeconds: child.hideSeconds ?? null,
       }
     : null;
 
@@ -175,6 +188,7 @@ export const getSnapshot = (mgr, scopeRoot) => {
 
   const mgrInputId = mgr?.getAttribute?.('input-id') || '';
   const inferredValidationId = mgrInputId ? `${mgrInputId}-validation` : null;
+  const inferredTimeValidationId = mgrInputId ? `${mgrInputId}-time-validation` : null;
 
   return {
     managerTag: mgr?.tagName?.toLowerCase?.() ?? null,
@@ -184,21 +198,24 @@ export const getSnapshot = (mgr, scopeRoot) => {
       'aria-describedby': mgr?.getAttribute?.('aria-describedby') ?? null,
       'input-id': mgrInputId || null,
       'validation-message': mgr?.getAttribute?.('validation-message') ?? null,
+      'time-validation-message': mgr?.getAttribute?.('time-validation-message') ?? null,
       validation: mgr?.hasAttribute?.('validation') ?? null,
+      'time-validation': mgr?.hasAttribute?.('time-validation') ?? null,
       'is-valid': mgr?.getAttribute?.('is-valid') ?? null,
       'use-pl-timepicker': mgr?.hasAttribute?.('use-pl-timepicker') ?? null,
       'disable-timepicker': mgr?.hasAttribute?.('disable-timepicker') ?? null,
+      'read-only': mgr?.hasAttribute?.('read-only') ?? null,
     },
     child: childProps,
     resolved: {
       labelledbyIds: labelledIds,
-      labelledbyAllResolve: labelledIds.every((id) => resolveId(scopeRoot, id)),
+      labelledbyAllResolve: labelledIds.every(id => resolveId(scopeRoot, id)),
       describedbyIds: describedIds,
-      describedbyAllResolve: describedIds.every((id) => resolveId(scopeRoot, id)),
+      describedbyAllResolve: describedIds.every(id => resolveId(scopeRoot, id)),
       inferredValidationId,
-      inferredValidationResolves: inferredValidationId
-        ? resolveId(scopeRoot, inferredValidationId)
-        : false,
+      inferredValidationResolves: inferredValidationId ? resolveId(scopeRoot, inferredValidationId) : false,
+      inferredTimeValidationId,
+      inferredTimeValidationResolves: inferredTimeValidationId ? resolveId(scopeRoot, inferredTimeValidationId) : false,
     },
   };
 };

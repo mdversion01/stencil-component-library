@@ -13,11 +13,11 @@ export const DocsWrapStyles = () => {
   return style;
 };
 
-export const normalize = (txt) => {
+export const normalize = txt => {
   const lines = String(txt || '')
     .replace(/\r\n/g, '\n')
     .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
+    .map(l => l.replace(/[ \t]+$/g, ''));
 
   const out = [];
   let prevBlank = false;
@@ -40,13 +40,13 @@ export const normalize = (txt) => {
   return out.join('\n');
 };
 
-export const attrLines = (pairs) =>
+export const attrLines = pairs =>
   pairs
     .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
     .map(([k, v]) => (v === true ? `${k}` : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
     .join('\n  ');
 
-export const buildDocsHtml = (args) =>
+export const buildDocsHtml = args =>
   normalize(`
 <autocomplete-single
   ${attrLines([
@@ -79,6 +79,7 @@ export const buildDocsHtml = (args) =>
     ['error', args.error],
     ['error-message', args.errorMessage],
     ['disabled', args.disabled],
+    ['read-only', args.readOnly],
     ['label-hidden', args.labelHidden],
     ['dev-mode', args.devMode],
 
@@ -92,18 +93,67 @@ export const buildDocsHtml = (args) =>
 ></autocomplete-single>
 `);
 
-export const wrapDocsHtml = (innerHtml) =>
+export const buildDocsHtmlControlledValue = () =>
+  normalize(`
+<div style="max-width:680px; display:grid; gap:10px;">
+  <div id="controlled-value-state" style="font-size:14px; color:#444;">
+    External controlled value: "Apple"
+  </div>
+
+  <autocomplete-single
+    id="acSingle_controlled"
+    input-id="acSingle_controlled"
+    label="Autocomplete Single"
+    placeholder="Type to search/filter..."
+    value="Apple"
+  ></autocomplete-single>
+
+  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+    <button type="button" id="set-apple">Set "Apple"</button>
+    <button type="button" id="set-mango">Set "Mango"</button>
+    <button type="button" id="clear-value">Clear value</button>
+  </div>
+
+  <script>
+    let controlledValue = 'Apple';
+
+    const host = document.querySelector('autocomplete-single');
+    const state = document.querySelector('#controlled-value-state');
+
+    const renderState = () => {
+      state.textContent = 'External controlled value: ' + JSON.stringify(controlledValue);
+    };
+
+    const applyValue = next => {
+      controlledValue = typeof next === 'string' ? next : '';
+      host.value = controlledValue;
+      renderState();
+    };
+
+    document.querySelector('#set-apple').addEventListener('click', () => applyValue('Apple'));
+    document.querySelector('#set-mango').addEventListener('click', () => applyValue('Mango'));
+    document.querySelector('#clear-value').addEventListener('click', () => applyValue(''));
+
+    host.addEventListener('itemSelect', e => applyValue(String(e.detail || '')));
+    host.addEventListener('clear', () => applyValue(''));
+
+    renderState();
+  </script>
+</div>
+`);
+
+export const wrapDocsHtml = innerHtml =>
   normalize(`
 <div style="max-width:680px;">
   ${String(innerHtml).replace(/\n/g, '\n  ')}
 </div>
 `);
 
-export const buildDocsHtmlMany = (snippets) =>
+export const buildDocsHtmlMany = snippets =>
   wrapDocsHtml(
     normalize(`
 <div style="display:grid; gap:14px;">
-${snippets.map((s) => `  ${String(s).replace(/\n/g, '\n  ')}`).join('\n')}
+${snippets.map(s => `  ${String(s).replace(/\n/g, '\n  ')}`).join('\n')}
 </div>
 `),
   );
@@ -166,9 +216,9 @@ export const DEFAULT_OPTIONS = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 
 
 const __renderSeqByStory = Object.create(null);
 
-const safeStoryKey = (ctx) => String(ctx?.id || 'story').replace(/[^a-z0-9_-]/gi, '_');
+const safeStoryKey = ctx => String(ctx?.id || 'story').replace(/[^a-z0-9_-]/gi, '_');
 
-const nextMountSuffix = (ctx) => {
+const nextMountSuffix = ctx => {
   const k = safeStoryKey(ctx);
   __renderSeqByStory[k] = (__renderSeqByStory[k] || 0) + 1;
   return `${k}_${__renderSeqByStory[k]}`;
@@ -179,14 +229,14 @@ const withUniqueId = (base, suffix) => {
   return `${b}__${suffix}`;
 };
 
-const getMountSuffix = (ctx) => {
+const getMountSuffix = ctx => {
   if (!ctx) return 'mount';
   if (!ctx.__acSingleMountSuffix) ctx.__acSingleMountSuffix = nextMountSuffix(ctx);
   if (!ctx.__acSingleLocalSeq) ctx.__acSingleLocalSeq = 0;
   return ctx.__acSingleMountSuffix;
 };
 
-const nextLocalSeq = (ctx) => {
+const nextLocalSeq = ctx => {
   if (!ctx) return 1;
   ctx.__acSingleLocalSeq = (ctx.__acSingleLocalSeq || 0) + 1;
   return ctx.__acSingleLocalSeq;
@@ -238,6 +288,7 @@ export const renderComponent = (args, ctx) => {
   args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
   args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
   args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
+  args.readOnly ? el.setAttribute('read-only', '') : el.removeAttribute('read-only');
   args.labelHidden ? el.setAttribute('label-hidden', '') : el.removeAttribute('label-hidden');
   args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
   args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
@@ -246,11 +297,11 @@ export const renderComponent = (args, ctx) => {
   setAutoSortWhenReady(el, args.autoSort);
   setValueWhenReady(el, args.value);
 
-  el.addEventListener('itemSelect', (e) => console.log('[autocomplete-single] itemSelect', e.detail));
-  el.addEventListener('valueChange', (e) => console.log('[autocomplete-single] valueChange', e.detail));
+  el.addEventListener('itemSelect', e => console.log('[autocomplete-single] itemSelect', e.detail));
+  el.addEventListener('valueChange', e => console.log('[autocomplete-single] valueChange', e.detail));
   el.addEventListener('clear', () => console.log('[autocomplete-single] clear'));
 
-  el.addEventListener('itemSelect', (e) => {
+  el.addEventListener('itemSelect', e => {
     const next = String(e?.detail ?? '');
     updateArgsBestEffort(ctx, { value: next });
   });

@@ -1,4 +1,4 @@
-// src/components/input-field/input-field-component.tsx
+// File: src/components/input-field/input-field-component.tsx
 import { Component, h, Prop, Element, State, Watch, Event, EventEmitter, Fragment } from '@stencil/core';
 
 @Component({
@@ -24,7 +24,7 @@ export class InputFieldComponent {
   @Prop() type: string = 'text';
   @Prop() validation: boolean = false; // external control
   @Prop() validationMessage: string = '';
-  @Prop() value: string = ''; // external value
+  @Prop({ mutable: true }) value: string = ''; // external value
   @Prop() placeholder?: string;
 
   /** Legacy numeric cols (fallback) */
@@ -60,6 +60,7 @@ export class InputFieldComponent {
   onValuePropChange(newVal: string) {
     this.valueState = newVal ?? '';
   }
+
   @Watch('validation')
   onValidationPropChange(newVal: boolean) {
     this.validationState = !!newVal;
@@ -107,13 +108,12 @@ export class InputFieldComponent {
 
   private computeIds() {
     // Prefer explicit inputId if provided; otherwise use per-instance uid.
-    const base =
-      (this.inputId && String(this.inputId).trim()) ||
-      (this.label && this.camelCase(this.label)) ||
-      this.uid;
+    const base = (this.inputId && String(this.inputId).trim()) || (this.label && this.camelCase(this.label)) || this.uid;
 
     // Ensure final base is selector/id safe enough
-    const safeBase = String(base).replace(/\s+/g, '').replace(/[^A-Za-z0-9\-_:.]/g, '');
+    const safeBase = String(base)
+      .replace(/\s+/g, '')
+      .replace(/[^A-Za-z0-9\-_:.]/g, '');
     this.ids.input = safeBase;
     this.ids.label = `${safeBase}__label`;
     this.ids.desc = `${safeBase}__desc`;
@@ -128,9 +128,7 @@ export class InputFieldComponent {
 
   private camelCase(str: string) {
     if (!str) return '';
-    return str
-      .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase()))
-      .replace(/\s+/g, '');
+    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase())).replace(/\s+/g, '');
   }
 
   /** Sanitize user-typed input: strip tags, remove control chars, trim, cap length. */
@@ -164,6 +162,7 @@ export class InputFieldComponent {
     if (clean !== target.value) target.value = clean;
 
     this.valueState = clean;
+    this.value = clean;
     this.valueChange.emit(this.valueState);
 
     if (this.meetsTypingThreshold() && this.validationState) {
@@ -275,12 +274,7 @@ export class InputFieldComponent {
   private renderValidation() {
     if (!this.validationState || !this.validationMessage) return null;
     return (
-      <div
-        id={this.ids.validation}
-        class="invalid-feedback form-text"
-        aria-live="polite"
-        aria-atomic="true"
-      >
+      <div id={this.ids.validation} class="invalid-feedback form-text" aria-live="polite" aria-atomic="true">
         {this.validationMessage}
       </div>
     );
@@ -294,8 +288,8 @@ export class InputFieldComponent {
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
-      this.isInline() ? `col-form-label` : '',
-      this.validationState ? 'invalid' : '',
+      this.isInline() ? 'col-form-label' : '',
+      this.readOnly || this.disabled ? '' : this.validationState ? 'invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -303,37 +297,27 @@ export class InputFieldComponent {
     const text = this.isHorizontal() || this.isInline() ? `${this.label}:` : this.label;
 
     return (
-      <label
-        id={this.ids.label}
-        class={classes}
-        htmlFor={this.ids.input || undefined}
-      >
-        <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
-        {this.required ? <span class="required">*</span> : null}
+      <label id={this.ids.label} class={classes} htmlFor={this.ids.input || undefined}>
+        <span class={this.readOnly || this.disabled ? '' : this.showAsRequired() ? 'required' : ''}>{text}</span>
+        {this.readOnly || this.disabled ? null : this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
 
   private renderInput() {
     const sizeClass = this.size === 'sm' ? 'form-control-sm' : this.size === 'lg' ? 'form-control-lg' : '';
-    const classes = ['form-control', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    const classes = ['form-control', this.disabled ? 'disabled' : this.readOnly ? 'read-only' : this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
 
     const placeholder = (this.placeholder && this.placeholder.trim().length > 0 ? this.placeholder : this.label) || 'Placeholder Text';
 
-    // aria-describedby should always include help text; include validation id when present
-    const describedBy = [
-      this.ids.desc,
-      this.validationState && this.validationMessage ? this.ids.validation : '',
-    ]
-      .filter(Boolean)
-      .join(' ');
+    const describedBy = [this.ids.desc, this.validationState && this.validationMessage ? this.ids.validation : ''].filter(Boolean).join(' ');
 
     return (
       <Fragment>
         {this.renderHelpText()}
 
         <input
-          ref={(el) => {
+          ref={el => {
             this.inputEl = el as HTMLInputElement;
             this.applyFormAttribute();
           }}
@@ -347,6 +331,8 @@ export class InputFieldComponent {
           aria-labelledby={this.ids.label}
           aria-describedby={describedBy || undefined}
           aria-invalid={this.validationState ? 'true' : undefined}
+          aria-disabled={this.disabled ? 'true' : undefined}
+          aria-readonly={this.readOnly ? 'true' : undefined}
           disabled={this.disabled}
           required={this.required}
           readOnly={this.readOnly}
@@ -369,22 +355,13 @@ export class InputFieldComponent {
     else if (this.isInline()) groupClasses.push('row', 'inline');
 
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass = this.isHorizontal()
-      ? this.buildColClass('input') || undefined
-      : this.isInline()
-        ? this.buildColClass('input') || undefined
-        : undefined;
+    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     return (
       <div class={outerClass}>
         <div class={groupClasses.join(' ')}>
           {this.renderInputLabel(labelColClass)}
-
-          {this.isHorizontal() ? (
-            <div class={inputColClass}>{this.renderInput()}</div>
-          ) : (
-            <div>{this.renderInput()}</div>
-          )}
+          {this.isHorizontal() ? <div class={inputColClass}>{this.renderInput()}</div> : <div>{this.renderInput()}</div>}
         </div>
       </div>
     );

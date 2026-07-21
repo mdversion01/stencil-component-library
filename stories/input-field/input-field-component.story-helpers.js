@@ -1,20 +1,20 @@
 // File: src/stories/input-field-component/input-field-component.story-helpers.js
 
-export const normalize = (value) => {
+export const normalize = value => {
   if (value === '' || value == null) return undefined;
   if (value === true) return true;
   if (value === false) return false;
   return value;
 };
 
-export const esc = (s) =>
+export const esc = s =>
   String(s)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 
-export const buildDocsHtml = (args) => {
+export const buildDocsHtml = args => {
   const a = { ...args };
 
   delete a.wrapWithForm;
@@ -69,6 +69,41 @@ export const buildDocsHtml = (args) => {
 
   return openTag;
 };
+
+export const buildDocsHtmlValueProp = () =>
+  '<input-field-component label="First Name" input-id="first-name-value" value="Ada" placeholder="Enter your first name"></input-field-component>';
+
+export const buildDocsHtmlExternalValue = () =>
+  [
+    '<div>',
+    '  <button type="button" id="load-ada">Load Ada</button>',
+    '  <button type="button" id="load-grace">Load Grace</button>',
+    '  <button type="button" id="load-katherine">Load Katherine</button>',
+    '  <button type="button" id="clear-value">Clear</button>',
+    '',
+    '  <input-field-component',
+    '    label="First Name"',
+    '    input-id="first-name-external"',
+    '    placeholder="Enter your first name"',
+    '  ></input-field-component>',
+    '</div>',
+    '',
+    '<script>',
+    "  const host = document.querySelector('input-field-component');",
+    "  document.querySelector('#load-ada').addEventListener('click', () => {",
+    "    host.value = 'Ada';",
+    '  });',
+    "  document.querySelector('#load-grace').addEventListener('click', () => {",
+    "    host.value = 'Grace';",
+    '  });',
+    "  document.querySelector('#load-katherine').addEventListener('click', () => {",
+    "    host.value = 'Katherine';",
+    '  });',
+    "  document.querySelector('#clear-value').addEventListener('click', () => {",
+    "    host.value = '';",
+    '  });',
+    '</script>',
+  ].join('\n');
 
 export const buildDocsHtmlSizes = () =>
   [
@@ -155,7 +190,7 @@ export const makeInput = (args = {}) => {
   el.labelCols = args.labelCols || '';
   el.inputCols = args.inputCols || '';
 
-  el.addEventListener('valueChange', (e) => {
+  el.addEventListener('valueChange', e => {
     console.log('[valueChange]', e.detail);
   });
 
@@ -172,7 +207,7 @@ export const wrapInForm = (inputEl, { formLayout = '', formId = 'demo-form' } = 
   return form;
 };
 
-export const template = (args) => {
+export const template = args => {
   const input = makeInput(args);
   return args.wrapWithForm ? wrapInForm(input, { formLayout: args.formLayout, formId: args.formId }) : input;
 };
@@ -226,6 +261,7 @@ export function snapshotA11y(host) {
           id: input.getAttribute('id') || '',
           role: input.getAttribute('role') || '',
           class: input.className || '',
+          value: input.value ?? '',
           ...pickAttrs(input, [
             'aria-label',
             'aria-labelledby',

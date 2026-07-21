@@ -142,7 +142,7 @@ describe('plumage-textarea-component', () => {
     `);
 
     const textarea = getTextarea(getHost(page));
-    expect(textarea.className).toContain('readonly');
+    expect(textarea.className).toContain('read-only');
   });
 
   it('renders label hidden class when labelHidden is true', async () => {

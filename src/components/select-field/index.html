@@ -46,7 +46,7 @@
           {"value":"banana","name":"Banana"},
           {"value":"cherry","name":"Cherry"}
         ]'
-        custom
+          custom
         ></select-field-component>
 
         <select-field-component
@@ -79,7 +79,60 @@
           {"value":"cherry","name":"Cherry"}
         ]'
         ></select-field-component>
-        </div>
+
+        <select-field-component
+          label="Favorite Fruit"
+          size="lg"
+          form-layout="horizontal"
+          label-align="right"
+          select-field-id="fruit4"
+          value=""
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+          validation-message="Please select an option."
+          required
+          validation
+        ></select-field-component>
+
+        <select-field-component
+          label="Favorite Fruit"
+          size="lg"
+          form-layout="horizontal"
+          label-align="right"
+          select-field-id="fruit5"
+          value=""
+          read-only
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+          validation-message="Please select an option."
+          required
+          validation
+        ></select-field-component>
+
+        <select-field-component
+          label="Favorite Fruit"
+          size="lg"
+          form-layout="horizontal"
+          label-align="right"
+          select-field-id="fruit6"
+          disabled
+          value=""
+          options='[
+          {"value":"apple","name":"Apple"},
+          {"value":"banana","name":"Banana"},
+          {"value":"cherry","name":"Cherry"}
+        ]'
+          validation-message="Please select an option."
+          required
+          validation
+        ></select-field-component>
+      </div>
     </app-wrapper>
 
     <script type="module"></script>

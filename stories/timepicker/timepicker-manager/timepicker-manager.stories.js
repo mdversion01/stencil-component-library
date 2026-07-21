@@ -1,3 +1,5 @@
+// File: src/stories/timepicker-manager-component.stories.js
+
 import DocsPage from './timepicker-manager-component.docs.mdx';
 import {
   DocsWrapStyles,
@@ -22,15 +24,18 @@ const baseArgs = {
   isValid: true,
   labelText: 'Add Time',
   required: false,
+  readOnly: false,
   showLabel: true,
   size: '',
+  timeInputThrottleMs: 50,
+  timeValidation: true,
+  timeValidationMessage: '',
   twelveHourOnly: false,
   twentyFourHourOnly: false,
   usePlTimepicker: false,
   validation: false,
   validationMessage: '',
   value: '',
-  timeInputThrottleMs: 50,
   wrapperWidth: 240,
 };
 
@@ -39,7 +44,7 @@ const storyWithTemplate = {
 };
 
 export default {
-  title: 'Components/Timepicker/Timepicker Manager',
+  title: 'Form/Timepicker/Timepicker Manager',
   tags: ['autodocs'],
   decorators: [
     Story => {
@@ -69,54 +74,50 @@ export default {
       page: DocsPage,
       description: {
         component: `
-The **Timepicker Manager** wraps a timepicker input and forwards props to either:
-- \`<timepicker-component>\` (classic) or
-- \`<plumage-timepicker-component>\` (plumage)
+The **Timepicker Manager** wraps either:
+- \`<timepicker-component>\` or
+- \`<plumage-timepicker-component>\`
 
-It provides a consistent API surface (a11y, value/events, methods) across both implementations.
+and forwards a common API to the selected child implementation.
 
 ## Controlled value + events
-The manager forwards \`value\` and re-emits child events:
+The manager forwards \`value\` and re-emits child events.
 
 ### Passthrough events
 - \`timeChange\`
 - \`timeInput\`
 
-### Namespaced events (recommended for parent listeners)
-To avoid collisions when multiple timepickers exist in the same page:
-- \`managerTimeChange\` includes \`managerInputId\` + \`impl\`
-- \`managerTimeInput\` includes \`managerInputId\` + \`impl\`
+### Namespaced events
+- \`managerTimeChange\`
+- \`managerTimeInput\`
 
-\`impl\` is either:
-- \`timepicker-component\` or \`plumage-timepicker-component\`
+These include:
+- \`managerInputId\`
+- \`impl\` = \`timepicker-component\` | \`plumage-timepicker-component\`
 
-## Accessibility + derived IDs (recommended)
-The manager uses \`input-id\` as the stable base for relationships and forwards a11y props to the child.
+## Accessibility + derived IDs
+The manager uses \`input-id\` as the stable base and forwards a11y props to the child.
 
-### Accessible name precedence (manager-level)
-- If \`aria-labelledby\` is provided: it wins and \`aria-label\` is not forwarded.
-- Otherwise: \`aria-label\` is forwarded when present.
+### Accessible name precedence
+- if \`aria-labelledby\` is provided, it wins and \`aria-label\` is not forwarded
+- otherwise \`aria-label\` is forwarded when present
 
-### \`aria-describedby\` composition (manager-level)
-The manager forwards \`aria-describedby\` and **appends** the child validation container id when a validation message exists:
-- external ids via \`aria-describedby\`
-- \`\${inputId}-validation\` when \`validation-message\` has content
+### \`aria-describedby\` composition
+The manager forwards external \`aria-describedby\` ids and appends:
+- \`\${inputId}-time-validation\` when \`time-validation\` is enabled and \`time-validation-message\` has content
+- \`\${inputId}-validation\` when \`validation\` is enabled and \`validation-message\` has content
+
+## Child forwarding differences
+- classic child receives \`disableTimepicker\`
+- plumage child receives \`disabled\`
 
 ## Public methods
-The manager exposes methods for form/keyboard-first flows:
-
 - \`focusInput({ open: true })\`
-  - focuses the child input
-  - optionally opens the popover
-  - when opened, focuses the Hour spinbutton so arrow keys work immediately
 - \`close()\`
-  - closes the popover (both implementations)
 
-## Keyboard model
-When the popover is open (both implementations), the keyboard model is consistent:
-- Tab trap, Escape to close, Left/Right roving focus, Up/Down increment, PageUp/PageDown ±10, Home/End min/max, Enter commit.
+These proxy to the active child when supported.
 
-> Note: 508 compliance also depends on page-level usage: unique \`input-id\` per instance, visible or programmatic labels, and consistent error messaging.
+> Use a unique \`input-id\` per instance for correct relationship wiring.
 `.trim(),
       },
       source: {
@@ -130,19 +131,19 @@ When the popover is open (both implementations), the keyboard model is consisten
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
-      description: 'Accessible label for the timepicker input (used when aria-labelledby not provided).',
+      description: 'Accessible label for the timepicker input when aria-labelledby is not provided.',
       table: { category: 'Accessibility' },
     },
     ariaLabelledby: {
       control: 'text',
       name: 'aria-labelledby',
-      description: 'ID(s) of element(s) that label the timepicker input (space-separated). Takes precedence over aria-label.',
+      description: 'ID(s) of external labeling element(s), space-separated. Takes precedence over aria-label.',
       table: { category: 'Accessibility' },
     },
     ariaDescribedby: {
       control: 'text',
       name: 'aria-describedby',
-      description: 'ID(s) of external description/help elements (space-separated). If validationMessage is present, manager appends the child validation element id.',
+      description: 'External description/help ids. Manager may append time-validation and validation ids.',
       table: { category: 'Accessibility' },
     },
 
@@ -150,44 +151,44 @@ When the popover is open (both implementations), the keyboard model is consisten
       control: 'boolean',
       name: 'show-label',
       table: { defaultValue: { summary: true }, category: 'Labeling' },
-      description: 'Whether to show the label (for demo purposes; if not showing a visible label, prefer aria-labelledby or aria-label).',
+      description: 'Whether to show the label.',
     },
     labelText: {
       control: 'text',
       name: 'label-text',
-      description: 'Text for the label (if show-label is true)',
+      description: 'Text for the label.',
       table: { category: 'Labeling' },
     },
     required: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Labeling' },
       name: 'required',
-      description: 'Show required indicator (label asterisk) where supported.',
+      description: 'Marks the field as required.',
     },
 
     inputId: {
       control: 'text',
       name: 'input-id',
-      description: 'ID for the timepicker input (should be unique per instance).',
+      description: 'Base input id. Should be unique per instance.',
       table: { category: 'Input Attributes' },
     },
     inputName: {
       control: 'text',
       name: 'input-name',
-      description: 'Name attribute for the timepicker input.',
+      description: 'Name attribute for the input.',
       table: { category: 'Input Attributes' },
     },
 
     inputWidth: {
       control: { type: 'number', min: 0, step: 1 },
       name: 'input-width',
-      description: 'Custom width for the timepicker input (px).',
+      description: 'Custom input width in px.',
       table: { category: 'Layout & Sizing' },
     },
     size: {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
-      description: 'Size of the timepicker input.',
+      description: 'Input size.',
       table: { category: 'Layout & Sizing' },
     },
 
@@ -195,7 +196,7 @@ When the popover is open (both implementations), the keyboard model is consisten
       control: 'boolean',
       table: { defaultValue: { summary: true }, category: 'Format & Options' },
       name: 'is-twenty-four-hour-format',
-      description: 'Initial format preference (24h).',
+      description: 'Current format preference.',
     },
     twelveHourOnly: {
       control: 'boolean',
@@ -227,26 +228,43 @@ When the popover is open (both implementations), the keyboard model is consisten
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'State' },
       name: 'disable-timepicker',
-      description: 'Disable the timepicker (input + buttons + dropdown). Passed to child as disableTimepicker or disabled (Plumage).',
+      description: 'Disable the timepicker. Forwarded as disableTimepicker or disabled depending on child implementation.',
+    },
+    readOnly: {
+      control: 'boolean',
+      table: { defaultValue: { summary: false }, category: 'State' },
+      name: 'read-only',
+      description: 'Read-only mode. Forwarded to the active child.',
     },
     isValid: {
       control: 'boolean',
       table: { defaultValue: { summary: true }, category: 'State' },
       name: 'is-valid',
-      description: 'Whether the current value is considered valid.',
+      description: 'Current validity state.',
     },
 
     validation: {
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Validation' },
       name: 'validation',
-      description:
-        'Apply invalid styling (drives invalid/is-invalid inside the rendered timepicker). Manager will also append the child validation element id to aria-describedby when validationMessage is present.',
+      description: 'Enable user validation state.',
     },
     validationMessage: {
       control: 'text',
       name: 'validation-message',
-      description: 'Validation message to display (if any).',
+      description: 'User validation message.',
+      table: { category: 'Validation' },
+    },
+    timeValidation: {
+      control: 'boolean',
+      table: { defaultValue: { summary: true }, category: 'Validation' },
+      name: 'time-validation',
+      description: 'Enable built-in time validation forwarding.',
+    },
+    timeValidationMessage: {
+      control: 'text',
+      name: 'time-validation-message',
+      description: 'Built-in time validation message forwarded to the child.',
       table: { category: 'Validation' },
     },
 
@@ -254,13 +272,13 @@ When the popover is open (both implementations), the keyboard model is consisten
       control: 'boolean',
       table: { defaultValue: { summary: false }, category: 'Rendering Mode' },
       name: 'use-pl-timepicker',
-      description: 'Render <plumage-timepicker-component> instead of <timepicker-component>.',
+      description: 'Render plumage-timepicker-component instead of timepicker-component.',
     },
 
     value: {
       control: 'text',
       table: { category: 'Controlled Value' },
-      description: 'Controlled time value forwarded to the child timepicker.',
+      description: 'Controlled time value forwarded to the child.',
     },
     timeInputThrottleMs: {
       control: { type: 'number', min: 0, step: 10 },
@@ -272,7 +290,7 @@ When the popover is open (both implementations), the keyboard model is consisten
     wrapperWidth: {
       control: { type: 'number', min: 120, step: 10 },
       name: 'wrapper-width',
-      description: 'Demo wrapper width (px), for Storybook only.',
+      description: 'Demo wrapper width (px), Storybook only.',
       table: { category: 'Storybook Only' },
     },
   },
@@ -290,7 +308,7 @@ export const Default = {
   parameters: {
     docs: {
       description: {
-        story: 'Default configuration with a visible label. For best accessibility, prefer a visible label or external aria-labelledby.',
+        story: 'Default configuration with a visible label.',
       },
       story: { height: '220px' },
     },
@@ -309,7 +327,7 @@ export const SmallSize = {
   parameters: {
     docs: {
       description: {
-        story: 'Small input with no visible label. In real usage, provide aria-labelledby to an external label or aria-label.',
+        story: 'Small input with no visible label.',
       },
       story: { height: '220px' },
     },
@@ -327,7 +345,7 @@ export const LargeWithLabel = {
   },
   parameters: {
     docs: {
-      description: { story: 'Large input with a visible label.' },
+      description: { story: 'Large input with visible label.' },
       story: { height: '220px' },
     },
   },
@@ -393,7 +411,7 @@ export const CustomInputWidth = {
 
 export const WithValidation = {
   ...storyWithTemplate,
-  name: 'With Validation Message',
+  name: 'With User Validation Message',
   args: {
     ...baseArgs,
     inputId: 'time-input-validation',
@@ -405,9 +423,50 @@ export const WithValidation = {
   parameters: {
     docs: {
       description: {
-        story: 'Invalid styling + validation message. Manager appends the child validation element id to aria-describedby when validationMessage is present.',
+        story: 'User validation message. Manager appends the child validation id to aria-describedby when active.',
       },
       story: { height: '240px' },
+    },
+  },
+};
+
+export const WithTimeValidation = {
+  ...storyWithTemplate,
+  name: 'With Built-in Time Validation Message',
+  args: {
+    ...baseArgs,
+    inputId: 'time-input-time-validation',
+    timeValidation: true,
+    timeValidationMessage: 'Invalid time format.',
+    isValid: false,
+    wrapperWidth: 420,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Built-in time validation message. Manager appends the child time-validation id to aria-describedby when active.',
+      },
+      story: { height: '240px' },
+    },
+  },
+};
+
+export const ReadOnly = {
+  ...storyWithTemplate,
+  name: 'Read Only',
+  args: {
+    ...baseArgs,
+    readOnly: true,
+    inputId: 'time-readonly',
+    value: '13:05:09',
+    wrapperWidth: 320,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Read-only state forwarded to the active child.',
+      },
+      story: { height: '220px' },
     },
   },
 };
@@ -425,7 +484,7 @@ export const PlumageStyle = {
   parameters: {
     docs: {
       description: {
-        story: 'Renders the <plumage-timepicker-component> when use-pl-timepicker is true. Disabled mapping differs (disabled vs disableTimepicker).',
+        story: 'Renders the plumage-timepicker-component when use-pl-timepicker is true.',
       },
       story: { height: '240px' },
     },
@@ -444,8 +503,8 @@ export const AccessibilityMatrix = {
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
       <div style="opacity:.8">
-        Renders multiple configurations and prints computed labeling/description wiring for the manager + child:
-        <code>aria-label</code>, <code>aria-labelledby</code>, <code>aria-describedby</code>, and inferred validation id.
+        Renders multiple configurations and prints computed manager + child labeling, description wiring,
+        forwarded child props, and inferred validation/time-validation IDs.
       </div>
     `;
     wrap.appendChild(header);
@@ -525,6 +584,8 @@ export const AccessibilityMatrix = {
         isValid: true,
         validation: false,
         validationMessage: '',
+        timeValidation: true,
+        timeValidationMessage: '',
         usePlTimepicker: false,
         wrapperWidth: 260,
       }),
@@ -543,6 +604,8 @@ export const AccessibilityMatrix = {
           isValid: true,
           validation: false,
           validationMessage: '',
+          timeValidation: true,
+          timeValidationMessage: '',
           usePlTimepicker: false,
           wrapperWidth: 260,
         },
@@ -555,29 +618,7 @@ export const AccessibilityMatrix = {
 
     wrap.appendChild(
       card(
-        'Horizontal (simulated layout, external labelledby)',
-        {
-          showLabel: false,
-          labelText: '',
-          inputId: 'mx-time-horizontal',
-          ariaLabelledby: 'mx-horizontal-label',
-          ariaDescribedby: '',
-          isValid: true,
-          usePlTimepicker: false,
-          wrapperWidth: 320,
-        },
-        `
-        <div style="display:grid; grid-template-columns:220px 1fr; gap:12px; align-items:center; max-width:860px; margin-bottom:8px;">
-          <div id="mx-horizontal-label" style="font-weight:600;">Time (horizontal label area)</div>
-        </div>
-        `,
-        'max-width:860px;',
-      ),
-    );
-
-    wrap.appendChild(
-      card(
-        'Error / validation (simulated, describedby + inferred validation id)',
+        'User validation (describedby + validation id)',
         {
           showLabel: true,
           labelText: 'Add time',
@@ -586,14 +627,40 @@ export const AccessibilityMatrix = {
           ariaLabelledby: '',
           ariaDescribedby: 'mx-error-help',
           validation: true,
-          isValid: false,
           validationMessage: 'Time is required.',
+          timeValidation: true,
+          timeValidationMessage: '',
+          isValid: false,
           usePlTimepicker: false,
           wrapperWidth: 420,
         },
         `
         <div id="mx-error-help" style="color:#444; font-size:12px; margin-bottom:8px;">
-          Help: required field. Manager should append <code>mx-time-error-validation</code> to aria-describedby when validationMessage exists.
+          Help: manager should append <code>mx-time-error-validation</code> to aria-describedby.
+        </div>
+        `,
+      ),
+    );
+
+    wrap.appendChild(
+      card(
+        'Built-in time validation (describedby + time-validation id)',
+        {
+          showLabel: true,
+          labelText: 'Add time',
+          inputId: 'mx-time-time-error',
+          ariaDescribedby: 'mx-time-error-help',
+          validation: false,
+          validationMessage: '',
+          timeValidation: true,
+          timeValidationMessage: 'Invalid time format.',
+          isValid: false,
+          usePlTimepicker: false,
+          wrapperWidth: 420,
+        },
+        `
+        <div id="mx-time-error-help" style="color:#444; font-size:12px; margin-bottom:8px;">
+          Help: manager should append <code>mx-time-time-error-time-validation</code> to aria-describedby.
         </div>
         `,
       ),
@@ -612,6 +679,8 @@ export const AccessibilityMatrix = {
         isValid: true,
         validation: false,
         validationMessage: '',
+        timeValidation: true,
+        timeValidationMessage: '',
         wrapperWidth: 320,
       }),
     );
@@ -623,7 +692,7 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Prints computed accessibility wiring for the timepicker manager + its child: aria precedence (labelledby > label), describedby forwarding + validation id appending, simulated inline/horizontal layouts, validation, and disabled state.',
+          'Prints computed accessibility wiring for the manager and active child: aria precedence, describedby forwarding and id appending, implementation selection, and disabled/read-only forwarding.',
       },
     },
   },

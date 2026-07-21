@@ -3,3 +3,10 @@
   font-size: 0.75rem !important;
   color: #6c757d;
 }
+
+.form-control.read-only:focus {
+  border-color: var(--bs-border-color) !important;
+  cursor: not-allowed;
+  outline: 0 !important;
+  box-shadow: none !important;
+}

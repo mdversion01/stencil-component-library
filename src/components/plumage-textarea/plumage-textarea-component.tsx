@@ -29,7 +29,7 @@ export class PlumageTextareaComponent {
   @Prop() required: boolean = false;
   @Prop() validation: boolean = false;
   @Prop() validationMessage: string = '';
-  @Prop() value: string = '';
+  @Prop({ mutable: true }) value: string = '';
   @Prop() placeholder?: string;
   @Prop() rows: number = 3;
   @Prop() maxLength?: number;
@@ -109,6 +109,10 @@ export class PlumageTextareaComponent {
 
   componentDidLoad() {
     this.applyFormAttribute();
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener('click', this.handleDocumentClick, true);
   }
 
   // ---------- form attribute ----------
@@ -233,6 +237,7 @@ export class PlumageTextareaComponent {
     if (clean !== target.value) target.value = clean;
 
     this.valueState = clean;
+    this.value = clean;
     this.valueChange.emit(this.valueState);
 
     if (this.meetsTypingThreshold() && this.validationState) this.validationState = false;
@@ -384,7 +389,7 @@ export class PlumageTextareaComponent {
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
       this.isInline() ? 'col-form-label' : '',
-      this.validationState ? 'invalid' : '',
+      this.readOnly || this.disabled ? null : this.validationState ? 'invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -393,15 +398,15 @@ export class PlumageTextareaComponent {
 
     return (
       <label class={classes} id={ids.labelId} htmlFor={ids.textareaId || undefined}>
-        <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
-        {this.required ? <span class="required">*</span> : null}
+        <span class={this.readOnly || this.disabled ? '' : this.showAsRequired() ? 'required' : ''}>{text}</span>
+        {this.readOnly || this.disabled ? null : this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
 
   private renderTextarea(ids: ReturnType<typeof this.resolveIds>) {
     const sizeClass = this.textareaTextSize === 'sm' ? 'form-control-sm' : this.textareaTextSize === 'lg' ? 'form-control-lg' : '';
-    const classes = ['form-control', this.readOnly ? 'readonly' : '', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    const classes = ['form-control', this.readOnly ? 'read-only' : this.disabled ? null : this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
 
     const labelText = (this.label || '').trim();
     const placeholder = (this.placeholder || '').trim() || labelText || 'Enter text';
@@ -450,21 +455,21 @@ export class PlumageTextareaComponent {
         />
 
         <div
-          class={`b-underline${this.validationState ? ' invalid' : ''}`}
+          class={`b-underline${this.disabled || this.readOnly ? ' disabled' : this.validationState ? ' invalid' : ''}`}
           role="presentation"
           aria-hidden="true"
           onClick={this.handleInteraction}
           onMouseDown={this.handleInteraction}
         >
           <div
-            class={`b-focus${this.disabled || this.readOnly ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`}
+            class={`b-focus${this.disabled || this.readOnly ? ' disabled' : this.validationState ? ' invalid' : ''}`}
             role="presentation"
             aria-hidden="true"
             style={{ width: '0', left: '50%' } as any}
           />
         </div>
 
-        {this.renderCounter(ids)}
+        {this.readOnly ? '' : this.renderCounter(ids)}
         {this.renderValidation(ids)}
       </div>
     );

@@ -27,6 +27,7 @@ export class PlumageAutocompleteSingle {
   @Prop() placeholder?: string;
   @Prop() devMode = false;
   @Prop() disabled: boolean = false;
+  @Prop() readOnly = false;
 
   @Prop({ mutable: true }) formId: string = '';
   @Prop({ mutable: true }) formLayout: '' | 'horizontal' | 'inline' = '';
@@ -80,6 +81,10 @@ export class PlumageAutocompleteSingle {
   private inputEl?: HTMLInputElement;
   private suppressBlur = false;
 
+  private get isInteractionLocked(): boolean {
+    return this.disabled || this.readOnly;
+  }
+
   // Stable fallback id for ARIA wiring
   private _fallbackId: string = `plumage-acs-${Math.random().toString(36).slice(2, 10)}`;
 
@@ -101,7 +106,7 @@ export class PlumageAutocompleteSingle {
     this.dropdownOpen = false;
 
     // best-effort selected index sync if the value matches an option
-    const idx = (this.options || []).findIndex((o) => (o || '').trim().toLowerCase() === this.inputValue.trim().toLowerCase());
+    const idx = (this.options || []).findIndex(o => (o || '').trim().toLowerCase() === this.inputValue.trim().toLowerCase());
     this.selectedOptionIndex = idx >= 0 ? idx : -1;
   }
 
@@ -137,6 +142,16 @@ export class PlumageAutocompleteSingle {
     this.filterOptions();
   }
 
+  @Watch('readOnly')
+  onReadOnlyChange(next: boolean) {
+    if (next) this.closeDropdown();
+  }
+
+  @Watch('disabled')
+  onDisabledChange(next: boolean) {
+    if (next) this.closeDropdown();
+  }
+
   // ---------------- Lifecycle -------------
   connectedCallback() {
     const formComponent = this.el.closest('form-component') as any;
@@ -155,7 +170,7 @@ export class PlumageAutocompleteSingle {
     this.inputValue = this.sanitizeInput(this.valueState);
     this.validationState = !!this.validation;
 
-    const idx = (this.options || []).findIndex((o) => (o || '').trim().toLowerCase() === this.inputValue.trim().toLowerCase());
+    const idx = (this.options || []).findIndex(o => (o || '').trim().toLowerCase() === this.inputValue.trim().toLowerCase());
     this.selectedOptionIndex = idx >= 0 ? idx : -1;
 
     document.addEventListener('click', this.handleDocumentClick);
@@ -183,9 +198,7 @@ export class PlumageAutocompleteSingle {
 
   // ---------------- IDs / ARIA helpers ----
   private camelCase(str: string): string {
-    return (str || '')
-      .replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase()))
-      .replace(/[\s-]+/g, '');
+    return (str || '').replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase())).replace(/[\s-]+/g, '');
   }
 
   private resolveIds(): {
@@ -347,7 +360,7 @@ export class PlumageAutocompleteSingle {
     }
     setTimeout(() => this.closeDropdown(), 0);
 
-    if (this.required) {
+    if (!this.readOnly && !this.disabled && this.required) {
       const invalidNow = !this.meetsTypingThreshold();
       this.validationState = invalidNow;
       this.validation = invalidNow;
@@ -366,6 +379,29 @@ export class PlumageAutocompleteSingle {
     if (this._resolvedFormId) input.setAttribute('form', this._resolvedFormId);
     else input.removeAttribute('form');
 
+    if (this.isInteractionLocked) {
+      if (event.type === 'keydown') {
+        const key = (event as KeyboardEvent).key;
+
+        if (key === 'Escape') {
+          this.closeDropdown();
+        }
+
+        if (key === 'Enter') {
+          event.preventDefault();
+        }
+
+        return;
+      }
+
+      const next = this.sanitizeInput(input.value);
+      if (next !== input.value) input.value = next;
+
+      this.inputValue = next;
+      this.valueState = next;
+      return;
+    }
+
     if (event.type === 'keydown') {
       const key = (event as KeyboardEvent).key;
 
@@ -375,18 +411,21 @@ export class PlumageAutocompleteSingle {
         this.navigateOptions(1);
         return;
       }
+
       if (key === 'ArrowUp') {
         event.preventDefault();
         if (!this.dropdownOpen && this.filteredOptions.length > 0) this.openDropdown({ withFocus: false });
         this.navigateOptions(-1);
         return;
       }
+
       if (key === 'Home') {
         event.preventDefault();
         if (!this.dropdownOpen && this.filteredOptions.length > 0) this.openDropdown({ withFocus: false });
         this.setFocusIndex(0);
         return;
       }
+
       if (key === 'End') {
         event.preventDefault();
         const len = this.filteredOptions.length;
@@ -396,18 +435,21 @@ export class PlumageAutocompleteSingle {
         }
         return;
       }
+
       if (key === 'PageDown') {
         event.preventDefault();
         if (!this.dropdownOpen && this.filteredOptions.length > 0) this.openDropdown({ withFocus: false });
         this.pageNavigate(1);
         return;
       }
+
       if (key === 'PageUp') {
         event.preventDefault();
         if (!this.dropdownOpen && this.filteredOptions.length > 0) this.openDropdown({ withFocus: false });
         this.pageNavigate(-1);
         return;
       }
+
       if (key === 'Enter') {
         event.preventDefault();
         if (this.focusedOptionIndex >= 0 && this.filteredOptions[this.focusedOptionIndex]) {
@@ -423,34 +465,38 @@ export class PlumageAutocompleteSingle {
         }
         return;
       }
+
       if (key === 'Escape') {
         this.closeDropdown();
         return;
       }
-    } else {
-      const next = this.sanitizeInput(input.value);
-      if (next !== input.value) input.value = next;
 
-      this.inputValue = next;
-      this.valueState = next;
-      this.valueChange.emit(this.valueState);
-      this.el.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true, detail: { value: this.valueState } }));
+      return;
+    }
 
-      this.filterOptions();
-      this.hasBeenInteractedWith = true;
+    const next = this.sanitizeInput(input.value);
+    if (next !== input.value) input.value = next;
 
-      if (this.meetsTypingThreshold() && this.validationState) {
-        this.validationState = false;
-        this.validation = false;
-      }
-      if (this.required && this.inputValue.trim() === '') {
-        this.validationState = true;
-        this.validation = true;
-      }
+    this.inputValue = next;
+    this.valueState = next;
+    this.valueChange.emit(this.valueState);
+    this.el.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true, detail: { value: this.valueState } }));
+
+    this.filterOptions();
+    this.hasBeenInteractedWith = true;
+
+    if (this.meetsTypingThreshold() && this.validationState) {
+      this.validationState = false;
+      this.validation = false;
+    }
+    if (this.required && this.inputValue.trim() === '') {
+      this.validationState = true;
+      this.validation = true;
     }
   };
 
   private onDropdownMouseDown = () => {
+    if (this.isInteractionLocked) return;
     this.suppressBlur = true;
   };
 
@@ -460,6 +506,7 @@ export class PlumageAutocompleteSingle {
   };
 
   private openDropdown(opts?: { withFocus?: boolean }) {
+    if (this.isInteractionLocked) return;
     const withFocus = !!opts?.withFocus;
     const wasOpen = this.dropdownOpen;
     this.dropdownOpen = true;
@@ -470,6 +517,13 @@ export class PlumageAutocompleteSingle {
   }
 
   private filterOptions() {
+    if (this.isInteractionLocked) {
+      this.filteredOptions = [];
+      this.dropdownOpen = false;
+      this.focusedOptionIndex = -1;
+      return;
+    }
+
     if (!Array.isArray(this.options)) {
       logError(this.devMode, 'PlumageAutocompleteSingle', `'options' must be an array`, { receivedType: typeof this.options, value: this.options });
       this.filteredOptions = [];
@@ -487,7 +541,7 @@ export class PlumageAutocompleteSingle {
       return;
     }
 
-    const nextFiltered = this.options.filter((opt) => (opt || '').toLowerCase().includes(v));
+    const nextFiltered = this.options.filter(opt => (opt || '').toLowerCase().includes(v));
     const opening = !this.dropdownOpen && nextFiltered.length > 0;
 
     this.filteredOptions = nextFiltered;
@@ -507,6 +561,7 @@ export class PlumageAutocompleteSingle {
   }
 
   private setFocusIndex(index: number) {
+    if (this.isInteractionLocked) return;
     if (!this.dropdownOpen || this.filteredOptions.length === 0) return;
     const len = this.filteredOptions.length;
     const clamped = Math.max(0, Math.min(len - 1, index));
@@ -522,6 +577,7 @@ export class PlumageAutocompleteSingle {
   }
 
   private pageNavigate(direction: 1 | -1) {
+    if (this.isInteractionLocked) return;
     if (!this.dropdownOpen || this.filteredOptions.length === 0) return;
     const len = this.filteredOptions.length;
     const page = this.getPageSize();
@@ -544,6 +600,7 @@ export class PlumageAutocompleteSingle {
   }
 
   private navigateOptions(direction: number) {
+    if (this.isInteractionLocked) return;
     if (!this.dropdownOpen || this.filteredOptions.length === 0) return;
     const len = this.filteredOptions.length;
     let newIndex = this.focusedOptionIndex;
@@ -552,6 +609,7 @@ export class PlumageAutocompleteSingle {
   }
 
   private selectOption(option: string) {
+    if (this.isInteractionLocked) return;
     if (typeof option !== 'string' || option.trim() === '') {
       logError(this.devMode, 'PlumageAutocompleteSingle', 'Invalid option selected', { option });
       return;
@@ -565,7 +623,7 @@ export class PlumageAutocompleteSingle {
     this.filteredOptions = [];
     this.focusedOptionIndex = -1;
 
-    const idx = (this.options || []).findIndex((o) => (o || '').trim().toLowerCase() === cleaned.trim().toLowerCase());
+    const idx = (this.options || []).findIndex(o => (o || '').trim().toLowerCase() === cleaned.trim().toLowerCase());
     this.selectedOptionIndex = idx >= 0 ? idx : -1;
 
     this.validationState = false;
@@ -593,6 +651,7 @@ export class PlumageAutocompleteSingle {
   }
 
   private clearInput = () => {
+    if (this.isInteractionLocked) return;
     this.inputValue = '';
     this.valueState = '';
     if (this.inputEl) this.inputEl.value = '';
@@ -632,27 +691,35 @@ export class PlumageAutocompleteSingle {
       this.labelHidden ? 'sr-only' : '',
       this.labelAlign === 'right' ? 'align-right' : '',
       this.isHorizontal() ? `${labelColClass} no-padding col-form-label` : '',
-      this.validationState ? 'invalid' : '',
+      this.readOnly || this.disabled ? '' : this.validation || this.error ? ' invalid' : '',
     ]
       .filter(Boolean)
       .join(' ');
   }
 
   private inputClasses() {
-    return ['form-control', this.validationState || this.error ? 'is-invalid' : ''].filter(Boolean).join(' ');
+    return ['form-control', this.disabled ? 'disabled' : this.readOnly ? 'read-only' : this.validation || this.error ? 'is-invalid' : ''].filter(Boolean).join(' ');
   }
 
   private groupClasses() {
     const sizeClass = this.size === 'sm' ? 'input-group-sm' : this.size === 'lg' ? 'input-group-lg' : '';
-    return ['input-group', 'autocomplete-single-select', this.validationState ? 'is-invalid' : '', sizeClass].filter(Boolean).join(' ');
+    return [
+      'input-group',
+      'autocomplete-single-select',
+      this.disabled ? 'disabled' : this.readOnly ? 'read-only' : this.validation || this.error ? 'is-invalid' : '',
+      this.disabled ? 'disabled' : this.readOnly ? 'read-only' : this.validation && this.isFocused ? 'is-invalid-focused' : this.isFocused ? 'ac-focused' : '',
+      sizeClass,
+    ]
+      .filter(Boolean)
+      .join(' ');
   }
 
   private renderInputLabel(ids: ReturnType<typeof this.resolveIds>, labelColClass?: string) {
     const text = this.isRowLayout() ? `${this.label}:` : this.label;
     return (
       <label class={this.labelClasses(labelColClass)} id={ids.labelId} htmlFor={ids.inputId || undefined}>
-        <span class={this.showAsRequired() ? 'required' : ''}>{text}</span>
-        {this.required ? <span class="required">*</span> : ''}
+        <span class={this.readOnly || this.disabled ? '' : this.showAsRequired() ? 'required' : ''}>{text}</span>
+        {this.readOnly || this.disabled ? null : this.required ? <span class="required">*</span> : null}
       </label>
     );
   }
@@ -669,7 +736,7 @@ export class PlumageAutocompleteSingle {
 
     return (
       <input
-        ref={(el) => (this.inputEl = el as HTMLInputElement)}
+        ref={el => (this.inputEl = el as HTMLInputElement)}
         id={ids.inputId}
         role="combobox"
         aria-autocomplete="list"
@@ -680,6 +747,7 @@ export class PlumageAutocompleteSingle {
         aria-required={this.required ? 'true' : 'false'}
         aria-invalid={invalid ? 'true' : 'false'}
         aria-disabled={this.disabled ? 'true' : 'false'}
+        aria-readonly={this.readOnly ? 'true' : undefined}
         aria-describedby={describedBy}
         aria-labelledby={this.arialabelledBy ? this.arialabelledBy : hasVisibleLabel ? ids.labelId : undefined}
         aria-label={!hasVisibleLabel && !this.arialabelledBy ? fallbackAriaLabel : undefined}
@@ -688,6 +756,7 @@ export class PlumageAutocompleteSingle {
         placeholder={placeholder}
         value={this.inputValue}
         disabled={this.disabled}
+        readonly={this.readOnly}
         onInput={this.handleInput}
         onKeyDown={this.handleInput}
         onFocus={this.handleFocus}
@@ -703,7 +772,7 @@ export class PlumageAutocompleteSingle {
   }
 
   private renderClearButton() {
-    if (this.removeClearBtn || this.disabled || !this.inputValue) return null;
+    if (this.removeClearBtn || this.disabled || this.readOnly || !this.inputValue) return null;
     return (
       <button
         type="button"
@@ -727,9 +796,7 @@ export class PlumageAutocompleteSingle {
           const isFocused = this.focusedOptionIndex === index;
 
           // aria-selected should indicate the selected option, not the focused option
-          const isSelected =
-            this.selectedOptionIndex >= 0 &&
-            (this.options?.[this.selectedOptionIndex] || '').trim().toLowerCase() === (option || '').trim().toLowerCase();
+          const isSelected = this.selectedOptionIndex >= 0 && (this.options?.[this.selectedOptionIndex] || '').trim().toLowerCase() === (option || '').trim().toLowerCase();
 
           return (
             <li
@@ -738,7 +805,7 @@ export class PlumageAutocompleteSingle {
               aria-selected={isSelected ? 'true' : 'false'}
               class={{
                 'autocomplete-dropdown-item': true,
-                focused: isFocused,
+                'focused': isFocused,
                 'virtually-focused': isFocused,
                 [`${this.size}`]: !!this.size,
               }}
@@ -755,7 +822,7 @@ export class PlumageAutocompleteSingle {
   }
 
   private renderDropdown(ids: ReturnType<typeof this.resolveIds>) {
-    if (!this.dropdownOpen) return null;
+    if (!this.dropdownOpen || this.readOnly || this.disabled) return null;
     return (
       <div class="autocomplete-dropdown single" aria-live="polite" onMouseDown={this.onDropdownMouseDown}>
         {this.renderDropdownList(ids)}
@@ -771,10 +838,7 @@ export class PlumageAutocompleteSingle {
     const baseId = kind === 'validation' ? ids.validationId : ids.errorId;
     const baseClass = kind === 'validation' ? 'invalid-feedback' : 'error-message';
 
-    const liveProps =
-      kind === 'error'
-        ? { 'aria-live': 'assertive' as const, role: 'alert' as const }
-        : { 'aria-live': 'polite' as const, role: undefined as any };
+    const liveProps = kind === 'error' ? { 'aria-live': 'assertive' as const, 'role': 'alert' as const } : { 'aria-live': 'polite' as const, 'role': undefined as any };
 
     return (
       <div id={baseId} class={baseClass} {...liveProps}>
@@ -791,9 +855,9 @@ export class PlumageAutocompleteSingle {
           {this.renderClearButton()}
         </div>
 
-        <div class={`b-underline${this.validationState ? ' invalid' : ''}`} role="presentation">
+        <div class={`b-underline${this.disabled || this.readOnly ? ' disabled' : this.validationState ? ' invalid' : ''}`} role="presentation">
           <div
-            class={`b-focus${this.disabled ? ' disabled' : ''}${this.validationState ? ' invalid' : ''}`}
+            class={`b-focus${this.disabled || this.readOnly ? ' disabled' : this.validationState ? ' invalid' : ''}`}
             role="presentation"
             aria-hidden="true"
             style={{ width: '0', left: '50%' } as any}
@@ -806,17 +870,15 @@ export class PlumageAutocompleteSingle {
   private renderLayout(ids: ReturnType<typeof this.resolveIds>) {
     const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
     const labelColClass = this.isHorizontal() && !this.labelHidden ? this.buildColClass('label') : '';
-    const inputColClass = this.isHorizontal()
-      ? this.buildColClass('input') || undefined
-      : this.isInline()
-        ? this.buildColClass('input') || undefined
-        : undefined;
+    const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     if (this.isRowLayout()) {
       return (
         <div class={outerClass}>
           <div class={`row form-group ${this.isInline() ? 'inline' : this.isHorizontal() ? 'horizontal' : ''}`}>
-            {!this.labelHidden ? this.renderInputLabel(ids, labelColClass) : (
+            {!this.labelHidden ? (
+              this.renderInputLabel(ids, labelColClass)
+            ) : (
               // Still render SR-only label for 508 if labelHidden=true
               <label class={this.labelClasses(labelColClass)} id={ids.labelId} htmlFor={ids.inputId || undefined}>
                 <span class="sr-only">{this.label || this.placeholder || 'Autocomplete'}</span>
@@ -837,7 +899,9 @@ export class PlumageAutocompleteSingle {
 
     return (
       <div class={outerClass}>
-        {!this.labelHidden ? this.renderInputLabel(ids) : (
+        {!this.labelHidden ? (
+          this.renderInputLabel(ids)
+        ) : (
           <label class={this.labelClasses()} id={ids.labelId} htmlFor={ids.inputId || undefined}>
             <span class="sr-only">{this.label || this.placeholder || 'Autocomplete'}</span>
           </label>
