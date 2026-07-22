@@ -3,8 +3,11 @@
 import DocsPage from './date-range-time-picker-component.docs.mdx';
 import {
   buildDocsHtml,
+  buildDocsHtmlControlledValue,
   Template,
   renderDRTPMatrixRow,
+  setDateRangeTimeValueWhenReady,
+  updateArgsBestEffort,
 } from './date-range-time-picker-component.story-helpers.js';
 
 const baseArgs = {
@@ -496,7 +499,7 @@ export const Value = {
     label: 'Scheduled Maintenance',
     labelCol: '',
     inputCol: '',
-    value: '2026-07-20 09:00 - 2026-07-20 17:00',
+    value: '2026-07-20 09:00 - 2026-08-20 17:00',
   },
   parameters: {
     docs: {
@@ -506,6 +509,176 @@ export const Value = {
       },
       story: {
         height: '525px',
+      },
+    },
+  },
+};
+
+export const ControlledValue = {
+  name: 'Controlled Value',
+
+  args: {
+    ...baseArgs,
+    inputId: 'controlled-drtp',
+    label: 'Controlled Date/Time Range',
+    labelCol: '',
+    inputCol: '',
+    value: '2026-07-20 09:00 - 2026-08-20 12:00',
+  },
+
+  render: (args, ctx) => {
+    const wrap = document.createElement('div');
+    wrap.style.maxWidth = '720px';
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
+
+    const element = Template(args);
+
+    const note = document.createElement('div');
+    note.style.fontSize = '13px';
+    note.style.color = '#444';
+    note.innerHTML = `
+      Controlled example: external buttons update the component's
+      <code>value</code>, and component changes are pushed back into
+      Storybook args.
+    `;
+
+    const buttons = document.createElement('div');
+    buttons.style.display = 'flex';
+    buttons.style.gap = '8px';
+    buttons.style.flexWrap = 'wrap';
+
+    const makeButton = text => {
+      const button = document.createElement('button');
+
+      button.type = 'button';
+      button.className = 'btn btn-sm btn-secondary';
+      button.textContent = text;
+
+      return button;
+    };
+
+    const morningButton = makeButton('Set Morning Window');
+    const afternoonButton = makeButton('Set Afternoon Window');
+    const clearButton = makeButton('Clear');
+
+    const getJoinBy = () =>
+      typeof element.joinBy === 'string' && element.joinBy
+        ? element.joinBy
+        : args.joinBy || ' - ';
+
+    const eventDetailToValue = detail => {
+      if (typeof detail === 'string') {
+        return detail;
+      }
+
+      if (!detail || typeof detail !== 'object') {
+        return '';
+      }
+
+      if (
+        element.showIso &&
+        typeof detail.startDateTimeIso === 'string' &&
+        typeof detail.endDateTimeIso === 'string'
+      ) {
+        return `${detail.startDateTimeIso}${getJoinBy()}${detail.endDateTimeIso}`;
+      }
+
+      if (
+        typeof detail.startDate !== 'string' ||
+        typeof detail.endDate !== 'string' ||
+        typeof detail.startTime !== 'string' ||
+        typeof detail.endTime !== 'string'
+      ) {
+        return '';
+      }
+
+      const duration =
+        element.showDuration &&
+        typeof detail.duration === 'string' &&
+        detail.duration
+          ? ` (${detail.duration})`
+          : '';
+
+      return (
+        `${detail.startDate} ${detail.startTime}` +
+        `${getJoinBy()}` +
+        `${detail.endDate} ${detail.endTime}` +
+        duration
+      );
+    };
+
+    const applyValue = async nextValue => {
+      const value =
+        typeof nextValue === 'string'
+          ? nextValue.trim()
+          : '';
+
+      await setDateRangeTimeValueWhenReady(
+        element,
+        value,
+      );
+
+      updateArgsBestEffort(ctx, {
+        value,
+      });
+    };
+
+    morningButton.addEventListener('click', () => {
+      void applyValue(
+        '2026-07-20 09:00 - 2026-08-20 12:00',
+      );
+    });
+
+    afternoonButton.addEventListener('click', () => {
+      void applyValue(
+        '2026-07-20 13:00 - 2026-08-20 17:00',
+      );
+    });
+
+    clearButton.addEventListener('click', () => {
+      void applyValue('');
+    });
+
+    element.addEventListener(
+      'date-time-updated',
+      event => {
+        const value = eventDetailToValue(
+          event.detail,
+        );
+
+        if (!value) {
+          return;
+        }
+
+        void applyValue(value);
+      },
+    );
+
+    buttons.appendChild(morningButton);
+    buttons.appendChild(afternoonButton);
+    buttons.appendChild(clearButton);
+
+    wrap.appendChild(note);
+    wrap.appendChild(element);
+    wrap.appendChild(buttons);
+
+    return wrap;
+  },
+
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () =>
+          buildDocsHtmlControlledValue(),
+      },
+      description: {
+        story:
+          'Demonstrates the date range + time picker as a controlled component. External buttons update the value and selected calendar state, while picker changes are converted from the emitted event object into the controlled value string.',
+      },
+      story: {
+        height: '620px',
       },
     },
   },
@@ -701,7 +874,7 @@ export const Disabled = {
     inputCol: '',
     inputId: 'disabled-drtp',
     label: 'Disabled Date/Time Range',
-    value: '2026-07-20 09:00 - 2026-07-20 17:00',
+    value: '2026-07-20 09:00 - 2026-08-20 17:00',
   },
   parameters: {
     docs: {
@@ -724,7 +897,7 @@ export const ReadOnly = {
     inputCol: '',
     inputId: 'readonly-drtp',
     label: 'Read Only Date/Time Range',
-    value: '2026-07-20 09:00 - 2026-07-20 17:00',
+    value: '2026-07-20 09:00 - 2026-08-20 17:00',
   },
   parameters: {
     docs: {
@@ -834,7 +1007,7 @@ export const AccessibilityMatrix = {
           rangeTimePicker: false,
           labelHidden: false,
           value:
-            '2026-07-20 09:00 - 2026-07-20 17:00',
+            '2026-07-20 09:00 - 2026-08-20 17:00',
         },
       },
       {
@@ -899,7 +1072,7 @@ export const AccessibilityMatrix = {
           rangeTimePicker: false,
           labelHidden: false,
           value:
-            '2026-07-20 09:00 - 2026-07-20 17:00',
+            '2026-07-20 09:00 - 2026-08-20 17:00',
         },
       },
       {
@@ -914,7 +1087,7 @@ export const AccessibilityMatrix = {
           rangeTimePicker: false,
           labelHidden: false,
           value:
-            '2026-07-20 09:00 - 2026-07-20 17:00',
+            '2026-07-20 09:00 - 2026-08-20 17:00',
         },
       },
     ];

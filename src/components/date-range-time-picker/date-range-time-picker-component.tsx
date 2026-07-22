@@ -29,6 +29,7 @@ export class DateRangeTimePickerComponent {
   private dropdownEl?: HTMLDivElement;
   private dropdownContentEl?: HTMLDivElement;
   private popper?: PopperInstance;
+  private syncingValueInternally: boolean = false;
 
   private draftSnapshot: {
     value: string;
@@ -276,6 +277,20 @@ export class DateRangeTimePickerComponent {
     }
 
     this.destroyPopper();
+  }
+
+  @Watch('value')
+  onValueChange(newValue: string) {
+    if (this.syncingValueInternally) return;
+
+    const nextValue = String(newValue ?? '').trim();
+
+    if (!nextValue) {
+      this.clearInputField(true);
+      return;
+    }
+
+    this.applyInitialValue(nextValue);
   }
 
   @Watch('isTwentyFourHourFormat')
@@ -597,7 +612,13 @@ private parseIncomingPreloadedValue(rawValue: string): {
 
   private syncInputValue(nextValue: string) {
     const safe = String(nextValue ?? '');
-    this.value = safe;
+
+    if (this.value !== safe) {
+      this.syncingValueInternally = true;
+      this.value = safe;
+      this.syncingValueInternally = false;
+    }
+
     this.el.setAttribute('value', safe);
 
     if (this.inputEl) {
@@ -1290,7 +1311,7 @@ private parseIncomingPreloadedValue(rawValue: string): {
     this.validation = this.validation;
   }
 
-  private clearInputField = () => {
+  private clearInputField = (fromExternal = false) => {
     this.clearAllFocus();
     this.startDate = null;
     this.endDate = null;
@@ -1299,7 +1320,7 @@ private parseIncomingPreloadedValue(rawValue: string): {
 
     this.syncInputValue('');
 
-    if (this.required) {
+    if (!fromExternal && this.required) {
       this.validation = true;
       this.validationMessage = 'This field is required.';
     } else {

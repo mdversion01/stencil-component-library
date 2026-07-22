@@ -312,12 +312,12 @@ exports[`date-range-picker-component input-group mode renders and matches the in
                           </span>
                         </div>
                         <div aria-label="July 21, 2026" class="calendar-grid-item" data-date="2026-07-21" data-day="21" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             21
                           </span>
                         </div>
                         <div aria-label="July 22, 2026" class="calendar-grid-item" data-date="2026-07-22" data-day="22" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
                             22
                           </span>
                         </div>
@@ -986,12 +986,12 @@ exports[`date-range-picker-component rangePicker mode renders and matches the in
                   </span>
                 </div>
                 <div aria-label="July 21, 2026" class="calendar-grid-item" data-date="2026-07-21" data-day="21" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
-                  <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                  <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                     21
                   </span>
                 </div>
                 <div aria-label="July 22, 2026" class="calendar-grid-item" data-date="2026-07-22" data-day="22" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
-                  <span class="border-0 btn btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                  <span class="border-0 btn btn-outline-light current-day font-weight-bold rounded-circle text-dark text-nowrap">
                     22
                   </span>
                 </div>

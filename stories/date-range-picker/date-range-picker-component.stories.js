@@ -3,7 +3,10 @@
 import DocsPage from './date-range-picker-component.docs.mdx';
 import {
   buildDocsHtml,
+  buildDocsHtmlControlledValue,
+  setDateRangeValueWhenReady,
   Template,
+  updateArgsBestEffort,
 } from './date-range-picker-component.story-helpers.js';
 
 const baseArgs = {
@@ -513,6 +516,174 @@ export const Value = {
   },
 };
 
+export const ControlledValue = {
+  name: 'Controlled Value',
+
+  args: {
+    ...baseArgs,
+    inputId: 'controlled-drp',
+    label: 'Controlled Date Range',
+    labelCol: '',
+    inputCol: '',
+    value: '2026-07-20 - 2026-07-25',
+  },
+
+  render: (args, ctx) => {
+    const wrap = document.createElement('div');
+
+    wrap.style.maxWidth = '680px';
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
+
+    const element = Template(args);
+
+    const note = document.createElement('div');
+
+    note.style.fontSize = '13px';
+    note.style.color = '#444';
+    note.innerHTML = `
+      Controlled example: external buttons update the component's
+      <code>value</code>, and component changes are pushed back into
+      Storybook args.
+    `;
+
+    const buttons = document.createElement('div');
+
+    buttons.style.display = 'flex';
+    buttons.style.gap = '8px';
+    buttons.style.flexWrap = 'wrap';
+
+    const makeButton = text => {
+      const button = document.createElement('button');
+
+      button.type = 'button';
+      button.className = 'btn btn-sm btn-secondary';
+      button.textContent = text;
+
+      return button;
+    };
+
+    const julyButton = makeButton('Set July Range');
+    const augustButton = makeButton('Set August Range');
+    const clearButton = makeButton('Clear');
+
+    const getJoinBy = () =>
+      typeof element.joinBy === 'string' &&
+      element.joinBy
+        ? element.joinBy
+        : args.joinBy || ' - ';
+
+    const eventDetailToValue = detail => {
+      if (typeof detail === 'string') {
+        return detail;
+      }
+
+      if (!detail || typeof detail !== 'object') {
+        return '';
+      }
+
+      if (
+        element.showIso &&
+        typeof detail.startDateIso === 'string' &&
+        typeof detail.endDateIso === 'string'
+      ) {
+        return (
+          detail.startDateIso +
+          getJoinBy() +
+          detail.endDateIso
+        );
+      }
+
+      if (
+        typeof detail.startDate !== 'string' ||
+        typeof detail.endDate !== 'string'
+      ) {
+        return '';
+      }
+
+      return (
+        detail.startDate +
+        getJoinBy() +
+        detail.endDate
+      );
+    };
+
+    const applyValue = async nextValue => {
+      const value =
+        typeof nextValue === 'string'
+          ? nextValue.trim()
+          : '';
+
+      await setDateRangeValueWhenReady(
+        element,
+        value,
+      );
+
+      updateArgsBestEffort(ctx, {
+        value,
+      });
+    };
+
+    julyButton.addEventListener('click', () => {
+      void applyValue(
+        '2026-07-20 - 2026-07-25',
+      );
+    });
+
+    augustButton.addEventListener('click', () => {
+      void applyValue(
+        '2026-08-01 - 2026-08-10',
+      );
+    });
+
+    clearButton.addEventListener('click', () => {
+      void applyValue('');
+    });
+
+    element.addEventListener(
+      'date-range-updated',
+      event => {
+        const value = eventDetailToValue(
+          event.detail,
+        );
+
+        if (!value) {
+          return;
+        }
+
+        void applyValue(value);
+      },
+    );
+
+    buttons.appendChild(julyButton);
+    buttons.appendChild(augustButton);
+    buttons.appendChild(clearButton);
+
+    wrap.appendChild(note);
+    wrap.appendChild(element);
+    wrap.appendChild(buttons);
+
+    return wrap;
+  },
+
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () =>
+          buildDocsHtmlControlledValue(),
+      },
+      description: {
+        story:
+          'Demonstrates the date range picker as a controlled component. External controls update the value and selected calendar state, while picker changes are converted from the emitted event object into the controlled value string.',
+      },
+      story: {
+        height: '600px',
+      },
+    },
+  },
+};
+
 export const DateFormat = {
   name: 'Date Format',
   render: renderTemplate,
@@ -628,7 +799,8 @@ export const WithValidation = {
     ...baseArgs,
     required: true,
     validation: true,
-    validationMessage: 'Please enter a valid date range.',
+    validationMessage:
+      'Please enter a valid date range.',
     labelCol: '',
     inputCol: '',
     inputId: 'drp-validation',
@@ -637,7 +809,8 @@ export const WithValidation = {
   parameters: {
     docs: {
       description: {
-        story: 'A date range picker with validation enabled.',
+        story:
+          'A date range picker with validation enabled.',
       },
       story: {
         height: '525px',
@@ -889,7 +1062,10 @@ export const AccessibilityMatrix = {
       for (const name of names) {
         const value = element.getAttribute(name);
 
-        if (value !== null && value !== '') {
+        if (
+          value !== null &&
+          value !== ''
+        ) {
           output[name] = value;
         }
       }
@@ -903,7 +1079,10 @@ export const AccessibilityMatrix = {
         .split(/\s+/)
         .filter(Boolean);
 
-    const resolveIdsWithin = (host, ids) => {
+    const resolveIdsWithin = (
+      host,
+      ids,
+    ) => {
       const result = {};
 
       for (const id of ids) {
@@ -968,27 +1147,33 @@ export const AccessibilityMatrix = {
         '.calendar-button, button.btn.input-group-text',
       );
 
-      const clearButton = host.querySelector(
-        '.clear-input-button',
-      );
+      const clearButton =
+        host.querySelector(
+          '.clear-input-button',
+        );
 
       const dialog = host.querySelector(
         '.dropdown-content[role="dialog"], .dropdown-content',
       );
 
-      const validation = host.querySelector(
-        '.invalid-feedback.validation, .invalid-feedback.warning, .invalid-feedback',
-      );
+      const validation =
+        host.querySelector(
+          '.invalid-feedback.validation, .invalid-feedback.warning, .invalid-feedback',
+        );
 
       const describedByIds = input
         ? splitIds(
-            input.getAttribute('aria-describedby'),
+            input.getAttribute(
+              'aria-describedby',
+            ),
           )
         : [];
 
       const labelledByIds = input
         ? splitIds(
-            input.getAttribute('aria-labelledby'),
+            input.getAttribute(
+              'aria-labelledby',
+            ),
           )
         : [];
 
@@ -996,7 +1181,8 @@ export const AccessibilityMatrix = {
         host: {
           tag: host.tagName.toLowerCase(),
           id: host.id || null,
-          role: host.getAttribute('role') || null,
+          role:
+            host.getAttribute('role') || null,
           ...pickAttrs(host, [
             'value',
             'read-only',
@@ -1014,10 +1200,12 @@ export const AccessibilityMatrix = {
 
         input: input
           ? {
-              tag: input.tagName.toLowerCase(),
+              tag:
+                input.tagName.toLowerCase(),
               id: input.id || null,
               role:
-                input.getAttribute('role') || null,
+                input.getAttribute('role') ||
+                null,
               value: input.value || '',
               ...pickAttrs(input, [
                 'name',
@@ -1039,35 +1227,42 @@ export const AccessibilityMatrix = {
                 disabled: input.disabled,
               },
               resolves: {
-                'aria-labelledby': resolveIdsWithin(
-                  host,
-                  labelledByIds,
-                ),
-                'aria-describedby': resolveIdsWithin(
-                  host,
-                  describedByIds,
-                ),
+                'aria-labelledby':
+                  resolveIdsWithin(
+                    host,
+                    labelledByIds,
+                  ),
+                'aria-describedby':
+                  resolveIdsWithin(
+                    host,
+                    describedByIds,
+                  ),
               },
             }
           : null,
 
         label: label
           ? {
-              tag: label.tagName.toLowerCase(),
+              tag:
+                label.tagName.toLowerCase(),
               id: label.id || null,
               for:
-                label.getAttribute('for') || null,
+                label.getAttribute('for') ||
+                null,
             }
           : null,
 
         group: group
           ? {
-              tag: group.tagName.toLowerCase(),
+              tag:
+                group.tagName.toLowerCase(),
               id: group.id || null,
               role:
-                group.getAttribute('role') || null,
+                group.getAttribute('role') ||
+                null,
               className:
-                group.getAttribute('class') || '',
+                group.getAttribute('class') ||
+                '',
               ...pickAttrs(group, [
                 'aria-label',
                 'aria-labelledby',
@@ -1078,10 +1273,12 @@ export const AccessibilityMatrix = {
 
         toggle: toggle
           ? {
-              tag: toggle.tagName.toLowerCase(),
+              tag:
+                toggle.tagName.toLowerCase(),
               id: toggle.id || null,
               role:
-                toggle.getAttribute('role') || null,
+                toggle.getAttribute('role') ||
+                null,
               ...pickAttrs(toggle, [
                 'aria-label',
                 'aria-haspopup',
@@ -1106,10 +1303,12 @@ export const AccessibilityMatrix = {
 
         dialog: dialog
           ? {
-              tag: dialog.tagName.toLowerCase(),
+              tag:
+                dialog.tagName.toLowerCase(),
               id: dialog.id || null,
               role:
-                dialog.getAttribute('role') || null,
+                dialog.getAttribute('role') ||
+                null,
               ...pickAttrs(dialog, [
                 'aria-modal',
                 'aria-labelledby',
@@ -1135,32 +1334,41 @@ export const AccessibilityMatrix = {
 
         controls: {
           calendarToggleRendered: !!toggle,
-          clearButtonRendered: !!clearButton,
+          clearButtonRendered:
+            !!clearButton,
         },
 
         ids: collect(host),
       };
     };
 
-    const renderRow = ({ title, build }) => {
-      const wrapper = document.createElement('div');
+    const renderRow = ({
+      title,
+      build,
+    }) => {
+      const wrapper =
+        document.createElement('div');
 
-      wrapper.style.border = '1px solid #ddd';
+      wrapper.style.border =
+        '1px solid #ddd';
       wrapper.style.borderRadius = '12px';
       wrapper.style.padding = '12px';
       wrapper.style.display = 'grid';
       wrapper.style.gap = '10px';
 
-      const heading = document.createElement('div');
+      const heading =
+        document.createElement('div');
 
       heading.style.fontWeight = '700';
       heading.textContent = title;
 
-      const stage = document.createElement('div');
+      const stage =
+        document.createElement('div');
 
       stage.style.maxWidth = '560px';
 
-      const output = document.createElement('pre');
+      const output =
+        document.createElement('pre');
 
       output.style.margin = '0';
       output.style.padding = '10px';
@@ -1171,25 +1379,19 @@ export const AccessibilityMatrix = {
       output.textContent =
         'Collecting aria/role/id…';
 
-      const component = build();
+      const element = build();
 
-      stage.appendChild(component);
+      stage.appendChild(element);
       wrapper.appendChild(heading);
       wrapper.appendChild(stage);
       wrapper.appendChild(output);
 
       const update = () => {
-        const host = stage.querySelector(
-          'date-range-picker-component',
+        output.textContent = JSON.stringify(
+          snapshotDRPA11y(element),
+          null,
+          2,
         );
-
-        output.textContent = host
-          ? JSON.stringify(
-              snapshotDRPA11y(host),
-              null,
-              2,
-            )
-          : 'No host found';
       };
 
       requestAnimationFrame(() =>
@@ -1199,78 +1401,73 @@ export const AccessibilityMatrix = {
       return wrapper;
     };
 
-    const base = {
-      ...args,
-    };
-
-    const cases = [
+    const rows = [
       {
         title: 'Default',
         build: () =>
           Template({
-            ...base,
-            formLayout: '',
-            labelHidden: false,
-            disabled: false,
-            readOnly: false,
+            ...baseArgs,
+            ...args,
+            inputId: 'drp-a11y-default',
+            label: 'Default',
+            value: '',
             required: false,
             validation: false,
-            value: '',
-            inputId: 'drp-a11y-default',
-            label: 'Default DRP',
+            disabled: false,
+            readOnly: false,
+            formLayout: '',
           }),
       },
       {
         title: 'With Value',
         build: () =>
           Template({
-            ...base,
-            formLayout: '',
-            labelHidden: false,
-            disabled: false,
-            readOnly: false,
-            required: false,
-            validation: false,
+            ...baseArgs,
+            ...args,
+            inputId: 'drp-a11y-value',
+            label: 'With Value',
             value:
               '2026-07-10 - 2026-07-20',
-            inputId: 'drp-a11y-value',
-            label: 'DRP With Value',
+            required: false,
+            validation: false,
+            disabled: false,
+            readOnly: false,
+            formLayout: '',
           }),
       },
       {
         title: 'Inline',
         build: () =>
           Template({
-            ...base,
-            formLayout: 'inline',
-            labelHidden: false,
-            disabled: false,
-            readOnly: false,
+            ...baseArgs,
+            ...args,
+            inputId: 'drp-a11y-inline',
+            label: 'Inline',
+            value: '',
             required: false,
             validation: false,
-            value: '',
-            inputId: 'drp-a11y-inline',
-            label: 'Inline DRP',
+            disabled: false,
+            readOnly: false,
+            formLayout: 'inline',
             labelCol: '',
             inputCol: '',
-            labelCols: '',
-            inputCols: '',
           }),
       },
       {
         title: 'Horizontal',
         build: () =>
           Template({
-            ...base,
-            formLayout: 'horizontal',
-            labelHidden: false,
-            disabled: false,
-            readOnly: false,
+            ...baseArgs,
+            ...args,
+            inputId:
+              'drp-a11y-horizontal',
+            label: 'Horizontal',
+            value: '',
             required: false,
             validation: false,
-            value: '',
-            inputId: 'drp-a11y-horizontal',
-            label: 'Horizontal DRP',
+            disabled: false,
+            readOnly: false,
+            formLayout: 'horizontal',
             labelAlign: 'right',
             labelCol: 3,
             inputCol: 9,
@@ -1280,53 +1477,61 @@ export const AccessibilityMatrix = {
         title: 'Validation / Error',
         build: () =>
           Template({
-            ...base,
-            formLayout: '',
-            disabled: false,
-            readOnly: false,
+            ...baseArgs,
+            ...args,
+            inputId:
+              'drp-a11y-validation',
+            label: 'Validation',
+            value: '',
             required: true,
             validation: true,
             validationMessage:
               'Please enter a valid date range.',
-            value: '',
-            inputId: 'drp-a11y-validation',
-            label: 'Validated DRP',
+            disabled: false,
+            readOnly: false,
+            formLayout: '',
           }),
       },
       {
         title: 'Disabled',
         build: () =>
           Template({
-            ...base,
-            disabled: true,
-            readOnly: false,
-            required: false,
-            validation: false,
+            ...baseArgs,
+            ...args,
+            inputId:
+              'drp-a11y-disabled',
+            label: 'Disabled',
             value:
               '2026-07-10 - 2026-07-20',
-            inputId: 'drp-a11y-disabled',
-            label: 'Disabled DRP',
+            required: false,
+            validation: false,
+            disabled: true,
+            readOnly: false,
+            formLayout: '',
           }),
       },
       {
         title: 'Read Only',
         build: () =>
           Template({
-            ...base,
-            disabled: false,
-            readOnly: true,
-            required: false,
-            validation: false,
+            ...baseArgs,
+            ...args,
+            inputId:
+              'drp-a11y-readonly',
+            label: 'Read Only',
             value:
               '2026-07-10 - 2026-07-20',
-            inputId: 'drp-a11y-readonly',
-            label: 'Read Only DRP',
+            required: false,
+            validation: false,
+            disabled: false,
+            readOnly: true,
+            formLayout: '',
           }),
       },
     ];
 
-    cases.forEach(testCase => {
-      root.appendChild(renderRow(testCase));
+    rows.forEach(row => {
+      root.appendChild(renderRow(row));
     });
 
     return root;
@@ -1336,13 +1541,11 @@ export const AccessibilityMatrix = {
     controls: {
       disable: true,
     },
-
     docs: {
       description: {
         story:
-          'Matrix of common Date Range Picker states, including populated values, validation, disabled, and read-only behavior, with computed roles, aria-* attributes, IDs, and control states.',
+          'Matrix of common Date Range Picker states, including a populated value, validation, disabled, and read-only behavior, with computed roles, aria-* attributes, and IDs.',
       },
-
       story: {
         height: '1650px',
       },

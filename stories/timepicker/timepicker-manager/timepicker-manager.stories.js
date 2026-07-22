@@ -1,14 +1,7 @@
 // File: src/stories/timepicker-manager-component.stories.js
 
 import DocsPage from './timepicker-manager-component.docs.mdx';
-import {
-  DocsWrapStyles,
-  Template,
-  buildDocsHtml,
-  getChild,
-  getSnapshot,
-  normalizeHtml,
-} from './timepicker-manager-component.story-helpers.js';
+import { DocsWrapStyles, Template, buildDocsHtml, getChild, getSnapshot, normalizeHtml } from './timepicker-manager-component.story-helpers.js';
 
 const baseArgs = {
   ariaLabel: 'Time Picker',
@@ -471,6 +464,30 @@ export const ReadOnly = {
   },
 };
 
+export const Disabled = {
+  ...storyWithTemplate,
+  name: 'Disabled',
+  args: {
+    ...baseArgs,
+    disableTimepicker: true,
+    inputId: 'timepicker-manager-disabled',
+    inputName: 'disabled-time',
+    labelText: 'Disabled Time',
+    value: '13:05:09',
+    wrapperWidth: 320,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Disabled state forwarded to the active child implementation.'
+      },
+      story: {
+        height: '220px',
+      }
+    },
+  },
+};
+
 export const PlumageStyle = {
   ...storyWithTemplate,
   name: 'Plumage Style Timepicker',
@@ -487,6 +504,236 @@ export const PlumageStyle = {
         story: 'Renders the plumage-timepicker-component when use-pl-timepicker is true.',
       },
       story: { height: '240px' },
+    },
+  },
+};
+
+export const ControlledValue = {
+  name: 'Controlled Value',
+  args: {
+    ...baseArgs,
+    inputId: 'timepicker-manager-controlled',
+    inputName: 'controlled-time',
+    labelText: 'Controlled Time',
+    value: '13:05:09',
+    wrapperWidth: 520,
+  },
+  render: args => {
+    const root = document.createElement('div');
+    root.style.display = 'grid';
+    root.style.gap = '16px';
+    root.style.maxWidth = '720px';
+
+    const description = document.createElement('div');
+    description.innerHTML = `
+      <strong>Controlled value</strong>
+      <div style="margin-top:4px; opacity:.8;">
+        Use the buttons to update the manager externally. Changes made through
+        the active child are mirrored back to the manager.
+      </div>
+    `;
+
+    const controls = document.createElement('div');
+    controls.style.display = 'flex';
+    controls.style.flexWrap = 'wrap';
+    controls.style.gap = '8px';
+
+    const createButton = (label, value) => {
+      const button = document.createElement('button');
+
+      button.type = 'button';
+      button.textContent = label;
+      button.dataset.value = value;
+      button.style.padding = '6px 12px';
+      button.style.cursor = 'pointer';
+
+      return button;
+    };
+
+    const setMorningButton = createButton('Set 09:30:00', '09:30:00');
+
+    const setAfternoonButton = createButton('Set 13:05:09', '13:05:09');
+
+    const setEveningButton = createButton('Set 18:45:30', '18:45:30');
+
+    const clearButton = createButton('Clear', '');
+
+    controls.append(setMorningButton, setAfternoonButton, setEveningButton, clearButton);
+
+    const demo = document.createElement('div');
+    demo.innerHTML = Template({
+      ...baseArgs,
+      ...args,
+    });
+
+    const status = document.createElement('pre');
+    status.style.margin = '0';
+    status.style.padding = '12px';
+    status.style.border = '1px solid #ddd';
+    status.style.borderRadius = '8px';
+    status.style.background = '#fafafa';
+    status.style.whiteSpace = 'pre-wrap';
+    status.style.wordBreak = 'break-word';
+    status.textContent = 'Loading…';
+
+    const eventOutput = document.createElement('pre');
+    eventOutput.style.margin = '0';
+    eventOutput.style.padding = '12px';
+    eventOutput.style.border = '1px solid #ddd';
+    eventOutput.style.borderRadius = '8px';
+    eventOutput.style.background = '#fafafa';
+    eventOutput.style.whiteSpace = 'pre-wrap';
+    eventOutput.style.wordBreak = 'break-word';
+    eventOutput.textContent = 'No events received yet.';
+
+    const statusHeading = document.createElement('strong');
+    statusHeading.textContent = 'Current state';
+
+    const eventHeading = document.createElement('strong');
+    eventHeading.textContent = 'Latest event';
+
+    root.append(description, controls, demo, statusHeading, status, eventHeading, eventOutput);
+
+    const updateStatus = () => {
+      const manager = demo.querySelector('timepicker-manager');
+
+      const child = getChild(manager);
+
+      status.textContent = JSON.stringify(
+        {
+          managerValue: manager?.value ?? null,
+          childValue: child?.value ?? null,
+          implementation: child?.tagName?.toLowerCase?.() ?? null,
+          isTwentyFourHourFormat: manager?.isTwentyFourHourFormat ?? null,
+          hideSeconds: manager?.hideSeconds ?? null,
+          isValid: manager?.isValid ?? null,
+        },
+        null,
+        2,
+      );
+    };
+
+    const setControlledValue = value => {
+      const manager = demo.querySelector('timepicker-manager');
+
+      if (!manager) {
+        return;
+      }
+
+      manager.value = value;
+
+      requestAnimationFrame(updateStatus);
+    };
+
+    controls.addEventListener('click', event => {
+      const target = event.target;
+
+      if (!(target instanceof HTMLButtonElement)) {
+        return;
+      }
+
+      setControlledValue(target.dataset.value ?? '');
+    });
+
+    const recordEvent = event => {
+      eventOutput.textContent = JSON.stringify(
+        {
+          type: event.type,
+          detail: event.detail,
+        },
+        null,
+        2,
+      );
+
+      requestAnimationFrame(updateStatus);
+    };
+
+    const initialize = async () => {
+      const manager = demo.querySelector('timepicker-manager');
+
+      if (!manager) {
+        status.textContent = 'Manager element was not rendered.';
+        return;
+      }
+
+      if (typeof manager.componentOnReady === 'function') {
+        try {
+          await manager.componentOnReady();
+        } catch (_error) {}
+      } else if (window.customElements?.whenDefined) {
+        try {
+          await customElements.whenDefined('timepicker-manager');
+        } catch (_error) {}
+      }
+
+      const child = getChild(manager);
+
+      if (typeof child?.componentOnReady === 'function') {
+        try {
+          await child.componentOnReady();
+        } catch (_error) {}
+      }
+
+      manager.addEventListener('timeChange', recordEvent);
+
+      manager.addEventListener('timeInput', recordEvent);
+
+      manager.addEventListener('managerTimeChange', recordEvent);
+
+      manager.addEventListener('managerTimeInput', recordEvent);
+
+      updateStatus();
+    };
+
+    queueMicrotask(() => {
+      requestAnimationFrame(initialize);
+    });
+
+    return root;
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `
+Demonstrates controlled manager values in both child implementations.
+
+- External buttons update \`timepicker-manager.value\`
+- Child \`timeChange\` events update the manager value
+- The story displays manager and child values
+- The latest passthrough or namespaced event payload is displayed
+- Toggle \`use-pl-timepicker\` to test both implementations
+`.trim(),
+      },
+      story: {
+        height: '520px',
+      },
+      source: {
+        language: 'html',
+        code: `
+<timepicker-manager
+  input-id="timepicker-manager-controlled"
+  input-name="controlled-time"
+  label-text="Controlled Time"
+  show-label
+  value="13:05:09"
+></timepicker-manager>
+
+<script>
+  const manager = document.querySelector(
+    'timepicker-manager'
+  );
+
+  manager.value = '09:30:00';
+
+  manager.addEventListener(
+    'managerTimeChange',
+    event => {
+      console.log(event.detail);
+    }
+  );
+</script>
+`.trim(),
+      },
     },
   },
 };

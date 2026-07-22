@@ -105,6 +105,125 @@ export const buildDocsHtml = args => {
 `);
 };
 
+export const buildDocsHtmlControlledValue = () =>
+  normalize(`
+<date-range-picker-component
+  id="controlled-drp"
+  input-id="controlled-drp"
+  label="Controlled Date Range"
+  date-format="YYYY-MM-DD"
+  join-by=" - "
+  value="2026-07-20 - 2026-07-25"
+></date-range-picker-component>
+
+<div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+  <button type="button" id="set-july-range">
+    Set July Range
+  </button>
+
+  <button type="button" id="set-august-range">
+    Set August Range
+  </button>
+
+  <button type="button" id="clear-range">
+    Clear
+  </button>
+</div>
+
+<script>
+  const picker = document.querySelector(
+    '#controlled-drp'
+  );
+
+  const valueState = {
+    value: '2026-07-20 - 2026-07-25',
+  };
+
+  const getJoinBy = () =>
+    picker.joinBy || ' - ';
+
+  const eventDetailToValue = (detail) => {
+    if (typeof detail === 'string') {
+      return detail;
+    }
+
+    if (!detail || typeof detail !== 'object') {
+      return '';
+    }
+
+    if (
+      picker.showIso &&
+      typeof detail.startDateIso === 'string' &&
+      typeof detail.endDateIso === 'string'
+    ) {
+      return (
+        detail.startDateIso +
+        getJoinBy() +
+        detail.endDateIso
+      );
+    }
+
+    if (
+      typeof detail.startDate !== 'string' ||
+      typeof detail.endDate !== 'string'
+    ) {
+      return '';
+    }
+
+    return (
+      detail.startDate +
+      getJoinBy() +
+      detail.endDate
+    );
+  };
+
+  const sync = () => {
+    picker.value = valueState.value;
+  };
+
+  document
+    .querySelector('#set-july-range')
+    .addEventListener('click', () => {
+      valueState.value =
+        '2026-07-20 - 2026-07-25';
+
+      sync();
+    });
+
+  document
+    .querySelector('#set-august-range')
+    .addEventListener('click', () => {
+      valueState.value =
+        '2026-08-01 - 2026-08-10';
+
+      sync();
+    });
+
+  document
+    .querySelector('#clear-range')
+    .addEventListener('click', () => {
+      valueState.value = '';
+      sync();
+    });
+
+  picker.addEventListener(
+    'date-range-updated',
+    (event) => {
+      const nextValue = eventDetailToValue(
+        event.detail
+      );
+
+      if (!nextValue) {
+        return;
+      }
+
+      valueState.value = nextValue;
+      sync();
+    }
+  );
+</script>
+`);
+
 export const setAttr = (element, name, value) => {
   if (value === true) {
     element.setAttribute(name, '');
@@ -117,6 +236,38 @@ export const setAttr = (element, name, value) => {
   }
 
   element.setAttribute(name, String(value));
+};
+
+export const setDateRangeValueWhenReady = async (element, value) => {
+  if (typeof element?.componentOnReady === 'function') {
+    await element.componentOnReady();
+  } else if (window.customElements?.whenDefined) {
+    await customElements.whenDefined('date-range-picker-component');
+  }
+
+  element.value = typeof value === 'string' ? value : '';
+};
+
+export const updateArgsBestEffort = (ctx, updatedArgs) => {
+  if (typeof ctx?.updateArgs === 'function') {
+    try {
+      ctx.updateArgs(updatedArgs);
+      return;
+    } catch (_e) {}
+  }
+
+  try {
+    const channel =
+      window.__STORYBOOK_ADDONS_CHANNEL__ ||
+      window.__STORYBOOK_PREVIEW__?.addons?.getChannel?.() ||
+      window.__STORYBOOK_ADDONS?.getChannel?.();
+
+    const storyId = ctx?.id;
+    if (!channel || !storyId) return;
+
+    channel.emit('updateStoryArgs', { storyId, updatedArgs });
+    channel.emit('UPDATE_STORY_ARGS', { storyId, updatedArgs });
+  } catch (_e) {}
 };
 
 export const buildDateRangePickerEl = args => {
@@ -178,67 +329,43 @@ export const buildDateRangePickerEl = args => {
   element.ariaLabel = args.ariaLabel || '';
 
   setAttr(element, 'plumage', !!args.plumage);
-
   setAttr(element, 'range-picker', !!args.rangePicker);
-
   setAttr(element, 'disabled', !!args.disabled);
-
   setAttr(element, 'read-only', !!args.readOnly);
-
   setAttr(element, 'required', !!args.required);
 
   setAttr(element, 'date-format', args.dateFormat);
-
   setAttr(element, 'show-ymd', !!args.showYmd);
-
   setAttr(element, 'show-long', !!args.showLong);
-
   setAttr(element, 'show-iso', !!args.showIso);
 
   setAttr(element, 'placeholder', args.placeholder);
-
   setAttr(element, 'join-by', args.joinBy);
-
   setAttr(element, 'icon', args.icon);
-
   setAttr(element, 'input-id', args.inputId);
-
   setAttr(element, 'value', args.value);
 
   setAttr(element, 'append-prop', !!args.appendProp);
-
   setAttr(element, 'prepend-prop', !!args.prependProp);
-
   setAttr(element, 'append-id', args.appendId);
-
   setAttr(element, 'prepend-id', args.prependId);
 
   setAttr(element, 'label', args.label);
-
   setAttr(element, 'label-align', args.labelAlign);
-
   setAttr(element, 'label-hidden', !!args.labelHidden);
-
   setAttr(element, 'form-layout', args.formLayout);
-
   setAttr(element, 'size', args.size);
 
   setAttr(element, 'label-col', asNumOrUndef(args.labelCol));
-
   setAttr(element, 'input-col', asNumOrUndef(args.inputCol));
-
   setAttr(element, 'label-cols', args.labelCols);
-
   setAttr(element, 'input-cols', args.inputCols);
 
   setAttr(element, 'validation', !!args.validation);
-
   setAttr(element, 'validation-message', args.validationMessage);
-
   setAttr(element, 'warning-message', args.warningMessage);
 
   setAttr(element, 'show-ok-button', !!args.showOkButton);
-
   setAttr(element, 'aria-label', args.ariaLabel);
 
   element.addEventListener('date-range-updated', event => action('date-range-updated')(event.detail));

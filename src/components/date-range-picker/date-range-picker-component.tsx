@@ -294,46 +294,29 @@ export class DateRangePickerComponent {
 
   @Watch('value')
   onValueChange(newValue: string) {
-    const trimmed = String(newValue || '').trim();
+    const next = String(newValue ?? '').trim();
 
-    if (!trimmed) {
-      this.startDate = null;
-      this.endDate = null;
-      this.selectedStartDate = '';
-      this.selectedEndDate = '';
-      this.okButtonLabel = 'Close';
-
-      this.syncInputValue('');
-      this.updateDisplayedDateRange();
+    if (!next) {
+      this.clearInputField(true);
       return;
     }
 
-    const currentRendered = this.startDate && this.endDate ? `${this.formatForOutput(this.startDate)} ${this.joinBy} ${this.formatForOutput(this.endDate)}` : '';
-    if (trimmed === currentRendered) return;
+    const currentRendered =
+      this.startDate && this.endDate
+        ? `${this.formatForOutput(this.startDate)} ${this.joinBy} ${this.formatForOutput(this.endDate)}`
+        : '';
 
-    const parsed = this.parseIncomingRangeValue(trimmed);
-    if (!parsed) return;
-
-    this.startDate = parsed.start;
-    this.endDate = parsed.end;
-    this.selectedStartDate = this.formatForOutput(parsed.start);
-    this.selectedEndDate = this.formatForOutput(parsed.end);
-
-    const normalized = `${this.selectedStartDate} ${this.joinBy} ${this.selectedEndDate}`;
-    if (this.value !== normalized) {
-      this.value = normalized;
+    if (next === currentRendered) {
+      this.syncInputValue(next);
+      return;
     }
 
-    if (this.inputEl && this.inputEl.value !== normalized) {
-      this.syncInputValue(normalized);
-    }
-
-    this.validation = false;
-    this.validationMessage = '';
-    this.warningMessage = '';
-    this.updateOkButtonState();
+    this.applyInitialValue(next);
+    this.syncMonthYearSelectors();
+    this.updateSelectedRange();
     this.updateDisplayedDateRange();
     this.updateActiveDateElements();
+    this.updateOkButtonState();
   }
 
   // -------------------- public method ---------------------
@@ -942,17 +925,20 @@ export class DateRangePickerComponent {
     this.validation = this.validation; // no-op
   }
 
-  private clearInputField = () => {
+  private clearInputField = (fromExternal = false) => {
     this.clearAllFocus();
     this.startDate = null;
     this.endDate = null;
     this.selectedStartDate = '';
     this.selectedEndDate = '';
 
-    if (this.inputEl) this.inputEl.value = '';
-    this.value = '';
+    this.syncInputValue('');
 
-    if (this.required) {
+    if (this.value !== '') {
+      this.value = '';
+    }
+
+    if (!fromExternal && this.required) {
       this.validation = true;
       this.validationMessage = 'This field is required.';
     } else {
@@ -960,11 +946,16 @@ export class DateRangePickerComponent {
       this.validationMessage = '';
     }
 
+    this.warningMessage = '';
+
     const now = new Date();
     this.currentStartMonth = now.getMonth();
     this.currentStartYear = now.getFullYear();
     this.currentEndMonth = (this.currentStartMonth + 1) % 12;
-    this.currentEndYear = this.currentStartMonth === 11 ? this.currentStartYear + 1 : this.currentStartYear;
+    this.currentEndYear =
+      this.currentStartMonth === 11
+        ? this.currentStartYear + 1
+        : this.currentStartYear;
 
     this.userNavigated = false;
     this.okButtonLabel = 'Close';
@@ -973,6 +964,7 @@ export class DateRangePickerComponent {
     this.updateSelectedRange();
     this.updateDisplayedDateRange();
     this.updateActiveDateElements();
+    this.updateOkButtonState();
   };
 
   /** Public reset via event (kept for parity with Lit) */

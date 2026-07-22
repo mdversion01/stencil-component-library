@@ -472,6 +472,32 @@ export const ReadOnly = {
   },
 };
 
+export const Disabled = {
+  name: 'Disabled',
+  render: renderTemplate,
+  args: {
+    ...baseArgs,
+    wrapperWidth: 320,
+    disabled: true,
+    showLabel: true,
+    labelText: 'Disabled Time',
+    inputId: 'pl-disabled',
+    inputName: 'disabled-time',
+    value: '13:05:09',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: `Disabled state using the \`disabled\` prop.`
+      },
+      story: {
+        height: '220px',
+      },
+      source: docsSource,
+    },
+  },
+};
+
 export const WithValidationMessage = {
   name: 'With User Validation Message',
   render: renderTemplate,

@@ -39,37 +39,18 @@ export const normalize = txt => {
 
 export const attrs = pairs =>
   pairs
-    .filter(
-      ([, value]) =>
-        value !== undefined &&
-        value !== null &&
-        value !== '' &&
-        value !== false,
-    )
-    .map(([key, value]) =>
-      value === true
-        ? key
-        : `${key}="${String(value).replace(
-            /"/g,
-            '&quot;',
-          )}"`,
-    )
+    .filter(([, value]) => value !== undefined && value !== null && value !== '' && value !== false)
+    .map(([key, value]) => (value === true ? key : `${key}="${String(value).replace(/"/g, '&quot;')}"`))
     .join('\n  ');
 
 export const asNumOrUndef = value => {
-  if (
-    value === '' ||
-    value === null ||
-    value === undefined
-  ) {
+  if (value === '' || value === null || value === undefined) {
     return undefined;
   }
 
   const numericValue = Number(value);
 
-  return Number.isFinite(numericValue)
-    ? numericValue
-    : undefined;
+  return Number.isFinite(numericValue) ? numericValue : undefined;
 };
 
 export const esc = value =>
@@ -87,10 +68,7 @@ export const buildDocsHtml = args => {
     ['required', !!args.required],
 
     ['date-format', args.dateFormat],
-    [
-      'is-twenty-four-hour-format',
-      !!args.isTwentyFourHourFormat,
-    ],
+    ['is-twenty-four-hour-format', !!args.isTwentyFourHourFormat],
     ['show-duration', !!args.showDuration],
     ['show-ymd', !!args.showYmd],
     ['show-long', !!args.showLong],
@@ -132,6 +110,165 @@ export const buildDocsHtml = args => {
 `);
 };
 
+export const buildDocsHtmlControlledValue = () =>
+  normalize(`
+<date-range-time-picker-component
+  id="controlled-drtp"
+  input-id="controlled-drtp"
+  label="Controlled Date/Time Range"
+  date-format="YYYY-MM-DD"
+  join-by=" - "
+  value="2026-07-20 09:00 - 2026-08-20 12:00"
+></date-range-time-picker-component>
+
+<div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+  <button id="set-morning" type="button">
+    Set Morning Window
+  </button>
+
+  <button id="set-afternoon" type="button">
+    Set Afternoon Window
+  </button>
+
+  <button id="clear-range" type="button">
+    Clear
+  </button>
+</div>
+
+<script>
+  const picker = document.querySelector(
+    '#controlled-drtp'
+  );
+
+  const valueState = {
+    value:
+      '2026-07-20 09:00 - 2026-08-20 12:00',
+  };
+
+  const getJoinBy = () =>
+    picker.joinBy || ' - ';
+
+  const eventDetailToValue = (detail) => {
+    if (!detail || typeof detail !== 'object') {
+      return '';
+    }
+
+    if (
+      picker.showIso &&
+      typeof detail.startDateTimeIso === 'string' &&
+      typeof detail.endDateTimeIso === 'string'
+    ) {
+      return (
+        detail.startDateTimeIso +
+        getJoinBy() +
+        detail.endDateTimeIso
+      );
+    }
+
+    if (
+      typeof detail.startDate !== 'string' ||
+      typeof detail.endDate !== 'string' ||
+      typeof detail.startTime !== 'string' ||
+      typeof detail.endTime !== 'string'
+    ) {
+      return '';
+    }
+
+    const duration =
+      picker.showDuration &&
+      typeof detail.duration === 'string' &&
+      detail.duration
+        ? ' (' + detail.duration + ')'
+        : '';
+
+    return (
+      detail.startDate +
+      ' ' +
+      detail.startTime +
+      getJoinBy() +
+      detail.endDate +
+      ' ' +
+      detail.endTime +
+      duration
+    );
+  };
+
+  const sync = () => {
+    picker.value = valueState.value;
+  };
+
+  document
+    .querySelector('#set-morning')
+    .addEventListener('click', () => {
+      valueState.value =
+        '2026-07-20 09:00 - 2026-08-20 12:00';
+
+      sync();
+    });
+
+  document
+    .querySelector('#set-afternoon')
+    .addEventListener('click', () => {
+      valueState.value =
+        '2026-07-20 13:00 - 2026-08-20 17:00';
+
+      sync();
+    });
+
+  document
+    .querySelector('#clear-range')
+    .addEventListener('click', () => {
+      valueState.value = '';
+      sync();
+    });
+
+  picker.addEventListener(
+    'date-time-updated',
+    (event) => {
+      const nextValue = eventDetailToValue(
+        event.detail
+      );
+
+      if (!nextValue) {
+        return;
+      }
+
+      valueState.value = nextValue;
+      sync();
+    }
+  );
+</script>
+`);
+
+export const setDateRangeTimeValueWhenReady = async (el, value) => {
+  if (typeof el?.componentOnReady === 'function') {
+    await el.componentOnReady();
+  } else if (window.customElements?.whenDefined) {
+    await customElements.whenDefined('date-range-time-picker-component');
+  }
+
+  el.value = typeof value === 'string' ? value : '';
+};
+
+export const updateArgsBestEffort = (ctx, updatedArgs) => {
+  if (typeof ctx?.updateArgs === 'function') {
+    try {
+      ctx.updateArgs(updatedArgs);
+      return;
+    } catch (_e) {}
+  }
+
+  try {
+    const channel = window.__STORYBOOK_ADDONS_CHANNEL__ || window.__STORYBOOK_PREVIEW__?.addons?.getChannel?.() || window.__STORYBOOK_ADDONS?.getChannel?.();
+
+    const storyId = ctx?.id;
+    if (!channel || !storyId) return;
+
+    channel.emit('updateStoryArgs', { storyId, updatedArgs });
+    channel.emit('UPDATE_STORY_ARGS', { storyId, updatedArgs });
+  } catch (_e) {}
+};
+
 export const pickAttrs = (element, names) => {
   const output = {};
 
@@ -160,13 +297,9 @@ export const resolveIdsWithin = (host, ids) => {
   const result = {};
 
   for (const id of ids) {
-    const safe = String(id)
-      .replace(/\\/g, '\\\\')
-      .replace(/"/g, '\\"');
+    const safe = String(id).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 
-    result[id] = !!host.querySelector(
-      `[id="${safe}"]`,
-    );
+    result[id] = !!host.querySelector(`[id="${safe}"]`);
   }
 
   return result;
@@ -198,9 +331,7 @@ export const collectIds = root => {
 };
 
 export const buildDateRangeTimePickerEl = args => {
-  const element = document.createElement(
-    'date-range-time-picker-component',
-  );
+  const element = document.createElement('date-range-time-picker-component');
 
   element.plumage = !!args.plumage;
   element.rangeTimePicker = !!args.rangeTimePicker;
@@ -208,11 +339,9 @@ export const buildDateRangeTimePickerEl = args => {
   element.readOnly = !!args.readOnly;
   element.required = !!args.required;
 
-  element.dateFormat =
-    args.dateFormat || 'YYYY-MM-DD';
+  element.dateFormat = args.dateFormat || 'YYYY-MM-DD';
 
-  element.isTwentyFourHourFormat =
-    !!args.isTwentyFourHourFormat;
+  element.isTwentyFourHourFormat = !!args.isTwentyFourHourFormat;
 
   element.showDuration = !!args.showDuration;
   element.showYmd = !!args.showYmd;
@@ -224,19 +353,16 @@ export const buildDateRangeTimePickerEl = args => {
   }
 
   element.joinBy = args.joinBy || ' - ';
-  element.icon =
-    args.icon || 'fas fa-calendar-alt';
+  element.icon = args.icon || 'fas fa-calendar-alt';
 
-  element.inputId =
-    args.inputId || 'date-range-time';
+  element.inputId = args.inputId || 'date-range-time';
 
   element.appendProp = !!args.appendProp;
   element.prependProp = !!args.prependProp;
   element.appendId = args.appendId || '';
   element.prependId = args.prependId || '';
 
-  element.label =
-    args.label || 'Date and Time Picker';
+  element.label = args.label || 'Date and Time Picker';
 
   element.labelAlign = args.labelAlign || '';
   element.labelHidden = !!args.labelHidden;
@@ -256,68 +382,42 @@ export const buildDateRangeTimePickerEl = args => {
 
   element.validation = !!args.validation;
 
-  element.validationMessage =
-    args.validationMessage || 'Required field';
+  element.validationMessage = args.validationMessage || 'Required field';
 
-  element.warningMessage =
-    args.warningMessage || '';
+  element.warningMessage = args.warningMessage || '';
 
   element.showOkButton = !!args.showOkButton;
   element.ariaLabel = args.ariaLabel || '';
   element.value = args.value || '';
 
-  element.addEventListener(
-    'date-time-updated',
-    event =>
-      action('date-time-updated')(event.detail),
-  );
+  element.addEventListener('date-time-updated', event => action('date-time-updated')(event.detail));
 
   return element;
 };
 
-export const Template = args =>
-  buildDateRangeTimePickerEl(args);
+export const Template = args => buildDateRangeTimePickerEl(args);
 
 export const snapshotDRTPA11y = host => {
-  const input = host.querySelector(
-    'input.form-control',
-  );
+  const input = host.querySelector('input.form-control');
 
-  const label = host.querySelector(
-    'label.form-control-label',
-  );
+  const label = host.querySelector('label.form-control-label');
 
-  const toggle = host.querySelector(
-    '.calendar-button, button.btn.input-group-text',
-  );
+  const toggle = host.querySelector('.calendar-button, button.btn.input-group-text');
 
-  const dialog = host.querySelector(
-    '.dropdown-content',
-  );
+  const dialog = host.querySelector('.dropdown-content');
 
-  const validation = host.querySelector(
-    '.invalid-feedback.validation, .invalid-feedback.warning, .invalid-feedback',
-  );
+  const validation = host.querySelector('.invalid-feedback.validation, .invalid-feedback.warning, .invalid-feedback');
 
-  const describedByIds = input
-    ? splitIds(input.getAttribute('aria-describedby'))
-    : [];
+  const describedByIds = input ? splitIds(input.getAttribute('aria-describedby')) : [];
 
-  const labelledByIds = input
-    ? splitIds(input.getAttribute('aria-labelledby'))
-    : [];
+  const labelledByIds = input ? splitIds(input.getAttribute('aria-labelledby')) : [];
 
   return {
     host: {
       tag: host.tagName.toLowerCase(),
       id: host.id || null,
       role: host.getAttribute('role') || null,
-      ...pickAttrs(host, [
-        'value',
-        'aria-label',
-        'aria-labelledby',
-        'aria-describedby',
-      ]),
+      ...pickAttrs(host, ['value', 'aria-label', 'aria-labelledby', 'aria-describedby']),
       properties: {
         value: host.value || '',
         readOnly: !!host.readOnly,
@@ -351,14 +451,8 @@ export const snapshotDRTPA11y = host => {
             disabled: input.disabled,
           },
           resolves: {
-            'aria-labelledby': resolveIdsWithin(
-              host,
-              labelledByIds,
-            ),
-            'aria-describedby': resolveIdsWithin(
-              host,
-              describedByIds,
-            ),
+            'aria-labelledby': resolveIdsWithin(host, labelledByIds),
+            'aria-describedby': resolveIdsWithin(host, describedByIds),
           },
         }
       : null,
@@ -376,13 +470,7 @@ export const snapshotDRTPA11y = host => {
           tag: toggle.tagName.toLowerCase(),
           id: toggle.id || null,
           role: toggle.getAttribute('role') || null,
-          ...pickAttrs(toggle, [
-            'aria-label',
-            'aria-haspopup',
-            'aria-expanded',
-            'aria-controls',
-            'disabled',
-          ]),
+          ...pickAttrs(toggle, ['aria-label', 'aria-haspopup', 'aria-expanded', 'aria-controls', 'disabled']),
         }
       : null,
 
@@ -391,11 +479,7 @@ export const snapshotDRTPA11y = host => {
           tag: dialog.tagName.toLowerCase(),
           id: dialog.id || null,
           role: dialog.getAttribute('role') || null,
-          ...pickAttrs(dialog, [
-            'aria-modal',
-            'aria-labelledby',
-            'aria-describedby',
-          ]),
+          ...pickAttrs(dialog, ['aria-modal', 'aria-labelledby', 'aria-describedby']),
         }
       : null,
 
@@ -403,31 +487,21 @@ export const snapshotDRTPA11y = host => {
       ? {
           tag: validation.tagName.toLowerCase(),
           id: validation.id || null,
-          ...pickAttrs(validation, [
-            'aria-live',
-            'aria-atomic',
-          ]),
-          text:
-            validation.textContent?.trim() || null,
+          ...pickAttrs(validation, ['aria-live', 'aria-atomic']),
+          text: validation.textContent?.trim() || null,
         }
       : null,
 
     controls: {
       calendarToggleRendered: !!toggle,
-      clearButtonRendered: !!host.querySelector(
-        '.clear-input-button',
-      ),
+      clearButtonRendered: !!host.querySelector('.clear-input-button'),
     },
 
     ids: collectIds(host),
   };
 };
 
-export const renderDRTPMatrixRow = ({
-  title,
-  args,
-  idSuffix,
-}) => {
+export const renderDRTPMatrixRow = ({ title, args, idSuffix }) => {
   const wrapper = document.createElement('div');
 
   wrapper.style.border = '1px solid #ddd';
@@ -458,8 +532,7 @@ export const renderDRTPMatrixRow = ({
   output.style.borderRadius = '10px';
   output.style.overflowX = 'auto';
   output.style.fontSize = '12px';
-  output.textContent =
-    'Collecting aria/role/id…';
+  output.textContent = 'Collecting aria/role/id…';
 
   stage.appendChild(element);
   wrapper.appendChild(heading);
@@ -467,16 +540,10 @@ export const renderDRTPMatrixRow = ({
   wrapper.appendChild(output);
 
   const update = () => {
-    output.textContent = JSON.stringify(
-      snapshotDRTPA11y(element),
-      null,
-      2,
-    );
+    output.textContent = JSON.stringify(snapshotDRTPA11y(element), null, 2);
   };
 
-  requestAnimationFrame(() =>
-    requestAnimationFrame(update),
-  );
+  requestAnimationFrame(() => requestAnimationFrame(update));
 
   return wrapper;
 };

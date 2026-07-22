@@ -2,11 +2,7 @@
 
 import { action } from '@storybook/addon-actions';
 import DatepickerDocs from './datepicker-component.docs.mdx';
-import {
-  buildDocsHtml,
-  buildEl,
-  renderMatrixRow,
-} from './datepicker-component.story-helpers';
+import { buildDocsHtml, buildDocsHtmlControlledValue, buildEl, renderMatrixRow, setDateValueWhenReady, updateArgsBestEffort } from './datepicker-component.story-helpers';
 
 const baseArgs = {
   append: true,
@@ -89,8 +85,7 @@ export default {
         defaultValue: { summary: false },
         category: 'Core',
       },
-      description:
-        'Make the input read-only and disable calendar toggles while preserving the field value',
+      description: 'Make the input read-only and disable calendar toggles while preserving the field value',
     },
     required: {
       control: 'boolean',
@@ -102,19 +97,12 @@ export default {
     },
     autocomplete: {
       control: { type: 'select' },
-      options: [
-        'off',
-        'bday',
-        'bday-day',
-        'bday-month',
-        'bday-year',
-      ],
+      options: ['off', 'bday', 'bday-day', 'bday-month', 'bday-year'],
       table: {
         defaultValue: { summary: 'off' },
         category: 'Core',
       },
-      description:
-        'HTML autocomplete value for the input. Use "bday" / "bday-*" when the date represents a birthday. Default is "off".',
+      description: 'HTML autocomplete value for the input. Use "bday" / "bday-*" when the date represents a birthday. Default is "off".',
     },
     validationAttr: {
       control: 'boolean',
@@ -123,8 +111,7 @@ export default {
         defaultValue: { summary: false },
         category: 'Validation',
       },
-      description:
-        'Turns on validation mode by adding the "validation" attribute. Component only validates if the attribute is present.',
+      description: 'Turns on validation mode by adding the "validation" attribute. Component only validates if the attribute is present.',
     },
     validationMessage: {
       control: 'text',
@@ -144,8 +131,7 @@ export default {
         defaultValue: { summary: '' },
         category: 'Validation',
       },
-      description:
-        'Optional warning message (displays with warning visuals)',
+      description: 'Optional warning message (displays with warning visuals)',
     },
     formLayout: {
       control: { type: 'select' },
@@ -159,16 +145,14 @@ export default {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
       table: { category: 'Layout' },
-      description:
-        'Size variant. Applies Bootstrap-style sizing to the input and calendar button. Note: in horizontal layout, size only affects the input, not the label.',
+      description: 'Size variant. Applies Bootstrap-style sizing to the input and calendar button. Note: in horizontal layout, size only affects the input, not the label.',
     },
     labelAlign: {
       control: { type: 'select' },
       options: ['', 'right'],
       name: 'label-align',
       table: { category: 'Layout' },
-      description:
-        'Alignment for the label text (only applies when label is visible)',
+      description: 'Alignment for the label text (only applies when label is visible)',
     },
     labelHidden: {
       control: 'boolean',
@@ -177,8 +161,7 @@ export default {
         category: 'Layout',
         defaultValue: { summary: false },
       },
-      description:
-        'Visually hide the label (but keep it accessible to screen readers)',
+      description: 'Visually hide the label (but keep it accessible to screen readers)',
     },
     label: {
       control: 'text',
@@ -202,8 +185,7 @@ export default {
         subcategory: 'Grid',
       },
       name: 'label-col',
-      description:
-        'Number of grid columns for the label (horizontal layout only)',
+      description: 'Number of grid columns for the label (horizontal layout only)',
     },
     inputCol: {
       control: 'number',
@@ -215,8 +197,7 @@ export default {
         category: 'Layout',
         subcategory: 'Grid',
       },
-      description:
-        'Number of grid columns for the input (horizontal layout only)',
+      description: 'Number of grid columns for the input (horizontal layout only)',
     },
     labelCols: {
       control: 'text',
@@ -225,8 +206,7 @@ export default {
         category: 'Layout',
         subcategory: 'Grid',
       },
-      description:
-        'e.g. "col-sm-3 col-md-4" or "xs-12 sm-6 md-4"',
+      description: 'e.g. "col-sm-3 col-md-4" or "xs-12 sm-6 md-4"',
     },
     inputCols: {
       control: 'text',
@@ -235,8 +215,7 @@ export default {
         category: 'Layout',
         subcategory: 'Grid',
       },
-      description:
-        'e.g. "col-sm-9 col-md-8" or "xs-12 sm-6 md-8"',
+      description: 'e.g. "col-sm-9 col-md-8" or "xs-12 sm-6 md-8"',
     },
     prepend: {
       control: 'boolean',
@@ -267,8 +246,7 @@ export default {
         category: 'Formatting',
         defaultValue: { summary: 'YYYY-MM-DD' },
       },
-      description:
-        'Date format used for parsing and displaying the selected date.',
+      description: 'Date format used for parsing and displaying the selected date.',
     },
     placeholder: {
       control: 'text',
@@ -276,8 +254,7 @@ export default {
         category: 'Formatting',
         defaultValue: { summary: 'YYYY-MM-DD' },
       },
-      description:
-        'Hint shown in the input (defaults to dateFormat if not provided)',
+      description: 'Hint shown in the input (defaults to dateFormat if not provided)',
     },
     value: {
       control: 'text',
@@ -285,8 +262,7 @@ export default {
         category: 'Value',
         defaultValue: { summary: '' },
       },
-      description:
-        'Initial or externally controlled date value. The value must match dateFormat, such as "2026-07-20" or "07-20-2026".',
+      description: 'Initial or externally controlled date value. The value must match dateFormat, such as "2026-07-20" or "07-20-2026".',
     },
     inputId: {
       control: 'text',
@@ -295,8 +271,7 @@ export default {
         category: 'Identity',
         defaultValue: { summary: 'datepicker' },
       },
-      description:
-        'ID for the input element. If you omit the input-id attribute entirely, the component will generate a unique ID per instance.',
+      description: 'ID for the input element. If you omit the input-id attribute entirely, the component will generate a unique ID per instance.',
     },
     dropdownOpen: {
       control: 'boolean',
@@ -306,8 +281,7 @@ export default {
         category: 'Demo Helpers',
         defaultValue: { summary: false },
       },
-      description:
-        'Open the calendar dropdown (for demonstration purposes)',
+      description: 'Open the calendar dropdown (for demonstration purposes)',
     },
     displayContextExamples: {
       control: 'boolean',
@@ -316,8 +290,7 @@ export default {
         category: 'Demo Helpers',
         defaultValue: { summary: false },
       },
-      description:
-        'Display context examples (for demonstration purposes)',
+      description: 'Display context examples (for demonstration purposes)',
     },
   },
   args: {
@@ -338,8 +311,7 @@ export const Basic = {
   parameters: {
     docs: {
       description: {
-        story:
-          'A basic datepicker with default settings. Click the calendar button to select a date.',
+        story: 'A basic datepicker with default settings. Click the calendar button to select a date.',
       },
       story: { height: '430px' },
     },
@@ -360,10 +332,142 @@ export const Value = {
   parameters: {
     docs: {
       description: {
-        story:
-          'A datepicker initialized with a value. The component parses the value using dateFormat, displays it in the input, and opens the calendar to the selected month.',
+        story: 'A datepicker initialized with a value. The component parses the value using dateFormat, displays it in the input, and opens the calendar to the selected month.',
       },
       story: { height: '430px' },
+    },
+  },
+};
+
+export const ControlledValue = {
+  name: 'Controlled Value',
+
+  args: {
+    ...baseArgs,
+    label: 'Controlled Date',
+    inputId: 'datepicker-controlled',
+    value: '2026-07-20',
+    labelCol: '',
+    inputCol: '',
+  },
+
+  render: (args, ctx) => {
+    const wrap = document.createElement('div');
+
+    wrap.style.maxWidth = '680px';
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
+
+    const element = buildEl(args, action);
+
+    const note = document.createElement('div');
+
+    note.style.fontSize = '13px';
+    note.style.color = '#444';
+    note.innerHTML = `
+      Controlled example: external buttons update the component's
+      <code>value</code>, and calendar selections update the same
+      external value.
+    `;
+
+    const buttons = document.createElement('div');
+
+    buttons.style.display = 'flex';
+    buttons.style.gap = '8px';
+    buttons.style.flexWrap = 'wrap';
+
+    const makeButton = text => {
+      const button = document.createElement('button');
+
+      button.type = 'button';
+      button.className = 'btn btn-sm btn-secondary';
+      button.textContent = text;
+
+      return button;
+    };
+
+    const julyButton = makeButton('Set 2026-07-20');
+    const augustButton = makeButton('Set 2026-08-15');
+    const clearButton = makeButton('Clear');
+
+    const eventDetailToValue = detail => {
+      if (typeof detail === 'string') {
+        return detail;
+      }
+
+      if (!detail || typeof detail !== 'object') {
+        return '';
+      }
+
+      if (typeof detail.value === 'string') {
+        return detail.value;
+      }
+
+      if (typeof detail.date === 'string') {
+        return detail.date;
+      }
+
+      return '';
+    };
+
+    const applyValue = async nextValue => {
+      const value = typeof nextValue === 'string' ? nextValue.trim() : '';
+
+      await setDateValueWhenReady(element, value);
+
+      updateArgsBestEffort(ctx, {
+        value,
+      });
+    };
+
+    julyButton.addEventListener('click', () => {
+      void applyValue('2026-07-20');
+    });
+
+    augustButton.addEventListener('click', () => {
+      void applyValue('2026-08-15');
+    });
+
+    clearButton.addEventListener('click', () => {
+      void applyValue('');
+    });
+
+    element.addEventListener('date-selected', event => {
+      const emittedValue = eventDetailToValue(event.detail);
+
+      const value = emittedValue || String(element.value ?? '').trim();
+
+      if (!value) {
+        return;
+      }
+
+      void applyValue(value);
+    });
+
+    buttons.appendChild(julyButton);
+    buttons.appendChild(augustButton);
+    buttons.appendChild(clearButton);
+
+    wrap.appendChild(note);
+    wrap.appendChild(element);
+    wrap.appendChild(buttons);
+
+    return wrap;
+  },
+
+  parameters: {
+    docs: {
+      source: {
+        language: 'html',
+        transform: () => buildDocsHtmlControlledValue(),
+      },
+      description: {
+        story:
+          'Demonstrates the datepicker as a controlled component. External buttons update the value and selected calendar date, while calendar selections update the same external source of truth.',
+      },
+      story: {
+        height: '480px',
+      },
     },
   },
 };
@@ -382,8 +486,7 @@ export const Plumage = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Datepicker rendered with Plumage styling. Note the different colors and focus styles.',
+        story: 'Datepicker rendered with Plumage styling. Note the different colors and focus styles.',
       },
       story: { height: '430px' },
     },
@@ -405,8 +508,7 @@ export const HorizontalLayout = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Datepicker with a horizontal form layout. Labels and inputs are aligned side by side.',
+        story: 'Datepicker with a horizontal form layout. Labels and inputs are aligned side by side.',
       },
       story: { height: '430px' },
     },
@@ -429,8 +531,7 @@ export const InlineLayout = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Datepicker with an inline form layout. Labels and inputs are aligned inline.',
+        story: 'Datepicker with an inline form layout. Labels and inputs are aligned inline.',
       },
       story: { height: '430px' },
     },
@@ -452,8 +553,7 @@ export const WithValidation = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Datepicker with validation enabled. Try leaving the field empty then blurring to see the validation message.',
+        story: 'Datepicker with validation enabled. Try leaving the field empty then blurring to see the validation message.',
       },
       story: { height: '430px' },
     },
@@ -474,8 +574,7 @@ export const DateFormat = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Datepicker using MM-DD-YYYY format. The input and calendar use the specified format for displaying and parsing dates.',
+        story: 'Datepicker using MM-DD-YYYY format. The input and calendar use the specified format for displaying and parsing dates.',
       },
       story: { height: '430px' },
     },
@@ -496,8 +595,7 @@ export const Disabled = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Datepicker in a disabled state. The value remains visible, but the input and calendar are not interactive.',
+        story: 'Datepicker in a disabled state. The value remains visible, but the input and calendar are not interactive.',
       },
     },
   },
@@ -517,8 +615,7 @@ export const ReadOnly = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Datepicker in a read-only state. The value remains visible and read-only, and the calendar toggle is not interactive.',
+        story: 'Datepicker in a read-only state. The value remains visible and read-only, and the calendar toggle is not interactive.',
       },
     },
   },
@@ -537,8 +634,7 @@ export const Sizes = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Datepicker with different size options. Try changing the size to see the effect.',
+        story: 'Datepicker with different size options. Try changing the size to see the effect.',
       },
       story: { height: '430px' },
     },
@@ -559,8 +655,7 @@ export const PrependIcon = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Datepicker with a prepend icon. The icon appears before the input field.',
+        story: 'Datepicker with a prepend icon. The icon appears before the input field.',
       },
       story: { height: '430px' },
     },
@@ -581,8 +676,7 @@ export const StandaloneCalendar = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Datepicker displayed as a standalone calendar. No input field is shown.',
+        story: 'Datepicker displayed as a standalone calendar. No input field is shown.',
       },
     },
   },

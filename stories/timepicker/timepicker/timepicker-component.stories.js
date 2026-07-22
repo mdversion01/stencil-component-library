@@ -469,6 +469,32 @@ export const ReadOnly = {
   },
 };
 
+export const Disabled = {
+  name: 'Disabled',
+  render: Template,
+  args: {
+    ...baseArgs,
+    wrapperWidth: 320,
+    disableTimepicker: true,
+    showLabel: true,
+    labelText: 'Disabled Time',
+    inputId: 'tp-disabled',
+    inputName: 'disabled-time',
+    value: '13:05:09',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Disabled state using \`disable-timepicker\`.',
+      },
+      story: {
+        height: '220px',
+      },
+      source: docsSource,
+    },
+  },
+};
+
 export const WithValidationMessage = {
   name: 'With Validation Message',
   render: Template,

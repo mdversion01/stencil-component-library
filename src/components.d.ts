@@ -5214,7 +5214,11 @@ declare global {
         new (): HTMLDateRangeTimePickerComponentElement;
     };
     interface HTMLDatepickerComponentElementEventMap {
-        "date-selected": { formattedDate: string };
+        "date-selected": {
+    value: string;
+    formattedDate: string;
+    date: string;
+  };
     }
     interface HTMLDatepickerComponentElement extends Components.DatepickerComponent, HTMLStencilElement {
         addEventListener<K extends keyof HTMLDatepickerComponentElementEventMap>(type: K, listener: (this: HTMLDatepickerComponentElement, ev: DatepickerComponentCustomEvent<HTMLDatepickerComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -7342,7 +7346,11 @@ declare namespace LocalJSX {
           * @default ''
          */
         "labelSize"?: '' | 'sm' | 'lg';
-        "onDate-selected"?: (event: DatepickerComponentCustomEvent<{ formattedDate: string }>) => void;
+        "onDate-selected"?: (event: DatepickerComponentCustomEvent<{
+    value: string;
+    formattedDate: string;
+    date: string;
+  }>) => void;
         /**
           * @default 'YYYY-MM-DD'
          */

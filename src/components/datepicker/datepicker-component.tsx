@@ -115,7 +115,12 @@ export class Datepicker {
 
   @Prop({ mutable: true, reflect: true }) isCalendarFocused: boolean = false;
 
-  @Event({ eventName: 'date-selected' }) dateSelected!: EventEmitter<{ formattedDate: string }>;
+  @Event({ eventName: 'date-selected' })
+  dateSelected!: EventEmitter<{
+    value: string;
+    formattedDate: string;
+    date: string;
+  }>;
 
   /** === Watchers === */
   @Watch('dateFormat')
@@ -541,28 +546,46 @@ export class Datepicker {
     const parts = value.split('-');
     if (parts.length !== 3) return null;
 
+    let year: number;
+    let monthIndex: number;
+    let day: number;
+
     if (format === 'YYYY-MM-DD') {
-      const y = parseInt(parts[0], 10);
-      const m = parseInt(parts[1], 10) - 1;
-      const d = parseInt(parts[2], 10);
+      year = parseInt(parts[0], 10);
+      monthIndex = parseInt(parts[1], 10) - 1;
+      day = parseInt(parts[2], 10);
 
-      if (parts[0].length !== 4 || Number.isNaN(y) || Number.isNaN(m) || Number.isNaN(d)) return null;
-      if (m < 0 || m > 11 || d < 1 || d > 31) return null;
+      if (parts[0].length !== 4) return null;
+    } else {
+      monthIndex = parseInt(parts[0], 10) - 1;
+      day = parseInt(parts[1], 10);
+      year = parseInt(parts[2], 10);
 
-      const parsed = new Date(Date.UTC(y, m, d));
-      if (parsed.getUTCFullYear() !== y || parsed.getUTCMonth() !== m || parsed.getUTCDate() !== d) return null;
-      return parsed;
+      if (parts[2].length !== 4) return null;
     }
 
-    const m = parseInt(parts[0], 10) - 1;
-    const d = parseInt(parts[1], 10);
-    const y = parseInt(parts[2], 10);
+    if (
+      Number.isNaN(year) ||
+      Number.isNaN(monthIndex) ||
+      Number.isNaN(day) ||
+      monthIndex < 0 ||
+      monthIndex > 11 ||
+      day < 1 ||
+      day > 31
+    ) {
+      return null;
+    }
 
-    if (parts[2].length !== 4 || Number.isNaN(y) || Number.isNaN(m) || Number.isNaN(d)) return null;
-    if (m < 0 || m > 11 || d < 1 || d > 31) return null;
+    const parsed = new Date(year, monthIndex, day);
 
-    const parsed = new Date(Date.UTC(y, m, d));
-    if (parsed.getUTCFullYear() !== y || parsed.getUTCMonth() !== m || parsed.getUTCDate() !== d) return null;
+    if (
+      parsed.getFullYear() !== year ||
+      parsed.getMonth() !== monthIndex ||
+      parsed.getDate() !== day
+    ) {
+      return null;
+    }
+
     return parsed;
   }
 
@@ -762,7 +785,11 @@ export class Datepicker {
       formattedDate = `${this.selectedDate.getFullYear()}-${String(this.selectedDate.getMonth() + 1).padStart(2, '0')}-${String(this.selectedDate.getDate()).padStart(2, '0')}`;
       this.qs<HTMLElement>('.calendar')?.setAttribute('aria-activedescendant', `cell-${formattedDate}`);
 
-      this.dateSelected.emit({ formattedDate: long });
+      this.dateSelected.emit({
+        value: inputFmt,
+        formattedDate: long,
+        date: formattedDate,
+      });
 
       this.closeDropdown();
     }
@@ -1557,7 +1584,9 @@ export class Datepicker {
               role="group"
               aria-label="Date Picker Group"
             >
-              {this.readOnly ? '' : this.prependProp ? (
+              {this.readOnly ? (
+                ''
+              ) : this.prependProp ? (
                 <button
                   onClick={this.toggleDropdown}
                   class={`calendar-button btn input-group-text ${this.readOnly ? ' read-only' : this.disabled ? '' : this.validation ? ' is-invalid' : ''}`}
@@ -1612,7 +1641,9 @@ export class Datepicker {
                 ) : null}
               </div>
 
-              {this.readOnly ? '' : this.appendProp ? (
+              {this.readOnly ? (
+                ''
+              ) : this.appendProp ? (
                 <button
                   onClick={this.toggleDropdown}
                   class={`calendar-button btn input-group-text ${this.readOnly ? ' read-only' : this.disabled ? '' : this.validation ? ' is-invalid' : ''}`}
