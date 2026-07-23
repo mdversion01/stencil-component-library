@@ -45,9 +45,9 @@
 
 ## Events
 
-| Event           | Description | Type                                      |
-| --------------- | ----------- | ----------------------------------------- |
-| `date-selected` |             | `CustomEvent<{ formattedDate: string; }>` |
+| Event           | Description | Type                                                                   |
+| --------------- | ----------- | ---------------------------------------------------------------------- |
+| `date-selected` |             | `CustomEvent<{ value: string; formattedDate: string; date: string; }>` |
 
 
 ----------------------------------------------

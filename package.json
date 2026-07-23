@@ -65,7 +65,6 @@
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "generate": "stencil generate",
     "dev:stencil": "cross-env STORYBOOK=true stencil build --dev --watch",
-    "dev:storybook": "storybook dev -p 6006",
     "dev": "npm run build && concurrently -n STENCIL,SB -c green,cyan \"npm:dev:stencil\" \"npm:dev:storybook\"",
     "prestorybook": "npm run build",
     "storybook": "storybook dev -p 6006",
