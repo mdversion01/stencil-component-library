@@ -157,19 +157,22 @@ Tip: Ensure Stencil builds before Storybook starts:
 .storybook/main.js
 ```js
 
+// .storybook/main.js
 export default {
+  logLevel: 'warn',
   framework: { name: '@storybook/web-components-vite', options: {} },
-  stories: ['../stories/**/*.stories.@(js|ts|tsx)'],
+  stories: [
+    '../stories/**/*.mdx',
+    '../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+  ],
   addons: [
-    '@storybook/addon-essentials',
     '@storybook/addon-a11y',
-    '@storybook/addon-interactions',
+    '@storybook/addon-docs',
   ],
   staticDirs: [
-    // Mount Font Awesome webfonts to /assets/fonts
     { from: '../node_modules/@fortawesome/fontawesome-free/webfonts', to: '/assets/fonts' },
+    { from: '../dist', to: '/dist' },
   ],
-  docs: { autodocs: 'tag' },
 };
 
 ```

@@ -1,6 +1,6 @@
 // File: src/stories/app-wrapper/app-wrapper.stories.js
 
-import DocsPage from './app-wrapper.docs.mdx';
+// import DocsPage from './app-wrapper.docs.mdx';
 import {
   buildDocsHtml,
   buildLayoutExamples,
@@ -11,13 +11,13 @@ import {
 } from './app-wrapper.story-helpers.js';
 
 export default {
-  title: 'Layout/App Wrapper',
-  tags: ['autodocs'],
+  title: 'Layout/App Wrapper'
+  ,
   render: (args) => buildPlayground(args),
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           '`<app-wrapper>` is a super-light container that simply renders a div with the classes you pass in and a default `app-wrapper` class. It renders in the light DOM (`shadow: false`) so your global styles apply to its children.',

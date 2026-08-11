@@ -1,6 +1,6 @@
 // File: src/stories/dropdown-component/dropdown-component.stories.js
 
-import DocsPage from './dropdown-component.docs.mdx';
+// import DocsPage from './dropdown-component.docs.mdx';
 import {
   baseItems,
   buildCard,
@@ -47,8 +47,8 @@ const renderBasicTemplate = args => {
 };
 
 export default {
-  title: 'Components/Dropdown',
-  tags: ['autodocs'],
+  title: 'Components/Dropdown'
+  ,
   args: {
     ...defaultArgs,
   },
@@ -57,7 +57,7 @@ export default {
       handles: ['itemSelected', 'items-changed', 'selection-changed'],
     },
     docs: {
-      page: DocsPage,
+
       description: {
         component: [
           'Dropdown component for selecting from a list of options.',

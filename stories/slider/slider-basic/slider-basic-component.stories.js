@@ -1,14 +1,11 @@
 // src/stories/slider-basic-component.stories.js
-import SliderBasicDocs from './slider-basic-component.docs.mdx';
 import { Template, normalizeHtml, getSnapshot } from './slider-basic-component.story-helpers';
 
 export default {
   title: 'Components/Slider/Basic',
-  tags: ['autodocs'],
   parameters: {
     layout: 'padded',
     docs: {
-      page: SliderBasicDocs,
       description: {
         component: 'A basic slider component allowing selection of a single value within a range.',
       },

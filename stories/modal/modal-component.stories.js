@@ -1,6 +1,6 @@
 // File: src/stories/modal-component.stories.js
 
-import DocsPage from './modal-component.docs.mdx';
+// import DocsPage from './modal-component.docs.mdx';
 import {
   DOCS_FULLSCREEN,
   DOCS_LONG_SCROLL,
@@ -68,13 +68,13 @@ const playgroundArgs = {
 };
 
 export default {
-  title: 'Components/Modal',
-  tags: ['autodocs'],
+  title: 'Components/Modal'
+  ,
   decorators: [docsPortalDecorator],
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       source: {
         type: 'dynamic',
         language: 'html',

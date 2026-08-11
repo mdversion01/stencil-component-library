@@ -1,6 +1,5 @@
 // src/stories/radio-input-component.stories.js
 
-import RadioInputDocs from './radio-input-component.docs.mdx';
 import {
   normalize,
   buildDocsHtml,
@@ -53,13 +52,9 @@ const groupPlay = async ({ canvasElement, args }) => {
 
 export default {
   title: 'Form/Radio Input',
-  tags: ['autodocs'],
-
   args: defaultArgs,
-
   parameters: {
     docs: {
-      page: RadioInputDocs,
       description: {
         component:
           'A Bootstrap radio or basic radio input component that supports both single and grouped radios with various styling options. Includes radiogroup semantics and validation ARIA wiring.',

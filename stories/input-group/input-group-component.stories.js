@@ -1,6 +1,6 @@
 // File: src/stories/input-group-component/input-group-component.stories.js
 
-import DocsPage from './input-group-component.docs.mdx';
+// import DocsPage from './input-group-component.docs.mdx';
 import {
   buildDocsHtml,
   buildDocsHtmlExternalValue,
@@ -10,13 +10,13 @@ import {
 } from './input-group-component.story-helpers.js';
 
 export default {
-  title: 'Form/Input Group',
-  tags: ['autodocs'],
+  title: 'Form/Input Group'
+  ,
   render: args => buildEl(args),
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'The `input-group-component` is a wrapper for an input field that allows you to add prepend and append content such as icons, text, or native buttons. It also supports various form layouts, affix button IDs, emitted click events, validation states, read-only mode, and external value syncing.',

@@ -1,5 +1,5 @@
-import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
-import * as FormStories from './popover-component.stories';
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/addon-docs/blocks';
+import * as FormStories from './popover-component.stories.js';
 import { reactExample, vueExample, angularExample, svelteExample, svelteKitExample } from './popover-component.examples.js';
 
 <Meta of={FormStories} />
@@ -22,15 +22,15 @@ import { reactExample, vueExample, angularExample, svelteExample, svelteKitExamp
 ```
 
 ## React
-<Source code={reactExample} language="tsx" />
+<Source dark code={reactExample} language="tsx" />
 ## Vue
-<Source code={vueExample} language="vue" />
+<Source dark code={vueExample} language="vue" />
 ## Angular
-<Source code={angularExample} language="ts" />
+<Source dark code={angularExample} language="ts" />
 ## Svelte
-<Source code={svelteExample} language="ts" />
+<Source dark code={svelteExample} language="ts" />
 ## Svelte Kit
-<Source code={svelteKitExample} language="ts" />
+<Source dark code={svelteKitExample} language="ts" />
 
 {/* Show a live preview + controls table */}
 <Primary />

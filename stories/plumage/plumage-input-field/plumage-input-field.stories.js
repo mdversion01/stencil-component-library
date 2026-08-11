@@ -1,6 +1,6 @@
 // File: src/stories/plumage-input-field/plumage-input-field.stories.js
 
-import DocsPage from './plumage-input-field.docs.mdx';
+// import DocsPage from './plumage-input-field.docs.mdx';
 import {
   TAG,
   DocsWrapStyles,
@@ -22,8 +22,8 @@ import {
  * ------------------------------------------------------------------ */
 
 export default {
-  title: 'Form/Plumage Input Field',
-  tags: ['autodocs'],
+  title: 'Form/Plumage Input Field'
+  ,
   decorators: [
     Story => {
       const wrap = document.createElement('div');
@@ -35,7 +35,7 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'A customizable single Plumage-styled text input field component with various props for label, size, validation, layout, standard ARIA naming hooks, and external value syncing.',

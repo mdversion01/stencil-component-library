@@ -1,6 +1,6 @@
 // File: stories/date-range-time-picker-component.stories.js
 
-import DocsPage from './date-range-time-picker-component.docs.mdx';
+// import DocsPage from './date-range-time-picker-component.docs.mdx';
 import {
   buildDocsHtml,
   buildDocsHtmlControlledValue,
@@ -48,11 +48,11 @@ const baseArgs = {
 const renderTemplate = args => Template(args);
 
 export default {
-  title: 'Form/Date Range + Time Picker',
-  tags: ['autodocs'],
+  title: 'Form/Date Range + Time Picker'
+  ,
   parameters: {
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'A combined date range and time picker, with flexible display and layout options.',

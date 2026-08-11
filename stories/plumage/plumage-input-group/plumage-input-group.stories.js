@@ -1,6 +1,6 @@
 // File: src/stories/plumage-input-group.stories.js
 
-import DocsPage from './plumage-input-group.docs.mdx';
+// import DocsPage from './plumage-input-group.docs.mdx';
 import {
   DocsWrapStyles,
   buildDocsHtml,
@@ -11,8 +11,8 @@ import {
 } from './plumage-input-group.story-helpers.js';
 
 export default {
-  title: 'Form/Plumage Input Group',
-  tags: ['autodocs'],
+  title: 'Form/Plumage Input Group'
+  ,
   render: args => buildEl(args),
 
   decorators: [
@@ -41,7 +41,7 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'The `plumage-input-group-component` is a Plumage-styled wrapper for an input field that allows you to add prepend and append content such as icons, text, or native buttons. It also supports various form layouts, accessibility hooks, validation states, read-only mode, and emitted append/prepend button click events.',

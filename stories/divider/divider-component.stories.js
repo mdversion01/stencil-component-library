@@ -1,15 +1,15 @@
 // File: src/stories/divider-component/divider-component.stories.js
 
-import DocsPage from './divider-component.docs.mdx';
+// import DocsPage from './divider-component.docs.mdx';
 import { buildDocsHtml, buildDocsHtmlMany, buildDivider, makeParagraph } from './divider-component.story-helpers.js';
 
 export default {
-  title: 'Components/Divider',
-  tags: ['autodocs'],
+  title: 'Components/Divider'
+  ,
 
   parameters: {
     docs: {
-      page: DocsPage,
+
       description: {
         component: ['Divider component for separating content with optional text or styling.', ''].join('\n'),
       },

@@ -1,6 +1,6 @@
 // File: src/stories/input-field-component/input-field-component.stories.js
 
-import DocsPage from './input-field-component.docs.mdx';
+// import DocsPage from './input-field-component.docs.mdx';
 import {
   buildDocsHtml,
   buildDocsHtmlExternalValue,
@@ -41,11 +41,11 @@ const baseArgs = {
 const renderTemplate = args => template(args);
 
 export default {
-  title: 'Form/Input Field',
-  tags: ['autodocs'],
+  title: 'Form/Input Field'
+  ,
   parameters: {
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'A customizable input field component with various props for label, size, validation, and layout. ' +

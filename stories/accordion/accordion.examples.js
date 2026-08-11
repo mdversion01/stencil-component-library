@@ -1,3 +1,4 @@
+// stories/accordion/accordion.examples.js
 export const reactExample = `
 import { useEffect, useRef } from 'react'
 
@@ -101,7 +102,6 @@ type AccordionElement = HTMLElement & {
     </accordion-component>
   \`,
 })
-
 export class AccordionComponent implements AfterViewInit, OnDestroy {
   @ViewChild('accordionEl', { static: true })
   private accordionRef!: ElementRef<AccordionElement>;

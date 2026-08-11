@@ -1,9 +1,9 @@
-import DocsPage from './accordion-container.docs.mdx';
+// import DocsPage from './accordion-container.docs.mdx';
 import { buildContainer } from './accordion-container.story-helpers.js';
 
 export default {
-  title: 'Components/Accordion Container',
-  tags: ['autodocs'],
+  title: 'Components/Accordion Container'
+  ,
 
   render: (args, { id } = {}) => {
     const base = (id || 'acc').split('--').pop() || 'acc';
@@ -12,7 +12,6 @@ export default {
 
   parameters: {
     docs: {
-      page: DocsPage,
       description: {
         component: [
           'The Accordion Container renders multiple accordion items from a data array.',

@@ -1,4 +1,4 @@
-import DocsPage from './plumage-autocomplete-multiselect.docs.mdx';
+// import DocsPage from './plumage-autocomplete-multiselect.docs.mdx';
 import {
   DocsWrapStyles,
   FRUIT,
@@ -16,8 +16,8 @@ import {
 const TAG = 'plumage-autocomplete-multiselect-component';
 
 export default {
-  title: 'Form/Plumage Autocomplete Multiselect',
-  tags: ['autodocs'],
+  title: 'Form/Plumage Autocomplete Multiselect'
+  ,
 
   decorators: [
     (Story) => {
@@ -31,7 +31,7 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'Plumage-styled multiselect autocomplete with badges, keyboard navigation (arrows/Home/End/PageUp/PageDown/Escape), optional adding/deleting user options, read-only/disabled states, and responsive layouts (stacked, horizontal, inline).',

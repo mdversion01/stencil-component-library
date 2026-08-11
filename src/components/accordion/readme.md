@@ -19,6 +19,7 @@
 | `isOpen`           | `is-open`           |                                                                             | `boolean`                                      | `false`               |
 | `link`             | `link`              |                                                                             | `boolean`                                      | `false`               |
 | `outlined`         | `outlined`          |                                                                             | `boolean`                                      | `false`               |
+| `plumage`          | `plumage`           |                                                                             | `boolean`                                      | `false`               |
 | `regionLabelledby` | `region-labelledby` | Optional: allow an external label for the region instead of the toggle text | `string`                                       | `undefined`           |
 | `ripple`           | `ripple`            |                                                                             | `boolean`                                      | `false`               |
 | `size`             | `size`              |                                                                             | `"" \| "lg" \| "plumage-size" \| "sm" \| "xs"` | `''`                  |

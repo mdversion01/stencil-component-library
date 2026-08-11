@@ -1,6 +1,6 @@
 // File: src/stories/by-page-pagination-component.stories.js
 
-import DocsPage from './by-page-pagination-component.docs.mdx';
+// import DocsPage from './by-page-pagination-component.docs.mdx';
 import {
   buildDocsTransform,
   normalizeHtml,
@@ -27,12 +27,12 @@ const byPageDefaultArgs = {
 };
 
 export default {
-  title: 'Components/Pagination/By Page',
-  tags: ['autodocs'],
+  title: 'Components/Pagination/By Page'
+  ,
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       source: {
         type: 'dynamic',
         language: 'html',

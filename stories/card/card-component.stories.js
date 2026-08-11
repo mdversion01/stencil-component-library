@@ -1,11 +1,11 @@
 // File: src/stories/card-component/card-component.stories.js
 
-import DocsPage from './card-component.docs.mdx';
+// import DocsPage from './card-component.docs.mdx';
 import { DocsWrapStyles, buildDocsHtml, normalize, renderCard, wrapDocsHtml } from './card-component.story-helpers.js';
 
 export default {
-  title: 'Components/Card',
-  tags: ['autodocs'],
+  title: 'Components/Card'
+  ,
 
   decorators: [
     Story => {
@@ -18,7 +18,7 @@ export default {
 
   parameters: {
     docs: {
-      page: DocsPage,
+
       description: {
         component: ['Card component for displaying content in a card layout.', ''].join('\n'),
       },

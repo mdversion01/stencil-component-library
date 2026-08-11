@@ -1,6 +1,6 @@
 // File: src/stories/date-range-picker-component/date-range-picker-component.stories.js
 
-import DocsPage from './date-range-picker-component.docs.mdx';
+// import DocsPage from './date-range-picker-component.docs.mdx';
 import {
   buildDocsHtml,
   buildDocsHtmlControlledValue,
@@ -47,12 +47,12 @@ const baseArgs = {
 const renderTemplate = args => Template(args);
 
 export default {
-  title: 'Form/Date Range Picker',
-  tags: ['autodocs'],
+  title: 'Form/Date Range Picker'
+  ,
 
   parameters: {
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'A date range picker component with built-in support for various display formats, form layouts, validation states, read-only values, and externally supplied values.',

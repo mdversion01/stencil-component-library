@@ -1,14 +1,14 @@
 // File: src/stories/button-group/button-group.stories.js
 
-import DocsPage from './button-group.docs.mdx';
+// import DocsPage from './button-group.docs.mdx';
 import { buildDocsHtml, renderButtonGroup, setAttr } from './button-group.story-helpers.js';
 
 export default {
-  title: 'Components/Button Group',
-  tags: ['autodocs'],
+  title: 'Components/Button Group'
+  ,
   parameters: {
     docs: {
-      page: DocsPage,
+
       description: {
         component: [
           'Button Group component allows grouping multiple buttons together.',

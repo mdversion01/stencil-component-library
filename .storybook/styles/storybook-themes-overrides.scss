@@ -1,0 +1,385 @@
+// /* ============================================================
+//    File: .storybook/styles/storybook-themes-overrides.scss
+//    ============================================================ */
+
+// /* Bootstrap Light */
+// .sb-theme-light {
+//   --storybook-background: #ffffff;
+//   --storybook-foreground: #212529;
+//   --storybook-surface: #f8f9fa;
+//   --storybook-border: #dee2e6;
+// }
+
+// /* Bootstrap Dark */
+// .sb-theme-dark {
+//   --storybook-background: #212529;
+//   --storybook-foreground: #f8f9fa;
+//   --storybook-surface: #2b3035;
+//   --storybook-border: #495057;
+// }
+
+// /* Plumage Light */
+// .plmg-lt {
+//   --storybook-background: #f8f9fa;
+//   --storybook-foreground: #212529;
+//   --storybook-surface: #ffffff;
+//   --storybook-border: #dee2e6;
+// }
+
+// /* Plumage Dark */
+// .plmg-dk {
+//   --storybook-background: #1a1a1a;
+//   --storybook-foreground: #f2f2f2;
+//   --storybook-surface: #242424;
+//   --storybook-border: #454545;
+// }
+
+// /* Story canvas */
+// .sb-theme-light,
+// .sb-theme-dark,
+// .plmg-lt,
+// .plmg-dk {
+//   color: var(--storybook-foreground);
+//   background-color: var(--storybook-background);
+// }
+
+// /* Storybook Docs */
+// .sb-theme-light .sbdocs-wrapper,
+// .sb-theme-dark .sbdocs-wrapper,
+// .plmg-lt .sbdocs-wrapper,
+// .plmg-dk .sbdocs-wrapper,
+// .sb-theme-light .sbdocs-content,
+// .sb-theme-dark .sbdocs-content,
+// .plmg-lt .sbdocs-content,
+// .plmg-dk .sbdocs-content {
+//   color: var(--storybook-foreground) !important;
+//   background-color: var(--storybook-background) !important;
+// }
+
+// /* Docs previews */
+// .sb-theme-light .sbdocs-preview,
+// .sb-theme-dark .sbdocs-preview,
+// .plmg-lt .sbdocs-preview,
+// .plmg-dk .sbdocs-preview,
+// .sb-theme-light .docs-story,
+// .sb-theme-dark .docs-story,
+// .plmg-lt .docs-story,
+// .plmg-dk .docs-story {
+//   color: var(--storybook-foreground) !important;
+//   background-color: var(--storybook-surface) !important;
+//   border-color: var(--storybook-border) !important;
+// }
+
+// /* Example: Plumage-specific component overrides */
+// .plmg-lt .my-story-wrapper {
+//   background-color: #ffffff;
+// }
+
+// .plmg-dk .my-story-wrapper {
+//   background-color: #1a1a1a;
+// }
+
+// /* Example: Bootstrap-only overrides */
+// .sb-theme-light .my-story-wrapper {
+//   background-color: #ffffff;
+// }
+
+// .sb-theme-dark .my-story-wrapper {
+//   background-color: #212529;
+// }
+
+// // pre.prismjs {
+// //     padding: 20px;
+// //     background: #1b1c1d !important;
+// // }
+
+/* File: .storybook/storybook-theme-overrides.css */
+
+.sb-theme-light {
+  --sb-theme-bg: #ffffff;
+  --sb-theme-surface: #f8f9fa;
+  --sb-theme-text: #212529;
+  --sb-theme-muted: #6c757d;
+  --sb-theme-border: #dee2e6;
+}
+
+.sb-theme-dark {
+  --sb-theme-bg: #212529;
+  --sb-theme-surface: #2b3035;
+  --sb-theme-text: #f8f9fa;
+  --sb-theme-muted: #adb5bd;
+  --sb-theme-border: #495057;
+}
+
+.plmg-lt {
+  --sb-theme-bg: #f8f9fa;
+  --sb-theme-surface: #ffffff;
+  --sb-theme-text: #212529;
+  --sb-theme-muted: #6c757d;
+  --sb-theme-border: #dee2e6;
+}
+
+.plmg-dk {
+  --sb-theme-bg: #1a1a1a;
+  --sb-theme-surface: #242424;
+  --sb-theme-text: #f2f2f2;
+  --sb-theme-muted: #b8b8b8;
+  --sb-theme-border: #454545;
+}
+
+.sb-theme-light,
+.sb-theme-dark,
+.plmg-lt,
+.plmg-dk {
+  color: var(--sb-theme-text);
+  background-color: var(--sb-theme-bg);
+}
+
+.sb-theme-light .sbdocs-wrapper,
+.sb-theme-dark .sbdocs-wrapper,
+.plmg-lt .sbdocs-wrapper,
+.plmg-dk .sbdocs-wrapper,
+.sb-theme-light .sbdocs-content,
+.sb-theme-dark .sbdocs-content,
+.plmg-lt .sbdocs-content,
+.plmg-dk .sbdocs-content {
+  color: var(--sb-theme-text) !important;
+  background-color: var(--sb-theme-bg) !important;
+}
+
+.sb-theme-light .sbdocs-content *,
+.sb-theme-dark .sbdocs-content *,
+.plmg-lt .sbdocs-content *,
+.plmg-dk .sbdocs-content * {
+  color: inherit;
+}
+
+.sb-theme-light .sbdocs-title,
+.sb-theme-dark .sbdocs-title,
+.plmg-lt .sbdocs-title,
+.plmg-dk .sbdocs-title,
+.sb-theme-light .sbdocs-subtitle,
+.sb-theme-dark .sbdocs-subtitle,
+.plmg-lt .sbdocs-subtitle,
+.plmg-dk .sbdocs-subtitle,
+.sb-theme-light .sbdocs-p,
+.sb-theme-dark .sbdocs-p,
+.plmg-lt .sbdocs-p,
+.plmg-dk .sbdocs-p,
+.sb-theme-light .sbdocs-h1,
+.sb-theme-dark .sbdocs-h1,
+.plmg-lt .sbdocs-h1,
+.plmg-dk .sbdocs-h1,
+.sb-theme-light .sbdocs-h2,
+.sb-theme-dark .sbdocs-h2,
+.plmg-lt .sbdocs-h2,
+.plmg-dk .sbdocs-h2,
+.sb-theme-light .sbdocs-h3,
+.sb-theme-dark .sbdocs-h3,
+.plmg-lt .sbdocs-h3,
+.plmg-dk .sbdocs-h3,
+.sb-theme-light .sbdocs-h4,
+.sb-theme-dark .sbdocs-h4,
+.plmg-lt .sbdocs-h4,
+.plmg-dk .sbdocs-h4,
+.sb-theme-light .sbdocs-h5,
+.sb-theme-dark .sbdocs-h5,
+.plmg-lt .sbdocs-h5,
+.plmg-dk .sbdocs-h5,
+.sb-theme-light .sbdocs-h6,
+.sb-theme-dark .sbdocs-h6,
+.plmg-lt .sbdocs-h6,
+.plmg-dk .sbdocs-h6,
+.sb-theme-light .sbdocs-li,
+.sb-theme-dark .sbdocs-li,
+.plmg-lt .sbdocs-li,
+.plmg-dk .sbdocs-li {
+  color: var(--sb-theme-text) !important;
+}
+
+.sb-theme-light .sbdocs-content p,
+.sb-theme-dark .sbdocs-content p,
+.plmg-lt .sbdocs-content p,
+.plmg-dk .sbdocs-content p,
+.sb-theme-light .sbdocs-content li,
+.sb-theme-dark .sbdocs-content li,
+.plmg-lt .sbdocs-content li,
+.plmg-dk .sbdocs-content li,
+.sb-theme-light .sbdocs-content span,
+.sb-theme-dark .sbdocs-content span,
+.plmg-lt .sbdocs-content span,
+.plmg-dk .sbdocs-content span,
+.sb-theme-light .sbdocs-content label,
+.sb-theme-dark .sbdocs-content label,
+.plmg-lt .sbdocs-content label,
+.plmg-dk .sbdocs-content label {
+  color: var(--sb-theme-text);
+}
+
+.sb-theme-light .sbdocs-content small,
+.sb-theme-dark .sbdocs-content small,
+.plmg-lt .sbdocs-content small,
+.plmg-dk .sbdocs-content small,
+.sb-theme-light .sbdocs-content .text-muted,
+.sb-theme-dark .sbdocs-content .text-muted,
+.plmg-lt .sbdocs-content .text-muted,
+.plmg-dk .sbdocs-content .text-muted {
+  color: var(--sb-theme-muted) !important;
+}
+
+.sb-theme-light .sbdocs-preview,
+.sb-theme-dark .sbdocs-preview,
+.plmg-lt .sbdocs-preview,
+.plmg-dk .sbdocs-preview,
+.sb-theme-light .docs-story,
+.sb-theme-dark .docs-story,
+.plmg-lt .docs-story,
+.plmg-dk .docs-story {
+  color: var(--sb-theme-text) !important;
+  background-color: var(--sb-theme-surface) !important;
+  border-color: var(--sb-theme-border) !important;
+}
+
+.sb-theme-light .docblock-argstable,
+.sb-theme-dark .docblock-argstable,
+.plmg-lt .docblock-argstable,
+.plmg-dk .docblock-argstable,
+.sb-theme-light .docblock-argstable table,
+.sb-theme-dark .docblock-argstable table,
+.plmg-lt .docblock-argstable table,
+.plmg-dk .docblock-argstable table,
+.sb-theme-light .docblock-argstable th,
+.sb-theme-dark .docblock-argstable th,
+.plmg-lt .docblock-argstable th,
+.plmg-dk .docblock-argstable th,
+.sb-theme-light .docblock-argstable td,
+.sb-theme-dark .docblock-argstable td,
+.plmg-lt .docblock-argstable td,
+.plmg-dk .docblock-argstable td {
+  // color: var(--sb-theme-text) !important;
+  background-color: var(--sb-theme-surface) !important;
+  border-color: var(--sb-theme-border) !important;
+}
+
+.sb-theme-light .docblock-argstable code,
+.sb-theme-dark .docblock-argstable code,
+.plmg-lt .docblock-argstable code,
+.plmg-dk .docblock-argstable code,
+.sb-theme-light .sbdocs-content code,
+.sb-theme-dark .sbdocs-content code,
+.plmg-lt .sbdocs-content code,
+.plmg-dk .sbdocs-content code,
+.sb-theme-light li code,
+.sb-theme-dark li code,
+.plmg-lt li code,
+.plmg-dk li code,
+.sb-theme-light p code,
+.sb-theme-dark p code,
+.plmg-lt p code,
+.plmg-dk p code,
+.sb-theme-light span code,
+.sb-theme-dark span code,
+.plmg-lt span code,
+.plmg-dk span code,
+.sb-theme-light label code,
+.sb-theme-dark label code,
+.plmg-lt label code,
+.plmg-dk label code {
+  color: var(--sb-theme-text) !important;
+}
+
+.sb-theme-dark :where(p:not(.sb-anchor, .sb-unstyled, .sb-unstyled p)) code,
+.sb-theme-dark td span code,
+// .sb-theme-dark td div span,
+.sb-theme-dark td div span code,
+.sb-theme-dark li code,
+.sb-theme-dark p code,
+.sb-theme-dark span code,
+.sb-theme-dark label code,
+.plmg-dk :where(p:not(.sb-anchor, .sb-unstyled, .sb-unstyled p)) code,
+.plmg-dk td span code,
+// .plmg-dk td div span,
+.plmg-dk li code,
+.plmg-dk p code,
+.plmg-dk span code,
+.plmg-dk label code {
+  border: 1px solid rgb(92 97 100) !important;
+  background-color: rgb(70 70 70) !important;
+}
+
+// .sb-theme-dark .docblock-code-toggle,
+// // .sb-theme-dark button,
+// .plmg-dk .docblock-code-toggle,
+// .plmg-dk button {
+//   border-color: rgb(0 0 0) !important;
+//   background: rgb(0 0 0) !important;
+//   color: var(--sb-theme-text) !important;
+// }
+
+.sb-theme-dark .docs-story div,
+.plmg-dk .docs-story div {
+  background: rgb(43 48 53);
+  color: var(--sb-theme-text) !important;
+}
+
+.sb-theme-dark .sb-bar div,
+.plmg-dk .sb-bar div {
+  background: #394148 !important;
+  color: var(--sb-theme-text) !important;
+}
+
+.sb-theme-dark button[aria-expanded='false']::before,
+.plmg-dk button[aria-expanded='false']::before {
+  border-left: 3px solid var(--bs-white) !important;
+}
+
+.sb-theme-dark button[aria-expanded='true']::before,
+.plmg-dk button[aria-expanded='true']::before {
+  border-top: 3px solid var(--bs-white) !important;
+}
+
+.sb-theme-dark .rejt-accordion-region span[style],
+.plmg-dk .rejt-accordion-region span[style] {
+  color: var(--bs-white) !important;
+}
+
+.sb-theme-dark td div textarea::placeholder,
+.sb-theme-dark td textarea::placeholder,
+.plmg-dk td div textarea::placeholder,
+.plmg-dk td textarea::placeholder,
+.sb-theme-dark td span input::placeholder,
+.plmg-dk td span input::placeholder {
+  color: #a7a6a6 !important;
+}
+
+.sb-theme-dark td div textarea,
+.sb-theme-dark td textarea,
+.plmg-dk td div textarea,
+.plmg-dk td textarea {
+  background-color: #3e3e3e !important;
+}
+
+.sb-theme-dark td span select,
+.sb-theme-dark td select,
+.plmg-dk td span select,
+.plmg-dk td select {
+  background-color: #3e3e3e !important;
+}
+
+.sb-theme-dark td span select option:disabled,
+.plmg-dk td span select option:disabled {
+  color: #a7a6a6 !important;
+}
+
+.sb-theme-dark td span select:not(:-internal-list-box) option:disabled,
+.plmg-dk td span select:not(:-internal-list-box) option:disabled {
+    color: #a7a6a6 !important;
+}
+
+.sb-theme-dark td span svg path,
+.sb-theme-dark td svg path,
+.plmg-dk td span svg path,
+.plmg-dk td svg path {
+  fill: #FFF !important;
+  color: #FFF !important;
+}

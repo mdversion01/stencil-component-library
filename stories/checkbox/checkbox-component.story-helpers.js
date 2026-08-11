@@ -1,6 +1,6 @@
 // File: src/stories/checkbox-component/checkbox-component.story-helpers.js
 
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 
 export const normalize = (txt) => {
   const lines = String(txt || '')

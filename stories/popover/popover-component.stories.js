@@ -1,6 +1,5 @@
 // File: src/stories/popover-component.stories.js
 
-import PopoverDocs from './popover-component.docs.mdx';
 import {
   normalizeHtml,
   buildBasicPopoverHtml,
@@ -33,11 +32,9 @@ const baseArgs = {
 
 export default {
   title: 'Components/Popover',
-  tags: ['autodocs'],
   parameters: {
     layout: 'padded',
     docs: {
-      page: PopoverDocs,
       source: { type: 'dynamic', language: 'html' },
       description: {
         component: 'A popover component that displays contextual information when triggered by user interaction.',

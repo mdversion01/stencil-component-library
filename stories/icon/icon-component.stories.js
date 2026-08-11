@@ -1,4 +1,4 @@
-import DocsPage from './icon-component.docs.mdx';
+// import DocsPage from './icon-component.docs.mdx';
 import {
   buildDocsHtml,
   buildIcon,
@@ -7,12 +7,12 @@ import {
 } from './icon-component.story-helpers.js';
 
 export default {
-  title: 'Components/Icon',
-  tags: ['autodocs'],
+  title: 'Components/Icon'
+  ,
   render: (args) => buildIcon(args),
   parameters: {
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'Icon component for rendering Font Awesome or similar icon classes with optional sizing, color, spacing, and accessibility hooks.',

@@ -1,6 +1,6 @@
 // File: src/stories/plumage-textarea-component.stories.js
 
-import DocsPage from './plumage-textarea-component.docs.mdx';
+// import DocsPage from './plumage-textarea-component.docs.mdx';
 import {
   buildDocsHtml,
   buildDocsHtmlExternalValue,
@@ -9,13 +9,13 @@ import {
 } from './plumage-textarea-component.story-helpers.js';
 
 export default {
-  title: 'Form/Plumage Textarea Component',
-  tags: ['autodocs'],
+  title: 'Form/Plumage Textarea Component'
+  ,
   render: args => buildEl(args),
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'The `plumage-textarea-component` is a Plumage-styled multiline text field with support for validation, character counting, read-only mode, responsive form layouts, and emitted value/blur events.',

@@ -1,6 +1,6 @@
 // File: src/stories/plumage-timepicker-component.stories.js
 
-import DocsPage from './plumage-timepicker-component.docs.mdx';
+// import DocsPage from './plumage-timepicker-component.docs.mdx';
 import {
   DocsWrapStyles,
   Template,
@@ -44,8 +44,8 @@ const docsSource = {
 };
 
 export default {
-  title: 'Form/Timepicker/Plumage Timepicker',
-  tags: ['autodocs'],
+  title: 'Form/Timepicker/Plumage Timepicker'
+  ,
   decorators: [
     Story => {
       const wrap = document.createElement('div');
@@ -71,7 +71,7 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component: `
 The **Plumage Timepicker Component** is a time selection input styled for the Plumage design system.

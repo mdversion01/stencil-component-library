@@ -1,6 +1,6 @@
 // File: src/stories/form-component.stories.js
 
-import DocsPage from './form-component.docs.mdx';
+// import DocsPage from './form-component.docs.mdx';
 import {
   buildDocsHtml,
   buildForm,
@@ -44,11 +44,11 @@ const baseArgs = {
 const renderTemplate = args => template(args);
 
 export default {
-  title: 'Form/Form Wrapper',
-  tags: ['autodocs'],
+  title: 'Form/Form Wrapper'
+  ,
   parameters: {
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'A flexible wrapper for forms that can render with or without a native `<form>` element. Supports fieldsets, legends, and various layout and styling options.',

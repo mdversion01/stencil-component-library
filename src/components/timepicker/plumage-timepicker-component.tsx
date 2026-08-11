@@ -1055,7 +1055,7 @@ export class PlumageTimepickerComponent {
     const labelIdToUse = hasVisibleLabel ? this.getLabelId() : this.normalizeIdList(this.ariaLabelledby);
 
     return (
-      <div class="plumage">
+      // <div class="plumage">
         <div class="time-picker-container">
           <div class={`time-picker ${!this.twentyFourHourOnly && !this.twelveHourOnly ? 'mr-2' : ''}`}>
             <label
@@ -1344,7 +1344,7 @@ export class PlumageTimepickerComponent {
             </div>
           </div>
         </div>
-      </div>
+      // </div>
     );
   }
 }

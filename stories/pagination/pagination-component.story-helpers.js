@@ -1,6 +1,6 @@
 // File: src/stories/pagination-component.story-helpers.js
 
-import { useArgs } from '@storybook/preview-api';
+import { useArgs } from 'storybook/preview-api';
 
 let __isSyncingVariants = false;
 

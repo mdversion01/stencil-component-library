@@ -1,17 +1,27 @@
-// File: src/stories/accordion/accordion.story-helpers.js
+// stories/accordion/accordion.story-helpers.js
 const TAG = 'accordion-component';
 
-export function setAttr(el, name, v) {
-  if (v === true) el.setAttribute(name, '');
-  else if (v === false || v == null || v === '') el.removeAttribute(name);
-  else el.setAttribute(name, String(v));
+export function setAttr(el, name, value) {
+  if (value === true) {
+    el.setAttribute(name, '');
+    return;
+  }
+
+  if (value === false || value == null || value === '') {
+    el.removeAttribute(name);
+    return;
+  }
+
+  el.setAttribute(name, String(value));
 }
 
 export function makeUniqueTargetId(base, context) {
-  const b = base && String(base).trim() ? base.trim() : 'acc';
+  const normalizedBase =
+    base && String(base).trim() ? String(base).trim() : 'acc';
   const scope = context?.viewMode || 'story';
-  const rnd = Math.random().toString(36).slice(2, 6);
-  return `${b}-${scope}-${context?.id || 'sb'}-${rnd}`;
+  const randomSuffix = Math.random().toString(36).slice(2, 6);
+
+  return `${normalizedBase}-${scope}-${context?.id || 'sb'}-${randomSuffix}`;
 }
 
 export function buildAccordion(args, context) {
@@ -41,13 +51,13 @@ export function buildAccordion(args, context) {
   const content = document.createElement('div');
   content.slot = 'content';
 
-  const p1 = document.createElement('p');
-  p1.textContent = args.contentLine1;
+  const paragraphOne = document.createElement('p');
+  paragraphOne.textContent = args.contentLine1;
 
-  const p2 = document.createElement('p');
-  p2.textContent = args.contentLine2;
+  const paragraphTwo = document.createElement('p');
+  paragraphTwo.textContent = args.contentLine2;
 
-  content.append(p1, p2);
+  content.append(paragraphOne, paragraphTwo);
   host.append(header, content);
 
   return host;

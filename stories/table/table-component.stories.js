@@ -1,4 +1,4 @@
-import TableDocs from './table-component.docs.mdx';
+// import TableDocs from './table-component.docs.mdx';
 import {
   Template,
   basicItems,
@@ -26,7 +26,6 @@ import {
 
 export default {
   title: 'Components/Table',
-  tags: ['autodocs'],
   args: {
     addBorder: false,
     removeBorder: false,
@@ -77,7 +76,6 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
-      page: TableDocs,
       source: {
         type: 'dynamic',
         language: 'html',

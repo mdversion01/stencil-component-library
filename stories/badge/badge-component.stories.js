@@ -1,17 +1,17 @@
 // File: src/stories/badge-component/badge-component.stories.js
 
-import DocsPage from './badge-component.docs.mdx';
+// import DocsPage from './badge-component.docs.mdx';
 import { buildDocsHtml, buildDocsHtmlMany, renderBadge, setAttr } from './badge-component.story-helpers.js';
 
 export default {
-  title: 'Components/Badge',
-  tags: ['autodocs'],
+  title: 'Components/Badge'
+  ,
 
   render: (args) => renderBadge(args),
 
   parameters: {
     docs: {
-      page: DocsPage,
+
       description: {
         component: [
           'Content is provided via the **default slot** (text or markup).',

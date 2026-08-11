@@ -1,13 +1,12 @@
-import DiscreteSliderDocs from './discrete-slider-component.docs.mdx';
+// File: src/stories/slider/discrete-slider/discrete-slider-component.stories.js
+
 import { Template, normalizeHtml, getSnapshot } from './discrete-slider-component.story-helpers';
 
 export default {
   title: 'Components/Slider/Discrete Slider',
-  tags: ['autodocs'],
   parameters: {
     layout: 'padded',
     docs: {
-      page: DiscreteSliderDocs,
       description: {
         component:
           'A discrete slider component allowing selection from predefined string values, with support for horizontal and vertical orientation.',

@@ -1,4 +1,4 @@
-import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/blocks';
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/addon-docs/blocks';
 import * as StoriesModule from './date-range-time-picker-component.stories.js';
 import { reactExample, vueExample, angularExample, svelteExample, svelteKitExample } from './date-range-time-picker-component.examples.js';
 import { buildDocsHtml } from './date-range-time-picker-component.story-helpers.js';
@@ -11,27 +11,27 @@ import { buildDocsHtml } from './date-range-time-picker-component.story-helpers.
 
 ## HTML
 
-<Source
+<Source dark
   code={buildDocsHtml(StoriesModule.default.args)}
   language="html"
 />
 
 ## React
 
-<Source code={reactExample} language="tsx" />
+<Source dark code={reactExample} language="tsx" />
 
 ## Vue
 
-<Source code={vueExample} language="vue" />
+<Source dark code={vueExample} language="vue" />
 
 ## Angular
 
-<Source code={angularExample} language="ts" />
+<Source dark code={angularExample} language="ts" />
 ## Svelte
 
-<Source code={svelteExample} language="ts" />
+<Source dark code={svelteExample} language="ts" />
 ## Svelte Kit
-<Source code={svelteKitExample} language="ts" />
+<Source dark code={svelteKitExample} language="ts" />
 
 ## Playground
 

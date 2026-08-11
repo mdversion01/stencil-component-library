@@ -1,6 +1,5 @@
 // File: src/stories/select-field-component.stories.js
 
-import SelectFieldDocs from './select-field-component.docs.mdx';
 import {
   normalize,
   buildDocsHtml,
@@ -13,10 +12,8 @@ import {
 
 export default {
   title: 'Form/Select Field',
-  tags: ['autodocs'],
   parameters: {
     docs: {
-      page: SelectFieldDocs,
       description: {
         component:
           'A customizable select field component with support for single and multiple selection, responsive layouts, validation, accessibility overrides, and read-only/disabled states.',

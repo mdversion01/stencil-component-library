@@ -1,4 +1,4 @@
-import DocsPage from './tooltip-component.docs.mdx';
+// import DocsPage from './tooltip-component.docs.mdx';
 import {
   uid,
   buildTooltipMarkup,
@@ -15,12 +15,12 @@ import {
 } from './tooltip-component.story-helpers';
 
 export default {
-  title: 'Components/Tooltip',
-  tags: ['autodocs'],
+  title: 'Components/Tooltip'
+  ,
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'Light-DOM tooltip wrapper. Place your trigger element inside the component. Supports placement, HTML content (trusted), variants, custom classes, manual control, custom container, and an optional stable `tooltip-id` (recommended for tests/SSR).',

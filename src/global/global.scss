@@ -1,34 +1,34 @@
-// Include full Bootstrap if needed:
-@import 'bootstrap/scss/bootstrap'; // Includes everything, but less tree-shakeable
+// File: src/global/global.scss
 
-$fa-font-path: '../../assets/fonts'; // ✅ must be before imports!
-/* Import raw CSS */
-@import '@fortawesome/fontawesome-free/scss/fontawesome.scss';
-@import '@fortawesome/fontawesome-free/scss/solid.scss';
-@import '@fortawesome/fontawesome-free/scss/regular.scss';
-@import '../assets/mdi/materialdesignicons.min.css';
+$fa-font-path: '/assets/fonts' !default;
 
-@import './variables.scss';
-// @import "./mixins.scss";
+/*
+ * Bootstrap is compiled once by the Stencil library.
+ * Plumage provides Bootstrap-compatible Sass configuration.
+ */
+// @import 'bootstrap/scss/functions';
+// @import '@plumage/plumage-style-library/src/bootstrap-config';
+@import 'bootstrap/scss/bootstrap';
 
-// @include generate-badge-utilities($badge-colors);
+/*
+ * Font Awesome uses the Stencil library's copied webfonts.
+ */
+@import '@fortawesome/fontawesome-free/scss/fontawesome';
+@import '@fortawesome/fontawesome-free/scss/solid';
+@import '@fortawesome/fontawesome-free/scss/regular';
 
-// @import '../components/badge/badge.scss';
+/*
+ * Stencil-only Sass variables.
+ */
+@import './variables';
 
-// @import '../components/button/button.scss';
-
-@import '../components/elevated-styles.scss';
-
-@import '../components/popover/popover-component-styles.scss';
-
-@import '../components/progress-display/progress-display-styles.scss';
-
-@import '../components/slider/slider-component-styles.scss';
-
-@import '../components/checkbox/checkbox.scss';
+/*
+ * Plumage core excludes Bootstrap and third-party framework bundles.
+ */
+@import '@plumage/plumage-style-library/src/core';
 
 :root {
-  --bs-link-color: #1154A7 !important;
+  --bs-link-color: #1154a7 !important;
 }
 
 .sbdocs-preview {
@@ -92,6 +92,12 @@ $rotate-transition: transform 0.3s ease-in-out;
   transform: rotate(0deg);
 }
 
+.plmg-lt,
+.plmg-dk{
+  body {
+    font-family: 'Roboto', sans-serif;
+  }
+}
 
 // :root {
 //   --amber: #ffc107;

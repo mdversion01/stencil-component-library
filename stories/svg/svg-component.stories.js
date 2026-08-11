@@ -1,5 +1,5 @@
 // src/stories/svg-component.stories.js
-import SvgDocs from './svg-component.docs.mdx';
+// import SvgDocs from './svg-component.docs.mdx';
 import {
   Template,
   InlineWithTextTemplate,
@@ -49,11 +49,9 @@ const inlineTemplateStoryParameters = {
 
 export default {
   title: 'Components/SVG',
-  tags: ['autodocs'],
   parameters: {
     layout: 'padded',
     docs: {
-      page: SvgDocs,
       description: {
         component:
           'An SVG component for rendering inline SVG icons with accessibility and styling options. Uses `path` + `viewBox` to render the SVG markup. Defaults to decorative when unnamed.',

@@ -1,6 +1,6 @@
 // File: src/stories/timepicker-component.stories.js
 
-import DocsPage from './timepicker-component.docs.mdx';
+// import DocsPage from './timepicker-component.docs.mdx';
 import {
   DocsWrapStyles,
   Template,
@@ -40,8 +40,8 @@ const docsSource = {
 };
 
 export default {
-  title: 'Form/Timepicker/Timepicker',
-  tags: ['autodocs'],
+  title: 'Form/Timepicker/Timepicker'
+  ,
   decorators: [
     Story => {
       const wrap = document.createElement('div');
@@ -67,7 +67,7 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component: `
 The **Timepicker Component** is a time input with manual entry and an accessible popover spinner picker.

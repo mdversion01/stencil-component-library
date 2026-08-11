@@ -1,6 +1,6 @@
 // File: src/stories/plumage-autocomplete-single/plumage-autocomplete-single.stories.js
 
-import DocsPage from './plumage-autocomplete-single.docs.mdx';
+// import DocsPage from './plumage-autocomplete-single.docs.mdx';
 import {
   DocsWrapStyles,
   DEFAULT_OPTIONS,
@@ -22,8 +22,8 @@ import {
 } from './plumage-autocomplete-single.story-helpers.js';
 
 export default {
-  title: 'Form/Plumage Autocomplete Single',
-  tags: ['autodocs'],
+  title: 'Form/Plumage Autocomplete Single'
+  ,
   decorators: [
     Story => {
       const wrap = document.createElement('div');
@@ -35,7 +35,7 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'A Plumage-styled single-select autocomplete with focus underline, keyboard navigation, validation, responsive layouts (stacked, horizontal, inline), and optional clear action.',

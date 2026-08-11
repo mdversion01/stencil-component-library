@@ -1,9 +1,9 @@
-import SliderManagerDocs from './slider-manager-component.docs.mdx';
+// File: src/stories/slider/slider-manager/slider-manager-component.stories.js
+
 import { Template, normalizeHtml, getSnapshot } from './slider-manager-component.story-helpers';
 
 export default {
   title: 'Components/Slider/Slider Manager',
-  tags: ['autodocs'],
   args: {
     disabled: false,
     hideLeftTextBox: false,
@@ -43,7 +43,6 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
-      page: SliderManagerDocs,
       source: {
         type: 'dynamic',
         language: 'html',

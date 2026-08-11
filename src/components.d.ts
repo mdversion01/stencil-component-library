@@ -66,6 +66,10 @@ export namespace Components {
          */
         "outlined": boolean;
         /**
+          * @default false
+         */
+        "plumage": boolean;
+        /**
           * Optional: allow an external label for the region instead of the toggle text
          */
         "regionLabelledby"?: string;
@@ -5846,6 +5850,10 @@ declare namespace LocalJSX {
          */
         "outlined"?: boolean;
         /**
+          * @default false
+         */
+        "plumage"?: boolean;
+        /**
           * Optional: allow an external label for the region instead of the toggle text
          */
         "regionLabelledby"?: string;
@@ -10684,6 +10692,7 @@ declare namespace LocalJSX {
         "link": boolean;
         "icon": string;
         "isOpen": boolean;
+        "plumage": boolean;
         "regionLabelledby": string;
     }
     interface AccordionContainerAttributes {

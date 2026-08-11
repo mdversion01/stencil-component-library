@@ -1,6 +1,6 @@
 // File: src/stories/checkbox-component/checkbox-component.stories.js
 
-import DocsPage from './checkbox-component.docs.mdx';
+// import DocsPage from './checkbox-component.docs.mdx';
 import { buildDocsHtml, Template } from './checkbox-component.story-helpers.js';
 
 const baseArgs = {
@@ -34,11 +34,11 @@ const baseArgs = {
 const renderTemplate = args => Template(args);
 
 export default {
-  title: 'Form/Checkbox',
-  tags: ['autodocs'],
+  title: 'Form/Checkbox'
+  ,
   parameters: {
     docs: {
-      page: DocsPage,
+
       description: {
         component: ['Checkbox component for single or multiple selections with optional custom styles.', ''].join('\n'),
       },

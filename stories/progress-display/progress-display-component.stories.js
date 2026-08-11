@@ -1,5 +1,4 @@
 // File: src/stories/progress-display-component.stories.js
-import ProgressDisplayDocs from './progress-display-component.docs.mdx';
 
 const baseArgs = {
   circular: false,
@@ -37,11 +36,9 @@ const baseArgs = {
 
 export default {
   title: 'Components/Progress',
-  tags: ['autodocs'],
   parameters: {
     layout: 'padded',
     docs: {
-      page: ProgressDisplayDocs,
       description: {
         component:
           'A versatile progress display component supporting linear and circular styles, with options for single or multiple bars, animations, custom labels, and accessibility overrides.',

@@ -1,6 +1,6 @@
 // File: src/stories/timepicker-manager-component.stories.js
 
-import DocsPage from './timepicker-manager-component.docs.mdx';
+// import DocsPage from './timepicker-manager-component.docs.mdx';
 import { DocsWrapStyles, Template, buildDocsHtml, getChild, getSnapshot, normalizeHtml } from './timepicker-manager-component.story-helpers.js';
 
 const baseArgs = {
@@ -37,8 +37,8 @@ const storyWithTemplate = {
 };
 
 export default {
-  title: 'Form/Timepicker/Timepicker Manager',
-  tags: ['autodocs'],
+  title: 'Form/Timepicker/Timepicker Manager'
+  ,
   decorators: [
     Story => {
       const wrap = document.createElement('div');
@@ -64,7 +64,7 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component: `
 The **Timepicker Manager** wraps either:

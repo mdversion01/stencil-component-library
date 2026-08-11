@@ -121,3 +121,22 @@
     }
   }
 }
+
+.rotate-up, .rotate-down {
+    transform-origin: center center;
+    transition: transform 0.3s ease-in-out !important;
+}
+
+.plumage {
+  .accordion {
+    .accordion-item:last-of-type {
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    .accordion-item:first-of-type {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+}

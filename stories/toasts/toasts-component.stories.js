@@ -1,4 +1,4 @@
-import DocsPage from './toasts-component.docs.mdx';
+// import DocsPage from './toasts-component.docs.mdx';
 import {
   TAG,
   normalize,
@@ -13,12 +13,12 @@ import {
 } from './toasts-component.story-helpers';
 
 export default {
-  title: 'Components/Toasts',
-  tags: ['autodocs'],
+  title: 'Components/Toasts'
+  ,
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'Visual styling previews for `<toasts-component>`. Stories are controls-driven. A small autoplay runs to render example toasts so you can see styles; it re-runs when controls change. Previews are configured to keep toasts visible (no auto-dismiss) in both Canvas and Docs.',

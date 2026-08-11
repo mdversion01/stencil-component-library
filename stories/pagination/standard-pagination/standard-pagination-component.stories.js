@@ -1,6 +1,6 @@
 // File: src/stories/standard-pagination-component.stories.js
 
-import DocsPage from './standard-pagination-component.docs.mdx';
+// import DocsPage from './standard-pagination-component.docs.mdx';
 import {
   buildDocsTransform,
   normalizeHtml,
@@ -30,12 +30,12 @@ const standardArgs = {
 };
 
 export default {
-  title: 'Components/Pagination/Standard',
-  tags: ['autodocs'],
+  title: 'Components/Pagination/Standard'
+  ,
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       source: {
         type: 'dynamic',
         language: 'html',

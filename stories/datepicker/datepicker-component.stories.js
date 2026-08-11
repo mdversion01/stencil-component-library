@@ -1,7 +1,9 @@
 // File: src/stories/datepicker-component.stories.js
 
-import { action } from '@storybook/addon-actions';
-import DatepickerDocs from './datepicker-component.docs.mdx';
+import { action } from 'storybook/actions';
+
+// import DatepickerDocs from './datepicker-component.docs.mdx';
+
 import { buildDocsHtml, buildDocsHtmlControlledValue, buildEl, renderMatrixRow, setDateValueWhenReady, updateArgsBestEffort } from './datepicker-component.story-helpers';
 
 const baseArgs = {
@@ -39,10 +41,8 @@ const renderTemplate = args => buildEl(args, action);
 
 export default {
   title: 'Form/Datepicker',
-  tags: ['autodocs'],
   parameters: {
     docs: {
-      page: DatepickerDocs,
       description: {
         component:
           'A datepicker input with an optional attached calendar view. Supports Bootstrap-style layout and sizing, validation states, disabled/read-only modes, externally supplied values, and custom formatting.',

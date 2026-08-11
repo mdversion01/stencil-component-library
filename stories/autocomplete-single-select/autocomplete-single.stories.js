@@ -1,6 +1,6 @@
 // File: src/stories/autocomplete-single/autocomplete-single.stories.js
 
-import DocsPage from './autocomplete-single.docs.mdx';
+// import DocsPage from './autocomplete-single.docs.mdx';
 import {
   DocsWrapStyles,
   DEFAULT_OPTIONS,
@@ -15,8 +15,8 @@ import {
 } from './autocomplete-single.story-helpers.js';
 
 export default {
-  title: 'Form/Autocomplete Single',
-  tags: ['autodocs'],
+  title: 'Form/Autocomplete Single'
+  ,
   decorators: [
     Story => {
       const wrap = document.createElement('div');
@@ -27,7 +27,7 @@ export default {
   ],
   parameters: {
     docs: {
-      page: DocsPage,
+
       description: {
         component: [
           'Autocomplete Single component for selecting a single option from a list with autocomplete functionality.',

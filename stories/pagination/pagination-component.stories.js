@@ -1,6 +1,5 @@
 // File: src/stories/pagination-component.stories.js
 
-import DocsPage from './pagination-component.docs.mdx';
 import {
   buildDocsTransform,
   normalizeHtml,
@@ -31,23 +30,23 @@ const baseArgs = {
   position: 'bottom',
   paginationAriaLabel: 'Pagination',
   pageSizeLabel: 'Items per page:',
-  pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+  pageSizeHelpText:
+    'Use this control to change how many items are shown per page.',
 };
 
 const Template = rawArgs => template(rawArgs);
 
 export default {
   title: 'Components/Pagination',
-  tags: ['autodocs'],
   decorators: [withExclusiveVariants],
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
       source: {
         type: 'dynamic',
         language: 'html',
-        transform: (src, context) => buildDocsTransform(src, context),
+        transform: (source, context) =>
+          buildDocsTransform(source, context),
       },
       description: {
         component: [
@@ -200,8 +199,7 @@ export default {
     position: {
       control: { type: 'select' },
       options: ['top', 'bottom', 'both'],
-      description:
-        'Position placement when used with table-id. Used for select/range id construction.',
+      description: 'Position placement when used with table-id. Used for select/range id construction.',
       name: 'position',
       table: { category: 'Table Integration' },
     },

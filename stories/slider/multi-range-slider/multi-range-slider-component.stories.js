@@ -1,14 +1,12 @@
 // src/stories/multi-range-slider-component.stories.js
-import MultiRangeSliderDocs from './multi-range-slider-component.docs.mdx';
+
 import { Template, normalizeHtml, getSnapshot } from './multi-range-slider-component.story-helpers';
 
 export default {
   title: 'Components/Slider/Multi Range Slider',
-  tags: ['autodocs'],
   parameters: {
     layout: 'padded',
     docs: {
-      page: MultiRangeSliderDocs,
       description: {
         component:
           'A multi-range slider component allowing selection of a range between two values, with support for horizontal and vertical orientation.',

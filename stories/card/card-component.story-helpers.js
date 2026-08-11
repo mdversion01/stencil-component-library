@@ -1,9 +1,10 @@
-// File: src/stories/card-component/card-component.story-helpers.js
+// File: stories/card/card-component.story-helpers.js
 
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 
 export const DocsWrapStyles = () => {
   const style = document.createElement('style');
+
   style.innerHTML = `
     .sbdocs pre,
     .sbdocs pre code {
@@ -12,40 +13,61 @@ export const DocsWrapStyles = () => {
       overflow-x: auto !important;
     }
   `;
+
   return style;
 };
 
-export const normalize = (txt) => {
-  const lines = String(txt || '')
+export const normalize = (text) => {
+  const lines = String(text || '')
     .replace(/\r\n/g, '\n')
     .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
+    .map((line) => line.replace(/[ \t]+$/g, ''));
 
-  const out = [];
-  let prevBlank = false;
+  const output = [];
+  let previousLineWasBlank = false;
 
   for (const line of lines) {
-    const blank = line.trim() === '';
-    if (blank) {
-      if (prevBlank) continue;
-      prevBlank = true;
-      out.push('');
+    const isBlank = line.trim() === '';
+
+    if (isBlank) {
+      if (previousLineWasBlank) {
+        continue;
+      }
+
+      previousLineWasBlank = true;
+      output.push('');
       continue;
     }
-    prevBlank = false;
-    out.push(line);
+
+    previousLineWasBlank = false;
+    output.push(line);
   }
 
-  while (out[0] === '') out.shift();
-  while (out[out.length - 1] === '') out.pop();
+  while (output[0] === '') {
+    output.shift();
+  }
 
-  return out.join('\n');
+  while (output[output.length - 1] === '') {
+    output.pop();
+  }
+
+  return output.join('\n');
 };
 
 export const attrLines = (pairs) =>
   pairs
-    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
-    .map(([k, v]) => (v === true ? `${k}` : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
+    .filter(
+      ([, value]) =>
+        value !== undefined &&
+        value !== null &&
+        value !== '' &&
+        value !== false,
+    )
+    .map(([key, value]) =>
+      value === true
+        ? key
+        : `${key}="${String(value).replace(/"/g, '&quot;')}"`,
+    )
     .join('\n  ');
 
 export const buildDocsHtml = (args) =>
@@ -88,78 +110,109 @@ export const wrapDocsHtml = (innerHtml) =>
 </div>
 `);
 
-export const setAttr = (el, name, value) => {
+export const setAttr = (element, name, value) => {
   const isEmpty =
     value === false ||
     value === null ||
     value === undefined ||
     (typeof value === 'string' && value.trim() === '');
 
-  if (isEmpty) el.removeAttribute(name);
-  else if (value === true) el.setAttribute(name, '');
-  else el.setAttribute(name, String(value));
+  if (isEmpty) {
+    element.removeAttribute(name);
+    return;
+  }
+
+  if (value === true) {
+    element.setAttribute(name, '');
+    return;
+  }
+
+  element.setAttribute(name, String(value));
 };
 
 export const renderCard = (args) => {
-  const el = document.createElement('card-component');
+  const element = document.createElement('card-component');
 
-  el.actions = !!args.actions;
-  el.img = !!args.img;
-  el.noFooter = !!args.noFooter;
-  el.noHeader = !!args.noHeader;
+  element.actions = Boolean(args.actions);
+  element.img = Boolean(args.img);
+  element.noFooter = Boolean(args.noFooter);
+  element.noHeader = Boolean(args.noHeader);
+  element.clickable = Boolean(args.clickable);
+  element.disabled = Boolean(args.disabled);
+  element.landmark = Boolean(args.landmark);
+  element.headingLevel = Number(args.headingLevel) || 5;
+  element.decorativeImage = Boolean(args.decorativeImage);
 
-  el.clickable = !!args.clickable;
-  el.disabled = !!args.disabled;
-  el.landmark = !!args.landmark;
-  el.headingLevel = Number(args.headingLevel) || 5;
-  el.decorativeImage = !!args.decorativeImage;
-
-  if (args.ariaLabel) el.ariaLabel = args.ariaLabel;
-  if (args.ariaLabelledby) el.ariaLabelledby = args.ariaLabelledby;
-  if (args.ariaDescribedby) el.ariaDescribedby = args.ariaDescribedby;
-
-  if (args.classNames) el.classNames = args.classNames;
-  if (args.elevation) el.elevation = args.elevation;
-  if (args.inlineStyles) el.inlineStyles = args.inlineStyles;
-  if (args.cardMaxWidth) el.cardMaxWidth = args.cardMaxWidth;
-
-  if (args.img) {
-    if (args.altText) el.altText = args.altText;
-    if (args.imgSrc) el.imgSrc = args.imgSrc;
-    if (args.imgHeight) el.imgHeight = args.imgHeight;
+  if (args.ariaLabel) {
+    element.ariaLabel = args.ariaLabel;
   }
 
-  setAttr(el, 'actions', !!args.actions);
-  setAttr(el, 'img', !!args.img);
-  setAttr(el, 'no-footer', !!args.noFooter);
-  setAttr(el, 'no-header', !!args.noHeader);
+  if (args.ariaLabelledby) {
+    element.ariaLabelledby = args.ariaLabelledby;
+  }
 
-  setAttr(el, 'clickable', !!args.clickable);
-  setAttr(el, 'disabled', !!args.disabled);
-  setAttr(el, 'landmark', !!args.landmark);
-  setAttr(el, 'heading-level', args.headingLevel);
-  setAttr(el, 'decorative-image', !!args.decorativeImage);
+  if (args.ariaDescribedby) {
+    element.ariaDescribedby = args.ariaDescribedby;
+  }
 
-  setAttr(el, 'aria-label', args.ariaLabel);
-  setAttr(el, 'aria-labelledby', args.ariaLabelledby);
-  setAttr(el, 'aria-describedby', args.ariaDescribedby);
+  if (args.classNames) {
+    element.classNames = args.classNames;
+  }
 
-  setAttr(el, 'class-names', args.classNames);
-  setAttr(el, 'elevation', args.elevation);
-  setAttr(el, 'inline-styles', args.inlineStyles);
-  setAttr(el, 'card-max-width', args.cardMaxWidth);
+  if (args.elevation) {
+    element.elevation = args.elevation;
+  }
+
+  if (args.inlineStyles) {
+    element.inlineStyles = args.inlineStyles;
+  }
+
+  if (args.cardMaxWidth) {
+    element.cardMaxWidth = args.cardMaxWidth;
+  }
 
   if (args.img) {
-    setAttr(el, 'alt-text', args.altText);
-    setAttr(el, 'img-src', args.imgSrc);
-    setAttr(el, 'img-height', args.imgHeight);
+    if (args.altText) {
+      element.altText = args.altText;
+    }
+
+    if (args.imgSrc) {
+      element.imgSrc = args.imgSrc;
+    }
+
+    if (args.imgHeight) {
+      element.imgHeight = args.imgHeight;
+    }
+  }
+
+  setAttr(element, 'actions', Boolean(args.actions));
+  setAttr(element, 'img', Boolean(args.img));
+  setAttr(element, 'no-footer', Boolean(args.noFooter));
+  setAttr(element, 'no-header', Boolean(args.noHeader));
+  setAttr(element, 'clickable', Boolean(args.clickable));
+  setAttr(element, 'disabled', Boolean(args.disabled));
+  setAttr(element, 'landmark', Boolean(args.landmark));
+  setAttr(element, 'heading-level', args.headingLevel);
+  setAttr(element, 'decorative-image', Boolean(args.decorativeImage));
+  setAttr(element, 'aria-label', args.ariaLabel);
+  setAttr(element, 'aria-labelledby', args.ariaLabelledby);
+  setAttr(element, 'aria-describedby', args.ariaDescribedby);
+  setAttr(element, 'class-names', args.classNames);
+  setAttr(element, 'elevation', args.elevation);
+  setAttr(element, 'inline-styles', args.inlineStyles);
+  setAttr(element, 'card-max-width', args.cardMaxWidth);
+
+  if (args.img) {
+    setAttr(element, 'alt-text', args.altText);
+    setAttr(element, 'img-src', args.imgSrc);
+    setAttr(element, 'img-height', args.imgHeight);
   } else {
-    el.removeAttribute('alt-text');
-    el.removeAttribute('img-src');
-    el.removeAttribute('img-height');
+    element.removeAttribute('alt-text');
+    element.removeAttribute('img-src');
+    element.removeAttribute('img-height');
   }
 
-  el.innerHTML = `
+  element.innerHTML = `
     ${args.noHeader ? '' : `<div slot="header">${args.slotHeader}</div>`}
     <span slot="title">${args.slotTitle}</span>
     <span slot="text">${args.slotText}</span>
@@ -167,7 +220,7 @@ export const renderCard = (args) => {
     ${args.noFooter ? '' : `<div slot="footer"><p>${args.slotFooter}</p></div>`}
   `;
 
-  el.addEventListener('customClick', action('customClick'));
+  element.addEventListener('customClick', action('customClick'));
 
-  return el;
+  return element;
 };

@@ -1,5 +1,5 @@
 // File: src/stories/textarea-component.stories.js
-import DocsPage from './textarea-component.docs.mdx';
+// import DocsPage from './textarea-component.docs.mdx';
 import {
   buildDocsHtml,
   buildDocsHtmlExternalValue,
@@ -37,13 +37,13 @@ const storyWithRender = {
 };
 
 export default {
-  title: 'Form/Textarea',
-  tags: ['autodocs'],
+  title: 'Form/Textarea'
+  ,
   render: args => buildTextarea(args),
 
   parameters: {
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'A textarea web component with Bootstrap-style layout, validation support, optional max-length counter, and form-friendly valueChange / blurChange events.',

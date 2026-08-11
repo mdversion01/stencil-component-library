@@ -1,6 +1,6 @@
 // File: stories/plumage/plumage-autocomplete-multiple-selections/plumage-autocomplete-multiple-selections.stories.js
 
-import DocsPage from './plumage-autocomplete-multiple-selections.docs.mdx';
+// import DocsPage from './plumage-autocomplete-multiple-selections.docs.mdx';
 import {
   DocsWrapStyles,
   FRUIT,
@@ -18,8 +18,8 @@ import {
 } from './plumage-autocomplete-multiple-selections.story-helpers.js';
 
 export default {
-  title: 'Form/Plumage Autocomplete Multiple Selections',
-  tags: ['autodocs'],
+  title: 'Form/Plumage Autocomplete Multiple Selections'
+  ,
 
   decorators: [
     (Story) => {
@@ -33,7 +33,7 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'Plumage-styled Autocomplete Multiple Selections component with badges, fast keyboard navigation (arrows/Home/End/PageUp/PageDown/Escape), optional add/delete of user options, responsive layouts (stacked, horizontal, inline), and keep-open-after-select UX.',

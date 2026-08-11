@@ -1,6 +1,6 @@
 // File: src/stories/minimize-pagination-component.stories.js
 
-import DocsPage from './minimize-pagination-component.docs.mdx';
+// import DocsPage from './minimize-pagination-component.docs.mdx';
 import {
   buildDocsTransform,
   normalizeHtml,
@@ -26,12 +26,12 @@ const minimizedArgs = {
 };
 
 export default {
-  title: 'Components/Pagination/Minimized',
-  tags: ['autodocs'],
+  title: 'Components/Pagination/Minimized'
+  ,
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       source: {
         type: 'dynamic',
         language: 'html',

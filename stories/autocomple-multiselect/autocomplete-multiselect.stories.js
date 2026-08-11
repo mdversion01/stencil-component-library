@@ -1,6 +1,6 @@
 // File: src/stories/autocomplete-multiselect/autocomplete-multiselect.stories.js
 
-import DocsPage from './autocomplete-multiselect.docs.mdx';
+// import DocsPage from './autocomplete-multiselect.docs.mdx';
 import {
   DocsWrapStyles,
   FRUIT,
@@ -13,8 +13,8 @@ import {
 } from './autocomplete-multiselect.story-helpers.js';
 
 export default {
-  title: 'Form/Autocomplete Multiselect',
-  tags: ['autodocs'],
+  title: 'Form/Autocomplete Multiselect'
+  ,
   decorators: [
     Story => {
       const wrap = document.createElement('div');
@@ -25,7 +25,7 @@ export default {
   ],
   parameters: {
     docs: {
-      page: DocsPage,
+
       description: {
         component: [
           'Autocomplete Multiselect component for selecting multiple options from a list with autocomplete functionality.',

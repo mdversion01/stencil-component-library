@@ -1,15 +1,15 @@
-// File: src/stories/accordion/accordion.stories.js
-import DocsPage from './accordion.docs.mdx';
+// stories/accordion/accordion.stories.js
 import { buildAccordion } from './accordion.story-helpers';
 
 export default {
   title: 'Components/Accordion',
-  tags: ['autodocs'],
   render: (args, context) => buildAccordion(args, context),
 
   parameters: {
+    controls: {
+      exclude: ['headerText', 'contentLine1', 'contentLine2'],
+    },
     docs: {
-      page: DocsPage,
       description: {
         component: [
           'An Accordion Component belongs to the Accordion Container but can also be used on its own.\n',
@@ -32,7 +32,8 @@ export default {
   argTypes: {
     accordion: {
       control: 'boolean',
-      description: 'If true, renders as an accordion item within an accordion container. If false, renders as a standalone button toggle.',
+      description:
+        'If true, renders as an accordion item within an accordion container. If false, renders as a standalone button toggle.',
       table: { category: 'Behavior', defaultValue: { summary: false } },
     },
     isOpen: {
@@ -112,12 +113,22 @@ export default {
       description: 'Optional external label element id for the region.',
       table: { category: 'Accessibility' },
     },
-    headerText: { name: 'header-text', table: { disable: true }, control: false },
-    contentLine1: { name: 'content-line-1', table: { disable: true }, control: false },
-    contentLine2: { name: 'content-line-2', table: { disable: true }, control: false },
+    headerText: {
+      name: 'header-text',
+      table: { disable: true },
+      control: false,
+    },
+    contentLine1: {
+      name: 'content-line-1',
+      table: { disable: true },
+      control: false,
+    },
+    contentLine2: {
+      name: 'content-line-2',
+      table: { disable: true },
+      control: false,
+    },
   },
-
-  controls: { exclude: ['headerText', 'contentLine1', 'contentLine2'] },
 
   args: {
     accordion: false,
@@ -167,7 +178,13 @@ export const AccordionWithCustomIcon = {
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
   },
-  parameters: { docs: { description: { story: 'Accordion item using custom icons for open/closed states.' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Accordion item using custom icons for open/closed states.',
+      },
+    },
+  },
 };
 
 export const ButtonToggle = {
@@ -178,7 +195,13 @@ export const ButtonToggle = {
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
   },
-  parameters: { docs: { description: { story: 'Accordion item with a button toggle.' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Accordion item with a button toggle.',
+      },
+    },
+  },
 };
 
 export const ButtonToggleDisabled = {
@@ -189,7 +212,13 @@ export const ButtonToggleDisabled = {
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
   },
-  parameters: { docs: { description: { story: 'Button toggle in a disabled state.' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Button toggle in a disabled state.',
+      },
+    },
+  },
 };
 
 export const ButtonToggleOpenByDefault = {
@@ -201,7 +230,13 @@ export const ButtonToggleOpenByDefault = {
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
   },
-  parameters: { docs: { description: { story: 'Button toggle open by default.' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Button toggle open by default.',
+      },
+    },
+  },
 };
 
 export const LinkToggle = {
@@ -213,10 +248,15 @@ export const LinkToggle = {
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
   },
-  parameters: { docs: { description: { story: 'Accordion item with a link toggle.' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Accordion item with a link toggle.',
+      },
+    },
+  },
 };
 
-// Accessibility matrix story (UPDATED for class-driven collapse + no hidden/display:none)
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: (_args, context) => {
@@ -227,8 +267,8 @@ export const AccessibilityMatrix = {
 
     const title = document.createElement('div');
     title.innerHTML =
-      `<strong>Accessibility matrix</strong>` +
-      `<div style="opacity:.8">Shows computed toggle + region ARIA, ids, expanded state, and collapse classes (collapse/show/collapsing).</div>`;
+      '<strong>Accessibility matrix</strong>' +
+      '<div style="opacity:.8">Shows computed toggle + region ARIA, ids, expanded state, and collapse classes (collapse/show/collapsing).</div>';
     wrap.appendChild(title);
 
     const mkRow = (labelText, makeHost) => {
@@ -249,7 +289,6 @@ export const AccessibilityMatrix = {
       right.style.gap = '8px';
 
       const demo = document.createElement('div');
-      // demo.style.display = 'inline-flex';
       demo.style.alignItems = 'center';
       demo.style.gap = '12px';
       demo.style.flexWrap = 'wrap';
@@ -276,11 +315,15 @@ export const AccessibilityMatrix = {
         const bc = host.querySelector('button-component');
         const inner = host.querySelector('button-component button, button-component a');
         const region = host.querySelector('[role="region"]');
-
         const cls = region ? Array.from(region.classList).join(' ') : null;
 
         const attrs = {
-          mode: host.getAttribute('accordion') != null ? 'accordion' : host.getAttribute('link') != null ? 'link' : 'button',
+          mode:
+            host.getAttribute('accordion') != null
+              ? 'accordion'
+              : host.getAttribute('link') != null
+                ? 'link'
+                : 'button',
           regionId: region?.getAttribute('id') ?? host.getAttribute('target-id'),
           toggleHostId: bc?.getAttribute('id') ?? null,
           innerTag: inner?.tagName ?? null,
@@ -292,7 +335,7 @@ export const AccessibilityMatrix = {
           'aria-hidden': region?.getAttribute('aria-hidden') ?? null,
           inert: region?.hasAttribute('inert') ?? null,
           class: cls,
-          inlineHeight: region?.style?.height ?? null, // set only during transitions
+          inlineHeight: region?.style?.height ?? null,
         };
 
         pre.textContent = JSON.stringify(attrs, null, 2);

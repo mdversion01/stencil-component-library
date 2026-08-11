@@ -1,4 +1,4 @@
-import DocsPage from './toggle-switch-component.docs.mdx';
+// import DocsPage from './toggle-switch-component.docs.mdx';
 import {
   sampleMulti,
   buildDocsHtml,
@@ -8,12 +8,12 @@ import {
 } from './toggle-switch-component.story-helpers';
 
 export default {
-  title: 'Form/Toggle Switch',
-  tags: ['autodocs'],
+  title: 'Form/Toggle Switch'
+  ,
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'A single or multi toggle (Bootstrap-style or custom) with validation, sizes, inline layout, and event emission (`checkedChanged`).\n\n' +

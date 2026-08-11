@@ -1,5 +1,5 @@
 // src/stories/plumage-select-field-component.stories.js
-import DocsPage from './plumage-select-field.docs.mdx';
+// import DocsPage from './plumage-select-field.docs.mdx';
 import {
   DocsWrapStyles,
   buildDocsHtml,
@@ -16,8 +16,8 @@ import {
  * ------------------------------------------------------------------ */
 
 export default {
-  title: 'Form/Plumage Select Field',
-  tags: ['autodocs'],
+  title: 'Form/Plumage Select Field'
+  ,
   decorators: [
     Story => {
       const wrap = document.createElement('div');
@@ -43,7 +43,7 @@ export default {
   parameters: {
     layout: 'padded',
     docs: {
-      page: DocsPage,
+
       description: {
         component:
           'A Plumage-styled `<select>` with focus underline, optional horizontal/inline form layout, validation, and multi-select. Works in the light DOM and accepts a JSON array for `options`.',

@@ -1,17 +1,17 @@
 // File: src/stories/button-component/button-component.stories.js
 
-import DocsPage from './button-component.docs.mdx';
+// import DocsPage from './button-component.docs.mdx';
 import { buildDocsHtml, buildDocsHtmlMany, renderButton, setAttr } from './button-component.story-helpers.js';
 
 export default {
-  title: 'Components/Button',
-  tags: ['autodocs'],
+  title: 'Components/Button'
+  ,
 
   render: args => renderButton(args),
 
   parameters: {
     docs: {
-      page: DocsPage,
+
       description: {
         component: [
           'Button component allows for various styles and behaviors.',
