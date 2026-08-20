@@ -49,6 +49,14 @@
 | `customClick` |             | `CustomEvent<any>` |
 
 
+## Slots
+
+| Slot     | Description      |
+| -------- | ---------------- |
+|          | The default slot |
+| `"icon"` |                  |
+
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

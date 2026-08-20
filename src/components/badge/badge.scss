@@ -1,4 +1,7 @@
+@use 'sass:map';
+
 @import "../../global/variables.scss";
+@import "../elevated-styles.scss";
 
 @mixin generate-badge-utilities($colors) {
   @each $name, $value in $colors {
@@ -27,16 +30,29 @@
 
 @include generate-badge-utilities($badge-colors);
 
-// _badge-sizes.scss
-
 $badge-sizes: (
-  xs: (font: 0.625rem, font-important: false, min: 36px),
-  sm: (font: 0.75rem,  font-important: false, min: 50px),
-  base: (font: 1rem,    font-important: false, min: null),
-  lg: (font: 1.2rem,   font-important: true,  min: 78px)
+  xs: (
+    font: 0.625rem,
+    font-important: true,
+    min: 36px,
+  ),
+  sm: (
+    font: 0.75rem,
+    font-important: true,
+    min: 50px,
+  ),
+  base: (
+    font: 1rem,
+    font-important: true,
+    min: null,
+  ),
+  lg: (
+    font: 1.2rem,
+    font-important: true,
+    min: 78px,
+  ),
 );
 
-/// Emits `.badge.{size}` with optional min-width
 @mixin make-badge-size(
   $name,
   $cfg,
@@ -45,18 +61,30 @@ $badge-sizes: (
   $emit-min-width: false
 ) {
   #{$block}#{$sep}#{$name} {
-    $font: map-get($cfg, font);
-    $imp-font: if(map-get($cfg, font-important), ' !important', '');
-    font-size: #{$font}#{$imp-font};
-    @if $emit-min-width {
-      min-width: map-get($cfg, min) !important;
+    $font: map.get($cfg, font);
+    $font-important: map.get($cfg, font-important);
+    $min-width: map.get($cfg, min);
+
+    @if $font-important {
+      font-size: $font !important;
+    } @else {
+      font-size: $font;
+    }
+
+    @if $emit-min-width and $min-width != null {
+      min-width: $min-width !important;
     }
   }
 }
 
-// Generate .badge.xs / .badge.sm / .badge.lg
 @each $name, $cfg in $badge-sizes {
-  @include make-badge-size($name, $cfg, '.badge', '.', $emit-min-width: false);
+  @include make-badge-size(
+    $name,
+    $cfg,
+    '.badge',
+    '.',
+    $emit-min-width: false
+  );
 }
 
 // _badge-variants
@@ -99,9 +127,14 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
   .badge--outlined.#{$name},
   .badge__token.outlined.#{$name} {
     background-color: var(--bs-white) !important;
-    border-color: $color;
+    border-color: $color !important;
+
     @if $set-text {
-      color: $color; // now adds color for light too
+      @if $name == light {
+        color: #2b2b2b !important;
+      } @else {
+        color: $color !important;
+      }
     }
   }
 }
@@ -193,48 +226,48 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
   inset: auto auto calc(100% - 6px) calc(100% - 6px);
 }
 
-.badge {
-  align-items: center;
-  border: 1px solid transparent;
-  display: inline-flex;
-  flex: 0 0 auto;
-  font-weight: normal !important;
-  letter-spacing: 0.0892857143em;
-  line-height: inherit !important;
-  justify-content: center;
-  min-width: 8px;
-  outline: 0;
-  padding: 0 0.15rem 0.15rem !important;
-  position: relative;
-  text-decoration: none;
-  text-indent: 0.0892857143em;
-  transition-duration: 0.28s;
-  transition-property: box-shadow, transform, opacity;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+// .badge {
+//   align-items: center;
+//   border: 1px solid transparent;
+//   display: inline-flex;
+//   flex: 0 0 auto;
+//   font-weight: normal !important;
+//   letter-spacing: 0.0892857143em;
+//   line-height: inherit !important;
+//   justify-content: center;
+//   min-width: 8px;
+//   outline: 0;
+//   padding: 0 0.15rem 0.15rem !important;
+//   position: relative;
+//   text-decoration: none;
+//   text-indent: 0.0892857143em;
+//   transition-duration: 0.28s;
+//   transition-property: box-shadow, transform, opacity;
+//   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+//   -webkit-user-select: none;
+//   -moz-user-select: none;
+//   -ms-user-select: none;
+//   user-select: none;
+// }
 
-.badge.disabled,
-.badge:disabled {
-  cursor: default !important;
-  opacity: 0.65 !important;
-  pointer-events: none !important;
-}
+// .badge.disabled,
+// .badge:disabled {
+//   cursor: default !important;
+//   opacity: 0.65 !important;
+//   pointer-events: none !important;
+// }
 
-.badge:focus {
-  outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(38, 128, 235, 0.5);
-}
+// .badge:focus {
+//   outline: 0;
+//   box-shadow: 0 0 0 0.2rem rgba(38, 128, 235, 0.5);
+// }
 
-.badge--block {
-  display: flex;
-  flex: 1 0 auto;
-  min-width: 100% !important;
-  max-width: none;
-}
+// .badge--block {
+//   display: flex;
+//   flex: 1 0 auto;
+//   min-width: 100% !important;
+//   max-width: none;
+// }
 
 .badge__content {
   align-items: center;
@@ -243,6 +276,7 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
   flex: 1 0 auto;
   justify-content: inherit;
   line-height: normal;
+  margin-top: -2px;
   position: relative;
   transition: inherit;
   transition-property: opacity;
@@ -295,10 +329,10 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
   color: var(--bs-black);
 }
 
-.badge.text {
-  background-color: transparent;
-  border-color: transparent;
-}
+// .badge.text {
+//   background-color: transparent;
+//   border-color: transparent;
+// }
 
 .rounded-pill {
   padding: 0.15rem 0.5rem !important;
@@ -311,7 +345,7 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
 }
 
 .badge .icon {
-  margin: 4px 3px 0;
+  margin: 0 0 0 6px;
 }
 
 .rounded-pill .icon {
@@ -333,20 +367,20 @@ $badge-white-text-when-solid: accent, danger, info, primary, secondary, success,
   border-radius: 4px;
 }
 
-.badge.link {
-  background-color: transparent;
-  border-color: transparent;
-  color: var(--bs-link-color);
-}
+// .badge.link {
+//   background-color: transparent;
+//   border-color: transparent;
+//   color: var(--bs-link-color);
+// }
 
-.badge.link:hover {
-  background-color: transparent;
-  border-color: transparent;
-  color: var(--bs-link-hover-color);
-}
+// .badge.link:hover {
+//   background-color: transparent;
+//   border-color: transparent;
+//   color: var(--bs-link-hover-color);
+// }
 
 .pulse {
-  animation: token-pulse 2s infinite;
+  animation: token-pulse 2s infinite !important;
 }
 
 @keyframes token-pulse {

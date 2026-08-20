@@ -32,6 +32,13 @@
 | `styles`                  | `styles`                    | Additional inline styles to append (CSS string)                                                                                                               | `string`                         | `''`               |
 
 
+## Slots
+
+| Slot          | Description |
+| ------------- | ----------- |
+| `"formField"` |             |
+
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

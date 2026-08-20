@@ -86,6 +86,13 @@ Type: `Promise<void>`
 
 
 
+## Slots
+
+| Slot               | Description |
+| ------------------ | ----------- |
+| `"custom-content"` |             |
+
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

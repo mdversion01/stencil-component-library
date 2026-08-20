@@ -62,7 +62,7 @@ export default {
     active: { control: 'boolean', description: 'If true, adds active styles to the button.', table: { category: 'State', defaultValue: { summary: false } } },
     disabled: { control: 'boolean', description: 'If true, disables the button.', table: { category: 'State', defaultValue: { summary: false } } },
 
-    variant: { control: 'text', description: 'Visual variant/color.', table: { category: 'Appearance' } },
+    variant: { control: 'text', description: 'Visual variant/color are \'primary\', \'secondary\', \'tertiary\', \'success\', \'danger\', \'warning\', \'info\', \'light\', \'dark\', and \'active-blue\'.', table: { category: 'Appearance' } },
     size: { control: { type: 'select' }, options: ['', 'xs', 'sm', 'lg', 'plumage-size'], description: 'Size.', table: { category: 'Appearance' } },
     shape: { control: { type: 'select' }, options: ['', 'circle', 'pill', 'square'], description: 'Shape.', table: { category: 'Appearance' } },
     outlined: { control: 'boolean', description: 'Outlined style.', table: { category: 'Appearance', defaultValue: { summary: false } } },
@@ -202,7 +202,7 @@ export const BackgroundColors = {
     wrap.style.gap = '12px';
 
     const title = v => v.charAt(0).toUpperCase() + v.slice(1);
-    const variants = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
+    const variants = ['primary', 'secondary', 'tertiary', 'success', 'danger', 'warning', 'info', 'light', 'dark', 'active-blue'];
 
     variants.forEach(v => {
       const btn = document.createElement('button-component');
@@ -442,7 +442,7 @@ export const DisabledLinkWithUrl = {
     disabled: true,
     url: '/somewhere',
     btnText: 'Disabled Link (url set)',
-    variant: 'primary',
+    variant: 'link',
     ariaLabel: 'Disabled link button',
   },
   parameters: {

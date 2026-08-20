@@ -1,5 +1,3 @@
-// File: .storybook/preview.js
-
 import { defineCustomElements } from '../loader';
 import { withThemeByClassName } from '@storybook/addon-themes';
 
@@ -68,4 +66,3 @@ const preview = {
 };
 
 export default preview;
-

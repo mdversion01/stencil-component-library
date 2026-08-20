@@ -201,16 +201,16 @@ export class Badge {
 
   private renderDefaultBadge(classAttr: string) {
     return (
-      <div class={classAttr} style={this.parseInlineStyles(this.styles)} id={this.attr(this.badgeId)}>
-        <div class="badge__content">
+      <span class={classAttr} style={this.parseInlineStyles(this.styles)} id={this.attr(this.badgeId)}>
+        <span class="badge__content">
           <slot />
           {this.icon && (
             <span class="icon">
               <slot name="icon" />
             </span>
           )}
-        </div>
-      </div>
+        </span>
+      </span>
     );
   }
 

@@ -109,8 +109,6 @@
     position: relative;
     margin: 5px 0;
     min-width: 0;
-    background-color: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.125);
     border-radius: 0.25rem;
   }
 
@@ -119,6 +117,20 @@
       border-radius: 0;
       margin: 0;
     }
+  }
+}
+
+[data-bs-theme='light'] {
+  .accordion-card {
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+  }
+}
+
+[data-bs-theme='dark'] {
+  .accordion-card {
+    background-color: #212529;
+    border: 1px solid rgba(255, 255, 255, 0.125);
   }
 }
 
@@ -140,3 +152,5 @@
     }
   }
 }
+
+

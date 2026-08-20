@@ -47,8 +47,8 @@ export default {
     },
     size: {
       control: { type: 'select' },
-      options: ['base', 'xs', 'sm', 'lg'],
-      description: 'Size, base, xs, sm, or lg, of the badge component.',
+      options: [ 'xs', 'base', 'lg'],
+      description: 'Sizes are xs, sm, base, or lg, of the badge component. For Plumage, the default size is sm.',
       table: { category: 'Appearance' },
     },
     shape: {
@@ -512,7 +512,7 @@ export const BadgeSizes = {
 <badge-component badge-id="badge-lg" variant="primary" size="lg">Large</badge-component>`,
       },
       description: {
-        story: 'This example shows the different size options for the badge component: xs, sm, base, and lg.',
+        story: 'This example shows the different size options for the badge component: xs, sm, base, and lg. For Plumage, the default size is sm. No need to set `sm` in the component.',
       },
     },
   },

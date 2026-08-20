@@ -37,6 +37,17 @@
 | `customClick` |             | `CustomEvent<void>` |
 
 
+## Slots
+
+| Slot        | Description |
+| ----------- | ----------- |
+| `"actions"` |             |
+| `"footer"`  |             |
+| `"header"`  |             |
+| `"text"`    |             |
+| `"title"`   |             |
+
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

@@ -35,6 +35,13 @@
 | `variant`         | `variant`          |                                                                                                                                                                                                                  | `"" \| "danger" \| "dark" \| "info" \| "primary" \| "secondary" \| "success" \| "warning"`                                                                                                                                                                                                          | `''`        |
 
 
+## Slots
+
+| Slot | Description      |
+| ---- | ---------------- |
+|      | The default slot |
+
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

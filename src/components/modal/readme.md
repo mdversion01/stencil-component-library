@@ -54,6 +54,14 @@ Type: `Promise<void>`
 
 
 
+## Slots
+
+| Slot       | Description      |
+| ---------- | ---------------- |
+|            | The default slot |
+| `"footer"` |                  |
+
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*
