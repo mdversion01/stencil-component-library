@@ -402,20 +402,16 @@ export const ValueProp = {
 
 export const ExternalValue = {
   name: 'External Value',
+
   render: () => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '12px';
-    wrap.style.maxWidth = '640px';
+    wrap.className = 'input-group-external-value';
 
     const controls = document.createElement('div');
-    controls.style.display = 'flex';
-    controls.style.flexWrap = 'wrap';
-    controls.style.gap = '8px';
+    controls.className = 'input-group-external-value__controls';
 
     const output = document.createElement('div');
-    output.style.fontSize = '14px';
-    output.style.color = '#444';
+    output.className = 'input-group-external-value__output';
 
     const host = buildEl({
       ...Basic.args,
@@ -430,22 +426,28 @@ export const ExternalValue = {
     });
 
     const update = () => {
-      output.textContent = `Current external value: ${JSON.stringify(host.value ?? '')}`;
+      output.textContent =
+        `Current external value: ${JSON.stringify(host.value ?? '')}`;
     };
 
     const makeButton = (label, nextValue) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.textContent = label;
-      btn.addEventListener('click', () => {
+      const button = document.createElement('button');
+
+      button.type = 'button';
+      button.className = 'storybook-example-button';
+      button.textContent = label;
+
+      button.addEventListener('click', () => {
         host.value = nextValue;
         update();
       });
-      return btn;
+
+      return button;
     };
 
-    host.addEventListener('valueChange', e => {
-      output.textContent = `Current external value: ${JSON.stringify(e.detail?.value ?? '')}`;
+    host.addEventListener('valueChange', event => {
+      output.textContent =
+        `Current external value: ${JSON.stringify(event.detail?.value ?? '')}`;
     });
 
     controls.append(
@@ -456,15 +458,23 @@ export const ExternalValue = {
     );
 
     update();
-    wrap.append(controls, host, output);
+
+    wrap.append(
+      controls,
+      host,
+      output,
+    );
+
     return wrap;
   },
+
   parameters: {
     docs: {
       source: {
         language: 'html',
         transform: () => buildDocsHtmlExternalValue(),
       },
+
       description: {
         story:
           'Demonstrates updating the component from an external source after render by assigning to the `value` property. The native input stays synced with external value changes.',
@@ -472,6 +482,7 @@ export const ExternalValue = {
     },
   },
 };
+
 
 export const RequiredWithValidation = {
   name: 'Required + Validation',
@@ -620,24 +631,20 @@ export const PrependButtonOnly = {
 
 export const ButtonClickEvents = {
   name: 'Button Click Events',
+
   render: args => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '12px';
-    wrap.style.maxWidth = '640px';
+    wrap.className = 'input-group-button-events';
 
     const helperText = document.createElement('div');
-    helperText.style.fontSize = '14px';
-    helperText.style.color = '#444';
+    helperText.className = 'input-group-button-events__helper';
     helperText.innerHTML =
       'Use <code>appendClick</code> and <code>prependClick</code> on the component host to respond to native affix button clicks.';
 
     const output = document.createElement('div');
-    output.style.padding = '10px 12px';
-    output.style.border = '1px solid #ddd';
-    output.style.borderRadius = '8px';
-    output.style.background = '#fafafa';
-    output.textContent = 'Click an affix button to see the event output.';
+    output.className = 'input-group-button-events__output';
+    output.textContent =
+      'Click an affix button to see the event output.';
 
     const el = buildEl({
       ...args,
@@ -651,19 +658,30 @@ export const ButtonClickEvents = {
       appendIcon: '',
       prependText: args.prependText || 'Back',
       appendText: args.appendText || 'Go',
-      prependButtonId: args.prependButtonId || 'igc-button-events-prepend-btn',
-      appendButtonId: args.appendButtonId || 'igc-button-events-append-btn',
+      prependButtonId:
+        args.prependButtonId || 'igc-button-events-prepend-btn',
+      appendButtonId:
+        args.appendButtonId || 'igc-button-events-append-btn',
       placeholder: args.placeholder || 'Enter a value',
     });
 
     const updateOutput = side => {
       const input = el.querySelector('input');
       const value = input ? input.value : '';
-      output.textContent = `${side} button clicked. Current value: ${value || '(empty)'}`;
+
+      output.textContent =
+        `${side} button clicked. Current value: ${value || '(empty)'}`;
     };
 
-    el.addEventListener('prependClick', () => updateOutput('Prepend'));
-    el.addEventListener('appendClick', () => updateOutput('Append'));
+    el.addEventListener(
+      'prependClick',
+      () => updateOutput('Prepend'),
+    );
+
+    el.addEventListener(
+      'appendClick',
+      () => updateOutput('Append'),
+    );
 
     wrap.appendChild(helperText);
     wrap.appendChild(el);
@@ -671,6 +689,7 @@ export const ButtonClickEvents = {
 
     return wrap;
   },
+
   args: {
     ...Basic.args,
     label: 'Search',
@@ -686,6 +705,7 @@ export const ButtonClickEvents = {
     prependIcon: '',
     appendIcon: '',
   },
+
   parameters: {
     docs: {
       description: {
@@ -775,13 +795,12 @@ export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: () => {
     const root = document.createElement('div');
-    root.style.display = 'grid';
-    root.style.gap = '16px';
+    root.className = 'input-group-accessibility-matrix';
 
     const intro = document.createElement('div');
     intro.innerHTML = `
-      <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
-      <div style="font-size:13px; color:#444;">
+      <div class="input-group-accessibility-matrix__intro-title">Accessibility matrix</div>
+      <div class="input-group-accessibility-matrix__intro-description">
         Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs.
         Also reports whether <code>aria-labelledby</code> / <code>aria-describedby</code> resolve to real elements.
       </div>
@@ -917,7 +936,14 @@ export const AccessibilityMatrix = {
       },
     ];
 
-    rows.forEach((r, idx) => root.appendChild(renderMatrixRow({ ...r, idSuffix: String(idx + 1) })));
+    rows.forEach((r, idx) =>
+      root.appendChild(
+        renderMatrixRow({
+          ...r,
+          idSuffix: String(idx + 1),
+        }),
+      ),
+    );
 
     return root;
   },

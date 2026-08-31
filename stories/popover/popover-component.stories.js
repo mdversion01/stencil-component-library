@@ -575,46 +575,53 @@ export const ExternalTarget = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: args => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'popover-accessibility-matrix';
 
     const header = document.createElement('div');
-    header.innerHTML = `
-      <strong>Accessibility matrix</strong>
-      <div style="opacity:.8">
-        Prints computed <code>role</code> + <code>aria-*</code> + generated ids.
-        For popover: <em>click</em> behaves as a non-modal <code>dialog</code>; <em>hover/focus</em> behaves as a <code>tooltip</code>.
-      </div>
-    `;
+
+    const headerTitle = document.createElement('strong');
+    headerTitle.textContent = 'Accessibility matrix';
+
+    const headerDescription = document.createElement('div');
+    headerDescription.className =
+      'popover-accessibility-matrix__description';
+    headerDescription.innerHTML =
+      'Prints computed <code>role</code> + <code>aria-*</code> + generated ids. ' +
+      'For popover: <em>click</em> behaves as a non-modal <code>dialog</code>; ' +
+      '<em>hover/focus</em> behaves as a <code>tooltip</code>.';
+
+    header.appendChild(headerTitle);
+    header.appendChild(headerDescription);
     wrap.appendChild(header);
 
     const card = (title, storyArgs, openAction) => {
       const box = document.createElement('div');
-      box.style.border = '1px solid #ddd';
-      box.style.borderRadius = '10px';
-      box.style.padding = '12px';
-      box.style.display = 'grid';
-      box.style.gap = '10px';
+      box.className = 'popover-accessibility-matrix__card';
 
-      const t = document.createElement('div');
-      t.style.fontWeight = '600';
-      t.textContent = title;
+      const cardTitle = document.createElement('div');
+      cardTitle.className =
+        'popover-accessibility-matrix__card-title';
+      cardTitle.textContent = title;
 
       const demo = document.createElement('div');
+      demo.className =
+        'popover-accessibility-matrix__demo';
+
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className =
+        'popover-accessibility-matrix__output';
       pre.textContent = 'Loading…';
 
       const mount = document.createElement('div');
-      mount.innerHTML = Template({ ...baseArgs, ...args, ...storyArgs });
+      mount.innerHTML = Template({
+        ...baseArgs,
+        ...args,
+        ...storyArgs,
+      });
+
       const host = mount.querySelector('popover-component');
 
       demo.appendChild(mount);
@@ -623,50 +630,75 @@ export const AccessibilityMatrix = {
         if (host?.componentOnReady) {
           try {
             await host.componentOnReady();
-          } catch (_e) {}
+          } catch (_error) {
+            // Component readiness failures should not block the matrix snapshot.
+          }
         } else if (window.customElements?.whenDefined) {
           try {
             await customElements.whenDefined('popover-component');
-          } catch (_e) {}
+          } catch (_error) {
+            // Continue so the matrix can still report the available DOM state.
+          }
         }
 
         if (typeof openAction === 'function') {
           try {
             await openAction(host);
-          } catch (_e) {}
+          } catch (_error) {
+            // Snapshot the current state even if the simulated action fails.
+          }
         }
 
-        pre.textContent = JSON.stringify(getSnapshot(host), null, 2);
+        pre.textContent = JSON.stringify(
+          getSnapshot(host),
+          null,
+          2,
+        );
       };
 
-      queueMicrotask(() => requestAnimationFrame(update));
+      queueMicrotask(() =>
+        requestAnimationFrame(update),
+      );
 
-      box.appendChild(t);
+      box.appendChild(cardTitle);
       box.appendChild(demo);
       box.appendChild(pre);
+
       return box;
     };
 
-    const openClick = async host => {
-      const trigger =
-        host?.querySelector('button') ||
-        host?.querySelector('button-component') ||
-        host?.querySelector('[role="button"]') ||
-        host?.querySelector('[tabindex]');
+    const findTrigger = host =>
+      host?.querySelector('button') ||
+      host?.querySelector('button-component') ||
+      host?.querySelector('[role="button"]') ||
+      host?.querySelector('[tabindex]');
 
-      trigger?.dispatchEvent?.(new MouseEvent('click', { bubbles: true }));
-      await new Promise(resolve => requestAnimationFrame(resolve));
+    const openClick = async host => {
+      const trigger = findTrigger(host);
+
+      trigger?.dispatchEvent?.(
+        new MouseEvent('click', {
+          bubbles: true,
+        }),
+      );
+
+      await new Promise(resolve =>
+        requestAnimationFrame(resolve),
+      );
     };
 
     const openHover = async host => {
-      const trigger =
-        host?.querySelector('button') ||
-        host?.querySelector('button-component') ||
-        host?.querySelector('[role="button"]') ||
-        host?.querySelector('[tabindex]');
+      const trigger = findTrigger(host);
 
-      trigger?.dispatchEvent?.(new MouseEvent('mouseenter', { bubbles: true }));
-      await new Promise(resolve => requestAnimationFrame(resolve));
+      trigger?.dispatchEvent?.(
+        new MouseEvent('mouseenter', {
+          bubbles: true,
+        }),
+      );
+
+      await new Promise(resolve =>
+        requestAnimationFrame(resolve),
+      );
     };
 
     wrap.appendChild(
@@ -690,7 +722,8 @@ export const AccessibilityMatrix = {
           trigger: 'click',
           popoverTitle: 'Hidden header title',
           noHeader: true,
-          content: 'Header suppressed; title should become aria-label.',
+          content:
+            'Header suppressed; title should become aria-label.',
           placement: 'auto',
         },
         openClick,
@@ -729,26 +762,42 @@ export const AccessibilityMatrix = {
         {
           trigger: 'click',
           popoverTitle: 'Disabled',
-          content: 'If the trigger is disabled, click will not open in most browsers.',
+          content:
+            'If the trigger is disabled, click will not open in most browsers.',
         },
         async host => {
           const btn = host?.querySelector('button');
-          if (btn) btn.setAttribute('disabled', '');
-          await new Promise(resolve => requestAnimationFrame(resolve));
+
+          if (btn) {
+            btn.setAttribute('disabled', '');
+          }
+
+          await new Promise(resolve =>
+            requestAnimationFrame(resolve),
+          );
         },
       ),
     );
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:
           'Prints computed accessibility wiring for popover triggers and the rendered popover element. Click-triggered popovers behave as non-modal dialogs (`aria-controls`, `aria-expanded`, `role="dialog"`). Hover/focus behaves as a tooltip (`aria-describedby`, `role="tooltip"`).',
       },
-      source: { language: 'html', type: 'dynamic' },
+
+      source: {
+        language: 'html',
+        type: 'dynamic',
+      },
     },
   },
 };
+

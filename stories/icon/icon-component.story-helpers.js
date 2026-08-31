@@ -37,7 +37,9 @@ export const buildDocsHtml = (args) => {
     .map(([k, v]) => (v === true ? k : `${k}="${esc(v)}"`))
     .join(' ');
 
-  return attrStr ? `<icon-component ${attrStr}></icon-component>` : '<icon-component></icon-component>';
+  return attrStr
+    ? `<icon-component ${attrStr}></icon-component>`
+    : '<icon-component></icon-component>';
 };
 
 export function buildIcon(args = {}) {
@@ -46,6 +48,7 @@ export function buildIcon(args = {}) {
   if (args.icon) el.icon = args.icon;
   if (args.iconMargin) el.iconMargin = args.iconMargin;
   if (args.size) el.size = args.size;
+
   el.tokenIcon = !!args.tokenIcon;
 
   if (typeof args.iconSize === 'number') {
@@ -68,12 +71,23 @@ export function buildIcon(args = {}) {
   if (args.iconMargin) el.setAttribute('icon-margin', args.iconMargin);
   if (args.size) el.setAttribute('size', args.size);
   if (args.tokenIcon) el.setAttribute('token-icon', '');
-  if (typeof args.iconSize === 'number') el.setAttribute('icon-size', String(args.iconSize));
+
+  if (typeof args.iconSize === 'number') {
+    el.setAttribute('icon-size', String(args.iconSize));
+  }
+
   if (args.color) el.setAttribute('color', args.color);
-  if (typeof args.iconAriaHidden === 'boolean' && args.iconAriaHidden === false) {
+
+  if (
+    typeof args.iconAriaHidden === 'boolean' &&
+    args.iconAriaHidden === false
+  ) {
     el.setAttribute('icon-aria-hidden', 'false');
   }
-  if (args.iconAriaLabel) el.setAttribute('icon-aria-label', args.iconAriaLabel);
+
+  if (args.iconAriaLabel) {
+    el.setAttribute('icon-aria-label', args.iconAriaLabel);
+  }
 
   return el;
 }
@@ -86,16 +100,21 @@ export function buildIconRow(items) {
   wrap.style.flexWrap = 'wrap';
 
   items.forEach((item) => wrap.appendChild(buildIcon(item)));
+
   return wrap;
 }
 
 export function pickAttrs(el, names) {
   const out = {};
+
   if (!el) return out;
 
   for (const n of names) {
     const v = el.getAttribute(n);
-    if (v !== null && v !== '') out[n] = v;
+
+    if (v !== null && v !== '') {
+      out[n] = v;
+    }
   }
 
   return out;
@@ -112,7 +131,12 @@ export function snapshotA11y(host) {
       ? {
           tag: icon.tagName.toLowerCase(),
           class: icon.className,
-          ...pickAttrs(icon, ['aria-hidden', 'aria-label', 'role', 'style']),
+          ...pickAttrs(icon, [
+            'aria-hidden',
+            'aria-label',
+            'role',
+            'style',
+          ]),
         }
       : null,
   };
@@ -120,31 +144,20 @@ export function snapshotA11y(host) {
 
 export function renderMatrixRow({ title, args }) {
   const wrap = document.createElement('div');
-  wrap.style.border = '1px solid #ddd';
-  wrap.style.borderRadius = '12px';
-  wrap.style.padding = '12px';
-  wrap.style.display = 'grid';
-  wrap.style.gap = '10px';
+  wrap.className = 'icon-accessibility-matrix__row';
 
   const heading = document.createElement('div');
-  heading.style.fontWeight = '700';
+  heading.className = 'icon-accessibility-matrix__row-heading';
   heading.textContent = title;
 
   const stage = document.createElement('div');
-  stage.style.display = 'flex';
-  stage.style.alignItems = 'center';
-  stage.style.minHeight = '28px';
+  stage.className = 'icon-accessibility-matrix__stage';
 
   const el = buildIcon(args);
   stage.appendChild(el);
 
   const pre = document.createElement('pre');
-  pre.style.margin = '0';
-  pre.style.padding = '10px';
-  pre.style.background = '#f6f8fa';
-  pre.style.borderRadius = '10px';
-  pre.style.overflowX = 'auto';
-  pre.style.fontSize = '12px';
+  pre.className = 'icon-accessibility-matrix__output';
   pre.textContent = 'Collecting aria/role…';
 
   wrap.appendChild(heading);
@@ -152,10 +165,16 @@ export function renderMatrixRow({ title, args }) {
   wrap.appendChild(pre);
 
   const update = () => {
-    pre.textContent = JSON.stringify(snapshotA11y(el), null, 2);
+    pre.textContent = JSON.stringify(
+      snapshotA11y(el),
+      null,
+      2,
+    );
   };
 
-  requestAnimationFrame(() => requestAnimationFrame(update));
+  requestAnimationFrame(() =>
+    requestAnimationFrame(update),
+  );
 
   return wrap;
 }

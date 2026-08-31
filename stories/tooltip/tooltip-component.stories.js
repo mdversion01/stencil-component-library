@@ -326,20 +326,26 @@ export const CustomContainer = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: (_args, context) => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'tooltip-accessibility-matrix';
 
     const header = document.createElement('div');
-    header.innerHTML = `
-      <strong>Accessibility matrix</strong>
-      <div style="opacity:.8">
-        Shows examples and prints computed trigger/tooltip semantics (<code>role</code>, <code>aria-*</code>, and ids).
-        Tooltips are not auto-opened here to avoid overlays blocking content.
-      </div>
-    `;
+
+    const headerTitle = document.createElement('strong');
+    headerTitle.textContent = 'Accessibility matrix';
+
+    const headerDescription = document.createElement('div');
+    headerDescription.className =
+      'tooltip-accessibility-matrix__description';
+    headerDescription.innerHTML =
+      'Shows examples and prints computed trigger/tooltip semantics ' +
+      '(<code>role</code>, <code>aria-*</code>, and ids). ' +
+      'Tooltips are not auto-opened here to avoid overlays blocking content.';
+
+    header.appendChild(headerTitle);
+    header.appendChild(headerDescription);
     wrap.appendChild(header);
 
     wrap.appendChild(
@@ -360,6 +366,7 @@ export const AccessibilityMatrix = {
     const inlineLink = document.createElement('a');
     inlineLink.href = 'javascript:void(0)';
     inlineLink.textContent = 'inline link';
+
     wrap.appendChild(
       createExample('Inline', () =>
         makeTooltipHost(
@@ -375,7 +382,8 @@ export const AccessibilityMatrix = {
       ),
     );
 
-    const mid = makeButton('Middle');
+    const middleButton = makeButton('Middle');
+
     wrap.appendChild(
       createExample('Horizontal (layout example)', () =>
         makeTooltipHost(
@@ -386,24 +394,26 @@ export const AccessibilityMatrix = {
             trigger: 'hover focus',
             'data-original-title': 'Horizontal layout tooltip',
           },
-          mid,
+          middleButton,
         ),
       ),
     );
 
     wrap.appendChild(
-      createExample('Error / validation styling (danger variant)', () =>
-        makeTooltipHost(
-          context,
-          {
-            'tooltip-id': 'a11y-error',
-            position: 'right',
-            trigger: 'hover focus',
-            variant: 'danger',
-            'data-original-title': 'Something went wrong.',
-          },
-          makeButton('Danger trigger'),
-        ),
+      createExample(
+        'Error / validation styling (danger variant)',
+        () =>
+          makeTooltipHost(
+            context,
+            {
+              'tooltip-id': 'a11y-error',
+              position: 'right',
+              trigger: 'hover focus',
+              variant: 'danger',
+              'data-original-title': 'Something went wrong.',
+            },
+            makeButton('Danger trigger'),
+          ),
       ),
     );
 
@@ -415,7 +425,8 @@ export const AccessibilityMatrix = {
             'tooltip-id': 'a11y-disabled',
             position: 'top',
             trigger: 'hover focus',
-            'data-original-title': 'Disabled trigger tooltip (should not show via user interaction).',
+            'data-original-title':
+              'Disabled trigger tooltip (should not show via user interaction).',
           },
           makeButton('Disabled', true),
         ),
@@ -424,8 +435,12 @@ export const AccessibilityMatrix = {
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:

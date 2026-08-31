@@ -701,96 +701,178 @@ BadgeStyling.parameters = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: (args, ctx) => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'autocomplete-multiselect-accessibility-matrix';
 
     const title = document.createElement('div');
-    title.innerHTML =
-      '<strong>Accessibility matrix</strong>' +
-      '<div style="opacity:.8">Prints computed combobox/listbox/label wiring: role + aria-* + ids (default/inline/horizontal, error/validation, disabled, readOnly).</div>';
+
+    const titleHeading = document.createElement('strong');
+    titleHeading.textContent = 'Accessibility matrix';
+
+    const titleDescription = document.createElement('div');
+    titleDescription.className =
+      'autocomplete-multiselect-accessibility-matrix__description';
+    titleDescription.innerHTML =
+      'Prints computed combobox/listbox/label wiring: ' +
+      '<code>role</code> + <code>aria-*</code> + ids for default, inline, horizontal, ' +
+      'error/validation, disabled, and read-only states.';
+
+    title.appendChild(titleHeading);
+    title.appendChild(titleDescription);
     wrap.appendChild(title);
 
     const card = (labelText, build) => {
-      const c = document.createElement('div');
-      c.style.display = 'grid';
-      c.style.alignItems = 'start';
-      c.style.border = '1px solid #ddd';
-      c.style.borderRadius = '8px';
-      c.style.padding = '12px';
+      const cardElement = document.createElement('div');
+      cardElement.className =
+        'autocomplete-multiselect-accessibility-matrix__card';
 
-      const left = document.createElement('div');
-      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+      const heading = document.createElement('div');
+      heading.className =
+        'autocomplete-multiselect-accessibility-matrix__card-title';
+      heading.textContent = labelText;
 
-      const right = document.createElement('div');
-      right.style.display = 'grid';
-      right.style.gap = '8px';
+      const content = document.createElement('div');
+      content.className =
+        'autocomplete-multiselect-accessibility-matrix__content';
 
       const demo = document.createElement('div');
+      demo.className =
+        'autocomplete-multiselect-accessibility-matrix__demo';
+
       const built = build();
       demo.appendChild(built);
 
-      const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
-      pre.textContent = 'Loading…';
+      const output = document.createElement('pre');
+      output.className =
+        'autocomplete-multiselect-accessibility-matrix__output';
+      output.textContent = 'Loading…';
 
-      right.appendChild(demo);
-      right.appendChild(pre);
+      content.appendChild(demo);
+      content.appendChild(output);
 
-      c.appendChild(left);
-      c.appendChild(right);
+      cardElement.appendChild(heading);
+      cardElement.appendChild(content);
 
       const snapshot = () => {
-        const host = demo.querySelector('autocomplete-multiselect');
-        const input = host?.querySelector('input[role="combobox"]');
+        const host = demo.querySelector(
+          'autocomplete-multiselect',
+        );
+
+        const input = host?.querySelector(
+          'input[role="combobox"]',
+        );
+
         const labelEl = host?.querySelector('label');
 
-        const listboxId = input?.getAttribute('aria-controls') || null;
-        const listbox = listboxId ? host?.querySelector(`#${CSS.escape(listboxId)}`) : host?.querySelector('[role="listbox"]');
+        const listboxId =
+          input?.getAttribute('aria-controls') || null;
 
-        pre.textContent = JSON.stringify(
+        const listbox = listboxId
+          ? host?.querySelector(
+              `#${CSS.escape(listboxId)}`,
+            )
+          : host?.querySelector('[role="listbox"]');
+
+        output.textContent = JSON.stringify(
           {
-            hostId: host?.getAttribute('id') ?? null,
-            inputId: input?.getAttribute('id') ?? null,
-            labelId: labelEl?.getAttribute('id') ?? null,
-            labelFor: labelEl?.getAttribute('for') ?? labelEl?.getAttribute('htmlfor') ?? null,
-            labelText: labelEl?.textContent?.trim() ?? null,
-            labelCount: host ? host.querySelectorAll('label').length : null,
-            role: input?.getAttribute('role') ?? null,
-            ariaLabelledby: input?.getAttribute('aria-labelledby') ?? null,
-            ariaLabel: input?.getAttribute('aria-label') ?? null,
-            ariaDescribedby: input?.getAttribute('aria-describedby') ?? null,
-            ariaControls: input?.getAttribute('aria-controls') ?? null,
-            ariaExpanded: input?.getAttribute('aria-expanded') ?? null,
-            ariaActivedescendant: input?.getAttribute('aria-activedescendant') ?? null,
-            ariaRequired: input?.getAttribute('aria-required') ?? null,
-            ariaInvalid: input?.getAttribute('aria-invalid') ?? null,
-            ariaDisabled: input?.getAttribute('aria-disabled') ?? null,
-            ariaReadonly: input?.getAttribute('aria-readonly') ?? null,
-            readonlyAttr: input?.hasAttribute('readonly') ?? null,
-            disabledAttr: input?.hasAttribute('disabled') ?? null,
-            listboxPresent: !!listbox,
-            listboxId: listbox?.getAttribute('id') ?? null,
-            hasValidation: !!host?.querySelector('.invalid-feedback'),
-            hasError: !!host?.querySelector('.error-message'),
-            hasAddButton: !!host?.querySelector('button.add-btn'),
-            hasClearButton: !!host?.querySelector('button.clear-btn'),
-            hasRemoveButtons: !!host?.querySelector('.remove-btn'),
+            hostId:
+              host?.getAttribute('id') ?? null,
+
+            inputId:
+              input?.getAttribute('id') ?? null,
+
+            labelId:
+              labelEl?.getAttribute('id') ?? null,
+
+            labelFor:
+              labelEl?.getAttribute('for') ??
+              labelEl?.getAttribute('htmlfor') ??
+              null,
+
+            labelText:
+              labelEl?.textContent?.trim() ?? null,
+
+            labelCount:
+              host
+                ? host.querySelectorAll('label').length
+                : null,
+
+            role:
+              input?.getAttribute('role') ?? null,
+
+            ariaLabelledby:
+              input?.getAttribute('aria-labelledby') ??
+              null,
+
+            ariaLabel:
+              input?.getAttribute('aria-label') ?? null,
+
+            ariaDescribedby:
+              input?.getAttribute('aria-describedby') ??
+              null,
+
+            ariaControls:
+              input?.getAttribute('aria-controls') ?? null,
+
+            ariaExpanded:
+              input?.getAttribute('aria-expanded') ?? null,
+
+            ariaActivedescendant:
+              input?.getAttribute(
+                'aria-activedescendant',
+              ) ?? null,
+
+            ariaRequired:
+              input?.getAttribute('aria-required') ?? null,
+
+            ariaInvalid:
+              input?.getAttribute('aria-invalid') ?? null,
+
+            ariaDisabled:
+              input?.getAttribute('aria-disabled') ?? null,
+
+            ariaReadonly:
+              input?.getAttribute('aria-readonly') ?? null,
+
+            readonlyAttr:
+              input?.hasAttribute('readonly') ?? null,
+
+            disabledAttr:
+              input?.hasAttribute('disabled') ?? null,
+
+            listboxPresent:
+              !!listbox,
+
+            listboxId:
+              listbox?.getAttribute('id') ?? null,
+
+            hasValidation:
+              !!host?.querySelector('.invalid-feedback'),
+
+            hasError:
+              !!host?.querySelector('.error-message'),
+
+            hasAddButton:
+              !!host?.querySelector('button.add-btn'),
+
+            hasClearButton:
+              !!host?.querySelector('button.clear-btn'),
+
+            hasRemoveButtons:
+              !!host?.querySelector('.remove-btn'),
           },
           null,
           2,
         );
       };
 
-      queueMicrotask(() => requestAnimationFrame(snapshot));
-      return c;
+      queueMicrotask(() =>
+        requestAnimationFrame(snapshot),
+      );
+
+      return cardElement;
     };
 
     wrap.appendChild(
@@ -937,8 +1019,12 @@ export const AccessibilityMatrix = {
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:

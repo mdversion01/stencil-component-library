@@ -308,101 +308,139 @@ export const GroupDisabledOptions = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: args => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'checkbox-accessibility-matrix';
 
     const title = document.createElement('div');
-    title.innerHTML =
-      `<strong>Accessibility matrix</strong>` +
-      `<div style="opacity:.8">Default vs group inline. Validation + disabled. Prints computed ids and aria-* (fieldset/legend when group, label/for when single).</div>`;
+
+    const titleHeading = document.createElement('strong');
+    titleHeading.textContent = 'Accessibility matrix';
+
+    const titleDescription = document.createElement('div');
+    titleDescription.className =
+      'checkbox-accessibility-matrix__description';
+    titleDescription.innerHTML =
+      'Default vs group inline. Validation + disabled. Prints computed ids and ' +
+      '<code>aria-*</code> (fieldset/legend when group, label/for when single).';
+
+    title.appendChild(titleHeading);
+    title.appendChild(titleDescription);
     wrap.appendChild(title);
 
     const card = (labelText, build) => {
-      const c = document.createElement('div');
-      c.style.display = 'grid';
-      c.style.gridTemplateColumns = '320px 1fr';
-      c.style.gap = '12px';
-      c.style.alignItems = 'start';
-      c.style.border = '1px solid #ddd';
-      c.style.borderRadius = '8px';
-      c.style.padding = '12px';
+      const row = document.createElement('div');
+      row.className = 'checkbox-accessibility-matrix__row';
 
       const left = document.createElement('div');
-      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+      left.className = 'checkbox-accessibility-matrix__label';
+      left.textContent = labelText;
 
       const right = document.createElement('div');
-      right.style.display = 'grid';
-      right.style.gap = '8px';
+      right.className = 'checkbox-accessibility-matrix__content';
 
       const demo = document.createElement('div');
+      demo.className = 'checkbox-accessibility-matrix__demo';
+
       const built = build();
       demo.appendChild(built);
 
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className = 'checkbox-accessibility-matrix__output';
       pre.textContent = 'Loading…';
 
       right.appendChild(demo);
       right.appendChild(pre);
 
-      c.appendChild(left);
-      c.appendChild(right);
+      row.appendChild(left);
+      row.appendChild(right);
 
       const snapshot = () => {
         const host = demo.querySelector('checkbox-component');
 
-        const fieldset = host?.querySelector('fieldset.checkbox-group');
-        const legend = host?.querySelector('legend.group-title');
-        const groupInputs = host ? Array.from(host.querySelectorAll('input[type="checkbox"]')) : [];
+        const fieldset = host?.querySelector(
+          'fieldset.checkbox-group',
+        );
+        const legend = host?.querySelector(
+          'legend.group-title',
+        );
+        const groupInputs = host
+          ? Array.from(
+              host.querySelectorAll('input[type="checkbox"]'),
+            )
+          : [];
 
-        const singleInput = host?.querySelector('.form-check-input, .custom-control-input');
+        const singleInput = host?.querySelector(
+          '.form-check-input, .custom-control-input',
+        );
         const singleLabel = host?.querySelector('label');
 
-        const invalidFeedback = host?.querySelector('.invalid-feedback');
+        const invalidFeedback = host?.querySelector(
+          '.invalid-feedback',
+        );
 
         pre.textContent = JSON.stringify(
           {
             mode: fieldset ? 'group' : 'single',
-            fieldsetRole: fieldset?.getAttribute('role') ?? null,
-            fieldsetAriaLabelledby: fieldset?.getAttribute('aria-labelledby') ?? null,
-            fieldsetAriaDescribedby: fieldset?.getAttribute('aria-describedby') ?? null,
-            fieldsetAriaInvalid: fieldset?.getAttribute('aria-invalid') ?? null,
-            legendId: legend?.getAttribute('id') ?? null,
-            legendText: legend?.textContent?.trim() ?? null,
-            inputId: singleInput?.getAttribute('id') ?? null,
-            inputName: singleInput?.getAttribute('name') ?? null,
-            labelFor: singleLabel?.getAttribute('for') || singleLabel?.getAttribute('htmlfor') || (singleLabel ? singleLabel.htmlFor : null) || null,
-            labelText: singleLabel?.textContent?.trim() ?? null,
-            disabledAttr: singleInput?.hasAttribute('disabled') ?? null,
-            requiredAttr: singleInput?.hasAttribute('required') ?? null,
-            options: groupInputs.map(i => ({
-              id: i.getAttribute('id'),
-              name: i.getAttribute('name'),
-              checked: i.checked,
-              disabled: i.hasAttribute('disabled'),
-              ariaChecked: i.getAttribute('aria-checked'),
-              ariaDisabled: i.getAttribute('aria-disabled'),
-              ariaInvalid: i.getAttribute('aria-invalid'),
-              ariaDescribedby: i.getAttribute('aria-describedby'),
+            fieldsetRole:
+              fieldset?.getAttribute('role') ?? null,
+            fieldsetAriaLabelledby:
+              fieldset?.getAttribute('aria-labelledby') ??
+              null,
+            fieldsetAriaDescribedby:
+              fieldset?.getAttribute('aria-describedby') ??
+              null,
+            fieldsetAriaInvalid:
+              fieldset?.getAttribute('aria-invalid') ?? null,
+            legendId:
+              legend?.getAttribute('id') ?? null,
+            legendText:
+              legend?.textContent?.trim() ?? null,
+            inputId:
+              singleInput?.getAttribute('id') ?? null,
+            inputName:
+              singleInput?.getAttribute('name') ?? null,
+            labelFor:
+              singleLabel?.getAttribute('for') ||
+              singleLabel?.getAttribute('htmlfor') ||
+              (singleLabel ? singleLabel.htmlFor : null) ||
+              null,
+            labelText:
+              singleLabel?.textContent?.trim() ?? null,
+            disabledAttr:
+              singleInput?.hasAttribute('disabled') ?? null,
+            requiredAttr:
+              singleInput?.hasAttribute('required') ?? null,
+            options: groupInputs.map(input => ({
+              id: input.getAttribute('id'),
+              name: input.getAttribute('name'),
+              checked: input.checked,
+              disabled: input.hasAttribute('disabled'),
+              ariaChecked:
+                input.getAttribute('aria-checked'),
+              ariaDisabled:
+                input.getAttribute('aria-disabled'),
+              ariaInvalid:
+                input.getAttribute('aria-invalid'),
+              ariaDescribedby:
+                input.getAttribute('aria-describedby'),
             })),
-            invalidId: invalidFeedback?.getAttribute('id') ?? null,
-            invalidText: invalidFeedback?.textContent?.trim() ?? null,
+            invalidId:
+              invalidFeedback?.getAttribute('id') ?? null,
+            invalidText:
+              invalidFeedback?.textContent?.trim() ?? null,
           },
           null,
           2,
         );
       };
 
-      queueMicrotask(() => requestAnimationFrame(snapshot));
-      return c;
+      queueMicrotask(() =>
+        requestAnimationFrame(snapshot),
+      );
+
+      return row;
     };
 
     wrap.appendChild(
@@ -435,8 +473,17 @@ export const AccessibilityMatrix = {
           name: 'mxGroup',
           groupTitle: 'Group inline',
           groupOptions: [
-            { inputId: 'mx-g-1', value: 'a', labelTxt: 'A' },
-            { inputId: 'mx-g-2', value: 'b', labelTxt: 'B', checked: true },
+            {
+              inputId: 'mx-g-1',
+              value: 'a',
+              labelTxt: 'A',
+            },
+            {
+              inputId: 'mx-g-2',
+              value: 'b',
+              labelTxt: 'B',
+              checked: true,
+            },
           ],
           required: false,
           validation: false,
@@ -446,20 +493,33 @@ export const AccessibilityMatrix = {
     );
 
     wrap.appendChild(
-      card('Validation (group required, none checked)', () =>
-        Template({
-          ...args,
-          checkboxGroup: true,
-          name: 'mxReq',
-          groupTitle: 'Required group',
-          required: true,
-          validation: true,
-          validationMsg: 'Select at least one option.',
-          groupOptions: [
-            { inputId: 'mx-r-1', value: 'x', labelTxt: 'X', checked: false },
-            { inputId: 'mx-r-2', value: 'y', labelTxt: 'Y', checked: false },
-          ],
-        }),
+      card(
+        'Validation (group required, none checked)',
+        () =>
+          Template({
+            ...args,
+            checkboxGroup: true,
+            name: 'mxReq',
+            groupTitle: 'Required group',
+            required: true,
+            validation: true,
+            validationMsg:
+              'Select at least one option.',
+            groupOptions: [
+              {
+                inputId: 'mx-r-1',
+                value: 'x',
+                labelTxt: 'X',
+                checked: false,
+              },
+              {
+                inputId: 'mx-r-2',
+                value: 'y',
+                labelTxt: 'Y',
+                checked: false,
+              },
+            ],
+          }),
       ),
     );
 
@@ -482,8 +542,12 @@ export const AccessibilityMatrix = {
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:

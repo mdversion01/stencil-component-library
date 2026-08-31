@@ -412,19 +412,27 @@ export const Playground = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: () => {
     const root = document.createElement('div');
-    root.style.display = 'grid';
-    root.style.gap = '16px';
+    root.className = 'modal-accessibility-matrix';
 
     const intro = document.createElement('div');
-    intro.innerHTML = `
-    <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
-    <div style="font-size:13px; color:#444;">
-      Prints computed <code>role</code> + <code>aria-*</code> + IDs and whether <code>aria-labelledby</code> / <code>aria-describedby</code> resolve.
-      (Modal opens on interaction; this matrix validates static wiring + required attributes.)
-    </div>
-  `;
+
+    const introTitle = document.createElement('div');
+    introTitle.className = 'modal-accessibility-matrix__intro-title';
+    introTitle.textContent = 'Accessibility matrix';
+
+    const introDescription = document.createElement('div');
+    introDescription.className =
+      'modal-accessibility-matrix__intro-description';
+    introDescription.innerHTML =
+      'Prints computed <code>role</code> + <code>aria-*</code> + IDs and whether ' +
+      '<code>aria-labelledby</code> / <code>aria-describedby</code> resolve. ' +
+      '(Modal opens on interaction; this matrix validates static wiring + required attributes.)';
+
+    intro.appendChild(introTitle);
+    intro.appendChild(introDescription);
     root.appendChild(intro);
 
     const rows = [
@@ -446,7 +454,8 @@ export const AccessibilityMatrix = {
           btnText: 'Inline trigger',
           variant: 'secondary',
           modalTitle: 'Inline Wrapper',
-          bodyHtml: '<p>Inline wrapper demonstration (storybook-only).</p>',
+          bodyHtml:
+            '<p>Inline wrapper demonstration (storybook-only).</p>',
           footerHtml: '',
         },
         wrapStyle: 'display:flex; align-items:center; gap:12px;',
@@ -457,10 +466,12 @@ export const AccessibilityMatrix = {
           btnText: 'Horizontal trigger',
           variant: 'secondary',
           modalTitle: 'Horizontal Wrapper',
-          bodyHtml: '<p>Horizontal wrapper demonstration (storybook-only).</p>',
+          bodyHtml:
+            '<p>Horizontal wrapper demonstration (storybook-only).</p>',
           footerHtml: '',
         },
-        wrapStyle: 'display:flex; justify-content:space-between; align-items:center;',
+        wrapStyle:
+          'display:flex; justify-content:space-between; align-items:center;',
       },
       {
         title: 'Error/Validation (content only)',
@@ -469,7 +480,8 @@ export const AccessibilityMatrix = {
           variant: 'danger',
           modalTitle: 'Validation Error',
           bodyHtml:
-            '<p><strong>There was a problem.</strong></p><p>Please correct the highlighted fields and try again.</p>',
+            '<p><strong>There was a problem.</strong></p>' +
+            '<p>Please correct the highlighted fields and try again.</p>',
           footerHtml:
             '<button class="btn btn-danger" type="button">Fix issues</button>',
         },
@@ -482,33 +494,43 @@ export const AccessibilityMatrix = {
           variant: 'secondary',
           modalTitle: 'Disabled',
           disabled: true,
-          bodyHtml: '<p>This should not open because trigger is disabled.</p>',
+          bodyHtml:
+            '<p>This should not open because trigger is disabled.</p>',
           footerHtml: '',
         },
         wrapStyle: '',
       },
     ];
 
-    rows.forEach((r, idx) => {
+    rows.forEach((row, index) => {
       root.appendChild(
         buildMatrixRow({
-          ...r,
-          idSuffix: String(idx + 1),
+          ...row,
+          idSuffix: String(index + 1),
         }),
       );
     });
 
     return root;
   },
+
   parameters: {
     docs: {
       description: {
         story:
           'Matrix of key states. Prints computed role/aria/ids and whether ARIA references resolve to real elements.',
       },
-      source: { code: DOCS_MATRIX, language: 'html' },
-      story: { height: '1200px' },
+      source: {
+        code: DOCS_MATRIX,
+        language: 'html',
+      },
+      story: {
+        height: '1200px',
+      },
     },
-    controls: { disable: true },
+
+    controls: {
+      disable: true,
+    },
   },
 };

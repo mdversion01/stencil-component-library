@@ -451,16 +451,10 @@ export function snapshotA11y(host) {
 
 export function renderMatrixRow({ title, args, idSuffix, forceInvalid = false, buildEl, action }) {
   const wrapper = document.createElement('div');
-
-  wrapper.style.border = '1px solid #ddd';
-  wrapper.style.borderRadius = '12px';
-  wrapper.style.padding = '12px';
-  wrapper.style.display = 'grid';
-  wrapper.style.gap = '10px';
+  wrapper.className = 'datepicker-accessibility-matrix__card';
 
   const heading = document.createElement('div');
-
-  heading.style.fontWeight = '700';
+  heading.className = 'datepicker-accessibility-matrix__card-title';
   heading.textContent = title;
 
   const element = buildEl(
@@ -472,17 +466,10 @@ export function renderMatrixRow({ title, args, idSuffix, forceInvalid = false, b
   );
 
   const stage = document.createElement('div');
-
-  stage.style.maxWidth = '560px';
+  stage.className = 'datepicker-accessibility-matrix__stage';
 
   const output = document.createElement('pre');
-
-  output.style.margin = '0';
-  output.style.padding = '10px';
-  output.style.background = '#f6f8fa';
-  output.style.borderRadius = '10px';
-  output.style.overflowX = 'auto';
-  output.style.fontSize = '12px';
+  output.className = 'datepicker-accessibility-matrix__output';
   output.textContent = 'Collecting aria/role/id…';
 
   stage.appendChild(element);

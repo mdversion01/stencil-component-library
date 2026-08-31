@@ -264,11 +264,13 @@ export class ToggleSwitchComponent {
           {isRequired && <span class="required">*</span>}
         </label>
 
-        {/* {this.shouldShowItemMessage(item) && (
-          <div id={msgId} class="invalid-feedback" role="alert" aria-live="polite">
-            {this.getItemValidationMessage(item)}
-          </div>
-        )} */}
+        {this.inline ? '' : (
+          this.shouldShowItemMessage(item) && (
+            <div id={msgId} class="invalid-feedback" role="alert" aria-live="polite">
+              {this.getItemValidationMessage(item)}
+            </div>
+          )
+        )}
       </div>
     );
   }
@@ -322,11 +324,14 @@ export class ToggleSwitchComponent {
           {isRequired && <span class="required">*</span>}
         </label>
 
-        {this.shouldShowItemMessage(item) && (
-          <div id={msgId} class="invalid-feedback" role="alert" aria-live="polite">
-            {validationMessage}
-          </div>
+        {this.inline ? '' : (
+          this.shouldShowItemMessage(item) && (
+            <div id={msgId} class="invalid-feedback" role="alert" aria-live="polite">
+              {validationMessage}
+            </div>
+          )
         )}
+
       </div>
     );
   }
@@ -472,7 +477,7 @@ export class ToggleSwitchComponent {
           <div
             id={parentId}
             role="group"
-            class={this.inline ? (this.customSwitch ? '' : 'form-toggle-inline') : ''}
+            class={this.inline ? (this.customSwitch ? 'custom-control-inline' : 'form-toggle-inline') : ''}
             aria-labelledby={groupLabelledby || undefined}
             aria-invalid={hasAnyInvalid ? 'true' : undefined}
             aria-describedby={this.inline && hasAnyInvalid ? groupMsgId : undefined}

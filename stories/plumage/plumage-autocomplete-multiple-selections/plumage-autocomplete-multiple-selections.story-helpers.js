@@ -4,6 +4,7 @@ export const TAG = 'plumage-autocomplete-multiple-selections-component';
 
 export const DocsWrapStyles = () => {
   const style = document.createElement('style');
+
   style.innerHTML = `
     .sbdocs pre,
     .sbdocs pre code {
@@ -12,26 +13,30 @@ export const DocsWrapStyles = () => {
       overflow-x: auto !important;
     }
   `;
+
   return style;
 };
 
-export const normalize = (txt) => {
+export const normalize = txt => {
   const lines = String(txt ?? '')
     .replace(/\r\n/g, '\n')
     .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
+    .map(line => line.replace(/[ \t]+$/g, ''));
 
   const out = [];
   let prevBlank = false;
 
   for (const line of lines) {
     const blank = line.trim() === '';
+
     if (blank) {
       if (prevBlank) continue;
+
       prevBlank = true;
       out.push('');
       continue;
     }
+
     prevBlank = false;
     out.push(line);
   }
@@ -42,20 +47,20 @@ export const normalize = (txt) => {
   return out.join('\n');
 };
 
-export const attrLines = (pairs) =>
+export const attrLines = pairs =>
   pairs
-    .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
-    .map(([k, v]) => (v === true ? `${k}` : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
+    .filter(([, value]) => value !== undefined && value !== null && value !== '' && value !== false)
+    .map(([key, value]) => (value === true ? `${key}` : `${key}="${String(value).replace(/"/g, '&quot;')}"`))
     .join('\n  ');
 
-export const wrapDocsHtml = (innerHtml) =>
+export const wrapDocsHtml = innerHtml =>
   normalize(`
 <div style="max-width:680px;">
   ${String(innerHtml).replace(/\n/g, '\n  ')}
 </div>
 `);
 
-export const buildDocsComponentHtml = (args) =>
+export const buildDocsComponentHtml = args =>
   normalize(`
 <${TAG}
   ${attrLines([
@@ -122,14 +127,41 @@ export const buildDocsHtmlControlledValue = () =>
   </div>
 
   <div style="display:flex; flex-wrap:wrap; gap:8px;">
-    <button type="button" id="plumage-acms-set-apple-mango">Set: ["Apple","Mango"]</button>
-    <button type="button" id="plumage-acms-set-citrus">Set: ["Orange","Lemon","Lime"]</button>
-    <button type="button" id="plumage-acms-clear">Clear []</button>
-    <button type="button" id="plumage-acms-sanitize">Set: sanitization demo</button>
+    <button
+      type="button"
+      class="storybook-example-button"
+      id="plumage-acms-set-apple-mango"
+    >
+      Set: ["Apple","Mango"]
+    </button>
+
+    <button
+      type="button"
+      class="storybook-example-button"
+      id="plumage-acms-set-citrus"
+    >
+      Set: ["Orange","Lemon","Lime"]
+    </button>
+
+    <button
+      type="button"
+      class="storybook-example-button"
+      id="plumage-acms-clear"
+    >
+      Clear []
+    </button>
+
+    <button
+      type="button"
+      class="storybook-example-button"
+      id="plumage-acms-sanitize"
+    >
+      Set: sanitization demo
+    </button>
   </div>
 
   <${TAG}
-    id="acms_controlled"
+    id="acmsControlled"
     input-id="acms-controlled"
     label="Controlled selections"
   ></${TAG}>
@@ -137,42 +169,74 @@ export const buildDocsHtmlControlledValue = () =>
   <script>
     let controlledValue = ['Apple', 'Mango'];
 
-    const host = document.querySelector('${TAG}');
+    const host = document.querySelector('#acmsControlled');
     const state = document.querySelector('#plumage-acms-controlled-state');
 
     const renderState = (source) => {
-      state.textContent = 'External controlled value (' + source + '): ' + JSON.stringify(controlledValue);
+      state.textContent =
+        'External controlled value (' +
+        source +
+        '): ' +
+        JSON.stringify(controlledValue);
     };
 
-    const applyValue = (next, source) => {
-      controlledValue = Array.isArray(next) ? next.slice() : [];
+    const applyValue = async (next, source) => {
+      controlledValue = Array.isArray(next)
+        ? next.slice()
+        : [];
+
+      if (host.componentOnReady) {
+        await host.componentOnReady();
+      }
+
       host.value = controlledValue.slice();
+
       renderState(source);
     };
 
-    document.querySelector('#plumage-acms-set-apple-mango').addEventListener('click', () => {
-      applyValue(['Apple', 'Mango'], 'button click');
-    });
+    document
+      .querySelector('#plumage-acms-set-apple-mango')
+      .addEventListener('click', () => {
+        applyValue(['Apple', 'Mango'], 'button click');
+      });
 
-    document.querySelector('#plumage-acms-set-citrus').addEventListener('click', () => {
-      applyValue(['Orange', 'Lemon', 'Lime'], 'button click');
-    });
+    document
+      .querySelector('#plumage-acms-set-citrus')
+      .addEventListener('click', () => {
+        applyValue(['Orange', 'Lemon', 'Lime'], 'button click');
+      });
 
-    document.querySelector('#plumage-acms-clear').addEventListener('click', () => {
-      applyValue([], 'button click');
-    });
+    document
+      .querySelector('#plumage-acms-clear')
+      .addEventListener('click', () => {
+        applyValue([], 'button click');
+      });
 
-    document.querySelector('#plumage-acms-sanitize').addEventListener('click', () => {
-      applyValue(['  <b>Apple</b>  ', 'MANGO', 'mango', '\\u0007Bad\\u0000', ''], 'button click');
-    });
+    document
+      .querySelector('#plumage-acms-sanitize')
+      .addEventListener('click', () => {
+        applyValue(
+          ['  <b>Apple</b>  ', 'MANGO', 'mango', '\\u0007Bad\\u0000', ''],
+          'button click'
+        );
+      });
 
-    host.addEventListener('multiSelectChange', (e) => {
-      const next = Array.isArray(e.detail) ? e.detail : Array.isArray(e.detail?.value) ? e.detail.value : [];
-      applyValue(next, 'multiSelectChange event');
+    host.addEventListener('multiSelectChange', event => {
+      const next =
+        Array.isArray(event.detail)
+          ? event.detail
+          : Array.isArray(event.detail?.value)
+            ? event.detail.value
+            : [];
+
+      controlledValue = next.slice();
+
+      renderState('multiSelectChange event');
     });
 
     host.addEventListener('clear', () => {
-      applyValue([], 'clear event');
+      controlledValue = [];
+      renderState('clear event');
     });
 
     applyValue(controlledValue, 'initial value');
@@ -181,17 +245,25 @@ export const buildDocsHtmlControlledValue = () =>
 `),
   );
 
-export const buildDocsHtmlMany = (blocks) =>
+export const buildDocsHtmlMany = blocks =>
   normalize(`
 <div style="display:grid; gap:14px; max-width:760px;">
-${blocks.map((b) => `  ${String(b).replace(/\n/g, '\n  ')}`).join('\n')}
+${blocks.map(block => `  ${String(block).replace(/\n/g, '\n  ')}`).join('\n')}
 </div>
 `);
 
 export const setAttr = (el, name, value) => {
-  if (value === true) el.setAttribute(name, '');
-  else if (value === false || value == null || value === '') el.removeAttribute(name);
-  else el.setAttribute(name, String(value));
+  if (value === true) {
+    el.setAttribute(name, '');
+    return;
+  }
+
+  if (value === false || value == null || value === '') {
+    el.removeAttribute(name);
+    return;
+  }
+
+  el.setAttribute(name, String(value));
 };
 
 export const setOptionsWhenReady = async (el, options) => {
@@ -215,23 +287,60 @@ export const setValueWhenReady = async (el, value) => {
     await customElements.whenDefined(TAG);
   }
 
-  el.value = safe;
+  const selectedBefore = el.querySelector('[id$="-selected"]');
+
+  console.log('[setValueWhenReady] BEFORE', {
+    requested: safe,
+    componentValue: el.value,
+    selectedId: selectedBefore?.id ?? null,
+    selectedValue: selectedBefore?.value ?? selectedBefore?.textContent ?? null,
+  });
+
+  el.value = safe.slice();
+
+  await new Promise(resolve => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(resolve);
+    });
+  });
+
+  const selectedAfter = el.querySelector('[id$="-selected"]');
+
+  console.log('[setValueWhenReady] AFTER', {
+    requested: safe,
+    componentValue: el.value,
+    selectedId: selectedAfter?.id ?? null,
+    selectedValue: selectedAfter?.value ?? selectedAfter?.textContent ?? null,
+  });
 };
 
-export const wrapEl = (childEl) => {
+export const wrapEl = childEl => {
   const wrap = document.createElement('div');
+
   wrap.style.maxWidth = '680px';
   wrap.appendChild(childEl);
+
   return wrap;
 };
 
-export const wireLogsOnce = (el) => {
+export const wireLogsOnce = el => {
   if (!el || el.__wiredLogs) return;
 
-  el.addEventListener('multiSelectChange', (e) => console.log('[multiSelectChange]', e.detail));
-  el.addEventListener('valueChange', (e) => console.log('[valueChange]', e.detail));
-  el.addEventListener('itemSelect', (e) => console.log('[itemSelect]', e.detail));
-  el.addEventListener('clear', () => console.log('[clear]'));
+  el.addEventListener('multiSelectChange', event => {
+    console.log('[multiSelectChange]', event.detail);
+  });
+
+  el.addEventListener('valueChange', event => {
+    console.log('[valueChange]', event.detail);
+  });
+
+  el.addEventListener('itemSelect', event => {
+    console.log('[itemSelect]', event.detail);
+  });
+
+  el.addEventListener('clear', () => {
+    console.log('[clear]');
+  });
 
   el.__wiredLogs = true;
 };
@@ -265,17 +374,32 @@ export const FRUIT = [
 ];
 
 export const SIZE_VARIANTS = [
-  { id: 'acms_sm', inputId: 'acms-sm', label: 'Small', size: 'sm' },
-  { id: 'acms_md', inputId: 'acms-md', label: 'Default', size: '' },
-  { id: 'acms_lg', inputId: 'acms-lg', label: 'Large', size: 'lg' },
+  {
+    id: 'acms_sm',
+    inputId: 'acms-sm',
+    label: 'Small',
+    size: 'sm',
+  },
+  {
+    id: 'acms_md',
+    inputId: 'acms-md',
+    label: 'Default',
+    size: '',
+  },
+  {
+    id: 'acms_lg',
+    inputId: 'acms-lg',
+    label: 'Large',
+    size: 'lg',
+  },
 ];
 
 export const renderComponent = (args, { idOverride } = {}) => {
   const el = document.createElement(TAG);
 
   const hostId = idOverride || args.id || args.inputId || 'plumage-acms-demo';
-  setAttr(el, 'id', hostId);
 
+  setAttr(el, 'id', hostId);
   setAttr(el, 'input-id', args.inputId);
   setAttr(el, 'label', args.label);
   setAttr(el, 'placeholder', args.placeholder);
@@ -291,21 +415,27 @@ export const renderComponent = (args, { idOverride } = {}) => {
   setAttr(el, 'input-cols', args.inputCols);
 
   args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
+
   args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
+
   setAttr(el, 'validation-message', args.validationMessage);
 
   args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
+
   setAttr(el, 'error-message', args.errorMessage);
 
   args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
+
   args.readOnly ? el.setAttribute('read-only', '') : el.removeAttribute('read-only');
 
   args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
+
   setAttr(el, 'clear-icon', args.clearIcon);
 
   args.removeBtnBorder ? el.setAttribute('remove-btn-border', '') : el.removeAttribute('remove-btn-border');
 
   args.addBtn ? el.setAttribute('add-btn', '') : el.removeAttribute('add-btn');
+
   setAttr(el, 'add-icon', args.addIcon);
 
   args.editable ? el.setAttribute('editable', '') : el.removeAttribute('editable');
@@ -313,13 +443,9 @@ export const renderComponent = (args, { idOverride } = {}) => {
   setAttr(el, 'add-new-on-enter', args.addNewOnEnter);
   setAttr(el, 'auto-sort', args.autoSort);
 
-  args.preserveInputOnSelect
-    ? el.setAttribute('preserve-input-on-select', '')
-    : el.removeAttribute('preserve-input-on-select');
+  args.preserveInputOnSelect ? el.setAttribute('preserve-input-on-select', '') : el.removeAttribute('preserve-input-on-select');
 
-  args.clearInputOnBlurOutside
-    ? el.setAttribute('clear-input-on-blur-outside', '')
-    : el.removeAttribute('clear-input-on-blur-outside');
+  args.clearInputOnBlurOutside ? el.setAttribute('clear-input-on-blur-outside', '') : el.removeAttribute('clear-input-on-blur-outside');
 
   setAttr(el, 'badge-variant', args.badgeVariant);
   setAttr(el, 'badge-shape', args.badgeShape);
@@ -332,31 +458,38 @@ export const renderComponent = (args, { idOverride } = {}) => {
   setAttr(el, 'form-id', args.formId);
 
   args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
+
   setAttr(el, 'arialabelled-by', args.arialabelledBy);
 
   wireLogsOnce(el);
-  setOptionsWhenReady(el, Array.isArray(args.options) ? args.options : []);
-  setValueWhenReady(el, Array.isArray(args.value) ? args.value : []);
+
+  void setOptionsWhenReady(el, Array.isArray(args.options) ? args.options : []);
+
+  void setValueWhenReady(el, Array.isArray(args.value) ? args.value : []);
 
   return wrapEl(el);
 };
 
-const escapeHtmlA11y = (s) =>
-  String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+const escapeHtmlA11y = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-const whenReadyA11y = (el) => {
-  if (!el) return Promise.resolve();
-  if (typeof el.componentOnReady === 'function') return el.componentOnReady();
-  if (window.customElements?.whenDefined) return customElements.whenDefined(TAG);
+const whenReadyA11y = el => {
+  if (!el) {
+    return Promise.resolve();
+  }
+
+  if (typeof el.componentOnReady === 'function') {
+    return el.componentOnReady();
+  }
+
+  if (window.customElements?.whenDefined) {
+    return customElements.whenDefined(TAG);
+  }
+
   return Promise.resolve();
 };
 
-const readA11ySnapshotA11y = (el) => {
-  const input = el?.querySelector?.('input') || null;
+const readA11ySnapshotA11y = el => {
+  const input = el?.querySelector?.('input') ?? null;
 
   const keys = [
     'role',
@@ -379,68 +512,77 @@ const readA11ySnapshotA11y = (el) => {
   ];
 
   const inputAttrs = {};
-  for (const k of keys) inputAttrs[k] = input ? input.getAttribute(k) : null;
 
-  const listboxId = inputAttrs['aria-controls'] || null;
+  for (const key of keys) {
+    inputAttrs[key] = input ? input.getAttribute(key) : null;
+  }
+
+  const listboxId = inputAttrs['aria-controls'] ?? null;
+
   const listbox = listboxId ? el.querySelector(`#${listboxId}`) : null;
 
   const listboxAttrs = {};
+
   if (listbox) {
-    for (const k of ['id', 'role', 'aria-multiselectable']) {
-      listboxAttrs[k] = listbox.getAttribute(k);
+    for (const key of ['id', 'role', 'aria-multiselectable']) {
+      listboxAttrs[key] = listbox.getAttribute(key);
     }
   }
 
   const live = input && input.id ? el.querySelector(`#${input.id}-live`) : el.querySelector('.sr-only[aria-live]');
+
   const messages = el.querySelectorAll('[role="alert"], .invalid-feedback, .error-message');
-  const msgTexts = Array.from(messages)
-    .map((n) => (n.textContent || '').trim())
+
+  const messageTexts = Array.from(messages)
+    .map(node => (node.textContent || '').trim())
     .filter(Boolean);
 
   return {
     input: inputAttrs,
     listbox: listboxAttrs,
+
     liveRegion: live
       ? {
-          id: live.getAttribute('id'),
+          'id': live.getAttribute('id'),
           'aria-live': live.getAttribute('aria-live'),
           'aria-atomic': live.getAttribute('aria-atomic'),
-          text: (live.textContent || '').trim(),
+          'text': (live.textContent || '').trim(),
         }
       : null,
-    messages: msgTexts,
+
+    messages: messageTexts,
   };
 };
 
 export const mkMatrixCellA11y = (args, { idOverride } = {}) => {
   const wrap = document.createElement('div');
-  wrap.style.border = '1px solid #ddd';
-  wrap.style.borderRadius = '10px';
-  wrap.style.padding = '12px';
-  wrap.style.background = 'white';
+
+  wrap.className = 'plumage-autocomplete-multiple-selections-accessibility-matrix__card';
 
   const title = document.createElement('div');
-  title.style.fontWeight = '700';
-  title.style.marginBottom = '8px';
+
+  title.className = 'plumage-autocomplete-multiple-selections-accessibility-matrix__card-title';
+
   title.textContent = args.__title || 'Variant';
 
-  const compWrap = renderComponent(args, { idOverride });
-  compWrap.style.maxWidth = '100%';
+  const compWrap = renderComponent(args, {
+    idOverride,
+  });
+
+  compWrap.style.removeProperty('max-width');
+
+  compWrap.classList.add('plumage-autocomplete-multiple-selections-accessibility-matrix__stage');
 
   const status = document.createElement('div');
-  status.style.fontSize = '12px';
-  status.style.color = '#666';
-  status.style.marginTop = '8px';
+
+  status.className = 'plumage-autocomplete-multiple-selections-accessibility-matrix__status';
+
   status.textContent = 'Computing ARIA snapshot…';
 
   const pre = document.createElement('pre');
-  pre.style.marginTop = '10px';
-  pre.style.background = '#f8f9fa';
-  pre.style.borderRadius = '8px';
-  pre.style.padding = '10px';
-  pre.style.fontSize = '12px';
-  pre.style.lineHeight = '1.35';
-  pre.style.whiteSpace = 'pre-wrap';
+
+  pre.className = 'plumage-autocomplete-multiple-selections-accessibility-matrix__output';
+
   pre.textContent = '';
 
   wrap.appendChild(title);
@@ -455,18 +597,26 @@ export const mkMatrixCellA11y = (args, { idOverride } = {}) => {
       if (el && args.required && typeof el.validate === 'function') {
         try {
           el.validate();
-        } catch (_) {}
+        } catch (_) {
+          // no-op
+        }
       }
-      return new Promise((r) => setTimeout(r, 0));
+
+      return new Promise(resolve => {
+        setTimeout(resolve, 0);
+      });
     })
     .then(() => {
-      const snap = el ? readA11ySnapshotA11y(el) : null;
-      pre.innerHTML = escapeHtmlA11y(JSON.stringify(snap, null, 2));
+      const snapshot = el ? readA11ySnapshotA11y(el) : null;
+
+      pre.innerHTML = escapeHtmlA11y(JSON.stringify(snapshot, null, 2));
+
       status.textContent = 'Snapshot ready.';
     })
-    .catch((err) => {
+    .catch(error => {
       status.textContent = 'Snapshot error.';
-      pre.innerHTML = escapeHtmlA11y(String((err && err.stack) || err));
+
+      pre.innerHTML = escapeHtmlA11y(String((error && error.stack) || error));
     });
 
   return wrap;

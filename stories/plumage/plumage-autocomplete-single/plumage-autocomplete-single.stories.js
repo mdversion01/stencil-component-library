@@ -254,7 +254,7 @@ export const ControlledValue = {
     const mkBtn = label => {
       const b = document.createElement('button');
       b.type = 'button';
-      b.className = 'btn btn-sm btn-secondary';
+      b.className = 'storybook-example-button';
       b.textContent = label;
       return b;
     };
@@ -370,31 +370,185 @@ export const AccessibilityMatrix = {
   },
   render: (args, ctx) => {
     const outer = document.createElement('div');
+    outer.className = 'plumage-autocomplete-single-accessibility-matrix';
 
     const grid = document.createElement('div');
-    grid.style.display = 'grid';
-    grid.style.gridTemplateColumns = '1fr';
-    grid.style.gap = '14px';
-    grid.style.maxWidth = '1100px';
+    grid.className = 'plumage-autocomplete-single-accessibility-matrix__variants';
     outer.appendChild(grid);
 
     const suffix = nextMountSuffix(ctx);
 
     const variants = [
-      { title: 'Default / normal', base: 'acs_a11y_default', inputBase: 'acs-a11y-default', label: 'Default', formLayout: '', disabled: false, error: false, errorMessage: '', required: false, validation: false, value: '' },
-      { title: 'Default / validation', base: 'acs_a11y_default_validation', inputBase: 'acs-a11y-default-validation', label: 'Default + validation', formLayout: '', disabled: false, error: false, errorMessage: '', required: true, validation: true, value: '' },
-      { title: 'Default / error', base: 'acs_a11y_default_error', inputBase: 'acs-a11y-default-error', label: 'Default + error', formLayout: '', disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, value: '' },
-      { title: 'Default / disabled', base: 'acs_a11y_default_disabled', inputBase: 'acs-a11y-default-disabled', label: 'Default disabled', formLayout: '', disabled: true, error: false, errorMessage: '', required: false, validation: false, value: 'Apple' },
+      {
+        title: 'Default / normal',
+        base: 'acs_a11y_default',
+        inputBase: 'acs-a11y-default',
+        label: 'Default',
+        formLayout: '',
+        disabled: false,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        value: '',
+      },
+      {
+        title: 'Default / validation',
+        base: 'acs_a11y_default_validation',
+        inputBase: 'acs-a11y-default-validation',
+        label: 'Default + validation',
+        formLayout: '',
+        disabled: false,
+        error: false,
+        errorMessage: '',
+        required: true,
+        validation: true,
+        value: '',
+      },
+      {
+        title: 'Default / error',
+        base: 'acs_a11y_default_error',
+        inputBase: 'acs-a11y-default-error',
+        label: 'Default + error',
+        formLayout: '',
+        disabled: false,
+        error: true,
+        errorMessage: 'Something went wrong.',
+        required: false,
+        validation: false,
+        value: '',
+      },
+      {
+        title: 'Default / disabled',
+        base: 'acs_a11y_default_disabled',
+        inputBase: 'acs-a11y-default-disabled',
+        label: 'Default disabled',
+        formLayout: '',
+        disabled: true,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        value: 'Apple',
+      },
 
-      { title: 'Inline / normal', base: 'acs_a11y_inline', inputBase: 'acs-a11y-inline', label: 'Inline', formLayout: 'inline', disabled: false, error: false, errorMessage: '', required: false, validation: false, value: '' },
-      { title: 'Inline / validation', base: 'acs_a11y_inline_validation', inputBase: 'acs-a11y-inline-validation', label: 'Inline + validation', formLayout: 'inline', disabled: false, error: false, errorMessage: '', required: true, validation: true, value: '' },
-      { title: 'Inline / error', base: 'acs_a11y_inline_error', inputBase: 'acs-a11y-inline-error', label: 'Inline + error', formLayout: 'inline', disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, value: '' },
-      { title: 'Inline / disabled', base: 'acs_a11y_inline_disabled', inputBase: 'acs-a11y-inline-disabled', label: 'Inline disabled', formLayout: 'inline', disabled: true, error: false, errorMessage: '', required: false, validation: false, value: 'Banana' },
+      {
+        title: 'Inline / normal',
+        base: 'acs_a11y_inline',
+        inputBase: 'acs-a11y-inline',
+        label: 'Inline',
+        formLayout: 'inline',
+        disabled: false,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        value: '',
+      },
+      {
+        title: 'Inline / validation',
+        base: 'acs_a11y_inline_validation',
+        inputBase: 'acs-a11y-inline-validation',
+        label: 'Inline + validation',
+        formLayout: 'inline',
+        disabled: false,
+        error: false,
+        errorMessage: '',
+        required: true,
+        validation: true,
+        value: '',
+      },
+      {
+        title: 'Inline / error',
+        base: 'acs_a11y_inline_error',
+        inputBase: 'acs-a11y-inline-error',
+        label: 'Inline + error',
+        formLayout: 'inline',
+        disabled: false,
+        error: true,
+        errorMessage: 'Something went wrong.',
+        required: false,
+        validation: false,
+        value: '',
+      },
+      {
+        title: 'Inline / disabled',
+        base: 'acs_a11y_inline_disabled',
+        inputBase: 'acs-a11y-inline-disabled',
+        label: 'Inline disabled',
+        formLayout: 'inline',
+        disabled: true,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        value: 'Banana',
+      },
 
-      { title: 'Horizontal / normal', base: 'acs_a11y_horizontal', inputBase: 'acs-a11y-horizontal', label: 'Horizontal', formLayout: 'horizontal', labelAlign: 'right', labelCol: 4, inputCol: 8, disabled: false, error: false, errorMessage: '', required: false, validation: false, value: '' },
-      { title: 'Horizontal / validation', base: 'acs_a11y_horizontal_validation', inputBase: 'acs-a11y-horizontal-validation', label: 'Horizontal + validation', formLayout: 'horizontal', labelAlign: 'right', labelCol: 4, inputCol: 8, disabled: false, error: false, errorMessage: '', required: true, validation: true, value: '' },
-      { title: 'Horizontal / error', base: 'acs_a11y_horizontal_error', inputBase: 'acs-a11y-horizontal-error', label: 'Horizontal + error', formLayout: 'horizontal', labelAlign: 'right', labelCol: 4, inputCol: 8, disabled: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, value: '' },
-      { title: 'Horizontal / disabled', base: 'acs_a11y_horizontal_disabled', inputBase: 'acs-a11y-horizontal-disabled', label: 'Horizontal disabled', formLayout: 'horizontal', labelAlign: 'right', labelCol: 4, inputCol: 8, disabled: true, error: false, errorMessage: '', required: false, validation: false, value: 'Mango' },
+      {
+        title: 'Horizontal / normal',
+        base: 'acs_a11y_horizontal',
+        inputBase: 'acs-a11y-horizontal',
+        label: 'Horizontal',
+        formLayout: 'horizontal',
+        labelAlign: 'right',
+        labelCol: 4,
+        inputCol: 8,
+        disabled: false,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        value: '',
+      },
+      {
+        title: 'Horizontal / validation',
+        base: 'acs_a11y_horizontal_validation',
+        inputBase: 'acs-a11y-horizontal-validation',
+        label: 'Horizontal + validation',
+        formLayout: 'horizontal',
+        labelAlign: 'right',
+        labelCol: 4,
+        inputCol: 8,
+        disabled: false,
+        error: false,
+        errorMessage: '',
+        required: true,
+        validation: true,
+        value: '',
+      },
+      {
+        title: 'Horizontal / error',
+        base: 'acs_a11y_horizontal_error',
+        inputBase: 'acs-a11y-horizontal-error',
+        label: 'Horizontal + error',
+        formLayout: 'horizontal',
+        labelAlign: 'right',
+        labelCol: 4,
+        inputCol: 8,
+        disabled: false,
+        error: true,
+        errorMessage: 'Something went wrong.',
+        required: false,
+        validation: false,
+        value: '',
+      },
+      {
+        title: 'Horizontal / disabled',
+        base: 'acs_a11y_horizontal_disabled',
+        inputBase: 'acs-a11y-horizontal-disabled',
+        label: 'Horizontal disabled',
+        formLayout: 'horizontal',
+        labelAlign: 'right',
+        labelCol: 4,
+        inputCol: 8,
+        disabled: true,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        value: 'Mango',
+      },
     ];
 
     for (const v of variants) {
@@ -411,6 +565,7 @@ export const AccessibilityMatrix = {
           title: v.title,
         },
       );
+
       grid.appendChild(cell);
     }
 

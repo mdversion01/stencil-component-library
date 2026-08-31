@@ -679,198 +679,185 @@ This combines **Sort + Filter + Selection + Pagination**.
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: () => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '1100px';
+    wrap.className = 'table-accessibility-matrix';
 
     const header = document.createElement('div');
-    header.innerHTML = `
-      <strong>Accessibility matrix</strong>
-      <div style="opacity:.8">
-        Prints computed <code>role</code>, <code>aria-*</code>, and key ids for default / inline / horizontal, simulated error/validation, and simulated disabled.
-      </div>
-    `;
+
+    const headerTitle = document.createElement('strong');
+    headerTitle.textContent = 'Accessibility matrix';
+
+    const headerDescription = document.createElement('div');
+    headerDescription.className =
+      'table-accessibility-matrix__description';
+    headerDescription.innerHTML =
+      'Renders representative Table story configurations and prints computed ' +
+      '<code>role</code>, <code>aria-*</code>, table structure, sorting, selection, ' +
+      'caption/footer, and pagination accessibility state.';
+
+    header.appendChild(headerTitle);
+    header.appendChild(headerDescription);
     wrap.appendChild(header);
 
-    const card = (title, storyArgs, { extraHtml = '', decorateHost } = {}) => {
+    const card = ({
+      title,
+      args,
+      id,
+      items = basicItems,
+      fields,
+      extraAttrs = '',
+    }) => {
       const box = document.createElement('div');
-      box.style.border = '1px solid #ddd';
-      box.style.borderRadius = '10px';
-      box.style.padding = '12px';
-      box.style.display = 'grid';
-      box.style.gap = '10px';
+      box.className = 'table-accessibility-matrix__card';
 
-      const t = document.createElement('div');
-      t.style.fontWeight = '600';
-      t.textContent = title;
+      const cardTitle = document.createElement('div');
+      cardTitle.className =
+        'table-accessibility-matrix__card-title';
+      cardTitle.textContent = title;
 
       const demo = document.createElement('div');
-      const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
-      pre.textContent = 'Loading…';
+      demo.className = 'table-accessibility-matrix__demo';
+
+      const output = document.createElement('pre');
+      output.className = 'table-accessibility-matrix__output';
+      output.textContent = 'Loading…';
 
       const mount = document.createElement('div');
-      mount.innerHTML = normalizeHtml(`
-        ${extraHtml}
-      `);
 
-      const storyNode = renderTableStory(
-        { ...Basic.args, ...storyArgs },
-        {
-          id: storyArgs.__id || `mx-${Math.random().toString(36).slice(2, 7)}`,
-          items: basicItems,
-          fields: deriveFieldsFromFirstItem(basicItems),
-        },
-      );
-
-      if (decorateHost) {
-        decorateHost(storyNode);
-      }
+      const storyNode = renderTableStory(args, {
+        id,
+        items,
+        fields,
+        extraAttrs,
+      });
 
       mount.appendChild(storyNode);
       demo.appendChild(mount);
 
       const update = async () => {
         const host = mount.querySelector('table-component');
+
         if (host?.componentOnReady) {
           try {
             await host.componentOnReady();
-          } catch (_e) {}
+          } catch (_error) {}
         } else if (window.customElements?.whenDefined) {
           try {
             await customElements.whenDefined('table-component');
-          } catch (_e) {}
+          } catch (_error) {}
         }
 
-        if (typeof storyArgs.__tableAriaDescribedby === 'string') {
-          const tEl = host?.querySelector('table');
-          if (tEl) tEl.setAttribute('aria-describedby', storyArgs.__tableAriaDescribedby);
-        }
-
-        if (typeof storyArgs.__tableAriaLabelledby === 'string') {
-          const tEl = host?.querySelector('table');
-          if (tEl) tEl.setAttribute('aria-labelledby', storyArgs.__tableAriaLabelledby);
-        }
-
-        pre.textContent = JSON.stringify(pickTableA11y(host, mount), null, 2);
+        output.textContent = JSON.stringify(
+          pickTableA11y(host, mount),
+          null,
+          2,
+        );
       };
 
-      queueMicrotask(() => requestAnimationFrame(update));
+      queueMicrotask(() =>
+        requestAnimationFrame(() =>
+          requestAnimationFrame(update),
+        ),
+      );
 
-      box.appendChild(t);
+      box.appendChild(cardTitle);
       box.appendChild(demo);
-      box.appendChild(pre);
+      box.appendChild(output);
+
       return box;
     };
 
     wrap.appendChild(
-      card('Default', {
-        __id: 'mx-default',
-        striped: true,
-        rowHover: true,
-        sortable: true,
-        responsive: true,
-        size: 'sm',
+      card({
+        title: 'Basic',
+        id: 'table-a11y-basic',
+        args: {
+          ...Basic.args,
+        },
+        items: basicItems,
       }),
     );
 
     wrap.appendChild(
-      card(
-        'Inline (simulated external label + help)',
-        {
-          __id: 'mx-inline',
-          striped: true,
-          responsive: true,
-          size: 'sm',
-          __tableAriaLabelledby: 'mx-inline-label',
-          __tableAriaDescribedby: 'mx-inline-help',
+      card({
+        title: 'Responsive + bordered',
+        id: 'table-a11y-responsive-bordered',
+        args: {
+          ...Basic.args,
+          ...ResponsiveBordered.args,
         },
-        {
-          extraHtml: `
-            <div id="mx-inline-label" style="font-weight:600; margin-bottom:6px;">Inline label (external)</div>
-            <div id="mx-inline-help" style="opacity:.8; margin-bottom:10px;">Help: Use header cells to sort, rows can be selected if enabled.</div>
-          `,
-        },
-      ),
+        items: basicItems,
+      }),
     );
 
     wrap.appendChild(
-      card(
-        'Horizontal (simulated layout)',
-        {
-          __id: 'mx-horizontal',
-          striped: true,
-          responsive: true,
-          size: 'sm',
-          __tableAriaLabelledby: 'mx-horizontal-label',
+      card({
+        title: 'Sortable',
+        id: 'table-a11y-sortable',
+        args: {
+          ...Basic.args,
+          ...SortableSimple.args,
         },
-        {
-          extraHtml: `
-            <div style="display:grid; grid-template-columns:220px 1fr; gap:12px; align-items:start; max-width:980px;">
-              <div id="mx-horizontal-label" style="font-weight:600;">Horizontal label area</div>
-              <div></div>
-            </div>
-          `,
-        },
-      ),
+        items: fullDataItems,
+        fields: tableFields,
+      }),
     );
 
     wrap.appendChild(
-      card(
-        'Error / validation (simulated via aria-describedby)',
-        {
-          __id: 'mx-error',
-          striped: true,
-          responsive: true,
-          size: 'sm',
-          __tableAriaDescribedby: 'mx-error-text',
+      card({
+        title: 'Multi-row selection',
+        id: 'table-a11y-selectable',
+        args: {
+          ...Basic.args,
+          ...SelectableMultiSmall.args,
         },
-        {
-          extraHtml: `
-            <div id="mx-error-text" style="color:#a00; font-size:12px; margin-bottom:10px;">
-              Error: One or more rows are invalid. Review highlighted rows.
-            </div>
-          `,
-        },
-      ),
+        items: basicItems,
+        extraAttrs: 'table-id="table-a11y-selectable"',
+      }),
     );
 
     wrap.appendChild(
-      card(
-        'Disabled (simulated, non-interactive)',
-        {
-          __id: 'mx-disabled',
-          striped: true,
-          responsive: true,
-          rowHover: false,
-          size: 'sm',
+      card({
+        title: 'Caption + cloned footer + fixed header',
+        id: 'table-a11y-caption',
+        args: {
+          ...Basic.args,
+          ...CaptionTopCloneFooterFixed.args,
         },
-        {
-          decorateHost: storyNode => {
-            storyNode.setAttribute('aria-disabled', 'true');
-            storyNode.style.opacity = '0.6';
-            storyNode.style.pointerEvents = 'none';
-          },
+        items: basicItems,
+      }),
+    );
+
+    wrap.appendChild(
+      card({
+        title: 'Pagination',
+        id: 'table-a11y-pagination',
+        args: {
+          ...Basic.args,
+          ...WithPagination.args,
         },
-      ),
+        items: fullDataItems,
+        fields: tableFields,
+        extraAttrs: 'table-id="table-a11y-pagination"',
+      }),
     );
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:
-          'Shows multiple configurations and prints computed accessibility attributes for the rendered native `<table>` element and key descendants. “Inline/horizontal/error/disabled” are simulated patterns using external labels/description elements and wrapper attributes.',
+          'Accessibility matrix based on representative Table stories: Basic, Responsive + Bordered, Sortable, Multi-row Selection, Caption + Footer, and Pagination. Each case prints the computed native table structure and relevant accessibility attributes.',
       },
     },
   },
 };
+

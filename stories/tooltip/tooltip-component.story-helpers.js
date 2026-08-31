@@ -1,8 +1,8 @@
-export const normalize = (txt) => {
+export const normalize = txt => {
   const lines = String(txt ?? '')
     .replace(/\r\n/g, '\n')
     .split('\n')
-    .map((l) => l.replace(/[ \t]+$/g, ''));
+    .map(l => l.replace(/[ \t]+$/g, ''));
 
   const out = [];
   let prevBlank = false;
@@ -27,7 +27,7 @@ export const normalize = (txt) => {
 
 export const uid = () => `${Math.random().toString(36).slice(2, 8)}-${Date.now().toString(36)}`;
 
-export const attrs = (pairs) =>
+export const attrs = pairs =>
   pairs
     .filter(([, v]) => v !== undefined && v !== null && v !== '' && v !== false)
     .map(([k, v]) => (v === true ? k : `${k}="${String(v).replace(/"/g, '&quot;')}"`))
@@ -67,7 +67,7 @@ export const buildTooltipMarkup = (args, id) => {
   `);
 };
 
-export const manualTriggerDocsHtml = (ids) =>
+export const manualTriggerDocsHtml = ids =>
   normalize(`
 <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
   <tooltip-component id="${ids.tip}" trigger="manual click" position="bottom" data-original-title="Manually controlled tooltip">
@@ -80,17 +80,20 @@ export const manualTriggerDocsHtml = (ids) =>
 </div>
 `);
 
-export const splitIds = (v) => String(v || '').trim().split(/\s+/).filter(Boolean);
+export const splitIds = v =>
+  String(v || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
 
-export const getTrigger = (host) => (host?.firstElementChild ? host.firstElementChild : null);
+export const getTrigger = host => (host?.firstElementChild ? host.firstElementChild : null);
 
-export const snapshotA11y = (host) => {
+export const snapshotA11y = host => {
   const trigger = getTrigger(host);
 
   const describedby = trigger?.getAttribute('aria-describedby') || '';
   const describedIds = splitIds(describedby);
-  const inferredTooltipId =
-    describedIds.find((t) => /__tip_\d+$/.test(t)) || describedIds[describedIds.length - 1] || null;
+  const inferredTooltipId = describedIds.find(t => /__tip_\d+$/.test(t)) || describedIds[describedIds.length - 1] || null;
 
   const tooltipEl = inferredTooltipId ? document.getElementById(inferredTooltipId) : null;
 
@@ -139,7 +142,7 @@ export const whenDefined = async () => {
   }
 };
 
-export const onReady = async (host) => {
+export const onReady = async host => {
   await whenDefined();
   try {
     await host?.componentOnReady?.();
@@ -150,47 +153,32 @@ export const onReady = async (host) => {
 
 export const createExample = (title, makeHostFn) => {
   const card = document.createElement('div');
-  card.style.border = '1px solid #ddd';
-  card.style.borderRadius = '12px';
-  card.style.padding = '12px';
-  card.style.display = 'grid';
-  card.style.gap = '10px';
+  card.className = 'tooltip-accessibility-matrix__card';
 
-  const h = document.createElement('div');
-  h.style.fontWeight = '700';
-  h.textContent = title;
+  const heading = document.createElement('div');
+  heading.className = 'tooltip-accessibility-matrix__card-title';
+  heading.textContent = title;
 
   const demoRow = document.createElement('div');
-  demoRow.style.display = 'flex';
-  demoRow.style.alignItems = 'center';
-  demoRow.style.gap = '12px';
-  demoRow.style.flexWrap = 'wrap';
+  demoRow.className = 'tooltip-accessibility-matrix__demo-row';
 
   const demo = document.createElement('div');
-  demo.style.display = 'inline-flex';
-  demo.style.alignItems = 'center';
-  demo.style.gap = '10px';
+  demo.className = 'tooltip-accessibility-matrix__demo';
 
   const pre = document.createElement('pre');
-  pre.style.margin = '0';
-  pre.style.padding = '10px';
-  pre.style.borderRadius = '10px';
-  pre.style.overflow = 'auto';
-  pre.style.border = '1px solid #eee';
-  pre.style.background = '#fafafa';
-  pre.style.maxHeight = '240px';
+  pre.className = 'tooltip-accessibility-matrix__output';
   pre.textContent = 'Loading…';
 
   const hint = document.createElement('div');
-  hint.style.fontSize = '0.8rem';
-  hint.style.opacity = '0.85';
-  hint.innerHTML =
-    'Hover or focus the trigger to create the tooltip element. Press <kbd>Escape</kbd> while focused to close (when visible).';
+  hint.className = 'tooltip-accessibility-matrix__hint';
+  hint.innerHTML = 'Hover or focus the trigger to create the tooltip element. ' + 'Press <kbd>Escape</kbd> while focused to close (when visible).';
 
   const host = makeHostFn();
+
   demo.appendChild(host);
   demoRow.appendChild(demo);
-  card.appendChild(h);
+
+  card.appendChild(heading);
   card.appendChild(demoRow);
   card.appendChild(hint);
   card.appendChild(pre);
@@ -202,13 +190,16 @@ export const createExample = (title, makeHostFn) => {
   queueMicrotask(() =>
     requestAnimationFrame(async () => {
       await onReady(host);
-      requestAnimationFrame(() => update());
+      requestAnimationFrame(update);
     }),
   );
 
   host.addEventListener('mouseenter', () => setTimeout(update, 0), true);
+
   host.addEventListener('focus', () => setTimeout(update, 0), true);
+
   host.addEventListener('click', () => setTimeout(update, 0), true);
+
   document.addEventListener('click', () => setTimeout(update, 0), true);
 
   return card;

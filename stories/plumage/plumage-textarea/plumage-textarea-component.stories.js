@@ -282,6 +282,7 @@ export const ValueFromExternalSource = {
     const makeButton = (label, value) => {
       const button = document.createElement('button');
       button.type = 'button';
+      button.className = 'storybook-example-button';
       button.textContent = label;
       button.addEventListener('click', () => {
         textarea.value = value;
@@ -438,13 +439,12 @@ export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: () => {
     const root = document.createElement('div');
-    root.style.display = 'grid';
-    root.style.gap = '16px';
+    root.className = 'plumage-textarea-accessibility-matrix';
 
     const intro = document.createElement('div');
     intro.innerHTML = `
-      <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
-      <div style="font-size:13px; color:#444;">
+      <div class="plumage-textarea-accessibility-matrix__intro-title">Accessibility matrix</div>
+      <div class="plumage-textarea-accessibility-matrix__intro-description">
         Renders common variants and prints computed <code>aria-*</code>, IDs, counter wiring, validation wiring, and readonly/disabled state.
       </div>
     `;
@@ -523,7 +523,15 @@ export const AccessibilityMatrix = {
       },
     ];
 
-    rows.forEach((r, idx) => root.appendChild(renderMatrixRow({ ...r, idSuffix: String(idx + 1) })));
+    rows.forEach((r, idx) =>
+      root.appendChild(
+        renderMatrixRow({
+          ...r,
+          idSuffix: String(idx + 1),
+        }),
+      ),
+    );
+
     return root;
   },
   parameters: {

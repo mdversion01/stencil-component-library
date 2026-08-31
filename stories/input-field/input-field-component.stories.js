@@ -528,13 +528,12 @@ export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: () => {
     const root = document.createElement('div');
-    root.style.display = 'grid';
-    root.style.gap = '16px';
+    root.className = 'input-accessibility-matrix';
 
     const intro = document.createElement('div');
     intro.innerHTML = `
-      <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
-      <div style="font-size:13px; color:#444;">
+      <div class="input-accessibility-matrix__intro-title">Accessibility matrix</div>
+      <div class="input-accessibility-matrix__intro-description">
         Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs.
         Also reports whether <code>aria-labelledby</code> / <code>aria-describedby</code> resolve to real elements.
         Help text (<code>__desc</code>) is expected to always exist; validation (<code>__validation</code>) is expected only when invalid.
@@ -545,12 +544,26 @@ export const AccessibilityMatrix = {
     const rows = [
       {
         title: 'Default (stacked)',
-        args: { label: 'First Name', formLayout: '', disabled: false, required: false, validation: false, validationMessage: '' },
+        args: {
+          label: 'First Name',
+          formLayout: '',
+          disabled: false,
+          required: false,
+          validation: false,
+          validationMessage: '',
+        },
         forceInvalid: false,
       },
       {
         title: 'Inline',
-        args: { label: 'City', formLayout: 'inline', disabled: false, required: false, validation: false, validationMessage: '' },
+        args: {
+          label: 'City',
+          formLayout: 'inline',
+          disabled: false,
+          required: false,
+          validation: false,
+          validationMessage: '',
+        },
         forceInvalid: false,
       },
       {
@@ -581,7 +594,15 @@ export const AccessibilityMatrix = {
       },
       {
         title: 'Disabled',
-        args: { label: 'Company', formLayout: '', disabled: true, required: false, validation: false, validationMessage: '', value: 'Disabled value' },
+        args: {
+          label: 'Company',
+          formLayout: '',
+          disabled: true,
+          required: false,
+          validation: false,
+          validationMessage: '',
+          value: 'Disabled value',
+        },
         forceInvalid: false,
       },
     ];

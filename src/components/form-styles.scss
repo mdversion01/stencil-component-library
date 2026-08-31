@@ -30,7 +30,7 @@
 }
 
 .required {
-  color: #b30009;
+  color: var(--bs-form-invalid-color);
 }
 
 button,
@@ -57,7 +57,7 @@ form {
 
 legend {
   float: none !important;
-  padding: 0 10px !important;
+  padding: 0 0.625rem !important;
   width: auto !important;
 }
 
@@ -90,8 +90,8 @@ legend.xlarge {
 }
 
 fieldset {
-  border: 1px solid #ccc !important;
-  border-radius: 5px !important;
+  border: 1px solid var(--bs-secondary-border-subtle) !important;
+  border-radius: 0.313rem !important;
   padding: 0.35rem 0.625rem !important;
 }
 
@@ -117,7 +117,7 @@ input[type='radio'] {
 }
 
 .form-group {
-  padding: 5px 15px;
+  padding: 0.313rem 0.938rem;
 }
 
 .form-group {
@@ -129,7 +129,7 @@ input[type='radio'] {
 }
 
 .horizontal .form-group {
-  padding: 5px;
+  padding: 0.313rem;
 }
 
 .no-pad {
@@ -144,6 +144,6 @@ input[type='radio'] {
 .form-control[disabled],
 .form-control.disabled {
   background-color: var(--bs-secondary-bg) !important;
-  color: #8b8b8b !important;
+  color: var(--disabled-text-color) !important;
   cursor: not-allowed;
 }

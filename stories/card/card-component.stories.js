@@ -313,84 +313,91 @@ Elevated.parameters = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: args => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'card-accessibility-matrix';
 
     const title = document.createElement('div');
-    title.innerHTML =
-      `<strong>Accessibility matrix</strong>` +
-      `<div style="opacity:.8">Prints computed role + aria-* + ids. Includes default, landmark (region), clickable, disabled-clickable, and decorative image.</div>`;
+
+    const heading = document.createElement('strong');
+    heading.textContent = 'Accessibility matrix';
+
+    const description = document.createElement('div');
+    description.className = 'card-accessibility-matrix__description';
+    description.textContent =
+      'Prints computed role + aria-* + ids. Includes default, landmark (region), clickable, disabled-clickable, and decorative image.';
+
+    title.appendChild(heading);
+    title.appendChild(description);
     wrap.appendChild(title);
 
     const card = (labelText, build) => {
-      const c = document.createElement('div');
-      c.style.display = 'grid';
-      c.style.gridTemplateColumns = '320px 1fr';
-      c.style.gap = '12px';
-      c.style.alignItems = 'start';
-      c.style.border = '1px solid #ddd';
-      c.style.borderRadius = '8px';
-      c.style.padding = '12px';
+      const row = document.createElement('div');
+      row.className = 'card-accessibility-matrix__row';
 
       const left = document.createElement('div');
-      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+      left.className = 'card-accessibility-matrix__label';
+      left.textContent = labelText;
 
       const right = document.createElement('div');
-      right.style.display = 'grid';
-      right.style.gap = '8px';
+      right.className = 'card-accessibility-matrix__content';
 
       const demo = document.createElement('div');
+
       const built = build();
       demo.appendChild(built);
 
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className = 'card-accessibility-matrix__output';
       pre.textContent = 'Loading…';
 
       right.appendChild(demo);
       right.appendChild(pre);
 
-      c.appendChild(left);
-      c.appendChild(right);
+      row.appendChild(left);
+      row.appendChild(right);
 
       const snapshot = () => {
         const host = demo.querySelector('card-component');
         const root = host?.querySelector('article') || host;
-        const heading = host?.querySelector('.card-title');
+        const headingElement = host?.querySelector('.card-title');
         const img = host?.querySelector('img');
 
         pre.textContent = JSON.stringify(
           {
-            'hostTag': host?.tagName?.toLowerCase() ?? null,
-            'rootTag': root?.tagName?.toLowerCase() ?? null,
-            'role': root?.getAttribute('role') ?? null,
-            'tabIndexAttr': root?.getAttribute('tabindex') ?? null,
+            hostTag: host?.tagName?.toLowerCase() ?? null,
+            rootTag: root?.tagName?.toLowerCase() ?? null,
+            role: root?.getAttribute('role') ?? null,
+            tabIndexAttr: root?.getAttribute('tabindex') ?? null,
             'aria-label': root?.getAttribute('aria-label') ?? null,
-            'aria-labelledby': root?.getAttribute('aria-labelledby') ?? null,
-            'aria-describedby': root?.getAttribute('aria-describedby') ?? null,
-            'aria-disabled': root?.getAttribute('aria-disabled') ?? null,
-            'headingTag': heading ? heading.tagName.toLowerCase() : null,
-            'headingId': heading?.getAttribute('id') ?? null,
-            'headingText': heading?.textContent?.trim() ?? null,
-            'imgPresent': !!img,
-            'imgAlt': img?.getAttribute('alt') ?? null,
-            'imgAriaHidden': img?.getAttribute('aria-hidden') ?? null,
+            'aria-labelledby':
+              root?.getAttribute('aria-labelledby') ?? null,
+            'aria-describedby':
+              root?.getAttribute('aria-describedby') ?? null,
+            'aria-disabled':
+              root?.getAttribute('aria-disabled') ?? null,
+            headingTag:
+              headingElement?.tagName?.toLowerCase() ?? null,
+            headingId:
+              headingElement?.getAttribute('id') ?? null,
+            headingText:
+              headingElement?.textContent?.trim() ?? null,
+            imgPresent: Boolean(img),
+            imgAlt: img?.getAttribute('alt') ?? null,
+            imgAriaHidden:
+              img?.getAttribute('aria-hidden') ?? null,
           },
           null,
           2,
         );
       };
 
-      queueMicrotask(() => requestAnimationFrame(snapshot));
-      return c;
+      queueMicrotask(() =>
+        requestAnimationFrame(snapshot),
+      );
+
+      return row;
     };
 
     wrap.appendChild(
@@ -404,7 +411,8 @@ export const AccessibilityMatrix = {
           ariaLabelledby: undefined,
           ariaDescribedby: undefined,
           slotTitle: 'Default card',
-          slotText: 'No landmark role by default (avoids duplicate landmark checks).',
+          slotText:
+            'No landmark role by default (avoids duplicate landmark checks).',
         }),
       ),
     );
@@ -412,13 +420,13 @@ export const AccessibilityMatrix = {
     wrap.appendChild(
       card('Landmark region (named)', () => {
         const outer = document.createElement('div');
-        outer.style.display = 'grid';
-        outer.style.gap = '6px';
+        outer.className = 'card-accessibility-matrix__landmark';
 
         const ext = document.createElement('div');
         ext.id = 'card-ext-label';
+        ext.className =
+          'card-accessibility-matrix__landmark-label';
         ext.textContent = 'External landmark label';
-        ext.style.fontWeight = '600';
 
         outer.appendChild(ext);
 
@@ -429,10 +437,12 @@ export const AccessibilityMatrix = {
           ariaLabelledby: 'card-ext-label',
           ariaLabel: undefined,
           slotTitle: 'Landmark card title',
-          slotText: 'role="region" + aria-labelledby points to external label.',
+          slotText:
+            'role="region" + aria-labelledby points to external label.',
         });
 
         outer.appendChild(el);
+
         return outer;
       }),
     );
@@ -445,7 +455,8 @@ export const AccessibilityMatrix = {
           disabled: false,
           landmark: false,
           slotTitle: 'Clickable card',
-          slotText: 'Keyboard: Enter/Space emits customClick.',
+          slotText:
+            'Keyboard: Enter/Space emits customClick.',
         }),
       ),
     );
@@ -458,7 +469,8 @@ export const AccessibilityMatrix = {
           disabled: true,
           landmark: false,
           slotTitle: 'Disabled clickable',
-          slotText: 'aria-disabled should be true and tabindex should be absent.',
+          slotText:
+            'aria-disabled should be true and tabindex should be absent.',
         }),
       ),
     );
@@ -473,15 +485,20 @@ export const AccessibilityMatrix = {
           decorativeImage: true,
           altText: 'Should be ignored',
           slotTitle: 'Decorative image',
-          slotText: 'Image rendered with alt="" and aria-hidden="true".',
+          slotText:
+            'Image rendered with alt="" and aria-hidden="true".',
         }),
       ),
     );
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:

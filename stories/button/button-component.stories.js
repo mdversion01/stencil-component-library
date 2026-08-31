@@ -361,8 +361,33 @@ export const Block = {
     btnText: 'Block Button',
     variant: 'primary',
   },
+
+  render: args => {
+    const btn = renderButton(args);
+
+    btn.setAttribute('style', 'width: 100%;');
+
+    return btn;
+  },
+
   parameters: {
-    docs: { description: { story: 'Block-level button that spans the full width of its container.' } },
+    docs: {
+      description: {
+        story:
+          'Block-level button that spans the full width of its container by using the `block` attribute. The use of `style="width: 100%;"` is only for the example in this story.',
+      },
+
+      source: {
+        language: 'html',
+        code: `<button-component
+  block
+  btn-text="Block Button"
+  variant="primary"
+  style="width: 100%;"
+>
+</button-component>`,
+      },
+    },
   },
 };
 
@@ -520,49 +545,44 @@ export const ButtonWithBadge = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: () => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'accessibility-matrix';
 
     const title = document.createElement('div');
-    title.innerHTML = `<strong>Accessibility matrix</strong><div style="opacity:.8">Shows computed <code>tag</code>, <code>role</code>, <code>aria-*</code>, <code>href</code>, <code>tabindex</code>.</div>`;
+
+    const heading = document.createElement('strong');
+    heading.textContent = 'Accessibility matrix';
+
+    const description = document.createElement('div');
+    description.className = 'accessibility-matrix__description';
+    description.innerHTML =
+      'Shows computed host <code>role</code> / <code>aria-*</code> values for default/token/dot variants.';
+
+    title.appendChild(heading);
+    title.appendChild(description);
     wrap.appendChild(title);
 
-    const mkRow = (labelText, makeHost) => {
+    const mkRow = (labelText, makeEl) => {
       const row = document.createElement('div');
-      row.style.display = 'grid';
-      row.style.gridTemplateColumns = '240px 1fr';
-      row.style.gap = '12px';
-      row.style.alignItems = 'start';
-      row.style.border = '1px solid #ddd';
-      row.style.borderRadius = '8px';
-      row.style.padding = '12px';
+      row.className = 'accessibility-matrix__row';
 
       const left = document.createElement('div');
-      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+      left.className = 'accessibility-matrix__label';
+      left.textContent = labelText;
 
       const right = document.createElement('div');
-      right.style.display = 'grid';
-      right.style.gap = '8px';
+      right.className = 'accessibility-matrix__content';
 
       const demo = document.createElement('div');
-      demo.style.display = 'inline-flex';
-      demo.style.alignItems = 'center';
-      demo.style.gap = '8px';
-      demo.style.flexWrap = 'wrap';
+      demo.className = 'accessibility-matrix__demo';
 
-      const host = makeHost();
-      demo.appendChild(host);
+      const el = makeEl();
+      demo.appendChild(el);
 
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className = 'accessibility-matrix__output';
       pre.textContent = 'Loading computed attributes…';
 
       right.appendChild(demo);
@@ -572,25 +592,21 @@ export const AccessibilityMatrix = {
       row.appendChild(right);
 
       const update = () => {
-        const inner = host.querySelector('button, a');
         const attrs = {
-          'tag': inner?.tagName ?? null,
-          'href': inner?.getAttribute('href') ?? null,
-          'role': inner?.getAttribute('role') ?? null,
-          'tabindex': inner?.getAttribute('tabindex') ?? null,
-          'aria-label': inner?.getAttribute('aria-label') ?? null,
-          'aria-labelledby': inner?.getAttribute('aria-labelledby') ?? null,
-          'aria-describedby': inner?.getAttribute('aria-describedby') ?? null,
-          'aria-disabled': inner?.getAttribute('aria-disabled') ?? null,
-          'aria-pressed': inner?.getAttribute('aria-pressed') ?? null,
-          'aria-expanded': inner?.getAttribute('aria-expanded') ?? null,
-          'aria-controls': inner?.getAttribute('aria-controls') ?? null,
-          'title': inner?.getAttribute('title') ?? null,
+          role: el.getAttribute('role'),
+          'aria-hidden': el.getAttribute('aria-hidden'),
+          'aria-label': el.getAttribute('aria-label'),
+          'aria-labelledby': el.getAttribute('aria-labelledby'),
+          'aria-describedby': el.getAttribute('aria-describedby'),
+          'aria-live': el.getAttribute('aria-live'),
+          'aria-atomic': el.getAttribute('aria-atomic'),
         };
+
         pre.textContent = JSON.stringify(attrs, null, 2);
       };
 
       queueMicrotask(() => requestAnimationFrame(update));
+
       return row;
     };
 

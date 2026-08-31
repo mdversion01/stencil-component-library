@@ -512,89 +512,160 @@ ReadOnly.parameters = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: (args, ctx) => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'autocomplete-single-accessibility-matrix';
 
     const title = document.createElement('div');
-    title.innerHTML = `<strong>Accessibility matrix</strong>
-<div style="opacity:.8">Prints computed label/combobox/listbox wiring: role + aria-* + ids (default/inline/horizontal, validation/error, disabled, readOnly).</div>`;
+
+    const titleHeading = document.createElement('strong');
+    titleHeading.textContent = 'Accessibility matrix';
+
+    const titleDescription = document.createElement('div');
+    titleDescription.className =
+      'autocomplete-single-accessibility-matrix__description';
+    titleDescription.innerHTML =
+      'Prints computed label/combobox/listbox wiring: ' +
+      '<code>role</code> + <code>aria-*</code> + ids for default, inline, horizontal, ' +
+      'validation/error, disabled, and read-only states.';
+
+    title.appendChild(titleHeading);
+    title.appendChild(titleDescription);
     wrap.appendChild(title);
 
     const cardRow = (labelText, buildEl) => {
       const card = document.createElement('div');
-      card.style.display = 'grid';
-      card.style.alignItems = 'start';
-      card.style.border = '1px solid #ddd';
-      card.style.borderRadius = '8px';
-      card.style.padding = '12px';
+      card.className =
+        'autocomplete-single-accessibility-matrix__card';
 
-      const left = document.createElement('div');
-      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+      const heading = document.createElement('div');
+      heading.className =
+        'autocomplete-single-accessibility-matrix__card-title';
+      heading.textContent = labelText;
 
-      const right = document.createElement('div');
-      right.style.display = 'grid';
-      right.style.gap = '8px';
+      const content = document.createElement('div');
+      content.className =
+        'autocomplete-single-accessibility-matrix__content';
 
       const demo = document.createElement('div');
+      demo.className =
+        'autocomplete-single-accessibility-matrix__demo';
+
       const el = buildEl();
       demo.appendChild(el);
 
-      const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
-      pre.textContent = 'Loading…';
+      const output = document.createElement('pre');
+      output.className =
+        'autocomplete-single-accessibility-matrix__output';
+      output.textContent = 'Loading…';
 
-      right.appendChild(demo);
-      right.appendChild(pre);
+      content.appendChild(demo);
+      content.appendChild(output);
 
-      card.appendChild(left);
-      card.appendChild(right);
+      card.appendChild(heading);
+      card.appendChild(content);
 
       const snapshot = () => {
         const host = demo.querySelector('autocomplete-single');
-        const input = host?.querySelector('input[role="combobox"]');
-        const listboxId = input?.getAttribute('aria-controls');
-        const listbox = listboxId ? host?.querySelector(`#${CSS.escape(listboxId)}`) : host?.querySelector('[role="listbox"]');
+        const input = host?.querySelector(
+          'input[role="combobox"]',
+        );
+
+        const listboxId =
+          input?.getAttribute('aria-controls');
+
+        const listbox = listboxId
+          ? host?.querySelector(
+              `#${CSS.escape(listboxId)}`,
+            )
+          : host?.querySelector('[role="listbox"]');
+
         const labelEl = host?.querySelector('label');
 
-        pre.textContent = JSON.stringify(
+        output.textContent = JSON.stringify(
           {
-            hostTag: host?.tagName?.toLowerCase() ?? null,
-            inputId: input?.getAttribute('id') ?? null,
-            labelId: labelEl?.getAttribute('id') ?? null,
-            labelFor: labelEl?.getAttribute('for') ?? labelEl?.getAttribute('htmlfor') ?? null,
-            role: input?.getAttribute('role') ?? null,
-            ariaLabelledby: input?.getAttribute('aria-labelledby') ?? null,
-            ariaLabel: input?.getAttribute('aria-label') ?? null,
-            ariaDescribedby: input?.getAttribute('aria-describedby') ?? null,
-            ariaControls: input?.getAttribute('aria-controls') ?? null,
-            ariaExpanded: input?.getAttribute('aria-expanded') ?? null,
-            ariaActivedescendant: input?.getAttribute('aria-activedescendant') ?? null,
-            ariaRequired: input?.getAttribute('aria-required') ?? null,
-            ariaInvalid: input?.getAttribute('aria-invalid') ?? null,
-            ariaDisabled: input?.getAttribute('aria-disabled') ?? null,
-            ariaReadonly: input?.getAttribute('aria-readonly') ?? null,
-            readonly: input?.hasAttribute('readonly') ?? false,
-            disabled: input?.hasAttribute('disabled') ?? false,
-            listboxPresent: !!listbox,
-            listboxId: listbox?.getAttribute('id') ?? null,
-            hasValidation: !!host?.querySelector('.invalid-feedback'),
-            hasError: !!host?.querySelector('.error-message'),
-            hasClearButton: !!host?.querySelector('button.clear-btn'),
+            hostTag:
+              host?.tagName?.toLowerCase() ?? null,
+
+            inputId:
+              input?.getAttribute('id') ?? null,
+
+            labelId:
+              labelEl?.getAttribute('id') ?? null,
+
+            labelFor:
+              labelEl?.getAttribute('for') ??
+              labelEl?.getAttribute('htmlfor') ??
+              null,
+
+            role:
+              input?.getAttribute('role') ?? null,
+
+            ariaLabelledby:
+              input?.getAttribute('aria-labelledby') ??
+              null,
+
+            ariaLabel:
+              input?.getAttribute('aria-label') ?? null,
+
+            ariaDescribedby:
+              input?.getAttribute('aria-describedby') ??
+              null,
+
+            ariaControls:
+              input?.getAttribute('aria-controls') ?? null,
+
+            ariaExpanded:
+              input?.getAttribute('aria-expanded') ?? null,
+
+            ariaActivedescendant:
+              input?.getAttribute(
+                'aria-activedescendant',
+              ) ?? null,
+
+            ariaRequired:
+              input?.getAttribute('aria-required') ?? null,
+
+            ariaInvalid:
+              input?.getAttribute('aria-invalid') ?? null,
+
+            ariaDisabled:
+              input?.getAttribute('aria-disabled') ?? null,
+
+            ariaReadonly:
+              input?.getAttribute('aria-readonly') ?? null,
+
+            readonly:
+              input?.hasAttribute('readonly') ?? false,
+
+            disabled:
+              input?.hasAttribute('disabled') ?? false,
+
+            listboxPresent:
+              !!listbox,
+
+            listboxId:
+              listbox?.getAttribute('id') ?? null,
+
+            hasValidation:
+              !!host?.querySelector('.invalid-feedback'),
+
+            hasError:
+              !!host?.querySelector('.error-message'),
+
+            hasClearButton:
+              !!host?.querySelector('button.clear-btn'),
           },
           null,
           2,
         );
       };
 
-      queueMicrotask(() => requestAnimationFrame(snapshot));
+      queueMicrotask(() =>
+        requestAnimationFrame(snapshot),
+      );
+
       return card;
     };
 
@@ -660,22 +731,24 @@ export const AccessibilityMatrix = {
     );
 
     wrap.appendChild(
-      cardRow('Validation + Error (aria-invalid + describedby)', () =>
-        renderComponent(
-          {
-            ...args,
-            inputId: 'mx-msg',
-            label: 'Messages',
-            required: true,
-            validation: true,
-            validationMessage: 'This is required.',
-            error: true,
-            errorMessage: 'Something went wrong.',
-            readOnly: false,
-            value: '',
-          },
-          ctx,
-        ),
+      cardRow(
+        'Validation + Error (aria-invalid + describedby)',
+        () =>
+          renderComponent(
+            {
+              ...args,
+              inputId: 'mx-msg',
+              label: 'Messages',
+              required: true,
+              validation: true,
+              validationMessage: 'This is required.',
+              error: true,
+              errorMessage: 'Something went wrong.',
+              readOnly: false,
+              value: '',
+            },
+            ctx,
+          ),
       ),
     );
 
@@ -717,16 +790,22 @@ export const AccessibilityMatrix = {
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:
           'Prints computed accessibility wiring for the combobox + listbox: role/aria-labelledby/aria-describedby/aria-controls/aria-expanded/aria-activedescendant plus ids across layouts and states, including disabled and readOnly.',
       },
+
       source: {
         language: 'html',
-        transform: (_src, ctx) => wrapDocsHtml(buildDocsHtml(ctx.args)),
+        transform: (_src, ctx) =>
+          wrapDocsHtml(buildDocsHtml(ctx.args)),
       },
     },
   },

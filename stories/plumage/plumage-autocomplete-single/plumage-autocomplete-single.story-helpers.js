@@ -344,16 +344,16 @@ const readA11ySnapshotSingle = hostEl => {
   };
 };
 
-export const mkMatrixCellSingle = (args, { idOverride, inputIdOverride, title } = {}) => {
+export const mkMatrixCellSingle = (
+  args,
+  { idOverride, inputIdOverride, title } = {},
+) => {
   const wrap = document.createElement('div');
-  wrap.style.border = '1px solid #ddd';
-  wrap.style.borderRadius = '10px';
-  wrap.style.padding = '12px';
-  wrap.style.background = 'white';
+  wrap.className = 'plumage-autocomplete-single-accessibility-matrix__card';
 
   const head = document.createElement('div');
-  head.style.fontWeight = '700';
-  head.style.marginBottom = '8px';
+  head.className =
+    'plumage-autocomplete-single-accessibility-matrix__card-title';
   head.textContent = title || 'Variant';
 
   const el = document.createElement(TAG);
@@ -378,33 +378,55 @@ export const mkMatrixCellSingle = (args, { idOverride, inputIdOverride, title } 
   setAttr(el, 'type', args.type || 'text');
   setAttr(el, 'validation-message', args.validationMessage);
 
-  args.required ? el.setAttribute('required', '') : el.removeAttribute('required');
-  args.validation ? el.setAttribute('validation', '') : el.removeAttribute('validation');
-  args.error ? el.setAttribute('error', '') : el.removeAttribute('error');
-  args.disabled ? el.setAttribute('disabled', '') : el.removeAttribute('disabled');
-  args.readOnly ? el.setAttribute('read-only', '') : el.removeAttribute('read-only');
-  args.labelHidden ? el.setAttribute('label-hidden', '') : el.removeAttribute('label-hidden');
-  args.devMode ? el.setAttribute('dev-mode', '') : el.removeAttribute('dev-mode');
-  args.removeClearBtn ? el.setAttribute('remove-clear-btn', '') : el.removeAttribute('remove-clear-btn');
+  args.required
+    ? el.setAttribute('required', '')
+    : el.removeAttribute('required');
 
-  setOptionsWhenReady(el, Array.isArray(args.options) && args.options.length ? args.options : DEFAULT_OPTIONS);
+  args.validation
+    ? el.setAttribute('validation', '')
+    : el.removeAttribute('validation');
+
+  args.error
+    ? el.setAttribute('error', '')
+    : el.removeAttribute('error');
+
+  args.disabled
+    ? el.setAttribute('disabled', '')
+    : el.removeAttribute('disabled');
+
+  args.readOnly
+    ? el.setAttribute('read-only', '')
+    : el.removeAttribute('read-only');
+
+  args.labelHidden
+    ? el.setAttribute('label-hidden', '')
+    : el.removeAttribute('label-hidden');
+
+  args.devMode
+    ? el.setAttribute('dev-mode', '')
+    : el.removeAttribute('dev-mode');
+
+  args.removeClearBtn
+    ? el.setAttribute('remove-clear-btn', '')
+    : el.removeAttribute('remove-clear-btn');
+
+  setOptionsWhenReady(
+    el,
+    Array.isArray(args.options) && args.options.length
+      ? args.options
+      : DEFAULT_OPTIONS,
+  );
   setAutoSortWhenReady(el, args.autoSort);
   setValueWhenReady(el, args.value);
 
   const status = document.createElement('div');
-  status.style.fontSize = '12px';
-  status.style.color = '#666';
-  status.style.marginTop = '8px';
+  status.className =
+    'plumage-autocomplete-single-accessibility-matrix__status';
   status.textContent = 'Computing ARIA snapshot…';
 
   const pre = document.createElement('pre');
-  pre.style.marginTop = '10px';
-  pre.style.background = '#f8f9fa';
-  pre.style.borderRadius = '8px';
-  pre.style.padding = '10px';
-  pre.style.fontSize = '12px';
-  pre.style.lineHeight = '1.35';
-  pre.style.whiteSpace = 'pre-wrap';
+  pre.className =
+    'plumage-autocomplete-single-accessibility-matrix__output';
 
   wrap.appendChild(head);
   wrap.appendChild(el);
@@ -418,6 +440,7 @@ export const mkMatrixCellSingle = (args, { idOverride, inputIdOverride, title } 
           el.validate();
         } catch (_) {}
       }
+
       return new Promise(r => setTimeout(r, 0));
     })
     .then(() => {

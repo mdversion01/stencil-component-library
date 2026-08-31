@@ -153,46 +153,44 @@ export const ExternalLabelAndDescription = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: () => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'button-group-accessibility-matrix';
 
     const title = document.createElement('div');
-    title.innerHTML =
-      '<strong>Accessibility matrix</strong>' +
-      '<div style="opacity:.8">Shows computed role and aria-* attributes on the group container.</div>';
+
+    const heading = document.createElement('strong');
+    heading.textContent = 'Accessibility matrix';
+
+    const description = document.createElement('div');
+    description.className =
+      'button-group-accessibility-matrix__description';
+    description.textContent =
+      'Shows computed role and aria-* attributes on the group container.';
+
+    title.appendChild(heading);
+    title.appendChild(description);
     wrap.appendChild(title);
 
     const mkRow = (labelText, makeHost, afterMount) => {
       const row = document.createElement('div');
-      row.style.display = 'grid';
-      row.style.gridTemplateColumns = '260px 1fr';
-      row.style.gap = '12px';
-      row.style.alignItems = 'start';
-      row.style.border = '1px solid #ddd';
-      row.style.borderRadius = '8px';
-      row.style.padding = '12px';
+      row.className = 'button-group-accessibility-matrix__row';
 
       const left = document.createElement('div');
-      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+      left.className = 'button-group-accessibility-matrix__label';
+      left.textContent = labelText;
 
       const right = document.createElement('div');
-      right.style.display = 'grid';
-      right.style.gap = '8px';
+      right.className = 'button-group-accessibility-matrix__content';
 
       const demo = document.createElement('div');
+
       const host = makeHost();
       demo.appendChild(host);
 
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className = 'button-group-accessibility-matrix__output';
       pre.textContent = 'Loading computed attributes…';
 
       right.appendChild(demo);
@@ -202,23 +200,33 @@ export const AccessibilityMatrix = {
       row.appendChild(right);
 
       const update = () => {
-        const group = demo.querySelector('button-group > div[role="group"]') || demo.querySelector('[role="group"]');
+        const group =
+          demo.querySelector('button-group > div[role="group"]') ||
+          demo.querySelector('[role="group"]');
+
         const attrs = {
           tag: group?.tagName ?? null,
           role: group?.getAttribute('role') ?? null,
           class: group?.getAttribute('class') ?? null,
           'aria-label': group?.getAttribute('aria-label') ?? null,
-          'aria-labelledby': group?.getAttribute('aria-labelledby') ?? null,
-          'aria-describedby': group?.getAttribute('aria-describedby') ?? null,
-          'aria-disabled': group?.getAttribute('aria-disabled') ?? null,
+          'aria-labelledby':
+            group?.getAttribute('aria-labelledby') ?? null,
+          'aria-describedby':
+            group?.getAttribute('aria-describedby') ?? null,
+          'aria-disabled':
+            group?.getAttribute('aria-disabled') ?? null,
         };
+
         pre.textContent = JSON.stringify(attrs, null, 2);
       };
 
       queueMicrotask(() =>
         requestAnimationFrame(async () => {
           update();
-          if (afterMount) await afterMount(demo, update);
+
+          if (afterMount) {
+            await afterMount(demo, update);
+          }
         }),
       );
 
@@ -283,8 +291,12 @@ export const AccessibilityMatrix = {
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:

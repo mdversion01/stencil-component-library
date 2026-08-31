@@ -259,50 +259,44 @@ export const LinkToggle = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: (_args, context) => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'accordion-accessibility-matrix';
 
     const title = document.createElement('div');
-    title.innerHTML =
-      '<strong>Accessibility matrix</strong>' +
-      '<div style="opacity:.8">Shows computed toggle + region ARIA, ids, expanded state, and collapse classes (collapse/show/collapsing).</div>';
+
+    const heading = document.createElement('strong');
+    heading.textContent = 'Accessibility matrix';
+
+    const description = document.createElement('div');
+    description.className = 'accordion-accessibility-matrix__description';
+    description.textContent =
+      'Shows computed toggle + region ARIA, ids, expanded state, and collapse classes (collapse/show/collapsing).';
+
+    title.appendChild(heading);
+    title.appendChild(description);
     wrap.appendChild(title);
 
     const mkRow = (labelText, makeHost) => {
       const row = document.createElement('div');
-      row.style.display = 'grid';
-      row.style.gridTemplateColumns = '260px 1fr';
-      row.style.gap = '12px';
-      row.style.alignItems = 'start';
-      row.style.border = '1px solid #ddd';
-      row.style.borderRadius = '8px';
-      row.style.padding = '12px';
+      row.className = 'accordion-accessibility-matrix__row';
 
       const left = document.createElement('div');
-      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+      left.className = 'accordion-accessibility-matrix__label';
+      left.textContent = labelText;
 
       const right = document.createElement('div');
-      right.style.display = 'grid';
-      right.style.gap = '8px';
+      right.className = 'accordion-accessibility-matrix__content';
 
       const demo = document.createElement('div');
-      demo.style.alignItems = 'center';
-      demo.style.gap = '12px';
-      demo.style.flexWrap = 'wrap';
+      demo.className = 'accordion-accessibility-matrix__demo';
 
       const host = makeHost();
       demo.appendChild(host);
 
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className = 'accordion-accessibility-matrix__output';
       pre.textContent = 'Loading computed attributes…';
 
       right.appendChild(demo);
@@ -313,9 +307,13 @@ export const AccessibilityMatrix = {
 
       const update = () => {
         const bc = host.querySelector('button-component');
-        const inner = host.querySelector('button-component button, button-component a');
+        const inner = host.querySelector(
+          'button-component button, button-component a',
+        );
         const region = host.querySelector('[role="region"]');
-        const cls = region ? Array.from(region.classList).join(' ') : null;
+        const cls = region
+          ? Array.from(region.classList).join(' ')
+          : null;
 
         const attrs = {
           mode:
@@ -324,91 +322,125 @@ export const AccessibilityMatrix = {
               : host.getAttribute('link') != null
                 ? 'link'
                 : 'button',
-          regionId: region?.getAttribute('id') ?? host.getAttribute('target-id'),
+
+          regionId:
+            region?.getAttribute('id') ??
+            host.getAttribute('target-id'),
+
           toggleHostId: bc?.getAttribute('id') ?? null,
           innerTag: inner?.tagName ?? null,
           innerRole: inner?.getAttribute('role') ?? null,
-          'aria-expanded': inner?.getAttribute('aria-expanded') ?? null,
-          'aria-controls': inner?.getAttribute('aria-controls') ?? null,
-          regionRole: region?.getAttribute('role') ?? null,
-          'region aria-labelledby': region?.getAttribute('aria-labelledby') ?? null,
-          'aria-hidden': region?.getAttribute('aria-hidden') ?? null,
-          inert: region?.hasAttribute('inert') ?? null,
+
+          'aria-expanded':
+            inner?.getAttribute('aria-expanded') ?? null,
+
+          'aria-controls':
+            inner?.getAttribute('aria-controls') ?? null,
+
+          regionRole:
+            region?.getAttribute('role') ?? null,
+
+          'region aria-labelledby':
+            region?.getAttribute('aria-labelledby') ?? null,
+
+          'aria-hidden':
+            region?.getAttribute('aria-hidden') ?? null,
+
+          inert:
+            region?.hasAttribute('inert') ?? null,
+
           class: cls,
-          inlineHeight: region?.style?.height ?? null,
+
+          inlineHeight:
+            region?.style?.height ?? null,
         };
 
         pre.textContent = JSON.stringify(attrs, null, 2);
       };
 
-      queueMicrotask(() => requestAnimationFrame(update));
+      queueMicrotask(() =>
+        requestAnimationFrame(update),
+      );
+
       return row;
     };
 
-    const mk = (args) => buildAccordion(args, context);
+    const mk = args => buildAccordion(args, context);
 
     wrap.appendChild(
-      mkRow('Button toggle (closed)', () =>
-        mk({
-          accordion: false,
-          link: false,
-          isOpen: false,
-          targetId: 'mx-btn',
-          headerText: 'Toggle section',
-          contentLine1: 'Body',
-          contentLine2: 'More',
-          variant: 'primary',
-        }),
+      mkRow(
+        'Button toggle (closed)',
+        () =>
+          mk({
+            accordion: false,
+            link: false,
+            isOpen: false,
+            targetId: 'mx-btn',
+            headerText: 'Toggle section',
+            contentLine1: 'Body',
+            contentLine2: 'More',
+            variant: 'primary',
+          }),
       ),
     );
 
     wrap.appendChild(
-      mkRow('Button toggle (open)', () =>
-        mk({
-          accordion: false,
-          link: false,
-          isOpen: true,
-          targetId: 'mx-btn-open',
-          headerText: 'Toggle section',
-          contentLine1: 'Body',
-          contentLine2: 'More',
-          variant: 'primary',
-        }),
+      mkRow(
+        'Button toggle (open)',
+        () =>
+          mk({
+            accordion: false,
+            link: false,
+            isOpen: true,
+            targetId: 'mx-btn-open',
+            headerText: 'Toggle section',
+            contentLine1: 'Body',
+            contentLine2: 'More',
+            variant: 'primary',
+          }),
       ),
     );
 
     wrap.appendChild(
-      mkRow('Accordion mode (with icon)', () =>
-        mk({
-          accordion: true,
-          icon: 'fa-solid fa-plus, fa-solid fa-minus',
-          isOpen: false,
-          targetId: 'mx-acc',
-          headerText: 'Accordion header',
-          contentLine1: 'Body',
-          contentLine2: 'More',
-        }),
+      mkRow(
+        'Accordion mode (with icon)',
+        () =>
+          mk({
+            accordion: true,
+            icon: 'fa-solid fa-plus, fa-solid fa-minus',
+            isOpen: false,
+            targetId: 'mx-acc',
+            headerText: 'Accordion header',
+            contentLine1: 'Body',
+            contentLine2: 'More',
+          }),
       ),
     );
 
     wrap.appendChild(
-      mkRow('Link mode', () =>
-        mk({
-          link: true,
-          variant: 'link',
-          isOpen: false,
-          targetId: 'mx-link',
-          headerText: 'Open via link',
-          contentLine1: 'Body',
-          contentLine2: 'More',
-        }),
+      mkRow(
+        'Link mode',
+        () =>
+          mk({
+            link: true,
+            variant: 'link',
+            isOpen: false,
+            targetId: 'mx-link',
+            headerText: 'Open via link',
+            contentLine1: 'Body',
+            contentLine2: 'More',
+          }),
       ),
     );
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:

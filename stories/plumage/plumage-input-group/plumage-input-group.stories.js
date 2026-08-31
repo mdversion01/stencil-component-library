@@ -504,6 +504,7 @@ export const ExternalValue = {
     const makeButton = (label, nextValue) => {
       const btn = document.createElement('button');
       btn.type = 'button';
+      btn.className = 'storybook-example-button';
       btn.textContent = label;
       btn.addEventListener('click', () => {
         host.value = nextValue;
@@ -855,14 +856,12 @@ export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: args => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'plumage-input-group-accessibility-matrix';
 
     const header = document.createElement('div');
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
-      <div style="opacity:.8">
+      <div class="plumage-input-group-accessibility-matrix__description">
         Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal, validation, disabled, readOnly, and button affixes.
       </div>
     `;
@@ -870,27 +869,23 @@ export const AccessibilityMatrix = {
 
     const card = (title, storyArgs) => {
       const box = document.createElement('div');
-      box.style.border = '1px solid #ddd';
-      box.style.borderRadius = '10px';
-      box.style.padding = '12px';
-      box.style.display = 'grid';
-      box.style.gap = '10px';
+      box.className = 'plumage-input-group-accessibility-matrix__card';
 
       const t = document.createElement('div');
-      t.style.fontWeight = '600';
+      t.className = 'plumage-input-group-accessibility-matrix__card-title';
       t.textContent = title;
 
       const demo = document.createElement('div');
+
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className = 'plumage-input-group-accessibility-matrix__output';
       pre.textContent = 'Loading…';
 
-      const host = buildEl({ ...Basic.args, ...args, ...storyArgs });
+      const host = buildEl({
+        ...Basic.args,
+        ...args,
+        ...storyArgs,
+      });
       demo.appendChild(host);
 
       const update = async () => {
@@ -900,7 +895,9 @@ export const AccessibilityMatrix = {
           } catch (_e) {}
         } else if (window.customElements?.whenDefined) {
           try {
-            await customElements.whenDefined('plumage-input-group-component');
+            await customElements.whenDefined(
+              'plumage-input-group-component',
+            );
           } catch (_e) {}
         }
 
@@ -912,6 +909,7 @@ export const AccessibilityMatrix = {
       box.appendChild(t);
       box.appendChild(demo);
       box.appendChild(pre);
+
       return box;
     };
 

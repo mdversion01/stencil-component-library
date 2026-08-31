@@ -285,21 +285,26 @@ export function snapshotA11y(host) {
   };
 }
 
-export function buildMatrixRow({ title, args, wrapStyle = '', idSuffix }) {
+export function buildMatrixRow({
+  title,
+  args,
+  wrapStyle = '',
+  idSuffix,
+}) {
   const wrap = document.createElement('div');
-  wrap.style.border = '1px solid #ddd';
-  wrap.style.borderRadius = '12px';
-  wrap.style.padding = '12px';
-  wrap.style.display = 'grid';
-  wrap.style.gap = '10px';
+  wrap.className = 'modal-accessibility-matrix__row';
 
   const heading = document.createElement('div');
-  heading.style.fontWeight = '700';
+  heading.className = 'modal-accessibility-matrix__row-heading';
   heading.textContent = title;
 
   const stage = document.createElement('div');
-  stage.style.maxWidth = '720px';
-  if (wrapStyle) stage.setAttribute('style', wrapStyle);
+  stage.className = 'modal-accessibility-matrix__stage';
+
+  // Keep the existing Storybook-only layout behavior.
+  if (wrapStyle) {
+    stage.setAttribute('style', wrapStyle);
+  }
 
   const container = document.createElement('div');
   container.innerHTML = template({
@@ -310,12 +315,7 @@ export function buildMatrixRow({ title, args, wrapStyle = '', idSuffix }) {
   stage.appendChild(container);
 
   const pre = document.createElement('pre');
-  pre.style.margin = '0';
-  pre.style.padding = '10px';
-  pre.style.background = '#f6f8fa';
-  pre.style.borderRadius = '10px';
-  pre.style.overflowX = 'auto';
-  pre.style.fontSize = '12px';
+  pre.className = 'modal-accessibility-matrix__output';
   pre.textContent = 'Collecting aria/role/id…';
 
   wrap.appendChild(heading);
@@ -324,11 +324,21 @@ export function buildMatrixRow({ title, args, wrapStyle = '', idSuffix }) {
 
   const update = () => {
     const host = container.querySelector('modal-component');
-    if (!host) return;
-    pre.textContent = JSON.stringify(snapshotA11y(host), null, 2);
+
+    if (!host) {
+      return;
+    }
+
+    pre.textContent = JSON.stringify(
+      snapshotA11y(host),
+      null,
+      2,
+    );
   };
 
-  requestAnimationFrame(() => requestAnimationFrame(update));
+  requestAnimationFrame(() =>
+    requestAnimationFrame(update),
+  );
 
   return wrap;
 }

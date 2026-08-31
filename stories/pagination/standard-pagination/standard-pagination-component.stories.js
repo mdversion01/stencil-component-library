@@ -635,19 +635,29 @@ export const StandaloneRangeAndSizer = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: () => {
     const root = document.createElement('div');
-    root.style.display = 'grid';
-    root.style.gap = '16px';
+    root.className = 'standard-pagination-accessibility-matrix';
 
     const intro = document.createElement('div');
-    intro.innerHTML = `
-    <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
-    <div style="font-size:13px; color:#444;">
-      Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs.
-      Also reports whether <code>aria-describedby</code> resolves to real elements (range + select help text).
-    </div>
-  `;
+
+    const introTitle = document.createElement('div');
+    introTitle.className =
+      'standard-pagination-accessibility-matrix__intro-title';
+    introTitle.textContent = 'Accessibility matrix';
+
+    const introDescription = document.createElement('div');
+    introDescription.className =
+      'standard-pagination-accessibility-matrix__intro-description';
+    introDescription.innerHTML =
+      'Renders common variants and prints computed <code>role</code> + ' +
+      '<code>aria-*</code> + IDs. Also reports whether ' +
+      '<code>aria-describedby</code> resolves to real elements ' +
+      '(range + select help text).';
+
+    intro.appendChild(introTitle);
+    intro.appendChild(introDescription);
     root.appendChild(intro);
 
     const rows = [
@@ -695,7 +705,8 @@ export const AccessibilityMatrix = {
           itemsPerPageOptions: [10, 20, 50, 100, 'All'],
           plumage: true,
           pageSizeLabel: 'Items per page:',
-          pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+          pageSizeHelpText:
+            'Use this control to change how many items are shown per page.',
           paginationAriaLabel: 'Pagination',
         },
       },
@@ -711,7 +722,8 @@ export const AccessibilityMatrix = {
           itemsPerPageOptions: [10, 20, 'All'],
           plumage: false,
           pageSizeLabel: 'Items per page:',
-          pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+          pageSizeHelpText:
+            'Use this control to change how many items are shown per page.',
           paginationAriaLabel: 'Pagination',
         },
       },
@@ -731,25 +743,32 @@ export const AccessibilityMatrix = {
       },
     ];
 
-    rows.forEach((r, idx) => {
+    rows.forEach((row, index) => {
       root.appendChild(
         renderMatrixRow({
-          ...r,
-          idSuffix: String(idx + 1),
+          ...row,
+          idSuffix: String(index + 1),
         }),
       );
     });
 
     return root;
   },
+
   parameters: {
     docs: {
       description: {
         story:
           'Matrix of key states (default/inline-ish/horizontal-ish, no-rows state, start-disabled state). Each row prints computed role/aria/ids and whether aria-describedby resolves.',
       },
-      story: { height: '1400px' },
+
+      story: {
+        height: '1400px',
+      },
     },
-    controls: { disable: true },
+
+    controls: {
+      disable: true,
+    },
   },
 };

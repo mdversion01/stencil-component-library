@@ -725,14 +725,12 @@ export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: () => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'radio-input-accessibility-matrix';
 
     const header = document.createElement('div');
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
-      <div style="opacity:.8">
+      <div class="radio-input-accessibility-matrix__description">
         Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal, validation, and disabled.
       </div>
     `;
@@ -740,24 +738,16 @@ export const AccessibilityMatrix = {
 
     const card = (title, makeOuter) => {
       const box = document.createElement('div');
-      box.style.border = '1px solid #ddd';
-      box.style.borderRadius = '10px';
-      box.style.padding = '12px';
-      box.style.display = 'grid';
-      box.style.gap = '10px';
+      box.className = 'radio-input-accessibility-matrix__card';
 
       const t = document.createElement('div');
-      t.style.fontWeight = '600';
+      t.className = 'radio-input-accessibility-matrix__card-title';
       t.textContent = title;
 
       const demo = document.createElement('div');
+
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className = 'radio-input-accessibility-matrix__output';
       pre.textContent = 'Loading…';
 
       const outer = makeOuter();
@@ -765,6 +755,7 @@ export const AccessibilityMatrix = {
 
       const update = async () => {
         const host = outer.querySelector?.('radio-input-component') || outer;
+
         if (host?.componentOnReady) {
           try {
             await host.componentOnReady();
@@ -774,6 +765,7 @@ export const AccessibilityMatrix = {
             await customElements.whenDefined('radio-input-component');
           } catch (_e) {}
         }
+
         pre.textContent = JSON.stringify(getSnapshot(outer), null, 2);
       };
 
@@ -782,6 +774,7 @@ export const AccessibilityMatrix = {
       box.appendChild(t);
       box.appendChild(demo);
       box.appendChild(pre);
+
       return box;
     };
 
@@ -794,10 +787,20 @@ export const AccessibilityMatrix = {
         el.setAttribute(
           'group-options',
           JSON.stringify([
-            { inputId: 'mx-d-a', value: 'a', labelTxt: 'Alpha', checked: true },
-            { inputId: 'mx-d-b', value: 'b', labelTxt: 'Beta' },
+            {
+              inputId: 'mx-d-a',
+              value: 'a',
+              labelTxt: 'Alpha',
+              checked: true,
+            },
+            {
+              inputId: 'mx-d-b',
+              value: 'b',
+              labelTxt: 'Beta',
+            },
           ]),
         );
+
         return el;
       }),
     );
@@ -812,11 +815,25 @@ export const AccessibilityMatrix = {
         el.setAttribute(
           'group-options',
           JSON.stringify([
-            { inputId: 'mx-i-s', value: 'S', labelTxt: 'Small' },
-            { inputId: 'mx-i-m', value: 'M', labelTxt: 'Medium', checked: true },
-            { inputId: 'mx-i-l', value: 'L', labelTxt: 'Large' },
+            {
+              inputId: 'mx-i-s',
+              value: 'S',
+              labelTxt: 'Small',
+            },
+            {
+              inputId: 'mx-i-m',
+              value: 'M',
+              labelTxt: 'Medium',
+              checked: true,
+            },
+            {
+              inputId: 'mx-i-l',
+              value: 'L',
+              labelTxt: 'Large',
+            },
           ]),
         );
+
         return el;
       }),
     );
@@ -824,16 +841,14 @@ export const AccessibilityMatrix = {
     wrap.appendChild(
       card('Horizontal layout (simulated)', () => {
         const outer = document.createElement('div');
-        outer.style.display = 'grid';
-        outer.style.gridTemplateColumns = '220px 1fr';
-        outer.style.gap = '12px';
-        outer.style.alignItems = 'start';
-        outer.style.maxWidth = '780px';
+        outer.className = 'radio-input-accessibility-matrix__horizontal';
 
         const left = document.createElement('div');
         left.id = 'mx-horizontal-label';
-        left.innerHTML =
-          '<div style="font-weight:600">Horizontal label area</div><div style="opacity:.8; font-size:12px;">Simulates a horizontal form row.</div>';
+        left.innerHTML = `
+          <div class="radio-input-accessibility-matrix__horizontal-label">Horizontal label area</div>
+          <div class="radio-input-accessibility-matrix__horizontal-description">Simulates a horizontal form row.</div>
+        `;
 
         const el = document.createElement('radio-input-component');
         el.setAttribute('bs-radio-group', '');
@@ -842,13 +857,23 @@ export const AccessibilityMatrix = {
         el.setAttribute(
           'group-options',
           JSON.stringify([
-            { inputId: 'mx-h-1', value: '1', labelTxt: 'One', checked: true },
-            { inputId: 'mx-h-2', value: '2', labelTxt: 'Two' },
+            {
+              inputId: 'mx-h-1',
+              value: '1',
+              labelTxt: 'One',
+              checked: true,
+            },
+            {
+              inputId: 'mx-h-2',
+              value: '2',
+              labelTxt: 'Two',
+            },
           ]),
         );
 
         outer.appendChild(left);
         outer.appendChild(el);
+
         return outer;
       }),
     );
@@ -865,10 +890,19 @@ export const AccessibilityMatrix = {
         el.setAttribute(
           'group-options',
           JSON.stringify([
-            { inputId: 'mx-v-a', value: 'a', labelTxt: 'Alpha' },
-            { inputId: 'mx-v-b', value: 'b', labelTxt: 'Beta' },
+            {
+              inputId: 'mx-v-a',
+              value: 'a',
+              labelTxt: 'Alpha',
+            },
+            {
+              inputId: 'mx-v-b',
+              value: 'b',
+              labelTxt: 'Beta',
+            },
           ]),
         );
+
         return el;
       }),
     );
@@ -882,6 +916,7 @@ export const AccessibilityMatrix = {
         el.setAttribute('label-txt', 'Disabled option');
         el.setAttribute('disabled', '');
         el.setAttribute('value', 'x');
+
         return el;
       }),
     );
@@ -895,15 +930,32 @@ export const AccessibilityMatrix = {
         el.setAttribute('disabled', '');
         el.setAttribute('required', '');
         el.setAttribute('validation', '');
-        el.setAttribute('validation-msg', 'Should not display while disabled');
+        el.setAttribute(
+          'validation-msg',
+          'Should not display while disabled',
+        );
         el.setAttribute(
           'group-options',
           JSON.stringify([
-            { inputId: 'mx-gd-a', value: 'a', labelTxt: 'Alpha', checked: true },
-            { inputId: 'mx-gd-b', value: 'b', labelTxt: 'Beta' },
-            { inputId: 'mx-gd-c', value: 'c', labelTxt: 'Gamma' },
+            {
+              inputId: 'mx-gd-a',
+              value: 'a',
+              labelTxt: 'Alpha',
+              checked: true,
+            },
+            {
+              inputId: 'mx-gd-b',
+              value: 'b',
+              labelTxt: 'Beta',
+            },
+            {
+              inputId: 'mx-gd-c',
+              value: 'c',
+              labelTxt: 'Gamma',
+            },
           ]),
         );
+
         return el;
       }),
     );

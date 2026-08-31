@@ -696,91 +696,166 @@ export const BadgeStyling = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: (args, ctx) => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className =
+      'autocomplete-multiple-selections-accessibility-matrix';
 
     const title = document.createElement('div');
-    title.innerHTML =
-      '<strong>Accessibility matrix</strong><div style="opacity:.8">Prints computed combobox/listbox/label wiring + validation/error ids. Includes disabled, readOnly, and id de-dupe.</div>';
+
+    const titleHeading = document.createElement('strong');
+    titleHeading.textContent = 'Accessibility matrix';
+
+    const titleDescription = document.createElement('div');
+    titleDescription.className =
+      'autocomplete-multiple-selections-accessibility-matrix__description';
+    titleDescription.innerHTML =
+      'Prints computed combobox/listbox/label wiring + validation/error ids. ' +
+      'Includes disabled, readOnly, external ARIA references, and id de-dupe.';
+
+    title.appendChild(titleHeading);
+    title.appendChild(titleDescription);
     wrap.appendChild(title);
 
     const row = (labelText, build) => {
       const card = document.createElement('div');
-      card.style.display = 'grid';
-      card.style.alignItems = 'start';
-      card.style.border = '1px solid #ddd';
-      card.style.borderRadius = '8px';
-      card.style.padding = '12px';
+      card.className =
+        'autocomplete-multiple-selections-accessibility-matrix__card';
 
-      const left = document.createElement('div');
-      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+      const heading = document.createElement('div');
+      heading.className =
+        'autocomplete-multiple-selections-accessibility-matrix__card-title';
+      heading.textContent = labelText;
 
-      const right = document.createElement('div');
-      right.style.display = 'grid';
-      right.style.gap = '8px';
+      const content = document.createElement('div');
+      content.className =
+        'autocomplete-multiple-selections-accessibility-matrix__content';
 
       const demo = document.createElement('div');
+      demo.className =
+        'autocomplete-multiple-selections-accessibility-matrix__demo';
+
       const built = build();
       demo.appendChild(built);
 
-      const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
-      pre.textContent = 'Loading…';
+      const output = document.createElement('pre');
+      output.className =
+        'autocomplete-multiple-selections-accessibility-matrix__output';
+      output.textContent = 'Loading…';
 
-      right.appendChild(demo);
-      right.appendChild(pre);
+      content.appendChild(demo);
+      content.appendChild(output);
 
-      card.appendChild(left);
-      card.appendChild(right);
+      card.appendChild(heading);
+      card.appendChild(content);
 
       const snapshot = () => {
-        const host = demo.querySelector('autocomplete-multiple-selections');
-        const input = host?.querySelector('input[role="combobox"]');
+        const host = demo.querySelector(
+          'autocomplete-multiple-selections',
+        );
+
+        const input = host?.querySelector(
+          'input[role="combobox"]',
+        );
+
         const labelEl = host?.querySelector('label');
 
-        const listboxId = input?.getAttribute('aria-controls') || null;
-        const listbox = listboxId ? host?.querySelector(`#${CSS.escape(listboxId)}`) : host?.querySelector('[role="listbox"]');
+        const listboxId =
+          input?.getAttribute('aria-controls') || null;
 
-        pre.textContent = JSON.stringify(
+        const listbox = listboxId
+          ? host?.querySelector(
+              `#${CSS.escape(listboxId)}`,
+            )
+          : host?.querySelector('[role="listbox"]');
+
+        output.textContent = JSON.stringify(
           {
-            hostId: host?.getAttribute('id') ?? null,
-            inputId: input?.getAttribute('id') ?? null,
-            labelId: labelEl?.getAttribute('id') ?? null,
-            labelFor: labelEl?.getAttribute('for') ?? labelEl?.getAttribute('htmlfor') ?? null,
-            ariaLabelledby: input?.getAttribute('aria-labelledby') ?? null,
-            ariaLabel: input?.getAttribute('aria-label') ?? null,
-            ariaDescribedby: input?.getAttribute('aria-describedby') ?? null,
-            ariaControls: input?.getAttribute('aria-controls') ?? null,
-            ariaExpanded: input?.getAttribute('aria-expanded') ?? null,
-            ariaActivedescendant: input?.getAttribute('aria-activedescendant') ?? null,
-            ariaRequired: input?.getAttribute('aria-required') ?? null,
-            ariaInvalid: input?.getAttribute('aria-invalid') ?? null,
-            ariaDisabled: input?.getAttribute('aria-disabled') ?? null,
-            ariaReadonly: input?.getAttribute('aria-readonly') ?? null,
-            readonlyAttr: input?.hasAttribute('readonly') ?? null,
-            disabledAttr: input?.hasAttribute('disabled') ?? null,
-            listboxPresent: !!listbox,
-            listboxId: listbox?.getAttribute('id') ?? null,
-            hasValidation: !!host?.querySelector('.invalid-feedback'),
-            hasError: !!host?.querySelector('.error-message'),
-            hasAddButton: !!host?.querySelector('button.add-btn'),
-            hasClearButton: !!host?.querySelector('button.clear-btn'),
-            hasRemoveButtons: !!host?.querySelector('.remove-btn'),
+            hostId:
+              host?.getAttribute('id') ?? null,
+
+            inputId:
+              input?.getAttribute('id') ?? null,
+
+            labelId:
+              labelEl?.getAttribute('id') ?? null,
+
+            labelFor:
+              labelEl?.getAttribute('for') ??
+              labelEl?.getAttribute('htmlfor') ??
+              null,
+
+            ariaLabelledby:
+              input?.getAttribute('aria-labelledby') ??
+              null,
+
+            ariaLabel:
+              input?.getAttribute('aria-label') ?? null,
+
+            ariaDescribedby:
+              input?.getAttribute('aria-describedby') ??
+              null,
+
+            ariaControls:
+              input?.getAttribute('aria-controls') ?? null,
+
+            ariaExpanded:
+              input?.getAttribute('aria-expanded') ?? null,
+
+            ariaActivedescendant:
+              input?.getAttribute(
+                'aria-activedescendant',
+              ) ?? null,
+
+            ariaRequired:
+              input?.getAttribute('aria-required') ?? null,
+
+            ariaInvalid:
+              input?.getAttribute('aria-invalid') ?? null,
+
+            ariaDisabled:
+              input?.getAttribute('aria-disabled') ?? null,
+
+            ariaReadonly:
+              input?.getAttribute('aria-readonly') ?? null,
+
+            readonlyAttr:
+              input?.hasAttribute('readonly') ?? null,
+
+            disabledAttr:
+              input?.hasAttribute('disabled') ?? null,
+
+            listboxPresent:
+              !!listbox,
+
+            listboxId:
+              listbox?.getAttribute('id') ?? null,
+
+            hasValidation:
+              !!host?.querySelector('.invalid-feedback'),
+
+            hasError:
+              !!host?.querySelector('.error-message'),
+
+            hasAddButton:
+              !!host?.querySelector('button.add-btn'),
+
+            hasClearButton:
+              !!host?.querySelector('button.clear-btn'),
+
+            hasRemoveButtons:
+              !!host?.querySelector('.remove-btn'),
           },
           null,
           2,
         );
       };
 
-      queueMicrotask(() => requestAnimationFrame(snapshot));
+      queueMicrotask(() =>
+        requestAnimationFrame(snapshot),
+      );
+
       return card;
     };
 
@@ -803,56 +878,65 @@ export const AccessibilityMatrix = {
     );
 
     wrap.appendChild(
-      row('Validation (aria-invalid + describedby)', () =>
-        renderComponent(
-          {
-            ...args,
-            inputId: 'mx-val',
-            label: 'Required',
-            required: true,
-            validation: true,
-            validationMessage: 'This is required.',
-            disabled: false,
-            readOnly: false,
-          },
-          ctx,
-        ),
+      row(
+        'Validation (aria-invalid + describedby)',
+        () =>
+          renderComponent(
+            {
+              ...args,
+              inputId: 'mx-val',
+              label: 'Required',
+              required: true,
+              validation: true,
+              validationMessage: 'This is required.',
+              disabled: false,
+              readOnly: false,
+            },
+            ctx,
+          ),
       ),
     );
 
     wrap.appendChild(
-      row('External aria-labelledby/aria-describedby (overrides)', () => {
-        const outer = document.createElement('div');
-        outer.style.display = 'grid';
-        outer.style.gap = '6px';
+      row(
+        'External aria-labelledby/aria-describedby (overrides)',
+        () => {
+          const outer = document.createElement('div');
+          outer.className =
+            'autocomplete-multiple-selections-accessibility-matrix__external';
 
-        const lbl = document.createElement('div');
-        lbl.id = 'mx-external-label';
-        lbl.textContent = 'External label text';
-        lbl.style.fontWeight = '600';
+          const label = document.createElement('div');
+          label.id = 'mx-external-label';
+          label.className =
+            'autocomplete-multiple-selections-accessibility-matrix__external-label';
+          label.textContent = 'External label text';
 
-        const desc = document.createElement('div');
-        desc.id = 'mx-external-desc';
-        desc.textContent = 'External description/help.';
-        desc.style.opacity = '0.85';
+          const description = document.createElement('div');
+          description.id = 'mx-external-desc';
+          description.className =
+            'autocomplete-multiple-selections-accessibility-matrix__external-description';
+          description.textContent =
+            'External description/help.';
 
-        outer.appendChild(lbl);
-        outer.appendChild(desc);
+          outer.appendChild(label);
+          outer.appendChild(description);
 
-        const wrapped = renderComponent(
-          {
-            ...args,
-            inputId: 'mx-ext',
-            label: 'Internal label still exists',
-            ariaLabelledby: 'mx-external-label',
-            ariaDescribedby: 'mx-external-desc',
-          },
-          ctx,
-        );
+          const wrapped = renderComponent(
+            {
+              ...args,
+              inputId: 'mx-ext',
+              label: 'Internal label still exists',
+              ariaLabelledby: 'mx-external-label',
+              ariaDescribedby: 'mx-external-desc',
+            },
+            ctx,
+          );
 
-        outer.appendChild(wrapped);
-        return outer;
-      }),
+          outer.appendChild(wrapped);
+
+          return outer;
+        },
+      ),
     );
 
     wrap.appendChild(
@@ -893,82 +977,121 @@ export const AccessibilityMatrix = {
 
     wrap.appendChild(
       (() => {
-        const labelText = 'ID de-dupe (two instances share same input-id)';
-        const build = () => {
-          const outer = document.createElement('div');
-          outer.style.display = 'grid';
-          outer.style.gap = '10px';
-
-          const a = renderComponent({ ...args, inputId: 'dup', label: 'First dup' }, ctx);
-          const b = renderComponent({ ...args, inputId: 'dup', label: 'Second dup' }, ctx);
-
-          outer.appendChild(a);
-          outer.appendChild(b);
-
-          return outer;
-        };
-
         const card = document.createElement('div');
-        card.style.display = 'grid';
-        card.style.alignItems = 'start';
-        card.style.border = '1px solid #ddd';
-        card.style.borderRadius = '8px';
-        card.style.padding = '12px';
+        card.className =
+          'autocomplete-multiple-selections-accessibility-matrix__card';
 
-        const left = document.createElement('div');
-        left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+        const heading = document.createElement('div');
+        heading.className =
+          'autocomplete-multiple-selections-accessibility-matrix__card-title';
+        heading.textContent =
+          'ID de-dupe (two instances share same input-id)';
 
-        const right = document.createElement('div');
-        right.style.display = 'grid';
-        right.style.gap = '8px';
+        const content = document.createElement('div');
+        content.className =
+          'autocomplete-multiple-selections-accessibility-matrix__content';
 
         const demo = document.createElement('div');
-        const built = build();
-        demo.appendChild(built);
+        demo.className =
+          'autocomplete-multiple-selections-accessibility-matrix__demo';
 
-        const pre = document.createElement('pre');
-        pre.style.margin = '0';
-        pre.style.padding = '10px';
-        pre.style.borderRadius = '8px';
-        pre.style.overflow = 'auto';
-        pre.style.border = '1px solid #eee';
-        pre.style.background = '#fafafa';
-        pre.textContent = 'Loading…';
+        const instancesWrap = document.createElement('div');
+        instancesWrap.className =
+          'autocomplete-multiple-selections-accessibility-matrix__instances';
 
-        right.appendChild(demo);
-        right.appendChild(pre);
+        const first = renderComponent(
+          {
+            ...args,
+            inputId: 'dup',
+            label: 'First dup',
+          },
+          ctx,
+        );
 
-        card.appendChild(left);
-        card.appendChild(right);
+        const second = renderComponent(
+          {
+            ...args,
+            inputId: 'dup',
+            label: 'Second dup',
+          },
+          ctx,
+        );
+
+        instancesWrap.appendChild(first);
+        instancesWrap.appendChild(second);
+        demo.appendChild(instancesWrap);
+
+        const output = document.createElement('pre');
+        output.className =
+          'autocomplete-multiple-selections-accessibility-matrix__output';
+        output.textContent = 'Loading…';
+
+        content.appendChild(demo);
+        content.appendChild(output);
+
+        card.appendChild(heading);
+        card.appendChild(content);
 
         const snapshot = () => {
-          const hosts = Array.from(demo.querySelectorAll('autocomplete-multiple-selections'));
+          const hosts = Array.from(
+            demo.querySelectorAll(
+              'autocomplete-multiple-selections',
+            ),
+          );
+
           const instances = hosts.map(host => {
-            const input = host.querySelector('input[role="combobox"]');
+            const input = host.querySelector(
+              'input[role="combobox"]',
+            );
+
             const labelEl = host.querySelector('label');
-            const controls = input?.getAttribute('aria-controls') ?? null;
+
+            const controls =
+              input?.getAttribute('aria-controls') ?? null;
 
             return {
-              hostId: host.getAttribute('id') ?? null,
-              inputId: input?.getAttribute('id') ?? null,
-              labelId: labelEl?.getAttribute('id') ?? null,
-              labelledby: input?.getAttribute('aria-labelledby') ?? null,
+              hostId:
+                host.getAttribute('id') ?? null,
+
+              inputId:
+                input?.getAttribute('id') ?? null,
+
+              labelId:
+                labelEl?.getAttribute('id') ?? null,
+
+              labelledby:
+                input?.getAttribute('aria-labelledby') ??
+                null,
+
               controls,
             };
           });
 
-          pre.textContent = JSON.stringify({ instances }, null, 2);
+          output.textContent = JSON.stringify(
+            {
+              instances,
+            },
+            null,
+            2,
+          );
         };
 
-        queueMicrotask(() => requestAnimationFrame(snapshot));
+        queueMicrotask(() =>
+          requestAnimationFrame(snapshot),
+        );
+
         return card;
       })(),
     );
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:

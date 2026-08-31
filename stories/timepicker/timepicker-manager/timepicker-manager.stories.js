@@ -543,6 +543,7 @@ export const ControlledValue = {
 
       button.type = 'button';
       button.textContent = label;
+      button.className = 'storybook-example-button';
       button.dataset.value = value;
       button.style.padding = '6px 12px';
       button.style.cursor = 'pointer';
@@ -742,14 +743,12 @@ export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: () => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'timepicker-manager-accessibility-matrix';
 
     const header = document.createElement('div');
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
-      <div style="opacity:.8">
+      <div class="timepicker-manager-accessibility-matrix__description">
         Renders multiple configurations and prints computed manager + child labeling, description wiring,
         forwarded child props, and inferred validation/time-validation IDs.
       </div>
@@ -758,26 +757,17 @@ export const AccessibilityMatrix = {
 
     const card = (title, storyArgs, extraHtml = '', containerStyle = '') => {
       const box = document.createElement('div');
-      box.style.border = '1px solid #ddd';
-      box.style.borderRadius = '10px';
-      box.style.padding = '12px';
-      box.style.display = 'grid';
-      box.style.gap = '10px';
+      box.className = 'timepicker-manager-accessibility-matrix__card';
 
       const t = document.createElement('div');
-      t.style.fontWeight = '600';
+      t.className = 'timepicker-manager-accessibility-matrix__card-title';
       t.textContent = title;
 
       const demo = document.createElement('div');
       if (containerStyle) demo.setAttribute('style', containerStyle);
 
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className = 'timepicker-manager-accessibility-matrix__output';
       pre.textContent = 'Loading…';
 
       const mount = document.createElement('div');
@@ -857,8 +847,8 @@ export const AccessibilityMatrix = {
           wrapperWidth: 260,
         },
         `
-        <div id="mx-inline-label" style="font-weight:600; margin-bottom:6px;">External label for time</div>
-        <div id="mx-inline-help" style="opacity:.8; margin-bottom:8px;">Help text: enter time in HH:mm.</div>
+        <div id="mx-inline-label" class="timepicker-manager-accessibility-matrix__external-label">External label for time</div>
+        <div id="mx-inline-help" class="timepicker-manager-accessibility-matrix__external-help">Help text: enter time in HH:mm.</div>
         `,
       ),
     );
@@ -882,7 +872,7 @@ export const AccessibilityMatrix = {
           wrapperWidth: 420,
         },
         `
-        <div id="mx-error-help" style="color:#444; font-size:12px; margin-bottom:8px;">
+        <div id="mx-error-help" class="timepicker-manager-accessibility-matrix__error-help">
           Help: manager should append <code>mx-time-error-validation</code> to aria-describedby.
         </div>
         `,
@@ -906,7 +896,7 @@ export const AccessibilityMatrix = {
           wrapperWidth: 420,
         },
         `
-        <div id="mx-time-error-help" style="color:#444; font-size:12px; margin-bottom:8px;">
+        <div id="mx-time-error-help" class="timepicker-manager-accessibility-matrix__error-help">
           Help: manager should append <code>mx-time-time-error-time-validation</code> to aria-describedby.
         </div>
         `,

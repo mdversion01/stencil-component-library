@@ -1,11 +1,6 @@
 // File: src/stories/textarea-component.stories.js
 // import DocsPage from './textarea-component.docs.mdx';
-import {
-  buildDocsHtml,
-  buildDocsHtmlExternalValue,
-  buildTextarea,
-  snapshotTextareaA11y,
-} from './textarea-component.story-helpers';
+import { buildDocsHtml, buildDocsHtmlExternalValue, buildTextarea, snapshotTextareaA11y } from './textarea-component.story-helpers';
 
 const baseArgs = {
   disabled: false,
@@ -37,16 +32,13 @@ const storyWithRender = {
 };
 
 export default {
-  title: 'Form/Textarea'
-  ,
+  title: 'Form/Textarea',
   render: args => buildTextarea(args),
 
   parameters: {
     docs: {
-
       description: {
-        component:
-          'A textarea web component with Bootstrap-style layout, validation support, optional max-length counter, and form-friendly valueChange / blurChange events.',
+        component: 'A textarea web component with Bootstrap-style layout, validation support, optional max-length counter, and form-friendly valueChange / blurChange events.',
       },
       source: {
         language: 'html',
@@ -252,24 +244,22 @@ export const ValueFromExternalSource = {
 
     const makeButton = (label, value) => {
       const button = document.createElement('button');
+
       button.type = 'button';
+      button.className = 'storybook-example-button';
       button.textContent = label;
+
       button.addEventListener('click', () => {
         textarea.value = value;
         updateStatus();
       });
+
       return button;
     };
 
-    const loadDraft = makeButton(
-      'Load Draft',
-      'Hello team,\n\nHere is the latest draft message loaded from an outside source.\n\nThanks.'
-    );
+    const loadDraft = makeButton('Load Draft', 'Hello team,\n\nHere is the latest draft message loaded from an outside source.\n\nThanks.');
 
-    const loadApi = makeButton(
-      'Load API Response',
-      'This textarea was populated from preloaded data or an API response.'
-    );
+    const loadApi = makeButton('Load API Response', 'This textarea was populated from preloaded data or an API response.');
 
     const clear = makeButton('Clear', '');
 
@@ -285,8 +275,7 @@ export const ValueFromExternalSource = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Demonstrates setting the `value` prop from someplace else, such as preloaded data, an API response, or another UI action.',
+        story: 'Demonstrates setting the `value` prop from someplace else, such as preloaded data, an API response, or another UI action.',
       },
       source: {
         language: 'html',
@@ -442,13 +431,12 @@ export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: args => {
     const root = document.createElement('div');
-    root.style.display = 'grid';
-    root.style.gap = '16px';
+    root.className = 'textarea-accessibility-matrix';
 
     const intro = document.createElement('div');
     intro.innerHTML = `
-      <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
-      <div style="font-size:13px; color:#444;">
+      <div class="textarea-accessibility-matrix__intro-title">Accessibility matrix</div>
+      <div class="textarea-accessibility-matrix__intro-description">
         Textarea variants with computed label/help/counter/validation wiring.
       </div>
     `;
@@ -456,26 +444,17 @@ export const AccessibilityMatrix = {
 
     const renderRow = ({ title, build }) => {
       const wrap = document.createElement('div');
-      wrap.style.border = '1px solid #ddd';
-      wrap.style.borderRadius = '12px';
-      wrap.style.padding = '12px';
-      wrap.style.display = 'grid';
-      wrap.style.gap = '10px';
+      wrap.className = 'textarea-accessibility-matrix__card';
 
       const heading = document.createElement('div');
-      heading.style.fontWeight = '700';
+      heading.className = 'textarea-accessibility-matrix__card-title';
       heading.textContent = title;
 
       const stage = document.createElement('div');
-      stage.style.maxWidth = '560px';
+      stage.className = 'textarea-accessibility-matrix__stage';
 
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.background = '#f6f8fa';
-      pre.style.borderRadius = '10px';
-      pre.style.overflowX = 'auto';
-      pre.style.fontSize = '12px';
+      pre.className = 'textarea-accessibility-matrix__output';
       pre.textContent = 'Collecting aria/role/id…';
 
       const comp = build();
@@ -490,6 +469,7 @@ export const AccessibilityMatrix = {
       };
 
       requestAnimationFrame(() => requestAnimationFrame(update));
+
       return wrap;
     };
 
@@ -546,14 +526,14 @@ export const AccessibilityMatrix = {
     ];
 
     rows.forEach(row => root.appendChild(renderRow(row)));
+
     return root;
   },
   parameters: {
     controls: { disable: true },
     docs: {
       description: {
-        story:
-          'Shows computed label, help text, validation, and max-length counter accessibility wiring.',
+        story: 'Shows computed label, help text, validation, and max-length counter accessibility wiring.',
       },
     },
   },

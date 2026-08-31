@@ -565,14 +565,12 @@ export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: () => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'timepicker-accessibility-matrix';
 
     const header = document.createElement('div');
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
-      <div style="opacity:.8">
+      <div class="timepicker-accessibility-matrix__description">
         Prints computed role, aria-*, derived ids, control visibility, and popover/spinbutton semantics for
         <code>&lt;timepicker-component&gt;</code>.
       </div>
@@ -581,26 +579,17 @@ export const AccessibilityMatrix = {
 
     const card = (title, storyArgs, extraHtml = '', containerStyle = '') => {
       const box = document.createElement('div');
-      box.style.border = '1px solid #ddd';
-      box.style.borderRadius = '10px';
-      box.style.padding = '12px';
-      box.style.display = 'grid';
-      box.style.gap = '10px';
+      box.className = 'timepicker-accessibility-matrix__card';
 
       const t = document.createElement('div');
-      t.style.fontWeight = '600';
+      t.className = 'timepicker-accessibility-matrix__card-title';
       t.textContent = title;
 
       const demo = document.createElement('div');
       if (containerStyle) demo.setAttribute('style', containerStyle);
 
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className = 'timepicker-accessibility-matrix__output';
       pre.textContent = 'Loading…';
 
       const mount = document.createElement('div');
@@ -664,8 +653,8 @@ export const AccessibilityMatrix = {
           validationMessage: '',
         },
         `
-        <div id="mx-inline-label" style="font-weight:600; margin-bottom:6px;">External label for time</div>
-        <div id="mx-inline-help" style="opacity:.8; margin-bottom:8px;">Help: enter time in HH:mm (or use the picker).</div>
+        <div id="mx-inline-label" class="timepicker-accessibility-matrix__external-label">External label for time</div>
+        <div id="mx-inline-help" class="timepicker-accessibility-matrix__external-help">Help: enter time in HH:mm (or use the picker).</div>
         `,
       ),
     );
@@ -685,7 +674,7 @@ export const AccessibilityMatrix = {
           required: true,
         },
         `
-        <div id="mx-error-help" style="color:#444; font-size:12px; margin-bottom:8px;">
+        <div id="mx-error-help" class="timepicker-accessibility-matrix__error-help">
           Help: the input should include both this help id and its validation message id in aria-describedby.
         </div>
         `,

@@ -958,22 +958,24 @@ export const AccessibilityMatrix = {
 
   render: args => {
     const root = document.createElement('div');
-
-    root.style.display = 'grid';
-    root.style.gap = '16px';
+    root.className = 'date-range-time-picker-accessibility-matrix';
 
     const intro = document.createElement('div');
 
-    intro.innerHTML = `
-      <div style="font-weight:700; font-size:14px; margin-bottom:6px;">
-        Accessibility matrix
-      </div>
-      <div style="font-size:13px; color:#444;">
-        Date Range + Time Picker: common variants and computed
-        <code>role</code>, <code>aria-*</code>, IDs.
-      </div>
-    `;
+    const introTitle = document.createElement('div');
+    introTitle.className =
+      'date-range-time-picker-accessibility-matrix__intro-title';
+    introTitle.textContent = 'Accessibility matrix';
 
+    const introDescription = document.createElement('div');
+    introDescription.className =
+      'date-range-time-picker-accessibility-matrix__intro-description';
+    introDescription.innerHTML =
+      'Date Range + Time Picker: common variants and computed ' +
+      '<code>role</code>, <code>aria-*</code>, IDs.';
+
+    intro.appendChild(introTitle);
+    intro.appendChild(introDescription);
     root.appendChild(intro);
 
     const base = {

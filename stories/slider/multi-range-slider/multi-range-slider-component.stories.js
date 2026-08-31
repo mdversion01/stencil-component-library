@@ -418,42 +418,49 @@ VerticalOutsideFill.parameters = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: () => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'multi-range-slider-accessibility-matrix';
 
     const header = document.createElement('div');
-    header.innerHTML = `
-      <strong>Accessibility matrix</strong>
-      <div style="opacity:.8">
-        Prints computed <code>role</code> + <code>aria-*</code> + ids for default / inline / horizontal / vertical / validation / disabled,
-        and includes a keyboard focus demo (Tab + Arrow keys).
-      </div>
-    `;
+
+    const headerTitle = document.createElement('strong');
+    headerTitle.textContent = 'Accessibility matrix';
+
+    const headerDescription = document.createElement('div');
+    headerDescription.className =
+      'multi-range-slider-accessibility-matrix__description';
+    headerDescription.innerHTML =
+      'Prints computed <code>role</code> + <code>aria-*</code> + ids for ' +
+      'default / inline / horizontal / vertical / validation / disabled, ' +
+      'and includes a keyboard focus demo (Tab + Arrow keys).';
+
+    header.appendChild(headerTitle);
+    header.appendChild(headerDescription);
     wrap.appendChild(header);
 
-    const card = (title, storyArgs, extraHtml = '', { keyboardDemo = false } = {}) => {
+    const card = (
+      title,
+      storyArgs,
+      extraHtml = '',
+      { keyboardDemo = false } = {},
+    ) => {
       const box = document.createElement('div');
-      box.style.border = '1px solid #ddd';
-      box.style.borderRadius = '10px';
-      box.style.padding = '12px';
-      box.style.display = 'grid';
-      box.style.gap = '10px';
+      box.className = 'multi-range-slider-accessibility-matrix__card';
 
-      const t = document.createElement('div');
-      t.style.fontWeight = '600';
-      t.textContent = title;
+      const cardTitle = document.createElement('div');
+      cardTitle.className =
+        'multi-range-slider-accessibility-matrix__card-title';
+      cardTitle.textContent = title;
 
       const demo = document.createElement('div');
+      demo.className =
+        'multi-range-slider-accessibility-matrix__demo';
+
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className =
+        'multi-range-slider-accessibility-matrix__output';
       pre.textContent = 'Loading…';
 
       const mount = document.createElement('div');
@@ -465,45 +472,66 @@ export const AccessibilityMatrix = {
       demo.appendChild(mount);
 
       const update = async () => {
-        const host = mount.querySelector('multi-range-slider-component');
+        const host = mount.querySelector(
+          'multi-range-slider-component',
+        );
 
         if (host?.componentOnReady) {
           try {
             await host.componentOnReady();
-          } catch (_e) {}
+          } catch (_error) {
+            // Continue so the matrix can report available DOM state.
+          }
         } else if (window.customElements?.whenDefined) {
           try {
-            await customElements.whenDefined('multi-range-slider-component');
-          } catch (_e) {}
+            await customElements.whenDefined(
+              'multi-range-slider-component',
+            );
+          } catch (_error) {
+            // Continue so the matrix can report available DOM state.
+          }
         }
 
         const renderSnapshot = () => {
-          pre.textContent = JSON.stringify(getSnapshot(host, mount), null, 2);
+          pre.textContent = JSON.stringify(
+            getSnapshot(host, mount),
+            null,
+            2,
+          );
         };
 
         renderSnapshot();
 
         if (keyboardDemo) {
-          const sliders = Array.from(host.querySelectorAll('[role="slider"]'));
-          sliders.forEach(s => {
-            s.addEventListener('focus', renderSnapshot);
-            s.addEventListener('blur', renderSnapshot);
-            s.addEventListener('keydown', renderSnapshot);
+          const sliders = Array.from(
+            host?.querySelectorAll('[role="slider"]') || [],
+          );
+
+          sliders.forEach(slider => {
+            slider.addEventListener('focus', renderSnapshot);
+            slider.addEventListener('blur', renderSnapshot);
+            slider.addEventListener('keydown', renderSnapshot);
           });
 
           const hint = document.createElement('div');
-          hint.style.opacity = '.85';
+          hint.className =
+            'multi-range-slider-accessibility-matrix__keyboard-hint';
           hint.innerHTML =
-            'Tip: click a thumb, then press <kbd>Tab</kbd> to move focus to the other thumb. Use <kbd>Arrow</kbd> keys to change the focused thumb.';
+            'Tip: click a thumb, then press <kbd>Tab</kbd> to move focus to the other thumb. ' +
+            'Use <kbd>Arrow</kbd> keys to change the focused thumb.';
+
           box.insertBefore(hint, pre);
         }
       };
 
-      queueMicrotask(() => requestAnimationFrame(update));
+      queueMicrotask(() =>
+        requestAnimationFrame(update),
+      );
 
-      box.appendChild(t);
+      box.appendChild(cardTitle);
       box.appendChild(demo);
       box.appendChild(pre);
+
       return box;
     };
 
@@ -533,8 +561,19 @@ export const AccessibilityMatrix = {
           ariaDescribedby: 'mx-inline-help',
         },
         `
-        <div id="mx-inline-label" style="font-weight:600; margin-bottom:6px;">Inline label (external)</div>
-        <div id="mx-inline-help" style="opacity:.8; margin-bottom:8px;">Help text for range selection.</div>
+<div
+  id="mx-inline-label"
+  class="multi-range-slider-accessibility-matrix__external-label"
+>
+  Inline label (external)
+</div>
+
+<div
+  id="mx-inline-help"
+  class="multi-range-slider-accessibility-matrix__help"
+>
+  Help text for range selection.
+</div>
         `,
       ),
     );
@@ -552,9 +591,14 @@ export const AccessibilityMatrix = {
           ariaLabelledby: 'mx-horizontal-label',
         },
         `
-        <div style="display:grid; grid-template-columns:220px 1fr; gap:12px; align-items:center; max-width:860px;">
-          <div id="mx-horizontal-label" style="font-weight:600;">Horizontal label area</div>
-        </div>
+<div class="multi-range-slider-accessibility-matrix__horizontal">
+  <div
+    id="mx-horizontal-label"
+    class="multi-range-slider-accessibility-matrix__horizontal-label"
+  >
+    Horizontal label area
+  </div>
+</div>
         `,
       ),
     );
@@ -583,7 +627,14 @@ export const AccessibilityMatrix = {
           upperValue: 0,
           ariaDescribedby: 'mx-error',
         },
-        `<div id="mx-error" style="color:#a00; font-size:12px; margin-bottom:8px;">Error: choose a valid range.</div>`,
+        `
+<div
+  id="mx-error"
+  class="multi-range-slider-accessibility-matrix__validation"
+>
+  Error: choose a valid range.
+</div>
+        `,
       ),
     );
 
@@ -613,19 +664,26 @@ export const AccessibilityMatrix = {
           tickLabels: false,
         },
         '',
-        { keyboardDemo: true },
+        {
+          keyboardDemo: true,
+        },
       ),
     );
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:
           'Prints computed accessibility wiring for the multi-range slider: two focusable `role="slider"` thumbs with `aria-valuemin/max/now/text`, optional `aria-label` / `aria-labelledby` / `aria-describedby`, plus simulated inline/horizontal/vertical layouts, simulated error describedby, disabled state, and a keyboard demo where focus determines which thumb arrow keys modify.',
       },
+
       source: {
         language: 'html',
         transform: (_src, ctx) => Template(ctx.args),

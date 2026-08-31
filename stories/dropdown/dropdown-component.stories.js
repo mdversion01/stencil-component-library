@@ -434,19 +434,28 @@ export const Sizes = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: args => {
     const root = document.createElement('div');
-    root.style.display = 'grid';
-    root.style.gap = '16px';
+    root.className = 'dropdown-accessibility-matrix';
 
     const intro = document.createElement('div');
-    intro.innerHTML = `
-    <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
-    <div style="font-size:13px; color:#444;">
-      Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs from the light DOM.
-      (Layout + validation are Storybook-only wrappers; the component output is unchanged.)
-    </div>
-  `;
+
+    const introTitle = document.createElement('div');
+    introTitle.className =
+      'dropdown-accessibility-matrix__intro-title';
+    introTitle.textContent = 'Accessibility matrix';
+
+    const introDescription = document.createElement('div');
+    introDescription.className =
+      'dropdown-accessibility-matrix__intro-description';
+    introDescription.innerHTML =
+      'Renders common variants and prints computed <code>role</code> + ' +
+      '<code>aria-*</code> + IDs from the light DOM. ' +
+      '(Layout + validation are Storybook-only wrappers; the component output is unchanged.)';
+
+    intro.appendChild(introTitle);
+    intro.appendChild(introDescription);
     root.appendChild(intro);
 
     const cases = [
@@ -454,58 +463,89 @@ export const AccessibilityMatrix = {
         title: 'Default (valid)',
         layout: '',
         invalid: false,
-        args: { ...args, disabled: false, iconDropdown: false, alignMenuRight: false },
+        args: {
+          ...args,
+          disabled: false,
+          iconDropdown: false,
+          alignMenuRight: false,
+        },
       },
       {
         title: 'Inline wrapper (valid)',
         layout: 'inline',
         invalid: false,
-        args: { ...args, disabled: false, iconDropdown: false, alignMenuRight: false },
+        args: {
+          ...args,
+          disabled: false,
+          iconDropdown: false,
+          alignMenuRight: false,
+        },
       },
       {
         title: 'Horizontal wrapper (valid)',
         layout: 'horizontal',
         invalid: false,
-        args: { ...args, disabled: false, iconDropdown: false, alignMenuRight: false },
+        args: {
+          ...args,
+          disabled: false,
+          iconDropdown: false,
+          alignMenuRight: false,
+        },
       },
       {
         title: 'Error / validation wrapper (storybook-only)',
         layout: '',
         invalid: true,
-        invalidText: args.validationMessage || 'Required field',
-        args: { ...args, disabled: false, iconDropdown: false, alignMenuRight: false },
+        invalidText:
+          args.validationMessage || 'Required field',
+        args: {
+          ...args,
+          disabled: false,
+          iconDropdown: false,
+          alignMenuRight: false,
+        },
       },
       {
         title: 'Disabled',
         layout: '',
         invalid: false,
-        args: { ...args, disabled: true },
+        args: {
+          ...args,
+          disabled: true,
+        },
       },
     ];
 
-    cases.forEach((c, i) => {
+    cases.forEach((caseConfig, index) => {
       root.appendChild(
         buildCard({
-          title: c.title,
-          layout: c.layout,
-          invalid: c.invalid,
-          invalidText: c.invalidText,
-          args: c.args,
-          idSuffix: String(i + 1),
+          title: caseConfig.title,
+          layout: caseConfig.layout,
+          invalid: caseConfig.invalid,
+          invalidText: caseConfig.invalidText,
+          args: caseConfig.args,
+          idSuffix: String(index + 1),
         }),
       );
     });
 
     return root;
   },
+
   parameters: {
     docs: {
       description: {
         story:
           'Matrix of common states (default/inline/horizontal wrappers, error/validation wrapper, disabled) and a live readout of key roles, aria-* attributes, and ids to help verify 508/ARIA compliance.',
       },
-      story: { height: '1150px' },
+
+      story: {
+        height: '1150px',
+      },
     },
-    controls: { disable: true },
+
+    controls: {
+      disable: true,
+    },
   },
 };

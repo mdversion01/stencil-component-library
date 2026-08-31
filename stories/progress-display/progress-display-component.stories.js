@@ -922,46 +922,50 @@ const getSnapshot = host => {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: args => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'progress-accessibility-matrix';
 
     const header = document.createElement('div');
-    header.innerHTML = `
-      <strong>Accessibility matrix</strong>
-      <div style="opacity:.8">
-        Prints computed <code>role</code> + <code>aria-*</code> + ids for representative configurations.
-      </div>
-    `;
+
+    const headerTitle = document.createElement('strong');
+    headerTitle.textContent = 'Accessibility matrix';
+
+    const headerDescription = document.createElement('div');
+    headerDescription.className =
+      'progress-accessibility-matrix__description';
+    headerDescription.innerHTML =
+      'Prints computed <code>role</code> + <code>aria-*</code> + ids for representative configurations.';
+
+    header.appendChild(headerTitle);
+    header.appendChild(headerDescription);
     wrap.appendChild(header);
 
     const card = (title, html) => {
       const box = document.createElement('div');
-      box.style.border = '1px solid #ddd';
-      box.style.borderRadius = '10px';
-      box.style.padding = '12px';
-      box.style.display = 'grid';
-      box.style.gap = '10px';
+      box.className = 'progress-accessibility-matrix__card';
 
-      const t = document.createElement('div');
-      t.style.fontWeight = '600';
-      t.textContent = title;
+      const cardTitle = document.createElement('div');
+      cardTitle.className =
+        'progress-accessibility-matrix__card-title';
+      cardTitle.textContent = title;
 
       const demo = document.createElement('div');
+      demo.className =
+        'progress-accessibility-matrix__demo';
+
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className =
+        'progress-accessibility-matrix__output';
       pre.textContent = 'Loading…';
 
       const mount = document.createElement('div');
       mount.innerHTML = html.trim();
-      const host = mount.querySelector('progress-display-component');
+
+      const host = mount.querySelector(
+        'progress-display-component',
+      );
 
       demo.appendChild(mount);
 
@@ -969,25 +973,45 @@ export const AccessibilityMatrix = {
         if (host?.componentOnReady) {
           try {
             await host.componentOnReady();
-          } catch {}
+          } catch {
+            // Continue so the matrix can report available DOM state.
+          }
         } else if (window.customElements?.whenDefined) {
           try {
-            await customElements.whenDefined('progress-display-component');
-          } catch {}
+            await customElements.whenDefined(
+              'progress-display-component',
+            );
+          } catch {
+            // Continue so the matrix can report available DOM state.
+          }
         }
-        pre.textContent = JSON.stringify(getSnapshot(host), null, 2);
+
+        pre.textContent = JSON.stringify(
+          getSnapshot(host),
+          null,
+          2,
+        );
       };
 
-      queueMicrotask(() => requestAnimationFrame(update));
+      queueMicrotask(() =>
+        requestAnimationFrame(update),
+      );
 
-      box.appendChild(t);
+      box.appendChild(cardTitle);
       box.appendChild(demo);
       box.appendChild(pre);
+
       return box;
     };
 
-    const helpId = `mx-help-${Math.random().toString(36).slice(2, 7)}`;
-    const helpText = `<div id="${helpId}" style="font-size:12px; opacity:.85;">Help text describing this progress indicator.</div>`;
+    const helpId =
+      `mx-help-${Math.random().toString(36).slice(2, 7)}`;
+
+    const helpText =
+      `<div id="${helpId}" class="progress-accessibility-matrix__help-text">` +
+      'Help text describing this progress indicator.' +
+      '</div>';
+
     const stackedChildren = [
       '<span slot="bar-0">Primary chunk</span>',
       '<span slot="bar-1">Success chunk</span>',
@@ -999,7 +1023,15 @@ export const AccessibilityMatrix = {
         'Default (linear determinate)',
         `
         ${helpText}
-        ${toMarkup({ ...baseArgs, ...args, circular: false, multi: false, ariaDescribedby: helpId, value: 35, slotText: '' })}
+        ${toMarkup({
+          ...baseArgs,
+          ...args,
+          circular: false,
+          multi: false,
+          ariaDescribedby: helpId,
+          value: 35,
+          slotText: '',
+        })}
       `,
       ),
     );
@@ -1008,7 +1040,17 @@ export const AccessibilityMatrix = {
       card(
         'Inline (compact)',
         `
-        ${toMarkup({ ...baseArgs, ...args, circular: false, multi: false, height: 10, value: 60, showProgress: true, progressAlign: 'right', slotText: 'Loading' })}
+        ${toMarkup({
+          ...baseArgs,
+          ...args,
+          circular: false,
+          multi: false,
+          height: 10,
+          value: 60,
+          showProgress: true,
+          progressAlign: 'right',
+          slotText: 'Loading',
+        })}
       `,
       ),
     );
@@ -1024,9 +1066,21 @@ export const AccessibilityMatrix = {
           multi: true,
           label: 'Stacked segments',
           bars: [
-            { value: 20, variant: 'primary', showProgress: true },
-            { value: 35, variant: 'success', showProgress: true },
-            { value: 15, variant: 'warning', showProgress: true },
+            {
+              value: 20,
+              variant: 'primary',
+              showProgress: true,
+            },
+            {
+              value: 35,
+              variant: 'success',
+              showProgress: true,
+            },
+            {
+              value: 15,
+              variant: 'warning',
+              showProgress: true,
+            },
           ],
           children: stackedChildren,
         })}
@@ -1039,7 +1093,17 @@ export const AccessibilityMatrix = {
         'Error / validation (danger + describedby)',
         `
         ${helpText}
-        ${toMarkup({ ...baseArgs, ...args, circular: false, multi: false, ariaDescribedby: helpId, variant: 'danger', value: 15, showProgress: true, slotText: '' })}
+        ${toMarkup({
+          ...baseArgs,
+          ...args,
+          circular: false,
+          multi: false,
+          ariaDescribedby: helpId,
+          variant: 'danger',
+          value: 15,
+          showProgress: true,
+          slotText: '',
+        })}
       `,
       ),
     );
@@ -1048,17 +1112,35 @@ export const AccessibilityMatrix = {
       card(
         'Disabled / busy (indeterminate)',
         `
-        ${toMarkup({ ...baseArgs, ...args, circular: true, multi: false, indeterminate: true, variant: 'secondary', label: 'Loading', showProgress: false, slotText: '' })}
+        ${toMarkup({
+          ...baseArgs,
+          ...args,
+          circular: true,
+          multi: false,
+          indeterminate: true,
+          variant: 'secondary',
+          label: 'Loading',
+          showProgress: false,
+          slotText: '',
+        })}
       `,
       ),
     );
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
-      source: { language: 'html', type: 'dynamic' },
+      source: {
+        language: 'html',
+        type: 'dynamic',
+      },
+
       description: {
         story:
           'Prints computed accessibility wiring for progress. Shows `role="progressbar"` (and `role="group"` for multi) plus `aria-valuenow/max/min` or indeterminate `aria-busy`, and validates that `aria-labelledby` / `aria-describedby` ids resolve.',

@@ -1,3 +1,5 @@
+// File: src/stories/toggle-switch-component.story-helpers.js
+
 export const sampleMulti = [
   { id: 'wifi', label: 'Wi-Fi', value: 'wifi', checked: true, toggleTxt: true, newToggleTxt: { on: 'On', off: 'Off' } },
   { id: 'bt', label: 'Bluetooth', value: 'bt', checked: false, toggleTxt: true },
@@ -34,7 +36,7 @@ export const normalize = (txt) => {
 export const esc = (s) =>
   String(s)
     .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
+    .replace(/\</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 
@@ -107,12 +109,11 @@ export const buildDocsHtml = (args) => {
 
 export const renderToggle = (args) => {
   const wrap = document.createElement('div');
+  wrap.className = 'toggle-switch-story';
   if (Number.isFinite(args.demoWidth)) wrap.style.maxWidth = `${args.demoWidth}px`;
 
   const title = document.createElement('div');
-  title.style.marginBottom = '10px';
-  title.style.fontSize = '.875rem';
-  title.style.color = 'var(--sbtext, #444)';
+  title.className = 'toggle-switch-story__title';
   title.textContent = `${args.customSwitch ? 'Custom switch' : 'Bootstrap switch'}${args.switches ? ' (multi)' : ' (single)'} demo`;
 
   const el = document.createElement('toggle-switch-component');
@@ -172,17 +173,13 @@ export const renderToggle = (args) => {
 
   if (args.showEventLog) {
     const box = document.createElement('div');
-    box.style.marginTop = '12px';
+    box.className = 'toggle-switch-story__event-log';
 
     const strong = document.createElement('strong');
     strong.textContent = 'checkedChanged event:';
 
     pre = document.createElement('pre');
-    pre.style.background = '#f7f7f8';
-    pre.style.padding = '8px';
-    pre.style.borderRadius = '6px';
-    pre.style.whiteSpace = 'pre-wrap';
-    pre.style.margin = '6px 0 0';
+    pre.className = 'toggle-switch-story__event-output';
     pre.textContent = '(click toggle)';
 
     box.appendChild(strong);

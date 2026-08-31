@@ -191,18 +191,27 @@ export const MarginVariants = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: () => {
     const root = document.createElement('div');
-    root.style.display = 'grid';
-    root.style.gap = '16px';
+    root.className = 'icon-accessibility-matrix';
 
     const intro = document.createElement('div');
-    intro.innerHTML = `
-      <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
-      <div style="font-size:13px; color:#444;">
-        Renders decorative and meaningful icon variants and prints computed <code>aria-*</code> and <code>role</code>.
-      </div>
-    `;
+
+    const introTitle = document.createElement('div');
+    introTitle.className =
+      'icon-accessibility-matrix__intro-title';
+    introTitle.textContent = 'Accessibility matrix';
+
+    const introDescription = document.createElement('div');
+    introDescription.className =
+      'icon-accessibility-matrix__intro-description';
+    introDescription.innerHTML =
+      'Renders decorative and meaningful icon variants and prints computed ' +
+      '<code>aria-*</code> and <code>role</code>.';
+
+    intro.appendChild(introTitle);
+    intro.appendChild(introDescription);
     root.appendChild(intro);
 
     const rows = [
@@ -248,13 +257,18 @@ export const AccessibilityMatrix = {
 
     return root;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:
           'Matrix of decorative and meaningful icon states showing computed aria-hidden, aria-label, role, and final icon classes.',
       },
+
       source: {
         language: 'html',
         code: `<!-- Decorative -->

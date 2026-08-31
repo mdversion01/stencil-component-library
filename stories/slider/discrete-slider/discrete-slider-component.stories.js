@@ -299,41 +299,43 @@ Disabled.parameters = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: () => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'discrete-slider-accessibility-matrix';
 
     const header = document.createElement('div');
-    header.innerHTML = `
-      <strong>Accessibility matrix</strong>
-      <div style="opacity:.8">
-        Prints computed <code>role</code> + <code>aria-*</code> + ids for default / inline / horizontal / vertical / validation / disabled.
-      </div>
-    `;
+
+    const headerTitle = document.createElement('strong');
+    headerTitle.textContent = 'Accessibility matrix';
+
+    const headerDescription = document.createElement('div');
+    headerDescription.className =
+      'discrete-slider-accessibility-matrix__description';
+    headerDescription.innerHTML =
+      'Prints computed <code>role</code> + <code>aria-*</code> + ids for ' +
+      'default / inline / horizontal / vertical / validation / disabled.';
+
+    header.appendChild(headerTitle);
+    header.appendChild(headerDescription);
     wrap.appendChild(header);
 
     const card = (title, storyArgs, extraHtml = '') => {
       const box = document.createElement('div');
-      box.style.border = '1px solid #ddd';
-      box.style.borderRadius = '10px';
-      box.style.padding = '12px';
-      box.style.display = 'grid';
-      box.style.gap = '10px';
+      box.className = 'discrete-slider-accessibility-matrix__card';
 
-      const t = document.createElement('div');
-      t.style.fontWeight = '600';
-      t.textContent = title;
+      const cardTitle = document.createElement('div');
+      cardTitle.className =
+        'discrete-slider-accessibility-matrix__card-title';
+      cardTitle.textContent = title;
 
       const demo = document.createElement('div');
+      demo.className =
+        'discrete-slider-accessibility-matrix__demo';
+
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className =
+        'discrete-slider-accessibility-matrix__output';
       pre.textContent = 'Loading…';
 
       const mount = document.createElement('div');
@@ -345,26 +347,41 @@ export const AccessibilityMatrix = {
       demo.appendChild(mount);
 
       const update = async () => {
-        const host = mount.querySelector('discrete-slider-component');
+        const host = mount.querySelector(
+          'discrete-slider-component',
+        );
 
         if (host?.componentOnReady) {
           try {
             await host.componentOnReady();
-          } catch (_e) {}
+          } catch (_error) {
+            // Continue so the matrix can report available DOM state.
+          }
         } else if (window.customElements?.whenDefined) {
           try {
-            await customElements.whenDefined('discrete-slider-component');
-          } catch (_e) {}
+            await customElements.whenDefined(
+              'discrete-slider-component',
+            );
+          } catch (_error) {
+            // Continue so the matrix can report available DOM state.
+          }
         }
 
-        pre.textContent = JSON.stringify(getSnapshot(mount), null, 2);
+        pre.textContent = JSON.stringify(
+          getSnapshot(mount),
+          null,
+          2,
+        );
       };
 
-      queueMicrotask(() => requestAnimationFrame(update));
+      queueMicrotask(() =>
+        requestAnimationFrame(update),
+      );
 
-      box.appendChild(t);
+      box.appendChild(cardTitle);
       box.appendChild(demo);
       box.appendChild(pre);
+
       return box;
     };
 
@@ -386,7 +403,14 @@ export const AccessibilityMatrix = {
           selectedIndex: 2,
           ariaLabelledby: 'mx-inline-label',
         },
-        `<div id="mx-inline-label" style="font-weight:600; margin-bottom:8px;">Inline label (external)</div>`,
+        `
+<div
+  id="mx-inline-label"
+  class="discrete-slider-accessibility-matrix__external-label"
+>
+  Inline label (external)
+</div>
+        `,
       ),
     );
 
@@ -400,9 +424,16 @@ export const AccessibilityMatrix = {
           orientation: 'horizontal',
           ariaLabelledby: 'mx-horizontal-label',
         },
-        `<div style="display:grid; grid-template-columns:220px 1fr; gap:12px; align-items:center; max-width:860px;">
-           <div id="mx-horizontal-label" style="font-weight:600;">Horizontal label area</div>
-         </div>`,
+        `
+<div class="discrete-slider-accessibility-matrix__horizontal">
+  <div
+    id="mx-horizontal-label"
+    class="discrete-slider-accessibility-matrix__horizontal-label"
+  >
+    Horizontal label area
+  </div>
+</div>
+        `,
       ),
     );
 
@@ -426,7 +457,14 @@ export const AccessibilityMatrix = {
           selectedIndex: 0,
           ariaDescribedby: 'mx-error',
         },
-        `<div id="mx-error" style="color:#a00; font-size:12px; margin-bottom:8px;">Error: selection required.</div>`,
+        `
+<div
+  id="mx-error"
+  class="discrete-slider-accessibility-matrix__validation"
+>
+  Error: selection required.
+</div>
+        `,
       ),
     );
 
@@ -442,13 +480,18 @@ export const AccessibilityMatrix = {
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:
           'Prints computed accessibility wiring for the discrete slider: the focused element has `role="slider"` with `aria-valuemin/max/now/text`, optional `aria-label` / `aria-labelledby` / `aria-describedby`, and orientation support for horizontal and vertical layouts.',
       },
+
       source: {
         language: 'html',
         transform: (_src, ctx) => Template(ctx.args),
@@ -456,3 +499,4 @@ export const AccessibilityMatrix = {
     },
   },
 };
+

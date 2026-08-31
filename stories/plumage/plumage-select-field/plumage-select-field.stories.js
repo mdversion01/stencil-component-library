@@ -317,7 +317,7 @@ export const ValueFromOutsideSource = {
     const makeBtn = (text, value) => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'btn btn-outline-secondary btn-sm';
+      btn.className = 'storybook-example-button';
       btn.textContent = text;
       btn.addEventListener('click', () => setExternalValue(value));
       return btn;
@@ -418,7 +418,7 @@ export const MultipleValueFromOutsideSource = {
     const makeBtn = (text, value) => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'btn btn-outline-secondary btn-sm';
+      btn.className = 'storybook-example-button';
       btn.textContent = text;
       btn.addEventListener('click', () => setExternalValue(value));
       return btn;
@@ -731,14 +731,12 @@ export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: args => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'plumage-select-field-accessibility-matrix';
 
     const header = document.createElement('div');
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
-      <div style="opacity:.8">
+      <div class="plumage-select-field-accessibility-matrix__description">
         Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal, validation, disabled, and read-only.
       </div>
     `;
@@ -746,28 +744,24 @@ export const AccessibilityMatrix = {
 
     const card = (title, storyArgs) => {
       const box = document.createElement('div');
-      box.style.border = '1px solid #ddd';
-      box.style.borderRadius = '10px';
-      box.style.padding = '12px';
-      box.style.display = 'grid';
-      box.style.gap = '10px';
+      box.className = 'plumage-select-field-accessibility-matrix__card';
 
       const t = document.createElement('div');
-      t.style.fontWeight = '600';
+      t.className = 'plumage-select-field-accessibility-matrix__card-title';
       t.textContent = title;
 
       const demo = document.createElement('div');
+
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className = 'plumage-select-field-accessibility-matrix__output';
       pre.textContent = 'Loading…';
 
       const mount = document.createElement('div');
-      mount.innerHTML = Template({ ...baseArgs, ...args, ...storyArgs });
+      mount.innerHTML = Template({
+        ...baseArgs,
+        ...args,
+        ...storyArgs,
+      });
 
       const host = mount.querySelector('plumage-select-field-component');
       demo.appendChild(mount);
@@ -779,7 +773,9 @@ export const AccessibilityMatrix = {
           } catch (_e) {}
         } else if (window.customElements?.whenDefined) {
           try {
-            await customElements.whenDefined('plumage-select-field-component');
+            await customElements.whenDefined(
+              'plumage-select-field-component',
+            );
           } catch (_e) {}
         }
 
@@ -791,6 +787,7 @@ export const AccessibilityMatrix = {
       box.appendChild(t);
       box.appendChild(demo);
       box.appendChild(pre);
+
       return box;
     };
 

@@ -411,19 +411,29 @@ function renderMatrixRow({ title, build, idSuffix }) {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: () => {
     const root = document.createElement('div');
-    root.style.display = 'grid';
-    root.style.gap = '16px';
+    root.className = 'divider-accessibility-matrix';
 
     const intro = document.createElement('div');
-    intro.innerHTML = `
-      <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
-      <div style="font-size:13px; color:#444;">
-        Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + <code>id</code> and divider <code>className</code>.
-        For divider, "inline" is represented as the <em>vertical</em> variant inside an inline row. "Validation" and "Disabled" rows are audit demos only.
-      </div>
-    `;
+
+    const introTitle = document.createElement('div');
+    introTitle.className =
+      'divider-accessibility-matrix__intro-title';
+    introTitle.textContent = 'Accessibility matrix';
+
+    const introDescription = document.createElement('div');
+    introDescription.className =
+      'divider-accessibility-matrix__intro-description';
+    introDescription.innerHTML =
+      'Renders common variants and prints computed <code>role</code> + ' +
+      '<code>aria-*</code> + <code>id</code> and divider <code>className</code>. ' +
+      'For divider, "inline" is represented as the <em>vertical</em> variant ' +
+      'inside an inline row. "Validation" and "Disabled" rows are audit demos only.';
+
+    intro.appendChild(introTitle);
+    intro.appendChild(introDescription);
     root.appendChild(intro);
 
     const rows = [
@@ -431,7 +441,16 @@ export const AccessibilityMatrix = {
         title: 'Default (horizontal)',
         build: n => {
           const wrap = document.createElement('div');
-          wrap.append(makeParagraph(), buildDivider({ direction: 'horizontal', sbId: `divider-a11y-${n}` }), makeParagraph());
+
+          wrap.append(
+            makeParagraph(),
+            buildDivider({
+              direction: 'horizontal',
+              sbId: `divider-a11y-${n}`,
+            }),
+            makeParagraph(),
+          );
+
           return wrap;
         },
       },
@@ -439,10 +458,17 @@ export const AccessibilityMatrix = {
         title: 'Inline (vertical separator in a row)',
         build: n => {
           const wrap = document.createElement('div');
-          wrap.style.display = 'inline-flex';
-          wrap.style.alignItems = 'center';
-          wrap.style.gap = '10px';
-          wrap.append(document.createTextNode('Alpha'), buildDivider({ direction: 'vertical', sbId: `divider-a11y-${n}` }), document.createTextNode('Beta'));
+          wrap.className = 'divider-accessibility-matrix__inline';
+
+          wrap.append(
+            document.createTextNode('Alpha'),
+            buildDivider({
+              direction: 'vertical',
+              sbId: `divider-a11y-${n}`,
+            }),
+            document.createTextNode('Beta'),
+          );
+
           return wrap;
         },
       },
@@ -450,6 +476,7 @@ export const AccessibilityMatrix = {
         title: 'Horizontal (with text + aria-label)',
         build: n => {
           const wrap = document.createElement('div');
+
           wrap.append(
             makeParagraph(),
             buildDivider({
@@ -461,6 +488,7 @@ export const AccessibilityMatrix = {
             }),
             makeParagraph(),
           );
+
           return wrap;
         },
       },
@@ -468,11 +496,13 @@ export const AccessibilityMatrix = {
         title: 'Error / Validation (audit demo)',
         build: n => {
           const wrap = document.createElement('div');
+
           const note = document.createElement('div');
-          note.style.fontSize = '12px';
-          note.style.color = '#444';
-          note.textContent = 'Divider has no validation state; this row demonstrates a dashed divider with text as a visual separator in an error section.';
-          wrap.append(note);
+          note.className = 'divider-accessibility-matrix__note';
+          note.textContent =
+            'Divider has no validation state; this row demonstrates a dashed divider with text as a visual separator in an error section.';
+
+          wrap.appendChild(note);
 
           wrap.append(
             buildDivider({
@@ -484,6 +514,7 @@ export const AccessibilityMatrix = {
               sbId: `divider-a11y-${n}`,
             }),
           );
+
           return wrap;
         },
       },
@@ -491,14 +522,17 @@ export const AccessibilityMatrix = {
         title: 'Disabled (audit demo via aria-disabled)',
         build: n => {
           const wrap = document.createElement('div');
+
           const note = document.createElement('div');
-          note.style.fontSize = '12px';
-          note.style.color = '#444';
-          note.textContent = 'Divider is non-interactive; this row sets aria-disabled="true" for audit only and dims the wrapper visually.';
-          wrap.append(note);
+          note.className = 'divider-accessibility-matrix__note';
+          note.textContent =
+            'Divider is non-interactive; this row sets aria-disabled="true" for audit only and dims the wrapper visually.';
+
+          wrap.appendChild(note);
 
           const holder = document.createElement('div');
-          holder.style.opacity = '0.55';
+          holder.className = 'divider-accessibility-matrix__disabled';
+
           holder.append(
             buildDivider({
               direction: 'horizontal',
@@ -506,22 +540,37 @@ export const AccessibilityMatrix = {
               sbAriaDisabled: true,
             }),
           );
-          wrap.append(holder);
+
+          wrap.appendChild(holder);
+
           return wrap;
         },
       },
     ];
 
-    rows.forEach((r, idx) => root.appendChild(renderMatrixRow({ ...r, idSuffix: String(idx + 1) })));
+    rows.forEach((row, idx) => {
+      root.appendChild(
+        renderMatrixRow({
+          ...row,
+          idSuffix: String(idx + 1),
+        }),
+      );
+    });
 
     return root;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
-        story: 'Matrix of key divider variants and a live readout of computed role/aria/id/className to help verify ARIA/508 expectations.',
+        story:
+          'Matrix of key divider variants and a live readout of computed role/aria/id/className to help verify ARIA/508 expectations.',
       },
+
       source: {
         language: 'html',
         code: `<!-- Default (horizontal) -->

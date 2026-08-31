@@ -208,49 +208,45 @@ export const CustomIcons = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: (args, ctx) => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'accordion-container-accessibility-matrix';
 
     const title = document.createElement('div');
-    title.innerHTML =
-      '<strong>Accessibility matrix</strong>' +
-      '<div style="opacity:.8">Prints per-item toggle + region ARIA + ids; also verifies singleOpen closes others.</div>';
+
+    const heading = document.createElement('strong');
+    heading.textContent = 'Accessibility matrix';
+
+    const description = document.createElement('div');
+    description.className =
+      'accordion-container-accessibility-matrix__description';
+    description.textContent =
+      'Prints per-item toggle + region ARIA + ids; also verifies singleOpen closes others.';
+
+    title.appendChild(heading);
+    title.appendChild(description);
     wrap.appendChild(title);
 
     const mkRow = (labelText, build, afterMount) => {
       const row = document.createElement('div');
-      row.style.display = 'grid';
-      row.style.gridTemplateColumns = '280px 1fr';
-      row.style.gap = '12px';
-      row.style.alignItems = 'start';
-      row.style.border = '1px solid #ddd';
-      row.style.borderRadius = '8px';
-      row.style.padding = '12px';
+      row.className = 'accordion-container-accessibility-matrix__row';
 
       const left = document.createElement('div');
-      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+      left.className = 'accordion-container-accessibility-matrix__label';
+      left.textContent = labelText;
 
       const right = document.createElement('div');
-      right.style.display = 'grid';
-      right.style.gap = '8px';
+      right.className = 'accordion-container-accessibility-matrix__content';
 
       const demo = document.createElement('div');
-      demo.style.display = 'grid';
-      demo.style.gap = '8px';
+      demo.className = 'accordion-container-accessibility-matrix__demo';
 
       const host = build();
       demo.appendChild(host);
 
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className = 'accordion-container-accessibility-matrix__output';
       pre.textContent = 'Loading computed attributes…';
 
       right.appendChild(demo);
@@ -263,36 +259,63 @@ export const AccessibilityMatrix = {
         const hostContainer = demo.querySelector('accordion-container');
         const root = hostContainer || host;
 
-        const items = Array.from(root.querySelectorAll('.accordion-item')).map((item, i) => {
+        const items = Array.from(
+          root.querySelectorAll('.accordion-item'),
+        ).map((item, i) => {
           const btnHost = item.querySelector('button-component');
-          const inner = item.querySelector('button-component button, button-component a');
-          const region = item.querySelector('.accordion-collapse[role="region"]');
+          const inner = item.querySelector(
+            'button-component button, button-component a',
+          );
+          const region = item.querySelector(
+            '.accordion-collapse[role="region"]',
+          );
 
           return {
             index: i,
-            headerId: item.querySelector('.accordion-header')?.getAttribute('id') ?? null,
+            headerId:
+              item
+                .querySelector('.accordion-header')
+                ?.getAttribute('id') ?? null,
             triggerId: btnHost?.getAttribute('id') ?? null,
             innerTag: inner?.tagName ?? null,
-            'aria-expanded': inner?.getAttribute('aria-expanded') ?? null,
-            'aria-controls': inner?.getAttribute('aria-controls') ?? null,
+            'aria-expanded':
+              inner?.getAttribute('aria-expanded') ?? null,
+            'aria-controls':
+              inner?.getAttribute('aria-controls') ?? null,
             regionId: region?.getAttribute('id') ?? null,
-            'region aria-labelledby': region?.getAttribute('aria-labelledby') ?? null,
-            'aria-hidden': region?.getAttribute('aria-hidden') ?? null,
+            'region aria-labelledby':
+              region?.getAttribute('aria-labelledby') ?? null,
+            'aria-hidden':
+              region?.getAttribute('aria-hidden') ?? null,
             hidden: region?.hasAttribute('hidden') ?? null,
             inert: region?.hasAttribute('inert') ?? null,
-            'data-bs-parent': region?.getAttribute('data-bs-parent') ?? null,
-            className: region?.getAttribute('class') ?? null,
-            height: region?.style.height ?? null,
+            'data-bs-parent':
+              region?.getAttribute('data-bs-parent') ?? null,
+            className:
+              region?.getAttribute('class') ?? null,
+            height:
+              region?.style.height ?? null,
           };
         });
 
         pre.textContent = JSON.stringify(
           {
-            parentId: hostContainer?.getAttribute('parent-id') ?? null,
-            singleOpen: hostContainer?.hasAttribute('single-open') ?? null,
-            containerRole: root.querySelector('.accordion')?.getAttribute('role') ?? null,
-            containerAriaLabel: root.querySelector('.accordion')?.getAttribute('aria-label') ?? null,
-            containerAriaLabelledby: root.querySelector('.accordion')?.getAttribute('aria-labelledby') ?? null,
+            parentId:
+              hostContainer?.getAttribute('parent-id') ?? null,
+            singleOpen:
+              hostContainer?.hasAttribute('single-open') ?? null,
+            containerRole:
+              root
+                .querySelector('.accordion')
+                ?.getAttribute('role') ?? null,
+            containerAriaLabel:
+              root
+                .querySelector('.accordion')
+                ?.getAttribute('aria-label') ?? null,
+            containerAriaLabelledby:
+              root
+                .querySelector('.accordion')
+                ?.getAttribute('aria-labelledby') ?? null,
             items,
           },
           null,
@@ -303,14 +326,18 @@ export const AccessibilityMatrix = {
       queueMicrotask(() =>
         requestAnimationFrame(async () => {
           snapshot();
-          if (afterMount) await afterMount(host, snapshot);
+
+          if (afterMount) {
+            await afterMount(host, snapshot);
+          }
         }),
       );
 
       return row;
     };
 
-    const build = (storyArgs, base) => buildContainer(storyArgs, base);
+    const build = (storyArgs, base) =>
+      buildContainer(storyArgs, base, ctx);
 
     wrap.appendChild(
       mkRow(
@@ -321,17 +348,41 @@ export const AccessibilityMatrix = {
               ...args,
               singleOpen: false,
               data: [
-                { header: 'One', content: 'Body 1' },
-                { header: 'Two', content: 'Body 2' },
+                {
+                  header: 'One',
+                  content: 'Body 1',
+                },
+                {
+                  header: 'Two',
+                  content: 'Body 2',
+                },
               ],
             },
             'mx-default',
           ),
         async (host, snapshot) => {
-          const inners = host.querySelectorAll('button-component button, button-component a');
-          inners[0]?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-          inners[1]?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-          await new Promise(resolve => requestAnimationFrame(resolve));
+          const inners = host.querySelectorAll(
+            'button-component button, button-component a',
+          );
+
+          inners[0]?.dispatchEvent(
+            new MouseEvent('click', {
+              bubbles: true,
+              cancelable: true,
+            }),
+          );
+
+          inners[1]?.dispatchEvent(
+            new MouseEvent('click', {
+              bubbles: true,
+              cancelable: true,
+            }),
+          );
+
+          await new Promise(resolve =>
+            requestAnimationFrame(resolve),
+          );
+
           snapshot();
         },
       ),
@@ -346,18 +397,45 @@ export const AccessibilityMatrix = {
               ...args,
               singleOpen: true,
               data: [
-                { header: 'Alpha', content: 'A' },
-                { header: 'Beta', content: 'B' },
+                {
+                  header: 'Alpha',
+                  content: 'A',
+                },
+                {
+                  header: 'Beta',
+                  content: 'B',
+                },
               ],
             },
             'mx-single',
           ),
         async (host, snapshot) => {
-          const inners = host.querySelectorAll('button-component button, button-component a');
-          inners[0]?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-          await new Promise(resolve => requestAnimationFrame(resolve));
-          inners[1]?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-          await new Promise(resolve => requestAnimationFrame(resolve));
+          const inners = host.querySelectorAll(
+            'button-component button, button-component a',
+          );
+
+          inners[0]?.dispatchEvent(
+            new MouseEvent('click', {
+              bubbles: true,
+              cancelable: true,
+            }),
+          );
+
+          await new Promise(resolve =>
+            requestAnimationFrame(resolve),
+          );
+
+          inners[1]?.dispatchEvent(
+            new MouseEvent('click', {
+              bubbles: true,
+              cancelable: true,
+            }),
+          );
+
+          await new Promise(resolve =>
+            requestAnimationFrame(resolve),
+          );
+
           snapshot();
         },
       ),
@@ -368,37 +446,55 @@ export const AccessibilityMatrix = {
         'Container labelled (role=region)',
         () => {
           const outer = document.createElement('div');
-          outer.style.display = 'grid';
-          outer.style.gap = '6px';
+          outer.className =
+            'accordion-container-accessibility-matrix__labelled';
 
           const label = document.createElement('div');
           label.id = 'acc-container-label';
           label.textContent = 'Account settings accordion';
+
           outer.appendChild(label);
 
           const host = build(
             {
               ...args,
               data: [
-                { header: 'Security', content: 'Security body' },
-                { header: 'Privacy', content: 'Privacy body' },
+                {
+                  header: 'Security',
+                  content: 'Security body',
+                },
+                {
+                  header: 'Privacy',
+                  content: 'Privacy body',
+                },
               ],
             },
             'mx-labelled',
           );
-          host.setAttribute('aria-labelledby', 'acc-container-label');
+
+          host.setAttribute(
+            'aria-labelledby',
+            'acc-container-label',
+          );
+
           outer.appendChild(host);
 
           return outer;
         },
-        async (_outer, snapshot) => snapshot(),
+        async (_outer, snapshot) => {
+          snapshot();
+        },
       ),
     );
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:

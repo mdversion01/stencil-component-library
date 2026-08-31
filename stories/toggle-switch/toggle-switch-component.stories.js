@@ -90,7 +90,7 @@ export default {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
       table: { category: 'Toggle Switch Attribute' },
-      description: 'Size of the toggle switch (`sm`, `lg`, or blank for default).',
+      description: 'Size of the toggle switch (`sm`, `lg`, or blank for default) is only for Custom switch style.',
     },
     switches: {
       control: 'boolean',
@@ -282,14 +282,12 @@ export const AccessibilityMatrix = {
     void context;
 
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'toggle-switch-accessibility-matrix';
 
     const header = document.createElement('div');
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
-      <div style="opacity:.8">
+      <div class="toggle-switch-accessibility-matrix__description">
         Includes examples (default/inline/horizontal/error/disabled) and prints computed <code>role</code>, <code>aria-*</code>, and derived ids.
       </div>
     `;
@@ -297,25 +295,16 @@ export const AccessibilityMatrix = {
 
     const card = (title) => {
       const box = document.createElement('div');
-      box.style.border = '1px solid #ddd';
-      box.style.borderRadius = '10px';
-      box.style.padding = '12px';
-      box.style.display = 'grid';
-      box.style.gap = '10px';
+      box.className = 'toggle-switch-accessibility-matrix__card';
 
       const t = document.createElement('div');
-      t.style.fontWeight = '600';
+      t.className = 'toggle-switch-accessibility-matrix__card-title';
       t.textContent = title;
 
       const demo = document.createElement('div');
 
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className = 'toggle-switch-accessibility-matrix__output';
       pre.textContent = 'Loading…';
 
       box.appendChild(t);
@@ -363,15 +352,11 @@ export const AccessibilityMatrix = {
     c2.demo.appendChild(ex2);
 
     const horizWrap = document.createElement('div');
-    horizWrap.style.display = 'grid';
-    horizWrap.style.gridTemplateColumns = '220px 1fr';
-    horizWrap.style.gap = '12px';
-    horizWrap.style.alignItems = 'start';
-    horizWrap.style.maxWidth = '860px';
+    horizWrap.className = 'toggle-switch-accessibility-matrix__horizontal';
 
     const horizLabel = document.createElement('div');
     horizLabel.id = 'mx-horizontal-label';
-    horizLabel.style.fontWeight = '600';
+    horizLabel.className = 'toggle-switch-accessibility-matrix__horizontal-label';
     horizLabel.textContent = 'Connectivity settings';
 
     const ex3 = mountToggle({

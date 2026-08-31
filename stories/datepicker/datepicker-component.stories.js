@@ -686,13 +686,12 @@ export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: () => {
     const root = document.createElement('div');
-    root.style.display = 'grid';
-    root.style.gap = '16px';
+    root.className = 'datepicker-accessibility-matrix';
 
     const intro = document.createElement('div');
     intro.innerHTML = `
-      <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
-      <div style="font-size:13px; color:#444;">
+      <div class="datepicker-accessibility-matrix__intro-title">Accessibility matrix</div>
+      <div class="datepicker-accessibility-matrix__intro-description">
         Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs.
         Also reports whether <code>aria-labelledby</code> / <code>aria-describedby</code> resolve to real elements,
         whether help text is outside the dialog, and the current input value.

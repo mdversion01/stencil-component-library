@@ -327,6 +327,7 @@ export const ExternalValue = {
     const makeButton = (label, nextValue) => {
       const btn = document.createElement('button');
       btn.type = 'button';
+      btn.className = 'storybook-example-button';
       btn.textContent = label;
       btn.addEventListener('click', () => {
         host.value = nextValue;
@@ -572,41 +573,29 @@ export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: () => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'plumage-input-field-accessibility-matrix';
 
     const title = document.createElement('div');
     title.innerHTML = `<strong>Accessibility matrix</strong>
-<div style="opacity:.8">Prints computed label/input wiring: tag + ids + aria-* across default/inline/horizontal, validation, and disabled.</div>`;
+<div class="plumage-input-field-accessibility-matrix__description">Prints computed label/input wiring: tag + ids + aria-* across default/inline/horizontal, validation, and disabled.</div>`;
     wrap.appendChild(title);
 
     const cardRow = (labelText, buildEl) => {
       const card = document.createElement('div');
-      card.style.display = 'grid';
-      card.style.alignItems = 'start';
-      card.style.border = '1px solid #ddd';
-      card.style.borderRadius = '8px';
-      card.style.padding = '12px';
+      card.className = 'plumage-input-field-accessibility-matrix__card';
 
       const left = document.createElement('div');
-      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+      left.innerHTML = `<div class="plumage-input-field-accessibility-matrix__label">${labelText}</div>`;
 
       const right = document.createElement('div');
-      right.style.display = 'grid';
-      right.style.gap = '8px';
+      right.className = 'plumage-input-field-accessibility-matrix__content';
 
       const demo = document.createElement('div');
       const el = buildEl();
       demo.appendChild(el);
 
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className = 'plumage-input-field-accessibility-matrix__output';
       pre.textContent = 'Loading…';
 
       right.appendChild(demo);
@@ -685,7 +674,11 @@ export const AccessibilityMatrix = {
           formLayout: 'inline',
           validationMessage: '',
         });
-        return wrapInForm(input, { formLayout: 'inline', formId: 'mx-form-inline' });
+
+        return wrapInForm(input, {
+          formLayout: 'inline',
+          formId: 'mx-form-inline',
+        });
       }),
     );
 

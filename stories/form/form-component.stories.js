@@ -462,13 +462,12 @@ export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
   render: () => {
     const root = document.createElement('div');
-    root.style.display = 'grid';
-    root.style.gap = '16px';
+    root.className = 'form-accessibility-matrix';
 
     const intro = document.createElement('div');
     intro.innerHTML = `
-      <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
-      <div style="font-size:13px; color:#444;">
+      <div class="form-accessibility-matrix__intro-title">Accessibility matrix</div>
+      <div class="form-accessibility-matrix__intro-description">
         Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs.
         Includes Storybook-only "validation" and "disabled" demos to help audit 508/WCAG behavior.
       </div>
@@ -478,15 +477,39 @@ export const AccessibilityMatrix = {
     const rows = [
       {
         title: 'Default',
-        args: { formLayout: '', fieldset: false, legend: false, outsideOfForm: false, showValidation: false, disabledDemo: false },
+        args: {
+          formLayout: '',
+          fieldset: false,
+          legend: false,
+          outsideOfForm: false,
+          showValidation: false,
+          disabledDemo: false,
+        },
       },
       {
         title: 'Inline layout',
-        args: { formLayout: 'inline', fieldset: false, legend: false, outsideOfForm: false, showValidation: false, disabledDemo: false, numFields: 3 },
+        args: {
+          formLayout: 'inline',
+          fieldset: false,
+          legend: false,
+          outsideOfForm: false,
+          showValidation: false,
+          disabledDemo: false,
+          numFields: 3,
+        },
       },
       {
         title: 'Horizontal layout (fieldset + legend)',
-        args: { formLayout: 'horizontal', fieldset: true, legend: true, legendTxt: 'Details', outsideOfForm: false, showValidation: false, disabledDemo: false, numFields: 3 },
+        args: {
+          formLayout: 'horizontal',
+          fieldset: true,
+          legend: true,
+          legendTxt: 'Details',
+          outsideOfForm: false,
+          showValidation: false,
+          disabledDemo: false,
+          numFields: 3,
+        },
       },
       {
         title: 'Error/validation (storybook demo block)',
@@ -505,7 +528,16 @@ export const AccessibilityMatrix = {
       },
       {
         title: 'Disabled (storybook demo disables children)',
-        args: { formLayout: '', fieldset: true, legend: true, legendTxt: 'Disabled Demo', outsideOfForm: false, showValidation: false, disabledDemo: true, numFields: 2 },
+        args: {
+          formLayout: '',
+          fieldset: true,
+          legend: true,
+          legendTxt: 'Disabled Demo',
+          outsideOfForm: false,
+          showValidation: false,
+          disabledDemo: true,
+          numFields: 2,
+        },
       },
     ];
 
@@ -513,10 +545,19 @@ export const AccessibilityMatrix = {
       const idSuffix = String(idx + 1);
       const fixedArgs =
         r.title.startsWith('Error/validation')
-          ? { ...r.args, formAriaDescribedby: `form-matrix-${idSuffix}__validation` }
+          ? {
+              ...r.args,
+              formAriaDescribedby: `form-matrix-${idSuffix}__validation`,
+            }
           : r.args;
 
-      root.appendChild(renderMatrixRow({ title: r.title, args: fixedArgs, idSuffix }));
+      root.appendChild(
+        renderMatrixRow({
+          title: r.title,
+          args: fixedArgs,
+          idSuffix,
+        }),
+      );
     });
 
     return root;
@@ -532,3 +573,4 @@ export const AccessibilityMatrix = {
     controls: { disable: true },
   },
 };
+

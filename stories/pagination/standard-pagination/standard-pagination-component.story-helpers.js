@@ -228,33 +228,32 @@ export function buildMatrixEl(args) {
   return el;
 }
 
-export function renderMatrixRow({ title, args, idSuffix }) {
+export function renderMatrixRow({
+  title,
+  args,
+  idSuffix,
+}) {
   const wrap = document.createElement('div');
-  wrap.style.border = '1px solid #ddd';
-  wrap.style.borderRadius = '12px';
-  wrap.style.padding = '12px';
-  wrap.style.display = 'grid';
-  wrap.style.gap = '10px';
+  wrap.className = 'standard-pagination-accessibility-matrix__row';
 
   const heading = document.createElement('div');
-  heading.style.fontWeight = '700';
+  heading.className =
+    'standard-pagination-accessibility-matrix__row-heading';
   heading.textContent = title;
 
   const stage = document.createElement('div');
-  stage.style.maxWidth = '720px';
+  stage.className =
+    'standard-pagination-accessibility-matrix__stage';
 
   const pre = document.createElement('pre');
-  pre.style.margin = '0';
-  pre.style.padding = '10px';
-  pre.style.background = '#f6f8fa';
-  pre.style.borderRadius = '10px';
-  pre.style.overflowX = 'auto';
-  pre.style.fontSize = '12px';
+  pre.className =
+    'standard-pagination-accessibility-matrix__output';
   pre.textContent = 'Collecting aria/role/id…';
 
   const el = buildMatrixEl({
     ...args,
   });
+
   el.id = `spc-matrix-${idSuffix}`;
 
   stage.appendChild(el);
@@ -265,10 +264,17 @@ export function renderMatrixRow({ title, args, idSuffix }) {
 
   const update = () => {
     const snap = snapshotA11y(el);
-    pre.textContent = JSON.stringify(snap, null, 2);
+
+    pre.textContent = JSON.stringify(
+      snap,
+      null,
+      2,
+    );
   };
 
-  requestAnimationFrame(() => requestAnimationFrame(update));
+  requestAnimationFrame(() =>
+    requestAnimationFrame(update),
+  );
 
   return wrap;
 }

@@ -838,16 +838,53 @@ const splitIds = v =>
 export const pickTableA11y = (host, scopeRoot) => {
   const table = host?.querySelector('table') || null;
   const thead = table?.querySelector('thead') || null;
-  const headers = Array.from(table?.querySelectorAll('th[role="columnheader"]') || []);
-  const firstRow = table?.querySelector('tbody tr[role="row"]') || null;
+  const tbody = table?.querySelector('tbody') || null;
+  const tfoot = table?.querySelector('tfoot') || null;
+  const caption = table?.querySelector('caption') || null;
 
-  const labelledby = (table?.getAttribute('aria-labelledby') || '').trim();
-  const describedby = (table?.getAttribute('aria-describedby') || '').trim();
+  const headers = Array.from(
+    table?.querySelectorAll('th[role="columnheader"]') || [],
+  );
+
+  const bodyRows = Array.from(
+    tbody?.querySelectorAll('tr') || [],
+  );
+
+  const firstRow =
+    table?.querySelector('tbody tr[role="row"]') ||
+    bodyRows[0] ||
+    null;
+
+  const selectedRows = Array.from(
+    table?.querySelectorAll(
+      'tbody tr[aria-selected="true"]',
+    ) || [],
+  );
+
+  const pagination =
+    host?.querySelector('pagination-component') ||
+    host?.querySelector('standard-pagination-component') ||
+    host?.querySelector('minimize-pagination-component') ||
+    host?.querySelector('by-page-pagination-component') ||
+    null;
+
+  const labelledby = (
+    table?.getAttribute('aria-labelledby') || ''
+  ).trim();
+
+  const describedby = (
+    table?.getAttribute('aria-describedby') || ''
+  ).trim();
 
   const resolve = id => {
-    if (!id) return false;
+    if (!id) {
+      return false;
+    }
+
     try {
-      return !!scopeRoot.querySelector(`#${CSS.escape(id)}`);
+      return !!scopeRoot.querySelector(
+        `#${CSS.escape(id)}`,
+      );
     } catch {
       return false;
     }
@@ -857,31 +894,86 @@ export const pickTableA11y = (host, scopeRoot) => {
   const describedIds = splitIds(describedby);
 
   return {
-    host: host?.tagName?.toLowerCase?.() ?? null,
-    tableId: table?.getAttribute('id') ?? null,
-    role: table?.getAttribute('role') ?? '(native)',
-    'aria-colcount': table?.getAttribute('aria-colcount') ?? null,
-    'aria-rowcount': table?.getAttribute('aria-rowcount') ?? null,
-    'aria-multiselectable': table?.getAttribute('aria-multiselectable') ?? null,
-    'aria-labelledby': labelledby || null,
-    'aria-describedby': describedby || null,
-    labelledbyIds: labelledIds,
-    labelledbyAllResolve: labelledIds.every(resolve),
-    describedbyIds: describedIds,
-    describedbyAllResolve: describedIds.every(resolve),
-    headerThemeClass: thead?.getAttribute('class') ?? null,
-    headers: headers.slice(0, 6).map(h => ({
-      text: (h.textContent || '').trim().replace(/\s+/g, ' '),
-      tabIndex: h.getAttribute('tabindex'),
-      'aria-sort': h.getAttribute('aria-sort'),
-      'aria-colindex': h.getAttribute('aria-colindex'),
-      'aria-label': h.getAttribute('aria-label'),
-    })),
-    firstRow: firstRow
+    host:
+      host?.tagName?.toLowerCase?.() ??
+      null,
+
+    table: table
       ? {
-          id: firstRow.getAttribute('id'),
-          tabIndex: firstRow.getAttribute('tabindex'),
-          'aria-selected': firstRow.getAttribute('aria-selected'),
+          id: table.getAttribute('id'),
+          role: table.getAttribute('role') || '(native)',
+          'aria-colcount':
+            table.getAttribute('aria-colcount'),
+          'aria-rowcount':
+            table.getAttribute('aria-rowcount'),
+          'aria-multiselectable':
+            table.getAttribute('aria-multiselectable'),
+          'aria-labelledby':
+            labelledby || null,
+          'aria-describedby':
+            describedby || null,
+        }
+      : null,
+
+    references: {
+      labelledbyIds: labelledIds,
+      labelledbyAllResolve:
+        labelledIds.every(resolve),
+      describedbyIds: describedIds,
+      describedbyAllResolve:
+        describedIds.every(resolve),
+    },
+
+    structure: {
+      hasCaption: !!caption,
+      captionText:
+        (caption?.textContent || '')
+          .trim()
+          .replace(/\s+/g, ' ') || null,
+      hasHead: !!thead,
+      hasBody: !!tbody,
+      hasFooter: !!tfoot,
+      bodyRowCount: bodyRows.length,
+      headerThemeClass:
+        thead?.getAttribute('class') ?? null,
+    },
+
+    headers: headers.slice(0, 6).map(header => ({
+      text: (header.textContent || '')
+        .trim()
+        .replace(/\s+/g, ' '),
+      role: header.getAttribute('role'),
+      tabIndex: header.getAttribute('tabindex'),
+      'aria-sort': header.getAttribute('aria-sort'),
+      'aria-colindex':
+        header.getAttribute('aria-colindex'),
+      'aria-label':
+        header.getAttribute('aria-label'),
+    })),
+
+    selection: {
+      selectedRowCount: selectedRows.length,
+      firstRow: firstRow
+        ? {
+            id: firstRow.getAttribute('id'),
+            role: firstRow.getAttribute('role'),
+            tabIndex:
+              firstRow.getAttribute('tabindex'),
+            'aria-selected':
+              firstRow.getAttribute('aria-selected'),
+          }
+        : null,
+    },
+
+    pagination: pagination
+      ? {
+          tag: pagination.tagName.toLowerCase(),
+          position:
+            host?.getAttribute('pagination-position') ??
+            null,
+          variant:
+            host?.getAttribute('pagination-variant') ??
+            null,
         }
       : null,
   };

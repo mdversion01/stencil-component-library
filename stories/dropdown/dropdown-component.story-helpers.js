@@ -532,40 +532,39 @@ export const snapshotA11y = (host) => {
   };
 };
 
-export function buildCard({ title, layout = '', invalid = false, invalidText = '', args, idSuffix }) {
+export function buildCard({
+  title,
+  layout = '',
+  invalid = false,
+  invalidText = '',
+  args,
+  idSuffix,
+}) {
   const wrapper = document.createElement('div');
-  wrapper.style.border = '1px solid #e5e7eb';
-  wrapper.style.borderRadius = '12px';
-  wrapper.style.padding = '12px';
-  wrapper.style.background = 'white';
-  wrapper.style.display = 'grid';
-  wrapper.style.gap = '10px';
+  wrapper.className = 'dropdown-matrix-card';
 
   const heading = document.createElement('div');
-  heading.style.fontWeight = '700';
+  heading.className = 'dropdown-matrix-card__heading';
   heading.textContent = title;
 
   const row = document.createElement('div');
 
   if (layout === 'inline') {
-    row.style.display = 'flex';
-    row.style.alignItems = 'center';
-    row.style.gap = '12px';
+    row.className = 'dropdown-matrix-card__row--inline';
   } else if (layout === 'horizontal') {
-    row.style.display = 'grid';
-    row.style.gridTemplateColumns = '160px 1fr';
-    row.style.alignItems = 'center';
-    row.style.gap = '12px';
+    row.className = 'dropdown-matrix-card__row--horizontal';
   }
 
   const label = document.createElement('div');
+  label.className = 'dropdown-matrix-card__label';
   label.textContent = layout === 'horizontal' ? 'Label' : '';
-  label.style.fontWeight = '600';
-  label.style.fontSize = '13px';
-  label.style.display = layout === 'horizontal' ? 'block' : 'none';
+
+  if (layout === 'horizontal') {
+    label.classList.add('dropdown-matrix-card__label--visible');
+  }
 
   const stage = document.createElement('div');
-  stage.style.maxWidth = '560px';
+  stage.className = 'dropdown-matrix-card__stage';
 
   const host = buildDropdown(
     {
@@ -578,48 +577,43 @@ export function buildCard({ title, layout = '', invalid = false, invalidText = '
 
   stage.appendChild(host);
 
-  let validationEl = null;
-  if (invalid) {
-    validationEl = document.createElement('div');
-    validationEl.style.marginTop = '8px';
-    validationEl.style.color = '#b91c1c';
-    validationEl.style.fontSize = '12px';
-    validationEl.style.fontWeight = '600';
-    validationEl.textContent = invalidText || 'Required field';
-    stage.appendChild(validationEl);
+  if (layout === 'horizontal') {
+    row.appendChild(label);
   }
 
-  if (layout === 'horizontal') row.append(label, stage);
-  else row.append(stage);
+  row.appendChild(stage);
 
-  const pre = document.createElement('pre');
-  pre.style.margin = '0';
-  pre.style.padding = '10px';
-  pre.style.background = '#f6f8fa';
-  pre.style.borderRadius = '10px';
-  pre.style.overflowX = 'auto';
-  pre.style.fontSize = '12px';
-  pre.textContent = 'Collecting aria/role/id…';
+  const validation = document.createElement('div');
 
-  wrapper.append(heading, row, pre);
+  if (invalid) {
+    validation.className = 'dropdown-matrix-card__validation';
+    validation.textContent = invalidText;
+  }
+
+  const output = document.createElement('pre');
+  output.className = 'dropdown-matrix-card__output';
+  output.textContent = 'Loading computed attributes…';
+
+  wrapper.appendChild(heading);
+  wrapper.appendChild(row);
+
+  if (invalid) {
+    wrapper.appendChild(validation);
+  }
+
+  wrapper.appendChild(output);
 
   const update = () => {
-    const snap = snapshotA11y(host);
-    pre.textContent = JSON.stringify(
-      {
-        ...snap,
-        storybookOnly: {
-          layout,
-          invalid,
-          validationText: validationEl ? validationEl.textContent : null,
-        },
-      },
+    output.textContent = JSON.stringify(
+      snapshotA11y(host),
       null,
       2,
     );
   };
 
-  requestAnimationFrame(() => requestAnimationFrame(update));
+  queueMicrotask(() => {
+    requestAnimationFrame(update);
+  });
 
   return wrapper;
 }

@@ -570,129 +570,205 @@ export const PlumageToastMax = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: (_args, context) => {
-    makeIds(
+    const ids = makeIds(
       {
-        s_default: 'mxDefault',
-        s_inline: 'mxInline',
-        s_horizontal: 'mxHorizontal',
-        s_error: 'mxError',
-        s_disabled: 'mxDisabled',
+        alert: 'mxAlert',
+        status: 'mxStatus',
+        noClose: 'mxNoClose',
+        focus: 'mxFocus',
+        plumage: 'mxPlumage',
+        position: 'mxPosition',
       },
       context,
     );
 
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'toasts-accessibility-matrix';
 
     const header = document.createElement('div');
-    header.innerHTML = `
-      <strong>Accessibility matrix</strong>
-      <div style="opacity:.8">
-        Prints computed a11y wiring for the toaster region and the toast template (derived ids, roles, aria-*),
-        without rendering any actual toast UI.
-      </div>
-    `;
+
+    const headerTitle = document.createElement('strong');
+    headerTitle.textContent = 'Accessibility matrix';
+
+    const headerDescription = document.createElement('div');
+    headerDescription.className =
+      'toasts-accessibility-matrix__description';
+    headerDescription.innerHTML =
+      'Prints the derived accessibility model for representative toast configurations: ' +
+      '<code>role="alert"</code> versus <code>role="status"</code>, accessible naming, ' +
+      'close-button wiring, focus behavior, styling mode, and toaster position. ' +
+      'No toast overlay UI is rendered in this matrix.';
+
+    header.appendChild(headerTitle);
+    header.appendChild(headerDescription);
     wrap.appendChild(header);
 
-    const makeCard = (title) => {
+    const makeCard = title => {
       const box = document.createElement('div');
-      box.style.border = '1px solid #ddd';
-      box.style.borderRadius = '10px';
-      box.style.padding = '12px';
-      box.style.display = 'grid';
-      box.style.gap = '10px';
+      box.className = 'toasts-accessibility-matrix__card';
 
-      const t = document.createElement('div');
-      t.style.fontWeight = '600';
-      t.textContent = title;
+      const cardTitle = document.createElement('div');
+      cardTitle.className =
+        'toasts-accessibility-matrix__card-title';
+      cardTitle.textContent = title;
 
-      const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
-      pre.textContent = 'Loading…';
+      const output = document.createElement('pre');
+      output.className = 'toasts-accessibility-matrix__output';
+      output.textContent = 'Loading…';
 
-      box.appendChild(t);
-      box.appendChild(pre);
-      return { box, pre };
-    };
-
-    const compute = (cfg) => {
-      const toastId = cfg.toastId || 'mx';
-      const outerId = `${toastId}__toast_${cfg.exampleToastNumericId}__outer`;
-      const contentId = `${toastId}__toast_${cfg.exampleToastNumericId}__content`;
-      const titleId = `${toastId}__toast_${cfg.exampleToastNumericId}__title`;
-      const bodyId = `${toastId}__toast_${cfg.exampleToastNumericId}__body`;
-      const closeId = `${toastId}__toast_${cfg.exampleToastNumericId}__close`;
-      const role = cfg.isStatus ? 'status' : 'alert';
+      box.appendChild(cardTitle);
+      box.appendChild(output);
 
       return {
-        scenario: cfg.scenario,
-        region: {
-          role: 'region',
-          ariaLabel: cfg.ariaLabel || 'Notifications',
-          ariaRelevant: 'additions text',
-          ariaAtomic: 'false',
-          id: `toaster-${cfg.position}`,
-          class: `${cfg.plumageToast ? 'pl-toaster' : 'toaster'} toaster-${cfg.position}`,
-        },
-        exampleToast: {
-          dataToastId: String(cfg.exampleToastNumericId),
-          outerId,
-          role,
-          ariaAtomic: 'true',
-          ariaLabelledby: cfg.toastTitle ? titleId : undefined,
-          ariaDescribedby: bodyId,
-          focusTargetId: contentId,
-          closeButton: cfg.noCloseButton
-            ? null
-            : {
-                id: closeId,
-                ariaLabel: cfg.toastTitle ? `Close ${cfg.toastTitle}` : 'Close notification',
-                ariaControls: outerId,
-              },
-          derivedIds: { outerId, contentId, titleId, bodyId, closeId },
-        },
-        props: {
-          position: cfg.position,
-          solidToast: !!cfg.solidToast,
-          plumageToast: !!cfg.plumageToast,
-          plumageToastMax: !!cfg.plumageToastMax,
-          appendToast: !!cfg.appendToast,
-          noAnimation: !!cfg.noAnimation,
-          noHoverPause: !!cfg.noHoverPause,
-          focusOnShow: !!cfg.focusOnShow,
-        },
-        notes: [
-          'No live-region aria-live on the region itself; each toast uses role=status/alert which implies polite/assertive announcements.',
-          'Toast outer uses aria-labelledby (title) + aria-describedby (body) for an explicit accessible name/description.',
-          'Escape closes a toast when focus is within the toast.',
-        ],
+        box,
+        output,
       };
     };
 
-    const c1 = makeCard('Default (standard toast)');
-    const c2 = makeCard('Inline (external label/help scenario)');
-    const c3 = makeCard('Horizontal (simulated layout)');
-    const c4 = makeCard('Error/validation (danger alert)');
-    const c5 = makeCard('Disabled (simulated: no close button)');
+    const compute = config => {
+      const toastId = config.toastId || 'mx';
+      const numericId = config.exampleToastNumericId;
 
-    wrap.appendChild(c1.box);
-    wrap.appendChild(c2.box);
-    wrap.appendChild(c3.box);
-    wrap.appendChild(c4.box);
-    wrap.appendChild(c5.box);
+      const outerId =
+        `${toastId}__toast_${numericId}__outer`;
+
+      const contentId =
+        `${toastId}__toast_${numericId}__content`;
+
+      const titleId =
+        `${toastId}__toast_${numericId}__title`;
+
+      const bodyId =
+        `${toastId}__toast_${numericId}__body`;
+
+      const closeId =
+        `${toastId}__toast_${numericId}__close`;
+
+      const role = config.isStatus
+        ? 'status'
+        : 'alert';
+
+      return {
+        scenario: config.scenario,
+
+        region: {
+          role: 'region',
+          id: `toaster-${config.position}`,
+          class:
+            `${config.plumageToast ? 'pl-toaster' : 'toaster'} ` +
+            `toaster-${config.position}`,
+          'aria-label':
+            config.ariaLabel || 'Notifications',
+          'aria-relevant': 'additions text',
+          'aria-atomic': 'false',
+        },
+
+        toast: {
+          'data-toast-id': String(numericId),
+          id: outerId,
+          role,
+          'aria-atomic': 'true',
+          'aria-labelledby':
+            config.toastTitle
+              ? titleId
+              : null,
+          'aria-describedby': bodyId,
+
+          accessibleNameSource:
+            config.toastTitle
+              ? 'aria-labelledby → toast title'
+              : null,
+
+          accessibleDescriptionSource:
+            'aria-describedby → toast body',
+
+          focusTargetId: contentId,
+
+          closeButton: config.noCloseButton
+            ? null
+            : {
+                id: closeId,
+                'aria-label': config.toastTitle
+                  ? `Close ${config.toastTitle}`
+                  : 'Close notification',
+                'aria-controls': outerId,
+              },
+
+          derivedIds: {
+            outerId,
+            contentId,
+            titleId,
+            bodyId,
+            closeId,
+          },
+        },
+
+        behavior: {
+          announcement:
+            role === 'status'
+              ? 'polite'
+              : 'assertive',
+
+          focusOnShow:
+            !!config.focusOnShow,
+
+          closeButton:
+            !config.noCloseButton,
+
+          escapeClosesWhenFocused:
+            true,
+        },
+
+        hostProps: {
+          position: config.position,
+          solidToast:
+            !!config.solidToast,
+          plumageToast:
+            !!config.plumageToast,
+          plumageToastMax:
+            !!config.plumageToastMax,
+          appendToast:
+            !!config.appendToast,
+          noAnimation:
+            !!config.noAnimation,
+          noHoverPause:
+            !!config.noHoverPause,
+          focusOnShow:
+            !!config.focusOnShow,
+        },
+      };
+    };
+
+    const alertCard =
+      makeCard('Alert toast');
+
+    const statusCard =
+      makeCard('Status toast');
+
+    const noCloseCard =
+      makeCard('No close button');
+
+    const focusCard =
+      makeCard('Focus on show');
+
+    const plumageCard =
+      makeCard('Plumage toast');
+
+    const positionCard =
+      makeCard('Bottom-left position');
+
+    wrap.appendChild(alertCard.box);
+    wrap.appendChild(statusCard.box);
+    wrap.appendChild(noCloseCard.box);
+    wrap.appendChild(focusCard.box);
+    wrap.appendChild(plumageCard.box);
+    wrap.appendChild(positionCard.box);
 
     queueMicrotask(() => {
       const base = {
         ariaLabel: 'Notifications',
-        toastId: 'mx',
         exampleToastNumericId: 12345,
         toastTitle: 'Notice',
         isStatus: false,
@@ -707,73 +783,99 @@ export const AccessibilityMatrix = {
         focusOnShow: false,
       };
 
-      c1.pre.textContent = JSON.stringify(
-        compute({
-          ...base,
-          scenario: 'default',
-        }),
-        null,
-        2,
-      );
+      alertCard.output.textContent =
+        JSON.stringify(
+          compute({
+            ...base,
+            scenario: 'alert toast',
+            toastId: ids.alert,
+            toastTitle: 'Important notice',
+            isStatus: false,
+          }),
+          null,
+          2,
+        );
 
-      c2.pre.textContent = JSON.stringify(
-        compute({
-          ...base,
-          scenario: 'inline',
-          position: 'top-left',
-          toastId: 'mx-inline',
-          toastTitle: 'Inline notice',
-        }),
-        null,
-        2,
-      );
+      statusCard.output.textContent =
+        JSON.stringify(
+          compute({
+            ...base,
+            scenario: 'status toast',
+            toastId: ids.status,
+            toastTitle: 'Saved',
+            isStatus: true,
+          }),
+          null,
+          2,
+        );
 
-      c3.pre.textContent = JSON.stringify(
-        compute({
-          ...base,
-          scenario: 'horizontal',
-          position: 'bottom-left',
-          toastId: 'mx-horizontal',
-          toastTitle: 'Horizontal notice',
-        }),
-        null,
-        2,
-      );
+      noCloseCard.output.textContent =
+        JSON.stringify(
+          compute({
+            ...base,
+            scenario: 'no close button',
+            toastId: ids.noClose,
+            toastTitle: 'Persistent notice',
+            noCloseButton: true,
+          }),
+          null,
+          2,
+        );
 
-      c4.pre.textContent = JSON.stringify(
-        compute({
-          ...base,
-          scenario: 'error/validation',
-          position: 'bottom-right',
-          toastId: 'mx-error',
-          toastTitle: 'Error',
-          isStatus: false,
-        }),
-        null,
-        2,
-      );
+      focusCard.output.textContent =
+        JSON.stringify(
+          compute({
+            ...base,
+            scenario: 'focus on show',
+            toastId: ids.focus,
+            toastTitle: 'Focused notice',
+            focusOnShow: true,
+          }),
+          null,
+          2,
+        );
 
-      c5.pre.textContent = JSON.stringify(
-        compute({
-          ...base,
-          scenario: 'disabled (simulated)',
-          toastId: 'mx-disabled',
-          solidToast: true,
-          noCloseButton: true,
-        }),
-        null,
-        2,
-      );
+      plumageCard.output.textContent =
+        JSON.stringify(
+          compute({
+            ...base,
+            scenario: 'plumage toast',
+            toastId: ids.plumage,
+            toastTitle: 'Plumage notice',
+            plumageToast: true,
+            plumageToastMax: true,
+            solidToast: true,
+          }),
+          null,
+          2,
+        );
+
+      positionCard.output.textContent =
+        JSON.stringify(
+          compute({
+            ...base,
+            scenario: 'bottom-left position',
+            toastId: ids.position,
+            toastTitle: 'Positioned notice',
+            position: 'bottom-left',
+          }),
+          null,
+          2,
+        );
     });
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:
-          'Print-only accessibility matrix (no toast UI is rendered). It mirrors the component’s derived ids and aria/role model so you can verify wiring without overlays.',
+          'Print-only accessibility matrix for representative Toast configurations. It compares alert versus status announcement semantics, close-button accessibility, focus-on-show behavior, Plumage styling, and positioning while showing the derived toast and toaster IDs and ARIA relationships.',
       },
     },
   },

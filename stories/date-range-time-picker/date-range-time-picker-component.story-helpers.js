@@ -501,18 +501,18 @@ export const snapshotDRTPA11y = host => {
   };
 };
 
-export const renderDRTPMatrixRow = ({ title, args, idSuffix }) => {
+export const renderDRTPMatrixRow = ({
+  title,
+  args,
+  idSuffix,
+}) => {
   const wrapper = document.createElement('div');
-
-  wrapper.style.border = '1px solid #ddd';
-  wrapper.style.borderRadius = '12px';
-  wrapper.style.padding = '12px';
-  wrapper.style.display = 'grid';
-  wrapper.style.gap = '10px';
+  wrapper.className =
+    'date-range-time-picker-accessibility-matrix__card';
 
   const heading = document.createElement('div');
-
-  heading.style.fontWeight = '700';
+  heading.className =
+    'date-range-time-picker-accessibility-matrix__card-title';
   heading.textContent = title;
 
   const element = buildDateRangeTimePickerEl({
@@ -521,17 +521,12 @@ export const renderDRTPMatrixRow = ({ title, args, idSuffix }) => {
   });
 
   const stage = document.createElement('div');
-
-  stage.style.maxWidth = '560px';
+  stage.className =
+    'date-range-time-picker-accessibility-matrix__stage';
 
   const output = document.createElement('pre');
-
-  output.style.margin = '0';
-  output.style.padding = '10px';
-  output.style.background = '#f6f8fa';
-  output.style.borderRadius = '10px';
-  output.style.overflowX = 'auto';
-  output.style.fontSize = '12px';
+  output.className =
+    'date-range-time-picker-accessibility-matrix__output';
   output.textContent = 'Collecting aria/role/id…';
 
   stage.appendChild(element);
@@ -540,10 +535,16 @@ export const renderDRTPMatrixRow = ({ title, args, idSuffix }) => {
   wrapper.appendChild(output);
 
   const update = () => {
-    output.textContent = JSON.stringify(snapshotDRTPA11y(element), null, 2);
+    output.textContent = JSON.stringify(
+      snapshotDRTPA11y(element),
+      null,
+      2,
+    );
   };
 
-  requestAnimationFrame(() => requestAnimationFrame(update));
+  requestAnimationFrame(() =>
+    requestAnimationFrame(update),
+  );
 
   return wrapper;
 };

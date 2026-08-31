@@ -563,19 +563,28 @@ export const Playground = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: () => {
     const root = document.createElement('div');
-    root.style.display = 'grid';
-    root.style.gap = '16px';
+    root.className = 'minimize-pagination-accessibility-matrix';
 
     const intro = document.createElement('div');
-    intro.innerHTML = `
-    <div style="font-weight:700; font-size:14px; margin-bottom:6px;">Accessibility matrix</div>
-    <div style="font-size:13px; color:#444;">
-      Renders common variants and prints computed <code>role</code> + <code>aria-*</code> + IDs.
-      Also reports whether <code>aria-describedby</code> resolves to real elements and shows the live range region.
-    </div>
-  `;
+
+    const introTitle = document.createElement('div');
+    introTitle.className =
+      'minimize-pagination-accessibility-matrix__intro-title';
+    introTitle.textContent = 'Accessibility matrix';
+
+    const introDescription = document.createElement('div');
+    introDescription.className =
+      'minimize-pagination-accessibility-matrix__intro-description';
+    introDescription.innerHTML =
+      'Renders common variants and prints computed <code>role</code> + ' +
+      '<code>aria-*</code> + IDs. Also reports whether ' +
+      '<code>aria-describedby</code> resolves to real elements and shows the live range region.';
+
+    intro.appendChild(introTitle);
+    intro.appendChild(introDescription);
     root.appendChild(intro);
 
     const rows = [
@@ -617,12 +626,14 @@ export const AccessibilityMatrix = {
           itemsPerPageOptions: [10, 20, 50, 100, 'All'],
           plumage: true,
           pageSizeLabel: 'Items per page:',
-          pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+          pageSizeHelpText:
+            'Use this control to change how many items are shown per page.',
           paginationAriaLabel: 'Pagination',
         },
       },
       {
-        title: 'Error/Validation-ish (no rows: “All” disabled, range shows 0-0 of 0)',
+        title:
+          'Error/Validation-ish (no rows: “All” disabled, range shows 0-0 of 0)',
         args: {
           currentPage: 1,
           totalRows: 0,
@@ -633,7 +644,8 @@ export const AccessibilityMatrix = {
           itemsPerPageOptions: [10, 20, 'All'],
           plumage: false,
           pageSizeLabel: 'Items per page:',
-          pageSizeHelpText: 'Use this control to change how many items are shown per page.',
+          pageSizeHelpText:
+            'Use this control to change how many items are shown per page.',
           paginationAriaLabel: 'Pagination',
         },
       },
@@ -652,24 +664,29 @@ export const AccessibilityMatrix = {
       },
     ];
 
-    rows.forEach((r, idx) => {
+    rows.forEach((row, index) => {
       root.appendChild(
         renderMatrixRow({
-          ...r,
-          idSuffix: String(idx + 1),
+          ...row,
+          idSuffix: String(index + 1),
         }),
       );
     });
 
     return root;
   },
+
   parameters: {
     docs: {
       description: {
         story:
           'Matrix of key states (default/inline/horizontal, no-rows “validation-ish”, at-start disabled-ish). Each row prints computed role/aria/ids and whether aria-describedby resolves.',
       },
-      story: { height: '1400px' },
+
+      story: {
+        height: '1400px',
+      },
+
       source: {
         code: normalizeHtml(`
 <div style="display:grid; gap:16px;">
@@ -680,6 +697,9 @@ export const AccessibilityMatrix = {
         language: 'html',
       },
     },
-    controls: { disable: true },
+
+    controls: {
+      disable: true,
+    },
   },
 };

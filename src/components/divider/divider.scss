@@ -4,9 +4,6 @@ $divider-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica
   'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
   'Noto Color Emoji';
 
-$divider-text-color: rgba(0, 0, 0, 0.88);
-$divider-border-color: rgba(5, 5, 5, 0.25);
-
 $divider-font-size: 14px;
 $divider-line-height: 1.5714285714285714;
 
@@ -19,17 +16,27 @@ $divider-with-text-font-weight: 500;
 
 $divider-left-right-ratio: 0.05;
 
+[data-bs-theme='light'] {
+  --divider-text-color: rgba(0, 0, 0, 88%);
+  --divider-border-color: rgba(5, 5, 5, 25%);
+}
+
+[data-bs-theme='dark'] {
+  --divider-text-color: rgba(255, 255, 255, 88%);
+  --divider-border-color: rgba(255, 255, 255, 25%);
+}
+
 @mixin divider-with-text-base($plain: false) {
   display: flex;
   align-items: center;
   margin: $divider-with-text-margin;
-  color: $divider-text-color;
+  color: var(--divider-text-color);
   white-space: nowrap;
   text-align: center;
 
   // IMPORTANT: keep border COLOR on the element for ::before/::after to inherit,
   // but make the element border width 0 so no "top border" renders on the container.
-  border-block-start: 0 solid $divider-border-color;
+  border-block-start: 0 solid var(--divider-border-color);
 
   @if $plain == true {
     font-weight: normal;
@@ -79,7 +86,7 @@ $divider-left-right-ratio: 0.05;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    color: $divider-text-color;
+    color: var(--divider-text-color) ;
     font-size: $divider-font-size;
     line-height: $divider-line-height;
     list-style: none;
@@ -103,7 +110,7 @@ $divider-left-right-ratio: 0.05;
     width: 100%;
     min-width: 100%;
     margin: $divider-horizontal-margin;
-    border-block-start: 1px solid $divider-border-color;
+    border-block-start: 1px solid var(--divider-border-color);
   }
 
   .divider-horizontal.divider-with-text {
@@ -178,7 +185,7 @@ $divider-left-right-ratio: 0.05;
     margin-block: 0;
     vertical-align: middle;
     border-top: 0;
-    border-inline-start: 1px solid $divider-border-color;
+    border-inline-start: 1px solid var(--divider-border-color);
 
     &.divider-dashed {
       border-inline-start-style: dashed;
@@ -191,7 +198,7 @@ $divider-left-right-ratio: 0.05;
   /* dashed base (non-with-text horizontal uses this if you add .divider-dashed) */
   .divider-horizontal:not(.divider-with-text).divider-dashed {
     background: none;
-    border-color: $divider-border-color;
+    border-color: var(--divider-border-color);
     border-style: dashed;
     border-width: 1px 0 0;
   }

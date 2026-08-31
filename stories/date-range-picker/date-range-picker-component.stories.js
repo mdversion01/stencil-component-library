@@ -7,6 +7,7 @@ import {
   setDateRangeValueWhenReady,
   Template,
   updateArgsBestEffort,
+  renderDRPMatrixRow,
 } from './date-range-picker-component.story-helpers.js';
 
 const baseArgs = {
@@ -1034,372 +1035,30 @@ export const AccessibilityMatrix = {
 
   render: args => {
     const root = document.createElement('div');
+    root.className =
+      'date-range-picker-accessibility-matrix';
 
-    root.style.display = 'grid';
-    root.style.gap = '16px';
+    const intro =
+      document.createElement('div');
 
-    const intro = document.createElement('div');
+    const introTitle =
+      document.createElement('div');
+    introTitle.className =
+      'date-range-picker-accessibility-matrix__intro-title';
+    introTitle.textContent =
+      'Accessibility matrix';
 
-    intro.innerHTML = `
-      <div style="font-weight:700; font-size:14px; margin-bottom:6px;">
-        Accessibility matrix
-      </div>
-      <div style="font-size:13px; color:#444;">
-        Date Range Picker: common variants and computed
-        <code>role</code>, <code>aria-*</code>, IDs, values, and control states.
-      </div>
-    `;
+    const introDescription =
+      document.createElement('div');
+    introDescription.className =
+      'date-range-picker-accessibility-matrix__intro-description';
+    introDescription.innerHTML =
+      'Date Range Picker: common variants and computed ' +
+      '<code>role</code>, <code>aria-*</code>, IDs, values, and control states.';
 
+    intro.appendChild(introTitle);
+    intro.appendChild(introDescription);
     root.appendChild(intro);
-
-    const pickAttrs = (element, names) => {
-      const output = {};
-
-      if (!element) {
-        return output;
-      }
-
-      for (const name of names) {
-        const value = element.getAttribute(name);
-
-        if (
-          value !== null &&
-          value !== ''
-        ) {
-          output[name] = value;
-        }
-      }
-
-      return output;
-    };
-
-    const splitIds = value =>
-      String(value || '')
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean);
-
-    const resolveIdsWithin = (
-      host,
-      ids,
-    ) => {
-      const result = {};
-
-      for (const id of ids) {
-        const safe = String(id)
-          .replace(/\\/g, '\\\\')
-          .replace(/"/g, '\\"');
-
-        result[id] = !!host.querySelector(
-          `[id="${safe}"]`,
-        );
-      }
-
-      return result;
-    };
-
-    const collect = host => {
-      const ids = Array.from(
-        host.querySelectorAll('[id]'),
-      )
-        .map(node => node.id)
-        .filter(Boolean);
-
-      const counts = new Map();
-
-      for (const id of ids) {
-        counts.set(
-          id,
-          (counts.get(id) || 0) + 1,
-        );
-      }
-
-      const duplicates = Array.from(
-        counts.entries(),
-      )
-        .filter(([, count]) => count > 1)
-        .map(([id, count]) => ({
-          id,
-          count,
-        }));
-
-      return {
-        total: ids.length,
-        unique: counts.size,
-        duplicates,
-      };
-    };
-
-    const snapshotDRPA11y = host => {
-      const input = host.querySelector(
-        'input.form-control',
-      );
-
-      const label = host.querySelector(
-        'label.form-control-label',
-      );
-
-      const group = host.querySelector(
-        '.input-group',
-      );
-
-      const toggle = host.querySelector(
-        '.calendar-button, button.btn.input-group-text',
-      );
-
-      const clearButton =
-        host.querySelector(
-          '.clear-input-button',
-        );
-
-      const dialog = host.querySelector(
-        '.dropdown-content[role="dialog"], .dropdown-content',
-      );
-
-      const validation =
-        host.querySelector(
-          '.invalid-feedback.validation, .invalid-feedback.warning, .invalid-feedback',
-        );
-
-      const describedByIds = input
-        ? splitIds(
-            input.getAttribute(
-              'aria-describedby',
-            ),
-          )
-        : [];
-
-      const labelledByIds = input
-        ? splitIds(
-            input.getAttribute(
-              'aria-labelledby',
-            ),
-          )
-        : [];
-
-      return {
-        host: {
-          tag: host.tagName.toLowerCase(),
-          id: host.id || null,
-          role:
-            host.getAttribute('role') || null,
-          ...pickAttrs(host, [
-            'value',
-            'read-only',
-            'disabled',
-            'aria-label',
-            'aria-labelledby',
-            'aria-describedby',
-          ]),
-          properties: {
-            value: host.value || '',
-            readOnly: !!host.readOnly,
-            disabled: !!host.disabled,
-          },
-        },
-
-        input: input
-          ? {
-              tag:
-                input.tagName.toLowerCase(),
-              id: input.id || null,
-              role:
-                input.getAttribute('role') ||
-                null,
-              value: input.value || '',
-              ...pickAttrs(input, [
-                'name',
-                'type',
-                'autocomplete',
-                'required',
-                'readonly',
-                'disabled',
-                'aria-label',
-                'aria-labelledby',
-                'aria-describedby',
-                'aria-invalid',
-                'aria-readonly',
-                'aria-disabled',
-              ]),
-              properties: {
-                value: input.value || '',
-                readOnly: input.readOnly,
-                disabled: input.disabled,
-              },
-              resolves: {
-                'aria-labelledby':
-                  resolveIdsWithin(
-                    host,
-                    labelledByIds,
-                  ),
-                'aria-describedby':
-                  resolveIdsWithin(
-                    host,
-                    describedByIds,
-                  ),
-              },
-            }
-          : null,
-
-        label: label
-          ? {
-              tag:
-                label.tagName.toLowerCase(),
-              id: label.id || null,
-              for:
-                label.getAttribute('for') ||
-                null,
-            }
-          : null,
-
-        group: group
-          ? {
-              tag:
-                group.tagName.toLowerCase(),
-              id: group.id || null,
-              role:
-                group.getAttribute('role') ||
-                null,
-              className:
-                group.getAttribute('class') ||
-                '',
-              ...pickAttrs(group, [
-                'aria-label',
-                'aria-labelledby',
-                'aria-describedby',
-              ]),
-            }
-          : null,
-
-        toggle: toggle
-          ? {
-              tag:
-                toggle.tagName.toLowerCase(),
-              id: toggle.id || null,
-              role:
-                toggle.getAttribute('role') ||
-                null,
-              ...pickAttrs(toggle, [
-                'aria-label',
-                'aria-haspopup',
-                'aria-expanded',
-                'aria-controls',
-                'disabled',
-              ]),
-            }
-          : null,
-
-        clearButton: clearButton
-          ? {
-              tag:
-                clearButton.tagName.toLowerCase(),
-              id: clearButton.id || null,
-              ...pickAttrs(clearButton, [
-                'aria-label',
-                'disabled',
-              ]),
-            }
-          : null,
-
-        dialog: dialog
-          ? {
-              tag:
-                dialog.tagName.toLowerCase(),
-              id: dialog.id || null,
-              role:
-                dialog.getAttribute('role') ||
-                null,
-              ...pickAttrs(dialog, [
-                'aria-modal',
-                'aria-labelledby',
-                'aria-describedby',
-              ]),
-            }
-          : null,
-
-        validation: validation
-          ? {
-              tag:
-                validation.tagName.toLowerCase(),
-              id: validation.id || null,
-              ...pickAttrs(validation, [
-                'aria-live',
-                'aria-atomic',
-              ]),
-              text:
-                validation.textContent?.trim() ||
-                null,
-            }
-          : null,
-
-        controls: {
-          calendarToggleRendered: !!toggle,
-          clearButtonRendered:
-            !!clearButton,
-        },
-
-        ids: collect(host),
-      };
-    };
-
-    const renderRow = ({
-      title,
-      build,
-    }) => {
-      const wrapper =
-        document.createElement('div');
-
-      wrapper.style.border =
-        '1px solid #ddd';
-      wrapper.style.borderRadius = '12px';
-      wrapper.style.padding = '12px';
-      wrapper.style.display = 'grid';
-      wrapper.style.gap = '10px';
-
-      const heading =
-        document.createElement('div');
-
-      heading.style.fontWeight = '700';
-      heading.textContent = title;
-
-      const stage =
-        document.createElement('div');
-
-      stage.style.maxWidth = '560px';
-
-      const output =
-        document.createElement('pre');
-
-      output.style.margin = '0';
-      output.style.padding = '10px';
-      output.style.background = '#f6f8fa';
-      output.style.borderRadius = '10px';
-      output.style.overflowX = 'auto';
-      output.style.fontSize = '12px';
-      output.textContent =
-        'Collecting aria/role/id…';
-
-      const element = build();
-
-      stage.appendChild(element);
-      wrapper.appendChild(heading);
-      wrapper.appendChild(stage);
-      wrapper.appendChild(output);
-
-      const update = () => {
-        output.textContent = JSON.stringify(
-          snapshotDRPA11y(element),
-          null,
-          2,
-        );
-      };
-
-      requestAnimationFrame(() =>
-        requestAnimationFrame(update),
-      );
-
-      return wrapper;
-    };
 
     const rows = [
       {
@@ -1531,7 +1190,9 @@ export const AccessibilityMatrix = {
     ];
 
     rows.forEach(row => {
-      root.appendChild(renderRow(row));
+      root.appendChild(
+        renderDRPMatrixRow(row),
+      );
     });
 
     return root;

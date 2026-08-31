@@ -645,50 +645,44 @@ export const ButtonWithBadge = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: () => {
     const wrap = document.createElement('div');
-    wrap.style.display = 'grid';
-    wrap.style.gap = '16px';
-    wrap.style.alignItems = 'start';
-    wrap.style.maxWidth = '980px';
+    wrap.className = 'accessibility-matrix';
 
     const title = document.createElement('div');
-    title.innerHTML = `<strong>Accessibility matrix</strong><div style="opacity:.8">Shows computed host <code>role</code> / <code>aria-*</code> values for default/token/dot variants.</div>`;
+
+    const heading = document.createElement('strong');
+    heading.textContent = 'Accessibility matrix';
+
+    const description = document.createElement('div');
+    description.className = 'accessibility-matrix__description';
+    description.innerHTML =
+      'Shows computed host <code>role</code> / <code>aria-*</code> values for default/token/dot variants.';
+
+    title.appendChild(heading);
+    title.appendChild(description);
     wrap.appendChild(title);
 
     const mkRow = (labelText, makeEl) => {
       const row = document.createElement('div');
-      row.style.display = 'grid';
-      row.style.gridTemplateColumns = '220px 1fr';
-      row.style.gap = '12px';
-      row.style.alignItems = 'start';
-      row.style.border = '1px solid #ddd';
-      row.style.borderRadius = '8px';
-      row.style.padding = '12px';
+      row.className = 'accessibility-matrix__row';
 
       const left = document.createElement('div');
-      left.innerHTML = `<div style="font-weight:600">${labelText}</div>`;
+      left.className = 'accessibility-matrix__label';
+      left.textContent = labelText;
 
       const right = document.createElement('div');
-      right.style.display = 'grid';
-      right.style.gap = '8px';
+      right.className = 'accessibility-matrix__content';
 
       const demo = document.createElement('div');
-      demo.style.display = 'inline-flex';
-      demo.style.alignItems = 'center';
-      demo.style.gap = '8px';
-      demo.style.flexWrap = 'wrap';
+      demo.className = 'accessibility-matrix__demo';
 
       const el = makeEl();
       demo.appendChild(el);
 
       const pre = document.createElement('pre');
-      pre.style.margin = '0';
-      pre.style.padding = '10px';
-      pre.style.borderRadius = '8px';
-      pre.style.overflow = 'auto';
-      pre.style.border = '1px solid #eee';
-      pre.style.background = '#fafafa';
+      pre.className = 'accessibility-matrix__output';
       pre.textContent = 'Loading computed attributes…';
 
       right.appendChild(demo);
@@ -707,6 +701,7 @@ export const AccessibilityMatrix = {
           'aria-live': el.getAttribute('aria-live'),
           'aria-atomic': el.getAttribute('aria-atomic'),
         };
+
         pre.textContent = JSON.stringify(attrs, null, 2);
       };
 

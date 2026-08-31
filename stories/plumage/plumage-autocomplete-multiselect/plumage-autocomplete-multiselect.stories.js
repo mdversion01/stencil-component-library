@@ -3,7 +3,9 @@ import {
   DocsWrapStyles,
   FRUIT,
   SIZE_VARIANTS,
+  TAG,
   buildDocsComponentHtml,
+  buildDocsHtmlControlledValue,
   buildDocsHtmlMany,
   mkMatrixCellA11y,
   normalize,
@@ -13,14 +15,11 @@ import {
   wrapDocsHtml,
 } from './plumage-autocomplete-multiselect.story-helpers.js';
 
-const TAG = 'plumage-autocomplete-multiselect-component';
-
 export default {
-  title: 'Form/Plumage Autocomplete Multiselect'
-  ,
+  title: 'Form/Plumage Autocomplete Multiselect',
 
   decorators: [
-    (Story) => {
+    Story => {
       const wrap = document.createElement('div');
       wrap.appendChild(DocsWrapStyles());
       wrap.appendChild(Story());
@@ -30,12 +29,13 @@ export default {
 
   parameters: {
     layout: 'padded',
-    docs: {
 
+    docs: {
       description: {
         component:
           'Plumage-styled multiselect autocomplete with badges, keyboard navigation (arrows/Home/End/PageUp/PageDown/Escape), optional adding/deleting user options, read-only/disabled states, and responsive layouts (stacked, horizontal, inline).',
       },
+
       source: {
         language: 'html',
         transform: (_src, ctx) => wrapDocsHtml(buildDocsComponentHtml(ctx.args)),
@@ -43,57 +43,82 @@ export default {
     },
   },
 
-  render: (args) => renderComponent(args),
+  render: args => renderComponent(args),
 
   argTypes: {
     addNewOnEnter: {
       control: 'boolean',
       name: 'add-new-on-enter',
-      table: { category: 'Attributes', defaultValue: { summary: true } },
+      table: {
+        category: 'Attributes',
+        defaultValue: { summary: true },
+      },
       description:
         'When pressing Enter with typed text: always selects it as a badge; if `editable=true` and `add-new-on-enter=true`, also persists it into the options list.',
     },
+
     autoSort: {
       control: 'boolean',
       name: 'auto-sort',
-      table: { category: 'Attributes', defaultValue: { summary: true } },
-      description: 'Automatically sorts the options array when inserting new values (editable mode).',
+      table: {
+        category: 'Attributes',
+        defaultValue: { summary: true },
+      },
+      description:
+        'Automatically sorts the options array when inserting new values (editable mode).',
     },
+
     clearInputOnBlurOutside: {
       control: 'boolean',
       name: 'clear-input-on-blur-outside',
-      table: { category: 'Attributes', defaultValue: { summary: false } },
+      table: {
+        category: 'Attributes',
+        defaultValue: { summary: false },
+      },
       description: 'Clears the input when clicking outside the component.',
     },
+
     editable: {
       control: 'boolean',
       name: 'editable',
-      table: { category: 'Attributes', defaultValue: { summary: false } },
-      description: 'Allows adding/removing options at runtime (enables delete buttons for user-added options).',
+      table: {
+        category: 'Attributes',
+        defaultValue: { summary: false },
+      },
+      description:
+        'Allows adding/removing options at runtime (enables delete buttons for user-added options).',
     },
+
     id: {
       control: 'text',
       name: 'id',
       table: { category: 'Attributes' },
       description: 'The unique identifier for the component instance (host element id).',
     },
+
     preserveInputOnSelect: {
       control: 'boolean',
       name: 'preserve-input-on-select',
-      table: { category: 'Attributes', defaultValue: { summary: false } },
+      table: {
+        category: 'Attributes',
+        defaultValue: { summary: false },
+      },
       description: 'Preserves the typed input value after selecting an option.',
     },
+
     rawInputName: {
       control: 'text',
       name: 'raw-input-name',
       table: { category: 'Attributes' },
       description: 'The name attribute for the raw input hidden field.',
     },
+
     value: {
       control: 'object',
       name: 'value',
       table: { category: 'Attributes' },
-      description: 'Controlled selected items (string[]). Set as a property at runtime (not as an attribute).',
+      description:
+        'Controlled selected items (string[]). Set as a property at runtime (not as an attribute).',
     },
 
     badgeInlineStyles: {
@@ -102,12 +127,14 @@ export default {
       table: { category: 'Badge Attributes' },
       description: 'Inline styles for the badge.',
     },
+
     badgeShape: {
       control: 'text',
       name: 'badge-shape',
       table: { category: 'Badge Attributes' },
       description: 'The shape of the badge.',
     },
+
     badgeVariant: {
       control: 'text',
       name: 'badge-variant',
@@ -118,25 +145,34 @@ export default {
     addBtn: {
       control: 'boolean',
       name: 'add-btn',
-      table: { category: 'Button Attributes', defaultValue: { summary: false } },
+      table: {
+        category: 'Button Attributes',
+        defaultValue: { summary: false },
+      },
       description: 'Displays the add button for adding new items (editable mode).',
     },
+
     addIcon: {
       control: 'text',
       name: 'add-icon',
       table: { category: 'Button Attributes' },
       description: 'The icon to use for the add button.',
     },
+
     clearIcon: {
       control: 'text',
       name: 'clear-icon',
       table: { category: 'Button Attributes' },
       description: 'The icon to use for the clear button.',
     },
+
     removeClearBtn: {
       control: 'boolean',
       name: 'remove-clear-btn',
-      table: { category: 'Button Attributes', defaultValue: { summary: false } },
+      table: {
+        category: 'Button Attributes',
+        defaultValue: { summary: false },
+      },
       description: 'Removes the clear button from the input field.',
     },
 
@@ -150,7 +186,10 @@ export default {
     devMode: {
       control: 'boolean',
       name: 'dev-mode',
-      table: { category: 'Dev Mode', defaultValue: { summary: false } },
+      table: {
+        category: 'Dev Mode',
+        defaultValue: { summary: false },
+      },
       description: 'Enables developer mode (extra logging).',
     },
 
@@ -160,42 +199,57 @@ export default {
       table: { category: 'Input Attributes' },
       description: 'The id of the element that labels the input for accessibility purposes.',
     },
+
     disabled: {
       control: 'boolean',
       name: 'disabled',
-      table: { category: 'Input Attributes', defaultValue: { summary: false } },
+      table: {
+        category: 'Input Attributes',
+        defaultValue: { summary: false },
+      },
       description: 'Disables the input field, preventing user interaction.',
     },
+
     readOnly: {
       control: 'boolean',
       name: 'read-only',
-      table: { category: 'Input Attributes', defaultValue: { summary: false } },
-      description: 'Makes the input read-only while preserving selected badges and suppressing interaction.',
+      table: {
+        category: 'Input Attributes',
+        defaultValue: { summary: false },
+      },
+      description:
+        'Makes the input read-only while preserving selected badges and suppressing interaction.',
     },
+
     inputId: {
       control: 'text',
       name: 'input-id',
       table: { category: 'Input Attributes' },
-      description: 'The unique identifier for the input element within the component (also used to derive ARIA ids).',
+      description:
+        'The unique identifier for the input element within the component (also used to derive ARIA ids).',
     },
+
     label: {
       control: 'text',
       name: 'label',
       table: { category: 'Input Attributes' },
       description: 'The text label for the component.',
     },
+
     name: {
       control: 'text',
       name: 'name',
       table: { category: 'Input Attributes' },
       description: 'The name attribute for the selected items hidden inputs.',
     },
+
     placeholder: {
       control: 'text',
       name: 'placeholder',
       table: { category: 'Input Attributes' },
       description: 'The placeholder text for the input element.',
     },
+
     type: {
       control: 'text',
       table: { category: 'Input Attributes' },
@@ -205,8 +259,10 @@ export default {
     formId: {
       control: 'text',
       table: { category: 'Layout' },
-      description: 'The id of the parent form element to associate with when the component is not a direct child.',
+      description:
+        'The id of the parent form element to associate with when the component is not a direct child.',
     },
+
     formLayout: {
       control: { type: 'select' },
       options: ['', 'horizontal', 'inline'],
@@ -214,18 +270,25 @@ export default {
       table: { category: 'Layout' },
       description: 'Sets the form layout style.',
     },
+
     inputCol: {
       control: 'text',
       name: 'input-col',
-      table: { category: 'Layout', defaultValue: { summary: 10 } },
-      description: 'Used with horizontal form layouts. Single numeric column for the input in a grid.',
+      table: {
+        category: 'Layout',
+        defaultValue: { summary: 10 },
+      },
+      description:
+        'Used with horizontal form layouts. Single numeric column for the input in a grid.',
     },
+
     inputCols: {
       control: 'text',
       name: 'input-cols',
       table: { category: 'Layout' },
       description: 'Used with horizontal form layouts. Responsive input column classes.',
     },
+
     labelAlign: {
       control: { type: 'select' },
       options: ['', 'right'],
@@ -233,24 +296,36 @@ export default {
       table: { category: 'Layout' },
       description: 'Aligns the label text.',
     },
+
     labelCol: {
       control: 'text',
       name: 'label-col',
-      table: { category: 'Layout', defaultValue: { summary: 2 } },
-      description: 'Used with horizontal form layouts. Single numeric column for the label in a grid.',
+      table: {
+        category: 'Layout',
+        defaultValue: { summary: 2 },
+      },
+      description:
+        'Used with horizontal form layouts. Single numeric column for the label in a grid.',
     },
+
     labelCols: {
       control: 'text',
       name: 'label-cols',
       table: { category: 'Layout' },
       description: 'Used with horizontal form layouts. Responsive label column classes.',
     },
+
     labelHidden: {
       control: 'boolean',
       name: 'label-hidden',
-      table: { category: 'Layout', defaultValue: { summary: false } },
-      description: 'Hides the label visually while keeping it accessible for screen readers.',
+      table: {
+        category: 'Layout',
+        defaultValue: { summary: false },
+      },
+      description:
+        'Hides the label visually while keeping it accessible for screen readers.',
     },
+
     labelSize: {
       control: { type: 'select' },
       options: ['xs', 'sm', 'base', 'lg'],
@@ -258,6 +333,7 @@ export default {
       table: { category: 'Layout' },
       description: 'Sets the size of the label text.',
     },
+
     size: {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
@@ -268,26 +344,42 @@ export default {
 
     error: {
       control: 'boolean',
-      table: { category: 'Validation', defaultValue: { summary: false } },
+      table: {
+        category: 'Validation',
+        defaultValue: { summary: false },
+      },
       description: 'Marks the input as having an error state.',
     },
+
     errorMessage: {
       control: 'text',
-      table: { category: 'Validation', defaultValue: { summary: '' } },
+      table: {
+        category: 'Validation',
+        defaultValue: { summary: '' },
+      },
       description: 'The error message to display when the input is in an error state.',
     },
+
     required: {
       control: 'boolean',
       name: 'required',
-      table: { category: 'Validation', defaultValue: { summary: false } },
+      table: {
+        category: 'Validation',
+        defaultValue: { summary: false },
+      },
       description: 'Marks the input as required.',
     },
+
     validation: {
       control: 'boolean',
       name: 'validation',
-      table: { category: 'Validation', defaultValue: { summary: false } },
+      table: {
+        category: 'Validation',
+        defaultValue: { summary: false },
+      },
       description: 'Enables validation styling for the input field.',
     },
+
     validationMessage: {
       control: 'text',
       name: 'validation-message',
@@ -369,11 +461,14 @@ export const Basic = {
     value: [],
   },
 };
+
 Basic.name = 'Basic Setup';
+
 Basic.parameters = {
   docs: {
     description: {
-      story: 'The default configuration of the component with no specific layout applied. Options are set via the `options` property after hydration.',
+      story:
+        'The default configuration of the component with no specific layout applied. Options are set via the `options` property after hydration.',
     },
     story: { height: '300px' },
   },
@@ -396,11 +491,21 @@ export const HorizontalLayout = {
     validationMessage: '',
     autoSort: false,
     addNewOnEnter: false,
-    options: ['Acme, Inc.', 'Acme Labs', 'Alpha Co', 'Beta Corp', 'Delta Systems', 'Epsilon Partners', 'Gamma Group'],
+    options: [
+      'Acme, Inc.',
+      'Acme Labs',
+      'Alpha Co',
+      'Beta Corp',
+      'Delta Systems',
+      'Epsilon Partners',
+      'Gamma Group',
+    ],
     value: [],
   },
 };
+
 HorizontalLayout.name = 'Horizontal Layout';
+
 HorizontalLayout.parameters = {
   docs: {
     description: {
@@ -422,12 +527,25 @@ export const InlineLayout = {
     validationMessage: '',
     autoSort: false,
     addNewOnEnter: false,
-    options: ['Austin', 'Boston', 'Chicago', 'Denver', 'Los Angeles', 'New York', 'Portland', 'Seattle', 'San Francisco'],
+    options: [
+      'Austin',
+      'Boston',
+      'Chicago',
+      'Denver',
+      'Los Angeles',
+      'New York',
+      'Portland',
+      'Seattle',
+      'San Francisco',
+    ],
     value: [],
   },
-  render: (args) => renderComponent(args, { idOverride: 'ams_inline1' }),
+
+  render: args => renderComponent(args, { idOverride: 'ams_inline1' }),
 };
+
 InlineLayout.name = 'Inline Layout';
+
 InlineLayout.parameters = {
   docs: {
     description: {
@@ -439,6 +557,7 @@ InlineLayout.parameters = {
 
 export const EditableKeepOpenRapidPick = {
   name: 'Adding new items to the dropdown list (Editable)',
+
   args: {
     inputId: 'ams-editable',
     label: 'Tags',
@@ -451,11 +570,22 @@ export const EditableKeepOpenRapidPick = {
     placeholder: 'Type to add/select…',
     validationMessage: '',
     devMode: true,
-    options: ['Frontend', 'Backend', 'Fullstack', 'DevOps', 'Data', 'Design', 'QA', 'Product'],
+    options: [
+      'Frontend',
+      'Backend',
+      'Fullstack',
+      'DevOps',
+      'Data',
+      'Design',
+      'QA',
+      'Product',
+    ],
     value: ['Frontend', 'DevOps'],
   },
-  render: (args) => renderComponent(args, { idOverride: 'ams_edit' }),
+
+  render: args => renderComponent(args, { idOverride: 'ams_edit' }),
 };
+
 EditableKeepOpenRapidPick.parameters = {
   docs: {
     description: {
@@ -468,6 +598,7 @@ EditableKeepOpenRapidPick.parameters = {
 
 export const ControlledValue = {
   name: 'Controlled Value (array)',
+
   args: {
     inputId: 'ams-controlled',
     label: 'Controlled selections',
@@ -479,128 +610,217 @@ export const ControlledValue = {
     value: ['Apple', 'Mango'],
     validationMessage: '',
   },
-  render: (args) => {
+
+  render: args => {
     const wrap = document.createElement('div');
     wrap.style.maxWidth = '760px';
+    wrap.style.display = 'grid';
+    wrap.style.gap = '12px';
 
-    const elWrap = renderComponent(args, { idOverride: 'ams_controlled' });
+    let controlledValue = Array.isArray(args.value)
+      ? args.value.slice()
+      : ['Apple', 'Mango'];
+
+    const state = document.createElement('div');
+    state.style.opacity = '0.75';
+
+    const elWrap = renderComponent(args, {
+      idOverride: 'ams_controlled',
+    });
+
     const el = elWrap.querySelector(TAG);
 
     const buttons = document.createElement('div');
-    buttons.style.marginTop = '12px';
     buttons.style.display = 'flex';
     buttons.style.gap = '8px';
     buttons.style.flexWrap = 'wrap';
 
-    const mkBtn = (label) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'btn btn-sm btn-secondary';
-      b.textContent = label;
-      return b;
+    const makeButton = label => {
+      const button = document.createElement('button');
+
+      button.type = 'button';
+      button.className = 'storybook-example-button';
+      button.textContent = label;
+
+      return button;
     };
 
-    const btnAppleMango = mkBtn('Set: Apple + Mango');
-    const btnCitrus = mkBtn('Set: Orange + Lemon + Lime');
-    const btnClear = mkBtn('Clear');
-    const btnWeird = mkBtn('Set: (sanitization demo)');
+    const btnAppleMango = makeButton('Set: Apple + Mango');
+    const btnCitrus = makeButton('Set: Orange + Lemon + Lime');
+    const btnClear = makeButton('Clear');
+    const btnWeird = makeButton('Set: (sanitization demo)');
 
     buttons.appendChild(btnAppleMango);
     buttons.appendChild(btnCitrus);
     buttons.appendChild(btnClear);
     buttons.appendChild(btnWeird);
 
-    const setVal = async (next) => {
-      if (!el) return;
-      await (typeof el.componentOnReady === 'function' ? el.componentOnReady() : customElements.whenDefined(TAG));
-      el.value = Array.isArray(next) ? next : [];
-      args.value = Array.isArray(next) ? next : [];
+    const renderState = source => {
+      state.textContent =
+        `External controlled value (${source}): ${JSON.stringify(controlledValue)}`;
     };
 
-    btnAppleMango.addEventListener('click', () => setVal(['Apple', 'Mango']));
-    btnCitrus.addEventListener('click', () => setVal(['Orange', 'Lemon', 'Lime']));
-    btnClear.addEventListener('click', () => setVal([]));
-    btnWeird.addEventListener('click', () => setVal(['  <b>Apple</b>  ', 'MANGO', 'mango', '\u0007Bad\u0000', '']));
+    const setVal = async (next, source) => {
+      controlledValue = Array.isArray(next)
+        ? next.slice()
+        : [];
 
-    wrap.appendChild(elWrap);
+      renderState(source);
+
+      if (!el) {
+        console.error(
+          `[ControlledValue] Could not find ${TAG} inside rendered wrapper.`,
+        );
+        return;
+      }
+
+      await setValueWhenReady(el, controlledValue);
+    };
+
+    btnAppleMango.addEventListener('click', () => {
+      void setVal(
+        ['Apple', 'Mango'],
+        'button click',
+      );
+    });
+
+    btnCitrus.addEventListener('click', () => {
+      void setVal(
+        ['Orange', 'Lemon', 'Lime'],
+        'button click',
+      );
+    });
+
+    btnClear.addEventListener('click', () => {
+      void setVal(
+        [],
+        'button click',
+      );
+    });
+
+    btnWeird.addEventListener('click', () => {
+      void setVal(
+        [
+          '  <b>Apple</b>  ',
+          'MANGO',
+          'mango',
+          '\u0007Bad\u0000',
+          '',
+        ],
+        'button click',
+      );
+    });
+
+    if (el) {
+      el.addEventListener('multiSelectChange', event => {
+        const next = Array.isArray(event?.detail)
+          ? event.detail
+          : Array.isArray(event?.detail?.value)
+            ? event.detail.value
+            : [];
+
+        controlledValue = next.slice();
+
+        renderState(
+          'multiSelectChange event',
+        );
+      });
+
+      el.addEventListener('clear', () => {
+        controlledValue = [];
+
+        renderState(
+          'clear event',
+        );
+      });
+    }
+
+    renderState('initial value');
+
+    wrap.appendChild(state);
     wrap.appendChild(buttons);
+    wrap.appendChild(elWrap);
+
     return wrap;
   },
+
   parameters: {
     docs: {
       source: {
         language: 'html',
-        transform: (_src, ctx) =>
-          wrapDocsHtml(
-            normalize(`
-${buildDocsComponentHtml(ctx.args)}
-
-<!-- Value is a string[] prop. In real usage, the controlled value comes from external state. -->
-<script>
-  const selectedItemsFromApi = ${JSON.stringify(ctx.args.value || [])};
-
-  const el = document.querySelector('${TAG}');
-  el.value = selectedItemsFromApi;
-
-  document.querySelector('#set-apple-mango')?.addEventListener('click', () => {
-    const next = ['Apple', 'Mango'];
-    el.value = next;
-  });
-
-  document.querySelector('#clear-selections')?.addEventListener('click', () => {
-    el.value = [];
-  });
-</script>
-`),
-          ),
+        transform: () => buildDocsHtmlControlledValue(),
       },
+
       description: {
         story:
-          'Demonstrates the controlled `value` prop (string[]). Buttons set `el.value` as a property to update selected items programmatically.',
+          'Demonstrates the controlled `value` prop (string[]). Buttons update the component value property programmatically while displaying the external controlled state.',
       },
+
       story: { height: '380px' },
     },
   },
 };
 
 export const Sizes = {
-  render: (args) => {
+  render: args => {
     const container = document.createElement('div');
+
     container.style.display = 'grid';
     container.style.gap = '14px';
     container.style.maxWidth = '760px';
 
-    for (const v of SIZE_VARIANTS) {
-      const elWrap = renderComponent({ ...args, ...v }, { idOverride: v.id });
+    for (const variant of SIZE_VARIANTS) {
+      const elWrap = renderComponent(
+        {
+          ...args,
+          ...variant,
+        },
+        {
+          idOverride: variant.id,
+        },
+      );
+
       container.appendChild(elWrap);
 
       const el = elWrap.querySelector(TAG);
+
       if (el) {
-        setOptionsWhenReady(el, FRUIT);
-        setValueWhenReady(el, Array.isArray(v.value) ? v.value : []);
+        void setOptionsWhenReady(el, FRUIT);
+
+        void setValueWhenReady(
+          el,
+          Array.isArray(variant.value)
+            ? variant.value
+            : [],
+        );
       }
     }
 
     return container;
   },
+
   parameters: {
     docs: {
       source: {
         language: 'html',
+
         transform: (_src, ctx) =>
           buildDocsHtmlMany(
-            SIZE_VARIANTS.map((v) =>
+            SIZE_VARIANTS.map(variant =>
               buildDocsComponentHtml({
                 ...ctx.args,
-                ...v,
+                ...variant,
                 options: undefined,
               }),
             ),
           ),
       },
+
       description: {
-        story: 'Shows the three supported sizes. Options/value are applied at runtime as properties.',
+        story:
+          'Shows the three supported sizes. Options/value are applied at runtime as properties.',
       },
+
       story: { height: '480px' },
     },
   },
@@ -612,7 +832,8 @@ export const FieldValidation = {
     label: 'Favorite Fruits',
     required: true,
     validation: true,
-    validationMessage: 'Pick at least one fruit or type 3+ characters',
+    validationMessage:
+      'Pick at least one fruit or type 3+ characters',
     editable: false,
     addBtn: false,
     addIcon: '',
@@ -622,12 +843,17 @@ export const FieldValidation = {
     value: [],
   },
 };
-FieldValidation.name = 'Required with Validation Message';
+
+FieldValidation.name =
+  'Required with Validation Message';
+
 FieldValidation.parameters = {
   docs: {
     description: {
-      story: 'Enables validation for the input field. When the field is left empty and loses focus, the specified validation message will be displayed.',
+      story:
+        'Enables validation for the input field. When the field is left empty and loses focus, the specified validation message will be displayed.',
     },
+
     story: { height: '300px' },
   },
 };
@@ -650,13 +876,16 @@ export const ReadOnly = {
     errorMessage: '',
   },
 };
+
 ReadOnly.name = 'Read Only';
+
 ReadOnly.parameters = {
   docs: {
     description: {
       story:
         'Puts the multiselect into a non-interactive read-only state. Existing badges remain visible, while typing, selecting, removing, and clearing are suppressed.',
     },
+
     story: { height: '300px' },
   },
 };
@@ -678,11 +907,14 @@ export const Disabled = {
     value: ['Banana', 'Cherry'],
   },
 };
+
 Disabled.name = 'Disabled';
+
 Disabled.parameters = {
   docs: {
     description: {
-      story: 'Disables the input field, preventing user interaction.',
+      story:
+        'Disables the input field, preventing user interaction.',
     },
   },
 };
@@ -695,24 +927,29 @@ export const BadgeStyling = {
     addBtn: true,
     badgeVariant: 'info',
     badgeShape: 'rounded-pill',
-    badgeInlineStyles: 'border-radius:14px; font-weight:600;',
+    badgeInlineStyles:
+      'border-radius:14px; font-weight:600;',
     options: FRUIT,
     value: ['Apple', 'Orange'],
   },
 };
+
 BadgeStyling.name = 'Custom Badge Styling';
+
 BadgeStyling.parameters = {
   docs: {
     description: {
       story:
         'Use "Badge Variant" to apply Bootstrap text-bg color classes (e.g. "primary", "success") or your own CSS class. Use "Badge Shape" for pill/rounded styling. Use "Badge Inline Styles" for inline CSS.',
     },
+
     story: { height: '300px' },
   },
 };
 
 export const AccessibilityMatrix = {
   name: 'Accessibility matrix',
+
   args: {
     options: FRUIT,
     value: [],
@@ -740,60 +977,284 @@ export const AccessibilityMatrix = {
     placeholder: 'Type to search...',
   },
 
-  render: (args) => {
+  render: args => {
     const outer = document.createElement('div');
 
+    outer.className =
+      'plumage-autocomplete-multiselect-accessibility-matrix';
+
     const note = document.createElement('div');
-    note.style.maxWidth = '1100px';
-    note.style.marginBottom = '10px';
-    note.style.color = '#444';
+
+    note.className =
+      'plumage-autocomplete-multiselect-accessibility-matrix__note';
+
     note.innerHTML = `
-      <div style="font-weight:700; margin-bottom:4px;">What this shows</div>
-      <div style="font-size:13px; line-height:1.4;">
+      <div class="plumage-autocomplete-multiselect-accessibility-matrix__note-title">What this shows</div>
+      <div class="plumage-autocomplete-multiselect-accessibility-matrix__note-description">
         Each variant prints a JSON snapshot of the computed <code>role</code>, <code>aria-*</code> attributes, and key ids
         (<code>inputId</code> / <code>-listbox</code> / <code>-live</code>).
         For required+validation states, the story calls <code>el.validate()</code> to force <code>aria-invalid</code> + message wiring.
       </div>
     `;
+
     outer.appendChild(note);
 
     const container = document.createElement('div');
-    container.style.display = 'grid';
-    container.style.gridTemplateColumns = '1fr';
-    container.style.gap = '14px';
-    container.style.maxWidth = '1100px';
+
+    container.className =
+      'plumage-autocomplete-multiselect-accessibility-matrix__variants';
+
     outer.appendChild(container);
 
     const variants = [
-      { __title: 'Default / normal', inputId: 'ams-a11y-default', label: 'Default', formLayout: '', disabled: false, readOnly: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
-      { __title: 'Default / validation (required)', inputId: 'ams-a11y-default-validation', label: 'Default + validation', formLayout: '', disabled: false, readOnly: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
-      { __title: 'Default / error', inputId: 'ams-a11y-default-error', label: 'Default + error', formLayout: '', disabled: false, readOnly: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
-      { __title: 'Default / read only', inputId: 'ams-a11y-default-readonly', label: 'Default read only', formLayout: '', disabled: false, readOnly: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Apple', 'Mango'] },
-      { __title: 'Default / disabled', inputId: 'ams-a11y-default-disabled', label: 'Default disabled', formLayout: '', disabled: true, readOnly: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Apple', 'Mango'] },
-
-      { __title: 'Inline / normal', inputId: 'ams-a11y-inline', label: 'Inline', formLayout: 'inline', disabled: false, readOnly: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
-      { __title: 'Inline / validation (required)', inputId: 'ams-a11y-inline-validation', label: 'Inline + validation', formLayout: 'inline', disabled: false, readOnly: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
-      { __title: 'Inline / error', inputId: 'ams-a11y-inline-error', label: 'Inline + error', formLayout: 'inline', disabled: false, readOnly: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
-      { __title: 'Inline / read only', inputId: 'ams-a11y-inline-readonly', label: 'Inline read only', formLayout: 'inline', disabled: false, readOnly: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Banana', 'Orange'] },
-      { __title: 'Inline / disabled', inputId: 'ams-a11y-inline-disabled', label: 'Inline disabled', formLayout: 'inline', disabled: true, readOnly: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Banana', 'Orange'] },
-
-      { __title: 'Horizontal / normal', inputId: 'ams-a11y-horizontal', label: 'Horizontal', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, readOnly: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: [] },
-      { __title: 'Horizontal / validation (required)', inputId: 'ams-a11y-horizontal-validation', label: 'Horizontal + validation', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, readOnly: false, error: false, errorMessage: '', required: true, validation: true, validationMessage: 'Pick at least one item.', value: [] },
-      { __title: 'Horizontal / error', inputId: 'ams-a11y-horizontal-error', label: 'Horizontal + error', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, readOnly: false, error: true, errorMessage: 'Something went wrong.', required: false, validation: false, validationMessage: '', value: [] },
-      { __title: 'Horizontal / read only', inputId: 'ams-a11y-horizontal-readonly', label: 'Horizontal read only', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: false, readOnly: true, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Strawberry'] },
-      { __title: 'Horizontal / disabled', inputId: 'ams-a11y-horizontal-disabled', label: 'Horizontal disabled', formLayout: 'horizontal', labelAlign: 'right', labelSize: 'lg', labelCol: 3, inputCol: 9, disabled: true, readOnly: false, error: false, errorMessage: '', required: false, validation: false, validationMessage: '', value: ['Strawberry'] },
+      {
+        __title: 'Default / normal',
+        inputId: 'ams-a11y-default',
+        label: 'Default',
+        formLayout: '',
+        disabled: false,
+        readOnly: false,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        validationMessage: '',
+        value: [],
+      },
+      {
+        __title: 'Default / validation (required)',
+        inputId: 'ams-a11y-default-validation',
+        label: 'Default + validation',
+        formLayout: '',
+        disabled: false,
+        readOnly: false,
+        error: false,
+        errorMessage: '',
+        required: true,
+        validation: true,
+        validationMessage: 'Pick at least one item.',
+        value: [],
+      },
+      {
+        __title: 'Default / error',
+        inputId: 'ams-a11y-default-error',
+        label: 'Default + error',
+        formLayout: '',
+        disabled: false,
+        readOnly: false,
+        error: true,
+        errorMessage: 'Something went wrong.',
+        required: false,
+        validation: false,
+        validationMessage: '',
+        value: [],
+      },
+      {
+        __title: 'Default / read only',
+        inputId: 'ams-a11y-default-readonly',
+        label: 'Default read only',
+        formLayout: '',
+        disabled: false,
+        readOnly: true,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        validationMessage: '',
+        value: ['Apple', 'Mango'],
+      },
+      {
+        __title: 'Default / disabled',
+        inputId: 'ams-a11y-default-disabled',
+        label: 'Default disabled',
+        formLayout: '',
+        disabled: true,
+        readOnly: false,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        validationMessage: '',
+        value: ['Apple', 'Mango'],
+      },
+      {
+        __title: 'Inline / normal',
+        inputId: 'ams-a11y-inline',
+        label: 'Inline',
+        formLayout: 'inline',
+        disabled: false,
+        readOnly: false,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        validationMessage: '',
+        value: [],
+      },
+      {
+        __title: 'Inline / validation (required)',
+        inputId: 'ams-a11y-inline-validation',
+        label: 'Inline + validation',
+        formLayout: 'inline',
+        disabled: false,
+        readOnly: false,
+        error: false,
+        errorMessage: '',
+        required: true,
+        validation: true,
+        validationMessage: 'Pick at least one item.',
+        value: [],
+      },
+      {
+        __title: 'Inline / error',
+        inputId: 'ams-a11y-inline-error',
+        label: 'Inline + error',
+        formLayout: 'inline',
+        disabled: false,
+        readOnly: false,
+        error: true,
+        errorMessage: 'Something went wrong.',
+        required: false,
+        validation: false,
+        validationMessage: '',
+        value: [],
+      },
+      {
+        __title: 'Inline / read only',
+        inputId: 'ams-a11y-inline-readonly',
+        label: 'Inline read only',
+        formLayout: 'inline',
+        disabled: false,
+        readOnly: true,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        validationMessage: '',
+        value: ['Banana', 'Orange'],
+      },
+      {
+        __title: 'Inline / disabled',
+        inputId: 'ams-a11y-inline-disabled',
+        label: 'Inline disabled',
+        formLayout: 'inline',
+        disabled: true,
+        readOnly: false,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        validationMessage: '',
+        value: ['Banana', 'Orange'],
+      },
+      {
+        __title: 'Horizontal / normal',
+        inputId: 'ams-a11y-horizontal',
+        label: 'Horizontal',
+        formLayout: 'horizontal',
+        labelAlign: 'right',
+        labelSize: 'lg',
+        labelCol: 3,
+        inputCol: 9,
+        disabled: false,
+        readOnly: false,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        validationMessage: '',
+        value: [],
+      },
+      {
+        __title: 'Horizontal / validation (required)',
+        inputId: 'ams-a11y-horizontal-validation',
+        label: 'Horizontal + validation',
+        formLayout: 'horizontal',
+        labelAlign: 'right',
+        labelSize: 'lg',
+        labelCol: 3,
+        inputCol: 9,
+        disabled: false,
+        readOnly: false,
+        error: false,
+        errorMessage: '',
+        required: true,
+        validation: true,
+        validationMessage: 'Pick at least one item.',
+        value: [],
+      },
+      {
+        __title: 'Horizontal / error',
+        inputId: 'ams-a11y-horizontal-error',
+        label: 'Horizontal + error',
+        formLayout: 'horizontal',
+        labelAlign: 'right',
+        labelSize: 'lg',
+        labelCol: 3,
+        inputCol: 9,
+        disabled: false,
+        readOnly: false,
+        error: true,
+        errorMessage: 'Something went wrong.',
+        required: false,
+        validation: false,
+        validationMessage: '',
+        value: [],
+      },
+      {
+        __title: 'Horizontal / read only',
+        inputId: 'ams-a11y-horizontal-readonly',
+        label: 'Horizontal read only',
+        formLayout: 'horizontal',
+        labelAlign: 'right',
+        labelSize: 'lg',
+        labelCol: 3,
+        inputCol: 9,
+        disabled: false,
+        readOnly: true,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        validationMessage: '',
+        value: ['Strawberry'],
+      },
+      {
+        __title: 'Horizontal / disabled',
+        inputId: 'ams-a11y-horizontal-disabled',
+        label: 'Horizontal disabled',
+        formLayout: 'horizontal',
+        labelAlign: 'right',
+        labelSize: 'lg',
+        labelCol: 3,
+        inputCol: 9,
+        disabled: true,
+        readOnly: false,
+        error: false,
+        errorMessage: '',
+        required: false,
+        validation: false,
+        validationMessage: '',
+        value: ['Strawberry'],
+      },
     ];
 
-    for (let i = 0; i < variants.length; i += 1) {
-      const v = variants[i];
+    for (let index = 0; index < variants.length; index += 1) {
+      const variant = variants[index];
+
       const cell = mkMatrixCellA11y(
         {
           ...args,
-          ...v,
-          options: Array.isArray(v.options) ? v.options : args.options,
+          ...variant,
+          options: Array.isArray(variant.options)
+            ? variant.options
+            : args.options,
         },
-        { idOverride: `ams_a11y_${i}` },
+        {
+          idOverride: `ams_a11y_${index}`,
+        },
       );
+
       container.appendChild(cell);
     }
 
@@ -806,9 +1267,12 @@ export const AccessibilityMatrix = {
         story:
           'Renders a matrix of layout + state combinations (default/inline/horizontal × validation/error/read-only/disabled). Each cell prints computed role/ARIA attributes/ids to support accessibility reviews and 508 checks.',
       },
+
       story: { height: '3200px' },
+
       source: {
         language: 'html',
+
         transform: (_src, ctx) =>
           wrapDocsHtml(
             normalize(`

@@ -31,6 +31,27 @@ $fa-font-path: '/assets/fonts' !default;
   --bs-link-color: #1154a7 !important;
 }
 
+:root,
+[data-bs-theme='light'] {
+  --disabled-text-color: #8b8b8b;
+  --check-input-border-color: #bbbbbb;
+  --bs-custom-switch-bg-off: #999;
+  --bs-custom-switch-bg-on-disabled: rgba(38, 128, 235, 0.502);
+  --bs-custom-switch-bg-off-disabled: #cacaca;
+  --bs-custom-switch-border-disabled: #8e8e8e;
+  --bs-custom-switch-focus-shadow: rgba(0, 123, 255, 0.25);
+}
+
+:root,
+[data-bs-theme='dark'] {
+  --disabled-text-color: #8b8b8b;
+  --check-input-border-color: #bbbbbb;
+  --bs-custom-switch-bg-on: #999;
+  --bs-custom-switch-bg-on-disabled: rgba(38, 128, 235, 0.502);
+  --bs-custom-switch-border-disabled: #8e8e8e;
+  --bs-custom-switch-focus-shadow: rgba(0, 123, 255, 0.25);
+}
+
 .sbdocs-preview {
   border: 1px solid rgb(0 0 0 / 28%) !important;
 }
@@ -93,7 +114,7 @@ $rotate-transition: transform 0.3s ease-in-out;
 }
 
 .plmg-lt,
-.plmg-dk{
+.plmg-dk {
   body {
     font-family: 'Roboto', sans-serif;
   }
