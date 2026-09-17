@@ -45,7 +45,7 @@ exports[`button-component (new spec) iconBtn wraps slot in .btn__content 1`] = `
 `;
 
 exports[`button-component (new spec) renders <a> link with aria-disabled and proper role/tabindex when disabled 1`] = `
-<a aria-disabled="true" class="btn link" role="button" tabindex="-1">
+<a aria-disabled="true" class="btn disabled link" role="button" tabindex="-1">
   <span class="btn__content">
     Disabled Link
   </span>

@@ -564,25 +564,13 @@ export class Datepicker {
       if (parts[2].length !== 4) return null;
     }
 
-    if (
-      Number.isNaN(year) ||
-      Number.isNaN(monthIndex) ||
-      Number.isNaN(day) ||
-      monthIndex < 0 ||
-      monthIndex > 11 ||
-      day < 1 ||
-      day > 31
-    ) {
+    if (Number.isNaN(year) || Number.isNaN(monthIndex) || Number.isNaN(day) || monthIndex < 0 || monthIndex > 11 || day < 1 || day > 31) {
       return null;
     }
 
     const parsed = new Date(year, monthIndex, day);
 
-    if (
-      parsed.getFullYear() !== year ||
-      parsed.getMonth() !== monthIndex ||
-      parsed.getDate() !== day
-    ) {
+    if (parsed.getFullYear() !== year || parsed.getMonth() !== monthIndex || parsed.getDate() !== day) {
       return null;
     }
 
@@ -751,7 +739,7 @@ export class Datepicker {
     if (!isActive) {
       this.clearActiveState();
 
-      clickedSpan.classList.add('active', 'btn-primary', 'focus');
+      clickedSpan.classList.add('active', 'dp-btn-primary', 'focus');
 
       const idTarget = this.qs<HTMLElement>(`#cell-${container.dataset.date}`);
       if (idTarget) {
@@ -820,24 +808,24 @@ export class Datepicker {
   private setActiveState() {
     const activeSpan = this.qs('.active');
     if (activeSpan) {
-      (activeSpan as HTMLElement).classList.remove('active', 'btn-primary', 'focus');
-      (activeSpan as HTMLElement).classList.add('btn-outline-light', 'text-dark');
+      (activeSpan as HTMLElement).classList.remove('active', 'dp-btn-primary', 'focus');
+      (activeSpan as HTMLElement).classList.add('dp-btn-outline-light', 'text-dark');
     }
     if (this.selectedDate) {
       const id = `cell-${this.selectedDate.getUTCFullYear()}-${String(this.selectedDate.getUTCMonth() + 1).padStart(2, '0')}-${String(this.selectedDate.getUTCDate()).padStart(2, '0')}`;
       const el = this.qs<HTMLElement>(`#${(window as any).CSS?.escape ? (window as any).CSS.escape(id) : id}`);
       if (el) {
         const span = el.querySelector('span')!;
-        span.classList.add('active', 'btn-primary', 'focus');
-        span.classList.remove('btn-outline-light', 'text-dark');
+        span.classList.add('active', 'dp-btn-primary', 'focus');
+        span.classList.remove('dp-btn-outline-light', 'text-dark');
       }
     }
   }
 
   private clearActiveState() {
     this.qsa<HTMLElement>('.calendar-grid-item span').forEach(span => {
-      span.classList.remove('active', 'btn-primary', 'focus');
-      span.classList.add('btn-outline-light', 'text-dark');
+      span.classList.remove('active', 'dp-btn-primary', 'focus');
+      span.classList.add('dp-btn-outline-light', 'text-dark');
       const parent = span.parentElement as HTMLElement;
       const dateEl = this.qs<HTMLElement>(`#cell-${parent.dataset.date}`);
       if (dateEl) {
@@ -853,66 +841,98 @@ export class Datepicker {
 
   private renderCalendar(month0b: number, year: number) {
     const grid = this.qs<HTMLElement>('.calendar-grid');
+
     if (!grid) return;
+
     grid.innerHTML = '';
 
     const displayMonth = month0b + 1;
     const previousMonthLastDate = new Date(Date.UTC(year, month0b, 0)).getUTCDate();
+
     const firstDay = this.getFirstDayOfMonth(year, month0b);
+
     const daysInMonth = new Date(Date.UTC(year, month0b + 1, 0)).getUTCDate();
+
     const firstDayOfWeek = firstDay === 0 ? 0 : firstDay;
+
     let date = 1;
+
     const totalWeeks = Math.ceil((firstDayOfWeek + daysInMonth) / 7);
 
-    const formattedMonthYear = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long' }).format(new Date(year, month0b, 1));
-    const cap = this.qs<HTMLElement>(`#${this.ids.gridCaption}`);
-    if (cap) cap.textContent = formattedMonthYear;
+    const formattedMonthYear = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'long',
+    }).format(new Date(year, month0b, 1));
 
-    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long' };
+    const cap = this.qs<HTMLElement>(`#${this.ids.gridCaption}`);
+
+    if (cap) {
+      cap.textContent = formattedMonthYear;
+    }
+
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+    };
 
     for (let i = 0; i < totalWeeks; i++) {
       for (let j = 0; j < 7; j++) {
         const item = document.createElement('div');
+
         item.classList.add('calendar-grid-item');
         item.setAttribute('role', 'button');
         item.setAttribute('tabindex', '-1');
 
         const currentDate = new Date(Date.UTC(year, month0b, date));
+
         const today = new Date();
+
         item.dataset.month = String(displayMonth);
         item.dataset.year = String(currentDate.getUTCFullYear());
         item.dataset.day = String(currentDate.getUTCDate());
 
         const dataDate = `${year}-${String(displayMonth).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+
         item.dataset.date = dataDate;
         item.id = `cell-${dataDate}`;
 
         const isCurrentDay = today.getUTCDate() === date && today.getUTCMonth() === month0b && today.getUTCFullYear() === year;
+
         const isSelectedDay =
           this.selectedDate && this.selectedDate.getUTCDate() === date && this.selectedDate.getUTCMonth() === month0b && this.selectedDate.getUTCFullYear() === year;
 
         const span = document.createElement('span');
-        span.classList.add('btn', 'btn-outline-light', 'border-0', 'rounded-circle', 'text-nowrap', 'text-dark', 'font-weight-bold');
+
+        span.classList.add('btn', 'dp-btn-outline-light', 'border-0', 'rounded-circle', 'text-nowrap', 'text-dark', 'font-weight-bold');
 
         if (i === 0 && j < firstDayOfWeek && firstDayOfWeek > 0) {
           const prevMonthDay = previousMonthLastDate - firstDayOfWeek + j + 1;
+
           span.textContent = String(prevMonthDay);
+
           item.classList.add('previous-month-day');
-          span.classList.add('text-muted');
+
           span.classList.remove('text-dark', 'font-weight-bold');
 
           const prevMonth = month0b === 0 ? 11 : month0b - 1;
+
           const prevYear = month0b === 0 ? year - 1 : year;
+
           item.dataset.month = String(prevMonth + 1);
           item.dataset.year = String(prevYear);
           item.dataset.day = String(prevMonthDay);
+
           const prevDataDate = `${item.dataset.year}-${String(Number(item.dataset.month)).padStart(2, '0')}-${String(prevMonthDay).padStart(2, '0')}`;
+
           item.dataset.date = prevDataDate;
           item.id = `cell-${prevDataDate}`;
+
           const formattedDate = new Date(Date.UTC(Number(item.dataset.year), Number(item.dataset.month) - 1, Number(item.dataset.day))).toLocaleDateString('en-US', options);
+
           item.setAttribute('aria-label', formattedDate);
         } else if (date <= daysInMonth) {
           span.textContent = String(date);
+
           item.dataset.month = String(displayMonth);
           item.dataset.year = String(year);
           item.dataset.day = String(date);
@@ -921,52 +941,117 @@ export class Datepicker {
 
           if (isCurrentDay) {
             span.classList.add('current-day');
+
             item.setAttribute('aria-label', this.formatDateForAriaLabel(currentDate, true));
           } else {
             item.setAttribute('aria-label', formattedDate);
           }
 
           if (isSelectedDay) {
-            span.classList.add('active', 'btn-primary', 'focus');
-            span.classList.remove('btn-outline-light', 'text-dark');
+            span.classList.add('active', 'dp-btn-primary', 'focus');
+
+            span.classList.remove('dp-btn-outline-light', 'text-dark');
+
             const existing = item.getAttribute('aria-label') || '';
+
             item.setAttribute('aria-label', `${existing} (Selected)`);
+
             this.updateSelectedDateDisplay(this.formatDate(year, displayMonth, date));
+
             this.updateActiveDateElements();
           }
 
           date++;
         } else {
           const nextMonthDay = date - daysInMonth;
+
           span.textContent = String(nextMonthDay);
+
           item.classList.add('next-month-day');
-          span.classList.add('text-muted');
+
           span.classList.remove('text-dark', 'font-weight-bold');
 
           item.dataset.month = String((month0b === 11 ? 0 : month0b + 1) + 1);
+
           item.dataset.year = String(month0b === 11 ? year + 1 : year);
+
           item.dataset.day = String(nextMonthDay);
+
           const nextDataDate = `${item.dataset.year}-${String(Number(item.dataset.month)).padStart(2, '0')}-${String(nextMonthDay).padStart(2, '0')}`;
+
           item.dataset.date = nextDataDate;
+
           const formattedDate = new Date(Date.UTC(Number(item.dataset.year), Number(item.dataset.month) - 1, Number(item.dataset.day))).toLocaleDateString('en-US', options);
+
           item.setAttribute('aria-label', formattedDate);
+
           item.id = `cell-${nextDataDate}`;
+
           date++;
         }
 
         item.appendChild(span);
 
-        item.addEventListener('focus', () => {
+        let pointerInteraction = false;
+
+        item.addEventListener('pointerdown', () => {
+          pointerInteraction = true;
+        });
+
+        item.addEventListener('pointerup', () => {
+          pointerInteraction = false;
+        });
+
+        item.addEventListener('pointercancel', () => {
+          pointerInteraction = false;
+        });
+
+        item.addEventListener('mouseenter', () => {
           span.classList.add('focus');
+        });
+
+        item.addEventListener('mouseleave', () => {
+          if (!span.classList.contains('active')) {
+            span.classList.remove('focus');
+          }
+
+          const focusedCell = this.qs<HTMLElement>('.calendar-grid-item:focus');
+
+          if (!focusedCell) {
+            this.qs('.calendar')?.classList.remove('focus');
+          }
+        });
+
+        item.addEventListener('focus', () => {
+          if (pointerInteraction) {
+            return;
+          }
+
+          span.classList.add('focus');
+
           this.qs('.calendar')?.classList.add('focus');
         });
 
+        item.addEventListener('blur', () => {
+          if (!span.classList.contains('active')) {
+            span.classList.remove('focus');
+          }
+
+          const focusedCell = this.qs<HTMLElement>('.calendar-grid-item:focus');
+
+          if (!focusedCell) {
+            this.qs('.calendar')?.classList.remove('focus');
+          }
+        });
+
         span.addEventListener('click', this.handleDayClick);
+
         span.addEventListener('keydown', this.handleEnterKeyPress);
 
         grid.appendChild(item);
       }
     }
+
     this.setActiveState();
   }
 
@@ -1267,7 +1352,7 @@ export class Datepicker {
               <button
                 aria-label="Previous year"
                 aria-keyshortcuts="Alt+PageDown"
-                class="prev-year btn btn-sm border-0 flex-fill btn-outline-secondary"
+                class="prev-year btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
                 title="Previous year"
                 type="button"
                 onClick={this.prevYear}
@@ -1277,7 +1362,7 @@ export class Datepicker {
               <button
                 aria-label="Previous month"
                 aria-keyshortcuts="PageDown"
-                class="prev-month btn btn-sm border-0 flex-fill btn-outline-secondary"
+                class="prev-month btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
                 title="Previous month"
                 type="button"
                 onClick={this.prevMonth}
@@ -1287,7 +1372,7 @@ export class Datepicker {
               <button
                 aria-label="Current Day/Month/Year"
                 aria-keyshortcuts="Home"
-                class="current-date btn btn-sm border-0 flex-fill btn-outline-secondary"
+                class="current-date btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
                 title="Current Day/Month/Year"
                 type="button"
                 onClick={this.currentDate}
@@ -1298,7 +1383,7 @@ export class Datepicker {
               <button
                 aria-label="Next month"
                 aria-keyshortcuts="PageUp"
-                class="next-month btn btn-sm border-0 flex-fill btn-outline-secondary"
+                class="next-month btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
                 title="Next month"
                 type="button"
                 onClick={this.nextMonth}
@@ -1308,7 +1393,7 @@ export class Datepicker {
               <button
                 title="Next year"
                 type="button"
-                class="next-year btn btn-sm border-0 flex-fill btn-outline-secondary"
+                class="next-year btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
                 aria-label="Next year"
                 aria-keyshortcuts="Alt+PageUp"
                 onClick={this.nextYear}
@@ -1354,8 +1439,8 @@ export class Datepicker {
                 </small>
               </div>
               <div class="calendar-grid" id={this.ids.grid} />
-              <footer class="border-top small text-muted text-center bg-light" tabIndex={0}>
-                <div class="small">Use cursor keys to navigate calendar dates</div>
+              <footer class="border-top text-center" tabIndex={0}>
+                Use cursor keys to navigate calendar dates
               </footer>
             </div>
           </div>

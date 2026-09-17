@@ -51,9 +51,10 @@ const groupPlay = async ({ canvasElement, args }) => {
 };
 
 export default {
-  title: 'Form/Radio Input',
+  title: 'Bootstrap or Plumage/Radio Input',
   args: defaultArgs,
   parameters: {
+    themeFamily: 'allthemes',
     docs: {
       description: {
         component:

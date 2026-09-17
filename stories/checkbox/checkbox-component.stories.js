@@ -34,9 +34,10 @@ const baseArgs = {
 const renderTemplate = args => Template(args);
 
 export default {
-  title: 'Form/Checkbox'
+  title: 'Bootstrap or Plumage/Checkbox'
   ,
   parameters: {
+    themeFamily: 'allthemes',
     docs: {
 
       description: {
@@ -302,6 +303,7 @@ export const GroupDisabledOptions = {
     ],
   },
   parameters: {
+    themeFamily: 'bootstrap',
     docs: { description: { story: 'A group of checkboxes with some options disabled.' } },
   },
 };

@@ -4,9 +4,10 @@
 import { buildDocsHtml, renderButtonGroup, setAttr } from './button-group.story-helpers.js';
 
 export default {
-  title: 'Components/Button Group'
+  title: 'Bootstrap or Plumage/Button Group'
   ,
   parameters: {
+    themeFamily: 'allthemes',
     docs: {
 
       description: {

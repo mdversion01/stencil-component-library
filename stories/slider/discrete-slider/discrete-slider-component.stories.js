@@ -3,9 +3,10 @@
 import { Template, normalizeHtml, getSnapshot } from './discrete-slider-component.story-helpers';
 
 export default {
-  title: 'Components/Slider/Discrete Slider',
+  title: 'Bootstrap or Plumage/Slider/Discrete Slider',
   parameters: {
     layout: 'padded',
+    themeFamily: 'allthemes',
     docs: {
       description: {
         component:

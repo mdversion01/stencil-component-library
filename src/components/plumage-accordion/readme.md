@@ -1,0 +1,62 @@
+# accordion-item-component
+
+
+
+<!-- Auto Generated Below -->
+
+
+## Properties
+
+| Property           | Attribute           | Description                                                                 | Type                                           | Default               |
+| ------------------ | ------------------- | --------------------------------------------------------------------------- | ---------------------------------------------- | --------------------- |
+| `accordion`        | `accordion`         |                                                                             | `boolean`                                      | `false`               |
+| `block`            | `block`             |                                                                             | `boolean`                                      | `false`               |
+| `classNames`       | `class-names`       |                                                                             | `string`                                       | `''`                  |
+| `contentTxtSize`   | `content-txt-size`  |                                                                             | `string`                                       | `''`                  |
+| `disabled`         | `disabled`          |                                                                             | `boolean`                                      | `false`               |
+| `flush`            | `flush`             |                                                                             | `boolean`                                      | `false`               |
+| `icon`             | `icon`              |                                                                             | `string`                                       | `'fas fa-angle-down'` |
+| `isOpen`           | `is-open`           |                                                                             | `boolean`                                      | `false`               |
+| `link`             | `link`              |                                                                             | `boolean`                                      | `false`               |
+| `outlined`         | `outlined`          |                                                                             | `boolean`                                      | `false`               |
+| `regionLabelledby` | `region-labelledby` | Optional: allow an external label for the region instead of the toggle text | `string`                                       | `undefined`           |
+| `ripple`           | `ripple`            |                                                                             | `boolean`                                      | `false`               |
+| `size`             | `size`              |                                                                             | `"" \| "lg" \| "plumage-size" \| "sm" \| "xs"` | `''`                  |
+| `targetId`         | `target-id`         |                                                                             | `string`                                       | `''`                  |
+| `variant`          | `variant`           |                                                                             | `string`                                       | `''`                  |
+
+
+## Events
+
+| Event         | Description | Type                   |
+| ------------- | ----------- | ---------------------- |
+| `toggleEvent` |             | `CustomEvent<boolean>` |
+
+
+## Slots
+
+| Slot                 | Description                                       |
+| -------------------- | ------------------------------------------------- |
+| `"accordion-header"` | Header content when `accordion` is true.          |
+| `"button-text"`      | Header content when used as a button/link toggle. |
+| `"content"`          | Collapsible body content.                         |
+
+
+## Dependencies
+
+### Depends on
+
+- [button-component](../button)
+- [icon-component](../icon)
+
+### Graph
+```mermaid
+graph TD;
+  plumage-accordion-component --> button-component
+  plumage-accordion-component --> icon-component
+  style plumage-accordion-component fill:#f9f,stroke:#333,stroke-width:4px
+```
+
+----------------------------------------------
+
+*Built with [StencilJS](https://stenciljs.com/)*

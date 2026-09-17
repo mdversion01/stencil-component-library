@@ -1,8 +1,62 @@
 // -------------------------------------------------------
-// Dropdown SCSS (refactor of provided CSS)
+// Dropdown SCSS
 // -------------------------------------------------------
 
+/* ====== Theme tokens ====== */
+
+[data-bs-theme='light'] {
+  --dropdown-bg: #fff;
+  --dropdown-color: #212529;
+  --dropdown-border-color: rgba(0, 0, 0, 0.15);
+
+  --dropdown-divider-color: #e9ecef;
+
+  --dropdown-item-color: #212529;
+  --dropdown-item-hover-color: #16181b;
+  --dropdown-item-hover-bg: #e2e2e2;
+
+  --dropdown-item-focus-color: #16181b;
+  --dropdown-item-focus-bg: #f8f9fa;
+
+  --dropdown-item-active-color: #fff;
+  --dropdown-item-active-bg: #2680eb;
+
+  --dropdown-link-color: #007bff;
+
+  --dropdown-icon-menu-hover-color: #767676;
+
+  --dropdown-focus-outline: #007bff;
+  --dropdown-focus-shadow: rgba(0, 123, 255, 0.25);
+}
+
+[data-bs-theme='dark'] {
+  --dropdown-bg: #2b3035;
+  --dropdown-color: #f8f9fa;
+  --dropdown-border-color: #495057;
+
+  --dropdown-divider-color: #495057;
+
+  --dropdown-item-color: #f8f9fa;
+  --dropdown-item-hover-color: #fff;
+  --dropdown-item-hover-bg: #3a3f44;
+
+  --dropdown-item-focus-color: #fff;
+  --dropdown-item-focus-bg: #343a40;
+
+  --dropdown-item-active-color: #fff;
+  --dropdown-item-active-bg: #2680eb;
+
+  --dropdown-link-color: #6ea8fe;
+
+  --dropdown-icon-menu-hover-color: #ced4da;
+
+  --dropdown-focus-outline: #6ea8fe;
+  --dropdown-focus-shadow: rgba(110, 168, 254, 0.35);
+}
+
+
 /* ====== Helpers ====== */
+
 $icon-sizes: (
   base: 32px,
   sm: 24px,
@@ -27,25 +81,31 @@ $icon-menu-sizes: (
 }
 
 @mixin caret-outline-focus {
-  outline: 1px solid #007bff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: 1px solid var(--dropdown-focus-outline);
+  box-shadow: 0 0 0 0.2rem var(--dropdown-focus-shadow);
 }
 
+
 /* ====== Root containers ====== */
+
 .dropdown,
 .dropup {
   position: relative;
   display: inline-block;
 }
 
+
 /* ====== Trigger button ====== */
+
 .dropdown-button {
   &.lg {
     padding: 0 12px !important;
   }
+
   &.sm {
     padding: 0 6px !important;
   }
+
   &.default {
     padding: 0 8px !important;
   }
@@ -57,18 +117,18 @@ $icon-menu-sizes: (
 
     .btn {
       @include center-flex;
-      padding: 0 !important;
       @include square(map-get($icon-sizes, base));
+      padding: 0 !important;
 
       &-sm {
         @include square(map-get($icon-sizes, sm));
       }
+
       &-lg {
         @include square(map-get($icon-sizes, lg));
       }
     }
 
-    // shapes
     .circle,
     .sm.circle,
     .lg.circle,
@@ -88,17 +148,19 @@ $icon-menu-sizes: (
 
     &:hover {
       background-color: transparent;
-      color: #767676;
+      color: var(--dropdown-icon-menu-hover-color);
     }
 
     &.default {
       @include square(map-get($icon-menu-sizes, default));
       padding: 0 !important;
     }
+
     &.sm {
       @include square(map-get($icon-menu-sizes, sm));
       padding: 0 !important;
     }
+
     &.lg {
       @include square(map-get($icon-menu-sizes, lg));
       padding: 0 !important;
@@ -111,13 +173,14 @@ $icon-menu-sizes: (
   }
 }
 
+
 /* ====== Caret ====== */
+
 .dropdown-caret {
   width: 0.75rem;
   justify-content: flex-end;
   margin: 0 2px 0 10px;
 
-  // slightly nudge when small
   .dropdown-button.sm &,
   .size & {
     margin-top: 3px;
@@ -128,7 +191,9 @@ $icon-menu-sizes: (
   fill: currentColor;
 }
 
+
 /* ====== Menu ====== */
+
 .dropdown-menu {
   position: absolute;
   top: 100%;
@@ -140,12 +205,12 @@ $icon-menu-sizes: (
   padding: 0.05rem 0 !important;
   margin: 0.125rem 0 0;
   font-size: 1rem;
-  color: #212529;
+  color: var(--dropdown-color);
   text-align: left;
   list-style: none;
-  background-color: #fff;
+  background-color: var(--dropdown-bg);
   background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--dropdown-border-color);
   border-radius: 0.25rem;
 
   &,
@@ -163,6 +228,7 @@ $icon-menu-sizes: (
   &.square {
     border-radius: 0;
   }
+
   &.pill {
     border-radius: 12px;
   }
@@ -172,18 +238,22 @@ $icon-menu-sizes: (
   height: 0;
   margin: 0.25rem 0 !important;
   overflow: hidden;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--dropdown-divider-color);
 }
 
-/* (global link baseline kept minimal to avoid surprises) */
+
+/* ====== Global link baseline ====== */
+
 a {
-  color: #007bff;
+  color: var(--dropdown-link-color);
   text-decoration: none;
   background-color: transparent;
   -webkit-text-decoration-skip: objects;
 }
 
+
 /* ====== Items ====== */
+
 .dropdown-item {
   display: block;
   width: 100%;
@@ -191,7 +261,7 @@ a {
   clear: both;
   font-size: 0.875rem;
   font-weight: 400;
-  color: #212529;
+  color: var(--dropdown-item-color);
   text-align: inherit;
   white-space: nowrap;
   background-color: transparent;
@@ -248,6 +318,7 @@ a {
         left: 0;
         margin-top: 0;
       }
+
       &::after {
         top: 4px;
         left: -1px;
@@ -280,9 +351,11 @@ a {
     .form-check-label.sm {
       padding-top: 4px;
     }
+
     .form-group {
       margin-bottom: 0 !important;
     }
+
     .form-group.check-box {
       padding-top: 0 !important;
     }
@@ -292,6 +365,7 @@ a {
         &::before {
           top: 0.25rem;
         }
+
         &::after {
           top: 0.38rem;
         }
@@ -332,21 +406,23 @@ a {
 
   &:focus,
   &:hover {
-    color: #16181b;
+    color: var(--dropdown-item-hover-color);
     text-decoration: none;
-    background-color: #e2e2e2 !important;
+    background-color: var(--dropdown-item-hover-bg) !important;
     outline: 0;
   }
 
   &.active,
   &:active {
-    color: #fff !important;
+    color: var(--dropdown-item-active-color) !important;
     text-decoration: none;
-    background-color: #2680eb !important;
+    background-color: var(--dropdown-item-active-bg) !important;
   }
 }
 
-/* Variants that should NOT “active highlight” */
+
+/* ====== Variants without active highlight ====== */
+
 .chbx,
 .tgsw,
 .sub-inputs {
@@ -368,7 +444,9 @@ a {
   }
 }
 
-/* Toggle switch spacing */
+
+/* ====== Toggle switch spacing ====== */
+
 .form-group.toggle-switch {
   padding: 2px !important;
   margin-bottom: 0;
@@ -381,11 +459,14 @@ a {
 .dropdown-item.sm .form-group.toggle-switch {
   padding: 2px 0 !important;
 }
+
 .chbx .dropdown-item.sm .form-check {
   padding-top: 0;
 }
 
+
 /* ====== Submenus ====== */
+
 .dropdown-submenu {
   position: relative;
 
@@ -418,10 +499,12 @@ a {
   }
 }
 
+
 /* ====== Focus visuals ====== */
+
 .dropdown-item:focus-visible {
-  background-color: #f8f9fa;
-  color: #16181b;
+  background-color: var(--dropdown-item-focus-bg);
+  color: var(--dropdown-item-focus-color);
   @include caret-outline-focus;
 }
 
@@ -436,7 +519,9 @@ dropdown-component {
   }
 }
 
+
 /* ====== Utilities ====== */
+
 .hidden {
   display: none;
   visibility: hidden;

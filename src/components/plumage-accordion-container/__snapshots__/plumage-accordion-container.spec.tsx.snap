@@ -1,0 +1,923 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`plumage-accordion-container applies correct text size class from contentTxtSize prop: text size large 1`] = `
+<plumage-accordion-container icon="fas fa-angle-down">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="true" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 1
+                <span aria-hidden="true" class="rotate-down">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapsing" id="acc-test-collapse-0" role="region" style="height: 0px;">
+          <div class="accordion-body text-large">
+            Content 1
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-1">
+          <button-component aria-controls="acc-test-collapse-1" aria-expanded="false" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" id="acc-test-trigger-1">
+            <!---->
+            <button aria-controls="acc-test-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 2
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-1" inert="" role="region">
+          <div class="accordion-body text-large">
+            Content 2
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container handles keyboard activation (simulate click on inner button): after activation close 1`] = `
+<plumage-accordion-container icon="fas fa-angle-down">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="false" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 1
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapsing" id="acc-test-collapse-0" inert="" role="region" style="height: 0px;">
+          <div class="accordion-body">
+            Content 1
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-1">
+          <button-component aria-controls="acc-test-collapse-1" aria-expanded="false" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" id="acc-test-trigger-1">
+            <!---->
+            <button aria-controls="acc-test-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 2
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-1" inert="" role="region">
+          <div class="accordion-body">
+            Content 2
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container handles keyboard activation (simulate click on inner button): after activation open 1`] = `
+<plumage-accordion-container icon="fas fa-angle-down">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="true" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 1
+                <span aria-hidden="true" class="rotate-down">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapsing" id="acc-test-collapse-0" role="region" style="height: 0px;">
+          <div class="accordion-body">
+            Content 1
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-1">
+          <button-component aria-controls="acc-test-collapse-1" aria-expanded="false" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" id="acc-test-trigger-1">
+            <!---->
+            <button aria-controls="acc-test-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 2
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-1" inert="" role="region">
+          <div class="accordion-body">
+            Content 2
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container icon switching with snapshot: after icon toggle 1`] = `
+<plumage-accordion-container icon="icon-closed,icon-open">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="true" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 1
+                <span aria-hidden="true" class="rotate-down">
+                  <icon-component icon="icon-open"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapsing" id="acc-test-collapse-0" role="region" style="height: 0px;">
+          <div class="accordion-body">
+            Content 1
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-1">
+          <button-component aria-controls="acc-test-collapse-1" aria-expanded="false" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" id="acc-test-trigger-1">
+            <!---->
+            <button aria-controls="acc-test-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 2
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="icon-closed"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-1" inert="" role="region">
+          <div class="accordion-body">
+            Content 2
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container icon switching with snapshot: before icon toggle 1`] = `
+<plumage-accordion-container icon="icon-closed,icon-open">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="false" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 1
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="icon-closed"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-0" inert="" role="region">
+          <div class="accordion-body">
+            Content 1
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-1">
+          <button-component aria-controls="acc-test-collapse-1" aria-expanded="false" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" id="acc-test-trigger-1">
+            <!---->
+            <button aria-controls="acc-test-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 2
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="icon-closed"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-1" inert="" role="region">
+          <div class="accordion-body">
+            Content 2
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders an item with empty header and content strings: empty header and content 1`] = `
+<plumage-accordion-container icon="fas fa-angle-down">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="false" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-0" inert="" role="region">
+          <div class="accordion-body"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders correct ARIA attributes on accordion headers and panels (including hidden/inert when collapsed): ARIA attributes check 1`] = `
+<plumage-accordion-container icon="fas fa-angle-down">
+  <div class="sc-accordion">
+    <div class="accordion" id="my-accordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="my-accordion-header-0">
+          <button-component aria-controls="my-accordion-collapse-0" aria-expanded="false" data-bs-target="#my-accordion-collapse-0" data-bs-toggle="collapse" id="my-accordion-trigger-0">
+            <!---->
+            <button aria-controls="my-accordion-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#my-accordion-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Item 1
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="my-accordion-trigger-0" class="accordion-collapse collapse" hidden="" id="my-accordion-collapse-0" inert="" role="region">
+          <div class="accordion-body">
+            Content 1
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders empty accordion when data is an empty array: empty array data 1`] = `
+<plumage-accordion-container icon="fas fa-angle-down">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test"></div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders fallback icon behavior for invalid or missing icon prop: empty string icon 1`] = `
+<plumage-accordion-container icon="">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="false" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                H
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-0" inert="" role="region">
+          <div class="accordion-body">
+            C
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders fallback icon behavior for invalid or missing icon prop: malformed icon string 1`] = `
+<plumage-accordion-container icon="  , , ,">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="false" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                H
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-0" inert="" role="region">
+          <div class="accordion-body">
+            C
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders fallback icon behavior for invalid or missing icon prop: null icon 1`] = `
+<plumage-accordion-container>
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="false" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                H
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-0" inert="" role="region">
+          <div class="accordion-body">
+            C
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders gracefully when data is undefined, null, or not an array: non-array data fallback 1`] = `
+<plumage-accordion-container icon="fas fa-angle-down">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test"></div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders gracefully when data is undefined, null, or not an array: null data fallback 1`] = `
+<plumage-accordion-container icon="fas fa-angle-down">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test"></div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders gracefully when data is undefined, null, or not an array: undefined data fallback 1`] = `
+<plumage-accordion-container icon="fas fa-angle-down">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test"></div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders many accordion items and matches snapshot: long data array (12 items) 1`] = `
+<plumage-accordion-container icon="fas fa-angle-down">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="false" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 1
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-0" inert="" role="region">
+          <div class="accordion-body">
+            Content 1
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-1">
+          <button-component aria-controls="acc-test-collapse-1" aria-expanded="false" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" id="acc-test-trigger-1">
+            <!---->
+            <button aria-controls="acc-test-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 2
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-1" inert="" role="region">
+          <div class="accordion-body">
+            Content 2
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-2">
+          <button-component aria-controls="acc-test-collapse-2" aria-expanded="false" data-bs-target="#acc-test-collapse-2" data-bs-toggle="collapse" id="acc-test-trigger-2">
+            <!---->
+            <button aria-controls="acc-test-collapse-2" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-2" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 3
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-2" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-2" inert="" role="region">
+          <div class="accordion-body">
+            Content 3
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-3">
+          <button-component aria-controls="acc-test-collapse-3" aria-expanded="false" data-bs-target="#acc-test-collapse-3" data-bs-toggle="collapse" id="acc-test-trigger-3">
+            <!---->
+            <button aria-controls="acc-test-collapse-3" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-3" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 4
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-3" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-3" inert="" role="region">
+          <div class="accordion-body">
+            Content 4
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-4">
+          <button-component aria-controls="acc-test-collapse-4" aria-expanded="false" data-bs-target="#acc-test-collapse-4" data-bs-toggle="collapse" id="acc-test-trigger-4">
+            <!---->
+            <button aria-controls="acc-test-collapse-4" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-4" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 5
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-4" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-4" inert="" role="region">
+          <div class="accordion-body">
+            Content 5
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-5">
+          <button-component aria-controls="acc-test-collapse-5" aria-expanded="false" data-bs-target="#acc-test-collapse-5" data-bs-toggle="collapse" id="acc-test-trigger-5">
+            <!---->
+            <button aria-controls="acc-test-collapse-5" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-5" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 6
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-5" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-5" inert="" role="region">
+          <div class="accordion-body">
+            Content 6
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-6">
+          <button-component aria-controls="acc-test-collapse-6" aria-expanded="false" data-bs-target="#acc-test-collapse-6" data-bs-toggle="collapse" id="acc-test-trigger-6">
+            <!---->
+            <button aria-controls="acc-test-collapse-6" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-6" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 7
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-6" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-6" inert="" role="region">
+          <div class="accordion-body">
+            Content 7
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-7">
+          <button-component aria-controls="acc-test-collapse-7" aria-expanded="false" data-bs-target="#acc-test-collapse-7" data-bs-toggle="collapse" id="acc-test-trigger-7">
+            <!---->
+            <button aria-controls="acc-test-collapse-7" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-7" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 8
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-7" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-7" inert="" role="region">
+          <div class="accordion-body">
+            Content 8
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-8">
+          <button-component aria-controls="acc-test-collapse-8" aria-expanded="false" data-bs-target="#acc-test-collapse-8" data-bs-toggle="collapse" id="acc-test-trigger-8">
+            <!---->
+            <button aria-controls="acc-test-collapse-8" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-8" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 9
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-8" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-8" inert="" role="region">
+          <div class="accordion-body">
+            Content 9
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-9">
+          <button-component aria-controls="acc-test-collapse-9" aria-expanded="false" data-bs-target="#acc-test-collapse-9" data-bs-toggle="collapse" id="acc-test-trigger-9">
+            <!---->
+            <button aria-controls="acc-test-collapse-9" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-9" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 10
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-9" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-9" inert="" role="region">
+          <div class="accordion-body">
+            Content 10
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-10">
+          <button-component aria-controls="acc-test-collapse-10" aria-expanded="false" data-bs-target="#acc-test-collapse-10" data-bs-toggle="collapse" id="acc-test-trigger-10">
+            <!---->
+            <button aria-controls="acc-test-collapse-10" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-10" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 11
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-10" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-10" inert="" role="region">
+          <div class="accordion-body">
+            Content 11
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-11">
+          <button-component aria-controls="acc-test-collapse-11" aria-expanded="false" data-bs-target="#acc-test-collapse-11" data-bs-toggle="collapse" id="acc-test-trigger-11">
+            <!---->
+            <button aria-controls="acc-test-collapse-11" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-11" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 12
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-11" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-11" inert="" role="region">
+          <div class="accordion-body">
+            Content 12
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders only first two icons from icon="a,b,c": icon prop with extra values (a,b,c) 1`] = `
+<plumage-accordion-container icon="a,b,c">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="false" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                H
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="a"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapsing" id="acc-test-collapse-0" inert="" role="region" style="height: 0px;">
+          <div class="accordion-body">
+            C
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders outlined, block, and disabled props: outlined-block-disabled 1`] = `
+<plumage-accordion-container icon="fas fa-angle-down">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="false" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn btn--block btn-outline- collapsed disabled" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" disabled="" type="button">
+              <span class="btn__content">
+                Header 1
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-0" inert="" role="region">
+          <div class="accordion-body">
+            Content 1
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-1">
+          <button-component aria-controls="acc-test-collapse-1" aria-expanded="false" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" id="acc-test-trigger-1">
+            <!---->
+            <button aria-controls="acc-test-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn btn--block btn-outline- collapsed disabled" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" disabled="" type="button">
+              <span class="btn__content">
+                Header 2
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-1" inert="" role="region">
+          <div class="accordion-body">
+            Content 2
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders single static icon and does not change on toggle: static single icon toggle does not change 1`] = `
+<plumage-accordion-container icon="only-icon">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="false" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Static
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="only-icon"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapsing" id="acc-test-collapse-0" inert="" role="region" style="height: 0px;">
+          <div class="accordion-body">
+            Content
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders static icon with no toggle switch: static icon no switch 1`] = `
+<plumage-accordion-container icon="icon-static">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="false" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 1
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="icon-static"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-0" inert="" role="region">
+          <div class="accordion-body">
+            Content 1
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-1">
+          <button-component aria-controls="acc-test-collapse-1" aria-expanded="false" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" id="acc-test-trigger-1">
+            <!---->
+            <button aria-controls="acc-test-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 2
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="icon-static"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-1" inert="" role="region">
+          <div class="accordion-body">
+            Content 2
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container renders with given data and matches snapshot: default-data 1`] = `
+<plumage-accordion-container icon="fas fa-angle-down">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="false" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 1
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-0" inert="" role="region">
+          <div class="accordion-body">
+            Content 1
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-1">
+          <button-component aria-controls="acc-test-collapse-1" aria-expanded="false" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" id="acc-test-trigger-1">
+            <!---->
+            <button aria-controls="acc-test-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 2
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-1" inert="" role="region">
+          <div class="accordion-body">
+            Content 2
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;
+
+exports[`plumage-accordion-container toggles accordion via click and matches snapshot: click toggle first open 1`] = `
+<plumage-accordion-container icon="fas fa-angle-down">
+  <div class="sc-accordion">
+    <div class="accordion" id="acc-test">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-0">
+          <button-component aria-controls="acc-test-collapse-0" aria-expanded="true" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" id="acc-test-trigger-0">
+            <!---->
+            <button aria-controls="acc-test-collapse-0" aria-expanded="true" aria-label="Button" class="accordion-button btn" data-bs-target="#acc-test-collapse-0" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 1
+                <span aria-hidden="true" class="rotate-down">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-labelledby="acc-test-trigger-0" class="accordion-collapse collapsing" id="acc-test-collapse-0" role="region" style="height: 0px;">
+          <div class="accordion-body">
+            Content 1
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="acc-test-header-1">
+          <button-component aria-controls="acc-test-collapse-1" aria-expanded="false" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" id="acc-test-trigger-1">
+            <!---->
+            <button aria-controls="acc-test-collapse-1" aria-expanded="false" aria-label="Button" class="accordion-button btn collapsed" data-bs-target="#acc-test-collapse-1" data-bs-toggle="collapse" type="button">
+              <span class="btn__content">
+                Header 2
+                <span aria-hidden="true" class="rotate-up">
+                  <icon-component icon="fas fa-angle-down"></icon-component>
+                </span>
+              </span>
+            </button>
+          </button-component>
+        </h2>
+        <div aria-hidden="true" aria-labelledby="acc-test-trigger-1" class="accordion-collapse collapse" hidden="" id="acc-test-collapse-1" inert="" role="region">
+          <div class="accordion-body">
+            Content 2
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-container>
+`;

@@ -16,7 +16,7 @@ import {
 } from './plumage-autocomplete-multiple-selections.story-helpers.js';
 
 export default {
-  title: 'Form/Plumage Autocomplete Multiple Selections',
+  title: 'Plumage/Plumage Autocomplete Multiple Selections',
 
   decorators: [
     Story => {
@@ -29,6 +29,8 @@ export default {
 
   parameters: {
     layout: 'padded',
+
+    themeFamily: 'plumage',
     docs: {
       description: {
         component:
@@ -72,8 +74,7 @@ export default {
       control: 'text',
       name: 'id',
       table: { category: 'Attributes' },
-      description:
-        'The unique identifier for the component instance. This is used to associate the component with the javascript API and for accessibility purposes.',
+      description: 'The unique identifier for the component instance. This is used to associate the component with the javascript API and for accessibility purposes.',
     },
     preserveInputOnSelect: {
       control: 'boolean',
@@ -97,8 +98,7 @@ export default {
       control: 'object',
       name: 'value',
       table: { category: 'Attributes' },
-      description:
-        'Controlled selected items (string[]). Set as a property at runtime (not as an attribute).',
+      description: 'Controlled selected items (string[]). Set as a property at runtime (not as an attribute).',
     },
 
     badgeInlineStyles: {
@@ -181,15 +181,13 @@ export default {
       control: 'text',
       name: 'input-id',
       table: { category: 'Input Attributes' },
-      description:
-        'The unique identifier for the input element within the component. This is used for accessibility and form association.',
+      description: 'The unique identifier for the input element within the component. This is used for accessibility and form association.',
     },
     label: {
       control: 'text',
       name: 'label',
       table: { category: 'Input Attributes' },
-      description:
-        'The text label for the component. This is used for accessibility and user guidance.',
+      description: 'The text label for the component. This is used for accessibility and user guidance.',
     },
     name: {
       control: 'text',
@@ -201,67 +199,58 @@ export default {
       control: 'text',
       name: 'placeholder',
       table: { category: 'Input Attributes' },
-      description:
-        'The placeholder text for the input element. This provides a hint to the user about what to enter.',
+      description: 'The placeholder text for the input element. This provides a hint to the user about what to enter.',
     },
     type: {
       control: 'text',
       name: 'type',
       table: { category: 'Input Attributes' },
-      description:
-        'The type attribute for the input element. This can be used to specify the type of data expected (e.g., "text", "email", "number").',
+      description: 'The type attribute for the input element. This can be used to specify the type of data expected (e.g., "text", "email", "number").',
     },
 
     formId: {
       control: 'text',
       name: 'form-id',
       table: { category: 'Layout' },
-      description:
-        'The id of the parent form element to associate with when using form layouts. This is necessary when the component is not a direct child of the form element.',
+      description: 'The id of the parent form element to associate with when using form layouts. This is necessary when the component is not a direct child of the form element.',
     },
     formLayout: {
       control: { type: 'select' },
       options: ['', 'horizontal', 'inline'],
       name: 'form-layout',
       table: { category: 'Layout' },
-      description:
-        'Sets the form layout style. "horizontal" applies a two-column grid layout, while "inline" arranges elements in a single row.',
+      description: 'Sets the form layout style. "horizontal" applies a two-column grid layout, while "inline" arranges elements in a single row.',
     },
     inputCol: {
       control: 'text',
       name: 'input-col',
       table: { category: 'Layout', defaultValue: { summary: 10 } },
-      description:
-        'Used with horizontal form layouts. Single numeric column for the input in a grid. Default is 10 (col-10).',
+      description: 'Used with horizontal form layouts. Single numeric column for the input in a grid. Default is 10 (col-10).',
     },
     inputCols: {
       control: 'text',
       name: 'input-cols',
       table: { category: 'Layout' },
-      description:
-        'Used with horizontal form layouts. Responsive input column classes, e.g. "col", "col-sm-9 col-md-8".',
+      description: 'Used with horizontal form layouts. Responsive input column classes, e.g. "col", "col-sm-9 col-md-8".',
     },
     labelAlign: {
       control: { type: 'select' },
       options: ['', 'right'],
       name: 'label-align',
       table: { category: 'Layout' },
-      description:
-        'Aligns the label text. "right" aligns the label to the right, which is typically used in horizontal form layouts.',
+      description: 'Aligns the label text. "right" aligns the label to the right, which is typically used in horizontal form layouts.',
     },
     labelCol: {
       control: 'text',
       name: 'label-col',
       table: { category: 'Layout', defaultValue: { summary: 2 } },
-      description:
-        'Used with horizontal form layouts. Single numeric column for the label in a grid. Default is 2 (col-2).',
+      description: 'Used with horizontal form layouts. Single numeric column for the label in a grid. Default is 2 (col-2).',
     },
     labelCols: {
       control: 'text',
       name: 'label-cols',
       table: { category: 'Layout' },
-      description:
-        'Used with horizontal form layouts. Responsive label column classes, e.g. "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4".',
+      description: 'Used with horizontal form layouts. Responsive label column classes, e.g. "col", "col-sm-3 col-md-4", "xs-12 sm-6 md-4".',
     },
     labelHidden: {
       control: 'boolean',
@@ -274,24 +263,21 @@ export default {
       options: ['xs', 'sm', 'base', 'lg'],
       name: 'label-size',
       table: { category: 'Layout' },
-      description:
-        'Sets the size of the label text. Options include "xs" (extra small), "sm" (small), "base" (default), and "lg" (large).',
+      description: 'Sets the size of the label text. Options include "xs" (extra small), "sm" (small), "base" (default), and "lg" (large).',
     },
     size: {
       control: { type: 'select' },
       options: ['', 'sm', 'lg'],
       name: 'size',
       table: { category: 'Layout' },
-      description:
-        'Sets the size of the input field. Options include "sm" (small) and "lg" (large). Not adding any size will use the default.',
+      description: 'Sets the size of the input field. Options include "sm" (small) and "lg" (large). Not adding any size will use the default.',
     },
 
     error: {
       control: 'boolean',
       name: 'error',
       table: { category: 'Validation', defaultValue: { summary: false } },
-      description:
-        'Marks the input as having an error state, which will typically apply error styling to the component.',
+      description: 'Marks the input as having an error state, which will typically apply error styling to the component.',
     },
     errorMessage: {
       control: 'text',
@@ -303,8 +289,7 @@ export default {
       control: 'boolean',
       name: 'required',
       table: { category: 'Validation', defaultValue: { summary: false } },
-      description:
-        'Marks the input as required, which will trigger validation if the field is left empty.',
+      description: 'Marks the input as required, which will trigger validation if the field is left empty.',
     },
     validation: {
       control: 'boolean',
@@ -401,8 +386,7 @@ Basic.name = 'Basic';
 Basic.parameters = {
   docs: {
     description: {
-      story:
-        'The default configuration of the component with no specific layout applied. Note: options are set via the `options` property after hydration.',
+      story: 'The default configuration of the component with no specific layout applied. Note: options are set via the `options` property after hydration.',
     },
     story: { height: '300px' },
   },
@@ -425,15 +409,7 @@ export const HorizontalLayout = {
     validationMessage: '',
     autoSort: false,
     addNewOnEnter: false,
-    options: [
-      'Acme, Inc.',
-      'Acme Labs',
-      'Alpha Co',
-      'Beta Corp',
-      'Delta Systems',
-      'Epsilon Partners',
-      'Gamma Group',
-    ],
+    options: ['Acme, Inc.', 'Acme Labs', 'Alpha Co', 'Beta Corp', 'Delta Systems', 'Epsilon Partners', 'Gamma Group'],
     value: [],
   },
 };
@@ -462,17 +438,7 @@ export const InlineLayout = {
     validationMessage: '',
     autoSort: false,
     addNewOnEnter: false,
-    options: [
-      'Austin',
-      'Boston',
-      'Chicago',
-      'Denver',
-      'Los Angeles',
-      'New York',
-      'Portland',
-      'Seattle',
-      'San Francisco',
-    ],
+    options: ['Austin', 'Boston', 'Chicago', 'Denver', 'Los Angeles', 'New York', 'Portland', 'Seattle', 'San Francisco'],
     value: [],
   },
   render: args => renderComponent(args, { idOverride: 'acms_inline1' }),
@@ -504,16 +470,7 @@ export const EditableKeepOpenRapidPick = {
     placeholder: 'Type to add/select…',
     validationMessage: '',
     devMode: true,
-    options: [
-      'Frontend',
-      'Backend',
-      'Fullstack',
-      'DevOps',
-      'Data',
-      'Design',
-      'QA',
-      'Product',
-    ],
+    options: ['Frontend', 'Backend', 'Fullstack', 'DevOps', 'Data', 'Design', 'QA', 'Product'],
     value: ['Frontend', 'DevOps'],
   },
 
@@ -551,9 +508,7 @@ export const ControlledValue = {
     wrap.style.display = 'grid';
     wrap.style.gap = '12px';
 
-    let controlledValue = Array.isArray(args.value)
-      ? [...args.value]
-      : ['Apple', 'Mango'];
+    let controlledValue = Array.isArray(args.value) ? [...args.value] : ['Apple', 'Mango'];
 
     const state = document.createElement('div');
     state.style.opacity = '0.75';
@@ -591,8 +546,7 @@ export const ControlledValue = {
     buttons.appendChild(btnWeird);
 
     const renderState = source => {
-      state.textContent =
-        `External controlled value (${source}): ${JSON.stringify(controlledValue)}`;
+      state.textContent = `External controlled value (${source}): ${JSON.stringify(controlledValue)}`;
     };
 
     const setVal = async (next, source) => {
@@ -628,10 +582,7 @@ export const ControlledValue = {
           break;
 
         case 'sanitize':
-          void setVal(
-            ['  <b>Apple</b>  ', 'MANGO', 'mango', '\u0007Bad\u0000', ''],
-            'button activation',
-          );
+          void setVal(['  <b>Apple</b>  ', 'MANGO', 'mango', '\u0007Bad\u0000', ''], 'button activation');
           break;
 
         default:
@@ -677,11 +628,7 @@ export const ControlledValue = {
 
     if (el) {
       el.addEventListener('multiSelectChange', event => {
-        const next = Array.isArray(event?.detail)
-          ? event.detail
-          : Array.isArray(event?.detail?.value)
-            ? event.detail.value
-            : [];
+        const next = Array.isArray(event?.detail) ? event.detail : Array.isArray(event?.detail?.value) ? event.detail.value : [];
 
         controlledValue = [...next];
         renderState('multiSelectChange event');
@@ -709,8 +656,7 @@ export const ControlledValue = {
         transform: () => buildDocsHtmlControlledValue(),
       },
       description: {
-        story:
-          'Demonstrates the controlled `value` prop (string[]), including the external state that drives the component and updates it programmatically.',
+        story: 'Demonstrates the controlled `value` prop (string[]), including the external state that drives the component and updates it programmatically.',
       },
       story: { height: '420px' },
     },
@@ -742,10 +688,7 @@ export const Sizes = {
 
       if (el) {
         void setOptionsWhenReady(el, FRUIT);
-        void setValueWhenReady(
-          el,
-          Array.isArray(variant.value) ? variant.value : [],
-        );
+        void setValueWhenReady(el, Array.isArray(variant.value) ? variant.value : []);
       }
     }
 
@@ -768,8 +711,7 @@ export const Sizes = {
           ),
       },
       description: {
-        story:
-          'Shows the three supported sizes by setting the `size` arg to `sm`, empty string (default), and `lg`. Options/value are applied at runtime as properties.',
+        story: 'Shows the three supported sizes by setting the `size` arg to `sm`, empty string (default), and `lg`. Options/value are applied at runtime as properties.',
       },
       story: { height: '480px' },
     },
@@ -798,8 +740,7 @@ FieldValidation.name = 'Required with Validation Message';
 FieldValidation.parameters = {
   docs: {
     description: {
-      story:
-        'Enables validation for the input field. When the field is left empty and loses focus, the specified validation message will be displayed.',
+      story: 'Enables validation for the input field. When the field is left empty and loses focus, the specified validation message will be displayed.',
     },
     story: { height: '300px' },
   },
@@ -858,8 +799,7 @@ ReadOnly.name = 'Read Only';
 ReadOnly.parameters = {
   docs: {
     description: {
-      story:
-        'Keeps the selected badges visible while preventing typing, selection, removal, and clearing.',
+      story: 'Keeps the selected badges visible while preventing typing, selection, removal, and clearing.',
     },
   },
 };
@@ -923,13 +863,11 @@ export const AccessibilityMatrix = {
   render: args => {
     const outer = document.createElement('div');
 
-    outer.className =
-      'plumage-autocomplete-multiple-selections-accessibility-matrix';
+    outer.className = 'plumage-autocomplete-multiple-selections-accessibility-matrix';
 
     const note = document.createElement('div');
 
-    note.className =
-      'plumage-autocomplete-multiple-selections-accessibility-matrix__note';
+    note.className = 'plumage-autocomplete-multiple-selections-accessibility-matrix__note';
 
     note.innerHTML = `
       <div class="plumage-autocomplete-multiple-selections-accessibility-matrix__note-title">What this shows</div>
@@ -944,8 +882,7 @@ export const AccessibilityMatrix = {
 
     const container = document.createElement('div');
 
-    container.className =
-      'plumage-autocomplete-multiple-selections-accessibility-matrix__variants';
+    container.className = 'plumage-autocomplete-multiple-selections-accessibility-matrix__variants';
 
     outer.appendChild(container);
 

@@ -1,0 +1,33 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/addon-docs/blocks';
+import * as PlumageAccordionStories from './plumage-accordion.stories.js';
+import { reactExample, vueExample, angularExample, svelteExample, svelteKitExample } from './plumage-accordion.examples.js';
+
+<Meta of={PlumageAccordionStories} />
+
+# Plumage Accordion
+
+<Description of={PlumageAccordionStories} />
+
+## HTML
+
+```html
+<plumage-accordion-component target-id="accordion-section-1" accordion>
+  <span slot="accordion-header">Header Text</span>
+  <div slot="content">Body content</div>
+</plumage-accordion-component>
+```
+## React
+<Source dark code={reactExample} language="tsx" />
+## Vue
+<Source dark code={vueExample} language="vue" />
+## Angular
+<Source dark code={angularExample} language="ts" />
+## Svelte
+<Source dark code={svelteExample} language="ts" />
+## Svelte Kit
+<Source dark code={svelteKitExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+<Primary />
+<Controls />
+<Stories />

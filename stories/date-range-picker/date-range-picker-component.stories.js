@@ -48,10 +48,11 @@ const baseArgs = {
 const renderTemplate = args => Template(args);
 
 export default {
-  title: 'Form/Date Range Picker'
+  title: 'Bootstrap/Date Range Picker'
   ,
 
   parameters: {
+    themeFamily: 'bootstrap',
     docs: {
 
       description: {
@@ -1202,6 +1203,7 @@ export const AccessibilityMatrix = {
     controls: {
       disable: true,
     },
+
     docs: {
       description: {
         story:

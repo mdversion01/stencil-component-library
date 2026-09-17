@@ -15,7 +15,7 @@ import {
 } from './autocomplete-single.story-helpers.js';
 
 export default {
-  title: 'Form/Autocomplete Single'
+  title: 'Bootstrap/Autocomplete Single'
   ,
   decorators: [
     Story => {
@@ -26,6 +26,7 @@ export default {
     },
   ],
   parameters: {
+     themeFamily: 'bootstrap',
     docs: {
 
       description: {

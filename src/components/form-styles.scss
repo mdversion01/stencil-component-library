@@ -143,7 +143,7 @@ input[type='radio'] {
 .form-control:disabled,
 .form-control[disabled],
 .form-control.disabled {
-  background-color: var(--bs-secondary-bg) !important;
-  color: var(--disabled-text-color) !important;
+  background-color: var(--bs-secondary-bg);
+  color: var(--disabled-text-color);
   cursor: not-allowed;
 }

@@ -11,8 +11,9 @@ import {
 } from './select-field-component.story-helpers';
 
 export default {
-  title: 'Form/Select Field',
+  title: 'Bootstrap/Select Field',
   parameters: {
+    themeFamily: 'bootstrap',
     docs: {
       description: {
         component:

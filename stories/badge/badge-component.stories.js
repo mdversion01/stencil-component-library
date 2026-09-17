@@ -4,12 +4,13 @@
 import { buildDocsHtml, buildDocsHtmlMany, renderBadge, setAttr } from './badge-component.story-helpers.js';
 
 export default {
-  title: 'Components/Badge'
+  title: 'Bootstrap or Plumage/Badge'
   ,
 
   render: (args) => renderBadge(args),
 
   parameters: {
+     themeFamily: 'allthemes',
     docs: {
 
       description: {

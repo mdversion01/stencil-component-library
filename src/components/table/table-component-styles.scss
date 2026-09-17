@@ -767,60 +767,60 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath d='M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-6 400H54c-3.3 0-6-2.7-6-6V86c0-3.3 2.7-6 6-6h340c3.3 0 6 2.7 6 6v340c0 3.3-2.7 6-6 6z'/%3E%3C/svg%3E");
   }
 
-  .plumage {
-    table {
-      border-collapse: collapse;
-    }
+  // .plumage {
+  //   table {
+  //     border-collapse: collapse;
+  //   }
 
-    .table {
-      width: 100%;
-      margin-bottom: 0.25rem;
-      color: #383838;
+  //   .table {
+  //     width: 100%;
+  //     margin-bottom: 0.25rem;
+  //     color: #383838;
 
-      th,
-      td {
-        font-size: 0.8333rem;
-        padding: 0.5rem;
-        vertical-align: top;
-        border-top: 1px solid #f5f5f5;
-      }
+  //     th,
+  //     td {
+  //       font-size: 0.8333rem;
+  //       padding: 0.5rem;
+  //       vertical-align: top;
+  //       border-top: 1px solid #f5f5f5;
+  //     }
 
-      thead th {
-        vertical-align: bottom;
-        border-bottom: 2px solid #f5f5f5;
-      }
-    }
+  //     thead th {
+  //       vertical-align: bottom;
+  //       border-bottom: 2px solid #f5f5f5;
+  //     }
+  //   }
 
-    table,
-    .table-sm {
-      font-size: 0.8333rem;
-      font-weight: 300;
-      line-height: 1.1;
-    }
+  //   table,
+  //   .table-sm {
+  //     font-size: 0.8333rem;
+  //     font-weight: 300;
+  //     line-height: 1.1;
+  //   }
 
-    th {
-      font-weight: 400;
-      line-height: 1.2;
-    }
+  //   th {
+  //     font-weight: 400;
+  //     line-height: 1.2;
+  //   }
 
-    .table-sm {
-      th,
-      td {
-        padding: 0.3rem;
-      }
+  //   .table-sm {
+  //     th,
+  //     td {
+  //       padding: 0.3rem;
+  //     }
 
-      .select-row-btns {
-        margin: 3px 0 0 4px;
-      }
-    }
+  //     .select-row-btns {
+  //       margin: 3px 0 0 4px;
+  //     }
+  //   }
 
-    .table-striped tbody tr:nth-of-type(odd) {
-      background-color: rgba(0, 0, 0, 0.05);
-    }
+  //   .table-striped tbody tr:nth-of-type(odd) {
+  //     background-color: rgba(0, 0, 0, 0.05);
+  //   }
 
-    .table-hover tbody tr:hover {
-      color: #383838;
-      background-color: rgba(0, 0, 0, 0.075);
-    }
-  }
+  //   .table-hover tbody tr:hover {
+  //     color: #383838;
+  //     background-color: rgba(0, 0, 0, 0.075);
+  //   }
+  // }
 }

@@ -35,9 +35,10 @@ const baseArgs = {
 };
 
 export default {
-  title: 'Components/Progress',
+  title: 'Bootstrap or Plumage/Progress',
   parameters: {
     layout: 'padded',
+    themeFamily: 'allthemes',
     docs: {
       description: {
         component:

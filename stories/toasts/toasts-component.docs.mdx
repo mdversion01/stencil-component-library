@@ -1,6 +1,21 @@
-import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/addon-docs/blocks';
+import {
+  Meta,
+  Description,
+  Primary,
+  Controls,
+  Stories,
+  Source,
+} from '@storybook/addon-docs/blocks';
+
 import * as ToastStories from './toasts-component.stories.js';
-import { reactExample, vueExample, angularExample, svelteExample, svelteKitExample } from './toasts-component.examples';
+
+import {
+  reactExample,
+  vueExample,
+  angularExample,
+  svelteExample,
+  svelteKitExample,
+} from './toasts-component.examples';
 
 <Meta of={ToastStories} />
 
@@ -12,28 +27,59 @@ import { reactExample, vueExample, angularExample, svelteExample, svelteKitExamp
 
 ```html
 <section>
-  <button type="button" id="show-toast-btn">Show Toast</button>
+  <button
+    type="button"
+    id="show-toast-btn"
+  >
+    Show Toast
+  </button>
 
-  <toasts-component id="toast-example" aria-label="Notifications" position="top-right" append-toast persistent></toasts-component>
+  <toasts-component
+    id="toast-example"
+    aria-label="Notifications"
+    toast-id="toast-component"
+    position="top-right"
+    duration="5000"
+    max-width="350"
+    append-toast
+    persistent
+  ></toasts-component>
 </section>
 
 <script>
   (async () => {
-    await customElements.whenDefined('toasts-component');
+    await customElements.whenDefined(
+      'toasts-component',
+    );
 
-    const host = document.getElementById('toast-example');
-    const btn = document.getElementById('show-toast-btn');
+    const host =
+      document.getElementById(
+        'toast-example',
+      );
 
-    btn.addEventListener('click', async () => {
-      await host.showToast({
-        toastTitle: 'Saved',
-        content: 'Your changes were saved successfully.',
-        variantClass: 'success',
-        svgIcon: 'check-circle-fill',
-        additionalHdrContent: 'Just now',
-        persistent: true,
-      });
-    });
+    const button =
+      document.getElementById(
+        'show-toast-btn',
+      );
+
+    button.addEventListener(
+      'click',
+      async () => {
+        await host.showToast({
+          toastTitle: 'Saved',
+          content:
+            'Your changes were saved successfully.',
+          variantClass:
+            'success',
+          svgIcon:
+            'check-circle-fill',
+          additionalHdrContent:
+            'Just now',
+          persistent:
+            true,
+        });
+      },
+    );
   })();
 </script>
 ```

@@ -10,11 +10,12 @@ import {
 } from './input-group-component.story-helpers.js';
 
 export default {
-  title: 'Form/Input Group'
+  title: 'Bootstrap/Input Group'
   ,
   render: args => buildEl(args),
   parameters: {
     layout: 'padded',
+    themeFamily: 'bootstrap',
     docs: {
 
       description: {

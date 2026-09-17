@@ -22,7 +22,7 @@ import {
  * ------------------------------------------------------------------ */
 
 export default {
-  title: 'Form/Plumage Input Field'
+  title: 'Plumage/Plumage Input Field'
   ,
   decorators: [
     Story => {
@@ -34,6 +34,8 @@ export default {
   ],
   parameters: {
     layout: 'padded',
+
+     themeFamily: 'plumage',
     docs: {
 
       description: {

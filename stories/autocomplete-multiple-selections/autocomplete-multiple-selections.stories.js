@@ -13,7 +13,7 @@ import {
 } from './autocomplete-multiple-selections.story-helpers.js';
 
 export default {
-  title: 'Form/Autocomplete Multiple Selections'
+  title: 'Bootstrap/Autocomplete Multiple Selections'
   ,
 
   decorators: [
@@ -547,6 +547,7 @@ export const ControlledValue = {
     value: ['Apple'],
   },
   parameters: {
+     themeFamily: 'bootstrap',
     docs: {
       source: {
         language: 'html',

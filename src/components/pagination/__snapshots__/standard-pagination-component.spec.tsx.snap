@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`standard-pagination-component default snapshot with first/prev/next/last (text goToButtons) 1`] = `
+exports[`standard-pagination-component default snapshot with first/prev/next/last (text goToButtons): default-with-text-go-to-buttons 1`] = `
 <standard-pagination-component current-page="3" page-size="10">
   <div class="sc-pagination">
     <div class="d-flex pagination-layout">
-      <div aria-atomic="true" aria-live="polite" class="pagination-cell row-display sr-only" id="spc-range-spc-6bb13a98ed7ee-19f8a9400b2" role="status">
+      <div aria-atomic="true" aria-live="polite" class="pagination-cell row-display sr-only" id="spc-range-test" role="status">
         21-30 of 90
       </div>
       <div class="center pagination-cell">
         <nav aria-label="Pagination">
-          <ul aria-describedby="spc-range-spc-6bb13a98ed7ee-19f8a9400b2" class="b-pagination flex-fill50 justify-content-center pagination">
+          <ul aria-describedby="spc-range-test" class="b-pagination flex-fill50 justify-content-center pagination">
             <li class="page-item" role="listitem">
               <button aria-label="Go to first page" class="page-link" tabindex="0" type="button">
                 First
@@ -73,16 +73,16 @@ exports[`standard-pagination-component default snapshot with first/prev/next/las
 </standard-pagination-component>
 `;
 
-exports[`standard-pagination-component hideGoToButtons removes first/prev/next/last controls 1`] = `
+exports[`standard-pagination-component hideGoToButtons removes first/prev/next/last controls: hide-go-to-buttons 1`] = `
 <standard-pagination-component current-page="2" page-size="10">
   <div class="sc-pagination">
     <div class="d-flex pagination-layout">
-      <div aria-atomic="true" aria-live="polite" class="pagination-cell row-display sr-only" id="spc-range-spc-efa60b30aff92-19f8a9400c4" role="status">
+      <div aria-atomic="true" aria-live="polite" class="pagination-cell row-display sr-only" id="spc-range-test" role="status">
         11-20 of 50
       </div>
       <div>
         <nav aria-label="Pagination">
-          <ul aria-describedby="spc-range-spc-efa60b30aff92-19f8a9400c4" class="b-pagination pagination">
+          <ul aria-describedby="spc-range-test" class="b-pagination pagination">
             <li class="page-item" role="listitem">
               <button aria-label="Go to page 1" class="page-link" tabindex="0" type="button">
                 1

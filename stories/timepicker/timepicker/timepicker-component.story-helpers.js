@@ -91,7 +91,7 @@ export const Template = args => {
     .join('\n    ');
 
   return normalizeHtml(`
-<div class="timepicker-wrapper"${width ? ` style="width:${width};"` : ''}>
+<div class="timepicker-wrapper" style="${width ? `width:${width};` : ''} padding: 15px;">
   <${TAG}
     ${attrs}
   ></${TAG}>

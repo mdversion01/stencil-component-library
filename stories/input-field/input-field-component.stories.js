@@ -41,9 +41,10 @@ const baseArgs = {
 const renderTemplate = args => template(args);
 
 export default {
-  title: 'Form/Input Field'
+  title: 'Bootstrap/Input Field'
   ,
   parameters: {
+    themeFamily: 'bootstrap',
     docs: {
 
       description: {

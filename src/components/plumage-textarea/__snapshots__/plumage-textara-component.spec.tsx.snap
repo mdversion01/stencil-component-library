@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`plumage-textarea-component renders default markup 1`] = `
+exports[`plumage-textarea-component renders default markup: default-markup 1`] = `
 <plumage-textarea-component label="Comments">
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label label-sm" for="plumage-ta-cn851dgk" id="plumage-ta-cn851dgk-label">
+      <label class="form-control-label label-sm" for="plumage-ta-test" id="plumage-ta-test-label">
         <span>
           Comments
         </span>
       </label>
       <div>
         <div class="input-container" role="presentation">
-          <div class="sr-only" id="plumage-ta-cn851dgk-help">
+          <div class="sr-only" id="plumage-ta-test-help">
             Enter Comments. This is a multiline text area.
-          </div><textarea aria-describedby="plumage-ta-cn851dgk-help" aria-invalid="false" aria-labelledby="plumage-ta-cn851dgk-label" autocomplete="off" class="form-control" id="plumage-ta-cn851dgk" name="plumage-ta-cn851dgk" placeholder="Comments" rows="3" spellcheck="" value=""></textarea>
+          </div><textarea aria-describedby="plumage-ta-test-help" aria-invalid="false" aria-labelledby="plumage-ta-test-label" autocomplete="off" class="form-control" id="plumage-ta-test" name="plumage-ta-test" placeholder="Comments" rows="3" spellcheck="" value=""></textarea>
           <div aria-hidden="true" class="b-underline" role="presentation">
             <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
           </div>
@@ -24,20 +24,20 @@ exports[`plumage-textarea-component renders default markup 1`] = `
 </plumage-textarea-component>
 `;
 
-exports[`plumage-textarea-component renders horizontal layout snapshot 1`] = `
+exports[`plumage-textarea-component renders horizontal layout snapshot: horizontal-layout 1`] = `
 <plumage-textarea-component form-layout="horizontal" input-col="9" label="Address" label-col="3" value="123 Main St">
   <div class="horizontal plumage">
     <div class="form-group row">
-      <label class="col-3 col-form-label form-control-label label-sm no-padding" for="plumage-ta-l9p8ledz" id="plumage-ta-l9p8ledz-label">
+      <label class="col-3 col-form-label form-control-label label-sm no-padding" for="plumage-ta-test" id="plumage-ta-test-label">
         <span>
           Address:
         </span>
       </label>
       <div class="col-9">
         <div class="input-container" role="presentation">
-          <div class="sr-only" id="plumage-ta-l9p8ledz-help">
+          <div class="sr-only" id="plumage-ta-test-help">
             Enter Address. This is a multiline text area.
-          </div><textarea aria-describedby="plumage-ta-l9p8ledz-help" aria-invalid="false" aria-labelledby="plumage-ta-l9p8ledz-label" autocomplete="off" class="form-control" id="plumage-ta-l9p8ledz" name="plumage-ta-l9p8ledz" placeholder="Address" rows="3" spellcheck="" value="123 Main St"></textarea>
+          </div><textarea aria-describedby="plumage-ta-test-help" aria-invalid="false" aria-labelledby="plumage-ta-test-label" autocomplete="off" class="form-control" id="plumage-ta-test" name="plumage-ta-test" placeholder="Address" rows="3" spellcheck="" value="123 Main St"></textarea>
           <div aria-hidden="true" class="b-underline" role="presentation">
             <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
           </div>
@@ -48,11 +48,11 @@ exports[`plumage-textarea-component renders horizontal layout snapshot 1`] = `
 </plumage-textarea-component>
 `;
 
-exports[`plumage-textarea-component renders validation + counter snapshot 1`] = `
+exports[`plumage-textarea-component renders validation + counter snapshot: validation-and-counter 1`] = `
 <plumage-textarea-component label="Description" max-length="20" required="" rows="4" validation="" validation-message="Please enter a description." value="Hello">
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label invalid label-sm" for="plumage-ta-2pkscrb4" id="plumage-ta-2pkscrb4-label">
+      <label class="form-control-label invalid label-sm" for="plumage-ta-test" id="plumage-ta-test-label">
         <span>
           Description
         </span>
@@ -62,16 +62,16 @@ exports[`plumage-textarea-component renders validation + counter snapshot 1`] = 
       </label>
       <div>
         <div class="input-container" role="presentation">
-          <div class="sr-only" id="plumage-ta-2pkscrb4-help">
+          <div class="sr-only" id="plumage-ta-test-help">
             Enter Description. This is a multiline text area.
-          </div><textarea aria-describedby="plumage-ta-2pkscrb4-help plumage-ta-2pkscrb4-validation plumage-ta-2pkscrb4-counter" aria-invalid="true" aria-labelledby="plumage-ta-2pkscrb4-label" aria-required="true" autocomplete="off" class="form-control is-invalid" id="plumage-ta-2pkscrb4" maxlength="20" name="plumage-ta-2pkscrb4" placeholder="Description" required="" rows="4" spellcheck="" value="Hello"></textarea>
+          </div><textarea aria-describedby="plumage-ta-test-help plumage-ta-test-validation plumage-ta-test-counter" aria-invalid="true" aria-labelledby="plumage-ta-test-label" aria-required="true" autocomplete="off" class="form-control is-invalid" id="plumage-ta-test" maxlength="20" name="plumage-ta-test" placeholder="Description" required="" rows="4" spellcheck="" value="Hello"></textarea>
           <div aria-hidden="true" class="b-underline invalid" role="presentation">
             <div aria-hidden="true" class="b-focus invalid" role="presentation" style="width: 0; left: 50%;"></div>
           </div>
-          <div aria-atomic="true" aria-live="polite" class="form-text textarea-counter" id="plumage-ta-2pkscrb4-counter">
+          <div aria-atomic="true" aria-live="polite" class="form-text textarea-counter" id="plumage-ta-test-counter">
             5 / 20
           </div>
-          <div aria-live="polite" class="form-text invalid-feedback" id="plumage-ta-2pkscrb4-validation">
+          <div aria-live="polite" class="form-text invalid-feedback" id="plumage-ta-test-validation">
             Please enter a description.
           </div>
         </div>
@@ -81,20 +81,20 @@ exports[`plumage-textarea-component renders validation + counter snapshot 1`] = 
 </plumage-textarea-component>
 `;
 
-exports[`plumage-textarea-component updates internal value state when value prop changes 1`] = `
+exports[`plumage-textarea-component updates internal value state when value prop changes: value-state-first 1`] = `
 <plumage-textarea-component label="Notes" value="first">
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label label-sm" for="plumage-ta-kemo3i31" id="plumage-ta-kemo3i31-label">
+      <label class="form-control-label label-sm" for="plumage-ta-test" id="plumage-ta-test-label">
         <span>
           Notes
         </span>
       </label>
       <div>
         <div class="input-container" role="presentation">
-          <div class="sr-only" id="plumage-ta-kemo3i31-help">
+          <div class="sr-only" id="plumage-ta-test-help">
             Enter Notes. This is a multiline text area.
-          </div><textarea aria-describedby="plumage-ta-kemo3i31-help" aria-invalid="false" aria-labelledby="plumage-ta-kemo3i31-label" autocomplete="off" class="form-control" id="plumage-ta-kemo3i31" name="plumage-ta-kemo3i31" placeholder="Notes" rows="3" spellcheck="" value=""></textarea>
+          </div><textarea aria-describedby="plumage-ta-test-help" aria-invalid="false" aria-labelledby="plumage-ta-test-label" autocomplete="off" class="form-control" id="plumage-ta-test" name="plumage-ta-test" placeholder="Notes" rows="3" spellcheck="" value=""></textarea>
           <div aria-hidden="true" class="b-underline" role="presentation">
             <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
           </div>
@@ -105,20 +105,20 @@ exports[`plumage-textarea-component updates internal value state when value prop
 </plumage-textarea-component>
 `;
 
-exports[`plumage-textarea-component updates internal value state when value prop changes 2`] = `
+exports[`plumage-textarea-component updates internal value state when value prop changes: value-state-second 1`] = `
 <plumage-textarea-component label="Notes" value="second">
   <div class="plumage">
     <div class="form-group">
-      <label class="form-control-label label-sm" for="plumage-ta-kemo3i31" id="plumage-ta-kemo3i31-label">
+      <label class="form-control-label label-sm" for="plumage-ta-test" id="plumage-ta-test-label">
         <span>
           Notes
         </span>
       </label>
       <div>
         <div class="input-container" role="presentation">
-          <div class="sr-only" id="plumage-ta-kemo3i31-help">
+          <div class="sr-only" id="plumage-ta-test-help">
             Enter Notes. This is a multiline text area.
-          </div><textarea aria-describedby="plumage-ta-kemo3i31-help" aria-invalid="false" aria-labelledby="plumage-ta-kemo3i31-label" autocomplete="off" class="form-control" id="plumage-ta-kemo3i31" name="plumage-ta-kemo3i31" placeholder="Notes" rows="3" spellcheck="" value=""></textarea>
+          </div><textarea aria-describedby="plumage-ta-test-help" aria-invalid="false" aria-labelledby="plumage-ta-test-label" autocomplete="off" class="form-control" id="plumage-ta-test" name="plumage-ta-test" placeholder="Notes" rows="3" spellcheck="" value=""></textarea>
           <div aria-hidden="true" class="b-underline" role="presentation">
             <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
           </div>

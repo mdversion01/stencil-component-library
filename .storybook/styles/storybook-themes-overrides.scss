@@ -276,8 +276,8 @@
       color: var(--sbdocs-text) !important;
     }
 
-    small,
-    .text-muted {
+    + small,
+    + .text-muted {
       color: var(--sbdocs-muted) !important;
     }
 
@@ -355,7 +355,7 @@
     }
 
     p,
-    small,
+    + small,
     code {
       color: var(--sbdocs-text) !important;
     }
@@ -674,26 +674,26 @@
   .card-accessibility-matrix__row,
   .checkbox-accessibility-matrix__row
 ) {
-  display: grid;
-  gap: 12px;
-  align-items: start;
+  // display: grid;
+  // gap: 12px;
+  // align-items: start;
   padding: 12px;
   border: 1px solid var(--a11y-matrix-border);
   border-radius: 8px;
 }
 
-.accessibility-matrix__row {
-  grid-template-columns: 220px 1fr;
-}
+// .accessibility-matrix__row {
+//   grid-template-columns: 220px 1fr;
+// }
 
-.accordion-accessibility-matrix__row,
-.button-group-accessibility-matrix__row {
-  grid-template-columns: 260px 1fr;
-}
+// .accordion-accessibility-matrix__row,
+// .button-group-accessibility-matrix__row {
+//   grid-template-columns: 260px 1fr;
+// }
 
-.accordion-container-accessibility-matrix__row {
-  grid-template-columns: 280px 1fr;
-}
+// .accordion-container-accessibility-matrix__row {
+//   grid-template-columns: 280px 1fr;
+// }
 
 .card-accessibility-matrix__row,
 .checkbox-accessibility-matrix__row {
@@ -739,10 +739,10 @@
 }
 
 .accordion-accessibility-matrix__demo {
-  display: flex;
-  gap: 12px;
+  // display: flex;
+  // gap: 12px;
   align-items: center;
-  flex-wrap: wrap;
+  // flex-wrap: wrap;
 }
 
 .accordion-container-accessibility-matrix__demo {
@@ -1151,19 +1151,54 @@
    Divider
    ============================================================ */
 
+.divider-accessibility-matrix__disabled {
+  opacity: 0.55;
+}
+
+
 .divider-accessibility-matrix__inline {
   display: inline-flex;
   gap: 10px;
   align-items: center;
 }
 
-.divider-accessibility-matrix__note {
+.divider-accessibility-matrix__note,
+.divider-accessibility-matrix__status {
   color: var(--a11y-matrix-muted-color);
   font-size: 12px;
 }
 
 .divider-accessibility-matrix__disabled {
   opacity: 0.55;
+}
+
+.divider-accessibility-matrix__card {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--a11y-matrix-border);
+  border-radius: 12px;
+  background: var(--a11y-matrix-card-bg);
+  color: var(--a11y-matrix-text-color);
+}
+
+.divider-accessibility-matrix__card-title {
+  font-weight: 700;
+}
+
+.divider-accessibility-matrix__stage {
+  max-width: 720px;
+}
+
+.divider-accessibility-matrix__output {
+  margin: 0;
+  padding: 10px;
+  overflow-x: auto;
+  border: 1px solid var(--a11y-matrix-output-border);
+  border-radius: 10px;
+  background: var(--a11y-matrix-output-bg);
+  color: var(--a11y-matrix-output-color);
+  font-size: 12px;
 }
 
 /* ============================================================
@@ -1198,6 +1233,11 @@
   font-size: 12px;
 }
 
+.dropdown-matrix-card__status {
+  color: var(--a11y-matrix-muted-color);
+  font-size: 12px;
+}
+
 /* ============================================================
    Form / Pagination wide stages
    ============================================================ */
@@ -1216,6 +1256,26 @@
 .standard-pagination-accessibility-matrix__stage,
 .plumage-textarea-accessibility-matrix__stage {
   max-width: 720px;
+}
+
+.modal-accessibility-matrix__row {
+  display: grid;
+  gap: 10px;
+}
+
+.modal-accessibility-matrix__row-heading {
+  font-weight: 700;
+}
+
+.modal-accessibility-matrix__output {
+  margin: 0;
+  padding: 10px;
+  overflow-x: auto;
+  border: 1px solid var(--a11y-matrix-output-border);
+  border-radius: 10px;
+  background: var(--a11y-matrix-output-bg);
+  color: var(--a11y-matrix-output-color);
+  font-size: 12px;
 }
 
 .minimize-pagination-accessibility-matrix__stage {

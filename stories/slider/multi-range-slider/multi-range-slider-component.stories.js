@@ -3,9 +3,10 @@
 import { Template, normalizeHtml, getSnapshot } from './multi-range-slider-component.story-helpers';
 
 export default {
-  title: 'Components/Slider/Multi Range Slider',
+  title: 'Bootstrap or Plumage/Slider/Multi Range Slider',
   parameters: {
     layout: 'padded',
+    themeFamily: 'allthemes',
     docs: {
       description: {
         component:

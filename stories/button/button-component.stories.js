@@ -4,12 +4,13 @@
 import { buildDocsHtml, buildDocsHtmlMany, renderButton, setAttr } from './button-component.story-helpers.js';
 
 export default {
-  title: 'Components/Button'
+  title: 'Bootstrap or Plumage/Button'
   ,
 
   render: args => renderButton(args),
 
   parameters: {
+    themeFamily: 'allthemes',
     docs: {
 
       description: {

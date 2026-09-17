@@ -25,9 +25,9 @@ exports[`badge-component dot badge: bordered + elevation classes present and sta
 exports[`badge-component renders default badge 1`] = `
 <badge-component aria-hidden="true">
   <!---->
-  <div class="badge bg-secondary">
-    <div class="badge__content"></div>
-  </div>
+  <span class="badge bg-secondary">
+    <span class="badge__content"></span>
+  </span>
 </badge-component>
 `;
 

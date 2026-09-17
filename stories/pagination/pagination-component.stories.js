@@ -41,6 +41,7 @@ export default {
   decorators: [withExclusiveVariants],
   parameters: {
     layout: 'padded',
+    themeFamily: 'allthemes',
     docs: {
       source: {
         type: 'dynamic',

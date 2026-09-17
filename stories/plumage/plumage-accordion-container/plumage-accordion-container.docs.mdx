@@ -1,0 +1,60 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/addon-docs/blocks';
+
+import * as PlumageAccordionContainerStories from './plumage-accordion-container.stories.js';
+
+import { reactExample, vueExample, angularExample, svelteExample, svelteKitExample } from './plumage-accordion-container.examples.js';
+
+<Meta of={PlumageAccordionContainerStories} />
+
+# Plumage Accordion Container
+
+<Description of={PlumageAccordionContainerStories} />
+
+## HTML
+
+```html
+<plumage-accordion-container id="accordion-1" parent-id="accordion-example" aria-label="Account settings sections"></plumage-accordion-container>
+
+<script>
+  const collapseData = [
+    {
+      header: 'Accordion 1',
+      content: 'Content 1',
+    },
+    {
+      header: 'Accordion 2',
+      content: 'Content 2',
+    },
+    {
+      header: 'Accordion 3',
+      content: 'Content 3',
+    },
+    {
+      header: 'Accordion 4',
+      content: 'Content 4',
+    },
+  ];
+
+  const accordion = document.getElementById('accordion-1');
+
+  accordion.data = collapseData;
+</script>
+```
+
+## React
+
+<Source dark code={reactExample} language="tsx" />
+## Vue
+<Source dark code={vueExample} language="vue" />
+## Angular
+<Source dark code={angularExample} language="ts" />
+## Svelte
+<Source dark code={svelteExample} language="ts" />
+## Svelte Kit
+<Source dark code={svelteKitExample} language="ts" />
+
+{/* Show a live preview + controls table */}
+
+<Primary />
+<Controls />
+<Stories />

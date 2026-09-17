@@ -2019,7 +2019,7 @@ private parseIncomingPreloadedValue(rawValue: string): {
       }
 
       if (!itemClasses.includes('selected-range') && !itemClasses.includes('selected-range-active')) {
-        spanClasses.push('btn-outline-light');
+        spanClasses.push('dp-btn-outline-light');
       }
 
       ariaLabel = day
@@ -2071,7 +2071,7 @@ private parseIncomingPreloadedValue(rawValue: string): {
       <div class="date-picker">
         <div class="range-picker-wrapper">
           <div class="range-picker-nav mb-1" aria-label="Navigation controls">
-            <button type="button" onClick={() => this.prevMonth()} class="range-picker-nav-btn btn-outline-secondary" aria-label="Previous month">
+            <button type="button" onClick={() => this.prevMonth()} class="range-picker-nav-btn dp-btn-outline-secondary" aria-label="Previous month">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" aria-hidden="true" focusable="false">
                 <path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c-12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path>
               </svg>
@@ -2092,7 +2092,7 @@ private parseIncomingPreloadedValue(rawValue: string): {
               </button>
             </div>
 
-            <button type="button" onClick={() => this.nextMonth()} class="range-picker-nav-btn btn-outline-secondary" aria-label="Next month">
+            <button type="button" onClick={() => this.nextMonth()} class="range-picker-nav-btn dp-btn-outline-secondary" aria-label="Next month">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" aria-hidden="true" focusable="false">
                 <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path>
               </svg>
@@ -2244,7 +2244,7 @@ private parseIncomingPreloadedValue(rawValue: string): {
               <button
                 type="button"
                 onClick={this._handleOkClick}
-                class="btn btn-primary"
+                class="btn dp-btn-primary"
                 aria-label="Confirm or close date picker"
                 disabled={this.disabled || (this.okButtonLabel === 'OK' && this.hasBlockingTimeIssue())}
               >

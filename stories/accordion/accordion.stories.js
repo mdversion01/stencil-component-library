@@ -2,10 +2,11 @@
 import { buildAccordion } from './accordion.story-helpers';
 
 export default {
-  title: 'Components/Accordion',
+  title: 'Bootstrap/Accordion',
   render: (args, context) => buildAccordion(args, context),
 
   parameters: {
+     themeFamily: 'bootstrap',
     controls: {
       exclude: ['headerText', 'contentLine1', 'contentLine2'],
     },
@@ -211,6 +212,7 @@ export const ButtonToggleDisabled = {
     targetId: 'accordion-4',
     contentLine1: 'This is the collapsible content area.',
     contentLine2: 'Put any markup here.',
+    variant: 'secondary',
   },
   parameters: {
     docs: {

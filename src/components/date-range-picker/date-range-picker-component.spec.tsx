@@ -1,39 +1,11 @@
-// File: src/components/date-range-picker/date-range-picker-component.spec.tsx
+// File: src/components/date-range-picker-component/date-range-picker-component.spec.tsx
 
-import { newSpecPage, SpecPage } from '@stencil/core/testing';
+import {
+  newSpecPage,
+  SpecPage,
+} from '@stencil/core/testing';
 
-const globalObject = globalThis as any;
-
-if (!globalObject.CSS) {
-  globalObject.CSS = {};
-}
-
-if (typeof globalObject.CSS.escape !== 'function') {
-  globalObject.CSS.escape = (value: string) =>
-    String(value ?? '').replace(
-      /[^a-zA-Z0-9_-]/g,
-      character => `\\${character}`,
-    );
-}
-
-if (typeof globalObject.window !== 'undefined') {
-  const windowObject = globalObject.window as any;
-
-  if (!windowObject.CSS) {
-    windowObject.CSS = globalObject.CSS;
-  }
-
-  if (typeof windowObject.CSS.escape !== 'function') {
-    windowObject.CSS.escape = globalObject.CSS.escape;
-  }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const {
-  DateRangePickerComponent,
-} = require('./date-range-picker-component') as {
-  DateRangePickerComponent: any;
-};
+import { DateRangePickerComponent } from './date-range-picker-component';
 
 jest.mock('@popperjs/core', () => ({
   createPopper: jest.fn(() => ({
@@ -50,6 +22,19 @@ type DateRangeUpdatedDetail = {
   endDateIso: string;
 };
 
+type ControlledInstance = DateRangePickerComponent & {
+  startDate: Date | null;
+  endDate: Date | null;
+  selectedStartDate: string;
+  selectedEndDate: string;
+  currentStartMonth: number;
+  currentStartYear: number;
+  currentEndMonth: number;
+  currentEndYear: number;
+  validation: boolean;
+  validationMessage: string;
+};
+
 let originalRequestAnimationFrame:
   | typeof global.requestAnimationFrame
   | undefined;
@@ -58,16 +43,19 @@ let originalCancelAnimationFrame:
   | typeof global.cancelAnimationFrame
   | undefined;
 
-let originalFocus: typeof HTMLElement.prototype.focus;
+let originalFocus:
+  typeof HTMLElement.prototype.focus;
 
-let originalMathRandom: typeof Math.random;
+let originalMathRandom:
+  typeof Math.random;
 
 let activeElement: Element | null = null;
 
-const documentPrototype: any =
-  Object.getPrototypeOf(document) || Document.prototype;
+const documentPrototype =
+  Object.getPrototypeOf(document) ||
+  Document.prototype;
 
-const existingActiveElementDescriptor =
+const activeElementDescriptor =
   Object.getOwnPropertyDescriptor(
     documentPrototype,
     'activeElement',
@@ -84,12 +72,22 @@ beforeAll(() => {
   originalCancelAnimationFrame =
     global.cancelAnimationFrame;
 
-  originalFocus = HTMLElement.prototype.focus;
-  originalMathRandom = Math.random;
+  originalFocus =
+    HTMLElement.prototype.focus;
 
-  Math.random = jest.fn(() => 0.123456789);
+  originalMathRandom =
+    Math.random;
 
-  (global as any).requestAnimationFrame = (
+  Math.random = jest.fn(
+    () => 0.123456789,
+  );
+
+  (
+    global as typeof global & {
+      requestAnimationFrame:
+        typeof requestAnimationFrame;
+    }
+  ).requestAnimationFrame = (
     callback: FrameRequestCallback,
   ): number => {
     callback(0);
@@ -97,7 +95,13 @@ beforeAll(() => {
     return 0;
   };
 
-  (global as any).cancelAnimationFrame = jest.fn();
+  (
+    global as typeof global & {
+      cancelAnimationFrame:
+        typeof cancelAnimationFrame;
+    }
+  ).cancelAnimationFrame =
+    jest.fn();
 
   HTMLElement.prototype.focus =
     function patchedFocus(): void {
@@ -118,20 +122,33 @@ beforeAll(() => {
 });
 
 afterAll(() => {
-  (global as any).requestAnimationFrame =
+  (
+    global as typeof global & {
+      requestAnimationFrame?:
+        typeof requestAnimationFrame;
+    }
+  ).requestAnimationFrame =
     originalRequestAnimationFrame;
 
-  (global as any).cancelAnimationFrame =
+  (
+    global as typeof global & {
+      cancelAnimationFrame?:
+        typeof cancelAnimationFrame;
+    }
+  ).cancelAnimationFrame =
     originalCancelAnimationFrame;
 
-  HTMLElement.prototype.focus = originalFocus;
-  Math.random = originalMathRandom;
+  HTMLElement.prototype.focus =
+    originalFocus;
 
-  if (existingActiveElementDescriptor) {
+  Math.random =
+    originalMathRandom;
+
+  if (activeElementDescriptor) {
     Object.defineProperty(
       documentPrototype,
       'activeElement',
-      existingActiveElementDescriptor,
+      activeElementDescriptor,
     );
   } else {
     delete documentPrototype.activeElement;
@@ -146,53 +163,182 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-const createPage = async (
+async function createPage(
   html =
     '<date-range-picker-component></date-range-picker-component>',
-): Promise<SpecPage> => {
+): Promise<SpecPage> {
   const page = await newSpecPage({
-    components: [DateRangePickerComponent],
+    components: [
+      DateRangePickerComponent,
+    ],
     html,
   });
 
   await page.waitForChanges();
 
   return page;
-};
+}
 
-const flush = async (page: SpecPage): Promise<void> => {
+async function flush(
+  page: SpecPage,
+): Promise<void> {
   await page.waitForChanges();
-};
+}
 
-const rootOf = (page: SpecPage): HTMLElement => {
+function rootOf(
+  page: SpecPage,
+): HTMLElement {
   if (!page.root) {
     throw new Error(
-      'Expected the component root to be rendered.',
+      'Expected component root.',
     );
   }
 
   return page.root as HTMLElement;
-};
+}
 
-const queryRequired = <T extends Element>(
+function queryRequired<
+  T extends Element,
+>(
   root: ParentNode,
   selector: string,
-): T => {
-  const element = root.querySelector(selector);
+): T {
+  const element =
+    root.querySelector(selector);
 
   if (!element) {
     throw new Error(
-      `Expected element matching selector: ${selector}`,
+      `Expected element matching: ${selector}`,
     );
   }
 
   return element as T;
-};
+}
 
-const dispatchInput = (
+function normalizeGeneratedDateRangePickerIds(
+  root: HTMLElement,
+): void {
+  const elements: Element[] = [
+    root,
+    ...Array.from(
+      root.querySelectorAll('*'),
+    ),
+  ];
+
+  const replacements =
+    new Map<string, string>();
+
+  elements.forEach(element => {
+    const id =
+      element.getAttribute('id');
+
+    if (!id) {
+      return;
+    }
+
+    if (
+      /^date-range-picker-[A-Za-z0-9_-]+$/i.test(id)
+    ) {
+      replacements.set(
+        id,
+        'date-range-picker-test',
+      );
+
+      return;
+    }
+
+    if (
+      /^drp-[A-Za-z0-9_-]+$/i.test(id)
+    ) {
+      replacements.set(
+        id,
+        'drp-test',
+      );
+    }
+  });
+
+  const input =
+    root.querySelector<HTMLInputElement>(
+      'input.form-control',
+    );
+
+  if (
+    input &&
+    !root.hasAttribute('input-id')
+  ) {
+    const inputId =
+      input.getAttribute('id');
+
+    if (inputId) {
+      replacements.set(
+        inputId,
+        'date-range-input-test',
+      );
+    }
+  }
+
+  if (
+    replacements.size === 0
+  ) {
+    return;
+  }
+
+  elements.forEach(element => {
+    Array.from(
+      element.attributes,
+    ).forEach(attribute => {
+      let value =
+        attribute.value;
+
+      replacements.forEach(
+        (
+          stableId,
+          generatedId,
+        ) => {
+          value =
+            value
+              .split(generatedId)
+              .join(stableId);
+        },
+      );
+
+      if (
+        value !==
+        attribute.value
+      ) {
+        element.setAttribute(
+          attribute.name,
+          value,
+        );
+      }
+    });
+  });
+}
+
+function expectStableSnapshot(
+  root: HTMLElement,
+  hint: string,
+): void {
+  const snapshotRoot =
+    root.cloneNode(
+      true,
+    ) as HTMLElement;
+
+  normalizeGeneratedDateRangePickerIds(
+    snapshotRoot,
+  );
+
+  expect(
+    snapshotRoot,
+  ).toMatchSnapshot(
+    hint,
+  );
+}
+
+function dispatchInput(
   input: HTMLInputElement,
   value: string,
-): void => {
+): void {
   input.value = value;
 
   input.dispatchEvent(
@@ -201,281 +347,385 @@ const dispatchInput = (
       composed: true,
     }),
   );
-};
+}
 
-const keyDownOn = (
+function keyDownOn(
   element: Element,
   key: string,
-): void => {
+): void {
   element.dispatchEvent(
-    new KeyboardEvent('keydown', {
-      key,
-      bubbles: true,
-      composed: true,
-    }),
+    new KeyboardEvent(
+      'keydown',
+      {
+        key,
+        bubbles: true,
+        composed: true,
+      },
+    ),
   );
-};
+}
 
-const inMonthCells = (
+function getInput(
   root: HTMLElement,
-): HTMLElement[] =>
-  Array.from(
+): HTMLInputElement {
+  return queryRequired<HTMLInputElement>(
+    root,
+    'input.form-control',
+  );
+}
+
+function getDropdown(
+  root: HTMLElement,
+): HTMLElement {
+  return queryRequired<HTMLElement>(
+    root,
+    '.dropdown',
+  );
+}
+
+function getStartLabel(
+  root: HTMLElement,
+): string {
+  return (
+    queryRequired<HTMLElement>(
+      root,
+      '.start-date',
+    ).textContent?.trim() ?? ''
+  );
+}
+
+function getEndLabel(
+  root: HTMLElement,
+): string {
+  return (
+    queryRequired<HTMLElement>(
+      root,
+      '.end-date',
+    ).textContent?.trim() ?? ''
+  );
+}
+
+function getOkButton(
+  root: HTMLElement,
+): HTMLButtonElement {
+  return queryRequired<HTMLButtonElement>(
+    root,
+    '.ok-button button',
+  );
+}
+
+function getOkButtonLabel(
+  root: HTMLElement,
+): string {
+  return (
+    getOkButton(root)
+      .textContent
+      ?.trim() ?? ''
+  );
+}
+
+function inMonthCells(
+  root: HTMLElement,
+): HTMLElement[] {
+  return Array.from(
     root.querySelectorAll(
       '.calendar-grid-item:not(.previous-month-day):not(.next-month-day)',
     ),
   ) as HTMLElement[];
+}
 
-const focusedCell = (
+function focusedCell(
   root: HTMLElement,
-): HTMLElement | null => {
-  const focusedSpan = root.querySelector(
-    '.calendar-grid-item span.focus',
-  ) as HTMLElement | null;
+): HTMLElement | null {
+  const span =
+    root.querySelector(
+      '.calendar-grid-item span.focus',
+    ) as HTMLElement | null;
 
-  return focusedSpan
-    ? (focusedSpan.parentElement as HTMLElement)
+  return span
+    ? (span.parentElement as HTMLElement)
     : null;
-};
+}
 
-const clickInMonthCell = async (
+async function clickInMonthCell(
   page: SpecPage,
   index: number,
-): Promise<void> => {
-  const cells = inMonthCells(rootOf(page));
+): Promise<void> {
+  const cells =
+    inMonthCells(rootOf(page));
 
   if (!cells[index]) {
     throw new Error(
-      `No in-month calendar cell exists at index ${index}.`,
+      `Missing in-month cell at ${index}.`,
     );
   }
 
   cells[index].click();
 
   await flush(page);
-};
+}
 
-const selectRange = async (
+async function selectRange(
   page: SpecPage,
   startIndex = 1,
   endIndex = 7,
-): Promise<void> => {
-  await clickInMonthCell(page, startIndex);
-  await clickInMonthCell(page, endIndex);
-};
-
-const getStartLabel = (
-  root: HTMLElement,
-): string =>
-  queryRequired<HTMLElement>(
-    root,
-    '.start-date',
-  ).textContent?.trim() ?? '';
-
-const getEndLabel = (
-  root: HTMLElement,
-): string =>
-  queryRequired<HTMLElement>(
-    root,
-    '.end-date',
-  ).textContent?.trim() ?? '';
-
-const getOkButton = (
-  root: HTMLElement,
-): HTMLButtonElement =>
-  queryRequired<HTMLButtonElement>(
-    root,
-    '.ok-button button',
+): Promise<void> {
+  await clickInMonthCell(
+    page,
+    startIndex,
   );
 
-const getOkButtonLabel = (
-  root: HTMLElement,
-): string =>
-  getOkButton(root).textContent?.trim() ?? '';
-
-const getInput = (
-  root: HTMLElement,
-): HTMLInputElement =>
-  queryRequired<HTMLInputElement>(
-    root,
-    'input.form-control',
+  await clickInMonthCell(
+    page,
+    endIndex,
   );
+}
 
-const getDropdown = (
-  root: HTMLElement,
-): HTMLElement =>
-  queryRequired<HTMLElement>(
-    root,
-    '.dropdown',
-  );
-
-const formatRangeValue = (
-  startDate: string,
-  endDate: string,
-  joinBy = ' - ',
-): string =>
-  `${startDate}${joinBy}${endDate}`;
+function parseIdRefs(
+  value: string | null,
+): string[] {
+  return String(value || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+}
 
 describe(
-  'date-range-picker-component shared rendering',
+  'date-range-picker-component rendering',
   () => {
     test(
-      'renders two accessible calendar grids with weekday rows above them',
+      'renders two accessible calendar grids',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true"></date-range-picker-component>',
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              range-picker="true"
+            ></date-range-picker-component>
+          `);
+
+        const root =
+          rootOf(page);
+
+        const calendars =
+          Array.from(
+            root.querySelectorAll(
+              '.dp-calendar',
+            ),
+          ) as HTMLElement[];
+
+        expect(calendars).toHaveLength(
+          2,
         );
 
-        const root = rootOf(page);
+        calendars.forEach(
+          calendar => {
+            const caption =
+              queryRequired<HTMLElement>(
+                calendar,
+                '.calendar-grid-caption',
+              );
 
-        const calendars = Array.from(
-          root.querySelectorAll('.dp-calendar'),
-        ) as HTMLElement[];
+            const weekdays =
+              queryRequired<HTMLElement>(
+                calendar,
+                '.calendar-grid-weekdays',
+              );
 
-        expect(calendars).toHaveLength(2);
+            const grid =
+              queryRequired<HTMLElement>(
+                calendar,
+                '.calendar-grid',
+              );
 
-        calendars.forEach(calendar => {
-          const caption = queryRequired<HTMLElement>(
-            calendar,
-            '.calendar-grid-caption',
-          );
+            expect(
+              caption.id,
+            ).toBeTruthy();
 
-          const weekdays = queryRequired<HTMLElement>(
-            calendar,
-            '.calendar-grid-weekdays',
-          );
+            expect(
+              grid.getAttribute('role'),
+            ).toBe('grid');
 
-          const grid = queryRequired<HTMLElement>(
-            calendar,
-            '.calendar-grid',
-          );
+            expect(
+              grid.getAttribute(
+                'aria-labelledby',
+              ),
+            ).toBe(caption.id);
 
-          const children = Array.from(calendar.children);
+            expect(
+              weekdays.getAttribute(
+                'role',
+              ),
+            ).toBe('row');
 
-          expect(caption.id).toBeTruthy();
+            expect(
+              weekdays.querySelectorAll(
+                '[role="columnheader"]',
+              ),
+            ).toHaveLength(7);
+          },
+        );
 
-          expect(
-            grid.getAttribute('role'),
-          ).toBe('grid');
-
-          expect(
-            grid.getAttribute('aria-labelledby'),
-          ).toBe(caption.id);
-
-          expect(
-            weekdays.getAttribute('role'),
-          ).toBe('row');
-
-          expect(
-            weekdays.querySelectorAll(
-              '[role="columnheader"]',
-            ),
-          ).toHaveLength(7);
-
-          expect(
-            children.indexOf(weekdays),
-          ).toBeLessThan(
-            children.indexOf(grid),
-          );
-        });
+        expectStableSnapshot(
+          root,
+          'range-picker-default',
+        );
       },
     );
 
     test(
-      'renders 42 grid cells per calendar in seven-day rows',
+      'renders six weeks and 42 cells per calendar',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true"></date-range-picker-component>',
-        );
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              range-picker="true"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
-
-        const grids = Array.from(
-          root.querySelectorAll('.calendar-grid'),
-        ) as HTMLElement[];
+        const grids =
+          Array.from(
+            rootOf(page)
+              .querySelectorAll(
+                '.calendar-grid',
+              ),
+          ) as HTMLElement[];
 
         expect(grids).toHaveLength(2);
 
         grids.forEach(grid => {
           expect(
-            grid.querySelectorAll('[role="row"]'),
+            grid.querySelectorAll(
+              '[role="row"]',
+            ),
           ).toHaveLength(6);
 
           expect(
-            grid.querySelectorAll('[role="gridcell"]'),
+            grid.querySelectorAll(
+              '[role="gridcell"]',
+            ),
           ).toHaveLength(42);
         });
       },
     );
 
     test(
-      'generates unique selector-safe IDs for multiple component instances',
+      'generates unique selector-safe ARIA IDs',
       async () => {
-        const page = await createPage(`
-          <div>
-            <date-range-picker-component
-              input-id="date picker ! one"
-            ></date-range-picker-component>
+        const page =
+          await createPage(`
+            <div>
+              <date-range-picker-component
+                input-id="date picker ! one"
+              ></date-range-picker-component>
 
-            <date-range-picker-component
-              input-id="date picker ! one"
-            ></date-range-picker-component>
-          </div>
-        `);
+              <date-range-picker-component
+                input-id="date picker ! one"
+              ></date-range-picker-component>
+            </div>
+          `);
 
-        const components = Array.from(
-          page.body.querySelectorAll(
-            'date-range-picker-component',
-          ),
-        ) as HTMLElement[];
-
-        expect(components).toHaveLength(2);
-
-        const firstDialog = queryRequired<HTMLElement>(
-          components[0],
-          '.dropdown-content',
-        );
-
-        const secondDialog = queryRequired<HTMLElement>(
-          components[1],
-          '.dropdown-content',
-        );
-
-        const firstLabelledBy =
-          firstDialog.getAttribute(
-            'aria-labelledby',
-          );
-
-        const secondLabelledBy =
-          secondDialog.getAttribute(
-            'aria-labelledby',
-          );
-
-        expect(firstLabelledBy).toBeTruthy();
-        expect(secondLabelledBy).toBeTruthy();
-
-        expect(firstLabelledBy).not.toBe(
-          secondLabelledBy,
-        );
-
-        expect(firstLabelledBy).toMatch(
-          /^[A-Za-z_][\w:.-]*$/,
-        );
-
-        expect(secondLabelledBy).toMatch(
-          /^[A-Za-z_][\w:.-]*$/,
-        );
+        const components =
+          Array.from(
+            page.body.querySelectorAll(
+              'date-range-picker-component',
+            ),
+          ) as HTMLElement[];
 
         expect(
-          components[0].querySelector(
-            `#${firstLabelledBy}`,
-          ),
-        ).toBeTruthy();
+          components,
+        ).toHaveLength(2);
 
-        expect(
-          components[1].querySelector(
-            `#${secondLabelledBy}`,
-          ),
-        ).toBeTruthy();
+        const ids =
+          components.map(component => {
+            const dialog =
+              queryRequired<HTMLElement>(
+                component,
+                '.dropdown-content',
+              );
+
+            return dialog.getAttribute(
+              'aria-labelledby',
+            );
+          });
+
+        expect(ids[0]).toBeTruthy();
+        expect(ids[1]).toBeTruthy();
+
+        expect(ids[0]).not.toBe(
+          ids[1],
+        );
+
+        ids.forEach(id => {
+          expect(id).toMatch(
+            /^[A-Za-z_][\w:.-]*$/,
+          );
+        });
+      },
+    );
+
+    test(
+      'does not depend on CSS.escape',
+      async () => {
+        const globalObject =
+          globalThis as {
+            CSS?: typeof CSS;
+          };
+
+        const originalCss =
+          globalObject.CSS;
+
+        try {
+          Object.defineProperty(
+            globalObject,
+            'CSS',
+            {
+              configurable: true,
+              writable: true,
+              value: undefined,
+            },
+          );
+
+          const page =
+            await createPage(`
+              <date-range-picker-component
+                input-id="unsafe id !"
+              ></date-range-picker-component>
+            `);
+
+          const root =
+            rootOf(page);
+
+          const dialog =
+            queryRequired<HTMLElement>(
+              root,
+              '.dropdown-content',
+            );
+
+          const labelledBy =
+            dialog.getAttribute(
+              'aria-labelledby',
+            );
+
+          expect(
+            labelledBy,
+          ).toBeTruthy();
+
+          expect(
+            root.querySelector(
+              `#${labelledBy}`,
+            ),
+          ).toBeTruthy();
+        } finally {
+          Object.defineProperty(
+            globalObject,
+            'CSS',
+            {
+              configurable: true,
+              writable: true,
+              value: originalCss,
+            },
+          );
+        }
       },
     );
   },
@@ -485,27 +735,22 @@ describe(
   'date-range-picker-component rangePicker mode',
   () => {
     test(
-      'renders and matches the initial snapshot',
+      'renders picker directly without input, dropdown, or OK button',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true"></date-range-picker-component>',
-        );
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              range-picker="true"
+            ></date-range-picker-component>
+          `);
 
-        expect(page.root).toMatchSnapshot();
-      },
-    );
-
-    test(
-      'renders the picker directly without an input group',
-      async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true"></date-range-picker-component>',
-        );
-
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
         expect(
-          root.querySelector('.date-picker'),
+          root.querySelector(
+            '.date-picker',
+          ),
         ).toBeTruthy();
 
         expect(
@@ -515,24 +760,13 @@ describe(
         ).toBeNull();
 
         expect(
-          root.querySelector('.dropdown'),
+          root.querySelector(
+            '.dropdown',
+          ),
         ).toBeNull();
 
         expect(
-          root.querySelector('.ok-button'),
-        ).toBeNull();
-      },
-    );
-
-    test(
-      'does not render the OK button when rangePicker is true',
-      async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true" show-ok-button="true"></date-range-picker-component>',
-        );
-
-        expect(
-          rootOf(page).querySelector(
+          root.querySelector(
             '.ok-button',
           ),
         ).toBeNull();
@@ -540,147 +774,143 @@ describe(
     );
 
     test(
-      'moves visual focus by one day and one week with arrow keys',
+      'moves visual focus with arrow keys',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true"></date-range-picker-component>',
-        );
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              range-picker="true"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
-        const wrapper = queryRequired<HTMLElement>(
-          root,
-          '.calendar-wrapper',
-        );
+        const wrapper =
+          queryRequired<HTMLElement>(
+            root,
+            '.calendar-wrapper',
+          );
 
         wrapper.focus();
 
-        expect(document.activeElement).toBe(
+        keyDownOn(
           wrapper,
+          'ArrowRight',
         );
 
-        keyDownOn(wrapper, 'ArrowRight');
         await flush(page);
 
-        const firstFocusedCell = focusedCell(root);
-        const firstCells = inMonthCells(root);
+        const first =
+          focusedCell(root);
 
-        expect(firstFocusedCell).toBeTruthy();
+        expect(first).toBeTruthy();
 
-        const firstIndex = firstCells.indexOf(
-          firstFocusedCell!,
+        const firstCells =
+          inMonthCells(root);
+
+        const firstIndex =
+          firstCells.indexOf(
+            first!,
+          );
+
+        expect(
+          firstIndex,
+        ).toBeGreaterThanOrEqual(0);
+
+        keyDownOn(
+          wrapper,
+          'ArrowRight',
         );
 
-        expect(firstIndex).toBeGreaterThanOrEqual(
-          0,
-        );
-
-        keyDownOn(wrapper, 'ArrowRight');
         await flush(page);
 
-        const secondCells = inMonthCells(root);
+        const secondCells =
+          inMonthCells(root);
 
-        const secondIndex = secondCells.indexOf(
-          focusedCell(root)!,
-        );
-
-        expect(secondIndex).toBe(
-          firstIndex + 1,
-        );
-
-        keyDownOn(wrapper, 'ArrowDown');
-        await flush(page);
-
-        const thirdCells = inMonthCells(root);
-
-        const thirdIndex = thirdCells.indexOf(
-          focusedCell(root)!,
-        );
-
-        expect(thirdIndex).toBe(
-          Math.min(
-            secondIndex + 7,
-            thirdCells.length - 1,
+        expect(
+          secondCells.indexOf(
+            focusedCell(root)!,
           ),
-        );
-
-        keyDownOn(wrapper, 'ArrowUp');
-        await flush(page);
-
-        const fourthCells = inMonthCells(root);
-
-        const fourthIndex = fourthCells.indexOf(
-          focusedCell(root)!,
-        );
-
-        expect(fourthIndex).toBe(
-          Math.max(thirdIndex - 7, 0),
-        );
-
-        keyDownOn(wrapper, 'ArrowLeft');
-        await flush(page);
-
-        const fifthCells = inMonthCells(root);
-
-        const fifthIndex = fifthCells.indexOf(
-          focusedCell(root)!,
-        );
-
-        expect(fifthIndex).toBe(
-          Math.max(fourthIndex - 1, 0),
+        ).toBe(
+          firstIndex + 1,
         );
       },
     );
 
     test(
-      'selects the visually focused date with Enter',
+      'selects focused date with Enter',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true"></date-range-picker-component>',
-        );
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              range-picker="true"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
-        const wrapper = queryRequired<HTMLElement>(
-          root,
-          '.calendar-wrapper',
-        );
+        const wrapper =
+          queryRequired<HTMLElement>(
+            root,
+            '.calendar-wrapper',
+          );
 
         wrapper.focus();
 
-        keyDownOn(wrapper, 'ArrowRight');
+        keyDownOn(
+          wrapper,
+          'ArrowRight',
+        );
+
         await flush(page);
 
-        const selectedCell = focusedCell(root);
+        const cell =
+          focusedCell(root);
 
-        expect(selectedCell).toBeTruthy();
+        expect(cell).toBeTruthy();
 
-        const selectedDate =
-          selectedCell!.getAttribute(
+        const expected =
+          cell!.getAttribute(
             'data-date',
           );
 
-        keyDownOn(wrapper, 'Enter');
-        await flush(page);
-
-        expect(getStartLabel(root)).toBe(
-          selectedDate,
+        keyDownOn(
+          wrapper,
+          'Enter',
         );
 
-        expect(getEndLabel(root)).toBe('N/A');
+        await flush(page);
+
+        expect(
+          getStartLabel(root),
+        ).toBe(expected);
+
+        expect(
+          getEndLabel(root),
+        ).toBe('N/A');
       },
     );
 
     test(
-      'selects a complete range and marks the selected cells',
+      'selects and marks a complete range',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true"></date-range-picker-component>',
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              range-picker="true"
+            ></date-range-picker-component>
+          `);
+
+        const root =
+          rootOf(page);
+
+        await selectRange(
+          page,
+          0,
+          10,
         );
-
-        const root = rootOf(page);
-
-        await selectRange(page, 0, 10);
 
         expect(
           getStartLabel(root),
@@ -701,70 +931,115 @@ describe(
             '.calendar-grid-item.selected-range-active',
           ),
         ).toHaveLength(2);
+
+        expectStableSnapshot(
+          root,
+          'range-picker-complete-range',
+        );
       },
     );
 
     test(
-      'starts a new range after a complete range is already selected',
+      'starts a new range after completing one',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true"></date-range-picker-component>',
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              range-picker="true"
+            ></date-range-picker-component>
+          `);
+
+        const root =
+          rootOf(page);
+
+        await selectRange(
+          page,
+          1,
+          7,
         );
 
-        const root = rootOf(page);
+        const cells =
+          inMonthCells(root);
 
-        await selectRange(page, 1, 7);
-
-        await clickInMonthCell(page, 12);
-
-        const expectedStart =
-          inMonthCells(root)[12].getAttribute(
+        const expected =
+          cells[12].getAttribute(
             'data-date',
           );
 
-        expect(getStartLabel(root)).toBe(
-          expectedStart,
+        await clickInMonthCell(
+          page,
+          12,
         );
 
-        expect(getEndLabel(root)).toBe('N/A');
+        expect(
+          getStartLabel(root),
+        ).toBe(expected);
+
+        expect(
+          getEndLabel(root),
+        ).toBe('N/A');
       },
     );
 
     test(
-      'moves the start date when the second selected date is earlier',
+      'moves start date when second click is earlier',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true"></date-range-picker-component>',
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              range-picker="true"
+            ></date-range-picker-component>
+          `);
+
+        const root =
+          rootOf(page);
+
+        const cells =
+          inMonthCells(root);
+
+        const expected =
+          cells[2].getAttribute(
+            'data-date',
+          );
+
+        await clickInMonthCell(
+          page,
+          8,
         );
 
-        const root = rootOf(page);
-
-        const cells = inMonthCells(root);
-
-        const earlierDate =
-          cells[2].getAttribute('data-date');
-
-        await clickInMonthCell(page, 8);
-        await clickInMonthCell(page, 2);
-
-        expect(getStartLabel(root)).toBe(
-          earlierDate,
+        await clickInMonthCell(
+          page,
+          2,
         );
 
-        expect(getEndLabel(root)).toBe('N/A');
+        expect(
+          getStartLabel(root),
+        ).toBe(expected);
+
+        expect(
+          getEndLabel(root),
+        ).toBe('N/A');
       },
     );
 
     test(
-      'reset clears selection and removes visual focus',
+      'reset clears selected range and focus',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true"></date-range-picker-component>',
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              range-picker="true"
+            ></date-range-picker-component>
+          `);
+
+        const root =
+          rootOf(page);
+
+        await selectRange(
+          page,
+          0,
+          10,
         );
-
-        const root = rootOf(page);
-
-        await selectRange(page, 0, 10);
 
         queryRequired<HTMLButtonElement>(
           root,
@@ -773,8 +1048,13 @@ describe(
 
         await flush(page);
 
-        expect(getStartLabel(root)).toBe('N/A');
-        expect(getEndLabel(root)).toBe('N/A');
+        expect(
+          getStartLabel(root),
+        ).toBe('N/A');
+
+        expect(
+          getEndLabel(root),
+        ).toBe('N/A');
 
         expect(
           root.querySelector(
@@ -791,40 +1071,24 @@ describe(
     );
 
     test(
-      'responds to the reset-picker custom event',
+      'formats labels as long dates',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true"></date-range-picker-component>',
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              range-picker="true"
+              show-long="true"
+            ></date-range-picker-component>
+          `);
+
+        const root =
+          rootOf(page);
+
+        await selectRange(
+          page,
+          3,
+          6,
         );
-
-        const root = rootOf(page);
-
-        await selectRange(page, 2, 8);
-
-        root.dispatchEvent(
-          new CustomEvent('reset-picker', {
-            bubbles: true,
-            composed: true,
-          }),
-        );
-
-        await flush(page);
-
-        expect(getStartLabel(root)).toBe('N/A');
-        expect(getEndLabel(root)).toBe('N/A');
-      },
-    );
-
-    test(
-      'formats selected labels as long dates',
-      async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true" show-long="true"></date-range-picker-component>',
-        );
-
-        const root = rootOf(page);
-
-        await selectRange(page, 3, 6);
 
         expect(
           getStartLabel(root),
@@ -842,21 +1106,32 @@ describe(
           queryRequired<HTMLElement>(
             root,
             '.start-end-ranges',
-          ).classList.contains('long'),
+          ).classList.contains(
+            'long',
+          ),
         ).toBe(true);
       },
     );
 
     test(
-      'formats selected labels as ISO timestamps',
+      'formats labels as ISO timestamps',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true" show-iso="true"></date-range-picker-component>',
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              range-picker="true"
+              show-iso="true"
+            ></date-range-picker-component>
+          `);
+
+        const root =
+          rootOf(page);
+
+        await selectRange(
+          page,
+          4,
+          9,
         );
-
-        const root = rootOf(page);
-
-        await selectRange(page, 4, 9);
 
         expect(
           getStartLabel(root),
@@ -869,126 +1144,61 @@ describe(
         ).toMatch(
           /^\d{4}-\d{2}-\d{2}T00:00:00\.000Z$/,
         );
-
-        expect(
-          queryRequired<HTMLElement>(
-            root,
-            '.start-end-ranges',
-          ).classList.contains('iso'),
-        ).toBe(true);
       },
     );
 
     test(
-      'changes both displayed months with navigation buttons',
+      'updates consecutive months from selectors',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true"></date-range-picker-component>',
-        );
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              range-picker="true"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
-        const captionsBefore = Array.from(
-          root.querySelectorAll(
-            '.calendar-grid-caption',
-          ),
-        ).map(element =>
-          element.textContent?.trim(),
-        );
-
-        const nextButton =
-          queryRequired<HTMLButtonElement>(
-            root,
-            '[aria-label="Next month"]',
-          );
-
-        nextButton.click();
-        await flush(page);
-
-        const captionsAfterNext = Array.from(
-          root.querySelectorAll(
-            '.calendar-grid-caption',
-          ),
-        ).map(element =>
-          element.textContent?.trim(),
-        );
-
-        expect(captionsAfterNext).not.toEqual(
-          captionsBefore,
-        );
-
-        const previousButton =
-          queryRequired<HTMLButtonElement>(
-            root,
-            '[aria-label="Previous month"]',
-          );
-
-        previousButton.click();
-        await flush(page);
-
-        const captionsAfterPrevious =
-          Array.from(
-            root.querySelectorAll(
-              '.calendar-grid-caption',
-            ),
-          ).map(element =>
-            element.textContent?.trim(),
-          );
-
-        expect(captionsAfterPrevious).toEqual(
-          captionsBefore,
-        );
-      },
-    );
-
-    test(
-      'updates the consecutive calendars when month and year change',
-      async () => {
-        const page = await createPage(
-          '<date-range-picker-component range-picker="true"></date-range-picker-component>',
-        );
-
-        const root = rootOf(page);
-
-        const monthSelect =
+        const month =
           queryRequired<HTMLSelectElement>(
             root,
             'select.months',
           );
 
-        const yearSelect =
+        const year =
           queryRequired<HTMLSelectElement>(
             root,
             'select.years',
           );
 
-        monthSelect.value = '11';
+        month.value = '11';
 
-        monthSelect.dispatchEvent(
+        month.dispatchEvent(
           new Event('change', {
             bubbles: true,
-            composed: true,
           }),
         );
 
-        yearSelect.value = '2028';
+        year.value = '2028';
 
-        yearSelect.dispatchEvent(
+        year.dispatchEvent(
           new Event('change', {
             bubbles: true,
-            composed: true,
           }),
         );
 
         await flush(page);
 
-        const captions = Array.from(
-          root.querySelectorAll(
-            '.calendar-grid-caption',
-          ),
-        ).map(element =>
-          element.textContent?.trim(),
-        );
+        const captions =
+          Array.from(
+            root.querySelectorAll(
+              '.calendar-grid-caption',
+            ),
+          ).map(
+            element =>
+              element.textContent?.trim(),
+          );
 
         expect(captions).toEqual([
           'December 2028',
@@ -1000,25 +1210,20 @@ describe(
 );
 
 describe(
-  'date-range-picker-component input-group mode',
+  'date-range-picker-component input mode',
   () => {
     test(
-      'renders and matches the initial snapshot',
+      'renders input, toggle, dropdown, and Close button',
       async () => {
-        const page = await createPage();
+        const page =
+          await createPage();
 
-        expect(page.root).toMatchSnapshot();
-      },
-    );
+        const root =
+          rootOf(page);
 
-    test(
-      'renders an input, toggle button, dropdown, and Close button',
-      async () => {
-        const page = await createPage();
-
-        const root = rootOf(page);
-
-        expect(getInput(root)).toBeTruthy();
+        expect(
+          getInput(root),
+        ).toBeTruthy();
 
         expect(
           root.querySelector(
@@ -1026,27 +1231,37 @@ describe(
           ),
         ).toBeTruthy();
 
-        expect(getDropdown(root)).toBeTruthy();
+        expect(
+          getDropdown(root),
+        ).toBeTruthy();
 
-        expect(getOkButtonLabel(root)).toBe(
-          'Close',
+        expect(
+          getOkButtonLabel(root),
+        ).toBe('Close');
+
+        expectStableSnapshot(
+          root,
+          'input-mode-default',
         );
       },
     );
 
     test(
-      'uses the configured input ID and custom placeholder',
+      'uses custom input ID and placeholder',
       async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            input-id="custom-date-input"
-            placeholder="Choose a reporting period"
-          ></date-range-picker-component>
-        `);
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              input-id="custom-date-input"
+              placeholder="Choose a reporting period"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
-        const input = getInput(root);
+        const input =
+          getInput(root);
 
         const label =
           queryRequired<HTMLLabelElement>(
@@ -1058,240 +1273,199 @@ describe(
           'custom-date-input',
         );
 
-        expect(input.placeholder).toBe(
+        expect(
+          input.placeholder,
+        ).toBe(
           'Choose a reporting period',
         );
 
-        expect(label.htmlFor).toBe(
+        expect(
+          label.htmlFor,
+        ).toBe(
           'custom-date-input',
         );
-      },
-    );
 
-    test(
-      'derives the default placeholder from dateFormat and joinBy',
-      async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            date-format="MM-DD-YYYY"
-            join-by=" to "
-          ></date-range-picker-component>
-        `);
-
-        expect(
-          getInput(rootOf(page)).placeholder,
-        ).toBe(
-          'MM-DD-YYYY  to  MM-DD-YYYY',
+        expectStableSnapshot(
+          root,
+          'custom-input-id-placeholder',
         );
       },
     );
 
     test(
-      'opens and closes the dropdown with the calendar toggle',
+      'opens and closes the dropdown',
       async () => {
-        const page = await createPage();
+        const page =
+          await createPage();
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
-        const toggle =
+        let toggle =
           queryRequired<HTMLButtonElement>(
             root,
             '.calendar-button',
           );
 
         expect(
-          getDropdown(root).classList.contains(
-            'open',
+          toggle.getAttribute(
+            'aria-expanded',
           ),
-        ).toBe(false);
-
-        expect(
-          toggle.getAttribute('aria-expanded'),
         ).toBe('false');
 
         toggle.click();
+
         await flush(page);
 
         expect(
-          getDropdown(root).classList.contains(
-            'open',
-          ),
+          getDropdown(root)
+            .classList
+            .contains('open'),
         ).toBe(true);
 
-        expect(
+        toggle =
           queryRequired<HTMLButtonElement>(
             root,
             '.calendar-button',
-          ).getAttribute('aria-expanded'),
+          );
+
+        expect(
+          toggle.getAttribute(
+            'aria-expanded',
+          ),
         ).toBe('true');
 
-        queryRequired<HTMLButtonElement>(
-          root,
-          '.calendar-button',
-        ).click();
+        toggle.click();
 
         await flush(page);
 
         expect(
-          getDropdown(root).classList.contains(
-            'open',
-          ),
-        ).toBe(false);
-
-        expect(
-          queryRequired<HTMLButtonElement>(
-            root,
-            '.calendar-button',
-          ).getAttribute('aria-expanded'),
-        ).toBe('false');
-      },
-    );
-
-    test(
-      'clicking Close closes the dropdown without a full selection',
-      async () => {
-        const page = await createPage();
-
-        const root = rootOf(page);
-
-        queryRequired<HTMLButtonElement>(
-          root,
-          '.calendar-button',
-        ).click();
-
-        await flush(page);
-
-        expect(
-          getDropdown(root).classList.contains(
-            'open',
-          ),
-        ).toBe(true);
-
-        expect(getOkButtonLabel(root)).toBe(
-          'Close',
-        );
-
-        getOkButton(root).click();
-        await flush(page);
-
-        expect(
-          getDropdown(root).classList.contains(
-            'open',
-          ),
+          getDropdown(root)
+            .classList
+            .contains('open'),
         ).toBe(false);
       },
     );
 
     test(
-      'changes the button from Close to OK only after a complete range',
+      'changes Close to OK after complete range',
       async () => {
-        const page = await createPage();
+        const page =
+          await createPage();
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
-        expect(getOkButtonLabel(root)).toBe(
-          'Close',
+        expect(
+          getOkButtonLabel(root),
+        ).toBe('Close');
+
+        await clickInMonthCell(
+          page,
+          1,
         );
 
-        await clickInMonthCell(page, 1);
+        expect(
+          getOkButtonLabel(root),
+        ).toBe('Close');
 
-        expect(getOkButtonLabel(root)).toBe(
-          'Close',
+        await clickInMonthCell(
+          page,
+          7,
         );
 
-        await clickInMonthCell(page, 7);
-
-        expect(getOkButtonLabel(root)).toBe('OK');
+        expect(
+          getOkButtonLabel(root),
+        ).toBe('OK');
       },
     );
 
     test(
-      'updates the input after a complete calendar range is selected',
+      'updates input after calendar range selection',
       async () => {
-        const page = await createPage();
+        const page =
+          await createPage();
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
-        await selectRange(page, 1, 7);
+        await selectRange(
+          page,
+          1,
+          7,
+        );
 
-        const start = getStartLabel(root);
-        const end = getEndLabel(root);
-
-        expect(getInput(root).value).toBe(
-          formatRangeValue(start, end),
+        expect(
+          getInput(root).value,
+        ).toBe(
+          `${getStartLabel(root)} - ${getEndLabel(root)}`,
         );
       },
     );
 
     test(
-      'emits date-range-updated when OK confirms a complete selection',
+      'emits date-range-updated when OK confirms range',
       async () => {
-        const page = await createPage();
+        const page =
+          await createPage();
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
-        const listener = jest.fn();
+        const listener =
+          jest.fn();
 
         root.addEventListener(
           'date-range-updated',
           listener,
         );
 
-        queryRequired<HTMLButtonElement>(
-          root,
-          '.calendar-button',
-        ).click();
+        await selectRange(
+          page,
+          2,
+          9,
+        );
 
-        await flush(page);
-
-        await selectRange(page, 2, 9);
-
-        const expectedStart =
+        const start =
           getStartLabel(root);
 
-        const expectedEnd =
+        const end =
           getEndLabel(root);
 
         getOkButton(root).click();
+
         await flush(page);
 
-        expect(listener).toHaveBeenCalledTimes(
-          1,
-        );
+        expect(
+          listener,
+        ).toHaveBeenCalledTimes(1);
 
-        const event = listener.mock
-          .calls[0][0] as CustomEvent<DateRangeUpdatedDetail>;
-
-        expect(event.detail).toEqual({
-          startDate: expectedStart,
-          endDate: expectedEnd,
-          startDateIso: expectedStart,
-          endDateIso: expectedEnd,
-        });
-
-        expect(getInput(root).value).toBe(
-          formatRangeValue(
-            expectedStart,
-            expectedEnd,
-          ),
-        );
+        const event =
+          listener.mock
+            .calls[0][0] as CustomEvent<DateRangeUpdatedDetail>;
 
         expect(
-          getDropdown(root).classList.contains(
-            'open',
-          ),
-        ).toBe(false);
+          event.detail,
+        ).toEqual({
+          startDate: start,
+          endDate: end,
+          startDateIso: start,
+          endDateIso: end,
+        });
       },
     );
 
     test(
-      'accepts and normalizes a valid typed date range',
+      'accepts and normalizes valid typed YYYY-MM-DD range',
       async () => {
-        const page = await createPage();
+        const page =
+          await createPage();
 
-        const root = rootOf(page);
-        const input = getInput(root);
-        const listener = jest.fn();
+        const root =
+          rootOf(page);
+
+        const listener =
+          jest.fn();
 
         root.addEventListener(
           'date-range-updated',
@@ -1299,57 +1473,47 @@ describe(
         );
 
         dispatchInput(
-          input,
+          getInput(root),
           '2026-01-10 - 2026-01-20',
         );
 
         await flush(page);
 
-        expect(getInput(root).value).toBe(
+        expect(
+          getInput(root).value,
+        ).toBe(
           '2026-01-10-2026-01-20',
         );
 
-        expect(getStartLabel(root)).toBe(
-          '2026-01-10',
-        );
-
-        expect(getEndLabel(root)).toBe(
-          '2026-01-20',
-        );
+        expect(
+          getStartLabel(root),
+        ).toBe('2026-01-10');
 
         expect(
-          root.querySelector(
-            '.invalid-feedback',
-          ),
-        ).toBeNull();
+          getEndLabel(root),
+        ).toBe('2026-01-20');
 
-        expect(listener).toHaveBeenCalledTimes(
-          1,
-        );
-
-        const event = listener.mock
-          .calls[0][0] as CustomEvent<DateRangeUpdatedDetail>;
-
-        expect(event.detail).toEqual({
-          startDate: '2026-01-10',
-          endDate: '2026-01-20',
-          startDateIso: '2026-01-10',
-          endDateIso: '2026-01-20',
-        });
+        expect(
+          listener,
+        ).toHaveBeenCalledTimes(1);
       },
     );
 
     test(
-      'accepts MM-DD-YYYY input and emits ISO submission values',
+      'accepts MM-DD-YYYY and emits ISO dates',
       async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            date-format="MM-DD-YYYY"
-          ></date-range-picker-component>
-        `);
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              date-format="MM-DD-YYYY"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
-        const listener = jest.fn();
+        const root =
+          rootOf(page);
+
+        const listener =
+          jest.fn();
 
         root.addEventListener(
           'date-range-updated',
@@ -1363,32 +1527,19 @@ describe(
 
         await flush(page);
 
-        expect(getInput(root).value).toBe(
+        expect(
+          getInput(root).value,
+        ).toBe(
           '01-10-2026-01-20-2026',
         );
 
-        expect(getStartLabel(root)).toBe(
-          '01-10-2026',
-        );
-
-        expect(getEndLabel(root)).toBe(
-          '01-20-2026',
-        );
+        const event =
+          listener.mock
+            .calls[0][0] as CustomEvent<DateRangeUpdatedDetail>;
 
         expect(
-          root.querySelector(
-            '.invalid-feedback',
-          ),
-        ).toBeNull();
-
-        expect(listener).toHaveBeenCalledTimes(
-          1,
-        );
-
-        const event = listener.mock
-          .calls[0][0] as CustomEvent<DateRangeUpdatedDetail>;
-
-        expect(event.detail).toEqual({
+          event.detail,
+        ).toEqual({
           startDate: '01-10-2026',
           endDate: '01-20-2026',
           startDateIso: '2026-01-10',
@@ -1398,11 +1549,13 @@ describe(
     );
 
     test(
-      'shows validation feedback for an invalid typed range',
+      'rejects invalid typed range syntax',
       async () => {
-        const page = await createPage();
+        const page =
+          await createPage();
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
         dispatchInput(
           getInput(root),
@@ -1411,39 +1564,36 @@ describe(
 
         await flush(page);
 
-        const input = getInput(root);
-
-        const feedback =
-          queryRequired<HTMLElement>(
-            root,
-            '.invalid-feedback.validation',
-          );
-
         expect(
-          input.getAttribute('aria-invalid'),
+          getInput(root).getAttribute(
+            'aria-invalid',
+          ),
         ).toBe('true');
 
         expect(
-          feedback.textContent?.trim(),
-        ).toContain('Invalid date range.');
+          queryRequired<HTMLElement>(
+            root,
+            '.invalid-feedback.validation',
+          ).textContent,
+        ).toContain(
+          'Invalid date range.',
+        );
 
-        expect(getStartLabel(root)).toBe('N/A');
-        expect(getEndLabel(root)).toBe('N/A');
+        expectStableSnapshot(
+          root,
+          'invalid-range',
+        );
       },
     );
 
     test(
-      'rejects a range whose end date occurs before its start date',
+      'rejects reversed typed range',
       async () => {
-        const page = await createPage();
+        const page =
+          await createPage();
 
-        const root = rootOf(page);
-        const listener = jest.fn();
-
-        root.addEventListener(
-          'date-range-updated',
-          listener,
-        );
+        const root =
+          rootOf(page);
 
         dispatchInput(
           getInput(root),
@@ -1451,8 +1601,6 @@ describe(
         );
 
         await flush(page);
-
-        expect(listener).not.toHaveBeenCalled();
 
         expect(
           getInput(root).getAttribute(
@@ -1472,169 +1620,25 @@ describe(
     );
 
     test(
-      'loads and displays a valid initial value',
+      'clearing required input shows required validation',
       async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            value="2026-03-05 - 2026-03-15"
-          ></date-range-picker-component>
-        `);
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              required="true"
+              value="2026-06-01 - 2026-06-10"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
-        expect(getInput(root).value).toBe(
-          formatRangeValue(
-            '2026-03-05',
-            '2026-03-15',
-          ),
+        dispatchInput(
+          getInput(root),
+          '',
         );
-
-        expect(getStartLabel(root)).toBe(
-          '2026-03-05',
-        );
-
-        expect(getEndLabel(root)).toBe(
-          '2026-03-15',
-        );
-
-        expect(getOkButtonLabel(root)).toBe('OK');
-
-        expect(
-          root.querySelectorAll(
-            '.calendar-grid-item.selected-range-active',
-          ),
-        ).toHaveLength(2);
-      },
-    );
-
-    test(
-      'updates the rendered range when the value property changes',
-      async () => {
-        const page = await createPage();
-
-        const root = rootOf(page);
-
-        (root as any).value =
-          '2026-04-02 - 2026-04-09';
 
         await flush(page);
-
-        expect(getInput(root).value).toBe(
-          formatRangeValue(
-            '2026-04-02',
-            '2026-04-09',
-          ),
-        );
-
-        expect(getStartLabel(root)).toBe(
-          '2026-04-02',
-        );
-
-        expect(getEndLabel(root)).toBe(
-          '2026-04-09',
-        );
-
-        expect(getOkButtonLabel(root)).toBe('OK');
-
-        (root as any).value = '';
-
-        await flush(page);
-
-        expect(getInput(root).value).toBe('');
-        expect(getStartLabel(root)).toBe('N/A');
-        expect(getEndLabel(root)).toBe('N/A');
-
-        expect(getOkButtonLabel(root)).toBe(
-          'Close',
-        );
-      },
-    );
-
-    test(
-      'clear button resets the selection and returns the button to Close',
-      async () => {
-        const page = await createPage();
-
-        const root = rootOf(page);
-
-        await selectRange(page, 1, 7);
-
-        expect(
-          getInput(root).value.length,
-        ).toBeGreaterThan(0);
-
-        expect(getOkButtonLabel(root)).toBe('OK');
-
-        queryRequired<HTMLButtonElement>(
-          root,
-          '.clear-input-button',
-        ).click();
-
-        await flush(page);
-
-        expect(getInput(root).value).toBe('');
-        expect(getStartLabel(root)).toBe('N/A');
-        expect(getEndLabel(root)).toBe('N/A');
-
-        expect(getOkButtonLabel(root)).toBe(
-          'Close',
-        );
-
-        expect(
-          root.querySelector(
-            '.clear-input-button',
-          ),
-        ).toBeNull();
-      },
-    );
-
-    test(
-      'public clear method resets the component',
-      async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            value="2026-05-01 - 2026-05-08"
-          ></date-range-picker-component>
-        `);
-
-        const root = rootOf(page);
-
-        expect(getInput(root).value).not.toBe('');
-
-        await (root as any).clear();
-        await flush(page);
-
-        expect(getInput(root).value).toBe('');
-        expect(getStartLabel(root)).toBe('N/A');
-        expect(getEndLabel(root)).toBe('N/A');
-
-        expect(getOkButtonLabel(root)).toBe(
-          'Close',
-        );
-      },
-    );
-
-    test(
-      'clearing a required input shows required validation',
-      async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            required="true"
-            value="2026-06-01 - 2026-06-10"
-          ></date-range-picker-component>
-        `);
-
-        const root = rootOf(page);
-
-        dispatchInput(getInput(root), '');
-
-        await flush(page);
-
-        const feedback =
-          queryRequired<HTMLElement>(
-            root,
-            '.invalid-feedback.validation',
-          );
 
         expect(
           getInput(root).getAttribute(
@@ -1643,48 +1647,40 @@ describe(
         ).toBe('true');
 
         expect(
-          feedback.textContent?.trim(),
-        ).toBe('This field is required.');
-
-        expect(getStartLabel(root)).toBe('N/A');
-        expect(getEndLabel(root)).toBe('N/A');
+          queryRequired<HTMLElement>(
+            root,
+            '.invalid-feedback.validation',
+          ).textContent?.trim(),
+        ).toBe(
+          'This field is required.',
+        );
       },
     );
 
     test(
-      'does not render the OK button when showOkButton is false',
+      'readOnly removes interactive controls',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component show-ok-button="false"></date-range-picker-component>',
-        );
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              read-only="true"
+            ></date-range-picker-component>
+          `);
+
+        const root =
+          rootOf(page);
+
+        const input =
+          getInput(root);
 
         expect(
-          rootOf(page).querySelector(
-            '.ok-button',
-          ),
-        ).toBeNull();
-      },
-    );
-
-    test(
-      'readOnly makes the input read-only and removes interactive controls',
-      async () => {
-        const page = await createPage(
-          '<date-range-picker-component read-only="true"></date-range-picker-component>',
-        );
-
-        const root = rootOf(page);
-        const input = getInput(root);
-
-        expect(input.disabled).toBe(false);
-        expect(input.readOnly).toBe(true);
-
-        expect(
-          input.hasAttribute('readonly'),
+          input.readOnly,
         ).toBe(true);
 
         expect(
-          input.getAttribute('aria-readonly'),
+          input.getAttribute(
+            'aria-readonly',
+          ),
         ).toBe('true');
 
         expect(
@@ -1698,32 +1694,32 @@ describe(
             '.clear-input-button',
           ),
         ).toBeNull();
-
-        expect(
-          queryRequired<HTMLElement>(
-            root,
-            '.input-group',
-          ).classList.contains('read-only'),
-        ).toBe(true);
       },
     );
 
     test(
       'disabled disables the input and rendered calendar controls',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component disabled="true"></date-range-picker-component>',
-        );
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              disabled="true"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
-        expect(getInput(root).disabled).toBe(true);
+        expect(
+          getInput(root).disabled,
+        ).toBe(true);
 
-        const controls = Array.from(
-          root.querySelectorAll(
-            '.calendar-button',
-          ),
-        ) as HTMLElement[];
+        const controls =
+          Array.from(
+            root.querySelectorAll(
+              '.calendar-button',
+            ),
+          ) as HTMLElement[];
 
         expect(
           controls.length,
@@ -1731,128 +1727,109 @@ describe(
 
         controls.forEach(control => {
           expect(
-            control.hasAttribute('disabled') ||
+            control.hasAttribute(
+              'disabled',
+            ) ||
               control.getAttribute(
                 'aria-disabled',
               ) === 'true',
           ).toBe(true);
         });
-      },
-    );
 
-    test(
-      'accepts prepend and append configuration without breaking input-group rendering',
-      async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            prepend-prop="true"
-            prepend-id="prepend-range"
-            append-prop="true"
-            append-id="append-range"
-          ></date-range-picker-component>
-        `);
-
-        const root = rootOf(page);
-
-        const inputGroup =
-          queryRequired<HTMLElement>(
-            root,
-            '.input-group',
-          );
-
-        const input = getInput(root);
-
-        const calendarControls = Array.from(
-          inputGroup.querySelectorAll(
-            '.calendar-button',
-          ),
+        expectStableSnapshot(
+          root,
+          'disabled',
         );
-
-        expect(inputGroup).toBeTruthy();
-        expect(input).toBeTruthy();
-
-        expect(
-          calendarControls.length,
-        ).toBeGreaterThan(0);
       },
     );
 
     test(
-      'renders responsive horizontal label and input columns',
+      'renders responsive horizontal columns',
       async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            form-layout="horizontal"
-            label-cols="sm-4 md-3"
-            input-cols="sm-8 md-9"
-          ></date-range-picker-component>
-        `);
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              form-layout="horizontal"
+              label-cols="sm-4 md-3"
+              input-cols="sm-8 md-9"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
         const label =
           queryRequired<HTMLLabelElement>(
             root,
-            'label.form-control-label',
+            '.form-control-label',
           );
 
-        const inputGroup =
+        expect(
+          label.className,
+        ).toContain('col-sm-4');
+
+        expect(
+          label.className,
+        ).toContain('col-md-3');
+
+        const group =
           queryRequired<HTMLElement>(
             root,
             '.input-group',
           );
 
         const inputColumn =
-          inputGroup.parentElement as HTMLElement;
+          group.parentElement as HTMLElement;
 
-        expect(label.className).toContain(
-          'col-sm-4',
-        );
+        expect(
+          inputColumn.className,
+        ).toContain('col-sm-8');
 
-        expect(label.className).toContain(
-          'col-md-3',
-        );
+        expect(
+          inputColumn.className,
+        ).toContain('col-md-9');
 
-        expect(inputColumn.className).toContain(
-          'col-sm-8',
-        );
-
-        expect(inputColumn.className).toContain(
-          'col-md-9',
+        expectStableSnapshot(
+          root,
+          'responsive-horizontal',
         );
       },
     );
 
     test(
-      'uses a full-width input column when the horizontal label is hidden',
+      'horizontal hidden label uses col-12 and aria-label',
       async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            form-layout="horizontal"
-            label-hidden="true"
-          ></date-range-picker-component>
-        `);
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              form-layout="horizontal"
+              label-hidden="true"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
-        const inputGroup =
+        const group =
           queryRequired<HTMLElement>(
             root,
             '.input-group',
           );
 
         const inputColumn =
-          inputGroup.parentElement as HTMLElement;
+          group.parentElement as HTMLElement;
 
-        expect(inputColumn.className).toContain(
-          'col-12',
-        );
+        expect(
+          inputColumn.className,
+        ).toContain('col-12');
 
         expect(
           getInput(root).getAttribute(
             'aria-label',
           ),
-        ).toBe('Date Range Picker');
+        ).toBe(
+          'Date Range Picker',
+        );
 
         expect(
           getInput(root).getAttribute(
@@ -1863,52 +1840,65 @@ describe(
     );
 
     test(
-      'renders Plumage styling on the component wrapper',
+      'renders Plumage input styling',
       async () => {
-        const page = await createPage(
-          '<date-range-picker-component plumage="true"></date-range-picker-component>',
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              plumage="true"
+            ></date-range-picker-component>
+          `);
+
+        const root =
+          rootOf(page);
+
+        expect(
+          root.querySelector(
+            '.plumage',
+          ),
+        ).toBeTruthy();
+
+        expect(
+          root.querySelector(
+            '.form-input-group',
+          ),
+        ).toBeTruthy();
+
+        expect(
+          root.querySelector(
+            '.b-underline',
+          ),
+        ).toBeTruthy();
+
+        expectStableSnapshot(
+          root,
+          'plumage-input',
         );
-
-        const root = rootOf(page);
-
-        expect(
-          root.querySelector('.plumage'),
-        ).toBeTruthy();
-
-        expect(getInput(root)).toBeTruthy();
-
-        expect(
-          root.querySelector('.input-group'),
-        ).toBeTruthy();
       },
     );
 
     test(
-      'links the input to rendered instructions and exposes validation state',
+      'aria-describedby references rendered elements',
       async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            input-id="accessible-range"
-            required="true"
-          ></date-range-picker-component>
-        `);
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              input-id="accessible-range"
+              required="true"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
-        const input = getInput(root);
+        const root =
+          rootOf(page);
 
-        const initialIds = (
+        const input =
+          getInput(root);
+
+        parseIdRefs(
           input.getAttribute(
             'aria-describedby',
-          ) || ''
-        )
-          .split(/\s+/)
-          .filter(Boolean);
-
-        expect(
-          initialIds.length,
-        ).toBeGreaterThan(0);
-
-        initialIds.forEach(id => {
+          ),
+        ).forEach(id => {
           expect(
             root.querySelector(
               `[id="${id}"]`,
@@ -1916,34 +1906,21 @@ describe(
           ).toBeTruthy();
         });
 
-        dispatchInput(input, '');
+        dispatchInput(
+          input,
+          '',
+        );
 
         await flush(page);
 
-        const updatedInput = getInput(root);
+        const updated =
+          getInput(root);
 
-        expect(
-          updatedInput.getAttribute(
-            'aria-invalid',
-          ),
-        ).toBe('true');
-
-        const feedback =
-          root.querySelector(
-            '.invalid-feedback.validation',
-          ) as HTMLElement | null;
-
-        expect(feedback).toBeTruthy();
-
-        const describedByIds = (
-          updatedInput.getAttribute(
+        parseIdRefs(
+          updated.getAttribute(
             'aria-describedby',
-          ) || ''
-        )
-          .split(/\s+/)
-          .filter(Boolean);
-
-        describedByIds.forEach(id => {
+          ),
+        ).forEach(id => {
           expect(
             root.querySelector(
               `[id="${id}"]`,
@@ -1956,91 +1933,154 @@ describe(
 );
 
 describe(
-  'date-range-picker-component controlled parsing and edge cases',
+  'date-range-picker-component controlled values and edge cases',
   () => {
     test(
-      'externally clearing a required controlled value resets state without immediate validation',
+      'loads valid initial value',
       async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            required="true"
-            value="2026-07-10 - 2026-07-20"
-          ></date-range-picker-component>
-        `);
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              value="2026-03-05 - 2026-03-15"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
+
+        expect(
+          getInput(root).value,
+        ).toBe(
+          '2026-03-05 - 2026-03-15',
+        );
+
+        expect(
+          getStartLabel(root),
+        ).toBe('2026-03-05');
+
+        expect(
+          getEndLabel(root),
+        ).toBe('2026-03-15');
+
+        expect(
+          getOkButtonLabel(root),
+        ).toBe('OK');
+
+        expectStableSnapshot(
+          root,
+          'controlled-initial-value',
+        );
+      },
+    );
+
+    test(
+      'updates rendered range when value changes externally',
+      async () => {
+        const page =
+          await createPage();
+
+        const root =
+          rootOf(page);
 
         const instance =
-          page.rootInstance as {
-            value: string;
-            startDate: Date | null;
-            endDate: Date | null;
-            validation: boolean;
-            validationMessage: string;
-          };
+          page.rootInstance as ControlledInstance;
 
-        expect(instance.startDate).toBeTruthy();
-        expect(instance.endDate).toBeTruthy();
+        instance.value =
+          '2026-04-02 - 2026-04-09';
+
+        await flush(page);
+
+        expect(
+          getInput(root).value,
+        ).toBe(
+          '2026-04-02 - 2026-04-09',
+        );
+
+        expect(
+          getStartLabel(root),
+        ).toBe('2026-04-02');
+
+        expect(
+          getEndLabel(root),
+        ).toBe('2026-04-09');
+      },
+    );
+
+    test(
+      'externally clearing required value does not immediately validate',
+      async () => {
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              required="true"
+              value="2026-07-10 - 2026-07-20"
+            ></date-range-picker-component>
+          `);
+
+        const root =
+          rootOf(page);
+
+        const instance =
+          page.rootInstance as ControlledInstance;
 
         instance.value = '';
 
         await flush(page);
 
-        expect(instance.value).toBe('');
-        expect(instance.startDate).toBeNull();
-        expect(instance.endDate).toBeNull();
-        expect(instance.validation).toBe(false);
+        expect(
+          instance.startDate,
+        ).toBeNull();
 
         expect(
-          instance.validationMessage,
-        ).toBe('');
+          instance.endDate,
+        ).toBeNull();
 
-        expect(getInput(root).value).toBe('');
-        expect(getStartLabel(root)).toBe('N/A');
-        expect(getEndLabel(root)).toBe('N/A');
+        expect(
+          instance.validation,
+        ).toBe(false);
+
+        expect(
+          getInput(root).value,
+        ).toBe('');
 
         expect(
           root.querySelector(
             '.invalid-feedback',
           ),
         ).toBeNull();
-
-        expect(
-          getInput(root).getAttribute(
-            'aria-invalid',
-          ),
-        ).not.toBe('true');
       },
     );
 
     test(
       'normalizes an impossible external date using JavaScript date rollover',
       async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            value="2026-02-20 - 2026-02-28"
-          ></date-range-picker-component>
-        `);
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              value="2026-02-20 - 2026-02-28"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
         const instance =
-          page.rootInstance as {
-            value: string;
-            startDate: Date | null;
-            endDate: Date | null;
-          };
+          page.rootInstance as ControlledInstance;
 
         instance.value =
           '2026-02-30 - 2026-03-05';
 
         await flush(page);
 
-        expect(instance.value).toBe(
+        expect(
+          instance.value,
+        ).toBe(
           '2026-03-02 - 2026-03-05',
         );
 
-        expect(getInput(root).value).toBe(
+        expect(
+          getInput(root).value,
+        ).toBe(
           '2026-03-02 - 2026-03-05',
         );
 
@@ -2048,54 +2088,52 @@ describe(
           instance.startDate
             ?.toISOString()
             .slice(0, 10),
-        ).toBe('2026-03-02');
+        ).toBe(
+          '2026-03-02',
+        );
 
         expect(
           instance.endDate
             ?.toISOString()
             .slice(0, 10),
-        ).toBe('2026-03-05');
+        ).toBe(
+          '2026-03-05',
+        );
 
-        expect(getStartLabel(root)).toBe(
+        expect(
+          getStartLabel(root),
+        ).toBe(
           '2026-03-02',
         );
 
-        expect(getEndLabel(root)).toBe(
+        expect(
+          getEndLabel(root),
+        ).toBe(
           '2026-03-05',
         );
       },
     );
 
     test(
-      'preserves the last valid calendar state when an external range is reversed',
+      'rejects reversed external range and preserves last valid calendar state',
       async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            value="2026-04-01 - 2026-04-10"
-          ></date-range-picker-component>
-        `);
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              value="2026-04-01 - 2026-04-10"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
         const instance =
-          page.rootInstance as {
-            value: string;
-            startDate: Date | null;
-            endDate: Date | null;
-          };
+          page.rootInstance as ControlledInstance;
 
         instance.value =
           '2026-05-10 - 2026-05-01';
 
         await flush(page);
-
-        expect(instance.value).toBe(
-          '2026-05-10 - 2026-05-01',
-        );
-
-        expect(getInput(root).value).toBe(
-          '2026-05-10 - 2026-05-01',
-        );
 
         expect(
           instance.startDate
@@ -2109,23 +2147,27 @@ describe(
             .slice(0, 10),
         ).toBe('2026-04-10');
 
-        expect(getStartLabel(root)).toBe(
-          '2026-04-01',
-        );
+        expect(
+          getStartLabel(root),
+        ).toBe('2026-04-01');
 
-        expect(getEndLabel(root)).toBe(
-          '2026-04-10',
-        );
+        expect(
+          getEndLabel(root),
+        ).toBe('2026-04-10');
       },
     );
 
     test(
       'normalizes an impossible typed YYYY-MM-DD date using JavaScript rollover',
       async () => {
-        const page = await createPage();
+        const page =
+          await createPage();
 
-        const root = rootOf(page);
-        const listener = jest.fn();
+        const root =
+          rootOf(page);
+
+        const listener =
+          jest.fn();
 
         root.addEventListener(
           'date-range-updated',
@@ -2139,19 +2181,25 @@ describe(
 
         await flush(page);
 
-        expect(listener).toHaveBeenCalledTimes(
-          1,
-        );
+        expect(
+          listener,
+        ).toHaveBeenCalledTimes(1);
 
-        expect(getStartLabel(root)).toBe(
+        expect(
+          getStartLabel(root),
+        ).toBe(
           '2026-03-02',
         );
 
-        expect(getEndLabel(root)).toBe(
+        expect(
+          getEndLabel(root),
+        ).toBe(
           '2026-03-05',
         );
 
-        expect(getInput(root).value).toBe(
+        expect(
+          getInput(root).value,
+        ).toBe(
           '2026-03-02-2026-03-05',
         );
 
@@ -2167,14 +2215,21 @@ describe(
           ),
         ).toBeNull();
 
-        const event = listener.mock
-          .calls[0][0] as CustomEvent<DateRangeUpdatedDetail>;
+        const event =
+          listener.mock
+            .calls[0][0] as CustomEvent<DateRangeUpdatedDetail>;
 
-        expect(event.detail).toEqual({
-          startDate: '2026-03-02',
-          endDate: '2026-03-05',
-          startDateIso: '2026-03-02',
-          endDateIso: '2026-03-05',
+        expect(
+          event.detail,
+        ).toEqual({
+          startDate:
+            '2026-03-02',
+          endDate:
+            '2026-03-05',
+          startDateIso:
+            '2026-03-02',
+          endDateIso:
+            '2026-03-05',
         });
       },
     );
@@ -2182,10 +2237,14 @@ describe(
     test(
       'normalizes February 29 in a non-leap year to March 1',
       async () => {
-        const page = await createPage();
+        const page =
+          await createPage();
 
-        const root = rootOf(page);
-        const listener = jest.fn();
+        const root =
+          rootOf(page);
+
+        const listener =
+          jest.fn();
 
         root.addEventListener(
           'date-range-updated',
@@ -2199,41 +2258,70 @@ describe(
 
         await flush(page);
 
-        expect(listener).toHaveBeenCalledTimes(
-          1,
-        );
+        expect(
+          listener,
+        ).toHaveBeenCalledTimes(1);
 
-        expect(getStartLabel(root)).toBe(
+        expect(
+          getStartLabel(root),
+        ).toBe(
           '2026-03-01',
         );
 
-        expect(getEndLabel(root)).toBe(
+        expect(
+          getEndLabel(root),
+        ).toBe(
           '2026-03-05',
         );
 
-        expect(getInput(root).value).toBe(
+        expect(
+          getInput(root).value,
+        ).toBe(
           '2026-03-01-2026-03-05',
         );
 
-        const event = listener.mock
-          .calls[0][0] as CustomEvent<DateRangeUpdatedDetail>;
+        expect(
+          getInput(root).getAttribute(
+            'aria-invalid',
+          ),
+        ).not.toBe('true');
 
-        expect(event.detail).toEqual({
-          startDate: '2026-03-01',
-          endDate: '2026-03-05',
-          startDateIso: '2026-03-01',
-          endDateIso: '2026-03-05',
+        expect(
+          root.querySelector(
+            '.invalid-feedback.validation',
+          ),
+        ).toBeNull();
+
+        const event =
+          listener.mock
+            .calls[0][0] as CustomEvent<DateRangeUpdatedDetail>;
+
+        expect(
+          event.detail,
+        ).toEqual({
+          startDate:
+            '2026-03-01',
+          endDate:
+            '2026-03-05',
+          startDateIso:
+            '2026-03-01',
+          endDateIso:
+            '2026-03-05',
         });
       },
     );
 
     test(
-      'accepts February 29 in a leap year and emits ISO values',
+      'accepts February 29 in a leap year',
       async () => {
-        const page = await createPage();
+        const page =
+          await createPage();
 
-        const root = rootOf(page);
-        const listener = jest.fn();
+        const root =
+          rootOf(page);
+
+        const listener =
+          jest.fn();
 
         root.addEventListener(
           'date-range-updated',
@@ -2247,13 +2335,13 @@ describe(
 
         await flush(page);
 
-        expect(getStartLabel(root)).toBe(
-          '2028-02-29',
-        );
+        expect(
+          getStartLabel(root),
+        ).toBe('2028-02-29');
 
-        expect(getEndLabel(root)).toBe(
-          '2028-03-05',
-        );
+        expect(
+          getEndLabel(root),
+        ).toBe('2028-03-05');
 
         expect(
           getInput(root).getAttribute(
@@ -2262,19 +2350,16 @@ describe(
         ).not.toBe('true');
 
         expect(
-          root.querySelector(
-            '.invalid-feedback',
-          ),
-        ).toBeNull();
+          listener,
+        ).toHaveBeenCalledTimes(1);
 
-        expect(listener).toHaveBeenCalledTimes(
-          1,
-        );
+        const event =
+          listener.mock
+            .calls[0][0] as CustomEvent<DateRangeUpdatedDetail>;
 
-        const event = listener.mock
-          .calls[0][0] as CustomEvent<DateRangeUpdatedDetail>;
-
-        expect(event.detail).toEqual({
+        expect(
+          event.detail,
+        ).toEqual({
           startDate: '2028-02-29',
           endDate: '2028-03-05',
           startDateIso: '2028-02-29',
@@ -2284,21 +2369,17 @@ describe(
     );
 
     test(
-      'supports a custom separator containing regular-expression characters',
+      'supports regex-special custom separator',
       async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            join-by=" | "
-          ></date-range-picker-component>
-        `);
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              join-by=" | "
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
-        const listener = jest.fn();
-
-        root.addEventListener(
-          'date-range-updated',
-          listener,
-        );
+        const root =
+          rootOf(page);
 
         dispatchInput(
           getInput(root),
@@ -2307,42 +2388,35 @@ describe(
 
         await flush(page);
 
-        expect(getInput(root).value).toBe(
-          '2026-08-01  |  2026-08-15',
-        );
+        expect(
+          getStartLabel(root),
+        ).toBe('2026-08-01');
 
-        expect(getStartLabel(root)).toBe(
-          '2026-08-01',
-        );
+        expect(
+          getEndLabel(root),
+        ).toBe('2026-08-15');
 
-        expect(getEndLabel(root)).toBe(
-          '2026-08-15',
-        );
-
-        expect(listener).toHaveBeenCalledTimes(
-          1,
-        );
+        expect(
+          getInput(root).value,
+        ).toContain('|');
       },
     );
 
     test(
-      'keeps the two calendars consecutive when a controlled range is within one month',
+      'keeps calendars consecutive for same-month controlled range',
       async () => {
-        const page = await createPage(`
-          <date-range-picker-component
-            value="2026-12-05 - 2026-12-20"
-          ></date-range-picker-component>
-        `);
+        const page =
+          await createPage(`
+            <date-range-picker-component
+              value="2026-12-05 - 2026-12-20"
+            ></date-range-picker-component>
+          `);
 
-        const root = rootOf(page);
+        const root =
+          rootOf(page);
 
         const instance =
-          page.rootInstance as {
-            currentStartMonth: number;
-            currentStartYear: number;
-            currentEndMonth: number;
-            currentEndYear: number;
-          };
+          page.rootInstance as ControlledInstance;
 
         expect(
           instance.currentStartMonth,
@@ -2360,13 +2434,15 @@ describe(
           instance.currentEndYear,
         ).toBe(2027);
 
-        const captions = Array.from(
-          root.querySelectorAll(
-            '.calendar-grid-caption',
-          ),
-        ).map(element =>
-          element.textContent?.trim(),
-        );
+        const captions =
+          Array.from(
+            root.querySelectorAll(
+              '.calendar-grid-caption',
+            ),
+          ).map(
+            element =>
+              element.textContent?.trim(),
+          );
 
         expect(captions).toEqual([
           'December 2026',

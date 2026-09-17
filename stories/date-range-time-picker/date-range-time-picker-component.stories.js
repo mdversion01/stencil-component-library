@@ -48,9 +48,10 @@ const baseArgs = {
 const renderTemplate = args => Template(args);
 
 export default {
-  title: 'Form/Date Range + Time Picker'
+  title: 'Bootstrap/Date Range + Time Picker'
   ,
   parameters: {
+    themeFamily: 'allthemes',
     docs: {
 
       description: {

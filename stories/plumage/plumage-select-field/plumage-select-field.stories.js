@@ -16,7 +16,7 @@ import {
  * ------------------------------------------------------------------ */
 
 export default {
-  title: 'Form/Plumage Select Field'
+  title: 'Plumage/Plumage Select Field'
   ,
   decorators: [
     Story => {
@@ -42,6 +42,8 @@ export default {
   ],
   parameters: {
     layout: 'padded',
+
+     themeFamily: 'plumage',
     docs: {
 
       description: {

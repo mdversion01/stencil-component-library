@@ -32,10 +32,11 @@ const storyWithRender = {
 };
 
 export default {
-  title: 'Form/Textarea',
+  title: 'Bootstrap/Textarea',
   render: args => buildTextarea(args),
 
   parameters: {
+    themeFamily: 'bootstrap',
     docs: {
       description: {
         component: 'A textarea web component with Bootstrap-style layout, validation support, optional max-length counter, and form-friendly valueChange / blurChange events.',

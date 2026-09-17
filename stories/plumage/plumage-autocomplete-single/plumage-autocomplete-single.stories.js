@@ -22,7 +22,7 @@ import {
 } from './plumage-autocomplete-single.story-helpers.js';
 
 export default {
-  title: 'Form/Plumage Autocomplete Single'
+  title: 'Plumage/Plumage Autocomplete Single'
   ,
   decorators: [
     Story => {
@@ -34,6 +34,8 @@ export default {
   ],
   parameters: {
     layout: 'padded',
+
+     themeFamily: 'plumage',
     docs: {
 
       description: {

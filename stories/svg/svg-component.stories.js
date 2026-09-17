@@ -48,9 +48,10 @@ const inlineTemplateStoryParameters = {
 };
 
 export default {
-  title: 'Components/SVG',
+  title: 'Bootstrap or Plumage/SVG',
   parameters: {
     layout: 'padded',
+    themeFamily: 'allthemes',
     docs: {
       description: {
         component:

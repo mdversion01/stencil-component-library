@@ -1,0 +1,556 @@
+/* Toast + Toaster (converted to SCSS) */
+/* :contentReference[oaicite:0]{index=0} */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+*::before,
+*::after {
+  text-decoration: inherit;
+  vertical-align: inherit;
+}
+
+.plmg-lt,
+.plmg-dk {
+  /* -------------------------------------------------------------------------- */
+  /* Utilities                                                                   */
+  /* -------------------------------------------------------------------------- */
+
+  .d-none {
+    display: none;
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /* Toast                                                                        */
+  /* -------------------------------------------------------------------------- */
+
+  .toast-svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125rem;
+    fill: currentColor;
+    margin-right: 3px;
+  }
+
+  // .toast-body {
+  //   padding: 0.75rem;
+  // }
+
+  .toast:not(:last-child) {
+    margin-bottom: 0.25rem;
+  }
+
+  .additional-text {
+    margin-left: 10px;
+    margin-top: 2px;
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /* Toast variants (bootstrap-like alert variants)                              */
+  /* -------------------------------------------------------------------------- */
+
+  $toast-variants: (
+    primary: (
+      bg: rgba(230, 242, 255, 0.85),
+      border: rgba(184, 218, 255, 0.85),
+      fg: #004085,
+      header-bg: rgba(204, 229, 255, 0.85),
+      header-border: rgba(184, 218, 255, 0.85),
+      solid-bg: #e6f2ff,
+    ),
+    secondary: (
+      bg: rgba(239, 240, 241, 0.85),
+      border: rgba(214, 216, 219, 0.85),
+      fg: #383d41,
+      header-bg: rgba(226, 227, 229, 0.85),
+      header-border: rgba(214, 216, 219, 0.85),
+      solid-bg: #eff0f1,
+    ),
+    success: (
+      bg: rgba(230, 245, 233, 0.85),
+      border: rgba(195, 230, 203, 0.85),
+      fg: #155724,
+      header-bg: rgba(212, 237, 218, 0.85),
+      header-border: rgba(195, 230, 203, 0.85),
+      solid-bg: #e6f5e9,
+    ),
+    info: (
+      bg: rgba(229, 244, 247, 0.85),
+      border: rgba(190, 229, 235, 0.85),
+      fg: #0c5460,
+      header-bg: rgba(209, 236, 241, 0.85),
+      header-border: rgba(190, 229, 235, 0.85),
+      solid-bg: #e5f4f7,
+    ),
+    warning: (
+      bg: rgba(255, 249, 231, 0.85),
+      border: rgba(255, 238, 186, 0.85),
+      fg: #856404,
+      header-bg: rgba(255, 243, 205, 0.85),
+      header-border: rgba(255, 238, 186, 0.85),
+      solid-bg: #fff9e7,
+    ),
+    danger: (
+      bg: rgba(252, 237, 238, 0.85),
+      border: rgba(245, 198, 203, 0.85),
+      fg: #721c24,
+      header-bg: rgba(248, 215, 218, 0.85),
+      header-border: rgba(245, 198, 203, 0.85),
+      solid-bg: #fcedee,
+    ),
+    light: (
+      bg: hsla(0, 0%, 100%, 0.85),
+      border: rgba(253, 253, 254, 0.85),
+      fg: #818182,
+      header-bg: hsla(0, 0%, 99.6%, 0.85),
+      header-border: rgba(253, 253, 254, 0.85),
+      solid-bg: #fff,
+    ),
+    dark: (
+      bg: rgba(227, 229, 229, 0.85),
+      border: rgba(198, 200, 202, 0.85),
+      fg: #1b1e21,
+      header-bg: rgba(214, 216, 217, 0.85),
+      header-border: rgba(198, 200, 202, 0.85),
+      solid-bg: #e3e5e5,
+    ),
+  );
+
+  @each $name, $cfg in $toast-variants {
+    .toast-#{$name} {
+      background-color: map-get($cfg, bg);
+      border-color: map-get($cfg, border);
+      color: map-get($cfg, fg);
+
+      .toast-header {
+        color: map-get($cfg, fg);
+        background-color: map-get($cfg, header-bg);
+        border-bottom-color: map-get($cfg, header-border);
+      }
+
+      &.toast-solid {
+        background-color: map-get($cfg, solid-bg);
+      }
+    }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /* text-bg-* helpers + close button colors                                     */
+  /* -------------------------------------------------------------------------- */
+
+  $text-bg: (
+    primary: (
+      bg: rgba(13, 110, 253, 1),
+      fg: #fff,
+    ),
+    secondary: (
+      bg: rgba(108, 117, 125, 1),
+      fg: #fff,
+    ),
+    danger: (
+      bg: rgba(220, 53, 69, 1),
+      fg: #fff,
+    ),
+    warning: (
+      bg: rgba(255, 193, 7, 1),
+      fg: #000,
+    ),
+    success: (
+      bg: rgba(25, 135, 84, 1),
+      fg: #fff,
+    ),
+    info: (
+      bg: rgba(13, 202, 240, 1),
+      fg: #000,
+    ),
+    dark: (
+      bg: rgba(33, 37, 41, 1),
+      fg: #fff,
+    ),
+    light: (
+      bg: rgba(248, 249, 250, 1),
+      fg: #000,
+    ),
+  );
+
+  @each $name, $cfg in $text-bg {
+    .text-bg-#{$name} {
+      color: map-get($cfg, fg) !important;
+      background-color: map-get($cfg, bg) !important;
+
+      .close {
+        color: map-get($cfg, fg);
+        opacity: 1;
+
+        &:hover {
+          text-decoration: none;
+          opacity: 0.75;
+        }
+      }
+    }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /* Plumage Toast                                                                */
+  /* -------------------------------------------------------------------------- */
+
+  .toast {
+    flex-basis: 350px;
+    max-width: 350px;
+    font-family:
+      -apple-system,
+      BlinkMacSystemFont,
+      Segoe UI,
+      Roboto,
+      Helvetica Neue,
+      Arial,
+      Noto Sans,
+      Liberation Sans,
+      sans-serif,
+      Apple Color Emoji,
+      Segoe UI Emoji,
+      Segoe UI Symbol,
+      Noto Color Emoji;
+    font-size: 0.875rem;
+    background-clip: padding-box;
+    backface-visibility: hidden;
+
+    opacity: 0;
+    border-radius: 0.25rem;
+    position: relative;
+    display: block;
+    z-index: 1;
+    margin-bottom: 0.25rem;
+
+    /* overrides / plumage specifics */
+    box-shadow: unset;
+    max-width: unset;
+    min-width: 34.375rem;
+
+    &.showing {
+      opacity: 1;
+    }
+
+    &.show {
+      display: block;
+      opacity: 1;
+    }
+
+    &.hide {
+      display: none;
+    }
+  }
+
+  .toast-display {
+    display: flex;
+  }
+
+  .toast-content {
+    width: 100%;
+
+    // .toast-title {
+    //   padding: 0.25rem 0.5rem  !important;
+
+    .header {
+      font-size: 0.9375rem;
+    }
+
+    .toast-body-text {
+      font-size: 1.1875rem;
+      padding: 1rem 0 0 1rem !important;
+    }
+
+    .toast-data {
+      // margin-top: -0.25rem;
+      padding: 0.25rem 0.5rem !important;
+    }
+  }
+
+  .toast-icon {
+    padding: 0.25rem !important;
+  }
+  // }
+
+  .toast-icon {
+    align-items: center;
+
+    display: flex;
+    font-size: 2rem;
+    padding: 0 0.25rem;
+  }
+
+  .toast-header {
+    // display: flex;
+    // align-items: center;
+    // padding: 0.25rem 0.5rem;
+    // background-clip: padding-box;
+    // border-top-left-radius: calc(0.25rem - 1px);
+    // border-top-right-radius: calc(0.25rem - 1px);
+
+    /* overrides / plumage specifics */
+    // border: 0 !important;
+    // font-size: 0.9375rem;
+    // justify-content: space-between;
+    // padding-bottom: 0.25rem;
+    // pointer-events: auto !important;
+
+    .toast-title-wrapper {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .toast-header-content {
+      display: flex !important;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .toast-additional-header-content {
+      margin: 2px 8px 0;
+      font-size: 0.8333rem;
+      align-items: center;
+    }
+  }
+
+  .toast-body {
+     font-size: 0.8333rem;
+    // padding: 0 !important;
+  }
+
+
+
+  /* -------------------------------------------------------------------------- */
+  /* Toaster positioning                                                         */
+  /* -------------------------------------------------------------------------- */
+
+  .toaster {
+    z-index: 1100;
+
+    .toaster-slot {
+      position: relative;
+      display: block;
+
+      &:empty {
+        display: none !important;
+      }
+    }
+  }
+
+  $toaster-positions: (bottom-center, bottom-full, bottom-left, bottom-right, top-center, top-full, top-left, top-right);
+
+  @each $pos in $toaster-positions {
+    .toaster.toaster-#{$pos} {
+      position: fixed;
+      left: 0.5rem;
+      right: 0.5rem;
+      margin: 0;
+      padding: 0;
+      height: 0;
+      overflow: visible;
+      z-index: 1100;
+    }
+  }
+
+  /* Slot width rules (toast vs plumage toast) */
+  @each $pos in $toaster-positions {
+    .toaster.toaster-#{$pos} {
+      .toaster-slot {
+        position: absolute;
+        max-width: 350px;
+        width: 100%;
+        left: 0;
+        right: 0;
+        padding: 0;
+        margin: 0;
+        z-index: 1100;
+      }
+    }
+  }
+
+  /* Full-width variants */
+  .toaster.toaster-bottom-full,
+  .toaster.toaster-top-full {
+    .toaster-slot,
+    .toaster-slot .toast {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+
+  /* Top / bottom anchors */
+  .toaster.toaster-top-center,
+  .toaster.toaster-top-full,
+  .toaster.toaster-top-left,
+  .toaster.toaster-top-right {
+    top: 0;
+
+    .toaster-slot {
+      top: 0.5rem;
+    }
+  }
+
+  .toaster.toaster-bottom-center,
+  .toaster.toaster-bottom-full,
+  .toaster.toaster-bottom-left,
+  .toaster.toaster-bottom-right {
+    bottom: 0;
+
+    .toaster-slot {
+      bottom: 0.5rem;
+    }
+  }
+
+  /* Horizontal alignment */
+  .toaster.toaster-bottom-center,
+  .toaster.toaster-bottom-right,
+  .toaster.toaster-top-center,
+  .toaster.toaster-top-right {
+    .toaster-slot {
+      margin-left: auto;
+    }
+  }
+
+  .toaster.toaster-bottom-center,
+  .toaster.toaster-bottom-left,
+  .toaster.toaster-top-center,
+  .toaster.toaster-top-left {
+    .toaster-slot {
+      margin-right: auto;
+    }
+  }
+
+  /* Move/enter/leave transitions */
+  $toaster-move-positions: (bottom-left, bottom-right, top-left, top-right);
+
+  @each $pos in $toaster-move-positions {
+    .toaster.toaster-#{$pos} {
+      .toast {
+        &.toaster-enter-active,
+        &.toaster-leave-active,
+        &.toaster-move {
+          transition: transform 0.175s;
+        }
+
+        &.toaster-enter-active,
+        &.toaster-enter-to {
+          .toast.fade {
+            transition-delay: 0.175s;
+          }
+        }
+
+        &.toaster-leave-active {
+          position: absolute;
+          transition-delay: 0.175s;
+
+          .toast.fade {
+            transition-delay: 0s;
+          }
+        }
+      }
+    }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /* Close button                                                                 */
+  /* -------------------------------------------------------------------------- */
+
+  .close {
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0.5;
+    background-color: transparent;
+    border: 0;
+    margin: -5px 0 0 10px;
+    padding: 0;
+    cursor: pointer;
+
+    &:hover {
+      color: #000;
+      text-decoration: none;
+      opacity: 0.75;
+    }
+  }
+
+  a.close.disabled {
+    pointer-events: none;
+  }
+}
+
+.plmg-dk {
+
+  .toast {
+    background-color: #3e3e3e;
+    border: 1px solid #909090;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+  }
+
+  .toast-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: #3e3e3e;
+    color: #FFF;
+  }
+
+  .toast-body {
+    background-color: #3e3e3e;
+    color: #FFF;
+  }
+
+  .toast:hover {
+    .toast-body {
+      background-color: #2b2b2b;
+    }
+  }
+
+  .close {
+    color: #fff;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+.plmg-lt {
+
+  .toast {
+    background-color: #cacaca;
+    border: 1px solid #4b4b4b;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+  }
+
+  .toast-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: #cacaca;
+    color: #2c2c2c;
+  }
+
+  .toast-body {
+    background-color: #cacaca;
+    color: #2c2c2c;
+  }
+
+  .toast:hover {
+    .toast-body {
+      background-color: #b3b3b3;
+    }
+  }
+
+  .toast-icon {
+    border-right: 1px solid #4b4b4b;
+  }
+
+  .close {
+    color: #000;
+
+    &:hover {
+      color: #000;
+    }
+  }
+}

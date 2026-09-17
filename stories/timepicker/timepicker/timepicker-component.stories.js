@@ -10,7 +10,7 @@ import {
 } from './timepicker-component.story-helpers.js';
 
 const baseArgs = {
-  wrapperWidth: 260,
+  wrapperWidth: 290,
   ariaLabel: 'Time Picker',
   ariaLabelledby: '',
   ariaDescribedby: '',
@@ -40,7 +40,7 @@ const docsSource = {
 };
 
 export default {
-  title: 'Form/Timepicker/Timepicker'
+  title: 'Bootstrap/Timepicker'
   ,
   decorators: [
     Story => {
@@ -66,6 +66,7 @@ export default {
   ],
   parameters: {
     layout: 'padded',
+    themeFamily: 'bootstrap',
     docs: {
 
       description: {
@@ -430,7 +431,7 @@ export const NoDropdownButton = {
   render: Template,
   args: {
     ...baseArgs,
-    wrapperWidth: 260,
+    wrapperWidth: 290,
     hideTimepickerBtn: true,
     showLabel: true,
     labelText: 'Manual Entry Only',
@@ -513,7 +514,7 @@ export const WithValidationMessage = {
       description: {
         story: 'Shows invalid styling and a user validation message.',
       },
-      story: { height: '260px' },
+      story: { height: '290px' },
       source: docsSource,
     },
   },

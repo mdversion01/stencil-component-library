@@ -40,8 +40,9 @@ const baseArgs = {
 const renderTemplate = args => buildEl(args, action);
 
 export default {
-  title: 'Form/Datepicker',
+  title: 'Bootstrap/Datepicker',
   parameters: {
+    themeFamily: 'bootstrap',
     docs: {
       description: {
         component:

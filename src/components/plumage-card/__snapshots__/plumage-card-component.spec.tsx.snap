@@ -1,0 +1,226 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<plumage-card-component> applies elevation and custom classes to the article element: elevation-and-custom-class 1`] = `
+<plumage-card-component class-names="custom-card" elevation="2">
+  <!---->
+  <article class="card custom-card elevated-2" style="max-width: 20rem;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title" id="card-test-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
+    </div>
+    <div class="card-footer"></div>
+  </article>
+</plumage-card-component>
+`;
+
+exports[`<plumage-card-component> heading-level attribute changes the title heading tag: heading-level-2 1`] = `
+<plumage-card-component heading-level="2">
+  <!---->
+  <article class="card" style="max-width: 20rem;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h2 class="card-title" id="card-test-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h2>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
+    </div>
+    <div class="card-footer"></div>
+  </article>
+</plumage-card-component>
+`;
+
+exports[`<plumage-card-component> noHeader/noFooter remove their wrappers entirely: no-header-no-footer 1`] = `
+<plumage-card-component no-footer="" no-header="">
+  <!---->
+  <article class="card" style="max-width: 20rem;">
+    <div class="card-body">
+      <h5 class="card-title" id="card-test-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
+    </div>
+  </article>
+</plumage-card-component>
+`;
+
+exports[`<plumage-card-component> renders actions wrapper only when actions=true: actions 1`] = `
+<plumage-card-component actions="">
+  <!---->
+  <article class="card" style="max-width: 20rem;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title" id="card-test-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
+    </div>
+    <div class="card-actions">
+      <div slot="actions">
+        Action Button
+      </div>
+    </div>
+    <div class="card-footer"></div>
+  </article>
+</plumage-card-component>
+`;
+
+exports[`<plumage-card-component> renders basic card (non-landmark, non-clickable) with no role by default: basic-card 1`] = `
+<plumage-card-component>
+  <!---->
+  <article class="card" style="max-width: 20rem;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title" id="card-test-title"></h5>
+      <div class="card-text"></div>
+    </div>
+    <div class="card-footer"></div>
+  </article>
+</plumage-card-component>
+`;
+
+exports[`<plumage-card-component> renders card with header and footer slots (wrapper elements always present unless noHeader/noFooter): header-and-footer-slots 1`] = `
+<plumage-card-component>
+  <!---->
+  <article class="card" style="max-width: 20rem;">
+    <div class="card-header">
+      <div slot="header">
+        Header Content
+      </div>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title" id="card-test-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Main text content
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <div slot="footer">
+        Footer Content
+      </div>
+    </div>
+  </article>
+</plumage-card-component>
+`;
+
+exports[`<plumage-card-component> renders card with image (non-decorative) and preserves alt text: non-decorative-image 1`] = `
+<plumage-card-component alt-text="Sample Image" img="" img-src="https://example.com/image.jpg">
+  <!---->
+  <article class="card" style="max-width: 20rem;">
+    <img alt="Sample Image" class="card-img-top" src="https://example.com/image.jpg" style="height: 11.25rem; width: 100%; display: block;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title" id="card-test-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
+    </div>
+    <div class="card-footer"></div>
+  </article>
+</plumage-card-component>
+`;
+
+exports[`<plumage-card-component> renders decorative image with alt="" and aria-hidden="true": decorative-image 1`] = `
+<plumage-card-component alt-text="Ignored" decorative-image="" img="" img-src="https://example.com/image.jpg">
+  <!---->
+  <article class="card" style="max-width: 20rem;">
+    <img alt="" aria-hidden="true" class="card-img-top" src="https://example.com/image.jpg" style="height: 11.25rem; width: 100%; display: block;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title" id="card-test-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
+    </div>
+    <div class="card-footer"></div>
+  </article>
+</plumage-card-component>
+`;
+
+exports[`<plumage-card-component> renders landmark region with aria-label when landmark=true and aria-label is provided: landmark-with-aria-label 1`] = `
+<plumage-card-component aria-label="Profile Card" landmark="">
+  <!---->
+  <article aria-label="Profile Card" class="card" role="region" style="max-width: 20rem;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title" id="card-test-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
+    </div>
+    <div class="card-footer"></div>
+  </article>
+</plumage-card-component>
+`;
+
+exports[`<plumage-card-component> renders landmark region with aria-labelledby when provided (preferred over aria-label): landmark-with-aria-labelledby 1`] = `
+<plumage-card-component aria-label="Ignored Label" aria-labelledby="ext-label" landmark="">
+  <!---->
+  <article aria-labelledby="ext-label" class="card" role="region" style="max-width: 20rem;">
+    <div class="card-header"></div>
+    <div class="card-body">
+      <h5 class="card-title" id="card-test-title">
+        <div slot="title">
+          Card Title
+        </div>
+      </h5>
+      <div class="card-text">
+        <div slot="text">
+          Text
+        </div>
+      </div>
+    </div>
+    <div class="card-footer"></div>
+  </article>
+</plumage-card-component>
+`;

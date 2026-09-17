@@ -44,9 +44,10 @@ const baseArgs = {
 const renderTemplate = args => template(args);
 
 export default {
-  title: 'Form/Form Wrapper'
+  title: 'Bootstrap or Plumage/Form Wrapper'
   ,
   parameters: {
+    themeFamily: 'allthemes',
     docs: {
 
       description: {

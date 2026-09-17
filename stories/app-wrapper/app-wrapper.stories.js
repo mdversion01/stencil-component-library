@@ -11,11 +11,12 @@ import {
 } from './app-wrapper.story-helpers.js';
 
 export default {
-  title: 'Layout/App Wrapper'
+  title: 'Bootstrap or Plumage/Layout/App Wrapper'
   ,
   render: (args) => buildPlayground(args),
   parameters: {
     layout: 'padded',
+     themeFamily: 'allthemes',
     docs: {
 
       description: {

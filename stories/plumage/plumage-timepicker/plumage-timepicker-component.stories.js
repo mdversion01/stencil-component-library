@@ -44,8 +44,7 @@ const docsSource = {
 };
 
 export default {
-  title: 'Form/Timepicker/Plumage Timepicker'
-  ,
+  title: 'Plumage/Plumage Timepicker',
   decorators: [
     Story => {
       const wrap = document.createElement('div');
@@ -70,6 +69,8 @@ export default {
   ],
   parameters: {
     layout: 'padded',
+
+    themeFamily: 'plumage',
     docs: {
 
       description: {

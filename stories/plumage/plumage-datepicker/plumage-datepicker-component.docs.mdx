@@ -1,0 +1,69 @@
+import {
+  Meta,
+  Title,
+  Subtitle,
+  Description,
+  Primary,
+  Controls,
+  Stories,
+  Source,
+} from '@storybook/addon-docs/blocks';
+
+import * as PlumageDatepickerStories from './plumage-datepicker-component.stories.js';
+
+import {
+  htmlExample,
+  reactExample,
+  vueExample,
+  angularExample,
+  svelteExample,
+  svelteKitExample,
+} from './plumage-datepicker-component.examples';
+
+<Meta of={PlumageDatepickerStories} />
+
+<Title />
+<Subtitle>Plumage Datepicker Component</Subtitle>
+
+<Description>
+  A Plumage-styled datepicker input with an optional attached calendar view.
+  Supports responsive form layouts, sizing, validation states, externally
+  controlled values, custom date formatting, disabled/read-only states, and a
+  standalone calendar mode.
+</Description>
+
+## HTML
+
+<Source dark code={htmlExample} language="html" />
+
+## React
+
+<Source dark code={reactExample} language="jsx" />
+
+## Vue
+
+<Source dark code={vueExample} language="html" />
+
+## Angular
+
+<Source dark code={angularExample} language="html" />
+
+## Svelte
+
+<Source dark code={svelteExample} language="ts" />
+
+## Svelte Kit
+
+<Source dark code={svelteKitExample} language="ts" />
+
+## Playground
+
+<Primary />
+
+## Controls
+
+<Controls />
+
+## Stories
+
+<Stories />

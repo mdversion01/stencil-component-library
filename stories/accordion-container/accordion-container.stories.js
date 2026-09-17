@@ -2,7 +2,7 @@
 import { buildContainer } from './accordion-container.story-helpers.js';
 
 export default {
-  title: 'Components/Accordion Container'
+  title: 'Bootstrap/Accordion Container'
   ,
 
   render: (args, { id } = {}) => {
@@ -11,6 +11,7 @@ export default {
   },
 
   parameters: {
+     themeFamily: 'bootstrap',
     docs: {
       description: {
         component: [

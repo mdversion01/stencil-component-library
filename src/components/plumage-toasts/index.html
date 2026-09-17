@@ -1,0 +1,380 @@
+<!-- File: demo/plumage-toasts/index.html -->
+
+<!doctype html>
+<html dir="ltr" lang="en" class="plmg-lt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .plmg-lt {
+        body {
+          background-color: #fff;
+          color: #383838;
+        }
+      }
+
+      .plmg-dk {
+        body {
+          background-color: #323232;
+          color: #f2f2f2;
+        }
+      }
+
+      .theme-switcher {
+        margin: 10px;
+      }
+
+      .cwrapper {
+        margin: 10px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <div class="theme-switcher">
+      <button id="plumage-theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark mode">Dark mode</button>
+    </div>
+
+    <app-wrapper>
+      <div class="cwrapper">
+        <section class="display-box-demo">
+          <div style="margin-top: 15px">
+            <div style="margin-bottom: 5px; font-size: 0.75rem">Toast Styling Example:</div>
+
+            <plumage-toasts-component id="toast1" position=""></plumage-toasts-component>
+          </div>
+
+          <div style="margin-top: 15px; max-width: 500px">
+            <div style="margin-bottom: 5px; font-size: 0.75rem">Plumage Toast Max Styling Example:</div>
+
+            <plumage-toasts-component id="toast4" position="" plumage-toast-max></plumage-toasts-component>
+          </div>
+
+          <div style="margin-top: 15px">
+            <button class="btn btn-secondary type="button" onclick="showNotification1a()">Show Plumage Toast Max</button>
+
+            <button class="btn btn-secondary type="button" onclick="showNotification2b()">Show Stacked Plumage Toast Max</button>
+
+            <button class="btn btn-secondary type="button" onclick="simulateStackedNotifications()">Simulate Stacked Notifications</button>
+          </div>
+
+          <plumage-toasts-component id="toast1c" position="bottom-left"></plumage-toasts-component>
+
+          <plumage-toasts-component id="toast1a" position="bottom-right" plumage-toast-max></plumage-toasts-component>
+
+          <plumage-toasts-component id="toast2b" position="bottom-right" plumage-toast-max append-toast></plumage-toasts-component>
+        </section>
+      </div>
+    </app-wrapper>
+
+    <script type="module">
+      const getToast = id => {
+        const toast = document.getElementById(id);
+
+        if (!toast) {
+          console.warn(`[plumage-toasts demo] Element #${id} was not found.`);
+
+          return null;
+        }
+
+        if (typeof toast.showToast !== 'function') {
+          console.warn(`[plumage-toasts demo] Element #${id} is not ready.`);
+
+          return null;
+        }
+
+        return toast;
+      };
+
+      const showInitialExamples = async () => {
+        await customElements.whenDefined('plumage-toasts-component');
+
+        const toast1 = getToast('toast1');
+
+        if (toast1) {
+          await toast1.showToast({
+            toastTitle: 'Standard Toast',
+            content: 'This is a standard Plumage toast example!',
+            duration: 5000,
+            persistent: true,
+          });
+        }
+
+        const toast4 = getToast('toast4');
+
+        if (toast4) {
+          await toast4.showToast({
+            toastTitle: 'Plumage Toast Max',
+
+            contentHtml: '<div><div>This is data</div><div>This is data</div></div>',
+
+            duration: 7000,
+
+            persistent: true,
+
+            iconVariantClass: 'danger',
+
+            svgIcon: 'exclamation-circle-fill',
+          });
+        }
+      };
+
+      window.addEventListener('DOMContentLoaded', () => {
+        void showInitialExamples();
+      });
+
+      window.showNotification1a = async function () {
+        const toast = getToast('toast1a');
+
+        if (!toast) {
+          return;
+        }
+
+        await toast.showToast({
+          toastTitle: 'Notification',
+
+          content: 'This is a toast message!',
+
+          duration: 5000,
+
+          persistent: false,
+
+          noHoverPause: true,
+
+          svgIcon: 'info-fill',
+
+          iconVariantClass: 'info',
+        });
+      };
+
+      window.showNotification1c = async function () {
+        const toast = getToast('toast1c');
+
+        if (!toast) {
+          return;
+        }
+
+        await toast.showToast({
+          toastTitle: 'Title Text',
+
+          content: 'This is a toast message!',
+
+          additionalHdrContent: '43 seconds ago',
+
+          iconVariantClass: 'primary',
+
+          duration: 5000,
+
+          persistent: false,
+        });
+      };
+
+      window.showNotification2b = async function () {
+        const toast = getToast('toast2b');
+
+        if (!toast) {
+          return;
+        }
+
+        await toast.showToast({
+          toastTitle: 'Plumage Toast Max',
+
+          contentHtml: `
+              <div>
+                <div>This is data</div>
+                <div>This is data</div>
+              </div>
+            `,
+
+          duration: 7000,
+
+          svgIcon: 'exclamation-circle-fill',
+
+          persistent: false,
+
+          noCloseButton: false,
+
+          iconVariantClass: 'danger',
+        });
+      };
+
+      window.simulateStackedNotifications = async function () {
+        const toast = getToast('toast1c');
+
+        if (!toast) {
+          return;
+        }
+
+        const notifications = [
+          {
+            toastTitle: 'Title Text 1',
+
+            content: 'Stacked Notification 1',
+
+            iconVariantClass: 'info',
+
+            additionalHdrContent: '43 seconds ago',
+          },
+
+          {
+            toastTitle: 'Title Text 2',
+
+            content: 'Stacked Notification 2',
+
+            iconVariantClass: 'danger',
+          },
+
+          {
+            toastTitle: 'Title Text 3',
+
+            content: 'Stacked Notification 3',
+
+            iconVariantClass: 'success',
+          },
+        ];
+
+        notifications.forEach((notification, index) => {
+          window.setTimeout(() => {
+            void toast.showToast({
+              ...notification,
+
+              duration: 10000,
+
+              svgIcon: 'exclamation-triangle-outline',
+
+              persistent: false,
+            });
+          }, index * 2000);
+        });
+      };
+
+      const startRealtimeNotifications = async () => {
+        await customElements.whenDefined('plumage-toasts-component');
+
+        const types = ['error', 'update', 'news'];
+
+        const messages = {
+          error: 'An error toast example!',
+
+          update: 'System update toast example!',
+
+          news: 'Breaking news alert/toast example!',
+        };
+
+        const variants = {
+          error: 'danger',
+
+          update: 'info',
+
+          news: 'primary',
+        };
+
+        const icons = {
+          error: 'exclamation-triangle-fill',
+
+          update: 'info-fill',
+
+          news: 'check-circle-fill',
+        };
+
+        window.setInterval(() => {
+          const toast = getToast('toast1a');
+
+          if (!toast) {
+            return;
+          }
+
+          const type = types[Math.floor(Math.random() * types.length)];
+
+          void toast.showToast({
+            toastTitle: type.charAt(0).toUpperCase() + type.slice(1),
+
+            content: messages[type],
+
+            iconVariantClass: variants[type],
+
+            duration: 7000,
+
+            svgIcon: icons[type],
+
+            persistent: false,
+          });
+        }, 10000);
+      };
+
+      window.addEventListener('DOMContentLoaded', () => {
+        void startRealtimeNotifications();
+      });
+
+
+
+
+      (() => {
+        const STORAGE_KEY = 'plumage-demo-theme';
+
+        const html = document.documentElement;
+
+        const toggle = document.getElementById('plumage-theme-toggle');
+
+        if (!toggle) {
+          return;
+        }
+
+        const applyTheme = theme => {
+          const isDark = theme === 'dark';
+
+          const html = document.documentElement;
+
+          html.classList.remove('plmg-lt', 'plmg-dk');
+
+          html.classList.add(isDark ? 'plmg-dk' : 'plmg-lt');
+
+          toggle.setAttribute('aria-pressed', String(isDark));
+
+          toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+
+          toggle.textContent = isDark ? 'Light mode' : 'Dark mode';
+        };
+
+        const getInitialTheme = () => {
+          const storedTheme = localStorage.getItem(STORAGE_KEY);
+
+          if (storedTheme === 'light' || storedTheme === 'dark') {
+            return storedTheme;
+          }
+
+          return html.classList.contains('plmg-dk') ? 'dark' : 'light';
+        };
+
+        applyTheme(getInitialTheme());
+
+        toggle.addEventListener('click', () => {
+          const currentTheme = html.classList.contains('plmg-dk') ? 'dark' : 'light';
+
+          const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+          localStorage.setItem(STORAGE_KEY, nextTheme);
+
+          applyTheme(nextTheme);
+        });
+      })();
+    </script>
+  </body>
+</html>

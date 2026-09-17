@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`plumage-accordion-component renders closed by default (collapse class only; aria-hidden + inert) 1`] = `
+<plumage-accordion-component target-id="section1">
+  <!---->
+  <div class="sc-accordion">
+    <div class="accordion-wrapper">
+      <button-component aria-controls="section1" aria-expanded="false" class-names=" collapsed" data-target="section1" data-toggle="collapse" id="section1-header" target-id="section1">
+        <!---->
+        <button aria-controls="section1" aria-expanded="false" aria-label="Button" class="btn collapsed" data-target="section1" data-toggle="collapse" type="button">
+          <span class="btn__content">
+          </span>
+        </button>
+      </button-component>
+      <div aria-hidden="true" aria-labelledby="section1-header" class="collapse" id="section1" inert="" role="region">
+        <div class="accordion-body accordion-card"></div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-component>
+`;
+
+exports[`plumage-accordion-component renders open by default when is-open is set (collapse show; aria-hidden removed) 1`] = `
+<plumage-accordion-component is-open="true" target-id="section2">
+  <!---->
+  <div class="sc-accordion">
+    <div class="accordion-wrapper">
+      <button-component aria-controls="section2" aria-expanded="true" class-names=" " data-target="section2" data-toggle="collapse" id="section2-header" is-open="" target-id="section2">
+        <!---->
+        <button aria-controls="section2" aria-expanded="true" aria-label="Button" class="btn" data-target="section2" data-toggle="collapse" type="button">
+          <span class="btn__content">
+          </span>
+        </button>
+      </button-component>
+      <div aria-labelledby="section2-header" class="collapse show" id="section2" role="region">
+        <div class="accordion-body accordion-card"></div>
+      </div>
+    </div>
+  </div>
+</plumage-accordion-component>
+`;

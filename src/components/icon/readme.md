@@ -26,6 +26,8 @@
  - [accordion-component](../accordion)
  - [accordion-container](../accordion-container)
  - [dropdown-component](../dropdown)
+ - [plumage-accordion-component](../plumage-accordion)
+ - [plumage-accordion-container](../plumage-accordion-container)
 
 ### Graph
 ```mermaid
@@ -33,6 +35,8 @@ graph TD;
   accordion-component --> icon-component
   accordion-container --> icon-component
   dropdown-component --> icon-component
+  plumage-accordion-component --> icon-component
+  plumage-accordion-container --> icon-component
   style icon-component fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

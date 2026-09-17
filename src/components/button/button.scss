@@ -9,7 +9,8 @@ $btn-sizes: (
     min: 36px,
     padding: (
       0 8.8888888889px 2px,
-    ), // keep 3-value form,,,,,,,,
+    ),
+    // keep 3-value form,,,,,,,,
   ),
   sm: (
     font: 0.75rem,
@@ -277,7 +278,7 @@ $btn-text-variants: (
 .btn-outline-default {
   background-color: transparent !important;
   border-color: #e7e7e7 !important;
-  color: #212529 !important;
+  color: var(--button-outlined-text-color) !important;
 
   &:hover {
     background-color: #767676 !important;
@@ -346,7 +347,7 @@ $btn-text-variants: (
 .btn.icon-btn.btn-active-blue.active {
   background-color: transparent;
   border-color: transparent;
-  color: #419cf9;
+  color: #419cf9 !important;
 }
 
 // // Plumage sized button size
@@ -485,7 +486,7 @@ $btn-text-variants: (
     color: #131313 !important;
 
     &.active {
-      background-color: #5aa9fa;
+      background-color: #5aa9fa !important;
       border-color: #419cf9 !important;
       color: #131313;
     }
@@ -908,5 +909,51 @@ $btn-text-variants: (
   &.btn-active-blue:disabled {
     background-color: var(--bs-btn-active-blue-disabled) !important;
     color: var(--bs-white) !important;
+  }
+}
+
+[data-bs-theme='light'] {
+  .btn-outline-light {
+    color: #000;
+
+    &:hover,
+    &:focus {
+      color: #383838 !important;
+      background-color: #d3d4d5 !important;
+      border-color: #eaeaea !important;
+    }
+  }
+
+  .btn-outline-dark {
+    color: #2b2b2b;
+
+    &:hover,
+    &:focus {
+      color: #f0f0f0 !important;
+      background-color: #383838 !important;
+    }
+  }
+}
+
+[data-bs-theme='dark'] {
+  .btn-outline-light {
+    color: #f2f2f2;
+
+    &:hover,
+    &:focus {
+      color: #2b2b2b !important;
+      background-color: #f2f2f2 !important;
+    }
+  }
+
+  .btn-outline-dark {
+    color: #fff;
+
+    &:hover,
+    &:focus {
+      color: #fff !important;
+      background-color: #434343 !important;
+      border-color: #696969;
+    }
   }
 }

@@ -6,21 +6,19 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DropdownItem } from "./components/dropdown/dropdown-types";
-import { TimeChangeDetail, TimeInputDetail } from "./components/timepicker/plumage-timepicker-component";
+import { TimeChangeDetail, TimeInputDetail } from "./components/plumage-timepicker/plumage-timepicker-component";
+import { IconVariantColor, PlumageToastItem, PlumageToastPosition, PlumageToastPreviewItem } from "./components/plumage-toasts/plumage-toasts-component";
 import { Field, SelectMode, SortOrder, Variant } from "./components/table/table-component";
 import { TimeChangeDetail as TimeChangeDetail1, TimeInputDetail as TimeInputDetail1 } from "./components/timepicker/timepicker-component";
-import { TimeChangeDetail as TimeChangeDetail2, TimeInputDetail as TimeInputDetail2 } from "./components/timepicker/timepicker-component";
-import { FocusOptions, ManagerTimeChangeDetail, ManagerTimeInputDetail } from "./components/timepicker/timepicker-manager-component";
-import { ToastItem, ToastPosition, ToastVariant } from "./components/toasts/toasts-component";
+import { ToastItem, ToastPosition, ToastPreviewItem, ToastVariant } from "./components/toasts/toasts-component";
 import { ToggleItem } from "./components/toggle-switch/toggle-switch-types";
 import { TooltipPosition, TooltipVariant } from "./components/tooltip/tooltip-component";
 export { DropdownItem } from "./components/dropdown/dropdown-types";
-export { TimeChangeDetail, TimeInputDetail } from "./components/timepicker/plumage-timepicker-component";
+export { TimeChangeDetail, TimeInputDetail } from "./components/plumage-timepicker/plumage-timepicker-component";
+export { IconVariantColor, PlumageToastItem, PlumageToastPosition, PlumageToastPreviewItem } from "./components/plumage-toasts/plumage-toasts-component";
 export { Field, SelectMode, SortOrder, Variant } from "./components/table/table-component";
 export { TimeChangeDetail as TimeChangeDetail1, TimeInputDetail as TimeInputDetail1 } from "./components/timepicker/timepicker-component";
-export { TimeChangeDetail as TimeChangeDetail2, TimeInputDetail as TimeInputDetail2 } from "./components/timepicker/timepicker-component";
-export { FocusOptions, ManagerTimeChangeDetail, ManagerTimeInputDetail } from "./components/timepicker/timepicker-manager-component";
-export { ToastItem, ToastPosition, ToastVariant } from "./components/toasts/toasts-component";
+export { ToastItem, ToastPosition, ToastPreviewItem, ToastVariant } from "./components/toasts/toasts-component";
 export { ToggleItem } from "./components/toggle-switch/toggle-switch-types";
 export { TooltipPosition, TooltipVariant } from "./components/tooltip/tooltip-component";
 export namespace Components {
@@ -66,10 +64,6 @@ export namespace Components {
          */
         "outlined": boolean;
         /**
-          * @default false
-         */
-        "plumage": boolean;
-        /**
           * Optional: allow an external label for the region instead of the toggle text
          */
         "regionLabelledby"?: string;
@@ -80,7 +74,7 @@ export namespace Components {
         /**
           * @default ''
          */
-        "size": '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
+        "size": '' | 'xs' | 'sm' | 'lg';
         /**
           * @default ''
          */
@@ -2184,7 +2178,7 @@ export namespace Components {
           * @default false
          */
         "link": boolean;
-        "modalFullScreen"?: 'fullscreen' | 'sm-down' | 'md-down' | 'lg-down' | 'xl-down' | 'xxl-down';
+        "modalFullScreen"?: 'fullscreen' | 'fullscreen-sm-down' | 'fullscreen-md-down' | 'fullscreen-lg-down' | 'fullscreen-xl-down' | 'fullscreen-xxl-down';
         "modalId"?: string;
         "modalSize"?: 'sm' | 'lg' | 'xl';
         /**
@@ -2403,6 +2397,131 @@ export namespace Components {
           * @default 'standard'
          */
         "variant": 'standard' | 'minimize' | 'by-page';
+    }
+    interface PlumageAccordionComponent {
+        /**
+          * @default false
+         */
+        "accordion": boolean;
+        /**
+          * @default false
+         */
+        "block": boolean;
+        /**
+          * @default ''
+         */
+        "classNames": string;
+        /**
+          * @default ''
+         */
+        "contentTxtSize": string;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "flush": boolean;
+        /**
+          * @default 'fas fa-angle-down'
+         */
+        "icon": string;
+        /**
+          * @default false
+         */
+        "isOpen": boolean;
+        /**
+          * @default false
+         */
+        "link": boolean;
+        /**
+          * @default false
+         */
+        "outlined": boolean;
+        /**
+          * Optional: allow an external label for the region instead of the toggle text
+         */
+        "regionLabelledby"?: string;
+        /**
+          * @default false
+         */
+        "ripple": boolean;
+        /**
+          * @default ''
+         */
+        "size": '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
+        "targetId": string;
+        /**
+          * @default ''
+         */
+        "variant": string;
+    }
+    interface PlumageAccordionContainer {
+        /**
+          * Optional: accessible name for the container (use when it stands alone)
+         */
+        "ariaLabel"?: string;
+        /**
+          * Optional: external label element id for the container
+         */
+        "ariaLabelledby"?: string;
+        /**
+          * @default false
+         */
+        "block": boolean;
+        /**
+          * @default ''
+         */
+        "classNames": string;
+        /**
+          * @default ''
+         */
+        "contentTxtSize": string;
+        /**
+          * @default []
+         */
+        "data": Array<{ header: string; content: string }>;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "flush": boolean;
+        /**
+          * @default 'fas fa-angle-down'
+         */
+        "icon": string;
+        /**
+          * @default false
+         */
+        "outlined": boolean;
+        /**
+          * A unique id for THIS accordion container. If not provided, one will be generated.
+          * @default ''
+         */
+        "parentId": string;
+        /**
+          * @default false
+         */
+        "ripple": boolean;
+        /**
+          * @default false
+         */
+        "singleOpen": boolean;
+        /**
+          * @default ''
+         */
+        "size": '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
+        "variant": string;
     }
     interface PlumageAutocompleteMultipleSelectionsComponent {
         /**
@@ -2850,6 +2969,215 @@ export namespace Components {
           * @default ''
          */
         "value": string;
+    }
+    interface PlumageCardComponent {
+        /**
+          * @default false
+         */
+        "actions": boolean;
+        /**
+          * @default ''
+         */
+        "altText": string;
+        "ariaDescribedby"?: string;
+        /**
+          * Accessible naming hooks (preferred)
+         */
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
+        /**
+          * @default '20'
+         */
+        "cardMaxWidth": string;
+        /**
+          * @default ''
+         */
+        "classNames": string;
+        /**
+          * @default false
+         */
+        "clickable": boolean;
+        /**
+          * If true, image is decorative and will be hidden from AT (alt="").
+          * @default false
+         */
+        "decorativeImage": boolean;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default ''
+         */
+        "elevation": string;
+        /**
+          * Heading level for the title slot.
+          * @default 5
+         */
+        "headingLevel": number;
+        /**
+          * @default false
+         */
+        "img": boolean;
+        /**
+          * @default '11.25rem'
+         */
+        "imgHeight": string;
+        /**
+          * @default ''
+         */
+        "imgSrc": string;
+        /**
+          * @default ''
+         */
+        "inlineStyles": string;
+        /**
+          * @default false
+         */
+        "landmark": boolean;
+        /**
+          * @default false
+         */
+        "noFooter": boolean;
+        /**
+          * @default false
+         */
+        "noHeader": boolean;
+    }
+    interface PlumageDatepickerComponent {
+        /**
+          * @default ''
+         */
+        "appendId": string;
+        /**
+          * Reserved-name fixes kept
+          * @default true
+         */
+        "appendProp": boolean;
+        /**
+          * @default false
+         */
+        "calendar": boolean;
+        /**
+          * @default new Date().getMonth()
+         */
+        "currentMonth": number;
+        /**
+          * @default new Date().getFullYear()
+         */
+        "currentYear": number;
+        /**
+          * @default 'YYYY-MM-DD'
+         */
+        "dateFormat": DateFormat;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default false
+         */
+        "displayContextExamples": boolean;
+        /**
+          * @default false
+         */
+        "dropdownOpen": boolean;
+        /**
+          * Layout & sizing
+          * @default ''
+         */
+        "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * Icon & ids
+          * @default 'fas fa-calendar-alt'
+         */
+        "icon": string;
+        /**
+          * @default 10
+         */
+        "inputCol": number;
+        /**
+          * @default ''
+         */
+        "inputCols": string;
+        /**
+          * @default 'datepicker'
+         */
+        "inputId": string;
+        /**
+          * @default false
+         */
+        "isCalendarFocused": boolean;
+        /**
+          * Label & placeholder
+          * @default 'Date Picker'
+         */
+        "label": string;
+        /**
+          * @default ''
+         */
+        "labelAlign": '' | 'right';
+        /**
+          * Legacy numeric cols (fallback)
+          * @default 2
+         */
+        "labelCol": number;
+        /**
+          * Responsive column class specs
+          * @default ''
+         */
+        "labelCols": string;
+        /**
+          * @default false
+         */
+        "labelHidden": boolean;
+        /**
+          * @default ''
+         */
+        "labelSize": '' | 'sm' | 'lg';
+        /**
+          * @default 'YYYY-MM-DD'
+         */
+        "placeholder": string;
+        /**
+          * @default ''
+         */
+        "prependId": string;
+        /**
+          * Prepend/append
+          * @default false
+         */
+        "prependProp": boolean;
+        /**
+          * @default false
+         */
+        "readOnly": boolean;
+        /**
+          * Validation
+          * @default false
+         */
+        "required": boolean;
+        /**
+          * @default ''
+         */
+        "size": '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
+        "validation": boolean;
+        /**
+          * @default ''
+         */
+        "validationMessage": string;
+        /**
+          * Value (kept for API parity)
+          * @default ''
+         */
+        "value": string;
+        /**
+          * @default ''
+         */
+        "warningMessage": string;
     }
     interface PlumageInputFieldComponent {
         "ariaDescribedby"?: string;
@@ -3403,6 +3731,87 @@ export namespace Components {
           * @default ''
          */
         "value": string;
+    }
+    interface PlumageToastsComponent {
+        "additionalHeaderContent"?: any;
+        /**
+          * @default false
+         */
+        "appendToast": boolean;
+        /**
+          * @default 'Notifications'
+         */
+        "ariaLabel": string;
+        "bodyClass"?: string;
+        "contentHtml"?: string;
+        /**
+          * @default 5000
+         */
+        "duration": number;
+        /**
+          * @default false
+         */
+        "focusOnShow": boolean;
+        "headerClass"?: string;
+        /**
+          * @default false
+         */
+        "isStatus": boolean;
+        /**
+          * @default 550
+         */
+        "maxWidth": | number
+    | string;
+        "message"?: string;
+        /**
+          * @default false
+         */
+        "noAnimation": boolean;
+        /**
+          * @default false
+         */
+        "noCloseButton": boolean;
+        /**
+          * @default false
+         */
+        "noHoverPause": boolean;
+        /**
+          * @default false
+         */
+        "noTime": boolean;
+        /**
+          * @default false
+         */
+        "persistent": boolean;
+        /**
+          * @default false
+         */
+        "plumageToastMax": boolean;
+        /**
+          * @default 'bottom-right'
+         */
+        "position": PlumageToastPosition;
+        /**
+          * Declarative render-only toast data for documentation, testing, and visual previews. When supplied, runtime toast lifecycle behavior is disabled.
+         */
+        "previewToasts"?: PlumageToastPreviewItem[];
+        "removeToast": (id: number) => Promise<void>;
+        "showToast": (options?: Partial<Omit<PlumageToastItem, "id" | "state" | "hideTimeout" | "removeTimeout">>) => Promise<number>;
+        "startRemoveToast": (id: number) => Promise<void>;
+        "svgIcon"?: string;
+        /**
+          * @default PlumageToastsComponent.getCurrentZuluTime()
+         */
+        "time": string;
+        /**
+          * @default 'plumage-toasts-component'
+         */
+        "toastId": string;
+        "toastTitle"?: string;
+        /**
+          * @default ''
+         */
+        "variant": IconVariantColor;
     }
     interface PopoverComponent {
         "ariaDescribedby"?: string;
@@ -4474,12 +4883,12 @@ export namespace Components {
          */
         "size": string;
         /**
-          * Throttle window for timeInput events (ms). Set 0 to disable throttling.
+          * Throttle window for timeInput events in milliseconds. Set to 0 to disable throttling.
           * @default 50
          */
         "timeInputThrottleMs": number;
         /**
-          * Built-in time format/range validation is always enabled. Kept as a prop for backwards compatibility, but internal time validation always runs.
+          * Built-in time format/range validation is always enabled. Kept as a prop for backwards compatibility.
           * @default true
          */
         "timeValidation": boolean;
@@ -4492,99 +4901,7 @@ export namespace Components {
          */
         "twentyFourHourOnly": boolean;
         /**
-          * User-controlled validation toggle/message
-          * @default false
-         */
-        "validation"?: boolean;
-        /**
-          * @default ''
-         */
-        "validationMessage": string;
-        /**
-          * @default ''
-         */
-        "value": string;
-    }
-    interface TimepickerManager {
-        "ariaDescribedby"?: string;
-        "ariaLabel"?: string;
-        "ariaLabelledby"?: string;
-        "close": () => Promise<void>;
-        /**
-          * @default false
-         */
-        "disableTimepicker": boolean;
-        "focusInput": (options?: FocusOptions) => Promise<void>;
-        /**
-          * @default false
-         */
-        "hideSeconds": boolean;
-        /**
-          * @default false
-         */
-        "hideTimepickerBtn": boolean;
-        /**
-          * @default 'time-input'
-         */
-        "inputId": string;
-        /**
-          * @default 'time'
-         */
-        "inputName": string;
-        /**
-          * @default null
-         */
-        "inputWidth": number | string;
-        /**
-          * @default true
-         */
-        "isTwentyFourHourFormat": boolean;
-        /**
-          * @default true
-         */
-        "isValid": boolean;
-        /**
-          * @default 'Enter Time'
-         */
-        "labelText": string;
-        /**
-          * @default false
-         */
-        "readOnly": boolean;
-        /**
-          * @default false
-         */
-        "required": boolean;
-        "showLabel"?: boolean;
-        /**
-          * @default ''
-         */
-        "size": string;
-        /**
-          * @default 50
-         */
-        "timeInputThrottleMs": number;
-        /**
-          * @default true
-         */
-        "timeValidation": boolean;
-        /**
-          * @default ''
-         */
-        "timeValidationMessage": string;
-        /**
-          * @default false
-         */
-        "twelveHourOnly": boolean;
-        /**
-          * @default false
-         */
-        "twentyFourHourOnly": boolean;
-        /**
-          * @default false
-         */
-        "usePlTimepicker": boolean;
-        /**
+          * User-controlled validation toggle/message.
           * @default false
          */
         "validation"?: boolean;
@@ -4604,18 +4921,16 @@ export namespace Components {
          */
         "appendToast": boolean;
         /**
-          * Accessible label for the toaster region (screen readers). Keep short and meaningful (“Notifications”, “Messages”, etc.)
           * @default 'Notifications'
          */
         "ariaLabel": string;
         "bodyClass"?: string;
-        "customContent"?: any;
+        "contentHtml"?: string;
         /**
           * @default 5000
          */
         "duration": number;
         /**
-          * If true, when a toast is shown it will be focused (useful for critical messaging). Defaults to false to avoid stealing focus.
           * @default false
          */
         "focusOnShow": boolean;
@@ -4623,12 +4938,11 @@ export namespace Components {
         /**
           * @default false
          */
-        "iconPlumageStyle": boolean;
-        /**
-          * When true, toasts announce politely as “status” by default. When false, toasts announce assertively as “alert” by default.
-          * @default false
-         */
         "isStatus": boolean;
+        /**
+          * @default 350
+         */
+        "maxWidth": number | string;
         "message"?: string;
         /**
           * @default false
@@ -4647,32 +4961,21 @@ export namespace Components {
          */
         "persistent": boolean;
         /**
-          * @default false
-         */
-        "plumageToast": boolean;
-        /**
-          * @default false
-         */
-        "plumageToastMax": boolean;
-        /**
           * @default 'bottom-right'
          */
         "position": ToastPosition;
+        /**
+          * Declarative render-only toast data for documentation, testing, and visual previews. When supplied, runtime toast lifecycle behavior is disabled.
+         */
+        "previewToasts"?: ToastPreviewItem[];
         "removeToast": (id: number) => Promise<void>;
-        "showToast": (opts?: Partial<Omit<ToastItem, "id" | "state">>) => Promise<number>;
+        "showToast": (options?: Partial<Omit<ToastItem, "id" | "state" | "hideTimeout">>) => Promise<number>;
         /**
           * @default false
          */
         "solidToast": boolean;
         "startRemoveToast": (id: number) => Promise<void>;
-        /**
-          * Default icon symbol id (from the inline sprite) for new toasts.
-         */
         "svgIcon"?: string;
-        /**
-          * @default ToastsComponent.getCurrentZuluTime()
-         */
-        "time": string;
         /**
           * @default 'toast-component'
          */
@@ -4907,6 +5210,10 @@ export interface PaginationComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLPaginationComponentElement;
 }
+export interface PlumageAccordionComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPlumageAccordionComponentElement;
+}
 export interface PlumageAutocompleteMultipleSelectionsComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLPlumageAutocompleteMultipleSelectionsComponentElement;
@@ -4918,6 +5225,14 @@ export interface PlumageAutocompleteMultiselectComponentCustomEvent<T> extends C
 export interface PlumageAutocompleteSingleCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLPlumageAutocompleteSingleElement;
+}
+export interface PlumageCardComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPlumageCardComponentElement;
+}
+export interface PlumageDatepickerComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPlumageDatepickerComponentElement;
 }
 export interface PlumageInputFieldComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -4966,10 +5281,6 @@ export interface TextareaComponentCustomEvent<T> extends CustomEvent<T> {
 export interface TimepickerComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLTimepickerComponentElement;
-}
-export interface TimepickerManagerCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLTimepickerManagerElement;
 }
 export interface ToggleSwitchComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -5385,6 +5696,29 @@ declare global {
         prototype: HTMLPaginationComponentElement;
         new (): HTMLPaginationComponentElement;
     };
+    interface HTMLPlumageAccordionComponentElementEventMap {
+        "toggleEvent": boolean;
+    }
+    interface HTMLPlumageAccordionComponentElement extends Components.PlumageAccordionComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLPlumageAccordionComponentElementEventMap>(type: K, listener: (this: HTMLPlumageAccordionComponentElement, ev: PlumageAccordionComponentCustomEvent<HTMLPlumageAccordionComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLPlumageAccordionComponentElementEventMap>(type: K, listener: (this: HTMLPlumageAccordionComponentElement, ev: PlumageAccordionComponentCustomEvent<HTMLPlumageAccordionComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLPlumageAccordionComponentElement: {
+        prototype: HTMLPlumageAccordionComponentElement;
+        new (): HTMLPlumageAccordionComponentElement;
+    };
+    interface HTMLPlumageAccordionContainerElement extends Components.PlumageAccordionContainer, HTMLStencilElement {
+    }
+    var HTMLPlumageAccordionContainerElement: {
+        prototype: HTMLPlumageAccordionContainerElement;
+        new (): HTMLPlumageAccordionContainerElement;
+    };
     interface HTMLPlumageAutocompleteMultipleSelectionsComponentElementEventMap {
         "itemSelect": string;
         "clear": void;
@@ -5454,6 +5788,44 @@ declare global {
     var HTMLPlumageAutocompleteSingleElement: {
         prototype: HTMLPlumageAutocompleteSingleElement;
         new (): HTMLPlumageAutocompleteSingleElement;
+    };
+    interface HTMLPlumageCardComponentElementEventMap {
+        "customClick": void;
+    }
+    interface HTMLPlumageCardComponentElement extends Components.PlumageCardComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLPlumageCardComponentElementEventMap>(type: K, listener: (this: HTMLPlumageCardComponentElement, ev: PlumageCardComponentCustomEvent<HTMLPlumageCardComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLPlumageCardComponentElementEventMap>(type: K, listener: (this: HTMLPlumageCardComponentElement, ev: PlumageCardComponentCustomEvent<HTMLPlumageCardComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLPlumageCardComponentElement: {
+        prototype: HTMLPlumageCardComponentElement;
+        new (): HTMLPlumageCardComponentElement;
+    };
+    interface HTMLPlumageDatepickerComponentElementEventMap {
+        "date-selected": {
+    value: string;
+    formattedDate: string;
+    date: string;
+  };
+    }
+    interface HTMLPlumageDatepickerComponentElement extends Components.PlumageDatepickerComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLPlumageDatepickerComponentElementEventMap>(type: K, listener: (this: HTMLPlumageDatepickerComponentElement, ev: PlumageDatepickerComponentCustomEvent<HTMLPlumageDatepickerComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLPlumageDatepickerComponentElementEventMap>(type: K, listener: (this: HTMLPlumageDatepickerComponentElement, ev: PlumageDatepickerComponentCustomEvent<HTMLPlumageDatepickerComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLPlumageDatepickerComponentElement: {
+        prototype: HTMLPlumageDatepickerComponentElement;
+        new (): HTMLPlumageDatepickerComponentElement;
     };
     interface HTMLPlumageInputFieldComponentElementEventMap {
         "valueChange": string;
@@ -5543,6 +5915,12 @@ declare global {
     var HTMLPlumageTimepickerComponentElement: {
         prototype: HTMLPlumageTimepickerComponentElement;
         new (): HTMLPlumageTimepickerComponentElement;
+    };
+    interface HTMLPlumageToastsComponentElement extends Components.PlumageToastsComponent, HTMLStencilElement {
+    }
+    var HTMLPlumageToastsComponentElement: {
+        prototype: HTMLPlumageToastsComponentElement;
+        new (): HTMLPlumageToastsComponentElement;
     };
     interface HTMLPopoverComponentElement extends Components.PopoverComponent, HTMLStencilElement {
     }
@@ -5692,26 +6070,6 @@ declare global {
         prototype: HTMLTimepickerComponentElement;
         new (): HTMLTimepickerComponentElement;
     };
-    interface HTMLTimepickerManagerElementEventMap {
-        "timeChange": TimeChangeDetail2;
-        "timeInput": TimeInputDetail2;
-        "managerTimeChange": ManagerTimeChangeDetail;
-        "managerTimeInput": ManagerTimeInputDetail;
-    }
-    interface HTMLTimepickerManagerElement extends Components.TimepickerManager, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLTimepickerManagerElementEventMap>(type: K, listener: (this: HTMLTimepickerManagerElement, ev: TimepickerManagerCustomEvent<HTMLTimepickerManagerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLTimepickerManagerElementEventMap>(type: K, listener: (this: HTMLTimepickerManagerElement, ev: TimepickerManagerCustomEvent<HTMLTimepickerManagerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLTimepickerManagerElement: {
-        prototype: HTMLTimepickerManagerElement;
-        new (): HTMLTimepickerManagerElement;
-    };
     interface HTMLToastsComponentElement extends Components.ToastsComponent, HTMLStencilElement {
     }
     var HTMLToastsComponentElement: {
@@ -5781,14 +6139,19 @@ declare global {
         "modal-component": HTMLModalComponentElement;
         "multi-range-slider-component": HTMLMultiRangeSliderComponentElement;
         "pagination-component": HTMLPaginationComponentElement;
+        "plumage-accordion-component": HTMLPlumageAccordionComponentElement;
+        "plumage-accordion-container": HTMLPlumageAccordionContainerElement;
         "plumage-autocomplete-multiple-selections-component": HTMLPlumageAutocompleteMultipleSelectionsComponentElement;
         "plumage-autocomplete-multiselect-component": HTMLPlumageAutocompleteMultiselectComponentElement;
         "plumage-autocomplete-single": HTMLPlumageAutocompleteSingleElement;
+        "plumage-card-component": HTMLPlumageCardComponentElement;
+        "plumage-datepicker-component": HTMLPlumageDatepickerComponentElement;
         "plumage-input-field-component": HTMLPlumageInputFieldComponentElement;
         "plumage-input-group-component": HTMLPlumageInputGroupComponentElement;
         "plumage-select-field-component": HTMLPlumageSelectFieldComponentElement;
         "plumage-textarea-component": HTMLPlumageTextareaComponentElement;
         "plumage-timepicker-component": HTMLPlumageTimepickerComponentElement;
+        "plumage-toasts-component": HTMLPlumageToastsComponentElement;
         "popover-component": HTMLPopoverComponentElement;
         "progress-display-component": HTMLProgressDisplayComponentElement;
         "radio-input-component": HTMLRadioInputComponentElement;
@@ -5800,7 +6163,6 @@ declare global {
         "table-component": HTMLTableComponentElement;
         "textarea-component": HTMLTextareaComponentElement;
         "timepicker-component": HTMLTimepickerComponentElement;
-        "timepicker-manager": HTMLTimepickerManagerElement;
         "toasts-component": HTMLToastsComponentElement;
         "toggle-switch-component": HTMLToggleSwitchComponentElement;
         "tooltip-component": HTMLTooltipComponentElement;
@@ -5850,10 +6212,6 @@ declare namespace LocalJSX {
          */
         "outlined"?: boolean;
         /**
-          * @default false
-         */
-        "plumage"?: boolean;
-        /**
           * Optional: allow an external label for the region instead of the toggle text
          */
         "regionLabelledby"?: string;
@@ -5864,7 +6222,7 @@ declare namespace LocalJSX {
         /**
           * @default ''
          */
-        "size"?: '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
+        "size"?: '' | 'xs' | 'sm' | 'lg';
         /**
           * @default ''
          */
@@ -8004,7 +8362,7 @@ declare namespace LocalJSX {
           * @default false
          */
         "link"?: boolean;
-        "modalFullScreen"?: 'fullscreen' | 'sm-down' | 'md-down' | 'lg-down' | 'xl-down' | 'xxl-down';
+        "modalFullScreen"?: 'fullscreen' | 'fullscreen-sm-down' | 'fullscreen-md-down' | 'fullscreen-lg-down' | 'fullscreen-xl-down' | 'fullscreen-xxl-down';
         "modalId"?: string;
         "modalSize"?: 'sm' | 'lg' | 'xl';
         /**
@@ -8222,6 +8580,132 @@ declare namespace LocalJSX {
           * @default 'standard'
          */
         "variant"?: 'standard' | 'minimize' | 'by-page';
+    }
+    interface PlumageAccordionComponent {
+        /**
+          * @default false
+         */
+        "accordion"?: boolean;
+        /**
+          * @default false
+         */
+        "block"?: boolean;
+        /**
+          * @default ''
+         */
+        "classNames"?: string;
+        /**
+          * @default ''
+         */
+        "contentTxtSize"?: string;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "flush"?: boolean;
+        /**
+          * @default 'fas fa-angle-down'
+         */
+        "icon"?: string;
+        /**
+          * @default false
+         */
+        "isOpen"?: boolean;
+        /**
+          * @default false
+         */
+        "link"?: boolean;
+        "onToggleEvent"?: (event: PlumageAccordionComponentCustomEvent<boolean>) => void;
+        /**
+          * @default false
+         */
+        "outlined"?: boolean;
+        /**
+          * Optional: allow an external label for the region instead of the toggle text
+         */
+        "regionLabelledby"?: string;
+        /**
+          * @default false
+         */
+        "ripple"?: boolean;
+        /**
+          * @default ''
+         */
+        "size"?: '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
+        "targetId"?: string;
+        /**
+          * @default ''
+         */
+        "variant"?: string;
+    }
+    interface PlumageAccordionContainer {
+        /**
+          * Optional: accessible name for the container (use when it stands alone)
+         */
+        "ariaLabel"?: string;
+        /**
+          * Optional: external label element id for the container
+         */
+        "ariaLabelledby"?: string;
+        /**
+          * @default false
+         */
+        "block"?: boolean;
+        /**
+          * @default ''
+         */
+        "classNames"?: string;
+        /**
+          * @default ''
+         */
+        "contentTxtSize"?: string;
+        /**
+          * @default []
+         */
+        "data"?: Array<{ header: string; content: string }>;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "flush"?: boolean;
+        /**
+          * @default 'fas fa-angle-down'
+         */
+        "icon"?: string;
+        /**
+          * @default false
+         */
+        "outlined"?: boolean;
+        /**
+          * A unique id for THIS accordion container. If not provided, one will be generated.
+          * @default ''
+         */
+        "parentId"?: string;
+        /**
+          * @default false
+         */
+        "ripple"?: boolean;
+        /**
+          * @default false
+         */
+        "singleOpen"?: boolean;
+        /**
+          * @default ''
+         */
+        "size"?: '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
+        /**
+          * @default ''
+         */
+        "variant"?: string;
     }
     interface PlumageAutocompleteMultipleSelectionsComponent {
         /**
@@ -8680,6 +9164,221 @@ declare namespace LocalJSX {
           * @default ''
          */
         "value"?: string;
+    }
+    interface PlumageCardComponent {
+        /**
+          * @default false
+         */
+        "actions"?: boolean;
+        /**
+          * @default ''
+         */
+        "altText"?: string;
+        "ariaDescribedby"?: string;
+        /**
+          * Accessible naming hooks (preferred)
+         */
+        "ariaLabel"?: string;
+        "ariaLabelledby"?: string;
+        /**
+          * @default '20'
+         */
+        "cardMaxWidth"?: string;
+        /**
+          * @default ''
+         */
+        "classNames"?: string;
+        /**
+          * @default false
+         */
+        "clickable"?: boolean;
+        /**
+          * If true, image is decorative and will be hidden from AT (alt="").
+          * @default false
+         */
+        "decorativeImage"?: boolean;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default ''
+         */
+        "elevation"?: string;
+        /**
+          * Heading level for the title slot.
+          * @default 5
+         */
+        "headingLevel"?: number;
+        /**
+          * @default false
+         */
+        "img"?: boolean;
+        /**
+          * @default '11.25rem'
+         */
+        "imgHeight"?: string;
+        /**
+          * @default ''
+         */
+        "imgSrc"?: string;
+        /**
+          * @default ''
+         */
+        "inlineStyles"?: string;
+        /**
+          * @default false
+         */
+        "landmark"?: boolean;
+        /**
+          * @default false
+         */
+        "noFooter"?: boolean;
+        /**
+          * @default false
+         */
+        "noHeader"?: boolean;
+        "onCustomClick"?: (event: PlumageCardComponentCustomEvent<void>) => void;
+    }
+    interface PlumageDatepickerComponent {
+        /**
+          * @default ''
+         */
+        "appendId"?: string;
+        /**
+          * Reserved-name fixes kept
+          * @default true
+         */
+        "appendProp"?: boolean;
+        /**
+          * @default false
+         */
+        "calendar"?: boolean;
+        /**
+          * @default new Date().getMonth()
+         */
+        "currentMonth"?: number;
+        /**
+          * @default new Date().getFullYear()
+         */
+        "currentYear"?: number;
+        /**
+          * @default 'YYYY-MM-DD'
+         */
+        "dateFormat"?: DateFormat;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default false
+         */
+        "displayContextExamples"?: boolean;
+        /**
+          * @default false
+         */
+        "dropdownOpen"?: boolean;
+        /**
+          * Layout & sizing
+          * @default ''
+         */
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * Icon & ids
+          * @default 'fas fa-calendar-alt'
+         */
+        "icon"?: string;
+        /**
+          * @default 10
+         */
+        "inputCol"?: number;
+        /**
+          * @default ''
+         */
+        "inputCols"?: string;
+        /**
+          * @default 'datepicker'
+         */
+        "inputId"?: string;
+        /**
+          * @default false
+         */
+        "isCalendarFocused"?: boolean;
+        /**
+          * Label & placeholder
+          * @default 'Date Picker'
+         */
+        "label"?: string;
+        /**
+          * @default ''
+         */
+        "labelAlign"?: '' | 'right';
+        /**
+          * Legacy numeric cols (fallback)
+          * @default 2
+         */
+        "labelCol"?: number;
+        /**
+          * Responsive column class specs
+          * @default ''
+         */
+        "labelCols"?: string;
+        /**
+          * @default false
+         */
+        "labelHidden"?: boolean;
+        /**
+          * @default ''
+         */
+        "labelSize"?: '' | 'sm' | 'lg';
+        "onDate-selected"?: (event: PlumageDatepickerComponentCustomEvent<{
+    value: string;
+    formattedDate: string;
+    date: string;
+  }>) => void;
+        /**
+          * @default 'YYYY-MM-DD'
+         */
+        "placeholder"?: string;
+        /**
+          * @default ''
+         */
+        "prependId"?: string;
+        /**
+          * Prepend/append
+          * @default false
+         */
+        "prependProp"?: boolean;
+        /**
+          * @default false
+         */
+        "readOnly"?: boolean;
+        /**
+          * Validation
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * @default ''
+         */
+        "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
+        "validation"?: boolean;
+        /**
+          * @default ''
+         */
+        "validationMessage"?: string;
+        /**
+          * Value (kept for API parity)
+          * @default ''
+         */
+        "value"?: string;
+        /**
+          * @default ''
+         */
+        "warningMessage"?: string;
     }
     interface PlumageInputFieldComponent {
         "ariaDescribedby"?: string;
@@ -9241,6 +9940,84 @@ declare namespace LocalJSX {
           * @default ''
          */
         "value"?: string;
+    }
+    interface PlumageToastsComponent {
+        "additionalHeaderContent"?: any;
+        /**
+          * @default false
+         */
+        "appendToast"?: boolean;
+        /**
+          * @default 'Notifications'
+         */
+        "ariaLabel"?: string;
+        "bodyClass"?: string;
+        "contentHtml"?: string;
+        /**
+          * @default 5000
+         */
+        "duration"?: number;
+        /**
+          * @default false
+         */
+        "focusOnShow"?: boolean;
+        "headerClass"?: string;
+        /**
+          * @default false
+         */
+        "isStatus"?: boolean;
+        /**
+          * @default 550
+         */
+        "maxWidth"?: | number
+    | string;
+        "message"?: string;
+        /**
+          * @default false
+         */
+        "noAnimation"?: boolean;
+        /**
+          * @default false
+         */
+        "noCloseButton"?: boolean;
+        /**
+          * @default false
+         */
+        "noHoverPause"?: boolean;
+        /**
+          * @default false
+         */
+        "noTime"?: boolean;
+        /**
+          * @default false
+         */
+        "persistent"?: boolean;
+        /**
+          * @default false
+         */
+        "plumageToastMax"?: boolean;
+        /**
+          * @default 'bottom-right'
+         */
+        "position"?: PlumageToastPosition;
+        /**
+          * Declarative render-only toast data for documentation, testing, and visual previews. When supplied, runtime toast lifecycle behavior is disabled.
+         */
+        "previewToasts"?: PlumageToastPreviewItem[];
+        "svgIcon"?: string;
+        /**
+          * @default PlumageToastsComponent.getCurrentZuluTime()
+         */
+        "time"?: string;
+        /**
+          * @default 'plumage-toasts-component'
+         */
+        "toastId"?: string;
+        "toastTitle"?: string;
+        /**
+          * @default ''
+         */
+        "variant"?: IconVariantColor;
     }
     interface PopoverComponent {
         "ariaDescribedby"?: string;
@@ -10322,12 +11099,12 @@ declare namespace LocalJSX {
          */
         "size"?: string;
         /**
-          * Throttle window for timeInput events (ms). Set 0 to disable throttling.
+          * Throttle window for timeInput events in milliseconds. Set to 0 to disable throttling.
           * @default 50
          */
         "timeInputThrottleMs"?: number;
         /**
-          * Built-in time format/range validation is always enabled. Kept as a prop for backwards compatibility, but internal time validation always runs.
+          * Built-in time format/range validation is always enabled. Kept as a prop for backwards compatibility.
           * @default true
          */
         "timeValidation"?: boolean;
@@ -10340,101 +11117,7 @@ declare namespace LocalJSX {
          */
         "twentyFourHourOnly"?: boolean;
         /**
-          * User-controlled validation toggle/message
-          * @default false
-         */
-        "validation"?: boolean;
-        /**
-          * @default ''
-         */
-        "validationMessage"?: string;
-        /**
-          * @default ''
-         */
-        "value"?: string;
-    }
-    interface TimepickerManager {
-        "ariaDescribedby"?: string;
-        "ariaLabel"?: string;
-        "ariaLabelledby"?: string;
-        /**
-          * @default false
-         */
-        "disableTimepicker"?: boolean;
-        /**
-          * @default false
-         */
-        "hideSeconds"?: boolean;
-        /**
-          * @default false
-         */
-        "hideTimepickerBtn"?: boolean;
-        /**
-          * @default 'time-input'
-         */
-        "inputId"?: string;
-        /**
-          * @default 'time'
-         */
-        "inputName"?: string;
-        /**
-          * @default null
-         */
-        "inputWidth"?: number | string;
-        /**
-          * @default true
-         */
-        "isTwentyFourHourFormat"?: boolean;
-        /**
-          * @default true
-         */
-        "isValid"?: boolean;
-        /**
-          * @default 'Enter Time'
-         */
-        "labelText"?: string;
-        "onManagerTimeChange"?: (event: TimepickerManagerCustomEvent<ManagerTimeChangeDetail>) => void;
-        "onManagerTimeInput"?: (event: TimepickerManagerCustomEvent<ManagerTimeInputDetail>) => void;
-        "onTimeChange"?: (event: TimepickerManagerCustomEvent<TimeChangeDetail2>) => void;
-        "onTimeInput"?: (event: TimepickerManagerCustomEvent<TimeInputDetail2>) => void;
-        /**
-          * @default false
-         */
-        "readOnly"?: boolean;
-        /**
-          * @default false
-         */
-        "required"?: boolean;
-        "showLabel"?: boolean;
-        /**
-          * @default ''
-         */
-        "size"?: string;
-        /**
-          * @default 50
-         */
-        "timeInputThrottleMs"?: number;
-        /**
-          * @default true
-         */
-        "timeValidation"?: boolean;
-        /**
-          * @default ''
-         */
-        "timeValidationMessage"?: string;
-        /**
-          * @default false
-         */
-        "twelveHourOnly"?: boolean;
-        /**
-          * @default false
-         */
-        "twentyFourHourOnly"?: boolean;
-        /**
-          * @default false
-         */
-        "usePlTimepicker"?: boolean;
-        /**
+          * User-controlled validation toggle/message.
           * @default false
          */
         "validation"?: boolean;
@@ -10454,18 +11137,16 @@ declare namespace LocalJSX {
          */
         "appendToast"?: boolean;
         /**
-          * Accessible label for the toaster region (screen readers). Keep short and meaningful (“Notifications”, “Messages”, etc.)
           * @default 'Notifications'
          */
         "ariaLabel"?: string;
         "bodyClass"?: string;
-        "customContent"?: any;
+        "contentHtml"?: string;
         /**
           * @default 5000
          */
         "duration"?: number;
         /**
-          * If true, when a toast is shown it will be focused (useful for critical messaging). Defaults to false to avoid stealing focus.
           * @default false
          */
         "focusOnShow"?: boolean;
@@ -10473,12 +11154,11 @@ declare namespace LocalJSX {
         /**
           * @default false
          */
-        "iconPlumageStyle"?: boolean;
-        /**
-          * When true, toasts announce politely as “status” by default. When false, toasts announce assertively as “alert” by default.
-          * @default false
-         */
         "isStatus"?: boolean;
+        /**
+          * @default 350
+         */
+        "maxWidth"?: number | string;
         "message"?: string;
         /**
           * @default false
@@ -10497,29 +11177,18 @@ declare namespace LocalJSX {
          */
         "persistent"?: boolean;
         /**
-          * @default false
-         */
-        "plumageToast"?: boolean;
-        /**
-          * @default false
-         */
-        "plumageToastMax"?: boolean;
-        /**
           * @default 'bottom-right'
          */
         "position"?: ToastPosition;
         /**
+          * Declarative render-only toast data for documentation, testing, and visual previews. When supplied, runtime toast lifecycle behavior is disabled.
+         */
+        "previewToasts"?: ToastPreviewItem[];
+        /**
           * @default false
          */
         "solidToast"?: boolean;
-        /**
-          * Default icon symbol id (from the inline sprite) for new toasts.
-         */
         "svgIcon"?: string;
-        /**
-          * @default ToastsComponent.getCurrentZuluTime()
-         */
-        "time"?: string;
         /**
           * @default 'toast-component'
          */
@@ -10686,13 +11355,12 @@ declare namespace LocalJSX {
         "outlined": boolean;
         "block": boolean;
         "variant": string;
-        "size": '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
+        "size": '' | 'xs' | 'sm' | 'lg';
         "disabled": boolean;
         "ripple": boolean;
         "link": boolean;
         "icon": string;
         "isOpen": boolean;
-        "plumage": boolean;
         "regionLabelledby": string;
     }
     interface AccordionContainerAttributes {
@@ -11259,7 +11927,7 @@ declare namespace LocalJSX {
         "modalId": string;
         "modalTitle": string;
         "modalSize": 'sm' | 'lg' | 'xl';
-        "modalFullScreen": 'fullscreen' | 'sm-down' | 'md-down' | 'lg-down' | 'xl-down' | 'xxl-down';
+        "modalFullScreen": 'fullscreen' | 'fullscreen-sm-down' | 'fullscreen-md-down' | 'fullscreen-lg-down' | 'fullscreen-xl-down' | 'fullscreen-xxl-down';
         "scrollableBody": boolean;
         "scrollLongContent": boolean;
         "verticallyCentered": boolean;
@@ -11309,6 +11977,39 @@ declare namespace LocalJSX {
         "paginationAriaLabel": string;
         "pageSizeLabel": string;
         "pageSizeHelpText": string;
+    }
+    interface PlumageAccordionComponentAttributes {
+        "accordion": boolean;
+        "contentTxtSize": string;
+        "targetId": string;
+        "classNames": string;
+        "flush": boolean;
+        "outlined": boolean;
+        "block": boolean;
+        "variant": string;
+        "size": '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
+        "disabled": boolean;
+        "ripple": boolean;
+        "link": boolean;
+        "icon": string;
+        "isOpen": boolean;
+        "regionLabelledby": string;
+    }
+    interface PlumageAccordionContainerAttributes {
+        "parentId": string;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "flush": boolean;
+        "variant": string;
+        "size": '' | 'xs' | 'plumage-size' | 'sm' | 'lg';
+        "outlined": boolean;
+        "block": boolean;
+        "disabled": boolean;
+        "ripple": boolean;
+        "classNames": string;
+        "contentTxtSize": string;
+        "icon": string;
+        "singleOpen": boolean;
     }
     interface PlumageAutocompleteMultipleSelectionsComponentAttributes {
         "addBtn": boolean;
@@ -11417,6 +12118,60 @@ declare namespace LocalJSX {
         "inputCol": number;
         "labelCols": string;
         "inputCols": string;
+    }
+    interface PlumageCardComponentAttributes {
+        "actions": boolean;
+        "altText": string;
+        "cardMaxWidth": string;
+        "classNames": string;
+        "elevation": string;
+        "img": boolean;
+        "imgSrc": string;
+        "inlineStyles": string;
+        "noFooter": boolean;
+        "noHeader": boolean;
+        "imgHeight": string;
+        "clickable": boolean;
+        "disabled": boolean;
+        "landmark": boolean;
+        "ariaLabel": string;
+        "ariaLabelledby": string;
+        "ariaDescribedby": string;
+        "headingLevel": number;
+        "decorativeImage": boolean;
+    }
+    interface PlumageDatepickerComponentAttributes {
+        "appendProp": boolean;
+        "appendId": string;
+        "calendar": boolean;
+        "currentMonth": number;
+        "currentYear": number;
+        "dateFormat": DateFormat;
+        "disabled": boolean;
+        "readOnly": boolean;
+        "displayContextExamples": boolean;
+        "dropdownOpen": boolean;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "size": '' | 'sm' | 'lg';
+        "icon": string;
+        "inputId": string;
+        "label": string;
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "labelSize": '' | 'sm' | 'lg';
+        "placeholder": string;
+        "prependProp": boolean;
+        "prependId": string;
+        "required": boolean;
+        "validation": boolean;
+        "validationMessage": string;
+        "warningMessage": string;
+        "value": string;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+        "isCalendarFocused": boolean;
     }
     interface PlumageInputFieldComponentAttributes {
         "disabled": boolean;
@@ -11574,6 +12329,31 @@ declare namespace LocalJSX {
         "disabled": boolean;
         "readOnly": boolean;
         "timeInputThrottleMs": number;
+    }
+    interface PlumageToastsComponentAttributes {
+        "toastId": string;
+        "position": PlumageToastPosition;
+        "variant": IconVariantColor;
+        "plumageToastMax": boolean;
+        "appendToast": boolean;
+        "duration": number;
+        "noAnimation": boolean;
+        "noHoverPause": boolean;
+        "persistent": boolean;
+        "svgIcon": string;
+        "headerClass": string;
+        "bodyClass": string;
+        "isStatus": boolean;
+        "noCloseButton": boolean;
+        "noTime": boolean;
+        "toastTitle": string;
+        "message": string;
+        "maxWidth": string;
+        "additionalHeaderContent": string;
+        "contentHtml": string;
+        "time": string;
+        "ariaLabel": string;
+        "focusOnShow": boolean;
     }
     interface PopoverComponentAttributes {
         "arrowOff": boolean;
@@ -11912,40 +12692,11 @@ declare namespace LocalJSX {
         "required": boolean;
         "timeInputThrottleMs": number;
     }
-    interface TimepickerManagerAttributes {
-        "ariaLabel": string;
-        "ariaLabelledby": string;
-        "ariaDescribedby": string;
-        "showLabel": boolean;
-        "labelText": string;
-        "inputId": string;
-        "inputName": string;
-        "value": string;
-        "isTwentyFourHourFormat": boolean;
-        "size": string;
-        "twentyFourHourOnly": boolean;
-        "twelveHourOnly": boolean;
-        "hideTimepickerBtn": boolean;
-        "hideSeconds": boolean;
-        "usePlTimepicker": boolean;
-        "inputWidth": string;
-        "required": boolean;
-        "disableTimepicker": boolean;
-        "timeInputThrottleMs": number;
-        "readOnly": boolean;
-        "validationMessage": string;
-        "validation": boolean;
-        "timeValidation": boolean;
-        "timeValidationMessage": string;
-        "isValid": boolean;
-    }
     interface ToastsComponentAttributes {
         "toastId": string;
         "position": ToastPosition;
         "variant": ToastVariant;
         "solidToast": boolean;
-        "plumageToast": boolean;
-        "plumageToastMax": boolean;
         "appendToast": boolean;
         "duration": number;
         "noAnimation": boolean;
@@ -11956,12 +12707,11 @@ declare namespace LocalJSX {
         "bodyClass": string;
         "isStatus": boolean;
         "noCloseButton": boolean;
-        "iconPlumageStyle": boolean;
         "toastTitle": string;
         "message": string;
+        "maxWidth": string;
         "additionalHeaderContent": string;
-        "customContent": string;
-        "time": string;
+        "contentHtml": string;
         "ariaLabel": string;
         "focusOnShow": boolean;
     }
@@ -12024,14 +12774,19 @@ declare namespace LocalJSX {
         "modal-component": Omit<ModalComponent, keyof ModalComponentAttributes> & { [K in keyof ModalComponent & keyof ModalComponentAttributes]?: ModalComponent[K] } & { [K in keyof ModalComponent & keyof ModalComponentAttributes as `attr:${K}`]?: ModalComponentAttributes[K] } & { [K in keyof ModalComponent & keyof ModalComponentAttributes as `prop:${K}`]?: ModalComponent[K] };
         "multi-range-slider-component": Omit<MultiRangeSliderComponent, keyof MultiRangeSliderComponentAttributes> & { [K in keyof MultiRangeSliderComponent & keyof MultiRangeSliderComponentAttributes]?: MultiRangeSliderComponent[K] } & { [K in keyof MultiRangeSliderComponent & keyof MultiRangeSliderComponentAttributes as `attr:${K}`]?: MultiRangeSliderComponentAttributes[K] } & { [K in keyof MultiRangeSliderComponent & keyof MultiRangeSliderComponentAttributes as `prop:${K}`]?: MultiRangeSliderComponent[K] };
         "pagination-component": Omit<PaginationComponent, keyof PaginationComponentAttributes> & { [K in keyof PaginationComponent & keyof PaginationComponentAttributes]?: PaginationComponent[K] } & { [K in keyof PaginationComponent & keyof PaginationComponentAttributes as `attr:${K}`]?: PaginationComponentAttributes[K] } & { [K in keyof PaginationComponent & keyof PaginationComponentAttributes as `prop:${K}`]?: PaginationComponent[K] };
+        "plumage-accordion-component": Omit<PlumageAccordionComponent, keyof PlumageAccordionComponentAttributes> & { [K in keyof PlumageAccordionComponent & keyof PlumageAccordionComponentAttributes]?: PlumageAccordionComponent[K] } & { [K in keyof PlumageAccordionComponent & keyof PlumageAccordionComponentAttributes as `attr:${K}`]?: PlumageAccordionComponentAttributes[K] } & { [K in keyof PlumageAccordionComponent & keyof PlumageAccordionComponentAttributes as `prop:${K}`]?: PlumageAccordionComponent[K] };
+        "plumage-accordion-container": Omit<PlumageAccordionContainer, keyof PlumageAccordionContainerAttributes> & { [K in keyof PlumageAccordionContainer & keyof PlumageAccordionContainerAttributes]?: PlumageAccordionContainer[K] } & { [K in keyof PlumageAccordionContainer & keyof PlumageAccordionContainerAttributes as `attr:${K}`]?: PlumageAccordionContainerAttributes[K] } & { [K in keyof PlumageAccordionContainer & keyof PlumageAccordionContainerAttributes as `prop:${K}`]?: PlumageAccordionContainer[K] };
         "plumage-autocomplete-multiple-selections-component": Omit<PlumageAutocompleteMultipleSelectionsComponent, keyof PlumageAutocompleteMultipleSelectionsComponentAttributes> & { [K in keyof PlumageAutocompleteMultipleSelectionsComponent & keyof PlumageAutocompleteMultipleSelectionsComponentAttributes]?: PlumageAutocompleteMultipleSelectionsComponent[K] } & { [K in keyof PlumageAutocompleteMultipleSelectionsComponent & keyof PlumageAutocompleteMultipleSelectionsComponentAttributes as `attr:${K}`]?: PlumageAutocompleteMultipleSelectionsComponentAttributes[K] } & { [K in keyof PlumageAutocompleteMultipleSelectionsComponent & keyof PlumageAutocompleteMultipleSelectionsComponentAttributes as `prop:${K}`]?: PlumageAutocompleteMultipleSelectionsComponent[K] };
         "plumage-autocomplete-multiselect-component": Omit<PlumageAutocompleteMultiselectComponent, keyof PlumageAutocompleteMultiselectComponentAttributes> & { [K in keyof PlumageAutocompleteMultiselectComponent & keyof PlumageAutocompleteMultiselectComponentAttributes]?: PlumageAutocompleteMultiselectComponent[K] } & { [K in keyof PlumageAutocompleteMultiselectComponent & keyof PlumageAutocompleteMultiselectComponentAttributes as `attr:${K}`]?: PlumageAutocompleteMultiselectComponentAttributes[K] } & { [K in keyof PlumageAutocompleteMultiselectComponent & keyof PlumageAutocompleteMultiselectComponentAttributes as `prop:${K}`]?: PlumageAutocompleteMultiselectComponent[K] };
         "plumage-autocomplete-single": Omit<PlumageAutocompleteSingle, keyof PlumageAutocompleteSingleAttributes> & { [K in keyof PlumageAutocompleteSingle & keyof PlumageAutocompleteSingleAttributes]?: PlumageAutocompleteSingle[K] } & { [K in keyof PlumageAutocompleteSingle & keyof PlumageAutocompleteSingleAttributes as `attr:${K}`]?: PlumageAutocompleteSingleAttributes[K] } & { [K in keyof PlumageAutocompleteSingle & keyof PlumageAutocompleteSingleAttributes as `prop:${K}`]?: PlumageAutocompleteSingle[K] };
+        "plumage-card-component": Omit<PlumageCardComponent, keyof PlumageCardComponentAttributes> & { [K in keyof PlumageCardComponent & keyof PlumageCardComponentAttributes]?: PlumageCardComponent[K] } & { [K in keyof PlumageCardComponent & keyof PlumageCardComponentAttributes as `attr:${K}`]?: PlumageCardComponentAttributes[K] } & { [K in keyof PlumageCardComponent & keyof PlumageCardComponentAttributes as `prop:${K}`]?: PlumageCardComponent[K] };
+        "plumage-datepicker-component": Omit<PlumageDatepickerComponent, keyof PlumageDatepickerComponentAttributes> & { [K in keyof PlumageDatepickerComponent & keyof PlumageDatepickerComponentAttributes]?: PlumageDatepickerComponent[K] } & { [K in keyof PlumageDatepickerComponent & keyof PlumageDatepickerComponentAttributes as `attr:${K}`]?: PlumageDatepickerComponentAttributes[K] } & { [K in keyof PlumageDatepickerComponent & keyof PlumageDatepickerComponentAttributes as `prop:${K}`]?: PlumageDatepickerComponent[K] };
         "plumage-input-field-component": Omit<PlumageInputFieldComponent, keyof PlumageInputFieldComponentAttributes> & { [K in keyof PlumageInputFieldComponent & keyof PlumageInputFieldComponentAttributes]?: PlumageInputFieldComponent[K] } & { [K in keyof PlumageInputFieldComponent & keyof PlumageInputFieldComponentAttributes as `attr:${K}`]?: PlumageInputFieldComponentAttributes[K] } & { [K in keyof PlumageInputFieldComponent & keyof PlumageInputFieldComponentAttributes as `prop:${K}`]?: PlumageInputFieldComponent[K] };
         "plumage-input-group-component": Omit<PlumageInputGroupComponent, keyof PlumageInputGroupComponentAttributes> & { [K in keyof PlumageInputGroupComponent & keyof PlumageInputGroupComponentAttributes]?: PlumageInputGroupComponent[K] } & { [K in keyof PlumageInputGroupComponent & keyof PlumageInputGroupComponentAttributes as `attr:${K}`]?: PlumageInputGroupComponentAttributes[K] } & { [K in keyof PlumageInputGroupComponent & keyof PlumageInputGroupComponentAttributes as `prop:${K}`]?: PlumageInputGroupComponent[K] };
         "plumage-select-field-component": Omit<PlumageSelectFieldComponent, keyof PlumageSelectFieldComponentAttributes> & { [K in keyof PlumageSelectFieldComponent & keyof PlumageSelectFieldComponentAttributes]?: PlumageSelectFieldComponent[K] } & { [K in keyof PlumageSelectFieldComponent & keyof PlumageSelectFieldComponentAttributes as `attr:${K}`]?: PlumageSelectFieldComponentAttributes[K] } & { [K in keyof PlumageSelectFieldComponent & keyof PlumageSelectFieldComponentAttributes as `prop:${K}`]?: PlumageSelectFieldComponent[K] };
         "plumage-textarea-component": Omit<PlumageTextareaComponent, keyof PlumageTextareaComponentAttributes> & { [K in keyof PlumageTextareaComponent & keyof PlumageTextareaComponentAttributes]?: PlumageTextareaComponent[K] } & { [K in keyof PlumageTextareaComponent & keyof PlumageTextareaComponentAttributes as `attr:${K}`]?: PlumageTextareaComponentAttributes[K] } & { [K in keyof PlumageTextareaComponent & keyof PlumageTextareaComponentAttributes as `prop:${K}`]?: PlumageTextareaComponent[K] };
         "plumage-timepicker-component": Omit<PlumageTimepickerComponent, keyof PlumageTimepickerComponentAttributes> & { [K in keyof PlumageTimepickerComponent & keyof PlumageTimepickerComponentAttributes]?: PlumageTimepickerComponent[K] } & { [K in keyof PlumageTimepickerComponent & keyof PlumageTimepickerComponentAttributes as `attr:${K}`]?: PlumageTimepickerComponentAttributes[K] } & { [K in keyof PlumageTimepickerComponent & keyof PlumageTimepickerComponentAttributes as `prop:${K}`]?: PlumageTimepickerComponent[K] };
+        "plumage-toasts-component": Omit<PlumageToastsComponent, keyof PlumageToastsComponentAttributes> & { [K in keyof PlumageToastsComponent & keyof PlumageToastsComponentAttributes]?: PlumageToastsComponent[K] } & { [K in keyof PlumageToastsComponent & keyof PlumageToastsComponentAttributes as `attr:${K}`]?: PlumageToastsComponentAttributes[K] } & { [K in keyof PlumageToastsComponent & keyof PlumageToastsComponentAttributes as `prop:${K}`]?: PlumageToastsComponent[K] };
         "popover-component": Omit<PopoverComponent, keyof PopoverComponentAttributes> & { [K in keyof PopoverComponent & keyof PopoverComponentAttributes]?: PopoverComponent[K] } & { [K in keyof PopoverComponent & keyof PopoverComponentAttributes as `attr:${K}`]?: PopoverComponentAttributes[K] } & { [K in keyof PopoverComponent & keyof PopoverComponentAttributes as `prop:${K}`]?: PopoverComponent[K] };
         "progress-display-component": Omit<ProgressDisplayComponent, keyof ProgressDisplayComponentAttributes> & { [K in keyof ProgressDisplayComponent & keyof ProgressDisplayComponentAttributes]?: ProgressDisplayComponent[K] } & { [K in keyof ProgressDisplayComponent & keyof ProgressDisplayComponentAttributes as `attr:${K}`]?: ProgressDisplayComponentAttributes[K] } & { [K in keyof ProgressDisplayComponent & keyof ProgressDisplayComponentAttributes as `prop:${K}`]?: ProgressDisplayComponent[K] };
         "radio-input-component": Omit<RadioInputComponent, keyof RadioInputComponentAttributes> & { [K in keyof RadioInputComponent & keyof RadioInputComponentAttributes]?: RadioInputComponent[K] } & { [K in keyof RadioInputComponent & keyof RadioInputComponentAttributes as `attr:${K}`]?: RadioInputComponentAttributes[K] } & { [K in keyof RadioInputComponent & keyof RadioInputComponentAttributes as `prop:${K}`]?: RadioInputComponent[K] };
@@ -12043,7 +12798,6 @@ declare namespace LocalJSX {
         "table-component": Omit<TableComponent, keyof TableComponentAttributes> & { [K in keyof TableComponent & keyof TableComponentAttributes]?: TableComponent[K] } & { [K in keyof TableComponent & keyof TableComponentAttributes as `attr:${K}`]?: TableComponentAttributes[K] } & { [K in keyof TableComponent & keyof TableComponentAttributes as `prop:${K}`]?: TableComponent[K] };
         "textarea-component": Omit<TextareaComponent, keyof TextareaComponentAttributes> & { [K in keyof TextareaComponent & keyof TextareaComponentAttributes]?: TextareaComponent[K] } & { [K in keyof TextareaComponent & keyof TextareaComponentAttributes as `attr:${K}`]?: TextareaComponentAttributes[K] } & { [K in keyof TextareaComponent & keyof TextareaComponentAttributes as `prop:${K}`]?: TextareaComponent[K] };
         "timepicker-component": Omit<TimepickerComponent, keyof TimepickerComponentAttributes> & { [K in keyof TimepickerComponent & keyof TimepickerComponentAttributes]?: TimepickerComponent[K] } & { [K in keyof TimepickerComponent & keyof TimepickerComponentAttributes as `attr:${K}`]?: TimepickerComponentAttributes[K] } & { [K in keyof TimepickerComponent & keyof TimepickerComponentAttributes as `prop:${K}`]?: TimepickerComponent[K] };
-        "timepicker-manager": Omit<TimepickerManager, keyof TimepickerManagerAttributes> & { [K in keyof TimepickerManager & keyof TimepickerManagerAttributes]?: TimepickerManager[K] } & { [K in keyof TimepickerManager & keyof TimepickerManagerAttributes as `attr:${K}`]?: TimepickerManagerAttributes[K] } & { [K in keyof TimepickerManager & keyof TimepickerManagerAttributes as `prop:${K}`]?: TimepickerManager[K] };
         "toasts-component": Omit<ToastsComponent, keyof ToastsComponentAttributes> & { [K in keyof ToastsComponent & keyof ToastsComponentAttributes]?: ToastsComponent[K] } & { [K in keyof ToastsComponent & keyof ToastsComponentAttributes as `attr:${K}`]?: ToastsComponentAttributes[K] } & { [K in keyof ToastsComponent & keyof ToastsComponentAttributes as `prop:${K}`]?: ToastsComponent[K] };
         "toggle-switch-component": Omit<ToggleSwitchComponent, keyof ToggleSwitchComponentAttributes> & { [K in keyof ToggleSwitchComponent & keyof ToggleSwitchComponentAttributes]?: ToggleSwitchComponent[K] } & { [K in keyof ToggleSwitchComponent & keyof ToggleSwitchComponentAttributes as `attr:${K}`]?: ToggleSwitchComponentAttributes[K] } & { [K in keyof ToggleSwitchComponent & keyof ToggleSwitchComponentAttributes as `prop:${K}`]?: ToggleSwitchComponent[K] };
         "tooltip-component": Omit<TooltipComponent, keyof TooltipComponentAttributes> & { [K in keyof TooltipComponent & keyof TooltipComponentAttributes]?: TooltipComponent[K] } & { [K in keyof TooltipComponent & keyof TooltipComponentAttributes as `attr:${K}`]?: TooltipComponentAttributes[K] } & { [K in keyof TooltipComponent & keyof TooltipComponentAttributes as `prop:${K}`]?: TooltipComponent[K] };
@@ -12084,14 +12838,19 @@ declare module "@stencil/core" {
             "modal-component": LocalJSX.IntrinsicElements["modal-component"] & JSXBase.HTMLAttributes<HTMLModalComponentElement>;
             "multi-range-slider-component": LocalJSX.IntrinsicElements["multi-range-slider-component"] & JSXBase.HTMLAttributes<HTMLMultiRangeSliderComponentElement>;
             "pagination-component": LocalJSX.IntrinsicElements["pagination-component"] & JSXBase.HTMLAttributes<HTMLPaginationComponentElement>;
+            "plumage-accordion-component": LocalJSX.IntrinsicElements["plumage-accordion-component"] & JSXBase.HTMLAttributes<HTMLPlumageAccordionComponentElement>;
+            "plumage-accordion-container": LocalJSX.IntrinsicElements["plumage-accordion-container"] & JSXBase.HTMLAttributes<HTMLPlumageAccordionContainerElement>;
             "plumage-autocomplete-multiple-selections-component": LocalJSX.IntrinsicElements["plumage-autocomplete-multiple-selections-component"] & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteMultipleSelectionsComponentElement>;
             "plumage-autocomplete-multiselect-component": LocalJSX.IntrinsicElements["plumage-autocomplete-multiselect-component"] & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteMultiselectComponentElement>;
             "plumage-autocomplete-single": LocalJSX.IntrinsicElements["plumage-autocomplete-single"] & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteSingleElement>;
+            "plumage-card-component": LocalJSX.IntrinsicElements["plumage-card-component"] & JSXBase.HTMLAttributes<HTMLPlumageCardComponentElement>;
+            "plumage-datepicker-component": LocalJSX.IntrinsicElements["plumage-datepicker-component"] & JSXBase.HTMLAttributes<HTMLPlumageDatepickerComponentElement>;
             "plumage-input-field-component": LocalJSX.IntrinsicElements["plumage-input-field-component"] & JSXBase.HTMLAttributes<HTMLPlumageInputFieldComponentElement>;
             "plumage-input-group-component": LocalJSX.IntrinsicElements["plumage-input-group-component"] & JSXBase.HTMLAttributes<HTMLPlumageInputGroupComponentElement>;
             "plumage-select-field-component": LocalJSX.IntrinsicElements["plumage-select-field-component"] & JSXBase.HTMLAttributes<HTMLPlumageSelectFieldComponentElement>;
             "plumage-textarea-component": LocalJSX.IntrinsicElements["plumage-textarea-component"] & JSXBase.HTMLAttributes<HTMLPlumageTextareaComponentElement>;
             "plumage-timepicker-component": LocalJSX.IntrinsicElements["plumage-timepicker-component"] & JSXBase.HTMLAttributes<HTMLPlumageTimepickerComponentElement>;
+            "plumage-toasts-component": LocalJSX.IntrinsicElements["plumage-toasts-component"] & JSXBase.HTMLAttributes<HTMLPlumageToastsComponentElement>;
             "popover-component": LocalJSX.IntrinsicElements["popover-component"] & JSXBase.HTMLAttributes<HTMLPopoverComponentElement>;
             "progress-display-component": LocalJSX.IntrinsicElements["progress-display-component"] & JSXBase.HTMLAttributes<HTMLProgressDisplayComponentElement>;
             "radio-input-component": LocalJSX.IntrinsicElements["radio-input-component"] & JSXBase.HTMLAttributes<HTMLRadioInputComponentElement>;
@@ -12103,7 +12862,6 @@ declare module "@stencil/core" {
             "table-component": LocalJSX.IntrinsicElements["table-component"] & JSXBase.HTMLAttributes<HTMLTableComponentElement>;
             "textarea-component": LocalJSX.IntrinsicElements["textarea-component"] & JSXBase.HTMLAttributes<HTMLTextareaComponentElement>;
             "timepicker-component": LocalJSX.IntrinsicElements["timepicker-component"] & JSXBase.HTMLAttributes<HTMLTimepickerComponentElement>;
-            "timepicker-manager": LocalJSX.IntrinsicElements["timepicker-manager"] & JSXBase.HTMLAttributes<HTMLTimepickerManagerElement>;
             "toasts-component": LocalJSX.IntrinsicElements["toasts-component"] & JSXBase.HTMLAttributes<HTMLToastsComponentElement>;
             /**
              * Accessibility / 508 notes (high level):

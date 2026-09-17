@@ -1,0 +1,58 @@
+import { Meta, Description, Primary, Controls, Stories, Source } from '@storybook/addon-docs/blocks';
+import * as PlumageToastStories from './plumage-toasts-component.stories.js';
+import { reactExample, vueExample, angularExample, svelteExample, svelteKitExample } from './plumage-toasts-component.examples';
+
+<Meta of={PlumageToastStories} />
+
+# Plumage Toasts Component
+
+<Description of={PlumageToastStories} />
+
+## HTML
+
+```html
+<section>
+  <button type="button" id="show-toast-btn">Show Toast</button>
+
+  <plumage-toasts-component id="toast-example" aria-label="Notifications" position="top-right" append-toast persistent></plumage-toasts-component>
+</section>
+
+<script>
+  (async () => {
+    await customElements.whenDefined('plumage-toasts-component');
+
+    const host = document.getElementById('plumage-toast-example');
+    const btn = document.getElementById('show-toast-btn');
+
+    btn.addEventListener('click', async () => {
+      await host.showToast({
+        toastTitle: 'Saved',
+        content: 'Your changes were saved successfully.',
+        variantClass: 'success',
+        svgIcon: 'check-circle-fill',
+        additionalHdrContent: 'Just now',
+        persistent: true,
+      });
+    });
+  })();
+</script>
+```
+
+## React
+
+<Source dark code={reactExample} language="tsx" />
+## Vue
+<Source dark code={vueExample} language="vue" />
+## Angular
+<Source dark code={angularExample} language="ts" />
+## Svelte
+<Source dark code={svelteExample} language="svelte" />
+## SvelteKit
+<Source dark code={svelteKitExample} language="svelte" />
+
+{/* Show a live preview + controls table */}
+
+<Primary />
+<Controls />
+{/* ✅ This is what stops the “Primary appears again as first story” problem */}
+<Stories includePrimary={false} />

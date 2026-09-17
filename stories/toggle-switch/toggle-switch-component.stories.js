@@ -8,10 +8,11 @@ import {
 } from './toggle-switch-component.story-helpers';
 
 export default {
-  title: 'Form/Toggle Switch'
+  title: 'Bootstrap or Plumage/Toggle Switch'
   ,
   parameters: {
     layout: 'padded',
+    themeFamily: 'allthemes',
     docs: {
 
       description: {

@@ -4,7 +4,7 @@
 import { DocsWrapStyles, buildDocsHtml, normalize, renderCard, wrapDocsHtml } from './card-component.story-helpers.js';
 
 export default {
-  title: 'Components/Card'
+  title: 'Bootstrap/Card'
   ,
 
   decorators: [
@@ -17,6 +17,7 @@ export default {
   ],
 
   parameters: {
+    themeFamily: 'bootstrap',
     docs: {
 
       description: {

@@ -25,7 +25,7 @@ import {
 } from './table-component.story-helpers';
 
 export default {
-  title: 'Components/Table',
+  title: 'Bootstrap or Plumage/Table',
   args: {
     addBorder: false,
     removeBorder: false,
@@ -75,6 +75,7 @@ export default {
 
   parameters: {
     layout: 'padded',
+    themeFamily: 'allthemes',
     docs: {
       source: {
         type: 'dynamic',

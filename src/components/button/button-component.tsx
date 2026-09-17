@@ -283,6 +283,7 @@ export class Button {
       this.btnIcon && 'btn-icon',
       this.toggle && 'btn--toggle',
       this.toggle && this.pressed && 'pressed',
+      this.disabled && 'disabled',
     ]
       .filter(Boolean)
       .join(' ');

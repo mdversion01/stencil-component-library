@@ -2,9 +2,10 @@
 import { Template, normalizeHtml, getSnapshot } from './slider-basic-component.story-helpers';
 
 export default {
-  title: 'Components/Slider/Basic',
+  title: 'Bootstrap or Plumage/Slider/Basic',
   parameters: {
     layout: 'padded',
+    themeFamily: 'allthemes',
     docs: {
       description: {
         component: 'A basic slider component allowing selection of a single value within a range.',

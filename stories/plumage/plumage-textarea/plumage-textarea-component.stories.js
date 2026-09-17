@@ -9,11 +9,13 @@ import {
 } from './plumage-textarea-component.story-helpers.js';
 
 export default {
-  title: 'Form/Plumage Textarea Component'
+  title: 'Plumage/Plumage Textarea Component'
   ,
   render: args => buildEl(args),
   parameters: {
     layout: 'padded',
+
+     themeFamily: 'plumage',
     docs: {
 
       description: {

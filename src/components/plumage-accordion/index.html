@@ -1,0 +1,123 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stencil Component Starter</title>
+
+    <script type="module" src="../../build/stencil-component-library.esm.js"></script>
+    <script nomodule src="../../build/stencil-component-library.js"></script>
+
+    <link rel="stylesheet" href="../../build/stencil-component-library.css" />
+
+    <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
+
+    <style>
+      .cwrapper {
+        margin: 10px;
+      }
+
+      /* button {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      } */
+    </style>
+  </head>
+   <body class="plmg-lt">
+    <div class="theme-switcher">
+      <button
+        id="plumage-theme-toggle"
+        type="button"
+        aria-pressed="false"
+        aria-label="Switch to dark mode"
+      >
+        Dark mode
+      </button>
+    </div>
+    <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
+     -->
+    <app-wrapper>
+      <div class="cwrapper">
+        <plumage-accordion-component target-id="accordion-section-3" content-txt-size="sm" icon="fa-solid fa-plus, fa-solid fa-minus" accordion aria-label="Accordion Section">
+          <span slot="accordion-header">Using Other Icons</span>
+          <div slot="content">This content can be collapsed</div>
+        </plumage-accordion-component>
+        <br />
+
+       <plumage-accordion-component target-id="accordion-section-1" is-open="true" variant="default" aria-label="Frequently Asked Questions">
+          <span slot="button-text">What is your return policy?</span>
+          <div slot="content">
+            <p>You can return any item within 30 days of purchase for a full refund. Please ensure the product is in original condition.</p>
+          </div>
+        </plumage-accordion-component>
+        <br />
+        <plumage-accordion-component link target-id="link-1">
+          <span slot="button-text">Toggle Link 1</span>
+          <div slot="content">Toggle content 1</div>
+        </plumage-accordion-component>
+        <br />
+
+         <plumage-accordion-container id="accordion-1" content-txt-size="sm" parent-id="accordion-example"></plumage-accordion-container>
+
+        <script>
+          const collapseData = [
+            { header: 'Accordion 1', content: 'Content 1' },
+            { header: 'Accordion 2', content: 'Content 2' },
+            { header: 'Accordion 3', content: 'Content 3' },
+            { header: 'Accordion 4', content: 'Content 4' },
+          ];
+          document.getElementById('accordion-1').data = collapseData;
+        </script>
+
+        <br /><br />
+      </div>
+    </app-wrapper>
+
+     <script>
+      (() => {
+        const STORAGE_KEY = 'plumage-demo-theme';
+        const body = document.body;
+        const toggle = document.getElementById('plumage-theme-toggle');
+
+        function applyTheme(theme) {
+          const isDark = theme === 'dark';
+
+          body.classList.remove('plmg-lt', 'plmg-dk');
+          body.classList.add(isDark ? 'plmg-dk' : 'plmg-lt');
+
+          toggle.setAttribute('aria-pressed', String(isDark));
+          toggle.setAttribute(
+            'aria-label',
+            isDark ? 'Switch to light mode' : 'Switch to dark mode',
+          );
+          toggle.textContent = isDark ? 'Light mode' : 'Dark mode';
+        }
+
+        function getInitialTheme() {
+          const storedTheme = localStorage.getItem(STORAGE_KEY);
+
+          if (storedTheme === 'light' || storedTheme === 'dark') {
+            return storedTheme;
+          }
+
+          return body.classList.contains('plmg-dk') ? 'dark' : 'light';
+        }
+
+        applyTheme(getInitialTheme());
+
+        toggle.addEventListener('click', () => {
+          const currentTheme = body.classList.contains('plmg-dk')
+            ? 'dark'
+            : 'light';
+
+          const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+          localStorage.setItem(STORAGE_KEY, nextTheme);
+          applyTheme(nextTheme);
+        });
+      })();
+    </script>
+
+    <script type="module"></script>
+  </body>
+</html>

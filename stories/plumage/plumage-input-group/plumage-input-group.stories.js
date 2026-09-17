@@ -11,7 +11,7 @@ import {
 } from './plumage-input-group.story-helpers.js';
 
 export default {
-  title: 'Form/Plumage Input Group'
+  title: 'Plumage/Plumage Input Group'
   ,
   render: args => buildEl(args),
 
@@ -40,6 +40,8 @@ export default {
 
   parameters: {
     layout: 'padded',
+
+     themeFamily: 'plumage',
     docs: {
 
       description: {

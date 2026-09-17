@@ -31,9 +31,10 @@ const baseArgs = {
 };
 
 export default {
-  title: 'Components/Popover',
+  title: 'Bootstrap or Plumage/Popover',
   parameters: {
     layout: 'padded',
+    themeFamily: 'allthemes',
     docs: {
       source: { type: 'dynamic', language: 'html' },
       description: {

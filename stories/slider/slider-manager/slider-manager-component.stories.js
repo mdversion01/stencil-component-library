@@ -3,7 +3,7 @@
 import { Template, normalizeHtml, getSnapshot } from './slider-manager-component.story-helpers';
 
 export default {
-  title: 'Components/Slider/Slider Manager',
+  title: 'Bootstrap or Plumage/Slider/Slider Manager',
   args: {
     disabled: false,
     hideLeftTextBox: false,
@@ -42,6 +42,7 @@ export default {
 
   parameters: {
     layout: 'padded',
+    themeFamily: 'allthemes',
     docs: {
       source: {
         type: 'dynamic',

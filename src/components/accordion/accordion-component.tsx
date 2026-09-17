@@ -22,14 +22,12 @@ export class AccordionComponent {
   @Prop() outlined = false;
   @Prop() block = false;
   @Prop() variant = '';
-  @Prop() size: '' | 'xs' | 'plumage-size' | 'sm' | 'lg' = '';
+  @Prop() size: '' | 'xs' | 'sm' | 'lg' = '';
   @Prop() disabled = false;
   @Prop() ripple = false;
   @Prop() link = false;
   @Prop() icon: string = 'fas fa-angle-down';
   @Prop() isOpen: boolean = false;
-  @Prop() plumage: boolean = false;
-
   /** Optional: allow an external label for the region instead of the toggle text */
   @Prop() regionLabelledby?: string;
 
@@ -307,7 +305,7 @@ export class AccordionComponent {
 
   private renderAccordionExpansionCard() {
     return (
-      <div class={`sc-accordion ${this.plumage ? 'plumage' : ''}`}>
+      <div class={`sc-accordion`}>
         <div class={`accordion ${this.flush ? 'accordion-flush' : ''}`}>
           <div class="accordion-item">
             {this.renderAccordionButton()}

@@ -16,7 +16,7 @@ import {
 } from './plumage-autocomplete-multiselect.story-helpers.js';
 
 export default {
-  title: 'Form/Plumage Autocomplete Multiselect',
+  title: 'Plumage/Plumage Autocomplete Multiselect',
 
   decorators: [
     Story => {
@@ -30,6 +30,7 @@ export default {
   parameters: {
     layout: 'padded',
 
+     themeFamily: 'plumage',
     docs: {
       description: {
         component:

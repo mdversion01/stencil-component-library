@@ -7,10 +7,11 @@ import {
 } from './icon-component.story-helpers.js';
 
 export default {
-  title: 'Components/Icon'
+  title: 'Bootstrap or Plumage/Icon'
   ,
   render: (args) => buildIcon(args),
   parameters: {
+    themeFamily: 'allthemes',
     docs: {
 
       description: {

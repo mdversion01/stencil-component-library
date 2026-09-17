@@ -72,6 +72,7 @@ $input-wrappers: (
 // =============================================
 // Base: .plumage
 // =============================================
+.plmg-lt,
 .plumage {
   // -------- Labels (sizes) --------
   @each $key, $vals in $label-sizes {

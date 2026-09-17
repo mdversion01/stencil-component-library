@@ -30,7 +30,7 @@ export class ModalComponent {
   @Prop() modalId?: string;
   @Prop() modalTitle = 'Modal title';
   @Prop({ reflect: true }) modalSize?: 'sm' | 'lg' | 'xl';
-  @Prop({ reflect: true }) modalFullScreen?: 'fullscreen' | 'sm-down' | 'md-down' | 'lg-down' | 'xl-down' | 'xxl-down';
+  @Prop({ reflect: true }) modalFullScreen?: 'fullscreen' | 'fullscreen-sm-down' | 'fullscreen-md-down' | 'fullscreen-lg-down' | 'fullscreen-xl-down' | 'fullscreen-xxl-down';
   @Prop() scrollableBody: boolean = false;
   @Prop() scrollLongContent: boolean = false;
   @Prop() verticallyCentered: boolean = false;

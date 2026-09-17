@@ -1,0 +1,179 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`plumage-toasts-component renders Plumage Max toast with HTML content and matches snapshot: plumage-max-toast-info 1`] = `
+<plumage-toasts-component plumage-toast-max="" position="top-right">
+  <div>
+    <div aria-atomic="false" aria-label="Notifications" aria-relevant="additions text" class="toaster toaster-top-right" id="toaster-top-right" role="region">
+      <div class="toaster-slot" style="max-width: 550px;">
+        <div aria-atomic="true" aria-describedby="plumage-toast-component__toast_toast-test-1__body" aria-labelledby="plumage-toast-component__toast_toast-test-1__title" class="persistent show toast" data-toast-id="toast-test-1" id="plumage-toast-component__toast_toast-test-1__outer" role="alert">
+          <div class="toast-display toast-max" id="plumage-toast-component__toast_toast-test-1__content" tabindex="0">
+            <div class="toast-icon">
+              <svg aria-hidden="true" class="flex-shrink-0 toast-svg" focusable="false" viewBox="0 0 22 22" style="fill: #5c9be6;">
+                <path d="M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
+              </svg>
+            </div>
+            <div class="toast-content">
+              <div class="toast-header w-100">
+                <div class="hdr-x header" id="plumage-toast-component__toast_toast-test-1__title">
+                  <span>
+                    Plumage Max
+                  </span>
+                  <span class="toast-additional-header-content">
+                    now
+                  </span>
+                </div>
+                <div class="d-flex toast-buttons">
+                  <button aria-controls="plumage-toast-component__toast_toast-test-1__outer" aria-label="Close Plumage Max" class="close ml-3" id="plumage-toast-component__toast_toast-test-1__close" type="button">
+                    <span aria-hidden="true">
+                      ×
+                    </span>
+                  </button>
+                </div>
+              </div>
+              <div class="toast-body">
+                <div class="body-y d-flex flex-column toast-data" id="plumage-toast-component__toast_toast-test-1__body">
+                  <div>
+                    <div class="data">
+                      <div>
+                        Row A
+                      </div>
+                      <div>
+                        Row B
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-toasts-component>
+`;
+
+exports[`plumage-toasts-component renders a standard Plumage status toast and matches snapshot: status-toast-success 1`] = `
+<plumage-toasts-component position="bottom-left">
+  <div>
+    <div aria-atomic="false" aria-label="Notifications" aria-relevant="additions text" class="toaster toaster-bottom-left" id="toaster-bottom-left" role="region">
+      <div class="toaster-slot" style="max-width: 550px;">
+        <div aria-atomic="true" aria-describedby="plumage-toast-component__toast_toast-test-1__body" aria-labelledby="plumage-toast-component__toast_toast-test-1__title" class="persistent show toast" data-toast-id="toast-test-1" id="plumage-toast-component__toast_toast-test-1__outer" role="status">
+          <div class="toast-display" id="plumage-toast-component__toast_toast-test-1__content" tabindex="0">
+            <div class="toast-content">
+              <header class="toast-header">
+                <div class="toast-header-content">
+                  <div class="toast-title-wrapper">
+                    <div class="mb-0 mr-auto" id="plumage-toast-component__toast_toast-test-1__title">
+                      Success
+                    </div>
+                  </div>
+                  <div class="toast-time">
+                    07:08:09Z
+                  </div>
+                </div>
+                <button aria-controls="plumage-toast-component__toast_toast-test-1__outer" aria-label="Close Success" class="close m1 ml-auto" id="plumage-toast-component__toast_toast-test-1__close" type="button">
+                  <span aria-hidden="true">
+                    ×
+                  </span>
+                </button>
+              </header>
+              <div class="toast-body" id="plumage-toast-component__toast_toast-test-1__body">
+                Success body
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-toasts-component>
+`;
+
+exports[`plumage-toasts-component renders a standard Plumage toast with string content and matches snapshot: standard-toast-string 1`] = `
+<plumage-toasts-component position="top-left">
+  <div>
+    <div aria-atomic="false" aria-label="Notifications" aria-relevant="additions text" class="toaster toaster-top-left" id="toaster-top-left" role="region">
+      <div class="toaster-slot" style="max-width: 550px;">
+        <div aria-atomic="true" aria-describedby="plumage-toast-component__toast_toast-test-1__body" aria-labelledby="plumage-toast-component__toast_toast-test-1__title" class="persistent show toast" data-toast-id="toast-test-1" id="plumage-toast-component__toast_toast-test-1__outer" role="alert">
+          <div class="toast-display" id="plumage-toast-component__toast_toast-test-1__content" tabindex="0">
+            <div class="toast-content">
+              <header class="toast-header">
+                <div class="toast-header-content">
+                  <div class="toast-title-wrapper">
+                    <div class="mb-0 mr-auto" id="plumage-toast-component__toast_toast-test-1__title">
+                      Hello
+                    </div>
+                    <span class="toast-additional-header-content">
+                      just now
+                    </span>
+                  </div>
+                  <div class="toast-time">
+                    12:34:56Z
+                  </div>
+                </div>
+                <button aria-controls="plumage-toast-component__toast_toast-test-1__outer" aria-label="Close Hello" class="close m1 ml-auto" id="plumage-toast-component__toast_toast-test-1__close" type="button">
+                  <span aria-hidden="true">
+                    ×
+                  </span>
+                </button>
+              </header>
+              <div class="toast-body" id="plumage-toast-component__toast_toast-test-1__body">
+                This is a toast
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-toasts-component>
+`;
+
+exports[`plumage-toasts-component renders standard Plumage toast HTML content and matches snapshot: standard-toast-html 1`] = `
+<plumage-toasts-component position="bottom-right">
+  <div>
+    <div aria-atomic="false" aria-label="Notifications" aria-relevant="additions text" class="toaster toaster-bottom-right" id="toaster-bottom-right" role="region">
+      <div class="toaster-slot" style="max-width: 550px;">
+        <div aria-atomic="true" aria-describedby="plumage-toast-component__toast_toast-test-1__body" aria-labelledby="plumage-toast-component__toast_toast-test-1__title" class="persistent show toast" data-toast-id="toast-test-1" id="plumage-toast-component__toast_toast-test-1__outer" role="alert">
+          <div class="toast-display" id="plumage-toast-component__toast_toast-test-1__content" tabindex="0">
+            <div class="toast-content">
+              <header class="toast-header">
+                <div class="toast-header-content">
+                  <div class="toast-title-wrapper">
+                    <div class="mb-0 mr-auto" id="plumage-toast-component__toast_toast-test-1__title">
+                      HTML Toast
+                    </div>
+                    <span class="toast-additional-header-content">
+                      1m ago
+                    </span>
+                  </div>
+                  <div class="toast-time">
+                    00:00:00Z
+                  </div>
+                </div>
+                <button aria-controls="plumage-toast-component__toast_toast-test-1__outer" aria-label="Close HTML Toast" class="close m1 ml-auto" id="plumage-toast-component__toast_toast-test-1__close" type="button">
+                  <span aria-hidden="true">
+                    ×
+                  </span>
+                </button>
+              </header>
+              <div class="toast-body" id="plumage-toast-component__toast_toast-test-1__body">
+                <div class="inner">
+                  <b>
+                    Bold
+                  </b>
+                  and
+                  <i>
+                    italic
+                  </i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</plumage-toasts-component>
+`;

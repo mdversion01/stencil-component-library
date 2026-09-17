@@ -34,6 +34,7 @@ export default {
   ,
   parameters: {
     layout: 'padded',
+    themeFamily: 'bootstrap',
     docs: {
 
       source: {

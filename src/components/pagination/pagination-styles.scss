@@ -5,10 +5,10 @@
  *
  * Usage:
  * <div class="sc-pagination">
- *   <!-- your pagination markup -->
+ *   <!-- pagination markup -->
  * </div>
  *
- * Assumes this stylesheet is loaded after Bootstrap.
+ * Assumes Bootstrap 5.3+ color-mode variables are available.
  */
 
 $radius: 0.25rem;
@@ -22,16 +22,25 @@ $font-lg: 1rem;
 $link-padding-y: 0.5rem;
 $link-padding-x: 0.75rem;
 
-$link-color: #007bff;
-$link-hover-color: #0056b3;
+$link-color: var(--bs-link-color);
+$link-hover-color: var(--bs-link-hover-color);
 
-$link-bg: #fff;
-$link-hover-bg: #e9ecef;
+$link-bg: var(--bs-body-bg);
+$link-hover-bg: var(--bs-tertiary-bg);
 
-$link-border: #dee2e6;
-$focus-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+$link-border: var(--bs-border-color);
+$disabled-color: var(--bs-secondary-color);
+
+$focus-shadow:
+  0 0 0 0.2rem
+  rgba(var(--bs-primary-rgb), 0.25);
 
 $mobile-max: 575.98px;
+
+
+/* ============================================================
+   Pagination variants
+   ============================================================ */
 
 @mixin pagination-variant(
   $name,
@@ -47,69 +56,95 @@ $mobile-max: 575.98px;
       background-color: $link-bg;
 
       &:hover {
-        color: if($hover-color == null, $color, $hover-color);
-        background-color: if($hover-bg == null, $link-hover-bg, $hover-bg);
-      }
+        color: if(
+          $hover-color == null,
+          $color,
+          $hover-color
+        );
 
+        background-color: if(
+          $hover-bg == null,
+          $link-hover-bg,
+          $hover-bg
+        );
+      }
     }
 
     .page-item.active .page-link {
+      color: var(--bs-white);
       background-color: $active-bg;
       border-color: $active-border;
-      color: #fff;
     }
   }
 }
 
-/* Variant definitions (map-driven) */
+
+/* ============================================================
+   Variant definitions
+   ============================================================ */
+
 $pagination-variants: (
   secondary: (
-    color: #333,
+    color: var(--bs-secondary-text-emphasis),
     hover-bg: $link-hover-bg,
-    active-bg: #909090,
-    active-border: #909090
+    active-bg: var(--bs-secondary),
+    active-border: var(--bs-secondary)
   ),
+
   tertiary: (
-    color: #333,
+    color: var(--bs-body-color),
     hover-bg: $link-hover-bg,
-    active-bg: #a6a6a6,
-    active-border: #a6a6a6
+    active-bg: var(--bs-secondary),
+    active-border: var(--bs-secondary)
   ),
+
   success: (
-    color: #247f61,
-    hover-color: #2d9d78,
+    color: var(--bs-success-text-emphasis),
+    hover-color: var(--bs-success-text-emphasis),
     hover-bg: $link-hover-bg,
-    active-bg: #247f61,
-    active-border: #247f61
+    active-bg: var(--bs-success),
+    active-border: var(--bs-success)
   ),
+
   warning: (
-    color: #c47215,
+    color: var(--bs-warning-text-emphasis),
+    hover-color: var(--bs-warning-text-emphasis),
     hover-bg: $link-hover-bg,
-    active-bg: #e68619,
-    active-border: #e68619
+    active-bg: var(--bs-warning),
+    active-border: var(--bs-warning)
   ),
+
   danger: (
-    color: #de2730,
+    color: var(--bs-danger-text-emphasis),
+    hover-color: var(--bs-danger-text-emphasis),
     hover-bg: $link-hover-bg,
-    active-bg: #de2730,
-    active-border: #de2730
+    active-bg: var(--bs-danger),
+    active-border: var(--bs-danger)
   ),
+
   info: (
-    color: #3596f9,
+    color: var(--bs-info-text-emphasis),
+    hover-color: var(--bs-info-text-emphasis),
     hover-bg: $link-hover-bg,
-    active-bg: #3596f9,
-    active-border: #3596f9
+    active-bg: var(--bs-info),
+    active-border: var(--bs-info)
   )
 );
 
+
 *,
-:after,
-:before {
+::after,
+::before {
   box-sizing: border-box;
 }
 
-.sc-pagination {
-  /* ---------- resets / base (scoped) ---------- */
+
+// .sc-pagination {
+//   color: var(--bs-body-color);
+
+  /* ==========================================================
+     Resets / base
+     ========================================================== */
 
   [type='button'],
   [type='reset'],
@@ -138,6 +173,7 @@ $pagination-variants: (
   select,
   textarea {
     margin: 0;
+    color: var(--bs-body-color);
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;
@@ -153,37 +189,45 @@ $pagination-variants: (
     box-sizing: border-box;
   }
 
-  /* ---------- pagination ---------- */
+
+  /* ==========================================================
+     Pagination
+     ========================================================== */
 
   .pagination {
     display: flex;
     align-items: center;
     margin: 0;
     padding-left: 0;
-    list-style: none;
     border-radius: $radius;
+    color: var(--bs-body-color);
     font-size: $font-base;
+    list-style: none;
   }
 
   .page-link {
     position: relative;
     display: block;
-    padding: $link-padding-y $link-padding-x;
     margin-left: -1px;
-    line-height: 1.25;
+    padding:
+      $link-padding-y
+      $link-padding-x;
+    border: 1px solid $link-border;
     color: $link-color;
     background-color: $link-bg;
-    border: 1px solid $link-border;
+    line-height: 1.25;
+    text-decoration: none;
 
     &:hover {
       z-index: 2;
-      color: $link-hover-color;
-      text-decoration: none;
-      background-color: $link-hover-bg;
       border-color: $link-border;
+      color: $link-hover-color;
+      background-color: $link-hover-bg;
+      text-decoration: none;
     }
 
-    &:focus {
+    &:focus,
+    &:focus-visible {
       z-index: 3;
       outline: 0;
       box-shadow: $focus-shadow;
@@ -209,46 +253,65 @@ $pagination-variants: (
 
     &.active .page-link {
       z-index: 3;
-      color: #fff;
-      background-color: $link-color;
-      border-color: $link-color;
+      border-color: var(--bs-primary);
+      color: var(--bs-white);
+      background-color: var(--bs-primary);
     }
 
     &.disabled .page-link {
-      color: #6c757d;
-      pointer-events: none;
-      cursor: auto;
-      background-color: $link-bg;
       border-color: $link-border;
+      color: $disabled-color;
+      background-color: $link-bg;
+      cursor: auto;
+      pointer-events: none;
     }
   }
 
-  /* ---------- by-page / plumage ---------- */
+
+  /* ==========================================================
+     By-page / Plumage
+     ========================================================== */
 
   .by-page {
     .pages {
       padding: 0 0.5rem;
+      color: var(--bs-body-color);
       white-space: nowrap;
 
       .page-input {
         display: inline-block;
-        margin-top: 0;
         min-width: 2.5rem;
         max-width: 4rem;
-        text-align: center;
-        padding-left: 0.3rem;
+        margin-top: 0;
         padding-right: 0.3rem;
+        padding-left: 0.3rem;
+        border: 1px solid var(--bs-border-color);
+        color: var(--bs-body-color);
+        background-color: var(--bs-body-bg);
+        text-align: center;
+
+        &:focus {
+          border-color: var(--bs-primary-border-subtle);
+          outline: 0;
+          box-shadow: $focus-shadow;
+        }
+
+        &:disabled,
+        &[readonly] {
+          color: var(--bs-secondary-color);
+          background-color: var(--bs-secondary-bg);
+        }
 
         &.page-input-sm {
-          font-size: $font-sm;
           min-width: 2rem;
           max-width: 3rem;
+          font-size: $font-sm;
         }
 
         &.page-input-lg {
-          font-size: $font-lg;
           min-width: 3rem;
           max-width: 4rem;
+          font-size: $font-lg;
         }
       }
     }
@@ -267,10 +330,13 @@ $pagination-variants: (
   }
 
   .plumage {
+    color: var(--bs-body-color);
+
     .pages {
-      padding: 0 0.75rem;
       display: flex;
       align-items: center;
+      padding: 0 0.75rem;
+      color: var(--bs-body-color);
       font-size: 0.833rem;
 
       .page-input-wrapper {
@@ -279,25 +345,27 @@ $pagination-variants: (
     }
 
     .page-link {
-      border-left: 1px solid rgb(222, 226, 230);
-      border-right: 1px solid rgb(222, 226, 230);
       border-top: none;
+      border-right: 1px solid $link-border;
       border-bottom: none;
+      border-left: 1px solid $link-border;
+      color: $link-color;
+      background-color: $link-bg;
     }
 
     .page-item {
       &:first-child .page-link {
-        border-left: none;
-        border-right: 1px solid rgb(222, 226, 230);
         border-top: none;
+        border-right: 1px solid $link-border;
         border-bottom: none;
+        border-left: none;
       }
 
       &:last-child .page-link {
-        border-left: 1px solid rgb(222, 226, 230);
-        border-right: none;
         border-top: none;
+        border-right: none;
         border-bottom: none;
+        border-left: 1px solid $link-border;
       }
     }
 
@@ -306,8 +374,8 @@ $pagination-variants: (
     }
 
     .size-changer-sm {
-      font-size: $font-sm;
       padding: 0;
+      font-size: $font-sm;
     }
 
     .row-display {
@@ -321,14 +389,17 @@ $pagination-variants: (
     }
   }
 
-  /* ---------- size variants (no !important) ---------- */
+
+  /* ==========================================================
+     Size variants
+     ========================================================== */
 
   .pagination-sm {
     font-size: $font-sm;
 
     .page-link {
-      font-size: $font-sm;
       padding: 0.25rem 0.5rem;
+      font-size: $font-sm;
       line-height: 1.5;
     }
 
@@ -349,8 +420,8 @@ $pagination-variants: (
     font-size: $font-lg;
 
     .page-link {
-      font-size: $font-lg;
       padding: 0.5rem 1.25rem;
+      font-size: $font-lg;
       line-height: 1.5;
     }
 
@@ -367,7 +438,11 @@ $pagination-variants: (
     }
   }
 
-  /* by-page border-radius overrides for size variants */
+
+  /* ==========================================================
+     By-page border-radius overrides
+     ========================================================== */
+
   .by-page.pagination-sm {
     .page-item {
       &:nth-child(4) .page-link {
@@ -396,7 +471,10 @@ $pagination-variants: (
     }
   }
 
-  /* ---------- layouts ---------- */
+
+  /* ==========================================================
+     Layouts
+     ========================================================== */
 
   .pagination-layout {
     margin: 0.625rem 0;
@@ -436,34 +514,52 @@ $pagination-variants: (
     }
   }
 
-  /* ---------- size changer (no !important) ---------- */
+
+  /* ==========================================================
+     Size changer
+     ========================================================== */
 
   .size-changer {
     display: flex;
-    white-space: nowrap;
     align-items: baseline;
+    color: var(--bs-body-color);
+    white-space: nowrap;
 
     label {
-      font-size: $font-base;
       padding: 0 0.5rem;
+      color: var(--bs-body-color);
+      font-size: $font-base;
     }
 
     .form-select {
       padding: 0.275rem 2.25rem 0.275rem 0.5rem;
+      border-color: var(--bs-border-color);
+      color: var(--bs-body-color);
+      background-color: var(--bs-body-bg);
+
+      &:focus {
+        border-color: var(--bs-primary-border-subtle);
+        box-shadow: $focus-shadow;
+      }
+
+      &:disabled {
+        color: var(--bs-secondary-color);
+        background-color: var(--bs-secondary-bg);
+      }
     }
   }
 
   .size-changer-sm {
-    font-size: $font-sm;
     padding: 3px 0 0;
+    font-size: $font-sm;
 
     label {
       font-size: $font-sm;
     }
 
     .select-sm {
-      font-size: $font-sm;
       padding: 0.25rem 2.25rem 0.25rem 0.25rem;
+      font-size: $font-sm;
     }
   }
 
@@ -475,17 +571,21 @@ $pagination-variants: (
     }
 
     .select-lg {
-      font-size: $font-lg;
       padding: 0.325rem 2.25rem 0.325rem 0.25rem;
+      font-size: $font-lg;
     }
   }
 
-  /* ---------- row display ---------- */
+
+  /* ==========================================================
+     Row display
+     ========================================================== */
 
   .row-display {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--bs-body-color);
 
     &.sm {
       font-size: $font-sm;
@@ -501,7 +601,10 @@ $pagination-variants: (
     }
   }
 
-  /* ---------- utilities (scoped) ---------- */
+
+  /* ==========================================================
+     Utilities
+     ========================================================== */
 
   .justify-content-center {
     -ms-flex-pack: center;
@@ -537,7 +640,10 @@ $pagination-variants: (
     flex-grow: 1;
   }
 
-  /* ---------- variants (map-driven) ---------- */
+
+  /* ==========================================================
+     Variants
+     ========================================================== */
 
   @each $name, $cfg in $pagination-variants {
     @include pagination-variant(
@@ -550,11 +656,14 @@ $pagination-variants: (
     );
   }
 
-  /* ---------- responsive ---------- */
+
+  /* ==========================================================
+     Responsive
+     ========================================================== */
 
   @media (max-width: $mobile-max) {
     .bv-d-xs-down-none {
       display: none;
     }
   }
-}
+// }

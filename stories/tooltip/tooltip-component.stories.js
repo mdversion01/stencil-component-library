@@ -15,10 +15,11 @@ import {
 } from './tooltip-component.story-helpers';
 
 export default {
-  title: 'Components/Tooltip'
+  title: 'Bootstrap or Plumage/Tooltip'
   ,
   parameters: {
     layout: 'padded',
+    themeFamily: 'allthemes',
     docs: {
 
       description: {

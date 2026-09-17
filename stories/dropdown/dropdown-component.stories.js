@@ -33,7 +33,7 @@ const defaultArgs = {
   submenuOffsetX: 0,
   tableId: 'demo-table',
   titleAttr: '',
-  variant: 'default',
+  variant: '',
   withSubmenu: true,
 
   formLayout: '',
@@ -47,7 +47,7 @@ const renderBasicTemplate = args => {
 };
 
 export default {
-  title: 'Components/Dropdown'
+  title: 'Bootstrap or Plumage/Dropdown'
   ,
   args: {
     ...defaultArgs,
@@ -56,6 +56,7 @@ export default {
     actions: {
       handles: ['itemSelected', 'items-changed', 'selection-changed'],
     },
+    themeFamily: 'allthemes',
     docs: {
 
       description: {
@@ -245,10 +246,19 @@ export const Basic = {
     id: 'dropdown-basic',
     variant: 'primary',
   },
+  decorators: [
+    Story => {
+      const wrap = document.createElement('div');
+      wrap.style.padding = '5px 15px';
+      const node = Story();
+      wrap.appendChild(node);
+      return wrap;
+    },
+  ],
   parameters: {
     docs: {
       description: { story: 'A basic dropdown with default settings.' },
-      story: { height: '220px' },
+      story: { height: '125px' },
     },
   },
 };
@@ -264,9 +274,9 @@ export const RightAligned = {
   decorators: [
     Story => {
       const wrap = document.createElement('div');
-      wrap.style.paddingLeft = '40px';
+      wrap.style.padding = '5px 15px 0 60px';
       wrap.style.boxSizing = 'border-box';
-      wrap.style.minHeight = '220px';
+      wrap.style.minHeight = '125px';
       const node = Story();
       wrap.appendChild(node);
       return wrap;
@@ -274,7 +284,7 @@ export const RightAligned = {
   ],
   parameters: {
     docs: {
-      story: { height: '220px' },
+      story: { height: '125px' },
       description: { story: 'A right-aligned dropdown (menu opens to the left).' },
     },
   },
@@ -289,6 +299,7 @@ export const WithSubmenu = {
     wrap.style.display = 'flex';
     wrap.style.gap = '24px';
     wrap.style.alignItems = 'center';
+    wrap.style.padding = '5px 15px';
 
     const left = buildDropdown(
       { ...args, id: 'dropdown-submenu-left', withSubmenu: true, alignMenuRight: false, variant: 'secondary' },
@@ -340,11 +351,19 @@ export const IconOnly = {
   args: {
     icon: 'fa-solid fa-ellipsis-vertical',
     iconSize: 18,
-    variant: 'primary',
   },
+  decorators: [
+    Story => {
+      const wrap = document.createElement('div');
+      wrap.style.padding = '5px 15px';
+      const node = Story();
+      wrap.appendChild(node);
+      return wrap;
+    },
+  ],
   parameters: {
     docs: {
-      story: { height: '220px' },
+      story: { height: '125px' },
       description: { story: 'Dropdown using an icon-only trigger button.' },
     },
   },
@@ -359,6 +378,7 @@ export const CheckboxVariants = {
     wrap.style.display = 'flex';
     wrap.style.gap = '24px';
     wrap.style.alignItems = 'center';
+    wrap.style.padding = '5px 15px';
 
     const left = buildDropdown({ ...args, id: 'dropdown-checkboxes', variant: 'secondary', listType: 'checkboxes', withSubmenu: false }, items, 'dd-chk');
 
@@ -389,7 +409,7 @@ export const CheckboxVariants = {
   args: {},
   parameters: {
     docs: {
-      story: { height: '260px' },
+      story: { height: '220px' },
       description: { story: 'Dropdown with checkbox items. Two examples shown: standard and custom checkboxes.' },
     },
   },
@@ -399,10 +419,21 @@ export const ToggleSwitches = {
   name: 'ToggleSwitches',
   render: args =>
     buildDropdown({ ...args, id: 'dropdown-toggles', variant: 'secondary', listType: 'toggleSwitches', withSubmenu: false }, toggleItems(), 'dd-tgsw'),
+   decorators: [
+    Story => {
+      const wrap = document.createElement('div');
+      wrap.style.padding = '5px 15px';
+      wrap.style.boxSizing = 'border-box';
+      wrap.style.minHeight = '125px';
+      const node = Story();
+      wrap.appendChild(node);
+      return wrap;
+    },
+  ],
   args: {},
   parameters: {
     docs: {
-      story: { height: '220px' },
+      story: { height: '150px' },
       description: { story: 'Dropdown with toggle switch items.' },
     },
   },
@@ -415,6 +446,7 @@ export const Sizes = {
     wrap.style.display = 'flex';
     wrap.style.gap = '12px';
     wrap.style.alignItems = 'center';
+    wrap.style.padding = '5px 15px';
 
     const sm = buildDropdown({ ...args, id: 'dropdown-size-sm', size: 'sm', variant: 'primary', buttonText: 'Small' }, baseItems(), 'dd-size-sm');
     const md = buildDropdown({ ...args, id: 'dropdown-size-md', size: '', variant: 'primary', buttonText: 'Default' }, baseItems(), 'dd-size-md');
@@ -450,9 +482,7 @@ export const AccessibilityMatrix = {
     introDescription.className =
       'dropdown-accessibility-matrix__intro-description';
     introDescription.innerHTML =
-      'Renders common variants and prints computed <code>role</code> + ' +
-      '<code>aria-*</code> + IDs from the light DOM. ' +
-      '(Layout + validation are Storybook-only wrappers; the component output is unchanged.)';
+      'Renders common dropdown variants and prints the computed accessibility structure from the rendered light DOM, including the native trigger button, menu role, menu items, ARIA relationships, hidden form input, disabled state, and submenu controls.';
 
     intro.appendChild(introTitle);
     intro.appendChild(introDescription);
@@ -460,59 +490,108 @@ export const AccessibilityMatrix = {
 
     const cases = [
       {
-        title: 'Default (valid)',
-        layout: '',
-        invalid: false,
+        title: 'Default',
         args: {
           ...args,
           disabled: false,
           iconDropdown: false,
           alignMenuRight: false,
+          buttonText: 'Dropdown',
+          titleAttr: '',
+          variant: 'primary',
+          listType: 'default',
         },
+        items: baseItems(),
       },
+
       {
-        title: 'Inline wrapper (valid)',
-        layout: 'inline',
-        invalid: false,
+        title: 'Icon-only trigger',
         args: {
           ...args,
           disabled: false,
-          iconDropdown: false,
+          iconDropdown: true,
+          icon: 'fa-solid fa-ellipsis-vertical',
+          buttonText: '',
+          titleAttr: 'More actions',
           alignMenuRight: false,
+          variant: 'secondary',
+          listType: 'default',
         },
+        items: baseItems(),
       },
+
       {
-        title: 'Horizontal wrapper (valid)',
-        layout: 'horizontal',
-        invalid: false,
+        title: 'Right aligned',
         args: {
           ...args,
           disabled: false,
           iconDropdown: false,
-          alignMenuRight: false,
+          alignMenuRight: true,
+          buttonText: 'Actions',
+          variant: 'secondary',
+          listType: 'default',
         },
+        items: baseItems(),
       },
+
       {
-        title: 'Error / validation wrapper (storybook-only)',
-        layout: '',
-        invalid: true,
-        invalidText:
-          args.validationMessage || 'Required field',
+        title: 'With submenu',
         args: {
           ...args,
           disabled: false,
           iconDropdown: false,
           alignMenuRight: false,
+          buttonText: 'Menu',
+          variant: 'secondary',
+          listType: 'default',
+          withSubmenu: true,
         },
+        items: [
+          ...baseItems(),
+          { isDivider: true },
+          ...submenuItems(args.subMenuListType || 'default'),
+        ],
       },
+
+      {
+        title: 'Checkbox items',
+        args: {
+          ...args,
+          disabled: false,
+          iconDropdown: false,
+          buttonText: 'Fruit',
+          variant: 'secondary',
+          listType: 'checkboxes',
+          withSubmenu: false,
+        },
+        items: checkboxItems(),
+      },
+
+      {
+        title: 'Toggle switch items',
+        args: {
+          ...args,
+          disabled: false,
+          iconDropdown: false,
+          buttonText: 'Notifications',
+          variant: 'secondary',
+          listType: 'toggleSwitches',
+          withSubmenu: false,
+        },
+        items: toggleItems(),
+      },
+
       {
         title: 'Disabled',
-        layout: '',
-        invalid: false,
         args: {
           ...args,
           disabled: true,
+          iconDropdown: false,
+          buttonText: 'Disabled dropdown',
+          variant: 'primary',
+          listType: 'default',
         },
+        items: baseItems(),
       },
     ];
 
@@ -520,10 +599,8 @@ export const AccessibilityMatrix = {
       root.appendChild(
         buildCard({
           title: caseConfig.title,
-          layout: caseConfig.layout,
-          invalid: caseConfig.invalid,
-          invalidText: caseConfig.invalidText,
           args: caseConfig.args,
+          items: caseConfig.items,
           idSuffix: String(index + 1),
         }),
       );
@@ -536,11 +613,11 @@ export const AccessibilityMatrix = {
     docs: {
       description: {
         story:
-          'Matrix of common states (default/inline/horizontal wrappers, error/validation wrapper, disabled) and a live readout of key roles, aria-* attributes, and ids to help verify 508/ARIA compliance.',
+          'Computed accessibility matrix for standard, icon-only, right-aligned, submenu, checkbox, toggle-switch, and disabled dropdowns. Each card reports the rendered native trigger, menu, menu items, form input, ARIA attributes, and whether ID-based ARIA relationships resolve.',
       },
 
       story: {
-        height: '1150px',
+        height: '2200px',
       },
     },
 

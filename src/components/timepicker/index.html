@@ -12,7 +12,11 @@
 
     <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
 
-    <style>
+     <style>
+      .theme-switcher {
+        margin: 10px;
+      }
+
       .cwrapper {
         margin: 10px;
       }
@@ -36,28 +40,30 @@
     </style>
   </head>
   <body>
+
+       <div class="theme-switcher">
+      <button
+        id="bootstrap-theme-toggle"
+        type="button"
+        class="btn btn-outline-secondary"
+        aria-pressed="false"
+        aria-label="Switch to dark mode"
+      >
+        Dark mode
+      </button>
+    </div>
     <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
      -->
     <app-wrapper>
       <div class="cwrapper">
-        <section class="display-box-demo">
-          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 500px">
-            <timepicker-manager use-pl-timepicker size="lg" input-id="one" show-label label-text="Required Time" required is-valid validation validation-message="testing validation"></timepicker-manager>
-          </div>
-        </section>
+
 
         <section class="display-box-demo">
-          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
-            <timepicker-manager size="sm"></timepicker-manager>
+<div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
+            <timepicker-component show-label label-text="Time"></timepicker-manager>
           </div>
 
-          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
-            <timepicker-manager read-only size="lg" show-label></timepicker-manager>
-          </div>
 
-          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
-            <timepicker-manager disable-timepicker show-label label-text="Required Time (Disabled)" required is-valid validation validation-message="testing validation"></timepicker-manager>
-          </div>
 
           <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
             <timepicker-component read-only show-label label-text="Time (Read-Only)" required is-valid validation validation-message="testing validation"></timepicker-component>
@@ -67,22 +73,52 @@
             <timepicker-component show-label label-text="Required Time (Required)" required is-valid validation validation-message="testing validation"></timepicker-component>
           </div>
 
-          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
-            <plumage-timepicker-component show-label label-text="Required Time" required is-valid validation validation-message="testing validation" input-id="validation-timepicker"></plumage-timepicker-component>
-          </div>
 
-          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
-            <plumage-timepicker-component read-only show-label label-text="Required Time (Read-Only)" input-id="read-only-timepicker"></plumage-timepicker-component>
-          </div>
-
-          <div class="timepicker-wrapper" style="margin-bottom: 20px; margin-top: 20px; width: 210px">
-            <plumage-timepicker-component disabled show-label label-text="Required Time (Disabled)" input-id="disabled-timepicker"></plumage-timepicker-component>
-          </div>
 
         </section>
       </div>
     </app-wrapper>
 
-    <script type="module"></script>
+    <script type="module">
+       (() => {
+        const STORAGE_KEY = 'bootstrap-demo-theme';
+        const html = document.documentElement;
+        const toggle = document.getElementById('bootstrap-theme-toggle');
+
+        function applyTheme(theme) {
+          const normalizedTheme = theme === 'dark' ? 'dark' : 'light';
+          const isDark = normalizedTheme === 'dark';
+
+          html.setAttribute('data-bs-theme', normalizedTheme);
+
+          toggle.setAttribute('aria-pressed', String(isDark));
+          toggle.setAttribute(
+            'aria-label',
+            isDark ? 'Switch to light mode' : 'Switch to dark mode',
+          );
+          toggle.textContent = isDark ? 'Light mode' : 'Dark mode';
+        }
+
+        function getInitialTheme() {
+          const storedTheme = localStorage.getItem(STORAGE_KEY);
+
+          if (storedTheme === 'light' || storedTheme === 'dark') {
+            return storedTheme;
+          }
+
+          return html.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light';
+        }
+
+        applyTheme(getInitialTheme());
+
+        toggle.addEventListener('click', () => {
+          const currentTheme = html.getAttribute('data-bs-theme');
+          const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+          localStorage.setItem(STORAGE_KEY, nextTheme);
+          applyTheme(nextTheme);
+        });
+      })();
+    </script>
   </body>
 </html>

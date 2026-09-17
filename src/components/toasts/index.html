@@ -13,6 +13,10 @@
     <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
 
     <style>
+      .theme-switcher {
+        margin: 10px;
+      }
+
       .cwrapper {
         margin: 10px;
       }
@@ -36,6 +40,18 @@
     </style>
   </head>
   <body>
+
+       <div class="theme-switcher">
+      <button
+        id="bootstrap-theme-toggle"
+        type="button"
+        class="btn btn-outline-secondary"
+        aria-pressed="false"
+        aria-label="Switch to dark mode"
+      >
+        Dark mode
+      </button>
+    </div>
     <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
      -->
     <app-wrapper>
@@ -70,15 +86,7 @@
           </div>
         </section>
 
-        <section class="display-box-demo">
-          <button class="btn btn-secondary btn-sm" onclick="showNotification2a()">Show Plumage Toast</button>
-          <toasts-component id="toast2a" position="top-right" plumage-toast></toasts-component>
 
-          <div style="margin-top: 15px; max-width: 500px">
-            <div style="margin-bottom: 5px; font-size: 0.75rem">Plumage Toast Styling Example:</div>
-            <toasts-component id="toast2" position="" plumage-toast></toasts-component>
-          </div>
-        </section>
 
         <section class="display-box-demo">
           <button class="btn btn-secondary btn-sm" onclick="showNotification1a()">Show Toast</button>
@@ -110,17 +118,7 @@
           </div>
         </section>
 
-        <section class="display-box-demo">
-          <button class="btn btn-secondary btn-sm" onclick="showNotification2b()">Show Plumage Toast Max</button>
 
-          <!-- If you keep bottom-center, extend ToastPosition + CSS -->
-          <toasts-component id="toast2b" position="bottom-right" plumage-toast plumage-toast-max append-toast></toasts-component>
-
-          <div style="margin-top: 15px; max-width: 500px">
-            <div style="margin-bottom: 5px; font-size: 0.75rem">Plumage Toast Max Styling Example:</div>
-            <toasts-component id="toast4" position="" plumage-toast plumage-toast-max></toasts-component>
-          </div>
-        </section>
       </div>
     </app-wrapper>
 
@@ -177,17 +175,7 @@
           variantClass: 'success',
         });
 
-        const toast2 = document.getElementById('toast2');
-        toast2.showToast({
-          toastTitle: 'Plumage Toast',
-          content: 'This is a Plumage styled toast example!',
-          duration: 5000,
-          svgIcon: 'exclamation-circle-fill',
-          persistent: true,
-          noCloseButton: true,
-          iconPlumageStyle: true,
-          variantClass: 'info',
-        });
+
 
         const toast3 = document.getElementById('toast3');
         toast3.showToast({
@@ -243,17 +231,7 @@
           variantClass: 'success',
         });
 
-        const toast4 = document.getElementById('toast4');
-        // If you enable innerHTML (see patch below), you can pass markup strings:
-        toast4.showToast({
-          toastTitle: 'Plumage Toast Max',
-          contentHtml: '<div><div>This is data</div><div>This is data</div></div>',
-          duration: 7000,
-          svgIcon: 'exclamation-circle-fill',
-          persistent: true,
-          iconPlumageStyle: true,
-          variantClass: 'danger',
-        });
+
       });
 
       window.showNotification1a = function () {
@@ -305,36 +283,6 @@
         });
       };
 
-      window.showNotification2a = function () {
-        const t = document.getElementById('toast2a');
-        t.showToast({
-          toastTitle: 'Title Text',
-          content: 'This is a Plumage Styled toast message!',
-          duration: 5000,
-          svgIcon: 'exclamation-circle-fill',
-          persistent: false,
-          noCloseButton: false,
-          iconPlumageStyle: true,
-          variantClass: 'danger',
-        });
-      };
-
-      window.showNotification2b = function () {
-        const t = document.getElementById('toast2b');
-        t.showToast({
-          toastTitle: "Plumage Toast Max",
-          contentHtml: `<div slot="custom-content">
-            <div>This is data</div>
-            <div>This is data</div>
-          </div>`,
-          duration: 7000,
-          svgIcon: 'exclamation-circle-fill',
-          persistent: false,
-          noCloseButton: false,
-          iconPlumageStyle: true,
-          variantClass: 'danger',
-        });
-      };
 
       // Simulate real-time notifications
       (function simulateRealTimeNotifications() {
@@ -381,6 +329,46 @@
       };
 
       // ---------- End Toast notifications demo wiring ---------- //
+
+       (() => {
+        const STORAGE_KEY = 'bootstrap-demo-theme';
+        const html = document.documentElement;
+        const toggle = document.getElementById('bootstrap-theme-toggle');
+
+        function applyTheme(theme) {
+          const normalizedTheme = theme === 'dark' ? 'dark' : 'light';
+          const isDark = normalizedTheme === 'dark';
+
+          html.setAttribute('data-bs-theme', normalizedTheme);
+
+          toggle.setAttribute('aria-pressed', String(isDark));
+          toggle.setAttribute(
+            'aria-label',
+            isDark ? 'Switch to light mode' : 'Switch to dark mode',
+          );
+          toggle.textContent = isDark ? 'Light mode' : 'Dark mode';
+        }
+
+        function getInitialTheme() {
+          const storedTheme = localStorage.getItem(STORAGE_KEY);
+
+          if (storedTheme === 'light' || storedTheme === 'dark') {
+            return storedTheme;
+          }
+
+          return html.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light';
+        }
+
+        applyTheme(getInitialTheme());
+
+        toggle.addEventListener('click', () => {
+          const currentTheme = html.getAttribute('data-bs-theme');
+          const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+          localStorage.setItem(STORAGE_KEY, nextTheme);
+          applyTheme(nextTheme);
+        });
+      })();
     </script>
   </body>
 </html>
