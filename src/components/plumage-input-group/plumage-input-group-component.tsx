@@ -483,6 +483,7 @@ export class PlumageInputGroupComponent {
     return (
       <Fragment>
         <div class={groupClasses} onClick={this.handleInteraction} onMouseDown={this.handleInteraction}>
+          <div class="ig-wrapper">
           {this.prependField ? this.renderAffix('prepend', ids) : null}
 
           <input
@@ -517,6 +518,7 @@ export class PlumageInputGroupComponent {
           />
 
           {this.appendField ? this.renderAffix('append', ids) : null}
+          </div>
 
           <div class={`b-underline${this.disabled || this.readOnly ? ' disabled' : this.validationState ? ' invalid' : ''}`} role="presentation" aria-hidden="true">
             <div
@@ -570,7 +572,7 @@ export class PlumageInputGroupComponent {
     const computedAriaLabel = labelledBy ? undefined : (this.ariaLabel || labelText).trim();
 
     return (
-      <div class="plumage">
+      <div class="stencil-component">
         {this.renderLabel(ids, '')}
 
         <div class="input-group search-bar-container mb-3" onClick={this.handleInteraction} onMouseDown={this.handleInteraction}>
@@ -626,7 +628,7 @@ export class PlumageInputGroupComponent {
       return this.renderPlumageSearch(ids);
     }
 
-    const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
+    const outerClass = this.formLayout ? `stencil-component ${this.formLayout}` : 'stencil-component';
     const groupClasses = ['form-group', 'form-input-group'];
     if (this.isHorizontal()) groupClasses.push('row', 'horizontal');
     else if (this.isInline()) groupClasses.push('row', 'inline');
@@ -641,7 +643,7 @@ export class PlumageInputGroupComponent {
         : undefined;
 
     return (
-      <div class={`plumage${outerClass}`}>
+      <div class={`${outerClass}`}>
         <div class={groupClasses.join(' ')}>
           {this.renderLabel(ids, labelColClass)}
           {this.isHorizontal() ? (

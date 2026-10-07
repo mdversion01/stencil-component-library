@@ -1,5 +1,5 @@
 <!doctype html>
-<html dir="ltr" lang="en">
+<html dir="ltr" lang="en" class="plmg-lt">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,6 +13,24 @@
     <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
 
     <style>
+      .plmg-lt {
+        body {
+          background-color: #fff;
+          color: #383838;
+        }
+      }
+
+      .plmg-dk {
+        body {
+          background-color: #323232;
+          color: #f2f2f2;
+        }
+      }
+
+      .theme-switcher {
+        margin: 10px;
+      }
+
       .cwrapper {
         margin: 10px;
       }
@@ -29,12 +47,14 @@
     </style>
   </head>
   <body>
+    <div class="theme-switcher">
+      <button id="plumage-theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark mode">Dark mode</button>
+    </div>
+
     <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
      -->
     <app-wrapper>
       <div class="cwrapper">
-
-
         <plumage-select-field-component
           label="Favorite Fruit"
           select-field-id="fruit4"
@@ -60,6 +80,11 @@
           {"value":"banana","name":"Banana"},
           {"value":"cherry","name":"Cherry"}
         ]'
+          custom
+          required
+          validation
+          validation-message="Please make a selection"
+          read-only
         ></plumage-select-field-component>
 
         <plumage-select-field-component
@@ -68,8 +93,7 @@
           form-layout="horizontal"
           label-align="right"
           value=""
-          size="lg"
-           required
+          required
           validation
           validation-message="Please make a selection"
           options='[
@@ -85,8 +109,7 @@
           form-layout="horizontal"
           label-align="right"
           value=""
-          size="lg"
-           required
+          required
           validation
           validation-message="Please make a selection"
           read-only
@@ -103,9 +126,8 @@
           form-layout="horizontal"
           label-align="right"
           value=""
-          size="lg"
           disabled
-           required
+          required
           validation
           validation-message="Please make a selection"
           options='[
@@ -115,14 +137,14 @@
         ]'
         ></plumage-select-field-component>
 
-      <plumage-select-field-component
+        <plumage-select-field-component
           label="Favorite Fruit"
           multiple
           required
           validation
           validation-message="Please make a selection"
           show-default-in-multiple
-          field-height="2"
+          field-height="4"
           select-field-id="fruit"
           value=""
           options='[
@@ -134,6 +156,56 @@
       </div>
     </app-wrapper>
 
-    <script type="module"></script>
+    <script type="module">
+      (() => {
+        const STORAGE_KEY = 'plumage-demo-theme';
+
+        const html = document.documentElement;
+
+        const toggle = document.getElementById('plumage-theme-toggle');
+
+        if (!toggle) {
+          return;
+        }
+
+        const applyTheme = theme => {
+          const isDark = theme === 'dark';
+
+          const html = document.documentElement;
+
+          html.classList.remove('plmg-lt', 'plmg-dk');
+
+          html.classList.add(isDark ? 'plmg-dk' : 'plmg-lt');
+
+          toggle.setAttribute('aria-pressed', String(isDark));
+
+          toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+
+          toggle.textContent = isDark ? 'Light mode' : 'Dark mode';
+        };
+
+        const getInitialTheme = () => {
+          const storedTheme = localStorage.getItem(STORAGE_KEY);
+
+          if (storedTheme === 'light' || storedTheme === 'dark') {
+            return storedTheme;
+          }
+
+          return html.classList.contains('plmg-dk') ? 'dark' : 'light';
+        };
+
+        applyTheme(getInitialTheme());
+
+        toggle.addEventListener('click', () => {
+          const currentTheme = html.classList.contains('plmg-dk') ? 'dark' : 'light';
+
+          const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+          localStorage.setItem(STORAGE_KEY, nextTheme);
+
+          applyTheme(nextTheme);
+        });
+      })();
+    </script>
   </body>
 </html>

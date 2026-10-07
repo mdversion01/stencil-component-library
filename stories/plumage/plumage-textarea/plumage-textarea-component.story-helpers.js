@@ -3,56 +3,83 @@
 export const TAG = 'plumage-textarea-component';
 
 export const normalize = value => {
-  if (value === '' || value == null) return undefined;
-  if (value === true) return true;
-  if (value === false) return false;
+  if (value === '' || value == null) {
+    return undefined;
+  }
+
+  if (value === true) {
+    return true;
+  }
+
+  if (value === false) {
+    return false;
+  }
+
   return value;
 };
 
-export const esc = s =>
-  String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+export const esc = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 export const buildDocsHtml = args => {
-  const a = { ...args };
+  const a = {
+    ...args,
+  };
 
   const attrs = [
     ['disabled', !!a.disabled],
+
     ['read-only', !!a.readOnly],
+
     ['required', !!a.required],
+
     ['validation', !!a.validation],
+
     ['label-hidden', !!a.labelHidden],
 
     ['form-id', normalize(a.formId)],
+
     ['form-layout', normalize(a.formLayout)],
+
     ['input-id', normalize(a.inputId)],
+
     ['textarea-text-size', normalize(a.textareaTextSize)],
+
     ['label', normalize(a.label)],
+
     ['label-size', normalize(a.labelSize)],
+
     ['label-align', normalize(a.labelAlign)],
+
     ['validation-message', normalize(a.validationMessage)],
+
     ['value', normalize(a.value)],
+
     ['placeholder', normalize(a.placeholder)],
+
     ['rows', Number.isFinite(Number(a.rows)) ? Number(a.rows) : undefined],
+
     ['max-length', Number.isFinite(Number(a.maxLength)) ? Number(a.maxLength) : undefined],
 
     ['aria-label', normalize(a.ariaLabel)],
+
     ['aria-labelledby', normalize(a.ariaLabelledby)],
+
     ['aria-describedby', normalize(a.ariaDescribedby)],
+
     ['arialabelled-by', normalize(a.arialabelledBy)],
 
     ['label-col', Number.isFinite(a.labelCol) ? a.labelCol : undefined],
+
     ['input-col', Number.isFinite(a.inputCol) ? a.inputCol : undefined],
+
     ['label-cols', normalize(a.labelCols)],
+
     ['input-cols', normalize(a.inputCols)],
   ];
 
   const attrStr = attrs
-    .filter(([_, v]) => v !== undefined && v !== false)
-    .map(([k, v]) => (v === true ? k : `${k}="${esc(v)}"`))
+    .filter(([_, value]) => value !== undefined && value !== false)
+    .map(([key, value]) => (value === true ? key : `${key}="${esc(value)}"`))
     .join(' ');
 
   return attrStr ? `<${TAG} ${attrStr}></${TAG}>` : `<${TAG}></${TAG}>`;
@@ -60,9 +87,17 @@ export const buildDocsHtml = args => {
 
 export const buildDocsHtmlExternalValue = () => `
 <div>
-  <button type="button" id="load-draft">Load Draft</button>
-  <button type="button" id="load-api-response">Load API Response</button>
-  <button type="button" id="clear-textarea">Clear</button>
+  <button type="button" id="load-draft">
+    Load Draft
+  </button>
+
+  <button type="button" id="load-api-response">
+    Load API Response
+  </button>
+
+  <button type="button" id="clear-textarea">
+    Clear
+  </button>
 
   <${TAG}
     label="Message"
@@ -93,8 +128,17 @@ export const buildDocsHtmlExternalValue = () => `
 export const boolAttr = (name, on) => (on ? ` ${name}` : '');
 
 export const attr = (name, val) => {
-  const v = normalize(val);
-  return v === undefined || v === false ? '' : v === true ? ` ${name}` : ` ${name}="${esc(v)}"`;
+  const value = normalize(val);
+
+  if (value === undefined || value === false) {
+    return '';
+  }
+
+  if (value === true) {
+    return ` ${name}`;
+  }
+
+  return ` ${name}="${esc(value)}"`;
 };
 
 export const renderComponent = args => {
@@ -132,54 +176,75 @@ ${attr('input-cols', args.inputCols)}
 
 export function pickAttrs(el, names) {
   const out = {};
-  for (const n of names) {
-    const v = el.getAttribute(n);
-    if (v !== null && v !== '') out[n] = v;
+
+  for (const name of names) {
+    const value = el.getAttribute(name);
+
+    if (value !== null && value !== '') {
+      out[name] = value;
+    }
   }
+
   return out;
 }
 
-export function splitIds(v) {
-  return String(v || '')
+export function splitIds(value) {
+  return String(value || '')
     .trim()
     .split(/\s+/)
     .filter(Boolean);
 }
 
-export function escAttr(v) {
-  return String(v).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+export function escAttr(value) {
+  return String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 }
 
 export function resolveIdsWithin(host, ids) {
-  const res = {};
+  const result = {};
+
   ids.forEach(id => {
     const node = host.querySelector(`[id="${escAttr(id)}"]`);
-    res[id] = !!node;
+
+    result[id] = !!node;
   });
-  return res;
+
+  return result;
 }
 
 export function getSnapshot(host) {
   const textarea = host?.querySelector('textarea');
+
   const label = host?.querySelector('label');
+
   const feedback = host?.querySelector('.invalid-feedback');
+
   const counter = host?.querySelector('.textarea-counter');
-  const underline = host?.querySelector('.b-underline');
-  const focusBar = host?.querySelector('.b-focus');
+
+  const underlines = host ? Array.from(host.querySelectorAll('.b-underline')) : [];
+
+  const focusBars = host ? Array.from(host.querySelectorAll('.b-focus')) : [];
 
   const describedByIds = textarea ? splitIds(textarea.getAttribute('aria-describedby')) : [];
+
   const labelledByIds = textarea ? splitIds(textarea.getAttribute('aria-labelledby')) : [];
 
   return {
     host: host?.tagName?.toLowerCase() ?? null,
+
     textarea: textarea
       ? {
           tag: textarea.tagName.toLowerCase(),
+
           id: textarea.getAttribute('id') || '',
+
           name: textarea.getAttribute('name') || '',
+
           class: textarea.getAttribute('class') || '',
+
           value: textarea.value ?? '',
+
           textContent: textarea.textContent ?? '',
+
           ...pickAttrs(textarea, [
             'placeholder',
             'rows',
@@ -196,48 +261,66 @@ export function getSnapshot(host) {
             'required',
             'form',
           ]),
+
           resolves: {
             'aria-labelledby': resolveIdsWithin(host, labelledByIds),
+
             'aria-describedby': resolveIdsWithin(host, describedByIds),
           },
         }
       : null,
+
     label: label
       ? {
           tag: label.tagName.toLowerCase(),
+
           id: label.getAttribute('id') || '',
+
           for: label.getAttribute('for') || '',
+
           class: label.getAttribute('class') || '',
+
           text: (label.textContent || '').trim(),
         }
       : null,
+
     counter: counter
       ? {
           id: counter.getAttribute('id') || '',
+
           class: counter.getAttribute('class') || '',
+
           text: (counter.textContent || '').trim(),
         }
       : null,
+
     validation: feedback
       ? {
           id: feedback.getAttribute('id') || '',
+
           class: feedback.getAttribute('class') || '',
+
           text: (feedback.textContent || '').trim(),
+
           ...pickAttrs(feedback, ['aria-live']),
         }
       : null,
-    underline: underline
-      ? {
-          class: underline.getAttribute('class') || '',
-        }
-      : null,
-    focusBar: focusBar
-      ? {
-          class: focusBar.getAttribute('class') || '',
-          width: focusBar.style.width || '',
-          left: focusBar.style.left || '',
-        }
-      : null,
+
+    underlines: underlines.map((underline, index) => ({
+      position: underline.classList.contains('b-underline-top') ? 'top' : underline.classList.contains('b-underline-bottom') ? 'bottom' : index === 0 ? 'top' : 'bottom',
+
+      class: underline.getAttribute('class') || '',
+    })),
+
+    focusBars: focusBars.map((focusBar, index) => ({
+      position: focusBar.classList.contains('b-focus-top') ? 'top' : focusBar.classList.contains('b-focus-bottom') ? 'bottom' : index === 0 ? 'top' : 'bottom',
+
+      class: focusBar.getAttribute('class') || '',
+
+      width: focusBar.style.width || '',
+
+      left: focusBar.style.left || '',
+    })),
   };
 }
 
@@ -245,44 +328,79 @@ export function buildEl(args) {
   const el = document.createElement(TAG);
 
   const setBool = (name, on) => {
-    if (on) el.setAttribute(name, '');
-    else el.removeAttribute(name);
+    if (on) {
+      el.setAttribute(name, '');
+    } else {
+      el.removeAttribute(name);
+    }
   };
 
-  const set = (name, v) => {
-    const n = normalize(v);
-    if (n === undefined || n === false) el.removeAttribute(name);
-    else if (n === true) el.setAttribute(name, '');
-    else el.setAttribute(name, String(n));
+  const set = (name, value) => {
+    const normalized = normalize(value);
+
+    if (normalized === undefined || normalized === false) {
+      el.removeAttribute(name);
+
+      return;
+    }
+
+    if (normalized === true) {
+      el.setAttribute(name, '');
+
+      return;
+    }
+
+    el.setAttribute(name, String(normalized));
   };
 
   setBool('disabled', !!args.disabled);
+
   setBool('read-only', !!args.readOnly);
+
   setBool('required', !!args.required);
+
   setBool('validation', !!args.validation);
+
   setBool('label-hidden', !!args.labelHidden);
 
   set('form-id', args.formId);
+
   set('form-layout', args.formLayout);
+
   set('input-id', args.inputId);
+
   set('textarea-text-size', args.textareaTextSize);
+
   set('label', args.label);
+
   set('label-size', args.labelSize);
+
   set('label-align', args.labelAlign);
+
   set('validation-message', args.validationMessage);
+
   set('value', args.value);
+
   set('placeholder', args.placeholder);
+
   set('rows', args.rows);
+
   set('max-length', args.maxLength);
 
   set('aria-label', args.ariaLabel);
+
   set('aria-labelledby', args.ariaLabelledby);
+
   set('aria-describedby', args.ariaDescribedby);
+
   set('arialabelled-by', args.arialabelledBy);
 
   set('label-col', args.labelCol);
+
   set('input-col', args.inputCol);
+
   set('label-cols', args.labelCols);
+
   set('input-cols', args.inputCols);
 
   return el;
@@ -290,34 +408,46 @@ export function buildEl(args) {
 
 export function renderMatrixRow({ title, args, idSuffix }) {
   const wrap = document.createElement('div');
+
   wrap.className = 'plumage-textarea-accessibility-matrix__card';
 
   const heading = document.createElement('div');
+
   heading.className = 'plumage-textarea-accessibility-matrix__card-title';
+
   heading.textContent = title;
 
   const el = buildEl({
     ...args,
+
     inputId: args.inputId || `plumage-textarea-matrix-${idSuffix}`,
   });
 
   const stage = document.createElement('div');
+
   stage.className = 'plumage-textarea-accessibility-matrix__stage';
 
   const pre = document.createElement('pre');
+
   pre.className = 'plumage-textarea-accessibility-matrix__output';
+
   pre.textContent = 'Collecting aria/role/id…';
 
   stage.appendChild(el);
+
   wrap.appendChild(heading);
+
   wrap.appendChild(stage);
+
   wrap.appendChild(pre);
 
   const update = async () => {
     if (el?.componentOnReady) {
       try {
         await el.componentOnReady();
-      } catch (_e) {}
+      } catch (_e) {
+        // no-op
+      }
     }
 
     pre.textContent = JSON.stringify(getSnapshot(el), null, 2);

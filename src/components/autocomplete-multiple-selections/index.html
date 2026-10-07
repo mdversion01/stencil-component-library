@@ -13,6 +13,10 @@
     <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
 
     <style>
+       .theme-switcher {
+        margin: 10px;
+      }
+
       .cwrapper {
         margin: 10px;
       }
@@ -29,6 +33,17 @@
     </style>
   </head>
   <body>
+     <div class="theme-switcher">
+      <button
+        id="bootstrap-theme-toggle"
+        type="button"
+        class="btn btn-outline-secondary"
+        aria-pressed="false"
+        aria-label="Switch to dark mode"
+      >
+        Dark mode
+      </button>
+    </div>
     <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
      -->
     <app-wrapper>
@@ -47,11 +62,10 @@
           form-layout="horizontal"
           label-align="right"
           badge-variant="primary"
-          read-only
         ></autocomplete-multiple-selections>
 
         <autocomplete-multiple-selections
-          id="aci4"
+          id="aci5"
           editable
           input-id="ac-2"
           label="Autocomplete Multiple Selections"
@@ -92,7 +106,6 @@
           editable
           input-id="ac-4"
           label="Autocomplete Multiple Selections"
-          label-size="lg"
           placeholder="Type to search..."
           data-autocomplete="true"
           required
@@ -102,7 +115,6 @@
           validation-message="Please fill in"
           placeholder="Type to search..."
           read-only
-          size="lg"
           form-layout="horizontal"
           label-align="right"
         ></autocomplete-multiple-selections>
@@ -138,6 +150,77 @@
           // and emit it when options are upserted/deleted. Otherwise, there’s no hook.
         })();
       });
+
+      window.addEventListener('DOMContentLoaded', () => {
+        let aci5Options = ['Apple', 'Apparatus', 'Apple Pie', 'Applegate', 'Banana', 'Orange', 'Mango', 'Bet', 'Betty', 'Bobby', 'Bob', 'Bobby Brown', 'Bobby Blue', 'Bobby Green'];
+
+        const aci5 = document.getElementById('aci5');
+
+        (async () => {
+          if (window.customElements?.whenDefined) {
+            await customElements.whenDefined('autocomplete-multiple-selections');
+          }
+          if (typeof aci5.componentOnReady === 'function') {
+            await aci5.componentOnReady();
+          }
+
+          // seed options by assigning the prop (the component’s @Watch('options') will pick it up)
+          aci5.options = aci5Options.slice();
+          // aci5.value = ['Apple', 'Banana'];
+
+          // there is NO optionsChange in this component by default.
+          // You can still listen to selection changes:
+          aci5.addEventListener('multiSelectChange', e => {
+            console.log('[aci5 selectedItems]', e.detail);
+          });
+
+          // If you want to mirror user-added options back to app state,
+          // you must add an `@Event({eventName:'optionsChange'})` inside the component
+          // and emit it when options are upserted/deleted. Otherwise, there’s no hook.
+        })();
+      });
+
+      // theme
+
+       (() => {
+        const STORAGE_KEY = 'bootstrap-demo-theme';
+        const html = document.documentElement;
+        const toggle = document.getElementById('bootstrap-theme-toggle');
+
+        function applyTheme(theme) {
+          const normalizedTheme = theme === 'dark' ? 'dark' : 'light';
+          const isDark = normalizedTheme === 'dark';
+
+          html.setAttribute('data-bs-theme', normalizedTheme);
+
+          toggle.setAttribute('aria-pressed', String(isDark));
+          toggle.setAttribute(
+            'aria-label',
+            isDark ? 'Switch to light mode' : 'Switch to dark mode',
+          );
+          toggle.textContent = isDark ? 'Light mode' : 'Dark mode';
+        }
+
+        function getInitialTheme() {
+          const storedTheme = localStorage.getItem(STORAGE_KEY);
+
+          if (storedTheme === 'light' || storedTheme === 'dark') {
+            return storedTheme;
+          }
+
+          return html.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light';
+        }
+
+        applyTheme(getInitialTheme());
+
+        toggle.addEventListener('click', () => {
+          const currentTheme = html.getAttribute('data-bs-theme');
+          const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+          localStorage.setItem(STORAGE_KEY, nextTheme);
+          applyTheme(nextTheme);
+        });
+      })();
     </script>
   </body>
 </html>

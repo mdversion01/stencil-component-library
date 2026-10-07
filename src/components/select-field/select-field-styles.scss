@@ -1,62 +1,184 @@
+// ============================================================================
+// File: src/components/select-field/select-field-styles.scss
+// ============================================================================
+
+// ============================================================================
+// Bootstrap Select / Input Styles
+// ============================================================================
+
 // =================================================
-// Tokens
+// Core tokens
 // =================================================
-$color-text: #495057;
-$color-border: #ced4da;
+
+$color-text: #{'var(--bs-body-color)'};
+$color-border: #{'var(--bs-border-color)'};
 $color-muted: #6c757d;
-$color-danger: #b30009;
+$invalid: #{'var(--bs-form-invalid-color)'};
 
 $focus-border: #80bdff;
 $focus-glow: rgba(128, 189, 255, 0.5);
 
-$label-xs: 0.75rem;
-$label-sm: 0.875rem;
-$label-lg: 1.125rem;
-
 $col-form-ptb: calc(0.375rem + 1px);
 
-// Carets (Bootstrap-like)
-$down-caret-danger: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23b30009' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-$custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
+// =================================================
+// Spacing tokens
+//
+// Based on 16px = 1rem.
+// Exact 1px values remain 1px where used.
+// =================================================
+
+$space-2: 0.125rem;   // 2px
+$space-4: 0.25rem;    // 4px
+$space-5: 0.3125rem;  // 5px
+$space-6: 0.375rem;   // 6px
+$space-7: 0.4375rem;  // 7px
+$space-8: 0.5rem;     // 8px
+$space-9: 0.5625rem;  // 9px
+$space-10: 0.625rem;  // 10px
+$space-11: 0.6875rem; // 11px
+$space-12: 0.75rem;   // 12px
+$space-14: 0.875rem;  // 14px
+$space-16: 1rem;      // 16px
+
+// =================================================
+// Label tokens
+// =================================================
+
+$label-font-size-xs: 0.75rem;
+$label-font-size-sm: 0.875rem;
+$label-font-size-lg: 1.125rem;
+
+// Inline / horizontal alignment
+$label-padding-default: $space-7;
+$label-padding-xs: $space-4;
+$label-padding-sm: $space-5;
+$label-padding-lg: $space-9;
+
+// Default select label alignment
+$label-select-default-pt: $space-10;
+$label-select-default-xs-pt: $space-11;
+$label-select-default-sm-pt: $space-10;
+$label-select-default-lg-pt: $space-5;
+
+// Small select label alignment
+$label-select-sm-pt: $space-4;
+$label-select-sm-xs-pt: $space-6;
+$label-select-sm-sm-pt: $space-4;
+$label-select-sm-lg-pt: 1px;
+
+// Large select label alignment
+$label-select-lg-pt: $space-14;
+$label-select-lg-xs-pt: $space-16;
+$label-select-lg-sm-pt: $space-14;
+$label-select-lg-lg-pt: $space-11;
+
+// =================================================
+// Select tokens
+// =================================================
+
+// Custom select padding
+$select-custom-padding-y: $space-6;
+$select-custom-padding-left: $space-12;
+$select-custom-padding-right: 1.75rem;
+
+// Caret positioning / sizing
+$select-caret-position-right: $space-12;
+
+$select-custom-caret-width: $space-12;
+$select-custom-caret-height: $space-14;
+
+// Focus shadow geometry
+$select-focus-shadow-y: 1px;
+$select-focus-shadow-blur: $space-2;
+$select-focus-glow-blur: $space-5;
+
+// =================================================
+// Light theme
+// =================================================
+
+[data-bs-theme='light'] {
+  --invalid-color: #b30009;
+
+  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23dee2e6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+
+  --down-caret-invalid: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23b30009' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+
+  --custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
+
+  --custom-caret-invalid: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23b30009' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
+}
+
+// =================================================
+// Dark theme
+// =================================================
+
+[data-bs-theme='dark'] {
+  --invalid-color: #ea868f;
+
+  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23dee2e6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+
+  --down-caret-invalid: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ea868f' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+
+  --custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23f2f2f2' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
+
+  --custom-caret-invalid: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23ea868f' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
+}
 
 // =================================================
 // Helpers / Mixins
 // =================================================
-@mixin placeholder-color($c) {
-  &::-webkit-input-placeholder {
-    color: $c;
-  }
-  &:-moz-placeholder {
-    color: $c;
-    opacity: 1;
-  }
-  &::-moz-placeholder {
-    color: $c;
-    opacity: 1;
-  }
-  &:-ms-input-placeholder {
-    color: $c;
-  }
-  &::-ms-input-placeholder {
-    color: $c;
-  }
+
+@mixin placeholder-color($color) {
   &::placeholder {
-    color: $c;
+    color: $color;
+    opacity: 1;
   }
 }
 
-// Label font-size utilities
-.label-xs {
-  font-size: $label-xs !important;
-}
-.label-sm {
-  font-size: $label-sm !important;
-}
-.label-lg {
-  font-size: $label-lg !important;
+@mixin has-select-label-pt($selector, $padding-top) {
+  .form-group:has(> #{$selector}) > label.form-control-label {
+    padding-top: $padding-top !important;
+  }
+
+  .row.form-group:has(#{$selector}) label.form-control-label {
+    padding-top: $padding-top !important;
+  }
 }
 
+@mixin has-select-label-size-pt(
+  $selector,
+  $size-class,
+  $padding-top
+) {
+  .form-group:has(> #{$selector}) > label.form-control-label.#{$size-class} {
+    padding-top: $padding-top !important;
+  }
+
+  .row.form-group:has(#{$selector}) label.form-control-label.#{$size-class} {
+    padding-top: $padding-top !important;
+  }
+}
+
+// =================================================
+// Label utilities
+// =================================================
+
+.label-xs {
+  font-size: $label-font-size-xs !important;
+}
+
+.label-sm {
+  font-size: $label-font-size-sm !important;
+}
+
+.label-lg {
+  font-size: $label-font-size-lg !important;
+}
+
+// =================================================
 // Bootstrap col-form-label base
+// =================================================
+
 .col-form-label {
   padding-top: $col-form-ptb;
   padding-bottom: $col-form-ptb;
@@ -66,22 +188,23 @@ $custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.
 }
 
 // =================================================
-// Horizontal / Inline Layout
+// Horizontal layout
 // =================================================
+
 .horizontal {
   .form-group {
-    padding: 5px;
+    padding: $space-5;
   }
 
   label {
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: left;
+    justify-content: flex-start;
     margin-bottom: 0;
-    position: relative;
 
     &.align-right {
-      justify-content: right;
+      justify-content: flex-end;
     }
   }
 
@@ -92,84 +215,120 @@ $custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.
   }
 }
 
+// =================================================
+// Inline layout
+// =================================================
+
 .inline {
   label {
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: left;
+    justify-content: flex-start;
     margin-bottom: 0;
-    position: relative;
   }
 
   .form-group .form-control-label,
   .form-group label {
+    padding: 0 $space-8;
     margin-bottom: 0;
     white-space: nowrap;
-    padding: 0 0.5rem;
   }
 }
 
-// Adjust invalid label spacing within horizontal/inline
+// =================================================
+// Invalid label alignment
+// =================================================
+
 .horizontal .form-group .form-control-label.invalid,
 .inline .form-group .form-control-label.invalid {
   position: relative;
   align-items: normal;
-  // padding-top: 12px; // (kept for reference)
 }
 
-// Align by size in inline/horizontal
+// =================================================
+// Inline / horizontal label sizing
+// =================================================
+
 .inline,
 .horizontal {
   .form-control-label {
     align-items: start !important;
-    padding-top: 6px !important;
+    padding-top: $space-6 !important;
   }
+
   .label-xs {
     align-items: start !important;
-    padding-top: 4px !important;
+    padding-top: $label-padding-xs !important;
   }
+
   .label-sm {
     align-items: start !important;
-    padding-top: 5px !important;
+    padding-top: $label-padding-sm !important;
   }
+
   label {
     align-items: start !important;
-    padding-top: 7px !important;
+    padding-top: $label-padding-default !important;
   }
+
   .label-lg {
     align-items: start !important;
-    padding-top: 9px !important;
+    padding-top: $label-padding-lg !important;
   }
 }
 
 // =================================================
-// Custom Select (Bootstrap-like)
+// Custom Select
 // =================================================
+
 .custom-select {
   display: inline-block;
   width: 100%;
-  padding: 0.375rem 1.75rem 0.375rem 0.75rem;
-  line-height: 1.5;
+
+  padding:
+    $select-custom-padding-y
+    $select-custom-padding-right
+    $select-custom-padding-y
+    $select-custom-padding-left;
+
   color: $color-text;
+  line-height: 1.5;
   vertical-align: middle;
-  background: #fff $custom-caret no-repeat right 0.75rem center;
-  background-size: 8px 10px;
+
+  background-color: var(--bs-body-bg);
+  background-image: var(--custom-caret);
+  background-repeat: no-repeat;
+  background-position: right $select-caret-position-right center;
+  background-size:
+    $select-custom-caret-width
+    $select-custom-caret-height;
+
   border: 1px solid $color-border;
-  border-radius: 0.25rem;
+  border-radius: $space-4;
+
   appearance: none;
 
   &:focus {
     border-color: $focus-border;
     outline: 0;
+
     box-shadow:
-      inset 0 1px 2px rgb(0 0 0 / 8%),
-      0 0 5px $focus-glow;
+      inset
+      0
+      $select-focus-shadow-y
+      $select-focus-shadow-blur
+      rgba(0, 0, 0, 0.08),
+      0
+      0
+      $select-focus-glow-blur
+      $focus-glow;
   }
 
   &[multiple],
   &[size]:not([size='1']) {
     height: auto;
-    padding-right: 0.75rem;
+    padding-right: $space-12;
     background-image: none;
   }
 
@@ -177,60 +336,91 @@ $custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.
     color: $color-muted;
     background-color: #e9ecef;
   }
-
-  &::-ms-expand {
-    opacity: 0;
-  } // Hide IE11 caret
 }
 
 // =================================================
-// Validation feedback + states
+// Validation feedback
 // =================================================
+
 .invalid-feedback {
-  color: $color-danger;
-  margin-top: 0.25rem;
-  font-size: 0.75rem;
+  margin-top: $space-4;
+  color: $invalid;
+  font-size: $label-font-size-xs;
 }
 
 .invalid {
-  color: $color-danger;
+  color: $invalid;
 }
 
-// Border + caret in invalid state
+// =================================================
+// Invalid Bootstrap select
+// =================================================
+
 .form-select:invalid,
-.form-select.is-invalid,
+.form-select.is-invalid {
+  color: var(--invalid-color);
+  fill: var(--invalid-color);
+
+  border-color: var(--invalid-color);
+
+  background-image: var(--down-caret-invalid) !important;
+}
+
+// =================================================
+// Invalid custom select
+// =================================================
+
 .custom-select:invalid,
 .custom-select.is-invalid {
-  border-color: $color-danger;
-  color: $color-danger;
-  fill: $color-danger;
-  background-image: $down-caret-danger !important;
+  color: var(--invalid-color);
+  fill: var(--invalid-color);
+
+  border-color: var(--invalid-color);
+
+  background-image: var(--custom-caret-invalid) !important;
 }
 
-// Red placeholders while invalid
+// =================================================
+// Invalid placeholders
+// =================================================
+
 .form-select.is-invalid,
 .custom-select.is-invalid {
-  @include placeholder-color($color-danger);
+  @include placeholder-color($invalid);
 }
 
-// Options inherit red text on invalid
+// =================================================
+// Invalid option text
+// =================================================
+
 .form-select.is-invalid option,
 .custom-select.is-invalid option {
-  color: $color-danger;
+  color: $invalid;
   background-color: transparent;
 }
 
-// Remove arrow/padding for lists (multi or tall)
+// =================================================
+// Invalid multi / tall selects
+//
+// Remove caret and right padding for list-style selects.
+// =================================================
+
 .form-select.is-invalid[multiple],
 .form-select.is-invalid[size]:not([size='1']):first-child,
 .custom-select.is-invalid[multiple],
 .custom-select.is-invalid[size]:not([size='1']):first-child {
-  background-image: none !important;
-  background-color: transparent !important;
   padding-right: 0 !important;
+
+  background-color: transparent !important;
+  background-image: none !important;
 }
 
-// Base lists (multi/tall) never show the caret
+// =================================================
+// Base multi / tall selects
+//
+// List-style selects never show a caret.
+// =================================================
+
 .form-select[multiple],
 .form-select[size]:not([size='1']),
 .custom-select[multiple],
@@ -239,71 +429,124 @@ $custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.
   background-image: none;
 }
 
-// Red text for invalid single selects (Bootstrap parity)
+// =================================================
+// Invalid single-select text
+// =================================================
+
 .was-validated .form-select:invalid:not([multiple]):not([size]),
 .was-validated .form-select:invalid:not([multiple])[size='1'],
 .form-select.is-invalid:not([multiple]):not([size]),
 .form-select.is-invalid:not([multiple])[size='1'] {
-  color: $color-danger;
+  color: $invalid;
 }
 
 // =================================================
-// :has() label alignment helpers (DRY)
+// :has() label alignment
 // =================================================
+
 @supports selector(:has(*)) {
-  // Base mixin: sync padding-top for labels when a specific select is present.
-  @mixin has-select-label-pt($sel, $pt) {
-    .form-group:has(> #{$sel}) > label.form-control-label {
-      padding-top: $pt !important;
-    }
-    .row.form-group:has(#{$sel}) label.form-control-label {
-      padding-top: $pt !important;
-    }
-  }
+  // Default select
+  @include has-select-label-pt(
+    'select.form-select',
+    $label-select-default-pt
+  );
 
-  // Size-class variant for labels (.label-xs / .label-sm / .label-lg)
-  @mixin has-select-label-size-pt($sel, $size-class, $pt) {
-    .form-group:has(> #{$sel}) > label.form-control-label.#{$size-class} {
-      padding-top: $pt !important;
-    }
-    .row.form-group:has(#{$sel}) label.form-control-label.#{$size-class} {
-      padding-top: $pt !important;
-    }
-  }
+  @include has-select-label-size-pt(
+    'select.form-select',
+    label-sm,
+    $label-select-default-sm-pt
+  );
 
-  // ---------- Default .form-select ----------
-  @include has-select-label-pt('select.form-select', 10px);
-  @include has-select-label-size-pt('select.form-select', label-sm, 10px);
-  @include has-select-label-size-pt('select.form-select', label-xs, 11px);
-  @include has-select-label-size-pt('select.form-select', label-lg, 5px);
+  @include has-select-label-size-pt(
+    'select.form-select',
+    label-xs,
+    $label-select-default-xs-pt
+  );
 
-  // ---------- Small .form-select-sm ----------
-  @include has-select-label-pt('select.form-select.form-select-sm', 4px);
-  @include has-select-label-size-pt('select.form-select.form-select-sm', label-sm, 4px);
-  @include has-select-label-size-pt('select.form-select.form-select-sm', label-xs, 6px);
-  @include has-select-label-size-pt('select.form-select.form-select-sm', label-lg, 1px);
+  @include has-select-label-size-pt(
+    'select.form-select',
+    label-lg,
+    $label-select-default-lg-pt
+  );
 
-  // ---------- Large .form-select-lg ----------
-  @include has-select-label-pt('select.form-select.form-select-lg', 14px);
-  @include has-select-label-size-pt('select.form-select.form-select-lg', label-sm, 14px);
-  @include has-select-label-size-pt('select.form-select.form-select-lg', label-xs, 16px);
-  @include has-select-label-size-pt('select.form-select.form-select-lg', label-lg, 11px);
+  // Small select
+  @include has-select-label-pt(
+    'select.form-select.form-select-sm',
+    $label-select-sm-pt
+  );
+
+  @include has-select-label-size-pt(
+    'select.form-select.form-select-sm',
+    label-sm,
+    $label-select-sm-sm-pt
+  );
+
+  @include has-select-label-size-pt(
+    'select.form-select.form-select-sm',
+    label-xs,
+    $label-select-sm-xs-pt
+  );
+
+  @include has-select-label-size-pt(
+    'select.form-select.form-select-sm',
+    label-lg,
+    $label-select-sm-lg-pt
+  );
+
+  // Large select
+  @include has-select-label-pt(
+    'select.form-select.form-select-lg',
+    $label-select-lg-pt
+  );
+
+  @include has-select-label-size-pt(
+    'select.form-select.form-select-lg',
+    label-sm,
+    $label-select-lg-sm-pt
+  );
+
+  @include has-select-label-size-pt(
+    'select.form-select.form-select-lg',
+    label-xs,
+    $label-select-lg-xs-pt
+  );
+
+  @include has-select-label-size-pt(
+    'select.form-select.form-select-lg',
+    label-lg,
+    $label-select-lg-lg-pt
+  );
 }
+
+// =================================================
+// Read-only select
+//
+// Native <select> has no readonly attribute, so this state is
+// controlled through the component's .read-only class.
+// =================================================
 
 .form-select.read-only {
   --bs-form-select-bg-img: none !important;
-  opacity: 1;
+
   color: inherit;
-  background: #fff !important;
+
+  background-color: var(--bs-body-bg) !important;
+  background-image: none !important;
+
+  opacity: 1;
   cursor: not-allowed;
+
+  &:focus {
+    border-color: var(--bs-border-color) !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    cursor: not-allowed;
+  }
 }
 
-.form-select.read-only:focus {
-  border-color: var(--bs-border-color) !important;
-  cursor: not-allowed;
-  outline: 0 !important;
-  box-shadow: none !important;
-}
+// =================================================
+// Disabled select
+// =================================================
 
 .form-select:disabled {
   cursor: not-allowed !important;

@@ -1,7 +1,7 @@
 // =============================================
 // Tokens
 // =============================================
-$danger: #b30009;
+$invalid: var(--bs-form-invalid-color);
 
 $label-xs: 0.75rem;
 $label-sm: 0.875rem;
@@ -98,7 +98,7 @@ label,
 // Invalid input placeholder color
 .was-validated .form-control:invalid,
 .form-control.is-invalid {
-  @include placeholder-color($danger);
+  @include placeholder-color($invalid);
 }
 
 .form-control.read-only:focus {

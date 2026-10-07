@@ -806,17 +806,39 @@ export class PlumageDatepicker {
   };
 
   private setActiveState() {
-    const activeSpan = this.qs('.active');
+    const activeSpan = this.qs<HTMLElement>('.active');
+
     if (activeSpan) {
-      (activeSpan as HTMLElement).classList.remove('active', 'dp-btn-primary', 'focus');
-      (activeSpan as HTMLElement).classList.add('dp-btn-outline-light', 'text-dark');
+      const parent = activeSpan.parentElement as HTMLElement;
+
+      const isPreviousMonthDay = parent?.classList.contains('previous-month-day');
+
+      const isNextMonthDay = parent?.classList.contains('next-month-day');
+
+      activeSpan.classList.remove('active', 'dp-btn-primary', 'focus');
+
+      activeSpan.classList.add('dp-btn-outline-light');
+
+      if (!isPreviousMonthDay && !isNextMonthDay) {
+        activeSpan.classList.add('text-dark');
+      } else {
+        activeSpan.classList.remove('text-dark');
+      }
     }
+
     if (this.selectedDate) {
-      const id = `cell-${this.selectedDate.getUTCFullYear()}-${String(this.selectedDate.getUTCMonth() + 1).padStart(2, '0')}-${String(this.selectedDate.getUTCDate()).padStart(2, '0')}`;
+      const id = `cell-${this.selectedDate.getUTCFullYear()}-${String(this.selectedDate.getUTCMonth() + 1).padStart(2, '0')}-${String(this.selectedDate.getUTCDate()).padStart(
+        2,
+        '0',
+      )}`;
+
       const el = this.qs<HTMLElement>(`#${(window as any).CSS?.escape ? (window as any).CSS.escape(id) : id}`);
+
       if (el) {
         const span = el.querySelector('span')!;
+
         span.classList.add('active', 'dp-btn-primary', 'focus');
+
         span.classList.remove('dp-btn-outline-light', 'text-dark');
       }
     }
@@ -824,15 +846,32 @@ export class PlumageDatepicker {
 
   private clearActiveState() {
     this.qsa<HTMLElement>('.calendar-grid-item span').forEach(span => {
-      span.classList.remove('active', 'dp-btn-primary', 'focus');
-      span.classList.add('dp-btn-outline-light', 'text-dark');
       const parent = span.parentElement as HTMLElement;
+
+      const isPreviousMonthDay = parent.classList.contains('previous-month-day');
+
+      const isNextMonthDay = parent.classList.contains('next-month-day');
+
+      span.classList.remove('active', 'dp-btn-primary', 'focus');
+
+      span.classList.add('dp-btn-outline-light');
+
+      if (!isPreviousMonthDay && !isNextMonthDay) {
+        span.classList.add('text-dark');
+      } else {
+        span.classList.remove('text-dark');
+      }
+
       const dateEl = this.qs<HTMLElement>(`#cell-${parent.dataset.date}`);
+
       if (dateEl) {
         const prev = dateEl.getAttribute('aria-label') || '';
+
         if (prev.endsWith(' (Selected)')) {
           dateEl.setAttribute('aria-label', prev.slice(0, -11));
+
           dateEl.removeAttribute('aria-selected');
+
           dateEl.removeAttribute('aria-current');
         }
       }
@@ -1337,146 +1376,148 @@ export class PlumageDatepicker {
 
   private renderDatePickerView() {
     return (
-      <div class="date-picker">
-        <div class="dp-single-calendar" aria-label={'Date Picker'} role="region">
-          <div class="calendar-inner" dir="ltr" lang="en-US" role="group">
-            <header class="datepicker" title="Selected Date">
-              <output aria-live="polite" aria-atomic="true" class="selected-date form-control form-control-sm text-center" id="selected-date" role="status" tabIndex={-1}>
-                <bdi>No date selected</bdi>
-                <bdi class="sr-only">(Selected date)</bdi>
-              </output>
-            </header>
+      <div class="stencil-component">
+        <div class="date-picker">
+          <div class="dp-single-calendar" aria-label={'Date Picker'} role="region">
+            <div class="calendar-inner" dir="ltr" lang="en-US" role="group">
+              <header class="datepicker" title="Selected Date">
+                <output aria-live="polite" aria-atomic="true" class="selected-date form-control form-control-sm text-center" id="selected-date" role="status" tabIndex={-1}>
+                  <bdi>No date selected</bdi>
+                  <bdi class="sr-only">(Selected date)</bdi>
+                </output>
+              </header>
 
-            <div class="calendar-nav d-flex" aria-label="Calendar Navigation" role="group" aria-labelledby={this.ids.navLabel}>
-              <span id={this.ids.navLabel} class="sr-only">
-                Calendar Navigation
-              </span>
+              <div class="calendar-nav d-flex" aria-label="Calendar Navigation" role="group" aria-labelledby={this.ids.navLabel}>
+                <span id={this.ids.navLabel} class="sr-only">
+                  Calendar Navigation
+                </span>
 
-              <button
-                aria-label="Previous year"
-                aria-keyshortcuts="Alt+PageDown"
-                class="prev-year btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
-                title="Previous year"
-                type="button"
-                onClick={this.prevYear}
-              >
-                <i class="fas fa-angle-double-left" aria-hidden="true" />
-              </button>
-              <button
-                aria-label="Previous month"
-                aria-keyshortcuts="PageDown"
-                class="prev-month btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
-                title="Previous month"
-                type="button"
-                onClick={this.prevMonth}
-              >
-                <i class="fas fa-angle-left" aria-hidden="true" />
-              </button>
-              <button
-                aria-label="Current Day/Month/Year"
-                aria-keyshortcuts="Home"
-                class="current-date btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
-                title="Current Day/Month/Year"
-                type="button"
-                onClick={this.currentDate}
-              >
-                <i class="fas fa-circle" aria-hidden="true" />
-                <span class="sr-only">Today</span>
-              </button>
-              <button
-                aria-label="Next month"
-                aria-keyshortcuts="PageUp"
-                class="next-month btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
-                title="Next month"
-                type="button"
-                onClick={this.nextMonth}
-              >
-                <i class="fas fa-angle-right" aria-hidden="true" />
-              </button>
-              <button
-                title="Next year"
-                type="button"
-                class="next-year btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
-                aria-label="Next year"
-                aria-keyshortcuts="Alt+PageUp"
-                onClick={this.nextYear}
-              >
-                <i class="fas fa-angle-double-right" aria-hidden="true" />
-              </button>
-            </div>
-
-            <div
-              aria-describedby={this.ids.grid}
-              aria-labelledby={this.ids.gridCaption}
-              aria-roledescription="Calendar"
-              class="calendar form-control h-auto text-center pt-2"
-              role="region"
-              aria-label="Calendar"
-              tabIndex={0}
-              onFocus={() => this.handleCalendarFocus()}
-              onFocusout={(e: FocusEvent) => this.handleCalendarFocusOut(e)}
-              onKeyDown={this.handleCalendarKeyDown}
-            >
-              <div aria-live="polite" aria-atomic="true" class="calendar-grid-caption text-center font-weight-bold" id={this.ids.gridCaption} />
-              <div aria-hidden="true" class="calendar-grid-weekdays">
-                <small aria-label="Sunday" title="Sunday" class={`calendar-grid-day col text-truncate`}>
-                  Sun
-                </small>
-                <small aria-label="Monday" title="Monday" class={`calendar-grid-day col text-truncate`}>
-                  Mon
-                </small>
-                <small aria-label="Tuesday" title="Tuesday" class={`calendar-grid-day col text-truncate`}>
-                  Tue
-                </small>
-                <small aria-label="Wednesday" title="Wednesday" class={`calendar-grid-day col text-truncate`}>
-                  Wed
-                </small>
-                <small aria-label="Thursday" title="Thursday" class={`calendar-grid-day col text-truncate`}>
-                  Thu
-                </small>
-                <small aria-label="Friday" title="Friday" class={`calendar-grid-day col text-truncate`}>
-                  Fri
-                </small>
-                <small aria-label="Saturday" title="Saturday" class={`calendar-grid-day col text-truncate`}>
-                  Sat
-                </small>
+                <button
+                  aria-label="Previous year"
+                  aria-keyshortcuts="Alt+PageDown"
+                  class="prev-year btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
+                  title="Previous year"
+                  type="button"
+                  onClick={this.prevYear}
+                >
+                  <i class="fas fa-angle-double-left" aria-hidden="true" />
+                </button>
+                <button
+                  aria-label="Previous month"
+                  aria-keyshortcuts="PageDown"
+                  class="prev-month btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
+                  title="Previous month"
+                  type="button"
+                  onClick={this.prevMonth}
+                >
+                  <i class="fas fa-angle-left" aria-hidden="true" />
+                </button>
+                <button
+                  aria-label="Current Day/Month/Year"
+                  aria-keyshortcuts="Home"
+                  class="current-date btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
+                  title="Current Day/Month/Year"
+                  type="button"
+                  onClick={this.currentDate}
+                >
+                  <i class="fas fa-circle" aria-hidden="true" />
+                  <span class="sr-only">Today</span>
+                </button>
+                <button
+                  aria-label="Next month"
+                  aria-keyshortcuts="PageUp"
+                  class="next-month btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
+                  title="Next month"
+                  type="button"
+                  onClick={this.nextMonth}
+                >
+                  <i class="fas fa-angle-right" aria-hidden="true" />
+                </button>
+                <button
+                  title="Next year"
+                  type="button"
+                  class="next-year btn btn-sm border-0 flex-fill dp-btn-outline-secondary"
+                  aria-label="Next year"
+                  aria-keyshortcuts="Alt+PageUp"
+                  onClick={this.nextYear}
+                >
+                  <i class="fas fa-angle-double-right" aria-hidden="true" />
+                </button>
               </div>
-              <div class="calendar-grid" id={this.ids.grid} />
-              <footer class="border-top text-center" tabIndex={0}>
-                Use cursor keys to navigate calendar dates
-              </footer>
+
+              <div
+                aria-describedby={this.ids.grid}
+                aria-labelledby={this.ids.gridCaption}
+                aria-roledescription="Calendar"
+                class="calendar form-control h-auto text-center pt-2"
+                role="region"
+                aria-label="Calendar"
+                tabIndex={0}
+                onFocus={() => this.handleCalendarFocus()}
+                onFocusout={(e: FocusEvent) => this.handleCalendarFocusOut(e)}
+                onKeyDown={this.handleCalendarKeyDown}
+              >
+                <div aria-live="polite" aria-atomic="true" class="calendar-grid-caption text-center font-weight-bold" id={this.ids.gridCaption} />
+                <div aria-hidden="true" class="calendar-grid-weekdays">
+                  <small aria-label="Sunday" title="Sunday" class={`calendar-grid-day col text-truncate`}>
+                    Sun
+                  </small>
+                  <small aria-label="Monday" title="Monday" class={`calendar-grid-day col text-truncate`}>
+                    Mon
+                  </small>
+                  <small aria-label="Tuesday" title="Tuesday" class={`calendar-grid-day col text-truncate`}>
+                    Tue
+                  </small>
+                  <small aria-label="Wednesday" title="Wednesday" class={`calendar-grid-day col text-truncate`}>
+                    Wed
+                  </small>
+                  <small aria-label="Thursday" title="Thursday" class={`calendar-grid-day col text-truncate`}>
+                    Thu
+                  </small>
+                  <small aria-label="Friday" title="Friday" class={`calendar-grid-day col text-truncate`}>
+                    Fri
+                  </small>
+                  <small aria-label="Saturday" title="Saturday" class={`calendar-grid-day col text-truncate`}>
+                    Sat
+                  </small>
+                </div>
+                <div class="calendar-grid" id={this.ids.grid} />
+                <footer class="border-top text-center" tabIndex={0}>
+                  Use cursor keys to navigate calendar dates
+                </footer>
+              </div>
             </div>
+
+            {this.displayContextExamples ? (
+              <div class="context" role="region" aria-labelledby="context-title" tabIndex={0}>
+                <div id="context-title">Context:</div>
+                <div>
+                  selectedYMD: "<span class="selected-date-Ymd">Date not selected</span>"
+                </div>
+                <div>
+                  selectedMDY: "<span class="selected-date-Mdy">Date not selected</span>"
+                </div>
+                <div>
+                  selectedFormatted: "<span class="selected-formatted-date">Date not selected</span>"
+                </div>
+                <div>
+                  selectedIsoFormatted: "<span class="selected-formatted-iso">Date not selected</span>"
+                </div>
+                <div>
+                  activeYMD: "<span class="active-date-ymd"></span>"
+                </div>
+                <div>
+                  activeMDY: "<span class="active-date-mdy"></span>"
+                </div>
+                <div>
+                  activeFormatted: "<span class="active-formatted-date-long"></span>"
+                </div>
+                <div>
+                  activeIsoFormatted: "<span class="active-formatted-iso"></span>"
+                </div>
+              </div>
+            ) : null}
           </div>
-
-          {this.displayContextExamples ? (
-            <div class="context" role="region" aria-labelledby="context-title" tabIndex={0}>
-              <div id="context-title">Context:</div>
-              <div>
-                selectedYMD: "<span class="selected-date-Ymd">Date not selected</span>"
-              </div>
-              <div>
-                selectedMDY: "<span class="selected-date-Mdy">Date not selected</span>"
-              </div>
-              <div>
-                selectedFormatted: "<span class="selected-formatted-date">Date not selected</span>"
-              </div>
-              <div>
-                selectedIsoFormatted: "<span class="selected-formatted-iso">Date not selected</span>"
-              </div>
-              <div>
-                activeYMD: "<span class="active-date-ymd"></span>"
-              </div>
-              <div>
-                activeMDY: "<span class="active-date-mdy"></span>"
-              </div>
-              <div>
-                activeFormatted: "<span class="active-formatted-date-long"></span>"
-              </div>
-              <div>
-                activeIsoFormatted: "<span class="active-formatted-iso"></span>"
-              </div>
-            </div>
-          ) : null}
         </div>
       </div>
     );
@@ -1776,10 +1817,12 @@ export class PlumageDatepicker {
 
   private renderInputs() {
     return (
-      <div class="date-picker">
-        <div class="dropdown-wrapper">
-          {this.renderInputGroupPlumage()}
-          {this.renderDropdown()}
+      <div class="stencil-component">
+        <div class="date-picker">
+          <div class="dropdown-wrapper">
+            {this.renderInputGroupPlumage()}
+            {this.renderDropdown()}
+          </div>
         </div>
       </div>
     );

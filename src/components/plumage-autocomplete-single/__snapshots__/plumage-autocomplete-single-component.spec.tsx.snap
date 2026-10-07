@@ -2,7 +2,7 @@
 
 exports[`plumage-autocomplete-single error state sets aria-invalid and error message uses role=alert 1`] = `
 <plumage-autocomplete-single error-message="Bad value" input-id="acs">
-  <div class="plumage">
+  <div class="stencil-component">
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="acs-live"></div>
     <div class="autocomplete-container form-group">
       <div>
@@ -30,7 +30,7 @@ exports[`plumage-autocomplete-single error state sets aria-invalid and error mes
 
 exports[`plumage-autocomplete-single filters on input and selects an option; dropdown closes and value is set; aria-selected reflects selected option; aria-activedescendant references option id 1`] = `
 <plumage-autocomplete-single input-id="acs">
-  <div class="plumage">
+  <div class="stencil-component">
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="acs-live">
       Selected Apple.
     </div>
@@ -74,7 +74,7 @@ exports[`plumage-autocomplete-single filters on input and selects an option; dro
 
 exports[`plumage-autocomplete-single label-hidden uses aria-label fallback when no aria-labelledby provided 1`] = `
 <plumage-autocomplete-single input-id="acs" label-hidden="">
-  <div class="plumage">
+  <div class="stencil-component">
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="acs-live"></div>
     <div class="autocomplete-container form-group">
       <div>
@@ -99,7 +99,7 @@ exports[`plumage-autocomplete-single label-hidden uses aria-label fallback when 
 
 exports[`plumage-autocomplete-single renders stacked layout with underline present (not invalid by default) 1`] = `
 <plumage-autocomplete-single input-id="acs">
-  <div class="plumage">
+  <div class="stencil-component">
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="acs-live"></div>
     <div class="autocomplete-container form-group">
       <div>
@@ -124,7 +124,7 @@ exports[`plumage-autocomplete-single renders stacked layout with underline prese
 
 exports[`plumage-autocomplete-single required + blur marks invalid and shows validation message; underline reflects invalid state; aria-describedby wired to validation id 1`] = `
 <plumage-autocomplete-single input-id="acs" validation-message="Please fill in">
-  <div class="plumage">
+  <div class="stencil-component">
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="acs-live"></div>
     <div class="autocomplete-container form-group">
       <div>

@@ -1,414 +1,642 @@
-// =================================================
-// Tokens
-// =================================================
-$color-text: #495057;
-$color-border: #ced4da;
-$color-focus-ring: rgba(0, 123, 255, 0.25);
-$color-focus: #2680eb;
-$color-danger: #b30009;
-$color-disabled-bg: #f5f5f5;
-$color-muted: #6c757d;
+// // ============================================================================
+// // Plumage Select / Input Styles
+// // ============================================================================
 
-$label-xs: 0.75rem;
-$label-sm: 0.875rem;
-$label-lg: 1.125rem;
+// // =================================================
+// // Core tokens
+// // =================================================
 
-$col-form-ptb: calc(0.375rem + 1px);
-$underline-height: 1px;
+// $color-focus: #2680eb;
 
-// Bootstrap-like custom select arrow
-$custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
+// $col-form-ptb: calc(0.375rem + 1px);
 
-// =================================================
-// Helpers
-// =================================================
-@mixin placeholder-color($c) {
-  &::-webkit-input-placeholder {
-    color: $c;
-  }
-  &:-moz-placeholder {
-    color: $c;
-    opacity: 1;
-  }
-  &::-moz-placeholder {
-    color: $c;
-    opacity: 1;
-  }
-  &:-ms-input-placeholder {
-    color: $c;
-  }
-  &::-ms-input-placeholder {
-    color: $c;
-  }
-  &::placeholder {
-    color: $c;
-  }
-}
+// // =================================================
+// // Spacing tokens
+// //
+// // Based on 16px = 1rem.
+// // Exact 1px values remain 1px where used.
+// // =================================================
 
-// =================================================
-// Plumage scope
-// =================================================
+// $space-2: 0.125rem;   // 2px
+// $space-4: 0.25rem;    // 4px
+// $space-5: 0.3125rem;  // 5px
+// $space-6: 0.375rem;   // 6px
+// $space-7: 0.4375rem;  // 7px
+// $space-8: 0.5rem;     // 8px
+// $space-9: 0.5625rem;  // 9px
+// $space-12: 0.75rem;   // 12px
+// $space-14: 0.875rem;  // 14px
+// $space-15: 0.9375rem; // 15px
+// $space-16: 1rem;      // 16px
+// $space-17: 1.0625rem; // 17px
+// $space-18: 1.125rem;  // 18px
+// $space-19: 1.1875rem; // 19px
 
-.plmg-lt,
-.plumage {
-  // Base input reset
-  input {
-    font: inherit;
-    line-height: inherit;
-    margin: 0;
-    overflow: visible;
-  }
+// // =================================================
+// // Label tokens
+// // =================================================
 
-  // ---------- Layout wrappers ----------
-  .form-group {
-    padding: 5px 15px;
-    margin-bottom: 0.25rem;
-    text-align: left;
-  }
+// $label-font-size-xs: 0.75rem;
+// $label-font-size-sm: 0.875rem;
+// $label-font-size-lg: 1.125rem;
 
-  .input-container {
-    position: relative;
-    text-align: left;
-  }
-  .form-group.input-container {
-    margin-bottom: 0.25rem;
-  }
+// $label-padding-default: $space-7;
+// $label-padding-xs: $space-4;
+// $label-padding-sm: $space-5;
+// $label-padding-lg: $space-9;
 
-  .horizontal {
-    .form-group {
-      padding: 5px;
-    }
-    .input-container {
-      padding: 0 15px;
-    }
-  }
-  .inline .input-container {
-    padding: 0 15px;
-  }
+// // Select-aware label alignment
+// $label-select-default-pt: $space-8;
+// $label-select-default-xs-pt: $space-9;
+// $label-select-default-sm-pt: $space-8;
+// $label-select-default-lg-pt: $space-5;
 
-  // ---------- Labels ----------
-  label {
-    display: inline-block;
-    position: relative;
-    margin-bottom: 0.5rem;
-  }
+// $label-select-sm-pt: $space-7;
+// $label-select-sm-xs-pt: $space-9;
+// $label-select-sm-sm-pt: $space-7;
+// $label-select-sm-lg-pt: $space-4;
 
-  .label-xs {
-    font-size: $label-xs !important;
-  }
-  .label-sm {
-    font-size: $label-sm !important;
-  }
-  .label-lg {
-    font-size: $label-lg !important;
-  }
+// $label-select-lg-pt: $space-17;
+// $label-select-lg-xs-pt: $space-19;
+// $label-select-lg-sm-pt: $space-17;
+// $label-select-lg-lg-pt: $space-14;
 
-  .horizontal label,
-  .inline label {
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    margin-bottom: 0;
-    position: relative;
+// // =================================================
+// // Select tokens
+// // =================================================
 
-    &.align-right {
-      justify-content: right;
-    }
-  }
+// // Heights
+// $select-height-sm-base: 1.8125rem;
+// $select-height-lg-base: 2.875rem;
+// $select-height-custom-base: 2.25rem;
 
-  .col-form-label {
-    padding-top: $col-form-ptb;
-    padding-bottom: $col-form-ptb;
-    margin-bottom: 0;
-    font-size: inherit;
-    line-height: 1.5;
-  }
+// // Padding
+// $select-padding-y: $space-6;
+// $select-padding-left: $space-8;
+// $select-padding-right: 2.25rem;
 
-  .form-group .form-control-label,
-  .form-group label {
-    font-weight: 400;
-    line-height: 1.1;
-    margin-bottom: 0.25rem;
-  }
+// $select-custom-padding-y: $space-4;
+// $select-custom-padding-left: $space-8;
+// $select-custom-padding-right: 1.75rem;
 
-  .inline {
-    .form-group .form-control-label,
-    .form-group label {
-      margin-bottom: 0;
-      white-space: nowrap;
-      padding: 0 0.5rem;
-    }
-  }
+// // Caret sizing / placement
+// $select-caret-position-right: $space-12;
+// $select-caret-width: $space-18;
+// $select-caret-height: $space-16;
 
-  .horizontal {
-    .form-group .form-control-label,
-    .form-group label {
-      margin-bottom: 0;
-      white-space: normal;
-    }
-  }
+// $select-custom-caret-width: $space-12;
+// $select-custom-caret-height: $space-14;
 
-  .horizontal .form-group .form-control-label.invalid,
-  .inline .form-group .form-control-label.invalid {
-    position: relative;
-    align-items: normal;
-    // padding-top: 12px; // (reference)
-  }
+// // =================================================
+// // Helpers
+// // =================================================
 
-  // Align by size within inline/horizontal
-  .inline,
-  .horizontal {
-    .form-control-label {
-      align-items: start !important;
-      padding-top: 6px !important;
-    }
-    .label-xs {
-      align-items: start !important;
-      padding-top: 4px !important;
-    }
-    .label-sm {
-      align-items: start !important;
-      padding-top: 5px !important;
-    }
-    label {
-      align-items: start !important;
-      padding-top: 7px !important;
-    }
-    .label-lg {
-      align-items: start !important;
-      padding-top: 9px !important;
-    }
-  }
+// @mixin placeholder-color($color) {
+//   &::placeholder {
+//     color: $color;
+//     opacity: 1;
+//   }
+// }
 
-  // ---------- Inputs / form-control ----------
-  .form-control {
-    display: block;
-    width: 100%;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: $color-text;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid $color-border;
-    border-radius: 0.25rem;
-    transition:
-      border-color 0.15s ease-in-out,
-      box-shadow 0.15s ease-in-out;
+// @mixin has-select-label-pt($selector, $padding-top) {
+//   .form-group:has(> #{$selector}) > label.form-control-label {
+//     padding-top: $padding-top !important;
+//   }
 
-    &:disabled {
-      background-color: $color-disabled-bg;
-    }
+//   .row.form-group:has(#{$selector}) label.form-control-label {
+//     padding-top: $padding-top !important;
+//   }
+// }
 
-    &:focus {
-      background-color: transparent;
-      border-color: #9bc4f6;
-      color: #383838;
-      outline: 0;
-      box-shadow: 0 0 0 0.2rem $color-focus-ring;
-    }
+// @mixin has-select-label-size-pt($selector, $size-class, $padding-top) {
+//   .form-group:has(> #{$selector}) > label.form-control-label.#{$size-class} {
+//     padding-top: $padding-top !important;
+//   }
 
-    &.is-invalid {
-      border-color: $color-danger;
-      @include placeholder-color($color-danger);
-    }
-  }
+//   .row.form-group:has(#{$selector}) label.form-control-label.#{$size-class} {
+//     padding-top: $padding-top !important;
+//   }
+// }
 
-  .form-select.read-only {
-    --bs-form-select-bg-img: none !important;
-    opacity: 1;
-    color: inherit;
-    background: #fff !important;
-    cursor: not-allowed;
-  }
+// // =================================================
+// // Plumage Light theme tokens
+// // =================================================
 
-  .form-select.read-only:focus {
-    border-color: var(--bs-border-color) !important;
-    cursor: not-allowed;
-    outline: 0 !important;
-    box-shadow: none !important;
-  }
+// .plmg-lt {
+//   --color-text: #383838;
+//   --invalid-color: #b30009;
 
-  .form-select:disabled {
-    background-color: var(--bs-secondary-bg);
-    border-radius: 0 !important;
-    cursor: not-allowed;
-  }
+//   --select-bg: #fff;
+//   --select-disabled-bg: #e9ecef;
+//   --select-disabled-color: #a9a9a9;
+//   --multi-bg: #f7f7f7;
 
-  // Selects inside input-container
-  .input-container select {
-    border: none;
-    font-size: 1rem;
-    font-weight: 300;
-    line-height: 1.2;
-    transition: border-color 0.25s ease;
+//   --underline-color: #ccc;
+//   --underline-invalid-color: #bb121a;
+//   --focus-invalid-color: #ff5c64;
 
-    &:focus {
-      box-shadow: none;
-      outline: none;
-    }
-  }
+//   --form-select-caret: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23383838' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 
-  // ---------- Custom select (Bootstrap-like) ----------
-  .custom-select {
-    display: inline-block;
-    width: 100%;
-    height: calc(2.25rem + 2px);
-    padding: 0.375rem 1.75rem 0.375rem 0.75rem;
-    line-height: 1.5;
-    color: $color-text;
-    vertical-align: middle;
-    background: #fff $custom-caret no-repeat right 0.75rem center;
-    background-size: 8px 10px;
-    border: 1px solid $color-border;
-    border-radius: 0.25rem;
-    appearance: none;
+//   --form-select-caret-disabled: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23383838' opacity='0.3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 
-    &:focus {
-      border-color: #80bdff;
-      outline: 0;
-      box-shadow:
-        inset 0 1px 2px rgb(0 0 0 / 8%),
-        0 0 5px rgb(128 189 255 / 50%);
-    }
+//   --down-caret-invalid: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23b30009' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 
-    &[multiple],
-    &[size]:not([size='1']) {
-      height: auto;
-      padding-right: 0.75rem;
-      background-image: none;
-    }
+//   --custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
 
-    &:disabled {
-      color: $color-muted;
-      background-color: #e9ecef;
-    }
+//   --custom-caret-disabled: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath opacity='0.3' fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
 
-    &::-ms-expand {
-      opacity: 0;
-    } // hide default caret in IE11
-  }
+//   --custom-caret-invalid: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23b30009' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
+// }
 
-  // Size variants for selects (inside input-container)
-  .input-container {
-    .form-select-sm {
-      height: calc(1.8125rem + 2px);
-      padding-top: 0.375rem;
-      padding-bottom: 0.375rem;
-      font-size: 0.833rem;
-    }
+// // =================================================
+// // Plumage Dark theme tokens
+// // =================================================
 
-    .form-select-lg {
-      height: calc(2.875rem + 2px);
-      padding-top: 0.375rem;
-      padding-bottom: 0.375rem;
-      font-size: 1.125rem;
-    }
-  }
+// .plmg-dk {
+//   --color-text: #f2f2f2;
+//   --invalid-color: #ea868f;
 
-  // ---------- Underline / focus bar ----------
-  .b-underline {
-    background-color: #ccc;
-    display: block;
-    height: $underline-height;
-    position: relative;
-    transition: 0.4s;
-    width: 100%;
-  }
+//   --select-bg: #323232;
+//   --select-disabled-bg: #4c4c4c;
+//   --select-disabled-color: #858585;
+//   --multi-bg: #3a3a3a;
 
-  .b-focus {
-    background-color: $color-focus;
-    bottom: 0;
-    height: $underline-height;
-    left: 50%;
-    position: absolute;
-    transition: 0.4s;
-    width: 0;
+//   --underline-color: #909090;
+//   --underline-invalid-color: #ea868f;
+//   --focus-invalid-color: #c9252d;
 
-    &:disabled,
-    &.disabled {
-      background-color: transparent;
-    }
-  }
+//   --form-select-caret: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23dee2e6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 
-  // ---------- Validation ----------
-  .invalid-feedback {
-    color: $color-danger;
-    margin-top: 0.25rem;
-    font-size: 0.75rem;
-  }
+//   --form-select-caret-disabled: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23dee2e6' opacity='0.3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 
-  .invalid {
-    color: $color-danger;
-  }
+//   --down-caret-invalid: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ea868f' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 
-  .invalid.b-underline,
-  .invalid.b-focus {
-    background-color: $color-danger;
-  }
+//   --custom-caret: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23f2f2f2' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
 
-  .form-select.form-control {
-    &:invalid,
-    &.is-invalid {
-      border-color: $color-danger;
-    }
-  }
+//   --custom-caret-disabled: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath opacity='0.3' fill='%23f2f2f2' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
 
-  .form-control.is-invalid {
-    @include placeholder-color($color-danger);
-  }
+//   --custom-caret-invalid: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23ea868f' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
+// }
 
-  // Red text for invalid single selects (Bootstrap parity)
-  .was-validated {
-    .form-select:invalid:not([multiple]):not([size]),
-    .form-select:invalid:not([multiple])[size='1'] {
-      color: $color-danger;
-    }
-  }
-  .form-select.is-invalid:not([multiple]):not([size]),
-  .form-select.is-invalid:not([multiple])[size='1'] {
-    color: $color-danger;
-  }
-}
+// // =================================================
+// // Shared Plumage scope
+// // =================================================
 
-// =================================================
-// :has() label alignment (consolidated + DRY)
-// =================================================
-@supports selector(:has(*)) {
-  // Base: sync padding-top for labels when a specific select exists.
-  @mixin has-select-label-pt($sel, $pt) {
-    .plumage .form-group:has(> #{$sel}) > label.form-control-label {
-      padding-top: $pt !important;
-    }
-    .plumage .row.form-group:has(#{$sel}) label.form-control-label {
-      padding-top: $pt !important;
-    }
-  }
+// .plmg-lt,
+// .plmg-dk {
+//   // =================================================
+//   // :has() label alignment
+//   // =================================================
 
-  // Size-class variant for labels (.label-xs / .label-sm / .label-lg)
-  @mixin has-select-label-size-pt($sel, $size-class, $pt) {
-    .plumage .form-group:has(> #{$sel}) > label.form-control-label.#{$size-class} {
-      padding-top: $pt !important;
-    }
-    .plumage .row.form-group:has(#{$sel}) label.form-control-label.#{$size-class} {
-      padding-top: $pt !important;
-    }
-  }
+//   @supports selector(:has(*)) {
+//     // Default select
+//     @include has-select-label-pt(
+//       'select.form-select',
+//       $label-select-default-pt
+//     );
 
-  // ----- Default select (.form-select) -----
-  @include has-select-label-pt('select.form-select', 8px);
-  @include has-select-label-size-pt('select.form-select', label-sm, 8px);
-  @include has-select-label-size-pt('select.form-select', label-xs, 9px);
-  @include has-select-label-size-pt('select.form-select', label-lg, 5px);
+//     @include has-select-label-size-pt(
+//       'select.form-select',
+//       label-sm,
+//       $label-select-default-sm-pt
+//     );
 
-  // ----- Small select (.form-select-sm) -----
-  @include has-select-label-pt('select.form-select.form-select-sm', 7px);
-  @include has-select-label-size-pt('select.form-select.form-select-sm', label-sm, 7px);
-  @include has-select-label-size-pt('select.form-select.form-select-sm', label-xs, 9px);
-  @include has-select-label-size-pt('select.form-select.form-select-sm', label-lg, 4px);
+//     @include has-select-label-size-pt(
+//       'select.form-select',
+//       label-xs,
+//       $label-select-default-xs-pt
+//     );
 
-  // ----- Large select (.form-select-lg) -----
-  @include has-select-label-pt('select.form-select.form-select-lg', 17px);
-  @include has-select-label-size-pt('select.form-select.form-select-lg', label-sm, 17px);
-  @include has-select-label-size-pt('select.form-select.form-select-lg', label-xs, 19px);
-  @include has-select-label-size-pt('select.form-select.form-select-lg', label-lg, 14px);
-}
+//     @include has-select-label-size-pt(
+//       'select.form-select',
+//       label-lg,
+//       $label-select-default-lg-pt
+//     );
+
+//     // Small select
+//     @include has-select-label-pt(
+//       'select.form-select.form-select-sm',
+//       $label-select-sm-pt
+//     );
+
+//     @include has-select-label-size-pt(
+//       'select.form-select.form-select-sm',
+//       label-sm,
+//       $label-select-sm-sm-pt
+//     );
+
+//     @include has-select-label-size-pt(
+//       'select.form-select.form-select-sm',
+//       label-xs,
+//       $label-select-sm-xs-pt
+//     );
+
+//     @include has-select-label-size-pt(
+//       'select.form-select.form-select-sm',
+//       label-lg,
+//       $label-select-sm-lg-pt
+//     );
+
+//     // Large select
+//     @include has-select-label-pt(
+//       'select.form-select.form-select-lg',
+//       $label-select-lg-pt
+//     );
+
+//     @include has-select-label-size-pt(
+//       'select.form-select.form-select-lg',
+//       label-sm,
+//       $label-select-lg-sm-pt
+//     );
+
+//     @include has-select-label-size-pt(
+//       'select.form-select.form-select-lg',
+//       label-xs,
+//       $label-select-lg-xs-pt
+//     );
+
+//     @include has-select-label-size-pt(
+//       'select.form-select.form-select-lg',
+//       label-lg,
+//       $label-select-lg-lg-pt
+//     );
+//   }
+
+//   // =================================================
+//   // Base input
+//   // =================================================
+
+//   input {
+//     font: inherit;
+//     line-height: inherit;
+//     margin: 0;
+//     overflow: visible;
+//   }
+
+//   // =================================================
+//   // Layout
+//   // =================================================
+
+//   .form-group {
+//     padding: $space-5 $space-15;
+//     margin-bottom: $space-4;
+//     text-align: left;
+//   }
+
+//   .horizontal {
+//     .form-group {
+//       padding: $space-5;
+//     }
+
+//     .input-container {
+//       padding: 0 $space-15;
+//     }
+
+//     .form-group .form-control-label,
+//     .form-group label {
+//       margin-bottom: 0;
+//       white-space: normal;
+//     }
+//   }
+
+//   .inline {
+//     .input-container {
+//       padding: 0 $space-15;
+//     }
+
+//     .form-group .form-control-label,
+//     .form-group label {
+//       padding: 0 $space-8;
+//       margin-bottom: 0;
+//       white-space: nowrap;
+//     }
+//   }
+
+//   // =================================================
+//   // Labels
+//   // =================================================
+
+//   label {
+//     position: relative;
+//     display: inline-block;
+//     margin-bottom: $space-8;
+//   }
+
+//   .label-xs {
+//     font-size: $label-font-size-xs !important;
+//   }
+
+//   .label-sm {
+//     font-size: $label-font-size-sm !important;
+//   }
+
+//   .label-lg {
+//     font-size: $label-font-size-lg !important;
+//   }
+
+//   .horizontal label,
+//   .inline label {
+//     position: relative;
+//     display: flex;
+//     align-items: start !important;
+//     justify-content: flex-start;
+//     padding-top: $label-padding-default !important;
+//     margin-bottom: 0;
+
+//     &.align-right {
+//       justify-content: flex-end;
+//     }
+//   }
+
+//   .col-form-label {
+//     padding-top: $col-form-ptb;
+//     padding-bottom: $col-form-ptb;
+//     margin-bottom: 0;
+//     font-size: inherit;
+//     line-height: 1.5;
+//   }
+
+//   .form-group .form-control-label,
+//   .form-group label {
+//     margin-bottom: $space-4;
+//     font-weight: 400;
+//     line-height: 1.1;
+//   }
+
+//   .horizontal .form-group .form-control-label.invalid,
+//   .inline .form-group .form-control-label.invalid {
+//     position: relative;
+//     align-items: normal;
+//   }
+
+//   // =================================================
+//   // Inline / horizontal label sizing
+//   // =================================================
+
+//   .inline,
+//   .horizontal {
+//     .form-control-label {
+//       align-items: start !important;
+//       padding-top: $space-6 !important;
+//     }
+
+//     .label-xs {
+//       align-items: start !important;
+//       padding-top: $label-padding-xs !important;
+//     }
+
+//     .label-sm {
+//       align-items: start !important;
+//       padding-top: $label-padding-sm !important;
+//     }
+
+//     .label-lg {
+//       align-items: start !important;
+//       padding-top: $label-padding-lg !important;
+//     }
+//   }
+
+//   // =================================================
+//   // Input container
+//   // =================================================
+
+//   .input-container {
+//     position: relative;
+//     text-align: left;
+
+//     select {
+//       border: 0;
+//       border-radius: 0;
+//       font-size: 1rem;
+//       font-weight: 300;
+//       line-height: 1.2;
+//       transition: border-color 0.25s ease;
+
+//       &:focus {
+//         box-shadow: none;
+//         outline: none;
+//       }
+//     }
+
+//     .multi,
+//     .multi.is-invalid {
+//       background-image: none !important;
+//       padding:
+//         $select-padding-y
+//         0
+//         $select-padding-y
+//         $select-padding-left !important;
+//     }
+
+//     .form-select {
+//       padding:
+//         $select-padding-y
+//         $select-padding-right
+//         $select-padding-y
+//         $select-padding-left;
+//     }
+
+//     .form-select-sm {
+//       height: calc(#{$select-height-sm-base} + #{$space-2});
+//       padding-top: $space-4;
+//       padding-bottom: $space-4;
+//       font-size: 0.833rem;
+//       border-radius: 0;
+//     }
+
+//     .form-select-lg {
+//       height: calc(#{$select-height-lg-base} + #{$space-2});
+//       padding-top: $space-4;
+//       padding-bottom: $space-4;
+//       padding-left: $select-padding-left;
+//       font-size: $label-font-size-lg;
+//       border-radius: 0;
+//     }
+//   }
+
+//   // =================================================
+//   // Standard select
+//   // =================================================
+
+//   .form-select {
+//     appearance: none;
+//     padding-right: $select-padding-right !important;
+
+//     color: var(--color-text);
+//     background-color: var(--select-bg);
+//     background-image: var(--form-select-caret) !important;
+//     background-repeat: no-repeat;
+//     background-position: right $select-caret-position-right center;
+//     background-size:
+//       $select-caret-width
+//       $select-caret-height !important;
+//   }
+
+//   // =================================================
+//   // Custom select
+//   // =================================================
+
+//   .custom-select {
+//     display: inline-block;
+//     width: 100%;
+//     height: calc(#{$select-height-custom-base} + #{$space-2});
+
+//     padding:
+//       $select-custom-padding-y
+//       $select-custom-padding-right
+//       $select-custom-padding-y
+//       $select-custom-padding-left;
+
+//     color: var(--color-text);
+//     line-height: 1.5;
+//     vertical-align: middle;
+
+//     background-color: var(--select-bg);
+//     background-image: var(--custom-caret);
+//     background-repeat: no-repeat;
+//     background-position: right $select-caret-position-right center;
+//     background-size:
+//       $select-custom-caret-width
+//       $select-custom-caret-height !important;
+
+//     border: 0;
+//     border-radius: $space-4;
+//     appearance: none;
+
+//     &:focus {
+//       outline: 0;
+//       box-shadow: none;
+//     }
+
+//     &[multiple],
+//     &[size]:not([size='1']) {
+//       height: auto;
+//       padding-right: $space-12;
+//       background-image: none;
+//     }
+//   }
+
+//   // =================================================
+//   // Multi select
+//   // =================================================
+
+//   .multi {
+//     background-color: var(--multi-bg);
+//   }
+
+//   // =================================================
+//   // Underline / focus bar
+//   // =================================================
+
+//   .b-underline {
+//     position: relative;
+//     display: block;
+//     width: 100%;
+//     height: 1px;
+
+//     background-color: var(--underline-color);
+//     transition: 0.4s;
+
+//     &.invalid {
+//       height: 1px;
+//       background-color: var(--underline-invalid-color) !important;
+//     }
+//   }
+
+//   .b-focus {
+//     position: absolute;
+//     bottom: 0;
+//     left: 50%;
+//     width: 0;
+//     height: 1px;
+
+//     background-color: $color-focus;
+//     transition: 0.4s;
+
+//     &:disabled,
+//     &.disabled {
+//       background-color: transparent;
+//     }
+//   }
+
+//   .invalid.b-underline,
+//   .invalid.b-focus {
+//     background-color: var(--focus-invalid-color);
+//   }
+
+//   // =================================================
+//   // Validation
+//   // =================================================
+
+//   .invalid-feedback {
+//     margin-top: $space-4;
+//     color: var(--invalid-color);
+//     font-size: $label-font-size-xs;
+//   }
+
+//   .invalid,
+//   .required {
+//     color: var(--invalid-color);
+//   }
+
+//   .form-select:invalid,
+//   .form-select.is-invalid {
+//     color: var(--invalid-color);
+//     fill: var(--invalid-color);
+//     border-color: var(--invalid-color);
+//     background-image: var(--down-caret-invalid) !important;
+//   }
+
+//   .custom-select:invalid,
+//   .custom-select.is-invalid {
+//     color: var(--invalid-color);
+//     fill: var(--invalid-color);
+//     border-color: var(--invalid-color);
+//     background-image: var(--custom-caret-invalid) !important;
+//   }
+
+//   .form-select.is-invalid,
+//   .custom-select.is-invalid,
+//   .form-control.is-invalid {
+//     @include placeholder-color(var(--invalid-color));
+//   }
+
+//   // =================================================
+//   // Disabled states
+//   // =================================================
+
+//   .form-select:disabled {
+//     color: var(--select-disabled-color);
+//     background-color: var(--select-disabled-bg);
+//     background-image: var(--form-select-caret-disabled) !important;
+//     border-radius: 0 !important;
+//     cursor: not-allowed;
+//   }
+
+//   .custom-select:disabled {
+//     color: var(--select-disabled-color);
+//     background-color: var(--select-disabled-bg);
+//     background-image: var(--custom-caret-disabled) !important;
+//     cursor: not-allowed;
+//   }
+
+//   // =================================================
+//   // Read-only states
+//   // =================================================
+
+//   .form-select.read-only,
+//   .custom-select.read-only {
+//     color: inherit;
+//     background-color: var(--select-bg) !important;
+//     background-image: none !important;
+//     opacity: 1;
+//     cursor: not-allowed;
+
+//     &:focus {
+//       border-color: var(--bs-border-color) !important;
+//       outline: 0 !important;
+//       box-shadow: none !important;
+//       cursor: not-allowed;
+//     }
+//   }
+// }

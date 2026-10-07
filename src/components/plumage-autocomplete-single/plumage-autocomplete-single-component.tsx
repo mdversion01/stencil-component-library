@@ -851,8 +851,10 @@ export class PlumageAutocompleteSingle {
     return (
       <Fragment>
         <div class={this.groupClasses()} onClick={this.handleInteraction}>
+          <div class="ig-wrapper">
           {this.renderInputField(ids)}
           {this.renderClearButton()}
+          </div>
         </div>
 
         <div class={`b-underline${this.disabled || this.readOnly ? ' disabled' : this.validationState ? ' invalid' : ''}`} role="presentation">
@@ -921,7 +923,7 @@ export class PlumageAutocompleteSingle {
     const ids = this.resolveIds();
 
     return (
-      <div class="plumage">
+      <div class="stencil-component">
         {/* SR announcements */}
         <div id={ids.liveId} class="sr-only" aria-live="polite" aria-atomic="true">
           {this.liveMessage}

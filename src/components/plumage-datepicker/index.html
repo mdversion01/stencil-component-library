@@ -13,6 +13,24 @@
     <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
 
     <style>
+      .plmg-lt {
+        body {
+          background-color: #fff;
+          color: #383838;
+        }
+      }
+
+      .plmg-dk {
+        body {
+          background-color: #323232;
+          color: #f2f2f2;
+        }
+      }
+
+      .theme-switcher {
+        margin: 10px;
+      }
+
       .cwrapper {
         margin: 10px;
       }
@@ -22,6 +40,7 @@
         border-radius: 3px;
       }
 
+
       .purple {
         background-color: purple !important;
         color: white !important;
@@ -29,6 +48,9 @@
     </style>
   </head>
   <body>
+     <div class="theme-switcher">
+      <button id="plumage-theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark mode">Dark mode</button>
+    </div>
     <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
      -->
     <app-wrapper>
@@ -45,12 +67,12 @@
           <plumage-datepicker-component read-only value="07-15-2026" required validation validation-message="Invalid date" input-id="dp-test" date-format="MM-DD-YYYY"></plumage-datepicker-component>
         </div>
 
-        <div>
+        <div style="width: 210px">
           <plumage-datepicker-component disabled required value="07-15-2026" validation validation-message="Invalid date" input-id="dp-test" date-format="MM-DD-YYYY"></plumage-datepicker-component>
         </div>
 
         <div style="margin-bottom: 20px">
-          <plumage-datepicker-component calendar plumage></plumage-datepicker-component>
+          <plumage-datepicker-component calendar></plumage-datepicker-component>
         </div>
 
         <div style="width: 210px">
@@ -66,43 +88,43 @@
         </div>
 
         <div>
-          <date-range-picker-component size="sm" range-picker></date-range-picker-component>
+          <plumage-date-range-picker-component size="sm" range-picker></plumage-date-range-picker-component>
         </div>
 
         <div>
-          <date-range-picker-component input-id="drp-1" value="2026-07-15 - 2026-08-17" date-format="MM-DD-YYYY" required validation validation-message="Invalid date"></date-range-picker-component>
+          <plumage-date-range-picker-component input-id="drp-1" value="2026-07-15 - 2026-08-17" date-format="MM-DD-YYYY" required validation validation-message="Invalid date"></plumage-date-range-picker-component>
         </div>
 
         <div>
-          <date-range-picker-component input-id="drp-1" read-only value="2026-07-15 - 2026-08-17" show-iso required validation validation-message="Invalid date"></date-range-picker-component>
+          <plumage-date-range-picker-component input-id="drp-1" read-only value="2026-07-15 - 2026-08-17" show-iso required validation validation-message="Invalid date"></plumage-date-range-picker-component>
         </div>
 
         <div>
-          <date-range-picker-component input-id="drp-1" disabled value="2026-07-15 - 2026-08-17" show-long required validation validation-message="Invalid date"></date-range-picker-component>
+          <plumage-date-range-picker-component input-id="drp-1" disabled value="2026-07-15 - 2026-08-17" show-long required validation validation-message="Invalid date"></plumage-date-range-picker-component>
         </div>
 
         <div>
-          <date-range-picker-component size="sm" plumage show-iso range-picker></date-range-picker-component>
+          <plumage-date-range-picker-component size="sm" show-iso range-picker></plumage-date-range-picker-component>
         </div>
 
         <div style="width: 325px">
-          <date-range-picker-component plumage value="2026-07-15 - 2026-08-17" form-layout="inline" required validation validation-message="Invalid date"></date-range-picker-component>
+          <plumage-date-range-picker-component value="2026-07-15 - 2026-08-17" form-layout="inline" required validation validation-message="Invalid date"></plumage-date-range-picker-component>
         </div>
 
         <div style="width: 325px">
-          <date-range-picker-component plumage read-only value="2026-07-15 - 2026-08-17" show-iso required validation validation-message="Invalid date"></date-range-picker-component>
+          <plumage-date-range-picker-component read-only value="2026-07-15 - 2026-08-17" show-iso required validation validation-message="Invalid date"></plumage-date-range-picker-component>
         </div>
 
         <div style="width: 325px">
-          <date-range-picker-component plumage disabled value="2026-07-15 - 2026-08-17" show-long required validation validation-message="Invalid date"></date-range-picker-component>
+          <plumage-date-range-picker-component disabled value="2026-07-15 - 2026-08-17" show-long required validation validation-message="Invalid date"></plumage-date-range-picker-component>
         </div>
 
         <div>
-          <date-range-time-picker-component size="sm" range-time-picker date-format="MM-DD-YYYY" show-duration></date-range-time-picker-component>
+          <plumage-date-range-time-picker-component size="sm" range-time-picker date-format="MM-DD-YYYY" show-duration></plumage-date-range-time-picker-component>
         </div>
 
         <div style="width: 554px">
-          <date-range-time-picker-component
+          <plumage-date-range-time-picker-component
             size="sm"
             form-layout="inline"
             value="Wednesday, July 15, 2026 11:00 AM  -  Thursday, August 20, 2026 08:00 PM"
@@ -111,11 +133,11 @@
             required
             validation
             validation-message="Invalid date"
-          ></date-range-time-picker-component>
+          ></plumage-date-range-time-picker-component>
         </div>
 
         <div style="width: 554px">
-          <date-range-time-picker-component
+          <plumage-date-range-time-picker-component
             size="sm"
             show-long
             value="2026-07-15 11:00  -  2026-08-20 20:00"
@@ -126,11 +148,11 @@
             required
             validation
             validation-message="Invalid date"
-          ></date-range-time-picker-component>
+          ></plumage-date-range-time-picker-component>
         </div>
 
         <div style="width: 554px">
-          <date-range-time-picker-component
+          <plumage-date-range-time-picker-component
             size="sm"
             value="2026-07-15 11:00  -  2026-08-20 20:00"
             form-layout="inline"
@@ -139,60 +161,105 @@
             required
             validation
             validation-message="Invalid date"
-          ></date-range-time-picker-component>
+          ></plumage-date-range-time-picker-component>
         </div>
 
         <div>
-          <date-range-time-picker-component size="sm" range-time-picker plumage date-format="MM-DD-YYYY" show-duration></date-range-time-picker-component>
+          <plumage-date-range-time-picker-component size="sm" range-time-picker date-format="MM-DD-YYYY" show-duration></plumage-date-range-time-picker-component>
         </div>
 
         <div style="width: 554px">
-          <date-range-time-picker-component
+          <plumage-date-range-time-picker-component
             size="sm"
             show-long
             value="Wednesday, July 15, 2026 11:00 AM  -  Thursday, August 20, 2026 08:00 PM"
             is-twenty-four-hour-format="false"
             form-layout="inline"
-            plumage
             show-duration
             required
             validation
             validation-message="Invalid date"
-          ></date-range-time-picker-component>
+          ></plumage-date-range-time-picker-component>
         </div>
 
         <div style="width: 554px">
-          <date-range-time-picker-component
+          <plumage-date-range-time-picker-component
             size="sm"
             value="2026-07-15 11:00  -  2026-08-20 20:00"
             form-layout="inline"
-            plumage
             show-duration
             read-only
             required
             validation
             validation-message="Invalid date"
-          ></date-range-time-picker-component>
+          ></plumage-date-range-time-picker-component>
         </div>
 
         <div style="width: 554px">
-          <date-range-time-picker-component
+          <plumage-date-range-time-picker-component
             size="sm"
-            value="2026-07-15 11:00  -  2026-08-20 20:00"
-            show-long
-            is-twenty-four-hour-format="false"
+            value=""
             form-layout="inline"
-            plumage
             show-duration
             disabled
             required
             validation
             validation-message="Invalid date"
-          ></date-range-time-picker-component>
+          ></plumage-date-range-time-picker-component>
         </div>
       </div>
     </app-wrapper>
 
-    <script type="module"></script>
+    <script type="module">
+      (() => {
+        const STORAGE_KEY = 'plumage-demo-theme';
+
+        const html = document.documentElement;
+
+        const toggle = document.getElementById('plumage-theme-toggle');
+
+        if (!toggle) {
+          return;
+        }
+
+        const applyTheme = theme => {
+          const isDark = theme === 'dark';
+
+          const html = document.documentElement;
+
+          html.classList.remove('plmg-lt', 'plmg-dk');
+
+          html.classList.add(isDark ? 'plmg-dk' : 'plmg-lt');
+
+          toggle.setAttribute('aria-pressed', String(isDark));
+
+          toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+
+          toggle.textContent = isDark ? 'Light mode' : 'Dark mode';
+        };
+
+        const getInitialTheme = () => {
+          const storedTheme = localStorage.getItem(STORAGE_KEY);
+
+          if (storedTheme === 'light' || storedTheme === 'dark') {
+            return storedTheme;
+          }
+
+          return html.classList.contains('plmg-dk') ? 'dark' : 'light';
+        };
+
+        applyTheme(getInitialTheme());
+
+        toggle.addEventListener('click', () => {
+          const currentTheme = html.classList.contains('plmg-dk') ? 'dark' : 'light';
+
+          const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+          localStorage.setItem(STORAGE_KEY, nextTheme);
+
+          applyTheme(nextTheme);
+        });
+      })();
+    </script>
   </body>
 </html>

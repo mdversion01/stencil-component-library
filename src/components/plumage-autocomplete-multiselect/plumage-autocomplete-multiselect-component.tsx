@@ -1326,7 +1326,7 @@ export class PlumageAutocompleteMultiselectComponent {
   render() {
     const ids = this.resolveIds();
     return (
-      <div class="plumage">
+      <div class="stencil-component">
         <div id={ids.liveId} class="sr-only" aria-live="polite" aria-atomic="true">
           {this.liveMessage}
         </div>

@@ -153,6 +153,9 @@ export class PlumageSelectFieldComponent {
   componentWillLoad() {
     this._options = this.normalizeOptions(this.options);
     this.onDefaultOptionTxtChange(this.defaultOptionTxt);
+
+    // Props are hydrated by this point, so resolve the initial form-id here.
+    this._resolvedFormId = this.formId || '';
   }
 
   componentDidLoad() {
@@ -579,21 +582,14 @@ export class PlumageSelectFieldComponent {
   private renderSelectField(selectId: string, nameId: string) {
     const sizeClass = this.size === 'sm' ? 'form-select-sm' : this.size === 'lg' ? 'form-select-lg' : '';
     const baseClass = this.custom ? 'custom-select' : 'form-select';
-
+    const multiSelect = this.multiple ? 'multi' : '';
     const hasPlaceholder = (this.defaultOptionTxt ?? '').trim().length > 0;
     const defaultLabel = hasPlaceholder ? this._safeDefaultOptionTxt : '';
     const showDefaultOption = hasPlaceholder && !(this.host.id || '').includes('sortField');
 
     const isInvalidNow = this.isInvalidNow();
 
-    const selectClasses = [
-      baseClass,
-      this.isReadOnlyState() ? 'read-only' : null,
-      sizeClass || null,
-      this.classes || null,
-    ]
-      .filter(Boolean)
-      .join(' ');
+    const selectClasses = [baseClass, this.isReadOnlyState() ? 'read-only' : null, sizeClass || null, this.classes || null, multiSelect].filter(Boolean).join(' ');
 
     const labelId = this.buildLabelId(selectId, nameId);
     const validationId = this.buildValidationId(selectId, nameId);
@@ -605,13 +601,11 @@ export class PlumageSelectFieldComponent {
     const defaultAriaLabel = this.labelHidden ? this.label || this.defaultOptionTxt || 'Select' : undefined;
     const defaultAriaLabelledBy = this.labelHidden ? undefined : labelId;
 
-    const ariaLabel = userLabelledBy ? undefined : userLabel ?? defaultAriaLabel;
+    const ariaLabel = userLabelledBy ? undefined : (userLabel ?? defaultAriaLabel);
     const ariaLabelledBy = userLabelledBy ?? (ariaLabel ? undefined : defaultAriaLabelledBy);
 
     const describedByWithValidation =
-      !this.isNonInteractiveState() && isInvalidNow && this.validationMessage
-        ? this.mergeDescribedBy(userDescribedBy, validationId)
-        : userDescribedBy;
+      !this.isNonInteractiveState() && isInvalidNow && this.validationMessage ? this.mergeDescribedBy(userDescribedBy, validationId) : userDescribedBy;
 
     return (
       <div class="input-container" role="presentation" onClick={this.handleInteraction}>
@@ -679,7 +673,7 @@ export class PlumageSelectFieldComponent {
     const selectId = this.camelCase(this.selectFieldId).replace(/ /g, '');
     const nameId = this.camelCase(this.label).replace(/ /g, '');
 
-    const outerClass = this.formLayout ? ` ${this.formLayout}` : '';
+    const outerClass = this.formLayout ? `stencil-component ${this.formLayout}` : 'stencil-component';
     const groupClasses = ['form-group'];
 
     if (this.isHorizontal()) groupClasses.push('row');
@@ -691,7 +685,7 @@ export class PlumageSelectFieldComponent {
     const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     return (
-      <div class={`plumage${outerClass}`}>
+      <div class={`${outerClass}`}>
         <div class={groupClasses.join(' ')}>
           {this.renderSelectLabel(selectId, nameId, labelColClass)}
           {this.isHorizontal() ? <div class={inputColClass}>{this.renderSelectField(selectId, nameId)}</div> : this.renderSelectField(selectId, nameId)}

@@ -1,7 +1,7 @@
 // =============================================
 // Tokens
 // =============================================
-$danger: #b30009;
+$invalid: var(--bs-form-invalid-color);
 $invalid-border: var(--bs-form-invalid-border-color, #b30009);
 
 $radius-sm: 0.25rem;
@@ -56,7 +56,7 @@ $radius-lg: 0.5rem;
 // =============================================
 .input-group-text.is-invalid {
   border-color: $invalid-border;
-  color: $danger;
+  color: $invalid;
 }
 
 .input-group.is-invalid {

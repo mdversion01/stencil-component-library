@@ -1,5 +1,5 @@
 <!doctype html>
-<html dir="ltr" lang="en">
+<html dir="ltr" lang="en" class="plmg-lt">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,6 +13,24 @@
     <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
 
     <style>
+      .plmg-lt {
+        body {
+          background-color: #fff;
+          color: #383838;
+        }
+      }
+
+      .plmg-dk {
+        body {
+          background-color: #323232;
+          color: #f2f2f2;
+        }
+      }
+
+      .theme-switcher {
+        margin: 10px;
+      }
+
       .cwrapper {
         margin: 10px;
       }
@@ -29,11 +47,15 @@
     </style>
   </head>
   <body>
+    <div class="theme-switcher">
+      <button id="plumage-theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark mode">Dark mode</button>
+    </div>
+
     <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
      -->
     <app-wrapper>
       <div class="cwrapper">
-       <plumage-input-field-component
+        <plumage-input-field-component
           label="First Name"
           label-size="lg"
           size="sm"
@@ -66,9 +88,7 @@
       <div class="cwrapper">
         <form-component>
           <plumage-input-field-component
-            required
-            validation
-            validation-message="Please enter First name"
+            disabled
             label="First Name"
             label-size="sm"
             size="sm"
@@ -78,9 +98,7 @@
           ></plumage-input-field-component>
 
           <plumage-input-field-component
-            required
-            validation
-            validation-message="Please enter Last name"
+            read-only
             label="Last Name"
             value=""
             input-id="input-6"
@@ -100,42 +118,92 @@
           ></plumage-input-field-component>
 
           <plumage-input-field-component
-          input-id="input-1"
-          size="sm"
-          label="Test Label2"
-          required
-          validation
-          validation-message="Please enter First name"
-        ></plumage-input-field-component>
+            input-id="input-1"
+            size="sm"
+            label="Test Label2"
+            required
+            validation
+            validation-message="Please enter First name"
+          ></plumage-input-field-component>
 
-        <plumage-input-field-component input-id="input-2" label="Test Label" label-hidden></plumage-input-field-component>
+          <plumage-input-field-component input-id="input-2" label="Test Label" label-hidden></plumage-input-field-component>
 
-        <plumage-input-field-component input-id="input-3" size="lg" label="Test Label2"></plumage-input-field-component>
+          <plumage-input-field-component input-id="input-3" size="lg" label="Test Label2"></plumage-input-field-component>
 
-        <plumage-input-field-component
-          input-id="input-4"
-          label="Test Label"
-          form-layout="inline"
-          required
-          validation
-          validation-message="Please enter First name"
-        ></plumage-input-field-component>
+          <plumage-input-field-component
+            input-id="input-4"
+            label="Test Label"
+            form-layout="inline"
+            required
+            validation
+            validation-message="Please enter First name"
+          ></plumage-input-field-component>
 
-        <plumage-input-field-component
-          input-id="input-5"
-          label-align="right"
-          label="Test Label"
-          label-col="6"
-          input-col="6"
-          form-layout="horizontal"
-          required
-          validation
-          validation-message="Please enter First name"
-        ></plumage-input-field-component>
+          <plumage-input-field-component
+            input-id="input-5"
+            label-align="right"
+            label="Test Label"
+            label-col="6"
+            input-col="6"
+            form-layout="horizontal"
+            required
+            validation
+            validation-message="Please enter First name"
+          ></plumage-input-field-component>
         </form-component>
       </div>
     </app-wrapper>
 
-    <script type="module"></script>
+    <script type="module">
+      (() => {
+        const STORAGE_KEY = 'plumage-demo-theme';
+
+        const html = document.documentElement;
+
+        const toggle = document.getElementById('plumage-theme-toggle');
+
+        if (!toggle) {
+          return;
+        }
+
+        const applyTheme = theme => {
+          const isDark = theme === 'dark';
+
+          const html = document.documentElement;
+
+          html.classList.remove('plmg-lt', 'plmg-dk');
+
+          html.classList.add(isDark ? 'plmg-dk' : 'plmg-lt');
+
+          toggle.setAttribute('aria-pressed', String(isDark));
+
+          toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+
+          toggle.textContent = isDark ? 'Light mode' : 'Dark mode';
+        };
+
+        const getInitialTheme = () => {
+          const storedTheme = localStorage.getItem(STORAGE_KEY);
+
+          if (storedTheme === 'light' || storedTheme === 'dark') {
+            return storedTheme;
+          }
+
+          return html.classList.contains('plmg-dk') ? 'dark' : 'light';
+        };
+
+        applyTheme(getInitialTheme());
+
+        toggle.addEventListener('click', () => {
+          const currentTheme = html.classList.contains('plmg-dk') ? 'dark' : 'light';
+
+          const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+          localStorage.setItem(STORAGE_KEY, nextTheme);
+
+          applyTheme(nextTheme);
+        });
+      })();
+    </script>
   </body>
 </html>

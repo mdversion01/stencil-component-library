@@ -31,10 +31,6 @@
   border: 0 !important;
 }
 
-.wd-40 {
-  width: 40px;
-}
-
 .primary {
   color: #fff !important;
 }
@@ -434,7 +430,7 @@ $time-dropdown-z: 10000;
 
 .validation-message,
 .warning-message {
-  color: var(--bs-code-color);
+  color: var(--bs-form-invalid-color);
   font-size: 0.75rem;
   margin-top: 0.25rem;
 }

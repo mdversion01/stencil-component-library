@@ -1,5 +1,9 @@
-// src/stories/plumage-select-field-component.stories.js
+// ============================================================================
+// File: src/stories/plumage-select-field-component.stories.js
+// ============================================================================
+
 // import DocsPage from './plumage-select-field.docs.mdx';
+
 import {
   DocsWrapStyles,
   buildDocsHtml,
@@ -16,8 +20,8 @@ import {
  * ------------------------------------------------------------------ */
 
 export default {
-  title: 'Plumage/Plumage Select Field'
-  ,
+  title: 'Plumage/Plumage Select Field',
+
   decorators: [
     Story => {
       const wrap = document.createElement('div');
@@ -40,16 +44,18 @@ export default {
       return wrap;
     },
   ],
+
   parameters: {
     layout: 'padded',
 
-     themeFamily: 'plumage',
-    docs: {
+    themeFamily: 'plumage',
 
+    docs: {
       description: {
         component:
           'A Plumage-styled `<select>` with focus underline, optional horizontal/inline form layout, validation, and multi-select. Works in the light DOM and accepts a JSON array for `options`.',
       },
+
       source: {
         language: 'html',
         transform: (_src, ctx) => buildDocsHtml(ctx.args),
@@ -61,143 +67,274 @@ export default {
     ariaDescribedby: {
       control: 'text',
       name: 'aria-describedby',
-      table: { category: 'Accessibility' },
+      table: {
+        category: 'Accessibility',
+      },
       description:
         'ARIA override: additional element id(s) describing the select (space-separated). When validation is shown, the component merges this with its validation message id.',
     },
+
     ariaLabel: {
       control: 'text',
       name: 'aria-label',
-      table: { category: 'Accessibility' },
-      description:
-        'ARIA override: label for the select. Ignored if aria-labelledby is provided. Recommended when label is hidden.',
+      table: {
+        category: 'Accessibility',
+      },
+      description: 'ARIA override: label for the select. Ignored if aria-labelledby is provided. Recommended when label is hidden.',
     },
+
     ariaLabelledby: {
       control: 'text',
       name: 'aria-labelledby',
-      table: { category: 'Accessibility' },
-      description:
-        'ARIA override: element id(s) that label the select (space-separated). Takes precedence over aria-label and component-generated label id.',
+      table: {
+        category: 'Accessibility',
+      },
+      description: 'ARIA override: element id(s) that label the select (space-separated). Takes precedence over aria-label and component-generated label id.',
     },
 
-    classes: { control: 'text', table: { category: 'Layout' }, description: 'Additional CSS classes' },
+    classes: {
+      control: 'text',
+      table: {
+        category: 'Layout',
+      },
+      description: 'Additional CSS classes',
+    },
+
     formId: {
       control: 'text',
       name: 'form-id',
-      table: { category: 'Layout' },
+      table: {
+        category: 'Layout',
+      },
       description: 'ID of the parent form element, used for accessibility and form association',
     },
+
     formLayout: {
-      control: { type: 'select' },
+      control: {
+        type: 'select',
+      },
       options: ['', 'horizontal', 'inline'],
       name: 'form-layout',
-      table: { category: 'Layout' },
-      description:
-        'Sets the form layout style. "horizontal" applies a two-column grid layout, while "inline" arranges elements in a single row.',
+      table: {
+        category: 'Layout',
+      },
+      description: 'Sets the form layout style. "horizontal" applies a two-column grid layout, while "inline" arranges elements in a single row.',
     },
+
     inputCol: {
       control: 'text',
       name: 'input-col',
-      table: { category: 'Layout', defaultValue: { summary: 10 } },
+      table: {
+        category: 'Layout',
+        defaultValue: {
+          summary: 10,
+        },
+      },
       description: 'Used with horizontal form layouts. Single numeric column for the input in a grid. Default is 10 (col-10).',
     },
+
     inputCols: {
       control: 'text',
       name: 'input-cols',
-      table: { category: 'Layout' },
+      table: {
+        category: 'Layout',
+      },
       description: 'Used with horizontal form layouts. Responsive input column classes.',
     },
-    label: { control: 'text', table: { category: 'Layout' }, description: 'Label text for the select field' },
+
+    label: {
+      control: 'text',
+      table: {
+        category: 'Layout',
+      },
+      description: 'Label text for the select field',
+    },
+
     labelAlign: {
-      control: { type: 'select' },
+      control: {
+        type: 'select',
+      },
       options: ['', 'right'],
       name: 'label-align',
-      table: { category: 'Layout' },
+      table: {
+        category: 'Layout',
+      },
       description: 'Alignment of the label',
     },
+
     labelCol: {
       control: 'text',
       name: 'label-col',
-      table: { category: 'Layout', defaultValue: { summary: 2 } },
+      table: {
+        category: 'Layout',
+        defaultValue: {
+          summary: 2,
+        },
+      },
       description: 'Used with horizontal form layouts. Single numeric column for the label in a grid. Default is 2 (col-2).',
     },
+
     labelCols: {
       control: 'text',
       name: 'label-cols',
-      table: { category: 'Layout' },
+      table: {
+        category: 'Layout',
+      },
       description: 'Used with horizontal form layouts. Responsive label column classes.',
     },
-    labelHidden: { control: 'boolean', name: 'label-hidden', table: { category: 'Layout' }, description: 'Hide the label' },
+
+    labelHidden: {
+      control: 'boolean',
+      name: 'label-hidden',
+      table: {
+        category: 'Layout',
+      },
+      description: 'Hide the label',
+    },
+
     labelSize: {
-      control: { type: 'select' },
+      control: {
+        type: 'select',
+      },
       options: ['', 'xs', 'sm', 'lg'],
       name: 'label-size',
-      table: { category: 'Layout' },
+      table: {
+        category: 'Layout',
+      },
       description: 'Size variant of the label',
     },
+
     size: {
-      control: { type: 'select' },
+      control: {
+        type: 'select',
+      },
       options: ['', 'sm', 'lg'],
-      table: { category: 'Layout' },
+      table: {
+        category: 'Layout',
+      },
       description: 'Size variant of the select field',
     },
 
-    multiple: { control: 'boolean', table: { category: 'Options', defaultValue: false }, description: 'Enable multiple selection mode' },
-    options: { control: 'object', description: 'Array of { value, name } or JSON string', table: { category: 'Options' } },
+    multiple: {
+      control: 'boolean',
+      table: {
+        category: 'Options',
+        defaultValue: false,
+      },
+      description: 'Enable multiple selection mode',
+    },
+
+    options: {
+      control: 'object',
+      description: 'Array of { value, name } or JSON string',
+      table: {
+        category: 'Options',
+      },
+    },
 
     withTable: {
       control: 'boolean',
       name: 'with-table',
-      table: { category: 'Other', defaultValue: { summary: false } },
+      table: {
+        category: 'Other',
+        defaultValue: {
+          summary: false,
+        },
+      },
       description: 'This associates the select field with a table for synchronized behavior.',
     },
 
     custom: {
       control: 'boolean',
-      table: { category: 'Select Field Attributes', defaultValue: false },
+      table: {
+        category: 'Select Field Attributes',
+        defaultValue: false,
+      },
       description: 'Enable custom styling for the select field',
     },
+
     defaultOptionTxt: {
       control: 'text',
       name: 'default-option-txt',
-      table: { category: 'Select Field Attributes' },
+      table: {
+        category: 'Select Field Attributes',
+      },
       description: 'Text for the default (unselected) option',
     },
+
     disabled: {
       control: 'boolean',
-      table: { category: 'Select Field Attributes', defaultValue: false },
+      table: {
+        category: 'Select Field Attributes',
+        defaultValue: false,
+      },
       description: 'Disable the select field',
     },
+
     readOnly: {
       control: 'boolean',
       name: 'read-only',
-      table: { category: 'Select Field Attributes', defaultValue: false },
+      table: {
+        category: 'Select Field Attributes',
+        defaultValue: false,
+      },
       description: 'Sets the select field to a read-only state. Adds the `read-only` class and disables interaction.',
     },
+
     fieldHeight: {
-      control: { type: 'number', min: 2, step: 1 },
+      control: {
+        type: 'number',
+        min: 2,
+        step: 1,
+      },
       name: 'field-height',
-      table: { category: 'Select Field Attributes' },
+      table: {
+        category: 'Select Field Attributes',
+      },
       description: "Number for the Select Field's height when used with the `multiple` attribute for multiple selection.",
     },
+
     selectFieldId: {
       control: 'text',
       name: 'select-field-id',
-      table: { category: 'Select Field Attributes' },
+      table: {
+        category: 'Select Field Attributes',
+      },
       description: 'ID of the select field, used for accessibility and form association',
     },
+
     value: {
       control: 'text',
-      table: { category: 'Select Field Attributes' },
+      table: {
+        category: 'Select Field Attributes',
+      },
       description: 'For single select. In multiple mode, the component expects an array value via property, not an HTML attribute.',
     },
 
-    required: { control: 'boolean', table: { category: 'Validation', defaultValue: false }, description: 'Mark the field as required' },
-    validation: { control: 'boolean', table: { category: 'Validation', defaultValue: false }, description: 'Enable validation' },
+    required: {
+      control: 'boolean',
+      table: {
+        category: 'Validation',
+        defaultValue: false,
+      },
+      description: 'Mark the field as required',
+    },
+
+    validation: {
+      control: 'boolean',
+      table: {
+        category: 'Validation',
+        defaultValue: false,
+      },
+      description: 'Enable validation',
+    },
+
     validationMessage: {
       control: 'text',
       name: 'validation-message',
-      table: { category: 'Validation' },
+      table: {
+        category: 'Validation',
+      },
       description: 'Validation message to display',
     },
   },
@@ -227,10 +364,20 @@ const baseArgs = {
 
   defaultOptionTxt: 'Select a fruit',
   value: '',
+
   options: [
-    { value: 'apple', name: 'Apple' },
-    { value: 'banana', name: 'Banana' },
-    { value: 'cherry', name: 'Cherry' },
+    {
+      value: 'apple',
+      name: 'Apple',
+    },
+    {
+      value: 'banana',
+      name: 'Banana',
+    },
+    {
+      value: 'cherry',
+      name: 'Cherry',
+    },
   ],
 
   formId: '',
@@ -249,10 +396,13 @@ const baseArgs = {
 
 export const BasicSingle = {
   name: 'Basic (single select)',
+
   render: args => Template(args),
+
   args: {
     ...baseArgs,
   },
+
   parameters: {
     docs: {
       description: {
@@ -264,11 +414,14 @@ export const BasicSingle = {
 
 export const WithSelection = {
   name: 'With Selection',
+
   render: args => Template(args),
+
   args: {
     ...baseArgs,
     value: 'banana',
   },
+
   parameters: {
     docs: {
       description: {
@@ -280,6 +433,7 @@ export const WithSelection = {
 
 export const ValueFromOutsideSource = {
   name: 'Value from Outside Source',
+
   render: args => {
     const wrap = document.createElement('div');
     wrap.style.display = 'grid';
@@ -293,9 +447,10 @@ export const ValueFromOutsideSource = {
 
     const status = document.createElement('div');
     status.style.fontSize = '14px';
-    status.style.color = '#444';
+    status.style.color = 'var(--color-text, #444)';
 
     const mount = document.createElement('div');
+
     mount.innerHTML = Template({
       ...args,
       value: '',
@@ -311,28 +466,34 @@ export const ValueFromOutsideSource = {
     };
 
     const setExternalValue = value => {
-      if (!host) return;
+      if (!host) {
+        return;
+      }
+
       host.value = value;
+
       syncStatus();
     };
 
     const makeBtn = (text, value) => {
       const btn = document.createElement('button');
+
       btn.type = 'button';
+
       btn.className = 'storybook-example-button';
+
       btn.textContent = text;
+
       btn.addEventListener('click', () => setExternalValue(value));
+
       return btn;
     };
 
-    controls.append(
-      makeBtn('Load Apple', 'apple'),
-      makeBtn('Load Banana', 'banana'),
-      makeBtn('Load Cherry', 'cherry'),
-    );
+    controls.append(makeBtn('Load Apple', 'apple'), makeBtn('Load Banana', 'banana'), makeBtn('Load Cherry', 'cherry'));
 
     if (host) {
       host.addEventListener('change', syncStatus);
+
       host.addEventListener('valueChange', syncStatus);
     }
 
@@ -340,30 +501,50 @@ export const ValueFromOutsideSource = {
 
     requestAnimationFrame(() => {
       syncStatus();
+
       setTimeout(() => setExternalValue('banana'), 600);
     });
 
     return wrap;
   },
+
   args: {
     ...baseArgs,
+
     label: 'Fruits',
+
     labelSize: 'sm',
+
     selectFieldId: 'plumage-fruit-external-value',
+
     defaultOptionTxt: 'Select a fruit',
+
     value: '',
+
     options: [
-      { value: 'apple', name: 'Apple' },
-      { value: 'banana', name: 'Banana' },
-      { value: 'cherry', name: 'Cherry' },
+      {
+        value: 'apple',
+        name: 'Apple',
+      },
+      {
+        value: 'banana',
+        name: 'Banana',
+      },
+      {
+        value: 'cherry',
+        name: 'Cherry',
+      },
     ],
   },
+
   parameters: {
     docs: {
       source: {
         language: 'html',
+
         transform: () => buildDocsHtmlExternalValue(),
       },
+
       description: {
         story: 'Demonstrates updating the component `value` prop from an external source after render.',
       },
@@ -373,38 +554,58 @@ export const ValueFromOutsideSource = {
 
 export const MultipleValueFromOutsideSource = {
   name: 'Multiple Value from Outside Source',
+
   render: args => {
     const wrap = document.createElement('div');
+
     wrap.style.display = 'grid';
+
     wrap.style.gap = '12px';
+
     wrap.style.maxWidth = '680px';
 
     const controls = document.createElement('div');
+
     controls.style.display = 'flex';
+
     controls.style.gap = '8px';
+
     controls.style.flexWrap = 'wrap';
 
     const status = document.createElement('div');
+
     status.style.fontSize = '14px';
-    status.style.color = '#444';
+
+    status.style.color = 'var(--color-text, #444)';
 
     const mount = document.createElement('div');
+
     mount.innerHTML = Template({
       ...args,
+
       multiple: true,
+
       value: '',
+
       label: args.label || 'Tags',
+
       selectFieldId: args.selectFieldId || 'plumage-tags-external-value',
+
       defaultOptionTxt: args.defaultOptionTxt || 'Choose tags',
-      fieldHeight: args.fieldHeight ?? 6,
+
+      fieldHeight: args.fieldHeight ?? 5,
     });
 
     const host = mount.querySelector('plumage-select-field-component');
 
     const readHostValue = () => {
-      if (!host) return [];
-      const v = host.value;
-      return Array.isArray(v) ? v : [];
+      if (!host) {
+        return [];
+      }
+
+      const value = host.value;
+
+      return Array.isArray(value) ? value : [];
     };
 
     const syncStatus = () => {
@@ -412,30 +613,44 @@ export const MultipleValueFromOutsideSource = {
     };
 
     const setExternalValue = value => {
-      if (!host) return;
+      if (!host) {
+        return;
+      }
+
       host.value = value;
+
       syncStatus();
     };
 
     const makeBtn = (text, value) => {
       const btn = document.createElement('button');
+
       btn.type = 'button';
+
       btn.className = 'storybook-example-button';
+
       btn.textContent = text;
+
       btn.addEventListener('click', () => setExternalValue(value));
+
       return btn;
     };
 
     controls.append(
       makeBtn('Load UX + Web', ['ux', 'web']),
+
       makeBtn('Load Mobile + Data', ['mobile', 'data']),
+
       makeBtn('Load All', ['ux', 'web', 'mobile', 'data']),
+
       makeBtn('Load Empty Default', ['']),
+
       makeBtn('Clear', []),
     );
 
     if (host) {
       host.addEventListener('change', syncStatus);
+
       host.addEventListener('valueChange', syncStatus);
     }
 
@@ -443,32 +658,56 @@ export const MultipleValueFromOutsideSource = {
 
     requestAnimationFrame(() => {
       syncStatus();
+
       setTimeout(() => setExternalValue(['ux', 'web']), 600);
     });
 
     return wrap;
   },
+
   args: {
     ...baseArgs,
+
     label: 'Tags',
+
     multiple: true,
+
     defaultOptionTxt: 'Choose tags',
+
     selectFieldId: 'plumage-tags-external-value',
-    fieldHeight: 6,
+
+    fieldHeight: 5,
+
     value: '',
+
     options: [
-      { value: 'ux', name: 'UX' },
-      { value: 'web', name: 'Web' },
-      { value: 'mobile', name: 'Mobile' },
-      { value: 'data', name: 'Data' },
+      {
+        value: 'ux',
+        name: 'UX',
+      },
+      {
+        value: 'web',
+        name: 'Web',
+      },
+      {
+        value: 'mobile',
+        name: 'Mobile',
+      },
+      {
+        value: 'data',
+        name: 'Data',
+      },
     ],
   },
+
   parameters: {
     docs: {
       source: {
         language: 'html',
+
         transform: () => buildDocsHtmlExternalMultiValue(),
       },
+
       description: {
         story:
           'Demonstrates updating the component `value` property from an external source in `multiple` mode using an array. Passing `[""]` is normalized by the component to `[]`, and selecting the empty default option clears the selection.',
@@ -479,20 +718,40 @@ export const MultipleValueFromOutsideSource = {
 
 export const MultipleSelection = {
   name: 'Multiple Selections',
+
   render: args => Template(args),
+
   args: {
     ...baseArgs,
+
     label: 'Tags',
+
     multiple: true,
+
     defaultOptionTxt: 'Choose tags',
+
     options: [
-      { value: 'ux', name: 'UX' },
-      { value: 'web', name: 'Web' },
-      { value: 'mobile', name: 'Mobile' },
-      { value: 'data', name: 'Data' },
+      {
+        value: 'ux',
+        name: 'UX',
+      },
+      {
+        value: 'web',
+        name: 'Web',
+      },
+      {
+        value: 'mobile',
+        name: 'Mobile',
+      },
+      {
+        value: 'data',
+        name: 'Data',
+      },
     ],
-    fieldHeight: 6,
+
+    fieldHeight: 5,
   },
+
   parameters: {
     docs: {
       description: {
@@ -505,14 +764,21 @@ export const MultipleSelection = {
 
 export const HorizontalLayout = {
   name: 'Horizontal Layout',
+
   render: args => Template(args),
+
   args: {
     ...baseArgs,
+
     formLayout: 'horizontal',
+
     labelCols: 'col-sm-3',
+
     inputCols: 'col-sm-9',
+
     value: 'cherry',
   },
+
   parameters: {
     docs: {
       description: {
@@ -525,17 +791,21 @@ export const HorizontalLayout = {
 
 export const InlineLayout = {
   name: 'Inline Layout',
+
   render: args => Template(args),
+
   args: {
     ...baseArgs,
+
     formLayout: 'inline',
+
     value: 'apple',
   },
+
   parameters: {
     docs: {
       description: {
-        story:
-          'The select field can also be used within an inline form layout. Set the `form-layout` prop to "inline" to arrange the label and select field in a single row.',
+        story: 'The select field can also be used within an inline form layout. Set the `form-layout` prop to "inline" to arrange the label and select field in a single row.',
       },
     },
   },
@@ -543,14 +813,21 @@ export const InlineLayout = {
 
 export const WithValidationRequired = {
   name: 'With Validation (Required)',
+
   render: args => Template(args),
+
   args: {
     ...baseArgs,
+
     required: true,
+
     validation: true,
+
     validationMessage: 'Please select an option.',
+
     defaultOptionTxt: 'Please choose…',
   },
+
   parameters: {
     docs: {
       description: {
@@ -562,12 +839,17 @@ export const WithValidationRequired = {
 
 export const Disabled = {
   name: 'Disabled',
+
   render: args => Template(args),
+
   args: {
     ...baseArgs,
+
     disabled: true,
+
     defaultOptionTxt: 'Not available',
   },
+
   parameters: {
     docs: {
       description: {
@@ -579,17 +861,21 @@ export const Disabled = {
 
 export const ReadOnly = {
   name: 'Read Only',
+
   render: args => Template(args),
+
   args: {
     ...baseArgs,
+
     readOnly: true,
+
     value: 'banana',
   },
+
   parameters: {
     docs: {
       description: {
-        story:
-          'An example of the select field in a read-only state. The component adds the `read-only` class, disables interaction, and suppresses invalid UI.',
+        story: 'An example of the select field in a read-only state. The component adds the `read-only` class, disables interaction, and suppresses invalid UI.',
       },
     },
   },
@@ -597,26 +883,37 @@ export const ReadOnly = {
 
 export const SizeVariants = {
   name: 'Size Variants',
+
   render: args => {
     const container = document.createElement('div');
+
     container.style.display = 'grid';
+
     container.style.gap = '12px';
+
     container.style.maxWidth = '680px';
 
-    SIZE_VARIANTS.forEach(v => {
+    SIZE_VARIANTS.forEach(variant => {
       const block = document.createElement('div');
+
       block.style.display = 'grid';
+
       block.style.gap = '6px';
 
       const markup = Template({
         ...args,
-        label: v.label,
-        labelSize: v.labelSize,
-        size: v.size,
-        selectFieldId: v.selectFieldId,
+
+        label: variant.label,
+
+        labelSize: variant.labelSize,
+
+        size: variant.size,
+
+        selectFieldId: variant.selectFieldId,
       });
 
       const mount = document.createElement('div');
+
       mount.innerHTML = markup.trim();
 
       if (mount.firstElementChild) {
@@ -628,33 +925,44 @@ export const SizeVariants = {
 
     return container;
   },
+
   args: {
     ...baseArgs,
   },
+
   parameters: {
     docs: {
       description: {
         story: 'Shows the three supported sizes by setting `size` to `sm`, empty string (default), and `lg`.',
       },
+
       source: {
         language: 'html',
+
         transform: (_src, ctx) =>
           [
             '<div style="display:grid; gap:12px; max-width:680px;">',
-            ...SIZE_VARIANTS.map(v =>
+
+            ...SIZE_VARIANTS.map(variant =>
               [
-                `  <!-- ${v.label} -->`,
+                `  <!-- ${variant.label} -->`,
+
                 `  ${Template({
                   ...ctx.args,
-                  label: v.label,
-                  labelSize: v.labelSize,
-                  size: v.size,
-                  selectFieldId: v.selectFieldId,
+
+                  label: variant.label,
+
+                  labelSize: variant.labelSize,
+
+                  size: variant.size,
+
+                  selectFieldId: variant.selectFieldId,
                 })
                   .trim()
                   .replace(/\n/g, '\n  ')}`,
               ].join('\n'),
             ),
+
             '</div>',
           ].join('\n'),
       },
@@ -664,13 +972,19 @@ export const SizeVariants = {
 
 export const CustomStyling = {
   name: 'Custom Styling',
+
   render: args => Template(args),
+
   args: {
     ...baseArgs,
+
     custom: true,
+
     classes: 'my-shadow-1',
+
     value: 'apple',
   },
+
   parameters: {
     docs: {
       description: {
@@ -682,23 +996,27 @@ export const CustomStyling = {
 
 export const OptionsViaJSONAttribute = () => {
   const wrap = document.createElement('div');
+
   wrap.innerHTML = `
-    <plumage-select-field-component
-      label="Continents"
-      default-option-txt="Select continent"
-      options='[
-        { "value": "af", "name": "Africa" },
-        { "value": "as", "name": "Asia" },
-        { "value": "eu", "name": "Europe" },
-        { "value": "na", "name": "North America" },
-        { "value": "oc", "name": "Oceania" },
-        { "value": "sa", "name": "South America" }
-      ]'
-    ></plumage-select-field-component>
-  `;
+      <plumage-select-field-component
+        label="Continents"
+        default-option-txt="Select continent"
+        options='[
+          { "value": "af", "name": "Africa" },
+          { "value": "as", "name": "Asia" },
+          { "value": "eu", "name": "Europe" },
+          { "value": "na", "name": "North America" },
+          { "value": "oc", "name": "Oceania" },
+          { "value": "sa", "name": "South America" }
+        ]'
+      ></plumage-select-field-component>
+    `;
 
   const el = wrap.querySelector('plumage-select-field-component');
-  if (el) el.value = '';
+
+  if (el) {
+    el.value = '';
+  }
 
   return wrap;
 };
@@ -707,6 +1025,7 @@ OptionsViaJSONAttribute.parameters = {
   docs: {
     source: {
       language: 'html',
+
       transform: () =>
         normalize(`
           <plumage-select-field-component
@@ -723,6 +1042,7 @@ OptionsViaJSONAttribute.parameters = {
           ></plumage-select-field-component>
         `),
     },
+
     description: {
       story: 'An example of passing options as a JSON string via the `options` attribute.',
     },
@@ -731,34 +1051,46 @@ OptionsViaJSONAttribute.parameters = {
 
 export const AccessibilityMatrix = {
   name: 'Accessibility Matrix (computed)',
+
   render: args => {
     const wrap = document.createElement('div');
+
     wrap.className = 'plumage-select-field-accessibility-matrix';
 
     const header = document.createElement('div');
+
     header.innerHTML = `
       <strong>Accessibility matrix</strong>
+
       <div class="plumage-select-field-accessibility-matrix__description">
-        Prints computed <code>role</code> + <code>aria-*</code> + generated ids for default / inline / horizontal, validation, disabled, and read-only.
+        Prints computed <code>role</code> + <code>aria-*</code> + generated ids
+        for default / inline / horizontal, validation, disabled, and read-only.
       </div>
     `;
+
     wrap.appendChild(header);
 
     const card = (title, storyArgs) => {
       const box = document.createElement('div');
+
       box.className = 'plumage-select-field-accessibility-matrix__card';
 
-      const t = document.createElement('div');
-      t.className = 'plumage-select-field-accessibility-matrix__card-title';
-      t.textContent = title;
+      const titleEl = document.createElement('div');
+
+      titleEl.className = 'plumage-select-field-accessibility-matrix__card-title';
+
+      titleEl.textContent = title;
 
       const demo = document.createElement('div');
 
       const pre = document.createElement('pre');
+
       pre.className = 'plumage-select-field-accessibility-matrix__output';
+
       pre.textContent = 'Loading…';
 
       const mount = document.createElement('div');
+
       mount.innerHTML = Template({
         ...baseArgs,
         ...args,
@@ -766,19 +1098,22 @@ export const AccessibilityMatrix = {
       });
 
       const host = mount.querySelector('plumage-select-field-component');
+
       demo.appendChild(mount);
 
       const update = async () => {
         if (host?.componentOnReady) {
           try {
             await host.componentOnReady();
-          } catch (_e) {}
+          } catch (_e) {
+            // no-op
+          }
         } else if (window.customElements?.whenDefined) {
           try {
-            await customElements.whenDefined(
-              'plumage-select-field-component',
-            );
-          } catch (_e) {}
+            await customElements.whenDefined('plumage-select-field-component');
+          } catch (_e) {
+            // no-op
+          }
         }
 
         pre.textContent = JSON.stringify(getSnapshot(host), null, 2);
@@ -786,8 +1121,10 @@ export const AccessibilityMatrix = {
 
       queueMicrotask(() => requestAnimationFrame(update));
 
-      box.appendChild(t);
+      box.appendChild(titleEl);
+
       box.appendChild(demo);
+
       box.appendChild(pre);
 
       return box;
@@ -796,11 +1133,17 @@ export const AccessibilityMatrix = {
     wrap.appendChild(
       card('Default (stacked)', {
         selectFieldId: 'mx-select-default',
+
         label: 'Default A11y',
+
         formLayout: '',
+
         validation: false,
+
         disabled: false,
+
         readOnly: false,
+
         value: '',
       }),
     );
@@ -808,11 +1151,17 @@ export const AccessibilityMatrix = {
     wrap.appendChild(
       card('Inline layout', {
         selectFieldId: 'mx-select-inline',
+
         label: 'Inline A11y',
+
         formLayout: 'inline',
+
         validation: false,
+
         disabled: false,
+
         readOnly: false,
+
         value: '',
       }),
     );
@@ -820,14 +1169,23 @@ export const AccessibilityMatrix = {
     wrap.appendChild(
       card('Horizontal layout', {
         selectFieldId: 'mx-select-horizontal',
+
         label: 'Horizontal A11y',
+
         formLayout: 'horizontal',
+
         labelAlign: 'right',
+
         labelCols: 'xs-12 sm-4',
+
         inputCols: 'xs-12 sm-8',
+
         validation: false,
+
         disabled: false,
+
         readOnly: false,
+
         value: '',
       }),
     );
@@ -835,12 +1193,19 @@ export const AccessibilityMatrix = {
     wrap.appendChild(
       card('Validation (aria-invalid + describedby)', {
         selectFieldId: 'mx-select-validation',
+
         label: 'Validation',
+
         required: true,
+
         validation: true,
+
         validationMessage: 'This is required.',
+
         readOnly: false,
+
         disabled: false,
+
         value: '',
       }),
     );
@@ -848,10 +1213,15 @@ export const AccessibilityMatrix = {
     wrap.appendChild(
       card('Disabled', {
         selectFieldId: 'mx-select-disabled',
+
         label: 'Disabled',
+
         disabled: true,
+
         readOnly: false,
+
         value: 'banana',
+
         validation: false,
       }),
     );
@@ -859,25 +1229,36 @@ export const AccessibilityMatrix = {
     wrap.appendChild(
       card('Read Only', {
         selectFieldId: 'mx-select-readonly',
+
         label: 'Read Only',
+
         readOnly: true,
+
         disabled: false,
+
         value: 'banana',
+
         validation: false,
       }),
     );
 
     return wrap;
   },
+
   parameters: {
-    controls: { disable: true },
+    controls: {
+      disable: true,
+    },
+
     docs: {
       description: {
         story:
           'Prints computed accessibility wiring for the select: `aria-labelledby`, `aria-describedby` (including validation id when present), `aria-required`, `aria-invalid`, `aria-readonly`, and `aria-disabled` across default / inline / horizontal, validation, disabled, and read-only.',
       },
+
       source: {
         language: 'html',
+
         transform: (_src, ctx) => buildDocsHtml(ctx.args),
       },
     },

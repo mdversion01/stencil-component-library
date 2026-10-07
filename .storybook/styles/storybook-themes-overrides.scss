@@ -577,6 +577,14 @@
   max-width: 1100px;
 }
 
+.sb-unstyled {
+  #control-wrapperWidth,
+  #control-inputWidth,
+  #control-timeInputThrottleMs {
+    width: 110px;
+  }
+}
+
 /* ============================================================
    Accessibility Matrix — headings / descriptions
    ============================================================ */
@@ -1154,7 +1162,6 @@
 .divider-accessibility-matrix__disabled {
   opacity: 0.55;
 }
-
 
 .divider-accessibility-matrix__inline {
   display: inline-flex;

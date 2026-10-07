@@ -13,6 +13,10 @@
     <link rel="stylesheet" href="../../assets/mdi/materialdesignicons.min.css" />
 
     <style>
+      .theme-switcher {
+        margin: 10px;
+      }
+
       .cwrapper {
         margin: 10px;
       }
@@ -29,14 +33,15 @@
     </style>
   </head>
   <body>
+    <div class="theme-switcher">
+      <button id="bootstrap-theme-toggle" type="button" class="btn btn-outline-secondary" aria-pressed="false" aria-label="Switch to dark mode">Dark mode</button>
+    </div>
     <!-- <my-component first="Stencil" middle="'Don't call me a framework'" last="JS"></my-component>
      -->
     <app-wrapper>
       <div class="cwrapper">
         <select-field-component
           label="Favorite Fruit"
-          label-size="lg"
-          size="lg"
           select-field-id="fruit1"
           form-layout="horizontal"
           label-align="right"
@@ -47,6 +52,9 @@
           {"value":"cherry","name":"Cherry"}
         ]'
           custom
+          validation-message="Please select an option."
+          required
+          validation
         ></select-field-component>
 
         <select-field-component
@@ -135,6 +143,43 @@
       </div>
     </app-wrapper>
 
-    <script type="module"></script>
+    <script type="module">
+      (() => {
+        const STORAGE_KEY = 'bootstrap-demo-theme';
+        const html = document.documentElement;
+        const toggle = document.getElementById('bootstrap-theme-toggle');
+
+        function applyTheme(theme) {
+          const normalizedTheme = theme === 'dark' ? 'dark' : 'light';
+          const isDark = normalizedTheme === 'dark';
+
+          html.setAttribute('data-bs-theme', normalizedTheme);
+
+          toggle.setAttribute('aria-pressed', String(isDark));
+          toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+          toggle.textContent = isDark ? 'Light mode' : 'Dark mode';
+        }
+
+        function getInitialTheme() {
+          const storedTheme = localStorage.getItem(STORAGE_KEY);
+
+          if (storedTheme === 'light' || storedTheme === 'dark') {
+            return storedTheme;
+          }
+
+          return html.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light';
+        }
+
+        applyTheme(getInitialTheme());
+
+        toggle.addEventListener('click', () => {
+          const currentTheme = html.getAttribute('data-bs-theme');
+          const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+          localStorage.setItem(STORAGE_KEY, nextTheme);
+          applyTheme(nextTheme);
+        });
+      })();
+    </script>
   </body>
 </html>

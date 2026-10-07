@@ -1,435 +1,437 @@
-// =============================================
-// Tokens
-// =============================================
-$gray-100: #f5f5f5;
-$gray-200: #e1e1e1;
-$gray-250: #eaeaea;
-$gray-400: #cccccc;
-$gray-600: #7d7d7d;
-$gray-700: #495057;
-$text: #383838;
+// // =============================================
+// // Tokens
+// // =============================================
+// $gray-100: #f5f5f5;
+// $gray-200: #e1e1e1;
+// $gray-250: #eaeaea;
+// $gray-400: #cccccc;
+// $gray-600: #7d7d7d;
+// $gray-700: #495057;
+// $text: #383838;
 
-$brand: #2680eb;
+// $brand: #2680eb;
 
-$radius: 0.25rem;
+// $radius: 0.25rem;
 
-// =============================================
-// Mixins
-// =============================================
-@mixin input-reset-focus {
-  &:focus {
-    box-shadow: none;
-    outline: none;
-  }
-}
+// // =============================================
+// // Mixins
+// // =============================================
+// @mixin input-reset-focus {
+//   &:focus {
+//     box-shadow: none;
+//     outline: none;
+//   }
+// }
 
-@mixin input-group-size($pad-y, $pad-x, $font, $line-height: 1.5) {
-  > .custom-select,
-  > .form-control,
-  > .input-group-append > .btn,
-  > .input-group-append > .input-group-text,
-  > .input-group-prepend > .btn,
-  > .input-group-prepend > .input-group-text {
-    padding: $pad-y $pad-x;
-    font-size: $font;
-    line-height: $line-height;
-  }
-}
+// @mixin input-group-size($pad-y, $pad-x, $font, $line-height: 1.5) {
+//   > .custom-select,
+//   > .form-control,
+//   > .input-group-append > .btn,
+//   > .input-group-append > .input-group-text,
+//   > .input-group-prepend > .btn,
+//   > .input-group-prepend > .input-group-text {
+//     padding: $pad-y $pad-x;
+//     font-size: $font;
+//     line-height: $line-height;
+//   }
+// }
 
-@mixin underline-base($height) {
-  height: $height;
-  transition: 0.4s;
-}
+// @mixin underline-base($height) {
+//   height: $height;
+//   transition: 0.4s;
+// }
 
-/* Generate label padding when a container contains a matching input-group.
-   $scope prefixes selectors (e.g., ".plumage ").
-   $label is a *string* selector for the label target.
-   $groups is a list of *string* selectors for the input-group(s). */
-@mixin label-pt-when-has-group($scope, $label, $pt, $groups) {
-  // Stacked: direct child input-group
-  @each $g in $groups {
-    #{$scope}.form-group:has(> #{$g}) > #{$label} {
-      padding-top: $pt !important;
-    }
-  }
+// /* Generate label padding when a container contains a matching input-group.
+//    $scope prefixes selectors (e.g., ".plumage ").
+//    $label is a *string* selector for the label target.
+//    $groups is a list of *string* selectors for the input-group(s). */
+// @mixin label-pt-when-has-group($scope, $label, $pt, $groups) {
+//   // Stacked: direct child input-group
+//   @each $g in $groups {
+//     #{$scope}.form-group:has(> #{$g}) > #{$label} {
+//       padding-top: $pt !important;
+//     }
+//   }
 
-  // Row (horizontal/inline): input-group anywhere under the row.form-group
-  @each $g in $groups {
-    #{$scope}.row.form-group:has(#{$g}) #{$label} {
-      padding-top: $pt !important;
-    }
-  }
-}
+//   // Row (horizontal/inline): input-group anywhere under the row.form-group
+//   @each $g in $groups {
+//     #{$scope}.row.form-group:has(#{$g}) #{$label} {
+//       padding-top: $pt !important;
+//     }
+//   }
+// }
 
-// =============================================
-// Plumage scope
-// =============================================
+// // =============================================
+// // Plumage scope
+// // =============================================
 
-.plmg-lt,
-.plumage {
-  // -----------------------------
-  // Inline layout container spacing
-  // -----------------------------
-  .form-input-group.inline {
-    display: flex;
+// .plmg-lt {
+//   // -----------------------------
+//   // Inline layout container spacing
+//   // -----------------------------
+//   .form-input-group.inline {
+//     display: flex;
 
-    .input-group {
-      margin: 0;
-    }
-  }
+//     .input-group {
+//       margin: 0;
+//     }
+//   }
 
-  // -----------------------------
-  // Input Group Layout
-  // -----------------------------
-  .autocomplete-container .autocomplete-single-select {
-    border: none;
-    border-radius: none;
-  }
+//   // -----------------------------
+//   // Input Group Layout
+//   // -----------------------------
+//   .autocomplete-container .autocomplete-single-select {
+//     border: none;
+//     border-radius: none;
+//   }
 
-  .input-group {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    border: none;
-    width: 100%;
+//   .input-group {
+//     position: relative;
+//     display: flex;
+//     flex-wrap: wrap;
+//     align-items: center;
+//     border: none;
+//     width: 100%;
 
-    // Remove default focus ring on inputs in group
-    input {
-      @include input-reset-focus;
-    }
+//     // Remove default focus ring on inputs in group
+//     input {
+//       @include input-reset-focus;
+//     }
 
-    /* Common children inside input-group */
-    > .custom-file,
-    > .custom-select,
-    > .form-control {
-      position: relative;
-      flex: 1 1 auto;
-      margin-bottom: 0;
-      border: none;
-      line-height: 1.5;
-    }
+//     /* Common children inside input-group */
+//     > .custom-file,
+//     > .custom-select,
+//     > .form-control {
+//       position: relative;
+//       flex: 1 1 auto;
+//       margin-bottom: 0;
+//       border: none;
+//       line-height: 1.5;
+//     }
 
-    /* Padding tweaks */
-    > .form-control:first-child {
-      padding-left: 0.5rem;
-    }
-    > .form-control:not(:first-child) {
-      padding-left: 0.5rem;
-    }
+//     /* Padding tweaks */
+//     > .form-control:first-child {
+//       padding-left: 0.5rem;
+//     }
+//     > .form-control:not(:first-child) {
+//       padding-left: 0.5rem;
+//     }
 
-    &:last-child {
-      .input-group-text {
-        border: 0;
-      }
-    }
+//     &:last-child {
+//       .input-group-text {
+//         border: 0;
+//       }
+//     }
 
-    .btn {
-      border: none;
-      border-radius: 0;
-      margin-bottom: 0;
-      margin-left: 0;
-    }
-  }
+//     .btn {
+//       border: none;
+//       border-radius: 0;
+//       margin-bottom: 0;
+//       margin-left: 0;
+//     }
+//   }
 
-  // Add-on text
-  .input-group-text {
-    display: flex;
-    align-items: center;
-    border: none;
-    padding: 0 0.75rem;
-    margin-bottom: 0;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: $gray-700;
-    text-align: center;
-    white-space: nowrap;
-    background-color: transparent;
+//   // Add-on text
+//   .input-group-text {
+//     display: flex;
+//     align-items: center;
+//     border: none;
+//     padding: 0 0.75rem;
+//     margin-bottom: 0;
+//     font-size: 1rem;
+//     font-weight: 400;
+//     line-height: 1.5;
+//     color: $gray-700;
+//     text-align: center;
+//     white-space: nowrap;
+//     background-color: transparent;
 
-    &.is-invalid {
-      color: #b30009;
-    }
-  }
+//     &.is-invalid {
+//       color: #b30009;
+//     }
+//   }
 
-  // Generic button inside input group
-  .input-group-btn {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    padding: 0.275rem 0.75rem;
-    margin-bottom: 0;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    text-align: center;
-    white-space: nowrap;
-    border: none;
-    border-radius: 0;
-    background-color: transparent;
-    min-height: 28px;
-    height: 100%;
+//   // Generic button inside input group
+//   .input-group-btn {
+//     display: flex;
+//     align-items: center;
+//     cursor: pointer;
+//     padding: 0.275rem 0.75rem;
+//     margin-bottom: 0;
+//     font-size: 1rem;
+//     font-weight: 400;
+//     line-height: 1.5;
+//     text-align: center;
+//     white-space: nowrap;
+//     border: none;
+//     border-radius: 0;
+//     background-color: transparent;
+//     min-height: 28px;
+//     height: 100%;
 
-    &.is-invalid {
-      color: #b30009;
-    }
+//     &.is-invalid {
+//       color: #b30009;
+//     }
 
-    &:hover,
-    &:focus {
-      background-color: $gray-100;
-    }
+//     &:hover,
+//     &:focus {
+//       background-color: $gray-100;
+//     }
 
-    &:disabled:hover,
-    &:disabled:focus {
-      background-color: transparent;
-      cursor: not-allowed;
-    }
-  }
+//     &:disabled:hover,
+//     &:disabled:focus {
+//       background-color: transparent;
+//       cursor: not-allowed;
+//     }
+//   }
 
-  // -----------------------------
-  // Size variants
-  // -----------------------------
-  .input-group-sm {
-    @include input-group-size(0.25rem, 0.5rem, 0.875rem);
-    > .form-control {
-      padding: 0.25rem 0.5rem 0.25rem 0;
-    }
-  }
+//   // -----------------------------
+//   // Size variants
+//   // -----------------------------
+//   .input-group-sm {
+//     @include input-group-size(0.25rem, 0.5rem, 0.875rem);
+//     > .form-control {
+//       padding: 0.25rem 0.5rem 0.25rem 0;
+//     }
+//   }
 
-  .input-group-lg {
-    min-width: 240px !important;
-    @include input-group-size(0.25rem, 1rem, 1.125rem);
+//   .input-group-lg {
+//     min-width: 240px !important;
+//     @include input-group-size(0.25rem, 1rem, 1.125rem);
 
-    > .form-control {
-      width: 135px;
-      padding: 0.5rem 0 0.5rem 0.5rem !important;
-      height: 2.5rem !important;
-    }
-  }
+//     > .form-control {
+//       width: 135px;
+//       padding: 0.5rem 0 0.5rem 0.5rem !important;
+//       height: 2.5rem !important;
+//     }
+//   }
 
-  // Ensure text sizes are consistent (explicit overrides)
-  .input-group > .form-control {
-    font-size: 1rem !important;
-  }
-  .input-group-xs > .form-control {
-    font-size: 0.75rem !important;
-  }
-  .input-group-sm > .form-control {
-    font-size: 0.875rem !important;
-  }
-  .input-group-lg > .form-control {
-    font-size: 1.125rem !important;
-  }
+//   // Ensure text sizes are consistent (explicit overrides)
+//   .input-group > .form-control {
+//     font-size: 1rem !important;
+//   }
+//   .input-group-xs > .form-control {
+//     font-size: 0.75rem !important;
+//   }
+//   .input-group-sm > .form-control {
+//     font-size: 0.875rem !important;
+//   }
+//   .input-group-lg > .form-control {
+//     font-size: 1.125rem !important;
+//   }
 
-  // -----------------------------
-  // States / Validation
-  // -----------------------------
-  .form-input-group label {
-    margin-bottom: 0.25rem !important;
-  }
+//   // -----------------------------
+//   // States / Validation
+//   // -----------------------------
+//   .form-input-group label {
+//     margin-bottom: 0.25rem !important;
+//   }
 
-  .form-input-group.inline .form-control-label {
-    align-items: start !important;
-    padding-top: 7px !important;
+//   .form-input-group.inline .form-control-label {
+//     align-items: start !important;
+//     padding-top: 7px !important;
 
-    &.label-lg {
-      padding-top: 11px !important;
-    }
-  }
+//     &.label-lg {
+//       padding-top: 11px !important;
+//     }
+//   }
 
-  .horizontal .form-input-group label {
-    display: flex;
-    align-items: center;
-    justify-content: right;
-    margin-bottom: 0 !important;
-    padding-right: 8px !important;
-  }
+//   .horizontal .form-input-group label {
+//     display: flex;
+//     align-items: center;
+//     justify-content: right;
+//     margin-bottom: 0 !important;
+//     padding-right: 8px !important;
+//   }
 
-  .horizontal .input-group,
-  .inline .input-group {
-    padding: 0 15px 0 0;
-  }
+//   .horizontal .input-group,
+//   .inline .input-group {
+//     padding: 0 15px 0 0;
+//   }
 
-  .form-control:disabled,
-  .form-control.disabled,
-  .input-group.disabled {
-    background-color: $gray-100;
-  }
+//   .form-control:disabled,
+//   .form-control.disabled,
+//   .input-group.disabled {
+//     background-color: $gray-100;
+//   }
 
-  :disabled.b-focus,
-  .disabled.b-focus {
-    background-color: transparent;
-  }
+//   :disabled.b-focus,
+//   .disabled.b-focus {
+//     background-color: transparent;
+//   }
 
-  .input-group .form-control:invalid,
-  .input-group .form-control.is-invalid {
-    background-position: right calc(-1.25em + 1.5rem) center;
-  }
+//   .input-group .form-control:invalid,
+//   .input-group .form-control.is-invalid {
+//     background-position: right calc(-1.25em + 1.5rem) center;
+//   }
 
-  .input-group.is-invalid > .input-group-text {
-    color: #b30009;
-  }
+//   .input-group.is-invalid > .input-group-text {
+//     color: #b30009;
+//   }
 
-  .input-group-lg .clear-button {
-    font-size: 1.125rem;
-    min-height: 38px;
-    padding: 0.5rem 1rem !important;
-  }
+//   .input-group-lg .clear-button {
+//     font-size: 1.125rem;
+//     min-height: 38px;
+//     padding: 0.5rem 1rem !important;
+//   }
 
-  .input-group-sm .clear-button {
-    min-height: 28px;
-    font-size: 0.875rem;
-    padding: 0.1rem 0.3rem 0 0.3rem !important;
-  }
+//   .input-group-sm .clear-button {
+//     min-height: 28px;
+//     font-size: 0.875rem;
+//     padding: 0.1rem 0.3rem 0 0.3rem !important;
+//   }
 
-  .input-group button:last-child {
-    border: none;
-    border-radius: 0 !important;
-  }
+//   .input-group button:last-child {
+//     border: none;
+//     border-radius: 0 !important;
+//   }
 
-  // -----------------------------
-  // Input Underline (focus bar)
-  // -----------------------------
-  .b-underline {
-    background-color: $gray-400;
-    display: block;
-    position: relative;
-    width: 100%;
-    @include underline-base(0.01rem);
-  }
+//   // -----------------------------
+//   // Input Underline (focus bar)
+//   // -----------------------------
+//   .b-underline {
+//     background-color: $gray-400;
+//     display: block;
+//     position: relative;
+//     width: 100%;
+//     @include underline-base(0.01rem);
+//   }
 
-  .b-focus {
-    background-color: $brand;
-    bottom: 0;
-    left: 50%;
-    position: absolute;
-    width: 0;
-    @include underline-base(0.01rem);
-  }
-}
+//   .b-focus {
+//     background-color: $brand;
+//     bottom: 0;
+//     left: 50%;
+//     position: absolute;
+//     width: 0;
+//     @include underline-base(0.01rem);
+//   }
+// }
 
-// =============================================
-// Search Bar (outside .plumage for reuse)
-// =============================================
-.search-bar-container {
-  align-items: center;
-  background-color: $gray-200;
-  border: 1px solid transparent;
-  border-radius: $radius;
-  color: $text;
-  display: flex;
-  max-height: 2.5rem;
-  padding: 0;
-  width: unset;
+// // =============================================
+// // Search Bar (outside .plumage for reuse)
+// // =============================================
+// .search-bar-container {
+//   align-items: center;
+//   background-color: $gray-200;
+//   border: 1px solid transparent;
+//   border-radius: $radius;
+//   color: $text;
+//   display: flex;
+//   max-height: 2.5rem;
+//   padding: 0;
+//   width: unset;
 
-  &.input-group {
-    flex-wrap: nowrap;
-  }
+//   &.input-group {
+//     flex-wrap: nowrap;
+//   }
 
-  &:focus,
-  &:hover,
-  &:focus-within {
-    background-color: $gray-250;
-    border: 1px solid $brand;
-  }
+//   &:focus,
+//   &:hover,
+//   &:focus-within {
+//     background-color: $gray-250;
+//     border: 1px solid $brand;
+//   }
 
-  .form-control {
-    background-color: transparent;
-    background-clip: padding-box;
-    border: 1px solid transparent;
-    color: $text;
-    display: block;
-    font-size: 0.8333rem;
-    font-weight: 400;
-    line-height: 1.2;
-    padding: 0.375rem 0.5rem 0.375rem 0;
-    transition:
-      border-color 0.15s ease-in-out,
-      box-shadow 0.15s ease-in-out;
-    width: calc(100% - 15px);
+//   .form-control {
+//     background-color: transparent;
+//     background-clip: padding-box;
+//     border: 1px solid transparent;
+//     color: $text;
+//     display: block;
+//     font-size: 0.8333rem;
+//     font-weight: 400;
+//     line-height: 1.2;
+//     padding: 0.375rem 0.5rem 0.375rem 0;
+//     transition:
+//       border-color 0.15s ease-in-out,
+//       box-shadow 0.15s ease-in-out;
+//     width: calc(100% - 15px);
 
-    &:focus {
-      background-color: transparent;
-      border-color: transparent;
-      color: $text;
-      outline: 0;
-      box-shadow: none;
-    }
+//     &:focus {
+//       background-color: transparent;
+//       border-color: transparent;
+//       color: $text;
+//       outline: 0;
+//       box-shadow: none;
+//     }
 
-    &.read-only {
-      cursor: not-allowed;
-    }
-  }
+//     &.read-only {
+//       cursor: not-allowed;
+//     }
+//   }
 
-  .clear-icon {
-    align-items: center;
-    display: flex;
-    padding: 0 0.5rem;
+//   .clear-icon {
+//     align-items: center;
+//     display: flex;
+//     padding: 0 0.5rem;
 
-    &:hover,
-    &:focus {
-      color: $gray-600;
-      cursor: pointer;
-    }
-  }
-}
+//     &:hover,
+//     &:focus {
+//       color: $gray-600;
+//       cursor: pointer;
+//     }
+//   }
+// }
 
-.search-bar {
-  box-shadow: none;
-  display: inline-block;
-  flex: auto;
-  padding: 0.188rem;
-  width: 8rem;
-}
+// .search-bar {
+//   box-shadow: none;
+//   display: inline-block;
+//   flex: auto;
+//   padding: 0.188rem;
+//   width: 8rem;
+// }
 
-.search-bar-icon {
-  align-items: center;
-  color: #8e8e8e;
-  display: flex;
-  font-size: 0.75rem;
-  line-height: 50%;
-  padding: 0 0.5rem;
-}
+// .search-bar-icon {
+//   align-items: center;
+//   color: #8e8e8e;
+//   display: flex;
+//   font-size: 0.75rem;
+//   line-height: 50%;
+//   padding: 0 0.5rem;
+// }
 
-// =============================================
-// Smart label padding via :has()
-// (single block; everything generated by mixins)
-// =============================================
-@supports selector(:has(*)) {
-  $scope: '.plumage ';
+// // =============================================
+// // Smart label padding via :has()
+// // (single block; everything generated by mixins)
+// // =============================================
+// @supports selector(:has(*)) {
+//   $scopes: (
+//     '.plmg-lt ',
+//     '.plmg-dk '
+//   );
 
-  // Define group-size selectors as strings
-  $groups-sm: ('div.input-group.input-group-sm', 'div.input-group.input-sm');
-  $groups-lg: ('div.input-group.input-group-lg', 'div.input-group.input-lg');
-  $groups-base: ('div.input-group');
+//   // Define group-size selectors as strings
+//   $groups-sm: ('div.input-group.input-group-sm', 'div.input-group.input-sm');
+//   $groups-lg: ('div.input-group.input-group-lg', 'div.input-group.input-lg');
+//   $groups-base: ('div.input-group');
 
-  // ----- LG groups -----
-  // label-sm -> 14px
-  @include label-pt-when-has-group($scope, 'label.form-control-label.label-sm', 14px, $groups-lg);
-  // default label -> 12px
-  @include label-pt-when-has-group($scope, 'label.form-control-label', 12px, $groups-lg);
-  // label-xs -> 15px
-  @include label-pt-when-has-group($scope, 'label.form-control-label.label-xs', 15px, $groups-lg);
-  // label-lg -> 12px
-  @include label-pt-when-has-group($scope, 'label.form-control-label.label-lg', 12px, $groups-lg);
+//   // ----- LG groups -----
+//   // label-sm -> 14px
+//   @include label-pt-when-has-group($scope, 'label.form-control-label.label-sm', 14px, $groups-lg);
+//   // default label -> 12px
+//   @include label-pt-when-has-group($scope, 'label.form-control-label', 12px, $groups-lg);
+//   // label-xs -> 15px
+//   @include label-pt-when-has-group($scope, 'label.form-control-label.label-xs', 15px, $groups-lg);
+//   // label-lg -> 12px
+//   @include label-pt-when-has-group($scope, 'label.form-control-label.label-lg', 12px, $groups-lg);
 
-  // ----- SM groups -----
-  // label-xs -> 8px
-  @include label-pt-when-has-group($scope, 'label.form-control-label.label-xs', 8px, $groups-sm);
-  // default label -> 5px
-  @include label-pt-when-has-group($scope, 'label.form-control-label', 5px, $groups-sm);
-  // label-sm -> 6px
-  @include label-pt-when-has-group($scope, 'label.form-control-label.label-sm', 6px, $groups-sm);
-  // label-lg -> 3px
-  @include label-pt-when-has-group($scope, 'label.form-control-label.label-lg', 3px, $groups-sm);
+//   // ----- SM groups -----
+//   // label-xs -> 8px
+//   @include label-pt-when-has-group($scope, 'label.form-control-label.label-xs', 8px, $groups-sm);
+//   // default label -> 5px
+//   @include label-pt-when-has-group($scope, 'label.form-control-label', 5px, $groups-sm);
+//   // label-sm -> 6px
+//   @include label-pt-when-has-group($scope, 'label.form-control-label.label-sm', 6px, $groups-sm);
+//   // label-lg -> 3px
+//   @include label-pt-when-has-group($scope, 'label.form-control-label.label-lg', 3px, $groups-sm);
 
-  // ----- Base (any) input-group -----
-  // label-lg -> 8px
-  @include label-pt-when-has-group($scope, 'label.form-control-label.label-lg', 8px, $groups-base);
-  // label-sm -> 12px
-  @include label-pt-when-has-group($scope, 'label.form-control-label.label-sm', 12px, $groups-base);
-  // label-xs -> 13px
-  @include label-pt-when-has-group($scope, 'label.form-control-label.label-xs', 13px, $groups-base);
-  // default label -> 11px
-  @include label-pt-when-has-group($scope, 'label.form-control-label', 11px, $groups-base);
-}
+//   // ----- Base (any) input-group -----
+//   // label-lg -> 8px
+//   @include label-pt-when-has-group($scope, 'label.form-control-label.label-lg', 8px, $groups-base);
+//   // label-sm -> 12px
+//   @include label-pt-when-has-group($scope, 'label.form-control-label.label-sm', 12px, $groups-base);
+//   // label-xs -> 13px
+//   @include label-pt-when-has-group($scope, 'label.form-control-label.label-xs', 13px, $groups-base);
+//   // default label -> 11px
+//   @include label-pt-when-has-group($scope, 'label.form-control-label', 11px, $groups-base);
+// }

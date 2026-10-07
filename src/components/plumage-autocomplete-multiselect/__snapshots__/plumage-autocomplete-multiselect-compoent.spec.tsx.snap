@@ -2,7 +2,7 @@
 
 exports[`plumage-autocomplete-multiselect-component filters, navigates, selects via keyboard; badges render; dropdown closes 1`] = `
 <plumage-autocomplete-multiselect-component input-id="Fruit" label="Fruit">
-  <div class="plumage">
+  <div class="stencil-component">
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="fruit-live">
       Added Grape.
     </div>
@@ -54,7 +54,7 @@ exports[`plumage-autocomplete-multiselect-component filters, navigates, selects 
 
 exports[`plumage-autocomplete-multiselect-component renders (stacked) and matches snapshot 1`] = `
 <plumage-autocomplete-multiselect-component input-id="Fruits" label="Fruits">
-  <div class="plumage">
+  <div class="stencil-component">
     <div aria-atomic="true" aria-live="polite" class="sr-only" id="fruits-live"></div>
     <div class="autocomplete-container form-group">
       <div>

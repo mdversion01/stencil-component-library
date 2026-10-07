@@ -1,55 +1,58 @@
 /* card.scss */
-@use '../../global/mixins.scss' as m;
-@import "../elevated-styles.scss";
+// @use '../../global/mixins.scss' as m;
+// @import '../elevated-styles.scss';
 
-.card {
-  img {
-    vertical-align: middle;
-    border-style: none;
-  }
+// .plmg-lt,
+// .plmg-dk {
+//   .card {
+//     img {
+//       vertical-align: middle;
+//       border-style: none;
+//     }
 
-  .card-header {
-    @include m.flex($align: center, $wrap: true);
-    letter-spacing: 0.0125em;
-    font-weight: 300;
-    word-break: break-all;
-  }
+//     .card-header {
+//       @include m.flex($align: center, $wrap: true);
+//       letter-spacing: 0.0125em;
+//       font-weight: 300;
+//       word-break: break-all;
+//     }
 
-  .card-title {
-    @include m.flex($align: center, $wrap: true);
-    letter-spacing: 0.0125em;
-    word-break: break-all;
-  }
+//     .card-title {
+//       @include m.flex($align: center, $wrap: true);
+//       letter-spacing: 0.0125em;
+//       word-break: break-all;
+//     }
 
-  .card-body {
-    min-height: 1px;
-  }
+//     .card-body {
+//       min-height: 1px;
+//     }
 
-  .card-text {
-    color: var(--bs-body-color);
-    font-size: 0.8333rem;
-    font-weight: 400;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-  }
+//     .card-text {
+//       color: var(--bs-body-color);
+//       font-size: 0.8333rem;
+//       font-weight: 400;
+//       line-height: 1.2;
+//       margin-bottom: 1rem;
+//     }
 
-  .card-footer {
-    font-size: 0.875rem;
-    font-weight: 300;
-    padding: 0 0.625rem;
+//     .card-footer {
+//       font-size: 0.875rem;
+//       font-weight: 300;
+//       padding: 0 0.625rem;
 
-    p {
-      margin: 0.75rem 0;
-    }
-  }
+//       p {
+//         margin: 0.75rem 0;
+//       }
+//     }
 
-  .card-actions {
-    @include m.flex($align: center, $gap: 8px, $wrap: false);
-    padding: 8px;
-  }
+//     .card-actions {
+//       @include m.flex($align: center, $gap: 8px, $wrap: false);
+//       padding: 8px;
+//     }
 
-  /* Example usage of stack for vertical sections inside a card */
-  .card-stack {
-    @include m.stack($gap: 0.75rem, $align: stretch);
-  }
-}
+//     /* Example usage of stack for vertical sections inside a card */
+//     .card-stack {
+//       @include m.stack($gap: 0.75rem, $align: stretch);
+//     }
+//   }
+// }

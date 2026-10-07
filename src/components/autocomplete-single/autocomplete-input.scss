@@ -16,7 +16,7 @@
 
   .invalid-feedback {
     margin-top: 0 !important;
-    color: #b30000 !important;
+    color: var(--bs-form-invalid-color) !important;
   }
 
   /* ---------------- Single-select shell ---------------- */
@@ -27,7 +27,7 @@
     .form-control,
     .form-control:focus {
       border: none !important;
-      color: #383838;
+      color: var(--bs-body-color);
       outline: 0 !important;
       box-shadow: none !important;
     }
@@ -42,20 +42,20 @@
     }
 
     &.is-invalid-focused {
-      border-color: #dc3545 !important; /* fallback */
+      border-color: var(--bs-form-invalid-border-color) !important; /* fallback */
       box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important; /* fallback */
     }
 
     &.is-invalid {
-      border-color: #b30009;
+      border-color: var(--bs-form-invalid-border-color);
 
       ::placeholder {
-        color: #b30009 !important;
+        color: var(--bs-form-invalid-color) !important;
       }
 
       > .add-btn,
       > .clear-btn {
-        color: #b30009;
+        color: var(--bs-form-invalid-color);
       }
     }
   }
@@ -81,7 +81,7 @@
     &:hover,
     &:focus,
     &:focus-visible {
-      color: #b80000;
+      color: var(--bs-invalid-hover-color);
     }
   }
 
@@ -101,25 +101,39 @@
   }
 }
 
+a:hover {
+  --bs-link-color-rgb: var(--bs-link-hover-color-rgb);
+}
+
 /* =========================================================
    Autocomplete — Dropdown
    ========================================================= */
 .autocomplete-dropdown {
+  --bs-dropdown-color: var(--bs-body-color);
+  --bs-dropdown-bg: var(--bs-body-bg);
+  --bs-dropdown-border-color: var(--bs-border-color-translucent);
+  --bs-dropdown-box-shadow: var(--bs-box-shadow);
+  --bs-dropdown-link-active-color: #fff;
+  --bs-dropdown-link-active-bg: #0d6efd;
+  --bs-dropdown-link-color: var(--bs-body-color);
+  --bs-dropdown-link-hover-bg: var(--bs-tertiary-bg);
+  --bs-dropdown-link-hover-color: var(--bs-body-color);
+
   position: absolute;
   min-width: 150px;
   max-width: 300px;
   max-height: 200px;
   overflow-y: auto;
-  background-color: #fff;
-  border: 1px solid #ccc;
+  background-color: var(--bs-dropdown-bg);
+  border: 1px solid var(--bs-dropdown-border-color);
   margin-top: 1px;
   z-index: 1000;
 
-  &.single {
-    .virtually-focused {
-      box-shadow: inset 0 0 0 2px #2680eb;
-    }
-  }
+  // &.single {
+  //   .virtually-focused {
+  //     // box-shadow: var(--bs-dropdown-box-shadow);
+  //   }
+  // }
 
   ul {
     list-style: none;
@@ -130,6 +144,7 @@
 
 /* Items + states + controls */
 .autocomplete-dropdown-item {
+  color: var(--bs-dropdown-link-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -146,11 +161,13 @@
   }
 
   &:hover {
-    background-color: #f2f2f2;
+    background-color: var(--bs-dropdown-link-hover-bg);
+    color: var(--bs-dropdown-link-hover-color);
   }
 
   &.focused {
-    background-color: #eee;
+    background-color: var(--bs-dropdown-link-hover-bg);
+    color: var(--bs-dropdown-link-hover-color);
   }
 
   &.key-selected {
@@ -159,9 +176,9 @@
   }
 
   &:active {
-    background-color: #2680eb;
-    color: #fff !important;
+    color: var(--bs-dropdown-link-active-color) !important;
     text-decoration: none;
+    background-color: var(--bs-dropdown-link-active-bg);
 
     .option-btn {
       color: #fff !important;
@@ -174,9 +191,9 @@
   } /* slight contrast tweak */
 
   /* “virtual focus” ring when a child gets virtual focus */
-  &:has(.virtually-focused) {
-    box-shadow: inset 0 0 0 2px #2680eb;
-  }
+  // &:has(.virtually-focused) {
+  //   box-shadow: var(--bs-dropdown-box-shadow);
+  // }
 
   .option-btn {
     background: transparent;
@@ -205,7 +222,7 @@
 
     &:hover,
     &.virtually-focused {
-      color: #b30009;
+      color: var(--bs-invalid-hover-color);
     }
   }
 }
@@ -273,23 +290,26 @@
    Autocomplete — Multi-select shell
    ========================================================= */
 .ac-multi-select-container {
-  border: 1px solid #ced4da;
-  border-radius: 0.25rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.25rem !important;
   display: flex;
   flex-wrap: wrap;
+  overflow: hidden;
   width: 100%;
 
   &.disabled {
-    background-color: #e9ecef;
+    // background-color: #e9ecef;
+    border-radius: 0.25rem !important;
     pointer-events: none;
-    opacity: 0.65;
+    // opacity: 0.65;
   }
 
   .input-group {
     flex-wrap: nowrap !important;
 
     .form-control {
-      border: none;
+      border: none !important;
+      border-radius: 0 !important;
       display: flex !important;
       flex: 1 1 auto !important;
       width: 100%;
@@ -303,10 +323,10 @@
   /* invalid */
   &:invalid,
   &.is-invalid {
-    border-color: #b30009;
+    border-color: var(--bs-form-invalid-border-color);
 
     ::placeholder {
-      color: #b30009 !important;
+      color: var(--bs-form-invalid-color) !important;
     }
   }
 
@@ -314,7 +334,7 @@
   .form-control:focus {
     background-color: transparent;
     border-color: transparent !important;
-    color: #383838;
+    color: var(--bs-body-color);
     outline: 0;
     box-shadow: none;
   }
@@ -352,7 +372,7 @@
     align-items: center;
     background-color: transparent;
     border: 1px solid #8e8e8e;
-    color: #000;
+    color: var(--bs-dropdown-link-color);
     display: flex;
     font-size: 0.75rem;
     font-weight: normal !important;
@@ -404,7 +424,7 @@
 
       &:hover,
       &:focus {
-        color: #b30009;
+        color: var(--bs-invalid-hover-color);
         outline: none;
       }
     }
@@ -433,8 +453,45 @@
 
       &:hover,
       &:focus {
-        color: #a90000;
+        color: var(--bs-invalid-hover-color);
       }
+    }
+  }
+}
+
+[data-bs-theme='dark'] {
+
+  .autocomplete-dropdown-item {
+    &.key-selected {
+      background-color: #6e6e6e;
+      color: #fff;
+    }
+
+    &.key-selected.focused {
+      background-color: #527e52;
+      color: #000;
+    } /* slight contrast tweak */
+
+    .delete-btn {
+      color: #c4c4c4;
+
+      &:hover,
+      &.virtually-focused {
+        color: #fd6c73;
+      }
+    }
+  }
+
+  .ac-selected-items {
+    .badge {
+      .remove-btn {
+      color: #c4c4c4;
+
+      &:hover,
+      &:focus {
+        color: #fd6c73;
+      }
+    }
     }
   }
 }

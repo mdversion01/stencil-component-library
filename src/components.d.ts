@@ -3044,6 +3044,285 @@ export namespace Components {
          */
         "noHeader": boolean;
     }
+    interface PlumageDateRangePickerComponent {
+        /**
+          * @default ''
+         */
+        "appendId": string;
+        /**
+          * was `append`, renamed to avoid reserved name
+          * @default true
+         */
+        "appendProp": boolean;
+        /**
+          * @default ''
+         */
+        "ariaLabel": string;
+        /**
+          * Programmatically clear the selection and reset
+         */
+        "clear": () => Promise<void>;
+        /**
+          * @default 'YYYY-MM-DD'
+         */
+        "dateFormat": 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * '', 'horizontal', or 'inline'
+          * @default ''
+         */
+        "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default 'fas fa-calendar-alt'
+         */
+        "icon": string;
+        /**
+          * @default 10
+         */
+        "inputCol": number;
+        /**
+          * @default ''
+         */
+        "inputCols": string;
+        /**
+          * @default 'drp'
+         */
+        "inputId": string;
+        /**
+          * @default '-'
+         */
+        "joinBy": string;
+        /**
+          * @default 'Date Range Picker'
+         */
+        "label": string;
+        /**
+          * @default ''
+         */
+        "labelAlign": '' | 'right';
+        /**
+          * Legacy numeric cols (fallback)
+          * @default 2
+         */
+        "labelCol": number;
+        /**
+          * Responsive column class specs
+          * @default ''
+         */
+        "labelCols": string;
+        /**
+          * @default false
+         */
+        "labelHidden": boolean;
+        /**
+          * @default ''
+         */
+        "labelSize": '' | 'sm' | 'lg';
+        /**
+          * External placeholder prop (immutable). We derive a default into state.
+         */
+        "placeholder"?: string;
+        /**
+          * @default ''
+         */
+        "prependId": string;
+        /**
+          * was `prepend`, renamed to avoid reserved name
+          * @default false
+         */
+        "prependProp": boolean;
+        /**
+          * Render only the picker (no input group); disables OK button
+          * @default false
+         */
+        "rangePicker": boolean;
+        /**
+          * @default false
+         */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        /**
+          * @default false
+         */
+        "showIso": boolean;
+        /**
+          * @default false
+         */
+        "showLong": boolean;
+        /**
+          * Allow host to control the OK/Close button; we'll mask it off when rangePicker = true
+          * @default true
+         */
+        "showOkButton": boolean;
+        /**
+          * Use these to control output format of start/end labels (display only)
+          * @default false
+         */
+        "showYmd": boolean;
+        /**
+          * @default ''
+         */
+        "size": '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
+        "validation": boolean;
+        /**
+          * @default 'Required field'
+         */
+        "validationMessage": string;
+        /**
+          * @default ''
+         */
+        "value": string;
+        /**
+          * @default ''
+         */
+        "warningMessage": string;
+    }
+    /**
+     * <plumage-date-range-time-picker-component>
+     * Date+time range picker with free-typing, calendar navigation,
+     * ISO / numeric / long display modes, and synchronized dropdown.
+     */
+    interface PlumageDateRangeTimePickerComponent {
+        /**
+          * @default ''
+         */
+        "appendId": string;
+        /**
+          * @default true
+         */
+        "appendProp": boolean;
+        /**
+          * @default ''
+         */
+        "ariaLabel": string;
+        "clear": () => Promise<void>;
+        /**
+          * @default 'YYYY-MM-DD'
+         */
+        "dateFormat": 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default ''
+         */
+        "formLayout": '' | 'horizontal' | 'inline';
+        /**
+          * @default 'fas fa-calendar-alt'
+         */
+        "icon": string;
+        /**
+          * @default 10
+         */
+        "inputCol": number;
+        /**
+          * @default ''
+         */
+        "inputCols": string;
+        /**
+          * @default 'date-range-time'
+         */
+        "inputId": string;
+        /**
+          * @default true
+         */
+        "isTwentyFourHourFormat": boolean;
+        /**
+          * @default '-'
+         */
+        "joinBy": string;
+        /**
+          * @default 'Date and Time Picker'
+         */
+        "label": string;
+        /**
+          * @default ''
+         */
+        "labelAlign": '' | 'right';
+        /**
+          * @default 2
+         */
+        "labelCol": number;
+        /**
+          * @default ''
+         */
+        "labelCols": string;
+        /**
+          * @default false
+         */
+        "labelHidden": boolean;
+        "placeholder"?: string;
+        /**
+          * @default ''
+         */
+        "prependId": string;
+        /**
+          * @default false
+         */
+        "prependProp": boolean;
+        /**
+          * @default false
+         */
+        "rangeTimePicker": boolean;
+        /**
+          * @default false
+         */
+        "readOnly": boolean;
+        /**
+          * @default false
+         */
+        "required": boolean;
+        /**
+          * @default false
+         */
+        "showDuration": boolean;
+        /**
+          * @default false
+         */
+        "showIso": boolean;
+        /**
+          * @default false
+         */
+        "showLong": boolean;
+        /**
+          * @default true
+         */
+        "showOkButton": boolean;
+        /**
+          * @default false
+         */
+        "showYmd": boolean;
+        /**
+          * @default ''
+         */
+        "size": '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
+        "validation": boolean;
+        /**
+          * @default 'Required field'
+         */
+        "validationMessage": string;
+        /**
+          * @default ''
+         */
+        "value": string;
+        /**
+          * @default ''
+         */
+        "warningMessage": string;
+    }
     interface PlumageDatepickerComponent {
         /**
           * @default ''
@@ -5230,6 +5509,14 @@ export interface PlumageCardComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLPlumageCardComponentElement;
 }
+export interface PlumageDateRangePickerComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPlumageDateRangePickerComponentElement;
+}
+export interface PlumageDateRangeTimePickerComponentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPlumageDateRangeTimePickerComponentElement;
+}
 export interface PlumageDatepickerComponentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLPlumageDatepickerComponentElement;
@@ -5806,6 +6093,60 @@ declare global {
         prototype: HTMLPlumageCardComponentElement;
         new (): HTMLPlumageCardComponentElement;
     };
+    interface HTMLPlumageDateRangePickerComponentElementEventMap {
+        "date-range-updated": {
+    startDate: string; // display string (same as input)
+    endDate: string; // display string (same as input)
+    startDateIso: string; // YYYY-MM-DD
+    endDateIso: string; // YYYY-MM-DD
+  };
+    }
+    interface HTMLPlumageDateRangePickerComponentElement extends Components.PlumageDateRangePickerComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLPlumageDateRangePickerComponentElementEventMap>(type: K, listener: (this: HTMLPlumageDateRangePickerComponentElement, ev: PlumageDateRangePickerComponentCustomEvent<HTMLPlumageDateRangePickerComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLPlumageDateRangePickerComponentElementEventMap>(type: K, listener: (this: HTMLPlumageDateRangePickerComponentElement, ev: PlumageDateRangePickerComponentCustomEvent<HTMLPlumageDateRangePickerComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLPlumageDateRangePickerComponentElement: {
+        prototype: HTMLPlumageDateRangePickerComponentElement;
+        new (): HTMLPlumageDateRangePickerComponentElement;
+    };
+    interface HTMLPlumageDateRangeTimePickerComponentElementEventMap {
+        "date-time-updated": {
+    startDate: string;
+    endDate: string;
+    startTime: string;
+    endTime: string;
+    duration: string;
+    startDateIso?: string;
+    endDateIso?: string;
+    startDateTimeIso?: string;
+    endDateTimeIso?: string;
+  };
+    }
+    /**
+     * <plumage-date-range-time-picker-component>
+     * Date+time range picker with free-typing, calendar navigation,
+     * ISO / numeric / long display modes, and synchronized dropdown.
+     */
+    interface HTMLPlumageDateRangeTimePickerComponentElement extends Components.PlumageDateRangeTimePickerComponent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLPlumageDateRangeTimePickerComponentElementEventMap>(type: K, listener: (this: HTMLPlumageDateRangeTimePickerComponentElement, ev: PlumageDateRangeTimePickerComponentCustomEvent<HTMLPlumageDateRangeTimePickerComponentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLPlumageDateRangeTimePickerComponentElementEventMap>(type: K, listener: (this: HTMLPlumageDateRangeTimePickerComponentElement, ev: PlumageDateRangeTimePickerComponentCustomEvent<HTMLPlumageDateRangeTimePickerComponentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLPlumageDateRangeTimePickerComponentElement: {
+        prototype: HTMLPlumageDateRangeTimePickerComponentElement;
+        new (): HTMLPlumageDateRangeTimePickerComponentElement;
+    };
     interface HTMLPlumageDatepickerComponentElementEventMap {
         "date-selected": {
     value: string;
@@ -6145,6 +6486,8 @@ declare global {
         "plumage-autocomplete-multiselect-component": HTMLPlumageAutocompleteMultiselectComponentElement;
         "plumage-autocomplete-single": HTMLPlumageAutocompleteSingleElement;
         "plumage-card-component": HTMLPlumageCardComponentElement;
+        "plumage-date-range-picker-component": HTMLPlumageDateRangePickerComponentElement;
+        "plumage-date-range-time-picker-component": HTMLPlumageDateRangeTimePickerComponentElement;
         "plumage-datepicker-component": HTMLPlumageDatepickerComponentElement;
         "plumage-input-field-component": HTMLPlumageInputFieldComponentElement;
         "plumage-input-group-component": HTMLPlumageInputGroupComponentElement;
@@ -9240,6 +9583,300 @@ declare namespace LocalJSX {
         "noHeader"?: boolean;
         "onCustomClick"?: (event: PlumageCardComponentCustomEvent<void>) => void;
     }
+    interface PlumageDateRangePickerComponent {
+        /**
+          * @default ''
+         */
+        "appendId"?: string;
+        /**
+          * was `append`, renamed to avoid reserved name
+          * @default true
+         */
+        "appendProp"?: boolean;
+        /**
+          * @default ''
+         */
+        "ariaLabel"?: string;
+        /**
+          * @default 'YYYY-MM-DD'
+         */
+        "dateFormat"?: 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * '', 'horizontal', or 'inline'
+          * @default ''
+         */
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 'fas fa-calendar-alt'
+         */
+        "icon"?: string;
+        /**
+          * @default 10
+         */
+        "inputCol"?: number;
+        /**
+          * @default ''
+         */
+        "inputCols"?: string;
+        /**
+          * @default 'drp'
+         */
+        "inputId"?: string;
+        /**
+          * @default '-'
+         */
+        "joinBy"?: string;
+        /**
+          * @default 'Date Range Picker'
+         */
+        "label"?: string;
+        /**
+          * @default ''
+         */
+        "labelAlign"?: '' | 'right';
+        /**
+          * Legacy numeric cols (fallback)
+          * @default 2
+         */
+        "labelCol"?: number;
+        /**
+          * Responsive column class specs
+          * @default ''
+         */
+        "labelCols"?: string;
+        /**
+          * @default false
+         */
+        "labelHidden"?: boolean;
+        /**
+          * @default ''
+         */
+        "labelSize"?: '' | 'sm' | 'lg';
+        /**
+          * Emits both human-readable (matches input/display) and ISO (YYYY-MM-DD) values
+         */
+        "onDate-range-updated"?: (event: PlumageDateRangePickerComponentCustomEvent<{
+    startDate: string; // display string (same as input)
+    endDate: string; // display string (same as input)
+    startDateIso: string; // YYYY-MM-DD
+    endDateIso: string; // YYYY-MM-DD
+  }>) => void;
+        /**
+          * External placeholder prop (immutable). We derive a default into state.
+         */
+        "placeholder"?: string;
+        /**
+          * @default ''
+         */
+        "prependId"?: string;
+        /**
+          * was `prepend`, renamed to avoid reserved name
+          * @default false
+         */
+        "prependProp"?: boolean;
+        /**
+          * Render only the picker (no input group); disables OK button
+          * @default false
+         */
+        "rangePicker"?: boolean;
+        /**
+          * @default false
+         */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * @default false
+         */
+        "showIso"?: boolean;
+        /**
+          * @default false
+         */
+        "showLong"?: boolean;
+        /**
+          * Allow host to control the OK/Close button; we'll mask it off when rangePicker = true
+          * @default true
+         */
+        "showOkButton"?: boolean;
+        /**
+          * Use these to control output format of start/end labels (display only)
+          * @default false
+         */
+        "showYmd"?: boolean;
+        /**
+          * @default ''
+         */
+        "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
+        "validation"?: boolean;
+        /**
+          * @default 'Required field'
+         */
+        "validationMessage"?: string;
+        /**
+          * @default ''
+         */
+        "value"?: string;
+        /**
+          * @default ''
+         */
+        "warningMessage"?: string;
+    }
+    /**
+     * <plumage-date-range-time-picker-component>
+     * Date+time range picker with free-typing, calendar navigation,
+     * ISO / numeric / long display modes, and synchronized dropdown.
+     */
+    interface PlumageDateRangeTimePickerComponent {
+        /**
+          * @default ''
+         */
+        "appendId"?: string;
+        /**
+          * @default true
+         */
+        "appendProp"?: boolean;
+        /**
+          * @default ''
+         */
+        "ariaLabel"?: string;
+        /**
+          * @default 'YYYY-MM-DD'
+         */
+        "dateFormat"?: 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default ''
+         */
+        "formLayout"?: '' | 'horizontal' | 'inline';
+        /**
+          * @default 'fas fa-calendar-alt'
+         */
+        "icon"?: string;
+        /**
+          * @default 10
+         */
+        "inputCol"?: number;
+        /**
+          * @default ''
+         */
+        "inputCols"?: string;
+        /**
+          * @default 'date-range-time'
+         */
+        "inputId"?: string;
+        /**
+          * @default true
+         */
+        "isTwentyFourHourFormat"?: boolean;
+        /**
+          * @default '-'
+         */
+        "joinBy"?: string;
+        /**
+          * @default 'Date and Time Picker'
+         */
+        "label"?: string;
+        /**
+          * @default ''
+         */
+        "labelAlign"?: '' | 'right';
+        /**
+          * @default 2
+         */
+        "labelCol"?: number;
+        /**
+          * @default ''
+         */
+        "labelCols"?: string;
+        /**
+          * @default false
+         */
+        "labelHidden"?: boolean;
+        "onDate-time-updated"?: (event: PlumageDateRangeTimePickerComponentCustomEvent<{
+    startDate: string;
+    endDate: string;
+    startTime: string;
+    endTime: string;
+    duration: string;
+    startDateIso?: string;
+    endDateIso?: string;
+    startDateTimeIso?: string;
+    endDateTimeIso?: string;
+  }>) => void;
+        "placeholder"?: string;
+        /**
+          * @default ''
+         */
+        "prependId"?: string;
+        /**
+          * @default false
+         */
+        "prependProp"?: boolean;
+        /**
+          * @default false
+         */
+        "rangeTimePicker"?: boolean;
+        /**
+          * @default false
+         */
+        "readOnly"?: boolean;
+        /**
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * @default false
+         */
+        "showDuration"?: boolean;
+        /**
+          * @default false
+         */
+        "showIso"?: boolean;
+        /**
+          * @default false
+         */
+        "showLong"?: boolean;
+        /**
+          * @default true
+         */
+        "showOkButton"?: boolean;
+        /**
+          * @default false
+         */
+        "showYmd"?: boolean;
+        /**
+          * @default ''
+         */
+        "size"?: '' | 'sm' | 'lg';
+        /**
+          * @default false
+         */
+        "validation"?: boolean;
+        /**
+          * @default 'Required field'
+         */
+        "validationMessage"?: string;
+        /**
+          * @default ''
+         */
+        "value"?: string;
+        /**
+          * @default ''
+         */
+        "warningMessage"?: string;
+    }
     interface PlumageDatepickerComponent {
         /**
           * @default ''
@@ -12140,6 +12777,75 @@ declare namespace LocalJSX {
         "headingLevel": number;
         "decorativeImage": boolean;
     }
+    interface PlumageDateRangePickerComponentAttributes {
+        "ariaLabel": string;
+        "dateFormat": 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        "value": string;
+        "joinBy": string;
+        "inputId": string;
+        "appendProp": boolean;
+        "appendId": string;
+        "prependProp": boolean;
+        "prependId": string;
+        "disabled": boolean;
+        "readOnly": boolean;
+        "label": string;
+        "labelSize": '' | 'sm' | 'lg';
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "icon": string;
+        "placeholder": string;
+        "required": boolean;
+        "size": '' | 'sm' | 'lg';
+        "validation": boolean;
+        "validationMessage": string;
+        "warningMessage": string;
+        "rangePicker": boolean;
+        "showOkButton": boolean;
+        "showYmd": boolean;
+        "showLong": boolean;
+        "showIso": boolean;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+    }
+    interface PlumageDateRangeTimePickerComponentAttributes {
+        "ariaLabel": string;
+        "dateFormat": 'YYYY-MM-DD' | 'MM-DD-YYYY';
+        "value": string;
+        "joinBy": string;
+        "inputId": string;
+        "appendProp": boolean;
+        "appendId": string;
+        "prependProp": boolean;
+        "prependId": string;
+        "disabled": boolean;
+        "readOnly": boolean;
+        "label": string;
+        "labelAlign": '' | 'right';
+        "labelHidden": boolean;
+        "formLayout": '' | 'horizontal' | 'inline';
+        "icon": string;
+        "placeholder": string;
+        "required": boolean;
+        "size": '' | 'sm' | 'lg';
+        "validation": boolean;
+        "validationMessage": string;
+        "warningMessage": string;
+        "rangeTimePicker": boolean;
+        "showOkButton": boolean;
+        "isTwentyFourHourFormat": boolean;
+        "showDuration": boolean;
+        "labelCol": number;
+        "inputCol": number;
+        "labelCols": string;
+        "inputCols": string;
+        "showYmd": boolean;
+        "showLong": boolean;
+        "showIso": boolean;
+    }
     interface PlumageDatepickerComponentAttributes {
         "appendProp": boolean;
         "appendId": string;
@@ -12780,6 +13486,8 @@ declare namespace LocalJSX {
         "plumage-autocomplete-multiselect-component": Omit<PlumageAutocompleteMultiselectComponent, keyof PlumageAutocompleteMultiselectComponentAttributes> & { [K in keyof PlumageAutocompleteMultiselectComponent & keyof PlumageAutocompleteMultiselectComponentAttributes]?: PlumageAutocompleteMultiselectComponent[K] } & { [K in keyof PlumageAutocompleteMultiselectComponent & keyof PlumageAutocompleteMultiselectComponentAttributes as `attr:${K}`]?: PlumageAutocompleteMultiselectComponentAttributes[K] } & { [K in keyof PlumageAutocompleteMultiselectComponent & keyof PlumageAutocompleteMultiselectComponentAttributes as `prop:${K}`]?: PlumageAutocompleteMultiselectComponent[K] };
         "plumage-autocomplete-single": Omit<PlumageAutocompleteSingle, keyof PlumageAutocompleteSingleAttributes> & { [K in keyof PlumageAutocompleteSingle & keyof PlumageAutocompleteSingleAttributes]?: PlumageAutocompleteSingle[K] } & { [K in keyof PlumageAutocompleteSingle & keyof PlumageAutocompleteSingleAttributes as `attr:${K}`]?: PlumageAutocompleteSingleAttributes[K] } & { [K in keyof PlumageAutocompleteSingle & keyof PlumageAutocompleteSingleAttributes as `prop:${K}`]?: PlumageAutocompleteSingle[K] };
         "plumage-card-component": Omit<PlumageCardComponent, keyof PlumageCardComponentAttributes> & { [K in keyof PlumageCardComponent & keyof PlumageCardComponentAttributes]?: PlumageCardComponent[K] } & { [K in keyof PlumageCardComponent & keyof PlumageCardComponentAttributes as `attr:${K}`]?: PlumageCardComponentAttributes[K] } & { [K in keyof PlumageCardComponent & keyof PlumageCardComponentAttributes as `prop:${K}`]?: PlumageCardComponent[K] };
+        "plumage-date-range-picker-component": Omit<PlumageDateRangePickerComponent, keyof PlumageDateRangePickerComponentAttributes> & { [K in keyof PlumageDateRangePickerComponent & keyof PlumageDateRangePickerComponentAttributes]?: PlumageDateRangePickerComponent[K] } & { [K in keyof PlumageDateRangePickerComponent & keyof PlumageDateRangePickerComponentAttributes as `attr:${K}`]?: PlumageDateRangePickerComponentAttributes[K] } & { [K in keyof PlumageDateRangePickerComponent & keyof PlumageDateRangePickerComponentAttributes as `prop:${K}`]?: PlumageDateRangePickerComponent[K] };
+        "plumage-date-range-time-picker-component": Omit<PlumageDateRangeTimePickerComponent, keyof PlumageDateRangeTimePickerComponentAttributes> & { [K in keyof PlumageDateRangeTimePickerComponent & keyof PlumageDateRangeTimePickerComponentAttributes]?: PlumageDateRangeTimePickerComponent[K] } & { [K in keyof PlumageDateRangeTimePickerComponent & keyof PlumageDateRangeTimePickerComponentAttributes as `attr:${K}`]?: PlumageDateRangeTimePickerComponentAttributes[K] } & { [K in keyof PlumageDateRangeTimePickerComponent & keyof PlumageDateRangeTimePickerComponentAttributes as `prop:${K}`]?: PlumageDateRangeTimePickerComponent[K] };
         "plumage-datepicker-component": Omit<PlumageDatepickerComponent, keyof PlumageDatepickerComponentAttributes> & { [K in keyof PlumageDatepickerComponent & keyof PlumageDatepickerComponentAttributes]?: PlumageDatepickerComponent[K] } & { [K in keyof PlumageDatepickerComponent & keyof PlumageDatepickerComponentAttributes as `attr:${K}`]?: PlumageDatepickerComponentAttributes[K] } & { [K in keyof PlumageDatepickerComponent & keyof PlumageDatepickerComponentAttributes as `prop:${K}`]?: PlumageDatepickerComponent[K] };
         "plumage-input-field-component": Omit<PlumageInputFieldComponent, keyof PlumageInputFieldComponentAttributes> & { [K in keyof PlumageInputFieldComponent & keyof PlumageInputFieldComponentAttributes]?: PlumageInputFieldComponent[K] } & { [K in keyof PlumageInputFieldComponent & keyof PlumageInputFieldComponentAttributes as `attr:${K}`]?: PlumageInputFieldComponentAttributes[K] } & { [K in keyof PlumageInputFieldComponent & keyof PlumageInputFieldComponentAttributes as `prop:${K}`]?: PlumageInputFieldComponent[K] };
         "plumage-input-group-component": Omit<PlumageInputGroupComponent, keyof PlumageInputGroupComponentAttributes> & { [K in keyof PlumageInputGroupComponent & keyof PlumageInputGroupComponentAttributes]?: PlumageInputGroupComponent[K] } & { [K in keyof PlumageInputGroupComponent & keyof PlumageInputGroupComponentAttributes as `attr:${K}`]?: PlumageInputGroupComponentAttributes[K] } & { [K in keyof PlumageInputGroupComponent & keyof PlumageInputGroupComponentAttributes as `prop:${K}`]?: PlumageInputGroupComponent[K] };
@@ -12844,6 +13552,13 @@ declare module "@stencil/core" {
             "plumage-autocomplete-multiselect-component": LocalJSX.IntrinsicElements["plumage-autocomplete-multiselect-component"] & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteMultiselectComponentElement>;
             "plumage-autocomplete-single": LocalJSX.IntrinsicElements["plumage-autocomplete-single"] & JSXBase.HTMLAttributes<HTMLPlumageAutocompleteSingleElement>;
             "plumage-card-component": LocalJSX.IntrinsicElements["plumage-card-component"] & JSXBase.HTMLAttributes<HTMLPlumageCardComponentElement>;
+            "plumage-date-range-picker-component": LocalJSX.IntrinsicElements["plumage-date-range-picker-component"] & JSXBase.HTMLAttributes<HTMLPlumageDateRangePickerComponentElement>;
+            /**
+             * <plumage-date-range-time-picker-component>
+             * Date+time range picker with free-typing, calendar navigation,
+             * ISO / numeric / long display modes, and synchronized dropdown.
+             */
+            "plumage-date-range-time-picker-component": LocalJSX.IntrinsicElements["plumage-date-range-time-picker-component"] & JSXBase.HTMLAttributes<HTMLPlumageDateRangeTimePickerComponentElement>;
             "plumage-datepicker-component": LocalJSX.IntrinsicElements["plumage-datepicker-component"] & JSXBase.HTMLAttributes<HTMLPlumageDatepickerComponentElement>;
             "plumage-input-field-component": LocalJSX.IntrinsicElements["plumage-input-field-component"] & JSXBase.HTMLAttributes<HTMLPlumageInputFieldComponentElement>;
             "plumage-input-group-component": LocalJSX.IntrinsicElements["plumage-input-group-component"] & JSXBase.HTMLAttributes<HTMLPlumageInputGroupComponentElement>;

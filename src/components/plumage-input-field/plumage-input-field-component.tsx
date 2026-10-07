@@ -138,9 +138,7 @@ export class PlumageInputFieldComponent {
 
   private camelCase(str: string) {
     if (!str) return '';
-    return str
-      .replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase()))
-      .replace(/\s+/g, '');
+    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (w, i) => (i === 0 ? w.toLowerCase() : w.toUpperCase())).replace(/\s+/g, '');
   }
 
   private resolveIds() {
@@ -404,10 +402,12 @@ export class PlumageInputFieldComponent {
     const inputColClass = this.isHorizontal() ? this.buildColClass('input') || undefined : this.isInline() ? this.buildColClass('input') || undefined : undefined;
 
     return (
-      <div class={`plumage${outerClass}`}>
-        <div class={groupClasses.join(' ')}>
-          {this.renderInputLabel(ids, labelColClass)}
-          {this.isHorizontal() ? <div class={inputColClass}>{this.renderInput(ids)}</div> : this.renderInput(ids)}
+      <div class="stencil-component">
+        <div class={`${outerClass}`}>
+          <div class={groupClasses.join(' ')}>
+            {this.renderInputLabel(ids, labelColClass)}
+            {this.isHorizontal() ? <div class={inputColClass}>{this.renderInput(ids)}</div> : this.renderInput(ids)}
+          </div>
         </div>
       </div>
     );
