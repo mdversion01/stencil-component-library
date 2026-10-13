@@ -13,25 +13,25 @@ exports[`date-range-time-picker-component controlled values hydrates initial val
         <div>
           <div aria-label="Date and time picker group" class="input-group" role="group">
             <div class="drp-input-field">
-              <input aria-describedby="snapshot-id-2-36-3g6v-dialog-desc" aria-labelledby="snapshot-id-1" autocomplete="off" class="form-control" id="snapshot-id-2" placeholder="YYYY-MM-DD HH:MM  -  YYYY-MM-DD HH:MM" type="text" value="2026-07-20 09:00  -  2026-08-20 17:00">
+              <input aria-describedby="snapshot-id-2-36-i1pp-dialog-desc" aria-labelledby="snapshot-id-1" autocomplete="off" class="form-control" id="snapshot-id-2" placeholder="YYYY-MM-DD HH:MM  -  YYYY-MM-DD HH:MM" type="text" value="2026-07-20 09:00  -  2026-08-20 17:00">
               <button aria-label="Clear date and time range" class="clear-input-button" type="button">
                 <i aria-hidden="true" class="fa-times-circle fas"></i>
               </button>
             </div>
             <div class="input-group-append">
-              <button aria-controls="snapshot-id-2-36-3g6v-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text" type="button">
+              <button aria-controls="snapshot-id-2-36-i1pp-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text" type="button">
                 <i aria-hidden="true" class="fa-calendar-alt fas"></i>
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div class="dropdown" id="snapshot-id-2-36-3g6v-dropdown">
-        <div aria-describedby="snapshot-id-2-36-3g6v-dialog-desc" aria-labelledby="snapshot-id-2-36-3g6v-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
-          <div class="sr-only visually-hidden" id="snapshot-id-2-36-3g6v-dialog-title">
+      <div class="dropdown" id="snapshot-id-2-36-i1pp-dropdown">
+        <div aria-describedby="snapshot-id-2-36-i1pp-dialog-desc" aria-labelledby="snapshot-id-2-36-i1pp-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
+          <div class="sr-only visually-hidden" id="snapshot-id-2-36-i1pp-dialog-title">
             Date and Time Picker
           </div>
-          <div class="sr-only visually-hidden" id="snapshot-id-2-36-3g6v-dialog-desc">
+          <div class="sr-only visually-hidden" id="snapshot-id-2-36-i1pp-dialog-desc">
             Select a start date and end date. Use arrow keys to navigate days. Press Enter to select. Enter times in HH:MM.
           </div>
           <div class="date-picker">
@@ -43,10 +43,10 @@ exports[`date-range-time-picker-component controlled values hydrates initial val
                   </svg>
                 </button>
                 <div class="selectors">
-                  <label class="sr-only visually-hidden" for="snapshot-id-2-36-3g6v-months" id="snapshot-id-2-36-3g6v-month-label">
+                  <label class="sr-only visually-hidden" for="snapshot-id-2-36-i1pp-months" id="snapshot-id-2-36-i1pp-month-label">
                     Select month
                   </label>
-                  <select aria-labelledby="snapshot-id-2-36-3g6v-month-label" class="form-control form-select months select-sm" id="snapshot-id-2-36-3g6v-months">
+                  <select aria-labelledby="snapshot-id-2-36-i1pp-month-label" class="form-control form-select months select-sm" id="snapshot-id-2-36-i1pp-months">
                     <option value="0">
                       January
                     </option>
@@ -84,10 +84,10 @@ exports[`date-range-time-picker-component controlled values hydrates initial val
                       December
                     </option>
                   </select>
-                  <label class="sr-only visually-hidden" for="snapshot-id-2-36-3g6v-year" id="snapshot-id-2-36-3g6v-year-label">
+                  <label class="sr-only visually-hidden" for="snapshot-id-2-36-i1pp-year" id="snapshot-id-2-36-i1pp-year-label">
                     Select year
                   </label>
-                  <select aria-labelledby="snapshot-id-2-36-3g6v-year-label" class="form-control form-select select-sm years" id="snapshot-id-2-36-3g6v-year">
+                  <select aria-labelledby="snapshot-id-2-36-i1pp-year-label" class="form-control form-select select-sm years" id="snapshot-id-2-36-i1pp-year">
                     <option value="2014">
                       2014
                     </option>
@@ -167,7 +167,7 @@ exports[`date-range-time-picker-component controlled values hydrates initial val
               <div class="range-picker">
                 <div aria-label="Calendars" class="calendar-wrapper" tabindex="0">
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-36-3g6v-grid-start-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-36-i1pp-grid-start-caption">
                       July 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -193,7 +193,7 @@ exports[`date-range-time-picker-component controlled values hydrates initial val
                         Sat
                       </small>
                     </div>
-                    <div aria-label="Calendar for July 2026" aria-labelledby="snapshot-id-2-36-3g6v-grid-start-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-36-3g6v-grid-start" role="grid">
+                    <div aria-label="Calendar for July 2026" aria-labelledby="snapshot-id-2-36-i1pp-grid-start-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-36-i1pp-grid-start" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="June 28, 2026" class="calendar-grid-item previous-month-day" data-date="2026-06-28" data-day="28" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light rounded-circle text-muted text-nowrap">
@@ -419,7 +419,7 @@ exports[`date-range-time-picker-component controlled values hydrates initial val
                     </div>
                   </div>
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-36-3g6v-grid-end-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-36-i1pp-grid-end-caption">
                       August 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -445,7 +445,7 @@ exports[`date-range-time-picker-component controlled values hydrates initial val
                         Sat
                       </small>
                     </div>
-                    <div aria-label="Calendar for August 2026" aria-labelledby="snapshot-id-2-36-3g6v-grid-end-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-36-3g6v-grid-end" role="grid">
+                    <div aria-label="Calendar for August 2026" aria-labelledby="snapshot-id-2-36-i1pp-grid-end-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-36-i1pp-grid-end" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="July 26, 2026" class="calendar-grid-item previous-month-day" data-date="2026-07-26" data-day="26" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light rounded-circle text-muted text-nowrap">
@@ -676,8 +676,8 @@ exports[`date-range-time-picker-component controlled values hydrates initial val
                     Use cursor keys to navigate calendar dates
                   </div>
                 </footer>
-                <div aria-labelledby="snapshot-id-2-36-3g6v-date-ranges-title" class="date-range-display" role="region" tabindex="0">
-                  <div class="sr-only visually-hidden" id="snapshot-id-2-36-3g6v-date-ranges-title">
+                <div aria-labelledby="snapshot-id-2-36-i1pp-date-ranges-title" class="date-range-display" role="region" tabindex="0">
+                  <div class="sr-only visually-hidden" id="snapshot-id-2-36-i1pp-date-ranges-title">
                     Selected date and time range
                   </div>
                   <div class="date-ranges">
@@ -685,23 +685,23 @@ exports[`date-range-time-picker-component controlled values hydrates initial val
                       <span class="start-date">
                         2026-07-20
                       </span>
-                      <label class="sr-only visually-hidden" for="snapshot-id-2-36-3g6v-start-time" id="snapshot-id-2-36-3g6v-start-time-label">
+                      <label class="sr-only visually-hidden" for="snapshot-id-2-36-i1pp-start-time" id="snapshot-id-2-36-i1pp-start-time-label">
                         Start time
                       </label>
-                      <input aria-describedby="snapshot-id-2-36-3g6v-warning" aria-labelledby="snapshot-id-2-36-3g6v-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" id="snapshot-id-2-36-3g6v-start-time" inputmode="numeric" maxlength="5" type="text" value="09:00">
+                      <input aria-describedby="snapshot-id-2-36-i1pp-warning" aria-labelledby="snapshot-id-2-36-i1pp-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" id="snapshot-id-2-36-i1pp-start-time" inputmode="numeric" maxlength="5" type="text" value="09:00">
                       <span class="to-spacing">
                         -
                       </span>
                       <span class="end-date">
                         2026-08-20
                       </span>
-                      <label class="sr-only visually-hidden" for="snapshot-id-2-36-3g6v-end-time" id="snapshot-id-2-36-3g6v-end-time-label">
+                      <label class="sr-only visually-hidden" for="snapshot-id-2-36-i1pp-end-time" id="snapshot-id-2-36-i1pp-end-time-label">
                         End time
                       </label>
-                      <input aria-describedby="snapshot-id-2-36-3g6v-warning" aria-labelledby="snapshot-id-2-36-3g6v-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="snapshot-id-2-36-3g6v-end-time" inputmode="numeric" maxlength="5" type="text" value="17:00">
+                      <input aria-describedby="snapshot-id-2-36-i1pp-warning" aria-labelledby="snapshot-id-2-36-i1pp-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="snapshot-id-2-36-i1pp-end-time" inputmode="numeric" maxlength="5" type="text" value="17:00">
                     </span>
                   </div>
-                  <div aria-live="assertive" class="warning-message" id="snapshot-id-2-36-3g6v-warning"></div>
+                  <div aria-live="assertive" class="warning-message" id="snapshot-id-2-36-i1pp-warning"></div>
                 </div>
               </div>
               <div class="ok-button">
@@ -934,7 +934,7 @@ exports[`date-range-time-picker-component keyboard and calendar selection select
                   </span>
                 </div>
                 <div aria-label="October 7, 2026" class="calendar-grid-item selected-range" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                  <span class="border-0 btn current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                  <span class="border-0 btn font-weight-bold rounded-circle text-dark text-nowrap">
                     7
                   </span>
                 </div>
@@ -966,7 +966,7 @@ exports[`date-range-time-picker-component keyboard and calendar selection select
                   </span>
                 </div>
                 <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                  <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                  <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                     13
                   </span>
                 </div>
@@ -1408,22 +1408,22 @@ exports[`date-range-time-picker-component layout and accessibility disabled inpu
         <div>
           <div aria-label="Date and time picker group" class="disabled input-group" role="group">
             <div class="drp-input-field">
-              <input aria-describedby="snapshot-id-2-49-1ff3-dialog-desc" aria-disabled="true" aria-labelledby="snapshot-id-1" autocomplete="off" class="disabled form-control" disabled="" id="snapshot-id-2" placeholder="YYYY-MM-DD HH:MM  -  YYYY-MM-DD HH:MM" type="text" value="2026-07-20 09:00  -  2026-08-20 17:00">
+              <input aria-describedby="snapshot-id-2-49-vz5i-dialog-desc" aria-disabled="true" aria-labelledby="snapshot-id-1" autocomplete="off" class="disabled form-control" disabled="" id="snapshot-id-2" placeholder="YYYY-MM-DD HH:MM  -  YYYY-MM-DD HH:MM" type="text" value="2026-07-20 09:00  -  2026-08-20 17:00">
             </div>
             <div class="input-group-append">
-              <button aria-controls="snapshot-id-2-49-1ff3-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-textdisabled" disabled="" type="button">
+              <button aria-controls="snapshot-id-2-49-vz5i-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-textdisabled" disabled="" type="button">
                 <i aria-hidden="true" class="fa-calendar-alt fas"></i>
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div class="dropdown" id="snapshot-id-2-49-1ff3-dropdown">
-        <div aria-describedby="snapshot-id-2-49-1ff3-dialog-desc" aria-labelledby="snapshot-id-2-49-1ff3-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
-          <div class="sr-only visually-hidden" id="snapshot-id-2-49-1ff3-dialog-title">
+      <div class="dropdown" id="snapshot-id-2-49-vz5i-dropdown">
+        <div aria-describedby="snapshot-id-2-49-vz5i-dialog-desc" aria-labelledby="snapshot-id-2-49-vz5i-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
+          <div class="sr-only visually-hidden" id="snapshot-id-2-49-vz5i-dialog-title">
             Date and Time Picker
           </div>
-          <div class="sr-only visually-hidden" id="snapshot-id-2-49-1ff3-dialog-desc">
+          <div class="sr-only visually-hidden" id="snapshot-id-2-49-vz5i-dialog-desc">
             Select a start date and end date. Use arrow keys to navigate days. Press Enter to select. Enter times in HH:MM.
           </div>
           <div class="date-picker">
@@ -1435,10 +1435,10 @@ exports[`date-range-time-picker-component layout and accessibility disabled inpu
                   </svg>
                 </button>
                 <div class="selectors">
-                  <label class="sr-only visually-hidden" for="snapshot-id-2-49-1ff3-months" id="snapshot-id-2-49-1ff3-month-label">
+                  <label class="sr-only visually-hidden" for="snapshot-id-2-49-vz5i-months" id="snapshot-id-2-49-vz5i-month-label">
                     Select month
                   </label>
-                  <select aria-labelledby="snapshot-id-2-49-1ff3-month-label" class="form-control form-select months select-sm" id="snapshot-id-2-49-1ff3-months">
+                  <select aria-labelledby="snapshot-id-2-49-vz5i-month-label" class="form-control form-select months select-sm" id="snapshot-id-2-49-vz5i-months">
                     <option value="0">
                       January
                     </option>
@@ -1476,10 +1476,10 @@ exports[`date-range-time-picker-component layout and accessibility disabled inpu
                       December
                     </option>
                   </select>
-                  <label class="sr-only visually-hidden" for="snapshot-id-2-49-1ff3-year" id="snapshot-id-2-49-1ff3-year-label">
+                  <label class="sr-only visually-hidden" for="snapshot-id-2-49-vz5i-year" id="snapshot-id-2-49-vz5i-year-label">
                     Select year
                   </label>
-                  <select aria-labelledby="snapshot-id-2-49-1ff3-year-label" class="form-control form-select select-sm years" id="snapshot-id-2-49-1ff3-year">
+                  <select aria-labelledby="snapshot-id-2-49-vz5i-year-label" class="form-control form-select select-sm years" id="snapshot-id-2-49-vz5i-year">
                     <option value="2014">
                       2014
                     </option>
@@ -1559,7 +1559,7 @@ exports[`date-range-time-picker-component layout and accessibility disabled inpu
               <div class="range-picker">
                 <div aria-label="Calendars" class="calendar-wrapper" tabindex="0">
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-49-1ff3-grid-start-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-49-vz5i-grid-start-caption">
                       July 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -1585,7 +1585,7 @@ exports[`date-range-time-picker-component layout and accessibility disabled inpu
                         Sat
                       </small>
                     </div>
-                    <div aria-label="Calendar for July 2026" aria-labelledby="snapshot-id-2-49-1ff3-grid-start-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-49-1ff3-grid-start" role="grid">
+                    <div aria-label="Calendar for July 2026" aria-labelledby="snapshot-id-2-49-vz5i-grid-start-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-49-vz5i-grid-start" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="June 28, 2026" class="calendar-grid-item previous-month-day" data-date="2026-06-28" data-day="28" data-month="6" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light rounded-circle text-muted text-nowrap">
@@ -1811,7 +1811,7 @@ exports[`date-range-time-picker-component layout and accessibility disabled inpu
                     </div>
                   </div>
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-49-1ff3-grid-end-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-49-vz5i-grid-end-caption">
                       August 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -1837,7 +1837,7 @@ exports[`date-range-time-picker-component layout and accessibility disabled inpu
                         Sat
                       </small>
                     </div>
-                    <div aria-label="Calendar for August 2026" aria-labelledby="snapshot-id-2-49-1ff3-grid-end-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-49-1ff3-grid-end" role="grid">
+                    <div aria-label="Calendar for August 2026" aria-labelledby="snapshot-id-2-49-vz5i-grid-end-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-49-vz5i-grid-end" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="July 26, 2026" class="calendar-grid-item previous-month-day" data-date="2026-07-26" data-day="26" data-month="7" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light rounded-circle text-muted text-nowrap">
@@ -2068,8 +2068,8 @@ exports[`date-range-time-picker-component layout and accessibility disabled inpu
                     Use cursor keys to navigate calendar dates
                   </div>
                 </footer>
-                <div aria-labelledby="snapshot-id-2-49-1ff3-date-ranges-title" class="date-range-display" role="region" tabindex="0">
-                  <div class="sr-only visually-hidden" id="snapshot-id-2-49-1ff3-date-ranges-title">
+                <div aria-labelledby="snapshot-id-2-49-vz5i-date-ranges-title" class="date-range-display" role="region" tabindex="0">
+                  <div class="sr-only visually-hidden" id="snapshot-id-2-49-vz5i-date-ranges-title">
                     Selected date and time range
                   </div>
                   <div class="date-ranges">
@@ -2077,23 +2077,23 @@ exports[`date-range-time-picker-component layout and accessibility disabled inpu
                       <span class="start-date">
                         2026-07-20
                       </span>
-                      <label class="sr-only visually-hidden" for="snapshot-id-2-49-1ff3-start-time" id="snapshot-id-2-49-1ff3-start-time-label">
+                      <label class="sr-only visually-hidden" for="snapshot-id-2-49-vz5i-start-time" id="snapshot-id-2-49-vz5i-start-time-label">
                         Start time
                       </label>
-                      <input aria-describedby="snapshot-id-2-49-1ff3-warning" aria-labelledby="snapshot-id-2-49-1ff3-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" disabled="" id="snapshot-id-2-49-1ff3-start-time" inputmode="numeric" maxlength="5" type="text" value="09:00">
+                      <input aria-describedby="snapshot-id-2-49-vz5i-warning" aria-labelledby="snapshot-id-2-49-vz5i-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" disabled="" id="snapshot-id-2-49-vz5i-start-time" inputmode="numeric" maxlength="5" type="text" value="09:00">
                       <span class="to-spacing">
                         -
                       </span>
                       <span class="end-date">
                         2026-08-20
                       </span>
-                      <label class="sr-only visually-hidden" for="snapshot-id-2-49-1ff3-end-time" id="snapshot-id-2-49-1ff3-end-time-label">
+                      <label class="sr-only visually-hidden" for="snapshot-id-2-49-vz5i-end-time" id="snapshot-id-2-49-vz5i-end-time-label">
                         End time
                       </label>
-                      <input aria-describedby="snapshot-id-2-49-1ff3-warning" aria-labelledby="snapshot-id-2-49-1ff3-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" disabled="" id="snapshot-id-2-49-1ff3-end-time" inputmode="numeric" maxlength="5" type="text" value="17:00">
+                      <input aria-describedby="snapshot-id-2-49-vz5i-warning" aria-labelledby="snapshot-id-2-49-vz5i-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" disabled="" id="snapshot-id-2-49-vz5i-end-time" inputmode="numeric" maxlength="5" type="text" value="17:00">
                     </span>
                   </div>
-                  <div aria-live="assertive" class="warning-message" id="snapshot-id-2-49-1ff3-warning"></div>
+                  <div aria-live="assertive" class="warning-message" id="snapshot-id-2-49-vz5i-warning"></div>
                 </div>
               </div>
               <div class="ok-button">
@@ -2123,22 +2123,22 @@ exports[`date-range-time-picker-component layout and accessibility horizontal la
         <div class="col-md-9 col-sm-8">
           <div aria-label="Date and time picker group" class="input-group" role="group">
             <div class="drp-input-field">
-              <input aria-describedby="snapshot-id-2-51-tkcz-dialog-desc" aria-labelledby="snapshot-id-1" autocomplete="off" class="form-control" id="snapshot-id-2" placeholder="YYYY-MM-DD HH:MM - YYYY-MM-DD HH:MM" type="text" value="">
+              <input aria-describedby="snapshot-id-2-51-ytyt-dialog-desc" aria-labelledby="snapshot-id-1" autocomplete="off" class="form-control" id="snapshot-id-2" placeholder="YYYY-MM-DD HH:MM - YYYY-MM-DD HH:MM" type="text" value="">
             </div>
             <div class="input-group-append">
-              <button aria-controls="snapshot-id-2-51-tkcz-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text" type="button">
+              <button aria-controls="snapshot-id-2-51-ytyt-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text" type="button">
                 <i aria-hidden="true" class="fa-calendar-alt fas"></i>
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div class="dropdown" id="snapshot-id-2-51-tkcz-dropdown">
-        <div aria-describedby="snapshot-id-2-51-tkcz-dialog-desc" aria-labelledby="snapshot-id-2-51-tkcz-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
-          <div class="sr-only visually-hidden" id="snapshot-id-2-51-tkcz-dialog-title">
+      <div class="dropdown" id="snapshot-id-2-51-ytyt-dropdown">
+        <div aria-describedby="snapshot-id-2-51-ytyt-dialog-desc" aria-labelledby="snapshot-id-2-51-ytyt-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
+          <div class="sr-only visually-hidden" id="snapshot-id-2-51-ytyt-dialog-title">
             Date and Time Picker
           </div>
-          <div class="sr-only visually-hidden" id="snapshot-id-2-51-tkcz-dialog-desc">
+          <div class="sr-only visually-hidden" id="snapshot-id-2-51-ytyt-dialog-desc">
             Select a start date and end date. Use arrow keys to navigate days. Press Enter to select. Enter times in HH:MM.
           </div>
           <div class="date-picker">
@@ -2150,10 +2150,10 @@ exports[`date-range-time-picker-component layout and accessibility horizontal la
                   </svg>
                 </button>
                 <div class="selectors">
-                  <label class="sr-only visually-hidden" for="snapshot-id-2-51-tkcz-months" id="snapshot-id-2-51-tkcz-month-label">
+                  <label class="sr-only visually-hidden" for="snapshot-id-2-51-ytyt-months" id="snapshot-id-2-51-ytyt-month-label">
                     Select month
                   </label>
-                  <select aria-labelledby="snapshot-id-2-51-tkcz-month-label" class="form-control form-select months select-sm" id="snapshot-id-2-51-tkcz-months">
+                  <select aria-labelledby="snapshot-id-2-51-ytyt-month-label" class="form-control form-select months select-sm" id="snapshot-id-2-51-ytyt-months">
                     <option value="0">
                       January
                     </option>
@@ -2191,10 +2191,10 @@ exports[`date-range-time-picker-component layout and accessibility horizontal la
                       December
                     </option>
                   </select>
-                  <label class="sr-only visually-hidden" for="snapshot-id-2-51-tkcz-year" id="snapshot-id-2-51-tkcz-year-label">
+                  <label class="sr-only visually-hidden" for="snapshot-id-2-51-ytyt-year" id="snapshot-id-2-51-ytyt-year-label">
                     Select year
                   </label>
-                  <select aria-labelledby="snapshot-id-2-51-tkcz-year-label" class="form-control form-select select-sm years" id="snapshot-id-2-51-tkcz-year">
+                  <select aria-labelledby="snapshot-id-2-51-ytyt-year-label" class="form-control form-select select-sm years" id="snapshot-id-2-51-ytyt-year">
                     <option value="2014">
                       2014
                     </option>
@@ -2274,7 +2274,7 @@ exports[`date-range-time-picker-component layout and accessibility horizontal la
               <div class="range-picker">
                 <div aria-label="Calendars" class="calendar-wrapper" tabindex="0">
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-51-tkcz-grid-start-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-51-ytyt-grid-start-caption">
                       October 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -2300,7 +2300,7 @@ exports[`date-range-time-picker-component layout and accessibility horizontal la
                         Sat
                       </small>
                     </div>
-                    <div aria-label="Calendar for October 2026" aria-labelledby="snapshot-id-2-51-tkcz-grid-start-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-51-tkcz-grid-start" role="grid">
+                    <div aria-label="Calendar for October 2026" aria-labelledby="snapshot-id-2-51-ytyt-grid-start-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-51-ytyt-grid-start" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="September 27, 2026" class="calendar-grid-item previous-month-day" data-date="2026-09-27" data-day="27" data-month="9" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light rounded-circle text-muted text-nowrap">
@@ -2355,7 +2355,7 @@ exports[`date-range-time-picker-component layout and accessibility horizontal la
                           </span>
                         </div>
                         <div aria-label="October 7, 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
@@ -2387,7 +2387,7 @@ exports[`date-range-time-picker-component layout and accessibility horizontal la
                           </span>
                         </div>
                         <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
@@ -2526,7 +2526,7 @@ exports[`date-range-time-picker-component layout and accessibility horizontal la
                     </div>
                   </div>
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-51-tkcz-grid-end-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-51-ytyt-grid-end-caption">
                       November 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -2552,7 +2552,7 @@ exports[`date-range-time-picker-component layout and accessibility horizontal la
                         Sat
                       </small>
                     </div>
-                    <div aria-label="Calendar for November 2026" aria-labelledby="snapshot-id-2-51-tkcz-grid-end-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-51-tkcz-grid-end" role="grid">
+                    <div aria-label="Calendar for November 2026" aria-labelledby="snapshot-id-2-51-ytyt-grid-end-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-51-ytyt-grid-end" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="November 1, 2026" class="calendar-grid-item cem-first-day" data-date="2026-11-01" data-day="1" data-month="11" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
@@ -2783,8 +2783,8 @@ exports[`date-range-time-picker-component layout and accessibility horizontal la
                     Use cursor keys to navigate calendar dates
                   </div>
                 </footer>
-                <div aria-labelledby="snapshot-id-2-51-tkcz-date-ranges-title" class="date-range-display" role="region" tabindex="0">
-                  <div class="sr-only visually-hidden" id="snapshot-id-2-51-tkcz-date-ranges-title">
+                <div aria-labelledby="snapshot-id-2-51-ytyt-date-ranges-title" class="date-range-display" role="region" tabindex="0">
+                  <div class="sr-only visually-hidden" id="snapshot-id-2-51-ytyt-date-ranges-title">
                     Selected date and time range
                   </div>
                   <div class="date-ranges">
@@ -2792,23 +2792,23 @@ exports[`date-range-time-picker-component layout and accessibility horizontal la
                       <span class="start-date">
                         N/A
                       </span>
-                      <label class="sr-only visually-hidden" for="snapshot-id-2-51-tkcz-start-time" id="snapshot-id-2-51-tkcz-start-time-label">
+                      <label class="sr-only visually-hidden" for="snapshot-id-2-51-ytyt-start-time" id="snapshot-id-2-51-ytyt-start-time-label">
                         Start time
                       </label>
-                      <input aria-describedby="snapshot-id-2-51-tkcz-warning" aria-labelledby="snapshot-id-2-51-tkcz-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" id="snapshot-id-2-51-tkcz-start-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
+                      <input aria-describedby="snapshot-id-2-51-ytyt-warning" aria-labelledby="snapshot-id-2-51-ytyt-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" id="snapshot-id-2-51-ytyt-start-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
                       <span class="to-spacing">
                         -
                       </span>
                       <span class="end-date">
                         N/A
                       </span>
-                      <label class="sr-only visually-hidden" for="snapshot-id-2-51-tkcz-end-time" id="snapshot-id-2-51-tkcz-end-time-label">
+                      <label class="sr-only visually-hidden" for="snapshot-id-2-51-ytyt-end-time" id="snapshot-id-2-51-ytyt-end-time-label">
                         End time
                       </label>
-                      <input aria-describedby="snapshot-id-2-51-tkcz-warning" aria-labelledby="snapshot-id-2-51-tkcz-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="snapshot-id-2-51-tkcz-end-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
+                      <input aria-describedby="snapshot-id-2-51-ytyt-warning" aria-labelledby="snapshot-id-2-51-ytyt-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="snapshot-id-2-51-ytyt-end-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
                     </span>
                   </div>
-                  <div aria-live="assertive" class="warning-message" id="snapshot-id-2-51-tkcz-warning"></div>
+                  <div aria-live="assertive" class="warning-message" id="snapshot-id-2-51-ytyt-warning"></div>
                 </div>
               </div>
               <div class="ok-button">
@@ -3073,7 +3073,7 @@ exports[`date-range-time-picker-component layout and accessibility main input AR
                           </span>
                         </div>
                         <div aria-label="October 7, 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
@@ -3105,7 +3105,7 @@ exports[`date-range-time-picker-component layout and accessibility main input AR
                           </span>
                         </div>
                         <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
@@ -3558,9 +3558,9 @@ exports[`date-range-time-picker-component rendering renders Plumage input varian
             <div>
               <div aria-label="Date and time picker group" class="drtp input-group nowrap" role="group" tabindex="0">
                 <div class="drp-input-field">
-                  <input aria-describedby="snapshot-id-2-4-1x0v-dialog-desc" aria-labelledby="snapshot-id-1" autocomplete="off" class="form-control" id="snapshot-id-2" placeholder="YYYY-MM-DD HH:MM - YYYY-MM-DD HH:MM" type="text" value="">
+                  <input aria-describedby="snapshot-id-2-4-x4rz-dialog-desc" aria-labelledby="snapshot-id-1" autocomplete="off" class="form-control" id="snapshot-id-2" placeholder="YYYY-MM-DD HH:MM - YYYY-MM-DD HH:MM" type="text" value="">
                 </div>
-                <button aria-controls="snapshot-id-2-4-1x0v-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text" type="button">
+                <button aria-controls="snapshot-id-2-4-x4rz-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text" type="button">
                   <i aria-hidden="true" class="fa-calendar-alt fas"></i>
                 </button>
               </div>
@@ -3570,12 +3570,12 @@ exports[`date-range-time-picker-component rendering renders Plumage input varian
             </div>
           </div>
         </div>
-        <div class="dropdown" id="snapshot-id-2-4-1x0v-dropdown">
-          <div aria-describedby="snapshot-id-2-4-1x0v-dialog-desc" aria-labelledby="snapshot-id-2-4-1x0v-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
-            <div class="sr-only visually-hidden" id="snapshot-id-2-4-1x0v-dialog-title">
+        <div class="dropdown" id="snapshot-id-2-4-x4rz-dropdown">
+          <div aria-describedby="snapshot-id-2-4-x4rz-dialog-desc" aria-labelledby="snapshot-id-2-4-x4rz-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
+            <div class="sr-only visually-hidden" id="snapshot-id-2-4-x4rz-dialog-title">
               Date and Time Picker
             </div>
-            <div class="sr-only visually-hidden" id="snapshot-id-2-4-1x0v-dialog-desc">
+            <div class="sr-only visually-hidden" id="snapshot-id-2-4-x4rz-dialog-desc">
               Select a start date and end date. Use arrow keys to navigate days. Press Enter to select. Enter times in HH:MM.
             </div>
             <div class="date-picker">
@@ -3587,11 +3587,11 @@ exports[`date-range-time-picker-component rendering renders Plumage input varian
                     </svg>
                   </button>
                   <div class="selectors">
-                    <label class="sr-only visually-hidden" for="snapshot-id-2-4-1x0v-months" id="snapshot-id-2-4-1x0v-month-label">
+                    <label class="sr-only visually-hidden" for="snapshot-id-2-4-x4rz-months" id="snapshot-id-2-4-x4rz-month-label">
                       Select month
                     </label>
                     <div class="input-container me-2" role="presentation">
-                      <select aria-labelledby="snapshot-id-2-4-1x0v-month-label" class="form-control form-select months select-sm" id="snapshot-id-2-4-1x0v-months">
+                      <select aria-labelledby="snapshot-id-2-4-x4rz-month-label" class="form-control form-select months select-sm" id="snapshot-id-2-4-x4rz-months">
                         <option value="0">
                           January
                         </option>
@@ -3633,11 +3633,11 @@ exports[`date-range-time-picker-component rendering renders Plumage input varian
                         <div aria-hidden="true" class="b-focus" role="presentation"></div>
                       </div>
                     </div>
-                    <label class="sr-only visually-hidden" for="snapshot-id-2-4-1x0v-year" id="snapshot-id-2-4-1x0v-year-label">
+                    <label class="sr-only visually-hidden" for="snapshot-id-2-4-x4rz-year" id="snapshot-id-2-4-x4rz-year-label">
                       Select year
                     </label>
                     <div class="input-container me-2" role="presentation">
-                      <select aria-labelledby="snapshot-id-2-4-1x0v-year-label" class="form-control form-select select-sm years" id="snapshot-id-2-4-1x0v-year">
+                      <select aria-labelledby="snapshot-id-2-4-x4rz-year-label" class="form-control form-select select-sm years" id="snapshot-id-2-4-x4rz-year">
                         <option value="2014">
                           2014
                         </option>
@@ -3721,7 +3721,7 @@ exports[`date-range-time-picker-component rendering renders Plumage input varian
                 <div class="range-picker">
                   <div aria-label="Calendars" class="calendar-wrapper" tabindex="0">
                     <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                      <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-4-1x0v-grid-start-caption">
+                      <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-4-x4rz-grid-start-caption">
                         October 2026
                       </div>
                       <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -3747,7 +3747,7 @@ exports[`date-range-time-picker-component rendering renders Plumage input varian
                           Sat
                         </small>
                       </div>
-                      <div aria-label="Calendar for October 2026" aria-labelledby="snapshot-id-2-4-1x0v-grid-start-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-4-1x0v-grid-start" role="grid">
+                      <div aria-label="Calendar for October 2026" aria-labelledby="snapshot-id-2-4-x4rz-grid-start-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-4-x4rz-grid-start" role="grid">
                         <div class="calendar-grid-row" role="row" style="display: contents;">
                           <div aria-label="September 27, 2026" class="calendar-grid-item previous-month-day" data-date="2026-09-27" data-day="27" data-month="9" data-year="2026" role="gridcell" tabindex="-1">
                             <span class="border-0 btn dp-btn-outline-light rounded-circle text-muted text-nowrap">
@@ -3802,7 +3802,7 @@ exports[`date-range-time-picker-component rendering renders Plumage input varian
                             </span>
                           </div>
                           <div aria-label="October 7, 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                            <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                            <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                               7
                             </span>
                           </div>
@@ -3834,7 +3834,7 @@ exports[`date-range-time-picker-component rendering renders Plumage input varian
                             </span>
                           </div>
                           <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                            <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                            <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                               13
                             </span>
                           </div>
@@ -3973,7 +3973,7 @@ exports[`date-range-time-picker-component rendering renders Plumage input varian
                       </div>
                     </div>
                     <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                      <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-4-1x0v-grid-end-caption">
+                      <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-4-x4rz-grid-end-caption">
                         November 2026
                       </div>
                       <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -3999,7 +3999,7 @@ exports[`date-range-time-picker-component rendering renders Plumage input varian
                           Sat
                         </small>
                       </div>
-                      <div aria-label="Calendar for November 2026" aria-labelledby="snapshot-id-2-4-1x0v-grid-end-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-4-1x0v-grid-end" role="grid">
+                      <div aria-label="Calendar for November 2026" aria-labelledby="snapshot-id-2-4-x4rz-grid-end-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-4-x4rz-grid-end" role="grid">
                         <div class="calendar-grid-row" role="row" style="display: contents;">
                           <div aria-label="November 1, 2026" class="calendar-grid-item cem-first-day" data-date="2026-11-01" data-day="1" data-month="11" data-year="2026" role="gridcell" tabindex="-1">
                             <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
@@ -4230,8 +4230,8 @@ exports[`date-range-time-picker-component rendering renders Plumage input varian
                       Use cursor keys to navigate calendar dates
                     </div>
                   </footer>
-                  <div aria-labelledby="snapshot-id-2-4-1x0v-date-ranges-title" class="date-range-display" role="region" tabindex="0">
-                    <div class="sr-only visually-hidden" id="snapshot-id-2-4-1x0v-date-ranges-title">
+                  <div aria-labelledby="snapshot-id-2-4-x4rz-date-ranges-title" class="date-range-display" role="region" tabindex="0">
+                    <div class="sr-only visually-hidden" id="snapshot-id-2-4-x4rz-date-ranges-title">
                       Selected date and time range
                     </div>
                     <div class="date-ranges">
@@ -4239,11 +4239,11 @@ exports[`date-range-time-picker-component rendering renders Plumage input varian
                         <span class="start-date">
                           N/A
                         </span>
-                        <label class="sr-only visually-hidden" for="snapshot-id-2-4-1x0v-start-time" id="snapshot-id-2-4-1x0v-start-time-label">
+                        <label class="sr-only visually-hidden" for="snapshot-id-2-4-x4rz-start-time" id="snapshot-id-2-4-x4rz-start-time-label">
                           Start time
                         </label>
                         <div class="input-container" role="presentation">
-                          <input aria-describedby="snapshot-id-2-4-1x0v-warning" aria-labelledby="snapshot-id-2-4-1x0v-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" id="snapshot-id-2-4-1x0v-start-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
+                          <input aria-describedby="snapshot-id-2-4-x4rz-warning" aria-labelledby="snapshot-id-2-4-x4rz-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" id="snapshot-id-2-4-x4rz-start-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
                           <div class="b-underline" role="presentation">
                             <div aria-hidden="true" class="b-focus" role="presentation"></div>
                           </div>
@@ -4254,18 +4254,18 @@ exports[`date-range-time-picker-component rendering renders Plumage input varian
                         <span class="end-date">
                           N/A
                         </span>
-                        <label class="sr-only visually-hidden" for="snapshot-id-2-4-1x0v-end-time" id="snapshot-id-2-4-1x0v-end-time-label">
+                        <label class="sr-only visually-hidden" for="snapshot-id-2-4-x4rz-end-time" id="snapshot-id-2-4-x4rz-end-time-label">
                           End time
                         </label>
                         <div class="input-container" role="presentation">
-                          <input aria-describedby="snapshot-id-2-4-1x0v-warning" aria-labelledby="snapshot-id-2-4-1x0v-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="snapshot-id-2-4-1x0v-end-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
+                          <input aria-describedby="snapshot-id-2-4-x4rz-warning" aria-labelledby="snapshot-id-2-4-x4rz-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="snapshot-id-2-4-x4rz-end-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
                           <div class="b-underline" role="presentation">
                             <div aria-hidden="true" class="b-focus" role="presentation"></div>
                           </div>
                         </div>
                       </span>
                     </div>
-                    <div aria-live="assertive" class="warning-message" id="snapshot-id-2-4-1x0v-warning"></div>
+                    <div aria-live="assertive" class="warning-message" id="snapshot-id-2-4-x4rz-warning"></div>
                   </div>
                 </div>
                 <div class="ok-button">
@@ -4296,22 +4296,22 @@ exports[`date-range-time-picker-component rendering renders input mode by defaul
         <div>
           <div aria-label="Date and time picker group" class="input-group" role="group">
             <div class="drp-input-field">
-              <input aria-describedby="snapshot-id-2-1-i5dd-dialog-desc" aria-labelledby="snapshot-id-1" autocomplete="off" class="form-control" id="snapshot-id-2" placeholder="YYYY-MM-DD HH:MM - YYYY-MM-DD HH:MM" type="text" value="">
+              <input aria-describedby="snapshot-id-2-1-ahr6-dialog-desc" aria-labelledby="snapshot-id-1" autocomplete="off" class="form-control" id="snapshot-id-2" placeholder="YYYY-MM-DD HH:MM - YYYY-MM-DD HH:MM" type="text" value="">
             </div>
             <div class="input-group-append">
-              <button aria-controls="snapshot-id-2-1-i5dd-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text" type="button">
+              <button aria-controls="snapshot-id-2-1-ahr6-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text" type="button">
                 <i aria-hidden="true" class="fa-calendar-alt fas"></i>
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div class="dropdown" id="snapshot-id-2-1-i5dd-dropdown">
-        <div aria-describedby="snapshot-id-2-1-i5dd-dialog-desc" aria-labelledby="snapshot-id-2-1-i5dd-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
-          <div class="sr-only visually-hidden" id="snapshot-id-2-1-i5dd-dialog-title">
+      <div class="dropdown" id="snapshot-id-2-1-ahr6-dropdown">
+        <div aria-describedby="snapshot-id-2-1-ahr6-dialog-desc" aria-labelledby="snapshot-id-2-1-ahr6-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
+          <div class="sr-only visually-hidden" id="snapshot-id-2-1-ahr6-dialog-title">
             Date and Time Picker
           </div>
-          <div class="sr-only visually-hidden" id="snapshot-id-2-1-i5dd-dialog-desc">
+          <div class="sr-only visually-hidden" id="snapshot-id-2-1-ahr6-dialog-desc">
             Select a start date and end date. Use arrow keys to navigate days. Press Enter to select. Enter times in HH:MM.
           </div>
           <div class="date-picker">
@@ -4323,10 +4323,10 @@ exports[`date-range-time-picker-component rendering renders input mode by defaul
                   </svg>
                 </button>
                 <div class="selectors">
-                  <label class="sr-only visually-hidden" for="snapshot-id-2-1-i5dd-months" id="snapshot-id-2-1-i5dd-month-label">
+                  <label class="sr-only visually-hidden" for="snapshot-id-2-1-ahr6-months" id="snapshot-id-2-1-ahr6-month-label">
                     Select month
                   </label>
-                  <select aria-labelledby="snapshot-id-2-1-i5dd-month-label" class="form-control form-select months select-sm" id="snapshot-id-2-1-i5dd-months">
+                  <select aria-labelledby="snapshot-id-2-1-ahr6-month-label" class="form-control form-select months select-sm" id="snapshot-id-2-1-ahr6-months">
                     <option value="0">
                       January
                     </option>
@@ -4364,10 +4364,10 @@ exports[`date-range-time-picker-component rendering renders input mode by defaul
                       December
                     </option>
                   </select>
-                  <label class="sr-only visually-hidden" for="snapshot-id-2-1-i5dd-year" id="snapshot-id-2-1-i5dd-year-label">
+                  <label class="sr-only visually-hidden" for="snapshot-id-2-1-ahr6-year" id="snapshot-id-2-1-ahr6-year-label">
                     Select year
                   </label>
-                  <select aria-labelledby="snapshot-id-2-1-i5dd-year-label" class="form-control form-select select-sm years" id="snapshot-id-2-1-i5dd-year">
+                  <select aria-labelledby="snapshot-id-2-1-ahr6-year-label" class="form-control form-select select-sm years" id="snapshot-id-2-1-ahr6-year">
                     <option value="2014">
                       2014
                     </option>
@@ -4447,7 +4447,7 @@ exports[`date-range-time-picker-component rendering renders input mode by defaul
               <div class="range-picker">
                 <div aria-label="Calendars" class="calendar-wrapper" tabindex="0">
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-1-i5dd-grid-start-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-1-ahr6-grid-start-caption">
                       October 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -4473,7 +4473,7 @@ exports[`date-range-time-picker-component rendering renders input mode by defaul
                         Sat
                       </small>
                     </div>
-                    <div aria-label="Calendar for October 2026" aria-labelledby="snapshot-id-2-1-i5dd-grid-start-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-1-i5dd-grid-start" role="grid">
+                    <div aria-label="Calendar for October 2026" aria-labelledby="snapshot-id-2-1-ahr6-grid-start-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-1-ahr6-grid-start" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="September 27, 2026" class="calendar-grid-item previous-month-day" data-date="2026-09-27" data-day="27" data-month="9" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light rounded-circle text-muted text-nowrap">
@@ -4528,7 +4528,7 @@ exports[`date-range-time-picker-component rendering renders input mode by defaul
                           </span>
                         </div>
                         <div aria-label="October 7, 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
@@ -4560,7 +4560,7 @@ exports[`date-range-time-picker-component rendering renders input mode by defaul
                           </span>
                         </div>
                         <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
@@ -4699,7 +4699,7 @@ exports[`date-range-time-picker-component rendering renders input mode by defaul
                     </div>
                   </div>
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-1-i5dd-grid-end-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-1-ahr6-grid-end-caption">
                       November 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -4725,7 +4725,7 @@ exports[`date-range-time-picker-component rendering renders input mode by defaul
                         Sat
                       </small>
                     </div>
-                    <div aria-label="Calendar for November 2026" aria-labelledby="snapshot-id-2-1-i5dd-grid-end-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-1-i5dd-grid-end" role="grid">
+                    <div aria-label="Calendar for November 2026" aria-labelledby="snapshot-id-2-1-ahr6-grid-end-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-1-ahr6-grid-end" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="November 1, 2026" class="calendar-grid-item cem-first-day" data-date="2026-11-01" data-day="1" data-month="11" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
@@ -4956,8 +4956,8 @@ exports[`date-range-time-picker-component rendering renders input mode by defaul
                     Use cursor keys to navigate calendar dates
                   </div>
                 </footer>
-                <div aria-labelledby="snapshot-id-2-1-i5dd-date-ranges-title" class="date-range-display" role="region" tabindex="0">
-                  <div class="sr-only visually-hidden" id="snapshot-id-2-1-i5dd-date-ranges-title">
+                <div aria-labelledby="snapshot-id-2-1-ahr6-date-ranges-title" class="date-range-display" role="region" tabindex="0">
+                  <div class="sr-only visually-hidden" id="snapshot-id-2-1-ahr6-date-ranges-title">
                     Selected date and time range
                   </div>
                   <div class="date-ranges">
@@ -4965,23 +4965,23 @@ exports[`date-range-time-picker-component rendering renders input mode by defaul
                       <span class="start-date">
                         N/A
                       </span>
-                      <label class="sr-only visually-hidden" for="snapshot-id-2-1-i5dd-start-time" id="snapshot-id-2-1-i5dd-start-time-label">
+                      <label class="sr-only visually-hidden" for="snapshot-id-2-1-ahr6-start-time" id="snapshot-id-2-1-ahr6-start-time-label">
                         Start time
                       </label>
-                      <input aria-describedby="snapshot-id-2-1-i5dd-warning" aria-labelledby="snapshot-id-2-1-i5dd-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" id="snapshot-id-2-1-i5dd-start-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
+                      <input aria-describedby="snapshot-id-2-1-ahr6-warning" aria-labelledby="snapshot-id-2-1-ahr6-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" id="snapshot-id-2-1-ahr6-start-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
                       <span class="to-spacing">
                         -
                       </span>
                       <span class="end-date">
                         N/A
                       </span>
-                      <label class="sr-only visually-hidden" for="snapshot-id-2-1-i5dd-end-time" id="snapshot-id-2-1-i5dd-end-time-label">
+                      <label class="sr-only visually-hidden" for="snapshot-id-2-1-ahr6-end-time" id="snapshot-id-2-1-ahr6-end-time-label">
                         End time
                       </label>
-                      <input aria-describedby="snapshot-id-2-1-i5dd-warning" aria-labelledby="snapshot-id-2-1-i5dd-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="snapshot-id-2-1-i5dd-end-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
+                      <input aria-describedby="snapshot-id-2-1-ahr6-warning" aria-labelledby="snapshot-id-2-1-ahr6-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="snapshot-id-2-1-ahr6-end-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
                     </span>
                   </div>
-                  <div aria-live="assertive" class="warning-message" id="snapshot-id-2-1-i5dd-warning"></div>
+                  <div aria-live="assertive" class="warning-message" id="snapshot-id-2-1-ahr6-warning"></div>
                 </div>
               </div>
               <div class="ok-button">
@@ -5214,7 +5214,7 @@ exports[`date-range-time-picker-component rendering renders rangeTimePicker mode
                   </span>
                 </div>
                 <div aria-label="October 7, 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                  <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                  <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                     7
                   </span>
                 </div>
@@ -5246,7 +5246,7 @@ exports[`date-range-time-picker-component rendering renders rangeTimePicker mode
                   </span>
                 </div>
                 <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                  <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                  <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                     13
                   </span>
                 </div>
@@ -5688,28 +5688,28 @@ exports[`date-range-time-picker-component typed input marks incomplete typed dat
         <div>
           <div aria-label="Date and time picker group" class="input-group is-invalid" role="group">
             <div class="drp-input-field">
-              <input aria-describedby="snapshot-id-2-29-t61k-dialog-desc snapshot-id-2-29-t61k-validation" aria-invalid="true" aria-labelledby="snapshot-id-1" autocomplete="off" class="form-control is-invalid" id="snapshot-id-2" placeholder="YYYY-MM-DD HH:MM - YYYY-MM-DD HH:MM" type="text" value="2026-01">
+              <input aria-describedby="snapshot-id-2-29-zajq-dialog-desc snapshot-id-2-29-zajq-validation" aria-invalid="true" aria-labelledby="snapshot-id-1" autocomplete="off" class="form-control is-invalid" id="snapshot-id-2" placeholder="YYYY-MM-DD HH:MM - YYYY-MM-DD HH:MM" type="text" value="2026-01">
               <button aria-label="Clear date and time range" class="clear-input-button" type="button">
                 <i aria-hidden="true" class="fa-times-circle fas"></i>
               </button>
             </div>
             <div class="input-group-append">
-              <button aria-controls="snapshot-id-2-29-t61k-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text is-invalid" type="button">
+              <button aria-controls="snapshot-id-2-29-zajq-dropdown" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle calendar picker" class="btn calendar-button input-group-text is-invalid" type="button">
                 <i aria-hidden="true" class="fa-calendar-alt fas"></i>
               </button>
             </div>
           </div>
-          <div class="invalid-feedback validation" id="snapshot-id-2-29-t61k-validation">
+          <div class="invalid-feedback validation" id="snapshot-id-2-29-zajq-validation">
             Please enter a valid date/time range.
           </div>
         </div>
       </div>
-      <div class="dropdown" id="snapshot-id-2-29-t61k-dropdown">
-        <div aria-describedby="snapshot-id-2-29-t61k-dialog-desc" aria-labelledby="snapshot-id-2-29-t61k-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
-          <div class="sr-only visually-hidden" id="snapshot-id-2-29-t61k-dialog-title">
+      <div class="dropdown" id="snapshot-id-2-29-zajq-dropdown">
+        <div aria-describedby="snapshot-id-2-29-zajq-dialog-desc" aria-labelledby="snapshot-id-2-29-zajq-dialog-title" aria-modal="true" class="dropdown-content" role="dialog" tabindex="-1">
+          <div class="sr-only visually-hidden" id="snapshot-id-2-29-zajq-dialog-title">
             Date and Time Picker
           </div>
-          <div class="sr-only visually-hidden" id="snapshot-id-2-29-t61k-dialog-desc">
+          <div class="sr-only visually-hidden" id="snapshot-id-2-29-zajq-dialog-desc">
             Select a start date and end date. Use arrow keys to navigate days. Press Enter to select. Enter times in HH:MM.
           </div>
           <div class="date-picker">
@@ -5721,10 +5721,10 @@ exports[`date-range-time-picker-component typed input marks incomplete typed dat
                   </svg>
                 </button>
                 <div class="selectors">
-                  <label class="sr-only visually-hidden" for="snapshot-id-2-29-t61k-months" id="snapshot-id-2-29-t61k-month-label">
+                  <label class="sr-only visually-hidden" for="snapshot-id-2-29-zajq-months" id="snapshot-id-2-29-zajq-month-label">
                     Select month
                   </label>
-                  <select aria-labelledby="snapshot-id-2-29-t61k-month-label" class="form-control form-select months select-sm" id="snapshot-id-2-29-t61k-months">
+                  <select aria-labelledby="snapshot-id-2-29-zajq-month-label" class="form-control form-select months select-sm" id="snapshot-id-2-29-zajq-months">
                     <option value="0">
                       January
                     </option>
@@ -5762,10 +5762,10 @@ exports[`date-range-time-picker-component typed input marks incomplete typed dat
                       December
                     </option>
                   </select>
-                  <label class="sr-only visually-hidden" for="snapshot-id-2-29-t61k-year" id="snapshot-id-2-29-t61k-year-label">
+                  <label class="sr-only visually-hidden" for="snapshot-id-2-29-zajq-year" id="snapshot-id-2-29-zajq-year-label">
                     Select year
                   </label>
-                  <select aria-labelledby="snapshot-id-2-29-t61k-year-label" class="form-control form-select select-sm years" id="snapshot-id-2-29-t61k-year">
+                  <select aria-labelledby="snapshot-id-2-29-zajq-year-label" class="form-control form-select select-sm years" id="snapshot-id-2-29-zajq-year">
                     <option value="2014">
                       2014
                     </option>
@@ -5845,7 +5845,7 @@ exports[`date-range-time-picker-component typed input marks incomplete typed dat
               <div class="range-picker">
                 <div aria-label="Calendars" class="calendar-wrapper" tabindex="0">
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-29-t61k-grid-start-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-29-zajq-grid-start-caption">
                       October 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -5871,7 +5871,7 @@ exports[`date-range-time-picker-component typed input marks incomplete typed dat
                         Sat
                       </small>
                     </div>
-                    <div aria-label="Calendar for October 2026" aria-labelledby="snapshot-id-2-29-t61k-grid-start-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-29-t61k-grid-start" role="grid">
+                    <div aria-label="Calendar for October 2026" aria-labelledby="snapshot-id-2-29-zajq-grid-start-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-29-zajq-grid-start" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="September 27, 2026" class="calendar-grid-item previous-month-day" data-date="2026-09-27" data-day="27" data-month="9" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light rounded-circle text-muted text-nowrap">
@@ -5926,7 +5926,7 @@ exports[`date-range-time-picker-component typed input marks incomplete typed dat
                           </span>
                         </div>
                         <div aria-label="October 7, 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
@@ -5958,7 +5958,7 @@ exports[`date-range-time-picker-component typed input marks incomplete typed dat
                           </span>
                         </div>
                         <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
@@ -6097,7 +6097,7 @@ exports[`date-range-time-picker-component typed input marks incomplete typed dat
                     </div>
                   </div>
                   <div class="calendar dp-calendar form-control h-auto pt-2 text-center">
-                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-29-t61k-grid-end-caption">
+                    <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="snapshot-id-2-29-zajq-grid-end-caption">
                       November 2026
                     </div>
                     <div aria-hidden="true" class="calendar-grid-weekdays" role="row">
@@ -6123,7 +6123,7 @@ exports[`date-range-time-picker-component typed input marks incomplete typed dat
                         Sat
                       </small>
                     </div>
-                    <div aria-label="Calendar for November 2026" aria-labelledby="snapshot-id-2-29-t61k-grid-end-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-29-t61k-grid-end" role="grid">
+                    <div aria-label="Calendar for November 2026" aria-labelledby="snapshot-id-2-29-zajq-grid-end-caption" aria-roledescription="Calendar" class="calendar-grid" id="snapshot-id-2-29-zajq-grid-end" role="grid">
                       <div class="calendar-grid-row" role="row" style="display: contents;">
                         <div aria-label="November 1, 2026" class="calendar-grid-item cem-first-day" data-date="2026-11-01" data-day="1" data-month="11" data-year="2026" role="gridcell" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
@@ -6354,8 +6354,8 @@ exports[`date-range-time-picker-component typed input marks incomplete typed dat
                     Use cursor keys to navigate calendar dates
                   </div>
                 </footer>
-                <div aria-labelledby="snapshot-id-2-29-t61k-date-ranges-title" class="date-range-display" role="region" tabindex="0">
-                  <div class="sr-only visually-hidden" id="snapshot-id-2-29-t61k-date-ranges-title">
+                <div aria-labelledby="snapshot-id-2-29-zajq-date-ranges-title" class="date-range-display" role="region" tabindex="0">
+                  <div class="sr-only visually-hidden" id="snapshot-id-2-29-zajq-date-ranges-title">
                     Selected date and time range
                   </div>
                   <div class="date-ranges">
@@ -6363,23 +6363,23 @@ exports[`date-range-time-picker-component typed input marks incomplete typed dat
                       <span class="start-date">
                         N/A
                       </span>
-                      <label class="sr-only visually-hidden" for="snapshot-id-2-29-t61k-start-time" id="snapshot-id-2-29-t61k-start-time-label">
+                      <label class="sr-only visually-hidden" for="snapshot-id-2-29-zajq-start-time" id="snapshot-id-2-29-zajq-start-time-label">
                         Start time
                       </label>
-                      <input aria-describedby="snapshot-id-2-29-t61k-warning snapshot-id-2-29-t61k-validation" aria-invalid="true" aria-labelledby="snapshot-id-2-29-t61k-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" id="snapshot-id-2-29-t61k-start-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
+                      <input aria-describedby="snapshot-id-2-29-zajq-warning snapshot-id-2-29-zajq-validation" aria-invalid="true" aria-labelledby="snapshot-id-2-29-zajq-start-time-label" autocomplete="off" class="form-control time-input" data-type="start" id="snapshot-id-2-29-zajq-start-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
                       <span class="to-spacing">
                         -
                       </span>
                       <span class="end-date">
                         N/A
                       </span>
-                      <label class="sr-only visually-hidden" for="snapshot-id-2-29-t61k-end-time" id="snapshot-id-2-29-t61k-end-time-label">
+                      <label class="sr-only visually-hidden" for="snapshot-id-2-29-zajq-end-time" id="snapshot-id-2-29-zajq-end-time-label">
                         End time
                       </label>
-                      <input aria-describedby="snapshot-id-2-29-t61k-warning snapshot-id-2-29-t61k-validation" aria-invalid="true" aria-labelledby="snapshot-id-2-29-t61k-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="snapshot-id-2-29-t61k-end-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
+                      <input aria-describedby="snapshot-id-2-29-zajq-warning snapshot-id-2-29-zajq-validation" aria-invalid="true" aria-labelledby="snapshot-id-2-29-zajq-end-time-label" autocomplete="off" class="form-control time-input" data-type="end" id="snapshot-id-2-29-zajq-end-time" inputmode="numeric" maxlength="5" type="text" value="00:00">
                     </span>
                   </div>
-                  <div aria-live="assertive" class="warning-message" id="snapshot-id-2-29-t61k-warning"></div>
+                  <div aria-live="assertive" class="warning-message" id="snapshot-id-2-29-zajq-warning"></div>
                 </div>
               </div>
               <div class="ok-button">

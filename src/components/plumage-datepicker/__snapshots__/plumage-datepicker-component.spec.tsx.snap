@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`plumage-datepicker-component clearing the input becomes invalid immediately when validation is enabled: required-validation-invalid 1`] = `
-<plumage-datepicker-component append="" append-id="" current-month="9" current-year="2026" date-format="YYYY-MM-DD" form-layout="" icon="fas fa-calendar-alt" input-id="datepicker-1791400077729-9e9013746deb2" label="Date" placeholder="YYYY-MM-DD" prepend-id="" required="" size="" validation="" validation-message="Please select a date." value="" warning-message="">
+<plumage-datepicker-component append="" append-id="" current-month="9" current-year="2026" date-format="YYYY-MM-DD" form-layout="" icon="fas fa-calendar-alt" input-id="datepicker-1791907418930-da41271017a4f" label="Date" placeholder="YYYY-MM-DD" prepend-id="" required="" size="" validation="" validation-message="Please select a date." value="" warning-message="">
   <div class="stencil-component">
     <div class="date-picker">
       <div class="dropdown-wrapper">
         <div>
           <div class="form-group form-input-group">
-            <label aria-hidden="true" class="form-control-label invalid required" for="datepicker-1791400077729-9e9013746deb2" id="datepicker-1791400077729-9e9013746deb2__label">
+            <label aria-hidden="true" class="form-control-label invalid required" for="datepicker-1791907418930-da41271017a4f" id="datepicker-1791907418930-da41271017a4f__label">
               <span class="required">
                 Date
               </span>
@@ -16,29 +16,29 @@ exports[`plumage-datepicker-component clearing the input becomes invalid immedia
               </span>
             </label>
             <div>
-              <div class="sr-only" id="datepicker-1791400077729-9e9013746deb2__desc">
+              <div class="sr-only" id="datepicker-1791907418930-da41271017a4f__desc">
                 Enter a date in YYYY-MM-DD format. Use the calendar button to pick a date.
               </div>
               <div aria-label="Date Picker Group" class="input-group is-invalid" role="group">
                 <div class="drp-input-field">
-                  <input aria-describedby="datepicker-1791400077729-9e9013746deb2__desc datepicker-1791400077729-9e9013746deb2__validation" aria-invalid="true" aria-labelledby="datepicker-1791400077729-9e9013746deb2__label" class="form-control is-invalid" id="datepicker-1791400077729-9e9013746deb2" name="selectedDate" placeholder="YYYY-MM-DD" required="" type="text" value="">
+                  <input aria-describedby="datepicker-1791907418930-da41271017a4f__desc datepicker-1791907418930-da41271017a4f__validation" aria-invalid="true" aria-labelledby="datepicker-1791907418930-da41271017a4f__label" class="form-control is-invalid" id="datepicker-1791907418930-da41271017a4f" name="selectedDate" placeholder="YYYY-MM-DD" required="" type="text" value="">
                 </div>
-                <button aria-controls="datepicker-1791400077729-9e9013746deb2__dialog" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text is-invalid" type="button">
+                <button aria-controls="datepicker-1791907418930-da41271017a4f__dialog" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text is-invalid" type="button">
                   <i aria-hidden="true" class="fa-calendar-alt fas"></i>
                 </button>
               </div>
               <div class="b-underline invalid" role="presentation">
                 <div aria-hidden="true" class="b-focus invalid" role="presentation"></div>
               </div>
-              <div aria-atomic="true" aria-live="polite" class="invalid-feedback validation" id="datepicker-1791400077729-9e9013746deb2__validation">
+              <div aria-atomic="true" aria-live="polite" class="invalid-feedback validation" id="datepicker-1791907418930-da41271017a4f__validation">
                 Please select a date.
               </div>
             </div>
           </div>
         </div>
         <div class="dropdown">
-          <div aria-labelledby="datepicker-1791400077729-9e9013746deb2__dialog_title" aria-modal="" class="dropdown-content" id="datepicker-1791400077729-9e9013746deb2__dialog" role="dialog">
-            <div class="sr-only" id="datepicker-1791400077729-9e9013746deb2__dialog_title">
+          <div aria-labelledby="datepicker-1791907418930-da41271017a4f__dialog_title" aria-modal="" class="dropdown-content" id="datepicker-1791907418930-da41271017a4f__dialog" role="dialog">
+            <div class="sr-only" id="datepicker-1791907418930-da41271017a4f__dialog_title">
               Calendar date picker
             </div>
             <div class="stencil-component">
@@ -47,8 +47,8 @@ exports[`plumage-datepicker-component clearing the input becomes invalid immedia
                   <div class="calendar-inner" dir="ltr" lang="en-US" role="group">
                     <header class="datepicker" title="Selected Date"><output aria-atomic="true" aria-live="polite" class="form-control form-control-sm selected-date text-center" id="selected-date" role="status" tabindex="-1"><bdi>No date selected</bdi><bdi class="sr-only">(Selected date)</bdi></output>
                     </header>
-                    <div aria-label="Calendar Navigation" aria-labelledby="datepicker-1791400077729-9e9013746deb2__navlabel" class="calendar-nav d-flex" role="group">
-                      <span class="sr-only" id="datepicker-1791400077729-9e9013746deb2__navlabel">
+                    <div aria-label="Calendar Navigation" aria-labelledby="datepicker-1791907418930-da41271017a4f__navlabel" class="calendar-nav d-flex" role="group">
+                      <span class="sr-only" id="datepicker-1791907418930-da41271017a4f__navlabel">
                         Calendar Navigation
                       </span>
                       <button aria-keyshortcuts="Alt+PageDown" aria-label="Previous year" class="border-0 btn btn-sm dp-btn-outline-secondary flex-fill prev-year" title="Previous year" type="button">
@@ -70,8 +70,8 @@ exports[`plumage-datepicker-component clearing the input becomes invalid immedia
                         <i aria-hidden="true" class="fa-angle-double-right fas"></i>
                       </button>
                     </div>
-                    <div aria-describedby="datepicker-1791400077729-9e9013746deb2__calendar_grid" aria-label="Calendar" aria-labelledby="datepicker-1791400077729-9e9013746deb2__calendar_grid_caption" aria-roledescription="Calendar" class="calendar form-control h-auto pt-2 text-center" role="region" tabindex="0">
-                      <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="datepicker-1791400077729-9e9013746deb2__calendar_grid_caption">
+                    <div aria-describedby="datepicker-1791907418930-da41271017a4f__calendar_grid" aria-label="Calendar" aria-labelledby="datepicker-1791907418930-da41271017a4f__calendar_grid_caption" aria-roledescription="Calendar" class="calendar form-control h-auto pt-2 text-center" role="region" tabindex="0">
+                      <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="datepicker-1791907418930-da41271017a4f__calendar_grid_caption">
                         October 2026
                       </div>
                       <div aria-hidden="true" class="calendar-grid-weekdays">
@@ -97,7 +97,7 @@ exports[`plumage-datepicker-component clearing the input becomes invalid immedia
                           Sat
                         </small>
                       </div>
-                      <div class="calendar-grid" id="datepicker-1791400077729-9e9013746deb2__calendar_grid">
+                      <div class="calendar-grid" id="datepicker-1791907418930-da41271017a4f__calendar_grid">
                         <div aria-label="September 2026" class="calendar-grid-item previous-month-day" data-date="2026-09-27" data-day="27" data-month="9" data-year="2026" id="cell-2026-09-27" role="button" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light rounded-circle text-nowrap">
                             27
@@ -148,8 +148,8 @@ exports[`plumage-datepicker-component clearing the input becomes invalid immedia
                             6
                           </span>
                         </div>
-                        <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
@@ -178,8 +178,8 @@ exports[`plumage-datepicker-component clearing the input becomes invalid immedia
                             12
                           </span>
                         </div>
-                        <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
@@ -291,21 +291,21 @@ exports[`plumage-datepicker-component clearing the input becomes invalid immedia
 `;
 
 exports[`plumage-datepicker-component horizontal + labelHidden expands input to col-12 and preserves accessible naming: horizontal-label-hidden 1`] = `
-<plumage-datepicker-component append="" append-id="" current-month="9" current-year="2026" date-format="YYYY-MM-DD" form-layout="horizontal" icon="fas fa-calendar-alt" input-id="datepicker-1791400077683-cbad173611791" label="Start date" label-hidden="" placeholder="YYYY-MM-DD" prepend-id="" size="" validation-message="" value="" warning-message="">
+<plumage-datepicker-component append="" append-id="" current-month="9" current-year="2026" date-format="YYYY-MM-DD" form-layout="horizontal" icon="fas fa-calendar-alt" input-id="datepicker-1791907418883-064e608b33a97" label="Start date" label-hidden="" placeholder="YYYY-MM-DD" prepend-id="" size="" validation-message="" value="" warning-message="">
   <div class="stencil-component">
     <div class="date-picker">
       <div class="dropdown-wrapper">
         <div class="horizontal">
           <div class="form-group form-input-group horizontal row">
             <div class="col-12">
-              <div class="sr-only" id="datepicker-1791400077683-cbad173611791__desc">
+              <div class="sr-only" id="datepicker-1791907418883-064e608b33a97__desc">
                 Enter a date in YYYY-MM-DD format. Use the calendar button to pick a date.
               </div>
               <div aria-label="Date Picker Group" class="input-group" role="group">
                 <div class="drp-input-field">
-                  <input aria-describedby="datepicker-1791400077683-cbad173611791__desc" aria-label="Start date" class="form-control" id="datepicker-1791400077683-cbad173611791" name="selectedDate" placeholder="YYYY-MM-DD" type="text" value="">
+                  <input aria-describedby="datepicker-1791907418883-064e608b33a97__desc" aria-label="Start date" class="form-control" id="datepicker-1791907418883-064e608b33a97" name="selectedDate" placeholder="YYYY-MM-DD" type="text" value="">
                 </div>
-                <button aria-controls="datepicker-1791400077683-cbad173611791__dialog" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text" type="button">
+                <button aria-controls="datepicker-1791907418883-064e608b33a97__dialog" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text" type="button">
                   <i aria-hidden="true" class="fa-calendar-alt fas"></i>
                 </button>
               </div>
@@ -316,8 +316,8 @@ exports[`plumage-datepicker-component horizontal + labelHidden expands input to 
           </div>
         </div>
         <div class="dropdown">
-          <div aria-labelledby="datepicker-1791400077683-cbad173611791__dialog_title" aria-modal="" class="dropdown-content" id="datepicker-1791400077683-cbad173611791__dialog" role="dialog">
-            <div class="sr-only" id="datepicker-1791400077683-cbad173611791__dialog_title">
+          <div aria-labelledby="datepicker-1791907418883-064e608b33a97__dialog_title" aria-modal="" class="dropdown-content" id="datepicker-1791907418883-064e608b33a97__dialog" role="dialog">
+            <div class="sr-only" id="datepicker-1791907418883-064e608b33a97__dialog_title">
               Calendar date picker
             </div>
             <div class="stencil-component">
@@ -326,8 +326,8 @@ exports[`plumage-datepicker-component horizontal + labelHidden expands input to 
                   <div class="calendar-inner" dir="ltr" lang="en-US" role="group">
                     <header class="datepicker" title="Selected Date"><output aria-atomic="true" aria-live="polite" class="form-control form-control-sm selected-date text-center" id="selected-date" role="status" tabindex="-1"><bdi>No date selected</bdi><bdi class="sr-only">(Selected date)</bdi></output>
                     </header>
-                    <div aria-label="Calendar Navigation" aria-labelledby="datepicker-1791400077683-cbad173611791__navlabel" class="calendar-nav d-flex" role="group">
-                      <span class="sr-only" id="datepicker-1791400077683-cbad173611791__navlabel">
+                    <div aria-label="Calendar Navigation" aria-labelledby="datepicker-1791907418883-064e608b33a97__navlabel" class="calendar-nav d-flex" role="group">
+                      <span class="sr-only" id="datepicker-1791907418883-064e608b33a97__navlabel">
                         Calendar Navigation
                       </span>
                       <button aria-keyshortcuts="Alt+PageDown" aria-label="Previous year" class="border-0 btn btn-sm dp-btn-outline-secondary flex-fill prev-year" title="Previous year" type="button">
@@ -349,8 +349,8 @@ exports[`plumage-datepicker-component horizontal + labelHidden expands input to 
                         <i aria-hidden="true" class="fa-angle-double-right fas"></i>
                       </button>
                     </div>
-                    <div aria-describedby="datepicker-1791400077683-cbad173611791__calendar_grid" aria-label="Calendar" aria-labelledby="datepicker-1791400077683-cbad173611791__calendar_grid_caption" aria-roledescription="Calendar" class="calendar form-control h-auto pt-2 text-center" role="region" tabindex="0">
-                      <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="datepicker-1791400077683-cbad173611791__calendar_grid_caption">
+                    <div aria-describedby="datepicker-1791907418883-064e608b33a97__calendar_grid" aria-label="Calendar" aria-labelledby="datepicker-1791907418883-064e608b33a97__calendar_grid_caption" aria-roledescription="Calendar" class="calendar form-control h-auto pt-2 text-center" role="region" tabindex="0">
+                      <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="datepicker-1791907418883-064e608b33a97__calendar_grid_caption">
                         October 2026
                       </div>
                       <div aria-hidden="true" class="calendar-grid-weekdays">
@@ -376,7 +376,7 @@ exports[`plumage-datepicker-component horizontal + labelHidden expands input to 
                           Sat
                         </small>
                       </div>
-                      <div class="calendar-grid" id="datepicker-1791400077683-cbad173611791__calendar_grid">
+                      <div class="calendar-grid" id="datepicker-1791907418883-064e608b33a97__calendar_grid">
                         <div aria-label="September 2026" class="calendar-grid-item previous-month-day" data-date="2026-09-27" data-day="27" data-month="9" data-year="2026" id="cell-2026-09-27" role="button" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light rounded-circle text-nowrap">
                             27
@@ -427,8 +427,8 @@ exports[`plumage-datepicker-component horizontal + labelHidden expands input to 
                             6
                           </span>
                         </div>
-                        <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
@@ -457,8 +457,8 @@ exports[`plumage-datepicker-component horizontal + labelHidden expands input to 
                             12
                           </span>
                         </div>
-                        <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
@@ -570,26 +570,26 @@ exports[`plumage-datepicker-component horizontal + labelHidden expands input to 
 `;
 
 exports[`plumage-datepicker-component horizontal layout applies numeric label and input columns and label size: horizontal-layout 1`] = `
-<plumage-datepicker-component append="" append-id="" current-month="9" current-year="2026" date-format="YYYY-MM-DD" form-layout="horizontal" icon="fas fa-calendar-alt" input-col="9" input-id="datepicker-1791400077661-527d550bb8dec" label="Birthday" label-col="3" label-size="lg" placeholder="YYYY-MM-DD" prepend-id="" size="" validation-message="" value="" warning-message="">
+<plumage-datepicker-component append="" append-id="" current-month="9" current-year="2026" date-format="YYYY-MM-DD" form-layout="horizontal" icon="fas fa-calendar-alt" input-col="9" input-id="datepicker-1791907418860-0aaf60305575c" label="Birthday" label-col="3" label-size="lg" placeholder="YYYY-MM-DD" prepend-id="" size="" validation-message="" value="" warning-message="">
   <div class="stencil-component">
     <div class="date-picker">
       <div class="dropdown-wrapper">
         <div class="horizontal">
           <div class="form-group form-input-group horizontal row">
-            <label aria-hidden="true" class="col-3 col-form-label-lg form-control-label no-padding" for="datepicker-1791400077661-527d550bb8dec" id="datepicker-1791400077661-527d550bb8dec__label">
+            <label aria-hidden="true" class="col-3 col-form-label-lg form-control-label no-padding" for="datepicker-1791907418860-0aaf60305575c" id="datepicker-1791907418860-0aaf60305575c__label">
               <span>
                 Birthday:
               </span>
             </label>
             <div class="col-9">
-              <div class="sr-only" id="datepicker-1791400077661-527d550bb8dec__desc">
+              <div class="sr-only" id="datepicker-1791907418860-0aaf60305575c__desc">
                 Enter a date in YYYY-MM-DD format. Use the calendar button to pick a date.
               </div>
               <div aria-label="Date Picker Group" class="input-group" role="group">
                 <div class="drp-input-field">
-                  <input aria-describedby="datepicker-1791400077661-527d550bb8dec__desc" aria-labelledby="datepicker-1791400077661-527d550bb8dec__label" class="form-control" id="datepicker-1791400077661-527d550bb8dec" name="selectedDate" placeholder="YYYY-MM-DD" type="text" value="">
+                  <input aria-describedby="datepicker-1791907418860-0aaf60305575c__desc" aria-labelledby="datepicker-1791907418860-0aaf60305575c__label" class="form-control" id="datepicker-1791907418860-0aaf60305575c" name="selectedDate" placeholder="YYYY-MM-DD" type="text" value="">
                 </div>
-                <button aria-controls="datepicker-1791400077661-527d550bb8dec__dialog" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text" type="button">
+                <button aria-controls="datepicker-1791907418860-0aaf60305575c__dialog" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text" type="button">
                   <i aria-hidden="true" class="fa-calendar-alt fas"></i>
                 </button>
               </div>
@@ -600,8 +600,8 @@ exports[`plumage-datepicker-component horizontal layout applies numeric label an
           </div>
         </div>
         <div class="dropdown">
-          <div aria-labelledby="datepicker-1791400077661-527d550bb8dec__dialog_title" aria-modal="" class="dropdown-content" id="datepicker-1791400077661-527d550bb8dec__dialog" role="dialog">
-            <div class="sr-only" id="datepicker-1791400077661-527d550bb8dec__dialog_title">
+          <div aria-labelledby="datepicker-1791907418860-0aaf60305575c__dialog_title" aria-modal="" class="dropdown-content" id="datepicker-1791907418860-0aaf60305575c__dialog" role="dialog">
+            <div class="sr-only" id="datepicker-1791907418860-0aaf60305575c__dialog_title">
               Calendar date picker
             </div>
             <div class="stencil-component">
@@ -610,8 +610,8 @@ exports[`plumage-datepicker-component horizontal layout applies numeric label an
                   <div class="calendar-inner" dir="ltr" lang="en-US" role="group">
                     <header class="datepicker" title="Selected Date"><output aria-atomic="true" aria-live="polite" class="form-control form-control-sm selected-date text-center" id="selected-date" role="status" tabindex="-1"><bdi>No date selected</bdi><bdi class="sr-only">(Selected date)</bdi></output>
                     </header>
-                    <div aria-label="Calendar Navigation" aria-labelledby="datepicker-1791400077661-527d550bb8dec__navlabel" class="calendar-nav d-flex" role="group">
-                      <span class="sr-only" id="datepicker-1791400077661-527d550bb8dec__navlabel">
+                    <div aria-label="Calendar Navigation" aria-labelledby="datepicker-1791907418860-0aaf60305575c__navlabel" class="calendar-nav d-flex" role="group">
+                      <span class="sr-only" id="datepicker-1791907418860-0aaf60305575c__navlabel">
                         Calendar Navigation
                       </span>
                       <button aria-keyshortcuts="Alt+PageDown" aria-label="Previous year" class="border-0 btn btn-sm dp-btn-outline-secondary flex-fill prev-year" title="Previous year" type="button">
@@ -633,8 +633,8 @@ exports[`plumage-datepicker-component horizontal layout applies numeric label an
                         <i aria-hidden="true" class="fa-angle-double-right fas"></i>
                       </button>
                     </div>
-                    <div aria-describedby="datepicker-1791400077661-527d550bb8dec__calendar_grid" aria-label="Calendar" aria-labelledby="datepicker-1791400077661-527d550bb8dec__calendar_grid_caption" aria-roledescription="Calendar" class="calendar form-control h-auto pt-2 text-center" role="region" tabindex="0">
-                      <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="datepicker-1791400077661-527d550bb8dec__calendar_grid_caption">
+                    <div aria-describedby="datepicker-1791907418860-0aaf60305575c__calendar_grid" aria-label="Calendar" aria-labelledby="datepicker-1791907418860-0aaf60305575c__calendar_grid_caption" aria-roledescription="Calendar" class="calendar form-control h-auto pt-2 text-center" role="region" tabindex="0">
+                      <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="datepicker-1791907418860-0aaf60305575c__calendar_grid_caption">
                         October 2026
                       </div>
                       <div aria-hidden="true" class="calendar-grid-weekdays">
@@ -660,7 +660,7 @@ exports[`plumage-datepicker-component horizontal layout applies numeric label an
                           Sat
                         </small>
                       </div>
-                      <div class="calendar-grid" id="datepicker-1791400077661-527d550bb8dec__calendar_grid">
+                      <div class="calendar-grid" id="datepicker-1791907418860-0aaf60305575c__calendar_grid">
                         <div aria-label="September 2026" class="calendar-grid-item previous-month-day" data-date="2026-09-27" data-day="27" data-month="9" data-year="2026" id="cell-2026-09-27" role="button" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light rounded-circle text-nowrap">
                             27
@@ -711,8 +711,8 @@ exports[`plumage-datepicker-component horizontal layout applies numeric label an
                             6
                           </span>
                         </div>
-                        <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
@@ -741,8 +741,8 @@ exports[`plumage-datepicker-component horizontal layout applies numeric label an
                             12
                           </span>
                         </div>
-                        <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
@@ -854,21 +854,21 @@ exports[`plumage-datepicker-component horizontal layout applies numeric label an
 `;
 
 exports[`plumage-datepicker-component labelHidden uses aria-label instead of aria-labelledby: label-hidden-accessibility 1`] = `
-<plumage-datepicker-component append="" append-id="" current-month="9" current-year="2026" date-format="YYYY-MM-DD" form-layout="" icon="fas fa-calendar-alt" input-id="datepicker-1791400077817-2b83ad98132af" label="Birthday" label-hidden="" placeholder="YYYY-MM-DD" prepend-id="" size="" validation-message="" value="" warning-message="">
+<plumage-datepicker-component append="" append-id="" current-month="9" current-year="2026" date-format="YYYY-MM-DD" form-layout="" icon="fas fa-calendar-alt" input-id="datepicker-1791907419010-8fe52309e4091" label="Birthday" label-hidden="" placeholder="YYYY-MM-DD" prepend-id="" size="" validation-message="" value="" warning-message="">
   <div class="stencil-component">
     <div class="date-picker">
       <div class="dropdown-wrapper">
         <div>
           <div class="form-group form-input-group">
             <div>
-              <div class="sr-only" id="datepicker-1791400077817-2b83ad98132af__desc">
+              <div class="sr-only" id="datepicker-1791907419010-8fe52309e4091__desc">
                 Enter a date in YYYY-MM-DD format. Use the calendar button to pick a date.
               </div>
               <div aria-label="Date Picker Group" class="input-group" role="group">
                 <div class="drp-input-field">
-                  <input aria-describedby="datepicker-1791400077817-2b83ad98132af__desc" aria-label="Birthday" class="form-control" id="datepicker-1791400077817-2b83ad98132af" name="selectedDate" placeholder="YYYY-MM-DD" type="text" value="">
+                  <input aria-describedby="datepicker-1791907419010-8fe52309e4091__desc" aria-label="Birthday" class="form-control" id="datepicker-1791907419010-8fe52309e4091" name="selectedDate" placeholder="YYYY-MM-DD" type="text" value="">
                 </div>
-                <button aria-controls="datepicker-1791400077817-2b83ad98132af__dialog" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text" type="button">
+                <button aria-controls="datepicker-1791907419010-8fe52309e4091__dialog" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text" type="button">
                   <i aria-hidden="true" class="fa-calendar-alt fas"></i>
                 </button>
               </div>
@@ -879,8 +879,8 @@ exports[`plumage-datepicker-component labelHidden uses aria-label instead of ari
           </div>
         </div>
         <div class="dropdown">
-          <div aria-labelledby="datepicker-1791400077817-2b83ad98132af__dialog_title" aria-modal="" class="dropdown-content" id="datepicker-1791400077817-2b83ad98132af__dialog" role="dialog">
-            <div class="sr-only" id="datepicker-1791400077817-2b83ad98132af__dialog_title">
+          <div aria-labelledby="datepicker-1791907419010-8fe52309e4091__dialog_title" aria-modal="" class="dropdown-content" id="datepicker-1791907419010-8fe52309e4091__dialog" role="dialog">
+            <div class="sr-only" id="datepicker-1791907419010-8fe52309e4091__dialog_title">
               Calendar date picker
             </div>
             <div class="stencil-component">
@@ -889,8 +889,8 @@ exports[`plumage-datepicker-component labelHidden uses aria-label instead of ari
                   <div class="calendar-inner" dir="ltr" lang="en-US" role="group">
                     <header class="datepicker" title="Selected Date"><output aria-atomic="true" aria-live="polite" class="form-control form-control-sm selected-date text-center" id="selected-date" role="status" tabindex="-1"><bdi>No date selected</bdi><bdi class="sr-only">(Selected date)</bdi></output>
                     </header>
-                    <div aria-label="Calendar Navigation" aria-labelledby="datepicker-1791400077817-2b83ad98132af__navlabel" class="calendar-nav d-flex" role="group">
-                      <span class="sr-only" id="datepicker-1791400077817-2b83ad98132af__navlabel">
+                    <div aria-label="Calendar Navigation" aria-labelledby="datepicker-1791907419010-8fe52309e4091__navlabel" class="calendar-nav d-flex" role="group">
+                      <span class="sr-only" id="datepicker-1791907419010-8fe52309e4091__navlabel">
                         Calendar Navigation
                       </span>
                       <button aria-keyshortcuts="Alt+PageDown" aria-label="Previous year" class="border-0 btn btn-sm dp-btn-outline-secondary flex-fill prev-year" title="Previous year" type="button">
@@ -912,8 +912,8 @@ exports[`plumage-datepicker-component labelHidden uses aria-label instead of ari
                         <i aria-hidden="true" class="fa-angle-double-right fas"></i>
                       </button>
                     </div>
-                    <div aria-describedby="datepicker-1791400077817-2b83ad98132af__calendar_grid" aria-label="Calendar" aria-labelledby="datepicker-1791400077817-2b83ad98132af__calendar_grid_caption" aria-roledescription="Calendar" class="calendar form-control h-auto pt-2 text-center" role="region" tabindex="0">
-                      <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="datepicker-1791400077817-2b83ad98132af__calendar_grid_caption">
+                    <div aria-describedby="datepicker-1791907419010-8fe52309e4091__calendar_grid" aria-label="Calendar" aria-labelledby="datepicker-1791907419010-8fe52309e4091__calendar_grid_caption" aria-roledescription="Calendar" class="calendar form-control h-auto pt-2 text-center" role="region" tabindex="0">
+                      <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="datepicker-1791907419010-8fe52309e4091__calendar_grid_caption">
                         October 2026
                       </div>
                       <div aria-hidden="true" class="calendar-grid-weekdays">
@@ -939,7 +939,7 @@ exports[`plumage-datepicker-component labelHidden uses aria-label instead of ari
                           Sat
                         </small>
                       </div>
-                      <div class="calendar-grid" id="datepicker-1791400077817-2b83ad98132af__calendar_grid">
+                      <div class="calendar-grid" id="datepicker-1791907419010-8fe52309e4091__calendar_grid">
                         <div aria-label="September 2026" class="calendar-grid-item previous-month-day" data-date="2026-09-27" data-day="27" data-month="9" data-year="2026" id="cell-2026-09-27" role="button" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light rounded-circle text-nowrap">
                             27
@@ -990,8 +990,8 @@ exports[`plumage-datepicker-component labelHidden uses aria-label instead of ari
                             6
                           </span>
                         </div>
-                        <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
@@ -1020,8 +1020,8 @@ exports[`plumage-datepicker-component labelHidden uses aria-label instead of ari
                             12
                           </span>
                         </div>
-                        <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
@@ -1133,26 +1133,26 @@ exports[`plumage-datepicker-component labelHidden uses aria-label instead of ari
 `;
 
 exports[`plumage-datepicker-component renders: default-render 1`] = `
-<plumage-datepicker-component append="" append-id="" current-month="9" current-year="2026" date-format="YYYY-MM-DD" form-layout="" icon="fas fa-calendar-alt" input-id="datepicker-1791400077591-f9b70cea165d3" label="Date Picker" placeholder="YYYY-MM-DD" prepend-id="" size="" validation-message="" value="" warning-message="">
+<plumage-datepicker-component append="" append-id="" current-month="9" current-year="2026" date-format="YYYY-MM-DD" form-layout="" icon="fas fa-calendar-alt" input-id="datepicker-1791907418795-62152d692f192" label="Date Picker" placeholder="YYYY-MM-DD" prepend-id="" size="" validation-message="" value="" warning-message="">
   <div class="stencil-component">
     <div class="date-picker">
       <div class="dropdown-wrapper">
         <div>
           <div class="form-group form-input-group">
-            <label aria-hidden="true" class="form-control-label" for="datepicker-1791400077591-f9b70cea165d3" id="datepicker-1791400077591-f9b70cea165d3__label">
+            <label aria-hidden="true" class="form-control-label" for="datepicker-1791907418795-62152d692f192" id="datepicker-1791907418795-62152d692f192__label">
               <span>
                 Date Picker
               </span>
             </label>
             <div>
-              <div class="sr-only" id="datepicker-1791400077591-f9b70cea165d3__desc">
+              <div class="sr-only" id="datepicker-1791907418795-62152d692f192__desc">
                 Enter a date in YYYY-MM-DD format. Use the calendar button to pick a date.
               </div>
               <div aria-label="Date Picker Group" class="input-group" role="group">
                 <div class="drp-input-field">
-                  <input aria-describedby="datepicker-1791400077591-f9b70cea165d3__desc" aria-labelledby="datepicker-1791400077591-f9b70cea165d3__label" class="form-control" id="datepicker-1791400077591-f9b70cea165d3" name="selectedDate" placeholder="YYYY-MM-DD" type="text" value="">
+                  <input aria-describedby="datepicker-1791907418795-62152d692f192__desc" aria-labelledby="datepicker-1791907418795-62152d692f192__label" class="form-control" id="datepicker-1791907418795-62152d692f192" name="selectedDate" placeholder="YYYY-MM-DD" type="text" value="">
                 </div>
-                <button aria-controls="datepicker-1791400077591-f9b70cea165d3__dialog" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text" type="button">
+                <button aria-controls="datepicker-1791907418795-62152d692f192__dialog" aria-expanded="false" aria-haspopup="dialog" aria-label="Toggle Calendar Picker" class="btn calendar-button input-group-text" type="button">
                   <i aria-hidden="true" class="fa-calendar-alt fas"></i>
                 </button>
               </div>
@@ -1163,8 +1163,8 @@ exports[`plumage-datepicker-component renders: default-render 1`] = `
           </div>
         </div>
         <div class="dropdown">
-          <div aria-labelledby="datepicker-1791400077591-f9b70cea165d3__dialog_title" aria-modal="" class="dropdown-content" id="datepicker-1791400077591-f9b70cea165d3__dialog" role="dialog">
-            <div class="sr-only" id="datepicker-1791400077591-f9b70cea165d3__dialog_title">
+          <div aria-labelledby="datepicker-1791907418795-62152d692f192__dialog_title" aria-modal="" class="dropdown-content" id="datepicker-1791907418795-62152d692f192__dialog" role="dialog">
+            <div class="sr-only" id="datepicker-1791907418795-62152d692f192__dialog_title">
               Calendar date picker
             </div>
             <div class="stencil-component">
@@ -1173,8 +1173,8 @@ exports[`plumage-datepicker-component renders: default-render 1`] = `
                   <div class="calendar-inner" dir="ltr" lang="en-US" role="group">
                     <header class="datepicker" title="Selected Date"><output aria-atomic="true" aria-live="polite" class="form-control form-control-sm selected-date text-center" id="selected-date" role="status" tabindex="-1"><bdi>No date selected</bdi><bdi class="sr-only">(Selected date)</bdi></output>
                     </header>
-                    <div aria-label="Calendar Navigation" aria-labelledby="datepicker-1791400077591-f9b70cea165d3__navlabel" class="calendar-nav d-flex" role="group">
-                      <span class="sr-only" id="datepicker-1791400077591-f9b70cea165d3__navlabel">
+                    <div aria-label="Calendar Navigation" aria-labelledby="datepicker-1791907418795-62152d692f192__navlabel" class="calendar-nav d-flex" role="group">
+                      <span class="sr-only" id="datepicker-1791907418795-62152d692f192__navlabel">
                         Calendar Navigation
                       </span>
                       <button aria-keyshortcuts="Alt+PageDown" aria-label="Previous year" class="border-0 btn btn-sm dp-btn-outline-secondary flex-fill prev-year" title="Previous year" type="button">
@@ -1196,8 +1196,8 @@ exports[`plumage-datepicker-component renders: default-render 1`] = `
                         <i aria-hidden="true" class="fa-angle-double-right fas"></i>
                       </button>
                     </div>
-                    <div aria-describedby="datepicker-1791400077591-f9b70cea165d3__calendar_grid" aria-label="Calendar" aria-labelledby="datepicker-1791400077591-f9b70cea165d3__calendar_grid_caption" aria-roledescription="Calendar" class="calendar form-control h-auto pt-2 text-center" role="region" tabindex="0">
-                      <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="datepicker-1791400077591-f9b70cea165d3__calendar_grid_caption">
+                    <div aria-describedby="datepicker-1791907418795-62152d692f192__calendar_grid" aria-label="Calendar" aria-labelledby="datepicker-1791907418795-62152d692f192__calendar_grid_caption" aria-roledescription="Calendar" class="calendar form-control h-auto pt-2 text-center" role="region" tabindex="0">
+                      <div aria-atomic="true" aria-live="polite" class="calendar-grid-caption font-weight-bold text-center" id="datepicker-1791907418795-62152d692f192__calendar_grid_caption">
                         October 2026
                       </div>
                       <div aria-hidden="true" class="calendar-grid-weekdays">
@@ -1223,7 +1223,7 @@ exports[`plumage-datepicker-component renders: default-render 1`] = `
                           Sat
                         </small>
                       </div>
-                      <div class="calendar-grid" id="datepicker-1791400077591-f9b70cea165d3__calendar_grid">
+                      <div class="calendar-grid" id="datepicker-1791907418795-62152d692f192__calendar_grid">
                         <div aria-label="September 2026" class="calendar-grid-item previous-month-day" data-date="2026-09-27" data-day="27" data-month="9" data-year="2026" id="cell-2026-09-27" role="button" tabindex="-1">
                           <span class="border-0 btn dp-btn-outline-light rounded-circle text-nowrap">
                             27
@@ -1274,8 +1274,8 @@ exports[`plumage-datepicker-component renders: default-render 1`] = `
                             6
                           </span>
                         </div>
-                        <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
@@ -1304,8 +1304,8 @@ exports[`plumage-datepicker-component renders: default-render 1`] = `
                             12
                           </span>
                         </div>
-                        <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                        <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>

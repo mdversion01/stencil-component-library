@@ -972,8 +972,8 @@ exports[`datepicker-component always renders help text and keeps aria-describedb
                         6
                       </span>
                     </div>
-                    <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         7
                       </span>
                     </div>
@@ -1002,8 +1002,8 @@ exports[`datepicker-component always renders help text and keeps aria-describedb
                         12
                       </span>
                     </div>
-                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         13
                       </span>
                     </div>
@@ -1806,8 +1806,8 @@ exports[`datepicker-component externally clearing a required value stays valid u
                         6
                       </span>
                     </div>
-                    <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         7
                       </span>
                     </div>
@@ -1836,8 +1836,8 @@ exports[`datepicker-component externally clearing a required value stays valid u
                         12
                       </span>
                     </div>
-                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         13
                       </span>
                     </div>
@@ -2076,8 +2076,8 @@ exports[`datepicker-component horizontal + labelHidden expands input to col-12 a
                         6
                       </span>
                     </div>
-                    <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         7
                       </span>
                     </div>
@@ -2106,8 +2106,8 @@ exports[`datepicker-component horizontal + labelHidden expands input to col-12 a
                         12
                       </span>
                     </div>
-                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         13
                       </span>
                     </div>
@@ -2351,8 +2351,8 @@ exports[`datepicker-component horizontal layout applies numeric label/input colu
                         6
                       </span>
                     </div>
-                    <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         7
                       </span>
                     </div>
@@ -2381,8 +2381,8 @@ exports[`datepicker-component horizontal layout applies numeric label/input colu
                         12
                       </span>
                     </div>
-                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         13
                       </span>
                     </div>
@@ -2626,8 +2626,8 @@ exports[`datepicker-component horizontal layout parses responsive labelCols/inpu
                         6
                       </span>
                     </div>
-                    <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         7
                       </span>
                     </div>
@@ -2656,8 +2656,8 @@ exports[`datepicker-component horizontal layout parses responsive labelCols/inpu
                         12
                       </span>
                     </div>
-                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         13
                       </span>
                     </div>
@@ -2901,8 +2901,8 @@ exports[`datepicker-component inline layout does not apply numeric grid classes 
                         6
                       </span>
                     </div>
-                    <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         7
                       </span>
                     </div>
@@ -2931,8 +2931,8 @@ exports[`datepicker-component inline layout does not apply numeric grid classes 
                         12
                       </span>
                     </div>
-                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         13
                       </span>
                     </div>
@@ -3182,8 +3182,8 @@ exports[`datepicker-component input -> clear -> blur becomes invalid when requir
                         6
                       </span>
                     </div>
-                    <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         7
                       </span>
                     </div>
@@ -3212,8 +3212,8 @@ exports[`datepicker-component input -> clear -> blur becomes invalid when requir
                         12
                       </span>
                     </div>
-                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         13
                       </span>
                     </div>
@@ -3452,8 +3452,8 @@ exports[`datepicker-component labelHidden uses aria-label instead of aria-labell
                         6
                       </span>
                     </div>
-                    <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         7
                       </span>
                     </div>
@@ -3482,8 +3482,8 @@ exports[`datepicker-component labelHidden uses aria-label instead of aria-labell
                         12
                       </span>
                     </div>
-                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         13
                       </span>
                     </div>
@@ -4778,8 +4778,8 @@ exports[`datepicker-component renders classic input-group mode by default: class
                         6
                       </span>
                     </div>
-                    <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         7
                       </span>
                     </div>
@@ -4808,8 +4808,8 @@ exports[`datepicker-component renders classic input-group mode by default: class
                         12
                       </span>
                     </div>
-                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         13
                       </span>
                     </div>
@@ -5059,8 +5059,8 @@ exports[`datepicker-component renders the legacy Plumage input group when plumag
                           6
                         </span>
                       </div>
-                      <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                        <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                      <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                        <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                           7
                         </span>
                       </div>
@@ -5089,8 +5089,8 @@ exports[`datepicker-component renders the legacy Plumage input group when plumag
                           12
                         </span>
                       </div>
-                      <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                        <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                      <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                        <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                           13
                         </span>
                       </div>
@@ -5335,8 +5335,8 @@ exports[`datepicker-component renders: default-render 1`] = `
                         6
                       </span>
                     </div>
-                    <div aria-label="Wednesday, October 7, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
-                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" id="cell-2026-10-07" role="button" tabindex="-1">
+                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         7
                       </span>
                     </div>
@@ -5365,8 +5365,8 @@ exports[`datepicker-component renders: default-render 1`] = `
                         12
                       </span>
                     </div>
-                    <div aria-label="October 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
-                      <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                    <div aria-label="Tuesday, October 13, 2026 (Today)" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" id="cell-2026-10-13" role="button" tabindex="-1">
+                      <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                         13
                       </span>
                     </div>

@@ -2,7 +2,7 @@
 
 exports[`plumage-accordion-container applies correct text size class from contentTxtSize prop: text size large 1`] = `
 <plumage-accordion-container icon="fas fa-angle-down">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -51,7 +51,7 @@ exports[`plumage-accordion-container applies correct text size class from conten
 
 exports[`plumage-accordion-container handles keyboard activation (simulate click on inner button): after activation close 1`] = `
 <plumage-accordion-container icon="fas fa-angle-down">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -100,7 +100,7 @@ exports[`plumage-accordion-container handles keyboard activation (simulate click
 
 exports[`plumage-accordion-container handles keyboard activation (simulate click on inner button): after activation open 1`] = `
 <plumage-accordion-container icon="fas fa-angle-down">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -149,7 +149,7 @@ exports[`plumage-accordion-container handles keyboard activation (simulate click
 
 exports[`plumage-accordion-container icon switching with snapshot: after icon toggle 1`] = `
 <plumage-accordion-container icon="icon-closed,icon-open">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -198,7 +198,7 @@ exports[`plumage-accordion-container icon switching with snapshot: after icon to
 
 exports[`plumage-accordion-container icon switching with snapshot: before icon toggle 1`] = `
 <plumage-accordion-container icon="icon-closed,icon-open">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -247,7 +247,7 @@ exports[`plumage-accordion-container icon switching with snapshot: before icon t
 
 exports[`plumage-accordion-container renders an item with empty header and content strings: empty header and content 1`] = `
 <plumage-accordion-container icon="fas fa-angle-down">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -273,7 +273,7 @@ exports[`plumage-accordion-container renders an item with empty header and conte
 
 exports[`plumage-accordion-container renders correct ARIA attributes on accordion headers and panels (including hidden/inert when collapsed): ARIA attributes check 1`] = `
 <plumage-accordion-container icon="fas fa-angle-down">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="my-accordion">
       <div class="accordion-item">
         <h2 class="accordion-header" id="my-accordion-header-0">
@@ -302,7 +302,7 @@ exports[`plumage-accordion-container renders correct ARIA attributes on accordio
 
 exports[`plumage-accordion-container renders empty accordion when data is an empty array: empty array data 1`] = `
 <plumage-accordion-container icon="fas fa-angle-down">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test"></div>
   </div>
 </plumage-accordion-container>
@@ -310,7 +310,7 @@ exports[`plumage-accordion-container renders empty accordion when data is an emp
 
 exports[`plumage-accordion-container renders fallback icon behavior for invalid or missing icon prop: empty string icon 1`] = `
 <plumage-accordion-container icon="">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -339,7 +339,7 @@ exports[`plumage-accordion-container renders fallback icon behavior for invalid 
 
 exports[`plumage-accordion-container renders fallback icon behavior for invalid or missing icon prop: malformed icon string 1`] = `
 <plumage-accordion-container icon="  , , ,">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -368,7 +368,7 @@ exports[`plumage-accordion-container renders fallback icon behavior for invalid 
 
 exports[`plumage-accordion-container renders fallback icon behavior for invalid or missing icon prop: null icon 1`] = `
 <plumage-accordion-container>
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -397,7 +397,7 @@ exports[`plumage-accordion-container renders fallback icon behavior for invalid 
 
 exports[`plumage-accordion-container renders gracefully when data is undefined, null, or not an array: non-array data fallback 1`] = `
 <plumage-accordion-container icon="fas fa-angle-down">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test"></div>
   </div>
 </plumage-accordion-container>
@@ -405,7 +405,7 @@ exports[`plumage-accordion-container renders gracefully when data is undefined, 
 
 exports[`plumage-accordion-container renders gracefully when data is undefined, null, or not an array: null data fallback 1`] = `
 <plumage-accordion-container icon="fas fa-angle-down">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test"></div>
   </div>
 </plumage-accordion-container>
@@ -413,7 +413,7 @@ exports[`plumage-accordion-container renders gracefully when data is undefined, 
 
 exports[`plumage-accordion-container renders gracefully when data is undefined, null, or not an array: undefined data fallback 1`] = `
 <plumage-accordion-container icon="fas fa-angle-down">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test"></div>
   </div>
 </plumage-accordion-container>
@@ -421,7 +421,7 @@ exports[`plumage-accordion-container renders gracefully when data is undefined, 
 
 exports[`plumage-accordion-container renders many accordion items and matches snapshot: long data array (12 items) 1`] = `
 <plumage-accordion-container icon="fas fa-angle-down">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -670,7 +670,7 @@ exports[`plumage-accordion-container renders many accordion items and matches sn
 
 exports[`plumage-accordion-container renders only first two icons from icon="a,b,c": icon prop with extra values (a,b,c) 1`] = `
 <plumage-accordion-container icon="a,b,c">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -699,7 +699,7 @@ exports[`plumage-accordion-container renders only first two icons from icon="a,b
 
 exports[`plumage-accordion-container renders outlined, block, and disabled props: outlined-block-disabled 1`] = `
 <plumage-accordion-container icon="fas fa-angle-down">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -748,7 +748,7 @@ exports[`plumage-accordion-container renders outlined, block, and disabled props
 
 exports[`plumage-accordion-container renders single static icon and does not change on toggle: static single icon toggle does not change 1`] = `
 <plumage-accordion-container icon="only-icon">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -777,7 +777,7 @@ exports[`plumage-accordion-container renders single static icon and does not cha
 
 exports[`plumage-accordion-container renders static icon with no toggle switch: static icon no switch 1`] = `
 <plumage-accordion-container icon="icon-static">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -826,7 +826,7 @@ exports[`plumage-accordion-container renders static icon with no toggle switch: 
 
 exports[`plumage-accordion-container renders with given data and matches snapshot: default-data 1`] = `
 <plumage-accordion-container icon="fas fa-angle-down">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">
@@ -875,7 +875,7 @@ exports[`plumage-accordion-container renders with given data and matches snapsho
 
 exports[`plumage-accordion-container toggles accordion via click and matches snapshot: click toggle first open 1`] = `
 <plumage-accordion-container icon="fas fa-angle-down">
-  <div class="sc-accordion">
+  <div class="stencil-component">
     <div class="accordion" id="acc-test">
       <div class="accordion-item">
         <h2 class="accordion-header" id="acc-test-header-0">

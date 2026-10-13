@@ -947,7 +947,7 @@ exports[`date-range-picker-component input mode disabled disables the input and 
                           </span>
                         </div>
                         <div aria-label="October 7, 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
@@ -979,7 +979,7 @@ exports[`date-range-picker-component input mode disabled disables the input and 
                           </span>
                         </div>
                         <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
@@ -1651,7 +1651,7 @@ exports[`date-range-picker-component input mode rejects invalid typed range synt
                           </span>
                         </div>
                         <div aria-label="October 7, 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
@@ -1683,7 +1683,7 @@ exports[`date-range-picker-component input mode rejects invalid typed range synt
                           </span>
                         </div>
                         <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
@@ -2368,7 +2368,7 @@ exports[`date-range-picker-component input mode renders Plumage input styling: p
                             </span>
                           </div>
                           <div aria-label="October 7, 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                            <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                            <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                               7
                             </span>
                           </div>
@@ -2400,7 +2400,7 @@ exports[`date-range-picker-component input mode renders Plumage input styling: p
                             </span>
                           </div>
                           <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                            <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                            <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                               13
                             </span>
                           </div>
@@ -3070,7 +3070,7 @@ exports[`date-range-picker-component input mode renders input, toggle, dropdown,
                           </span>
                         </div>
                         <div aria-label="October 7, 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
@@ -3102,7 +3102,7 @@ exports[`date-range-picker-component input mode renders input, toggle, dropdown,
                           </span>
                         </div>
                         <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
@@ -3771,7 +3771,7 @@ exports[`date-range-picker-component input mode renders responsive horizontal co
                           </span>
                         </div>
                         <div aria-label="October 7, 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
@@ -3803,7 +3803,7 @@ exports[`date-range-picker-component input mode renders responsive horizontal co
                           </span>
                         </div>
                         <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
@@ -4472,7 +4472,7 @@ exports[`date-range-picker-component input mode uses custom input ID and placeho
                           </span>
                         </div>
                         <div aria-label="October 7, 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             7
                           </span>
                         </div>
@@ -4504,7 +4504,7 @@ exports[`date-range-picker-component input mode uses custom input ID and placeho
                           </span>
                         </div>
                         <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                          <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                          <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                             13
                           </span>
                         </div>
@@ -5146,7 +5146,7 @@ exports[`date-range-picker-component rangePicker mode selects and marks a comple
                   </span>
                 </div>
                 <div aria-label="October 7, 2026" class="calendar-grid-item selected-range" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                  <span class="border-0 btn current-day font-weight-bold rounded-circle text-dark text-nowrap">
+                  <span class="border-0 btn font-weight-bold rounded-circle text-dark text-nowrap">
                     7
                   </span>
                 </div>
@@ -5178,7 +5178,7 @@ exports[`date-range-picker-component rangePicker mode selects and marks a comple
                   </span>
                 </div>
                 <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                  <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                  <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                     13
                   </span>
                 </div>
@@ -5811,7 +5811,7 @@ exports[`date-range-picker-component rendering renders two accessible calendar g
                   </span>
                 </div>
                 <div aria-label="October 7, 2026" class="calendar-grid-item" data-date="2026-10-07" data-day="7" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                  <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                  <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                     7
                   </span>
                 </div>
@@ -5843,7 +5843,7 @@ exports[`date-range-picker-component rendering renders two accessible calendar g
                   </span>
                 </div>
                 <div aria-label="October 13, 2026" class="calendar-grid-item" data-date="2026-10-13" data-day="13" data-month="10" data-year="2026" role="gridcell" tabindex="-1">
-                  <span class="border-0 btn dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
+                  <span class="border-0 btn current-day dp-btn-outline-light font-weight-bold rounded-circle text-dark text-nowrap">
                     13
                   </span>
                 </div>

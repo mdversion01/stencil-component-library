@@ -35,10 +35,12 @@ exports[`plumage-autocomplete-multiselect-component filters, navigates, selects 
             </div>
             <div class="ac-input-container-multi">
               <div class="input-group">
-                <input aria-autocomplete="list" aria-controls="fruit-listbox" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="false" aria-required="false" autocomplete="off" class="form-control" id="fruit" inputmode="text" placeholder="Type to search/filter..." role="combobox" type="text" value="">
-                <button aria-disabled="false" aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
-                  <i class="fa-times fas"></i>
-                </button>
+                <div class="ig-wrapper">
+                  <input aria-autocomplete="list" aria-controls="fruit-listbox" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="false" aria-required="false" autocomplete="off" class="form-control" id="fruit" inputmode="text" placeholder="Type to search/filter..." role="combobox" type="text" value="">
+                  <button aria-disabled="false" aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
+                    <i class="fa-times fas"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -68,7 +70,9 @@ exports[`plumage-autocomplete-multiselect-component renders (stacked) and matche
             <div aria-label="Selected items" class="ac-selected-items" id="fruits-selected" role="list"></div>
             <div class="ac-input-container-multi">
               <div class="input-group">
-                <input aria-autocomplete="list" aria-controls="fruits-listbox" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="false" aria-required="false" autocomplete="off" class="form-control" id="fruits" inputmode="text" placeholder="Type to search/filter..." role="combobox" type="text" value="">
+                <div class="ig-wrapper">
+                  <input aria-autocomplete="list" aria-controls="fruits-listbox" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="false" aria-required="false" autocomplete="off" class="form-control" id="fruits" inputmode="text" placeholder="Type to search/filter..." role="combobox" type="text" value="">
+                </div>
               </div>
             </div>
           </div>

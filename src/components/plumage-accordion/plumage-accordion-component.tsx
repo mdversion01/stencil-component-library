@@ -306,7 +306,7 @@ export class PlumageAccordionComponent {
 
   private renderAccordionExpansionCard() {
     return (
-      <div class={`sc-accordion`}>
+      <div class={`stencil-component`}>
         <div class={`accordion ${this.flush ? 'accordion-flush' : ''}`}>
           <div class="accordion-item">
             {this.renderAccordionButton()}
@@ -370,7 +370,7 @@ export class PlumageAccordionComponent {
   render() {
     if (!this.targetId || !this.targetId.trim()) {
       return (
-        <div class="sc-accordion">
+        <div class="stencil-component">
           <div class="accordion-wrapper">
             <div>
               <slot name={this.accordion ? 'accordion-header' : 'button-text'}></slot>
@@ -386,7 +386,7 @@ export class PlumageAccordionComponent {
     if (this.accordion) return this.renderAccordionExpansionCard();
 
     return (
-      <div class="sc-accordion">
+      <div class="stencil-component">
         <div class="accordion-wrapper">
           {this.link ? this.renderToggleLink() : this.renderToggleButton()}
           {this.renderExpansionContentArea()}

@@ -160,7 +160,7 @@ export namespace Components {
          */
         "addBtn": boolean;
         /**
-          * @default ''
+          * @default 'fa-solid fa-plus'
          */
         "addIcon": string;
         /**
@@ -195,7 +195,7 @@ export namespace Components {
          */
         "badgeVariant": string;
         /**
-          * @default ''
+          * @default 'fa-solid fa-xmark'
          */
         "clearIcon": string;
         /**
@@ -332,7 +332,7 @@ export namespace Components {
          */
         "addBtn": boolean;
         /**
-          * @default ''
+          * @default 'fa-solid fa-plus'
          */
         "addIcon": string;
         /**
@@ -367,7 +367,7 @@ export namespace Components {
          */
         "badgeVariant": string;
         /**
-          * @default ''
+          * @default 'fa-solid fa-xmark'
          */
         "clearIcon": string;
         /**
@@ -6651,7 +6651,7 @@ declare namespace LocalJSX {
          */
         "addBtn"?: boolean;
         /**
-          * @default ''
+          * @default 'fa-solid fa-plus'
          */
         "addIcon"?: string;
         /**
@@ -6686,7 +6686,7 @@ declare namespace LocalJSX {
          */
         "badgeVariant"?: string;
         /**
-          * @default ''
+          * @default 'fa-solid fa-xmark'
          */
         "clearIcon"?: string;
         /**
@@ -6828,7 +6828,7 @@ declare namespace LocalJSX {
          */
         "addBtn"?: boolean;
         /**
-          * @default ''
+          * @default 'fa-solid fa-plus'
          */
         "addIcon"?: string;
         /**
@@ -6863,7 +6863,7 @@ declare namespace LocalJSX {
          */
         "badgeVariant"?: string;
         /**
-          * @default ''
+          * @default 'fa-solid fa-xmark'
          */
         "clearIcon"?: string;
         /**

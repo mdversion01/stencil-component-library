@@ -807,7 +807,7 @@ export class PlumageAutocompleteMultipleSelectionsComponent {
 
   @Method()
   public async filterOptions(): Promise<void> {
-     if (this.isInteractionLocked) {
+    if (this.isInteractionLocked) {
       this.filteredOptions = [];
       this.dropdownOpen = false;
       this.focusedOptionIndex = -1;
@@ -1149,7 +1149,7 @@ export class PlumageAutocompleteMultipleSelectionsComponent {
 
     return (
       <label class={this.labelClasses(labelColClass)} htmlFor={inputId || undefined}>
-         <span class={this.readOnly || this.disabled ? '' : this.showAsRequired() ? 'required' : ''}>{text}</span>
+        <span class={this.readOnly || this.disabled ? '' : this.showAsRequired() ? 'required' : ''}>{text}</span>
         {this.readOnly || this.disabled ? null : this.required ? <span class="required">*</span> : ''}
       </label>
     );
@@ -1336,9 +1336,11 @@ export class PlumageAutocompleteMultipleSelectionsComponent {
           {this.renderSelectedItems(ids.selectedListId)}
           <div class="ac-input-container">
             <div class={this.groupClasses()}>
-              {this.renderInputField(ids)}
-              {this.renderAddButton()}
-              {this.renderClearButton()}
+              <div class="ig-wrapper">
+                {this.renderInputField(ids)}
+                {this.renderAddButton()}
+                {this.renderClearButton()}
+              </div>
             </div>
 
             {this.renderFormFields()}
@@ -1406,7 +1408,7 @@ export class PlumageAutocompleteMultipleSelectionsComponent {
   render() {
     const ids = this.resolveIds();
     return (
-      <div class="plumage">
+      <div class="stencil-component">
         {/* Screen-reader announcements for add/remove/clear/delete */}
         <div id={ids.liveId} class="sr-only" aria-live="polite" aria-atomic="true">
           {this.liveMessage}

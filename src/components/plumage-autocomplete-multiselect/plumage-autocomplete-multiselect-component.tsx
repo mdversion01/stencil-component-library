@@ -1256,9 +1256,11 @@ export class PlumageAutocompleteMultiselectComponent {
           {this.renderSelectedItems(ids.selectedListId)}
           <div class="ac-input-container-multi">
             <div class={this.groupClasses()}>
-              {this.renderInputField(ids)}
-              {this.renderAddButton()}
-              {this.renderClearButton()}
+              <div class="ig-wrapper">
+                {this.renderInputField(ids)}
+                {this.renderAddButton()}
+                {this.renderClearButton()}
+              </div>
             </div>
 
             {this.renderFormFields()}

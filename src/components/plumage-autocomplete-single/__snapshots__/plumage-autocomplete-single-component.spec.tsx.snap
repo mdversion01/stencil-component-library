@@ -13,7 +13,9 @@ exports[`plumage-autocomplete-single error state sets aria-invalid and error mes
         </label>
         <div>
           <div class="autocomplete-single-select input-group is-invalid">
-            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-describedby="acs-error" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="true" aria-labelledby="acs-label" aria-required="false" autocomplete="off" class="form-control is-invalid" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="">
+            <div class="ig-wrapper">
+              <input aria-autocomplete="list" aria-controls="acs-listbox" aria-describedby="acs-error" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="true" aria-labelledby="acs-label" aria-required="false" autocomplete="off" class="form-control is-invalid" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="">
+            </div>
           </div>
           <div class="b-underline" role="presentation">
             <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
@@ -43,10 +45,12 @@ exports[`plumage-autocomplete-single filters on input and selects an option; dro
         </label>
         <div>
           <div class="ac-focused autocomplete-single-select input-group">
-            <input aria-activedescendant="acs-opt-0" aria-autocomplete="list" aria-controls="acs-listbox" aria-disabled="false" aria-expanded="true" aria-haspopup="listbox" aria-invalid="false" aria-labelledby="acs-label" aria-required="false" autocomplete="off" class="form-control" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="a">
-            <button aria-disabled="false" aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
-              <i aria-hidden="true" class="fa-times fas"></i>
-            </button>
+            <div class="ig-wrapper">
+              <input aria-activedescendant="acs-opt-0" aria-autocomplete="list" aria-controls="acs-listbox" aria-disabled="false" aria-expanded="true" aria-haspopup="listbox" aria-invalid="false" aria-labelledby="acs-label" aria-required="false" autocomplete="off" class="form-control" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="a">
+              <button aria-disabled="false" aria-label="Clear input" class="clear clear-btn input-group-btn" title="Clear input" type="button">
+                <i aria-hidden="true" class="fa-times fas"></i>
+              </button>
+            </div>
           </div>
           <div class="b-underline" role="presentation">
             <div aria-hidden="true" class="b-focus" role="presentation" style="width: 100%; left: 0;"></div>
@@ -85,7 +89,9 @@ exports[`plumage-autocomplete-single label-hidden uses aria-label fallback when 
         </label>
         <div>
           <div class="autocomplete-single-select input-group">
-            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="false" aria-label="City" aria-required="false" autocomplete="off" class="form-control" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="">
+            <div class="ig-wrapper">
+              <input aria-autocomplete="list" aria-controls="acs-listbox" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="false" aria-label="City" aria-required="false" autocomplete="off" class="form-control" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="">
+            </div>
           </div>
           <div class="b-underline" role="presentation">
             <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
@@ -110,7 +116,9 @@ exports[`plumage-autocomplete-single renders stacked layout with underline prese
         </label>
         <div>
           <div class="autocomplete-single-select input-group">
-            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="false" aria-labelledby="acs-label" aria-required="false" autocomplete="off" class="form-control" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="">
+            <div class="ig-wrapper">
+              <input aria-autocomplete="list" aria-controls="acs-listbox" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="false" aria-labelledby="acs-label" aria-required="false" autocomplete="off" class="form-control" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="">
+            </div>
           </div>
           <div class="b-underline" role="presentation">
             <div aria-hidden="true" class="b-focus" role="presentation" style="width: 0; left: 50%;"></div>
@@ -138,7 +146,9 @@ exports[`plumage-autocomplete-single required + blur marks invalid and shows val
         </label>
         <div>
           <div class="autocomplete-single-select input-group is-invalid">
-            <input aria-autocomplete="list" aria-controls="acs-listbox" aria-describedby="acs-validation" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="true" aria-labelledby="acs-label" aria-required="true" autocomplete="off" class="form-control is-invalid" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="">
+            <div class="ig-wrapper">
+              <input aria-autocomplete="list" aria-controls="acs-listbox" aria-describedby="acs-validation" aria-disabled="false" aria-expanded="false" aria-haspopup="listbox" aria-invalid="true" aria-labelledby="acs-label" aria-required="true" autocomplete="off" class="form-control is-invalid" id="acs" inputmode="text" placeholder="City" role="combobox" type="text" value="">
+            </div>
           </div>
           <div class="b-underline invalid" role="presentation">
             <div aria-hidden="true" class="b-focus invalid" role="presentation" style="width: 0; left: 50%;"></div>

@@ -21,7 +21,7 @@ export class AutocompleteMultipleSelections {
   // Props
   @Prop({ mutable: true }) options: string[] = [];
   @Prop() addBtn = false;
-  @Prop() addIcon = '';
+  @Prop() addIcon = 'fa-solid fa-plus';
 
   /**
    * @deprecated Use `ariaLabelledby` (mapped to `aria-labelledby`) instead.
@@ -34,7 +34,7 @@ export class AutocompleteMultipleSelections {
   @Prop({ attribute: 'aria-labelledby' }) ariaLabelledby?: string;
   @Prop({ attribute: 'aria-describedby' }) ariaDescribedby?: string;
 
-  @Prop() clearIcon = '';
+  @Prop() clearIcon = 'fa-solid fa-xmark';
   @Prop() placeholder: string = '';
   @Prop() devMode: boolean = false;
   @Prop() disabled: boolean = false;

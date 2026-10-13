@@ -285,7 +285,7 @@ export class PlumageAccordionContainer {
     const containerIsNamed = !!this.joinIds(containerLabelledby, containerLabel);
 
     return (
-      <div class="sc-accordion">
+      <div class="stencil-component">
         <div
           class={`accordion ${this.flush ? 'accordion-flush' : ''}`}
           id={parentId}

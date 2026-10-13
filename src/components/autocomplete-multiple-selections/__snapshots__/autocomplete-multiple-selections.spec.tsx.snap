@@ -60,10 +60,10 @@ exports[`<autocomplete-multiple-selections> matches snapshot (open with matches 
               <div class="input-group">
                 <input aria-autocomplete="list" aria-controls="tags-listbox" aria-expanded="true" aria-haspopup="listbox" aria-labelledby="tags-label" autocomplete="off" class="form-control" id="tags" inputmode="text" placeholder="Tags" role="combobox" spellcheck="false" type="text" value="a">
                 <button aria-label="Add item" class="add-btn" title="Add item" type="button">
-                  <i aria-hidden="true" class="fa-plus fas"></i>
+                  <i aria-hidden="true" class="fa-plus fa-solid"></i>
                 </button>
                 <button aria-label="Clear input" class="clear-btn" title="Clear input" type="button">
-                  <i aria-hidden="true" class="fa-times fas"></i>
+                  <i aria-hidden="true" class="fa-solid fa-xmark"></i>
                 </button>
               </div>
             </div>
